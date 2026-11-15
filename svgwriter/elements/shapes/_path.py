@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, ClassVar, overload
 
+import numpy as np
+
 from ..._internal._typing import Self
 from ...attributes.descriptors import Attr
 from ...path.builder import PathBuilder
@@ -81,6 +83,26 @@ class Path(Shape, tag="path"):
         if isinstance(value, PathBuilder):
             value = value.build()
         self.attributes["d"] = value if isinstance(value, PathData) else PathData(value)
+
+    @property
+    def nodes(self) -> np.ndarray:
+        """All end and control points as an ``(N, 2)`` array; assign to move them.
+
+        Assigning rewrites ``d`` in absolute form. Broadcasting works as in
+        numpy: ``p.nodes = p.nodes * [1, -1] + 5``.
+
+        Examples
+        --------
+        >>> p = Path("M0 0 L10 0 L10 10")
+        >>> p.nodes = p.nodes + [1, 2]
+        >>> str(p.d)
+        'M1 2 L11 2 L11 12'
+        """
+        return self.d.nodes()
+
+    @nodes.setter
+    def nodes(self, value: object) -> None:
+        self.d = self.d.with_nodes(value)
 
     def _push(self, command: PathCommand) -> Self:
         self.attributes["d"] = PathData((*self.d, command))

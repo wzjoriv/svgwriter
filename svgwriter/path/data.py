@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Iterator, Sequence
+from dataclasses import replace
 from functools import cached_property
 from typing import Final, NamedTuple, overload
+
+import numpy as np
 
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._speedups import format_number
@@ -84,6 +87,11 @@ def _quadratic(p0: Point, p1: Point, p2: Point, t: float) -> Point:
         u * u * p0.x + 2 * u * t * p1.x + t * t * p2.x,
         u * u * p0.y + 2 * u * t * p1.y + t * t * p2.y,
     )
+
+
+def _pairs(command: PathCommand) -> list[tuple[str, str]]:
+    names = command.coordinates
+    return [(names[i], names[i + 1]) for i in range(0, len(names), 2)] if len(names) % 2 == 0 else []
 
 
 def _reflect(control: Point, about: Point) -> Point:
@@ -189,6 +197,57 @@ class PathData(Sequence[PathCommand]):
                 start = current
             elif isinstance(absolute, ClosePath):
                 current = start
+
+    def _editable(self) -> list[PathCommand]:
+        """Absolute commands with ``H``/``V`` widened to ``L`` so every node has x and y."""
+        commands: list[PathCommand] = []
+        for current, command in self.walk():
+            if isinstance(command, HLineTo):
+                command = LineTo(command.x, current.y)
+            elif isinstance(command, VLineTo):
+                command = LineTo(current.x, command.y)
+            commands.append(command)
+        return commands
+
+    def nodes(self) -> np.ndarray:
+        """Every coordinate pair (end points and control points) as an ``(N, 2)`` array.
+
+        Coordinates are absolute; ``H``/``V`` count as points on their line.
+        Arc radii and flags are not nodes.
+
+        Examples
+        --------
+        >>> PathData("M0 0 h10 Q15 5 10 10").nodes().tolist()
+        [[0.0, 0.0], [10.0, 0.0], [15.0, 5.0], [10.0, 10.0]]
+        """
+        pairs = [
+            (getattr(c, x), getattr(c, y))
+            for c in self._editable()
+            for x, y in _pairs(c)
+        ]
+        return np.array(pairs, dtype=float).reshape(-1, 2)
+
+    def with_nodes(self, nodes: object) -> PathData:
+        """The same commands with coordinates taken from an ``(N, 2)`` array (see :meth:`nodes`).
+
+        Raises
+        ------
+        ValueError
+            When the array's shape does not match the path's node count.
+        """
+        commands = self._editable()
+        array = np.asarray(nodes, dtype=float)
+        count = sum(len(_pairs(c)) for c in commands)
+        if array.shape != (count, 2):
+            raise ValueError(f"expected nodes of shape ({count}, 2), got {array.shape}")
+        values = iter(array.tolist())
+        rebuilt = []
+        for command in commands:
+            changes = {}
+            for x, y in _pairs(command):
+                changes[x], changes[y] = next(values)
+            rebuilt.append(replace(command, **changes) if changes else command)
+        return PathData(rebuilt)
 
     def to_absolute(self) -> PathData:
         return PathData(command for _, command in self.walk())

@@ -155,3 +155,27 @@ class TestFluentPath:
 
     def test_extends_existing_data(self) -> None:
         assert str(svg.Path("M0 0").line_to(1, 1).d) == "M0 0 L1 1"
+
+
+class TestNodes:
+    def test_nodes_cover_controls_and_widen_h_v(self) -> None:
+        d = PathData("M0 0 h10 v5 C1 2 3 4 5 6 S7 8 9 10 Q1 1 2 2 T3 3 A1 1 0 0 1 4 4 Z")
+        assert d.nodes().shape == (12, 2)
+        assert str(d.with_nodes(d.nodes())) == "M0 0 L10 0 L10 5 C1 2 3 4 5 6 S7 8 9 10 Q1 1 2 2 T3 3 A1 1 0 0 1 4 4 Z"
+
+    def test_relative_input_becomes_absolute(self) -> None:
+        assert PathData("m1 1 l2 0").nodes().tolist() == [[1, 1], [3, 1]]
+
+    def test_broadcast_edits(self) -> None:
+        p = svg.Path("M0 0 L10 0 L10 10")
+        p.nodes = p.nodes * [2, 1]
+        p.nodes = p.nodes + 1
+        p.nodes = p.nodes + [[0, 0], [0, 0], [5, 5]]
+        assert str(p.d) == "M1 1 L21 1 L26 16"
+
+    def test_shape_mismatch(self) -> None:
+        with pytest.raises(ValueError, match=r"\(2, 2\)"):
+            svg.Path("M0 0 L1 1").nodes = [[0, 0]]
+
+    def test_empty(self) -> None:
+        assert svg.Path().nodes.shape == (0, 2)
