@@ -3,17 +3,20 @@
 from __future__ import annotations
 
 import warnings
+from collections.abc import Sequence
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Any, Final, Literal
 
 import skia
 
 from ..path.data import PathData
+from ..transform.matrix import Matrix
 from ._skia import from_skia
 
 if TYPE_CHECKING:
     from ..elements.shapes import Path
 
-__all__ = ["Anchor", "FontWeight", "text_outline", "text_to_path", "text_width"]
+__all__ = ["Anchor", "FontWeight", "GlyphBox", "layout_glyphs", "text_outline", "text_to_path", "text_width"]
 
 Anchor = Literal["start", "middle", "end"]
 FontWeight = int | Literal["normal", "bold"]
@@ -90,6 +93,85 @@ def text_outline(
         if outline is not None:
             combined.addPath(outline, position.x(), position.y())
     return from_skia(combined)
+
+
+@dataclass(frozen=True)
+class GlyphBox:
+    """One laid-out character: its outline in local glyph space and where it sits."""
+
+    char: str
+    outline: PathData
+    x: float
+    y: float
+    angle: float
+    advance: float
+
+    def placed(self) -> PathData:
+        """The outline rotated by ``angle`` and moved to ``(x, y)``."""
+        return self.outline.transformed(Matrix.translate(self.x, self.y) @ Matrix.rotate(self.angle))
+
+
+def _pick(values: Sequence[float], index: int) -> float | None:
+    return values[index] if index < len(values) else None
+
+
+def layout_glyphs(
+    text: str,
+    font_family: str = DEFAULT_FAMILY,
+    size: float = DEFAULT_SIZE,
+    *,
+    x: Sequence[float] = (0.0,),
+    y: Sequence[float] = (0.0,),
+    dx: Sequence[float] = (),
+    dy: Sequence[float] = (),
+    rotate: Sequence[float] = (),
+    anchor: Anchor = "start",
+    weight: FontWeight = "normal",
+    italic: bool = False,
+) -> list[GlyphBox]:
+    """Place each character following SVG 1.1's per-character positioning rules.
+
+    Parameters
+    ----------
+    text : str
+        Characters to lay out.
+    font_family, size, weight, italic
+        The font, as in :func:`text_outline`.
+    x, y : sequence of float
+        Absolute positions for the first characters; later ones follow on.
+    dx, dy : sequence of float
+        Relative shifts per character (each shift carries to the following ones).
+    rotate : sequence of float
+        Per-character rotation in degrees; the last value repeats.
+    anchor : {"start", "middle", "end"}
+        ``text-anchor`` applied to the whole run.
+
+    Returns
+    -------
+    list of GlyphBox
+        One entry per character, whitespace included.
+    """
+    font = _font(font_family, size, weight, italic)
+    glyphs = font.textToGlyphs(text)
+    advances = font.getWidths(glyphs)
+    pen_x, pen_y = (x[0] if x else 0.0), (y[0] if y else 0.0)
+    boxes = []
+    for index, (char, glyph, advance) in enumerate(zip(text, glyphs, advances, strict=False)):
+        given_x, given_y = _pick(x, index), _pick(y, index)
+        pen_x = given_x if given_x is not None else pen_x
+        pen_y = given_y if given_y is not None else pen_y
+        pen_x += _pick(dx, index) or 0.0
+        pen_y += _pick(dy, index) or 0.0
+        angle = _pick(rotate, index)
+        angle = angle if angle is not None else (rotate[-1] if rotate else 0.0)
+        outline = font.getPath(glyph)
+        data = from_skia(outline) if outline is not None else PathData()
+        boxes.append(GlyphBox(char, data, pen_x, pen_y, angle, float(advance)))
+        pen_x += advance
+    if boxes and anchor != "start" and len(x) <= 1:
+        shift = _ANCHOR_SHIFT[anchor] * (boxes[-1].x + boxes[-1].advance - boxes[0].x)
+        boxes = [replace(b, x=b.x - shift) for b in boxes]
+    return boxes
 
 
 def text_to_path(

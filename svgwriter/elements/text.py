@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import enum
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
 from typing import TYPE_CHECKING, Any, ClassVar, TypeAlias
 
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._typing import LengthAdjust
 from ..attributes.length import Length, LengthLike
 from ._geometry import PathOperand
+from ._glyph import Glyph, number_list
 from ._mixins import (
     ConditionalAttributes,
     CoreAttributes,
@@ -21,7 +22,10 @@ from .base import Category, Child, ContentModel, Element
 from .container import Container
 
 if TYPE_CHECKING:
+    from ..ops.text import GlyphBox
     from ..path.data import BBox, PathData
+    from .shapes import Path
+    from .structure import Group
 
 __all__ = [
     "AltGlyph",
@@ -121,8 +125,14 @@ class Text(PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag="tex
     >>> str(Text("Hi", x=10, y=20, decoration=TextDecoration.UNDERLINE))
     '<text x="10" y="20" text-decoration="underline">Hi</text>'
 
-    With skia-python installed, text takes part in boolean operations
-    through its glyph outlines: ``Rect(0, 0, 100, 40) - Text("Hi", ...)``.
+    Notes
+    -----
+    Text takes part in boolean operations through its glyph outlines
+    (``Rect(0, 0, 100, 40) - Text("Hi", ...)``). ``text[i]`` is a live
+    :class:`Glyph` for character *i* (``len(text)`` counts characters);
+    :meth:`glyphs` returns one outline path per character. The method
+    ``rotate()`` rotates the whole element; the per-character SVG
+    ``rotate`` list is ``text.rotate_``.
     """
 
     geometry_attributes: ClassVar[frozenset[str]] = frozenset(
@@ -130,23 +140,97 @@ class Text(PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag="tex
          "font-weight", "font-style", "text-anchor"}
     )
 
-    def local_bbox(self) -> BBox | None:
-        return self.local_outline().bbox
+    @property
+    def characters(self) -> str:
+        """All character data, ``tspan`` content included."""
+        return _all_text(self)
 
-    def local_outline(self) -> PathData:
-        """Glyph outlines of the text content (skia); tspan offsets are ignored."""
-        from ..ops.text import text_outline
+    def layout(self) -> list[GlyphBox]:
+        """Per-character placement (skia fonts, SVG ``x``/``y``/``dx``/``dy``/``rotate`` rules).
 
-        return text_outline(
-            _all_text(self),
+        ``tspan`` positioning and styling are not applied yet.
+        """
+        from ..ops.text import layout_glyphs
+
+        return layout_glyphs(
+            self.characters,
             str(self.get("font-family", DEFAULT_FONT_FAMILY)),
             _first(self.get("font-size", DEFAULT_FONT_SIZE)),
-            x=_first(self.get("x")) + _first(self.get("dx")),
-            y=_first(self.get("y")) + _first(self.get("dy")),
+            x=number_list(self.get("x")) or [0.0],
+            y=number_list(self.get("y")) or [0.0],
+            dx=number_list(self.get("dx")),
+            dy=number_list(self.get("dy")),
+            rotate=number_list(self.get("rotate")),
             anchor=str(self.get("text-anchor", "start")),  # type: ignore[arg-type]
             weight=self.get("font-weight", "normal"),
             italic=str(self.get("font-style", "")) in ("italic", "oblique"),
         )
+
+    def local_bbox(self) -> BBox | None:
+        return self.local_outline().bbox
+
+    def local_outline(self) -> PathData:
+        """Glyph outlines of the text in local coordinates."""
+        from ..path.data import PathData
+
+        return sum((box.placed() for box in self.layout()), PathData())
+
+    def __len__(self) -> int:
+        """Number of characters."""
+        return len(self.characters)
+
+    def __getitem__(self, index: int) -> Glyph:
+        """A live :class:`Glyph` handle on one character.
+
+        Examples
+        --------
+        >>> t = Text("Hello", x=0, y=20)
+        >>> t[-1].char, len(t)
+        ('o', 5)
+        """
+        count = len(self.characters)
+        if not -count <= index < count:
+            raise IndexError(f"text has {count} characters, index {index} is out of range")
+        return Glyph(self, index % count)
+
+    def __iter__(self) -> Iterator[Glyph]:  # type: ignore[override]
+        """The characters as :class:`Glyph` handles; ``children`` holds the runs and spans."""
+        return (Glyph(self, i) for i in range(len(self.characters)))
+
+    def _styled_path(self, data: PathData) -> Path:
+        from .shapes import Path
+
+        path = Path(data)
+        path.attributes.update(
+            (k, v) for k, v in self.attributes.items()
+            if k not in ("id", "transform", "clip-path") and k not in self.geometry_attributes
+        )
+        return path
+
+    def glyphs(self, *, skip_blank: bool = False) -> Group:
+        """One outline ``<path>`` per character, in a ``<g>`` carrying this text's transform.
+
+        Parameters
+        ----------
+        skip_blank : bool
+            Leave out characters without an outline (spaces); otherwise the
+            group's children line up with the character indices.
+
+        Examples
+        --------
+        >>> g = Text("Hi", x=0, y=20, fill="red").glyphs()
+        >>> len(g), g[1].get("fill")
+        (2, 'red')
+        """
+        from .structure import Group
+
+        group = Group(t=self.t)
+        for box in self.layout():
+            data = box.placed()
+            if skip_blank and not len(data):
+                continue
+            group.append(self._styled_path(data))
+        return group
 
     def span(self, text: str, **kwargs: Any) -> TSpan:
         """Append a ``<tspan>`` and return it."""
