@@ -115,8 +115,8 @@ class TestPosition:
         c.position = (10, 20)
         assert close(c.position, (10, 20)) and str(c.t) == "translate(10 20)"
 
-    def test_place_at_chains(self) -> None:
-        assert close(svg.Rect(0, 0, 4, 4).rotate(30).place_at(0, 0).position, (0, 0))
+    def test_place_chains(self) -> None:
+        assert close(svg.Rect(0, 0, 4, 4).rotate(30).place(0, 0).position, (0, 0))
 
     def test_no_bbox_bounds_is_none(self) -> None:
         assert svg.Image("a.png").bounds() is None and svg.Image("a.png").anchor == (0, 0)
@@ -185,8 +185,8 @@ class TestPaintServers:
         assert cp.anchor == (5, 5) and str(cp.t) == "translate(1)"
 
 
-def test_path_move_to_draws_and_place_at_places() -> None:
-    p = svg.Path().move_to(0, 0).line_to(10, 0).place_at(100, 100)
+def test_path_move_to_draws_and_place_places() -> None:
+    p = svg.Path().move_to(0, 0).line_to(10, 0).place(100, 100)
     assert str(p.d) == "M0 0 L10 0" and close(p.position, (100, 100))
 
 

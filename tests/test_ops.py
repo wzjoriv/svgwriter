@@ -182,3 +182,18 @@ class TestRasterize:
         with pytest.raises(ValueError, match="could not parse"):
             ops.render_svg("<nope", 1, 1)
 
+
+
+class TestTextRendering:
+    def test_text_is_drawn(self) -> None:
+        doc = svg.Document(100, 40)
+        doc.text("Hello", x=10, y=30, font_size=20, fill="navy")
+        pixels = ops.rasterize(doc)
+        assert pixels[..., 3].max() == 1.0 and doc.root.find(svg.Text) is not None
+
+    def test_text_element_rasterize_and_clip_by_text(self) -> None:
+        assert svg.Text("Hi", x=0, y=20, font_size=20).rasterize()[..., 3].max() == 1.0
+        doc = svg.Document(60, 30)
+        doc.rect(0, 0, 60, 30, fill="black").clip(svg.Text("W", x=0, y=25, font_size=30))
+        alpha = ops.rasterize(doc)[..., 3]
+        assert 0 < alpha.mean() < 0.9

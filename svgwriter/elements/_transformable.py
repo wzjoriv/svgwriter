@@ -152,7 +152,7 @@ class Transformable(Element):
         here = self.position
         self.translate(value[0] - here.x, value[1] - here.y)
 
-    def place_at(self: E, x: float, y: float) -> E:
+    def place(self: E, x: float, y: float) -> E:
         """Translate so the anchor lands on ``(x, y)`` in parent coordinates."""
         self.position = (x, y)
         return self

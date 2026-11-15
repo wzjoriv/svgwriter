@@ -1,44 +1,19 @@
-"""``image``, ``style``, ``view`` and ``color-profile``."""
+"""``style``, ``view`` and ``color-profile``."""
 
 from __future__ import annotations
 
 from typing import Any
 
-from ...attributes.length import LengthLike
 from ...attributes.style import StyleSheet
-from ...attributes.viewbox import PreserveAspectRatio
-from ...path.data import BBox
 from .._mixins import (
     CoreAttributes,
     ExternalResourcesAttribute,
-    GraphicsElement,
     XLinkAttributes,
 )
-from .._viewport import FitToViewBox, Positioned, positioned_bbox
-from ..base import Category, ContentModel, Element
+from .._viewport import FitToViewBox
+from ..base import ContentModel, Element
 
-__all__ = ["ColorProfile", "Image", "StyleElement", "View"]
-
-
-class Image(GraphicsElement, XLinkAttributes, Positioned, tag="image", category=Category.GRAPHICS, content=ContentModel.ELEMENTS):
-    """``<image>``: a raster image or external SVG."""
-
-    def __init__(
-        self,
-        href: str | None = None,
-        x: LengthLike | None = None,
-        y: LengthLike | None = None,
-        width: LengthLike | None = None,
-        height: LengthLike | None = None,
-        *,
-        preserve_aspect_ratio: PreserveAspectRatio | str | None = None,
-        **kwargs: Any,
-    ) -> None:
-        super().__init__(href=href, x=x, y=y, width=width, height=height, **kwargs)
-        self.update(preserve_aspect_ratio=preserve_aspect_ratio)
-
-    def local_bbox(self) -> BBox | None:
-        return positioned_bbox(self)
+__all__ = ["ColorProfile", "StyleElement", "View"]
 
 
 class StyleElement(CoreAttributes, tag="style", content=ContentModel.TEXT):

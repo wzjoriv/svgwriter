@@ -39,7 +39,7 @@ the geometry. Reading `c.cx` returns the local value; reading where the shape *i
   is pre-multiplied (`t = op @ t`), so `translate(10, 0)` moves 10 units right on screen whatever the
   current rotation. `local=True` post-multiplies (`t = t @ op`): axes are the element's own.
   The pivot is the anchor in both frames (mapped through `t` for the parent frame). Angles are degrees.
-- **`position`** = the anchor in parent coordinates (read/write; writing translates). `place_at(x, y)` is
+- **`position`** = the anchor in parent coordinates (read/write; writing translates). `place(x, y)` is
   the chainable form. `bounds()` is the transformed bounding box in parent coordinates.
 - **Name clashes:** element methods win over SVG attributes with the same Python name; the attribute gets a
   trailing underscore (`text.rotate_` for `<text rotate="...">`), like `class_`.

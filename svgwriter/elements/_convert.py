@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from ..path.data import BBox
     from .clip import ClipPath
     from .shapes import Path
-    from .structure import Group
+    from .structure import Group, Image
 
 __all__ = ["Convertible"]
 
@@ -64,6 +64,32 @@ class Convertible(Transformable):
             group.update(**kwargs)
             return group
         return Group(self.copy(), **kwargs)
+
+    def to_image(self, *, scale: float = 1.0, padding: float = 0.0, background: str | None = None) -> Image:
+        """Rasterize into an ``<image>`` placed over this element's bounds.
+
+        Parameters
+        ----------
+        scale : float
+            Pixels per user unit.
+        padding : float
+            Extra margin in user units.
+        background : color, optional
+            Painted under the element; transparent when omitted.
+
+        Returns
+        -------
+        Image
+            Embedded pixels positioned where the element was drawn.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> img = svg.circle(10, 10, 5, fill="red").to_image(scale=2)
+        >>> img.shape, (img.x, img.y, img.width)
+        ((20, 20), (5.0, 5.0, 10.0))
+        """
+        return _to_image(self, scale, padding, background)
 
     def clip(self: E, *shapes: Element, units: str | None = None) -> E:
         """Clip to the union of *shapes* (or a ``ClipPath``) and return ``self``.
@@ -162,7 +188,8 @@ class Convertible(Transformable):
         (8, 16, 4)
         """
         from ..io.writer import to_string
-        from ..ops.render import render_svg
+        from ..ops.render import render_tree
+        from ..transform.matrix import Matrix
 
         box = self.render_bounds()
         if box is None:
@@ -170,13 +197,25 @@ class Convertible(Transformable):
         x, y = box.x - padding, box.y - padding
         width, height = box.width + 2 * padding, box.height + 2 * padding
         defs = "".join(to_string(d, xml_declaration=False, pretty=False) for d in _definitions(self))
-        body = to_string(self, xml_declaration=False, pretty=False)
-        text = (
-            f'<svg xmlns="{SVG_NS}" xmlns:xlink="{XLINK_NS}" '
-            f'viewBox="{x} {y} {width} {height}" width="{width}" height="{height}">'
-            f"<defs>{defs}</defs>{body}</svg>"
-        )
-        return render_svg(text, width, height, scale=scale, background=background)
+
+        def wrap(body: str) -> str:
+            return (
+                f'<svg xmlns="{SVG_NS}" xmlns:xlink="{XLINK_NS}" '
+                f'viewBox="{x} {y} {width} {height}" width="{width}" height="{height}">'
+                f"<defs>{defs}</defs>{body}</svg>"
+            )
+
+        return render_tree(self, wrap, width, height, view=Matrix.translate(-x, -y), scale=scale,
+                           background=background)
+
+
+def _to_image(element: Convertible, scale: float, padding: float, background: str | None) -> Image:
+    from .structure import Image
+
+    box = element.render_bounds()
+    pixels = element.rasterize(scale=scale, padding=padding, background=background)
+    assert box is not None
+    return Image(pixels, box.x - padding, box.y - padding, box.width + 2 * padding, box.height + 2 * padding)
 
 
 def _definitions(element: Element) -> list[Element]:
