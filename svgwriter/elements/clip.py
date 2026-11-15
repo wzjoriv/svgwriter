@@ -6,7 +6,8 @@ from typing import Any, Literal, TypeAlias
 
 from .._internal._typing import Units
 from ..attributes.length import LengthLike
-from ..path.data import BBox
+from ..path.data import BBox, PathData
+from ._geometry import PathOperand, union_outline
 from ._mixins import (
     ConditionalAttributes,
     CoreAttributes,
@@ -25,6 +26,7 @@ MarkerOrient: TypeAlias = float | Literal["auto"]
 
 
 class ClipPath(
+    PathOperand,
     Transformable,
     PresentationAttributes,
     ConditionalAttributes,
@@ -42,6 +44,10 @@ class ClipPath(
 
     def local_bbox(self) -> BBox | None:
         return children_bbox(self)
+
+    def local_outline(self) -> PathData:
+        """Union of the children's outlines."""
+        return union_outline(self)
 
 
 class Mask(

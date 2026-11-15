@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
 from numbers import Real
 from typing import Any, ClassVar, TypeVar
 
 from ..path.data import BBox
-from ..transform.matrix import Matrix, Point
-from ..transform.ops import Rotate, Scale, SkewX, SkewY, TransformOp, Translate
+from ..transform.matrix import IDENTITY, Matrix, Point
+from ..transform.ops import TransformOp
 from ..transform.transform import Transform, TransformLike, as_transform
 from .base import Child, Element
 
@@ -17,6 +16,10 @@ __all__ = ["PointLike", "Transformable", "children_bbox"]
 PointLike = tuple[float, float] | Point
 E = TypeVar("E", bound="Transformable")
 _TRANSFORMS = (Transform, TransformOp, Matrix)
+
+
+def _as_matrix(value: TransformLike) -> Matrix:
+    return value if isinstance(value, Matrix) else as_transform(value).to_matrix()
 
 
 def children_bbox(element: Element) -> BBox | None:
@@ -48,9 +51,15 @@ class Transformable(Element):
     >>> import svgwriter as svg
     >>> c = svg.circle(50, 50, 10).translate(10, 0).rotate(90)
     >>> str(c.t)
-    'rotate(90 60 50) translate(10)'
+    'rotate(90 55 55)'
     >>> c.position
     Point(x=60.0, y=50.0)
+
+    Notes
+    -----
+    ``t`` is one affine matrix. Every method multiplies into it (before it
+    in the parent frame, after it with ``local=True``) instead of
+    appending to a list; output is the shortest equivalent ``transform``.
     """
 
     transform_attribute: ClassVar[str] = "transform"
@@ -71,32 +80,32 @@ class Transformable(Element):
             self.anchor = anchor
 
     @property
-    def t(self) -> Transform:
-        """The transform, as a copy; assign to replace it."""
+    def t(self) -> Matrix:
+        """The transform as an affine :class:`~svgwriter.Matrix`; assign to replace it.
+
+        Written to SVG as the shortest equivalent ``transform`` text.
+        """
         raw = self.attributes.get(self.transform_attribute)
-        return Transform() if raw is None else Transform(as_transform(raw))
+        if raw is None:
+            return IDENTITY
+        return raw if isinstance(raw, Matrix) else as_transform(raw).to_matrix()
 
     @t.setter
     def t(self, value: TransformLike | None) -> None:
-        transform = None if value is None else as_transform(value)
-        if transform is None or not len(transform):
+        matrix = None if value is None else _as_matrix(value)
+        if matrix is None or matrix.is_identity:
             self.attributes.pop(self.transform_attribute, None)
         else:
-            self.attributes[self.transform_attribute] = Transform(transform)
+            self.attributes[self.transform_attribute] = matrix
 
     @property
-    def transform(self) -> Transform:
-        """Alias of :attr:`t`."""
+    def transform(self) -> Matrix:
+        """Same as :attr:`t`, under the SVG attribute's name."""
         return self.t
 
     @transform.setter
     def transform(self, value: TransformLike | None) -> None:
         self.t = value
-
-    @property
-    def matrix(self) -> Matrix:
-        """:attr:`t` collapsed to a single matrix."""
-        return self.t.to_matrix()
 
     def local_bbox(self) -> BBox | None:
         """Bounding box in local coordinates (before :attr:`t`), if known."""
@@ -120,7 +129,7 @@ class Transformable(Element):
     @property
     def position(self) -> Point:
         """The anchor in parent coordinates; assign to move the element there."""
-        return self.matrix.apply(*self.anchor)
+        return self.t.apply(*self.anchor)
 
     @position.setter
     def position(self, value: PointLike) -> None:
@@ -137,7 +146,7 @@ class Transformable(Element):
         box = self.local_bbox()
         if box is None:
             return None
-        m = self.matrix
+        m = self.t
         corners = [(box.x, box.y), (box.x + box.width, box.y), (box.x, box.y + box.height),
                    (box.x + box.width, box.y + box.height)]
         return BBox.from_points(m.apply(*p) for p in corners)
@@ -147,58 +156,82 @@ class Transformable(Element):
             return Point(float(about[0]), float(about[1]))
         return self.anchor if local else self.position
 
-    def _compose(self: E, ops: Sequence[TransformOp], local: bool) -> E:
-        current = list(self.t)
-        if local:
-            current.extend(ops)
-        elif len(ops) == 1 and isinstance(ops[0], Translate) and current and isinstance(current[0], Translate):
-            first, op = current[0], ops[0]
-            current[0] = Translate(first.tx + op.tx, (first.ty or 0.0) + (op.ty or 0.0))
-        else:
-            current[:0] = ops
-        self.t = Transform(current)
+    def _compose(self: E, op: Matrix, local: bool, about: PointLike | None = None, pivot: bool = True) -> E:
+        if pivot:
+            p = self._pivot(about, local)
+            op = Matrix.translate(p.x, p.y) @ op @ Matrix.translate(-p.x, -p.y)
+        self.t = self.t @ op if local else op @ self.t
         return self
 
-    def _about(self: E, op: TransformOp, about: PointLike | None, local: bool) -> E:
-        p = self._pivot(about, local)
-        if p.x == 0 and p.y == 0:
-            return self._compose([op], local)
-        return self._compose([Translate(p.x, p.y), op, Translate(-p.x, -p.y)], local)
-
     def translate(self: E, dx: float, dy: float = 0.0, *, local: bool = False) -> E:
-        """Move by ``(dx, dy)``; in parent axes unless *local*."""
-        if dx == 0 and dy == 0:
-            return self
-        return self._compose([Translate(dx, dy)], local)
+        """Move by ``(dx, dy)`` and return ``self``.
+
+        Parameters
+        ----------
+        dx, dy : float
+            Offset in user units.
+        local : bool
+            Measure along the element's own (rotated, scaled) axes instead
+            of the parent's.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 2, 2).rotate(90).translate(10, 0).position
+        Point(x=11.0, y=1.0)
+        """
+        return self._compose(Matrix.translate(dx, dy), local, pivot=False)
 
     def rotate(self: E, degrees: float, *, about: PointLike | None = None, local: bool = False) -> E:
-        """Rotate by *degrees* (clockwise on screen) around the anchor or *about*."""
-        p = self._pivot(about, local)
-        return self._compose([Rotate(degrees, p.x, p.y)], local)
+        """Rotate by *degrees* (clockwise on screen) and return ``self``.
+
+        Parameters
+        ----------
+        degrees : float
+            Angle; positive turns from +x towards +y.
+        about : (float, float), optional
+            Pivot; in parent coordinates, or local ones with *local*.
+            Defaults to the :attr:`anchor`.
+        local : bool
+            Compose in the element's own frame.
+        """
+        return self._compose(Matrix.rotate(degrees), local, about)
 
     def scale(
         self: E, sx: float, sy: float | None = None, *, about: PointLike | None = None, local: bool = False
     ) -> E:
-        """Scale by *sx* (and *sy*, default *sx*) around the anchor or *about*."""
-        return self._about(Scale(sx, sy), about, local)
+        """Scale by *sx* and *sy* (default *sx*) about the anchor and return ``self``.
+
+        Parameters
+        ----------
+        sx, sy : float
+            Factors along x and y; negative values mirror.
+        about : (float, float), optional
+            Fixed point instead of the :attr:`anchor`.
+        local : bool
+            Scale along the element's own axes instead of the parent's.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.circle(50, 50, 10).scale(2).bounds()
+        BBox(x=30.0, y=30.0, width=40.0, height=40.0)
+        """
+        return self._compose(Matrix.scale(sx, sy), local, about)
 
     def skew(
         self: E, x_degrees: float = 0.0, y_degrees: float = 0.0, *, about: PointLike | None = None,
         local: bool = False,
     ) -> E:
-        """Skew along x and/or y by angles in degrees around the anchor or *about*."""
-        if x_degrees:
-            self._about(SkewX(x_degrees), about, local)
-        if y_degrees:
-            self._about(SkewY(y_degrees), about, local)
-        return self
+        """Skew along x then y by angles in degrees about the anchor and return ``self``."""
+        return self._compose(Matrix.skew_y(y_degrees) @ Matrix.skew_x(x_degrees), local, about)
 
     def apply(self: E, transform: TransformLike, *, local: bool = False) -> E:
-        """Compose an arbitrary transform, in the parent frame unless *local*."""
-        return self._compose(list(as_transform(transform)), local)
+        """Compose an arbitrary transform (no pivot), in the parent frame unless *local*."""
+        return self._compose(_as_matrix(transform), local, pivot=False)
 
     def reset(self: E) -> E:
-        """Drop the transform."""
+        """Drop the transform and return ``self``."""
         self.t = None
         return self
 

@@ -17,6 +17,7 @@ from ..attributes.length import Length, LengthLike
 from ..attributes.names import PRESENTATION_ATTRIBUTES
 from ..attributes.style import Style, StyleLike
 from ..color.paint import PaintValue, parse_paint
+from ._convert import Convertible
 from ._transformable import Transformable
 from .base import Child, Element
 
@@ -244,7 +245,7 @@ class ExternalResourcesAttribute(Element):
 
 
 class GraphicsElement(
-    Transformable,
+    Convertible,
     ExternalResourcesAttribute,
     PresentationAttributes,
     ConditionalAttributes,

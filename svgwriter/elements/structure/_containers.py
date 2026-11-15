@@ -7,7 +7,9 @@ from typing import Any
 from ..._internal._constants import SVG_VERSION
 from ..._internal._typing import Self
 from ...attributes.length import LengthLike
-from ...path.data import BBox
+from ...path.data import BBox, PathData
+from ...transform.matrix import Matrix
+from .._geometry import PathOperand, union_outline
 from .._mixins import (
     ConditionalAttributes,
     CoreAttributes,
@@ -80,11 +82,15 @@ class Svg(
         return self.insert(0, Defs())
 
 
-class Group(GraphicsElement, GraphicsContainer, tag="g", category=Category.CONTAINER):
+class Group(PathOperand, GraphicsElement, GraphicsContainer, tag="g", category=Category.CONTAINER):
     """``<g>``: groups elements to share attributes and a transform."""
 
     def local_bbox(self) -> BBox | None:
         return children_bbox(self)
+
+    def local_outline(self) -> PathData:
+        """Union of the children's outlines."""
+        return union_outline(self)
 
 
 class Defs(GraphicsElement, GraphicsContainer, tag="defs", category=Category.CONTAINER):
@@ -103,7 +109,7 @@ class Symbol(
     """``<symbol>``: a template instantiated by ``<use>``."""
 
 
-class Use(GraphicsElement, XLinkAttributes, Positioned, tag="use", category=Category.STRUCTURAL):
+class Use(PathOperand, GraphicsElement, XLinkAttributes, Positioned, tag="use", category=Category.STRUCTURAL):
     """``<use>``: renders a referenced element."""
 
     def __init__(self, href: str | Element | None = None, x: LengthLike | None = None, y: LengthLike | None = None, **kwargs: Any) -> None:
@@ -126,15 +132,26 @@ class Use(GraphicsElement, XLinkAttributes, Positioned, tag="use", category=Cate
             return None
         return BBox(inner.x + user_units(self.get("x")), inner.y + user_units(self.get("y")), inner.width, inner.height)
 
+    def local_outline(self) -> PathData:
+        """The referenced element's outline, offset by ``x``/``y``."""
+        target = self.root().get_element_by_id(self.target) if self.target else None
+        if not isinstance(target, PathOperand):
+            raise TypeError(f"<use> refers to {'nothing' if target is None else '<' + target.tag + '>'}, which has no outline")
+        return target.outline().transformed(Matrix.translate(user_units(self.get("x")), user_units(self.get("y"))))
 
-class Switch(GraphicsElement, GraphicsContainer, tag="switch", category=Category.CONTAINER):
+
+class Switch(PathOperand, GraphicsElement, GraphicsContainer, tag="switch", category=Category.CONTAINER):
     """``<switch>``: renders the first child whose conditions pass."""
 
     def local_bbox(self) -> BBox | None:
         return children_bbox(self)
 
+    def local_outline(self) -> PathData:
+        """Union of the children's outlines."""
+        return union_outline(self)
 
-class A(GraphicsElement, XLinkAttributes, GraphicsContainer, tag="a", category=Category.CONTAINER):
+
+class A(PathOperand, GraphicsElement, XLinkAttributes, GraphicsContainer, tag="a", category=Category.CONTAINER):
     """``<a>``: a hyperlink around graphics."""
 
     def __init__(self, *children: Child, href: str | Element | None = None, target: str | None = None, **kwargs: Any) -> None:
@@ -143,3 +160,7 @@ class A(GraphicsElement, XLinkAttributes, GraphicsContainer, tag="a", category=C
 
     def local_bbox(self) -> BBox | None:
         return children_bbox(self)
+
+    def local_outline(self) -> PathData:
+        """Union of the children's outlines."""
+        return union_outline(self)

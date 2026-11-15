@@ -28,9 +28,11 @@ Everything after construction (moving, rotating, scaling, skewing) edits the ele
 the geometry. Reading `c.cx` returns the local value; reading where the shape *is* uses `c.position` or
 `c.bounds()`.
 
-- **`t`** is the element's transform as a `Transform` (an ordered op list, so the output stays readable:
-  `translate(10 0) rotate(30 50 50)`). It maps to `transform`, `gradientTransform` or `patternTransform`
-  depending on the class (`transform_attribute`). Reading returns a copy; assign (`el.t = ...`) to replace.
+- **`t`** is the element's transform as one immutable affine `Matrix`. Every move multiplies into it (never
+  appends to an op list); the writer emits the shortest equivalent text: rigid motions as
+  `rotate(a cx cy)`, otherwise the non-identity parts of `translate rotate skewX scale`, or `matrix(...)` when
+  shorter. A parsed `transform` string is kept verbatim until the element is moved. `t` maps to `transform`,
+  `gradientTransform` or `patternTransform` depending on the class (`transform_attribute`).
 - **`anchor`** is the pivot for rotate/scale/skew, in local coordinates. `None` (default) means the centre
   of the element's local bounding box, recomputed on use, so it follows geometry edits; a tuple pins it.
 - **`translate/rotate/scale/skew(..., local=False)`** return `self`. Default is the *parent* frame: the op

@@ -112,11 +112,78 @@ class Matrix:
     def as_tuple(self) -> Matrix6:
         return (self.a, self.b, self.c, self.d, self.e, self.f)
 
-    def isclose(self, other: Matrix, tolerance: float = 1e-9) -> bool:
+    def isclose(self, other: Matrix | object, tolerance: float = 1e-9) -> bool:
+        """Equal within *tolerance*; *other* may be a matrix, ``Transform`` or transform text.
+
+        Examples
+        --------
+        >>> Matrix.rotate(90).isclose("rotate(90)")
+        True
+        """
+        if not isinstance(other, Matrix):
+            from .transform import as_transform
+
+            other = as_transform(other).to_matrix()  # type: ignore[arg-type]
         return all(math.isclose(x, y, abs_tol=tolerance) for x, y in zip(self.as_tuple(), other.as_tuple(), strict=False))
 
+    def decompose(self) -> tuple[float, float, float, float, float, float]:
+        """``(tx, ty, angle, skew_x, sx, sy)`` with ``M = translate rotate skewX scale``.
+
+        Angles are in degrees.
+        """
+        angle = math.atan2(self.b, self.a)
+        cos, sin = math.cos(angle), math.sin(angle)
+        sx = math.hypot(self.a, self.b)
+        shear = cos * self.c + sin * self.d
+        sy = -sin * self.c + cos * self.d
+        skew = math.degrees(math.atan(shear / sy)) if sy else 0.0
+        return (self.e, self.f, math.degrees(angle), skew, sx, sy)
+
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
-        return "matrix({})".format(" ".join(format_number(v, precision) for v in self.as_tuple()))
+        """The shortest ``transform`` text for this matrix.
+
+        Rigid motions become ``rotate(a cx cy)``; otherwise the parts of
+        ``translate rotate skewX scale`` that are not identity, falling back
+        to ``matrix(...)`` when that is shorter.
+
+        Examples
+        --------
+        >>> Matrix.rotate(90, 5, 5).svg_value()
+        'rotate(90 5 5)'
+        >>> (Matrix.translate(10, 5) @ Matrix.scale(2, 3)).svg_value()
+        'matrix(2 0 0 3 10 5)'
+        >>> Matrix.skew_x(30).svg_value()
+        'skewX(30)'
+        """
+        def num(value: float) -> str:
+            return format_number(value, precision)
+
+        def zero(value: float) -> bool:
+            return num(value) in ("0", "-0")
+
+        tx, ty, angle, skew, sx, sy = self.decompose()
+        if zero(sx - 1) and zero(sy - 1) and zero(skew) and not zero(angle):
+            rotation = Matrix.rotate(angle)
+            denominator = (1 - rotation.a) ** 2 + rotation.b ** 2
+            cx = ((1 - rotation.a) * tx - rotation.b * ty) / denominator
+            cy = (rotation.b * tx + (1 - rotation.a) * ty) / denominator
+            centre = "" if zero(cx) and zero(cy) else f" {num(cx)} {num(cy)}"
+            return f"rotate({num(angle)}{centre})"
+        parts = []
+        if not (zero(tx) and zero(ty)):
+            parts.append(f"translate({num(tx)})" if zero(ty) else f"translate({num(tx)} {num(ty)})")
+        if not zero(angle):
+            parts.append(f"rotate({num(angle)})")
+        if not zero(skew):
+            parts.append(f"skewX({num(skew)})")
+        if not (zero(sx - 1) and zero(sy - 1)):
+            parts.append(f"scale({num(sx)})" if zero(sx - sy) else f"scale({num(sx)} {num(sy)})")
+        text = " ".join(parts)
+        full = "matrix({})".format(" ".join(num(v) for v in self.as_tuple()))
+        return text if len(text) <= len(full) else full
+
+    def __str__(self) -> str:
+        return self.svg_value()
 
 
 IDENTITY: Final = Matrix()

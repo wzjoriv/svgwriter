@@ -77,13 +77,13 @@ def _cmd_animate(args: argparse.Namespace) -> int:
 
 
 def _cmd_render(args: argparse.Namespace) -> int:
-    from ..ops.render import rasterize
+    from ..ops.render import render_png
 
     try:
         document, update, _ = load_scene(args.scene)
         if update is not None:
             update(document, args.time)
-        data = rasterize(document, scale=args.scale, background=args.background)
+        data = render_png(document, scale=args.scale, background=args.background)
     except SceneError as exc:
         return _fail(str(exc))
     Path(args.output).write_bytes(data)

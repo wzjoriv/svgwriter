@@ -27,7 +27,7 @@ from .measure import (
     tangent_at_length,
     total_length,
 )
-from .render import rasterize, skia_renderer
+from .render import encode, rasterize, render_png, render_svg, skia_renderer
 from .text import Anchor, FontWeight, text_outline, text_to_path, text_width
 
 __all__ = [
@@ -44,7 +44,10 @@ __all__ = [
     "from_skia",
     "intersection",
     "point_at_length",
+    "encode",
     "rasterize",
+    "render_png",
+    "render_svg",
     "simplify",
     "skia_renderer",
     "stroke_to_path",

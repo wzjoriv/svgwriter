@@ -174,8 +174,8 @@ class TestShapeToPath:
     def test_empty_polygon(self) -> None:
         assert len(svg.Polygon().to_path().d) == 0
 
-    def test_text_has_no_outline_without_ops(self) -> None:
-        with pytest.raises(NotImplementedError):
+    def test_base_operand_has_no_outline(self) -> None:
+        with pytest.raises(TypeError):
             svg.PathOperand().local_outline()
 
 

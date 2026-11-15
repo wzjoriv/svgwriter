@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, ClassVar, Final, TypeAlias, Union
 
 from ..path.data import BBox, PathData
-from ..transform.matrix import Point
+from ..transform.matrix import Matrix, Point
 from ..transform.transform import TransformLike, as_transform
 from .base import Element
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 __all__ = ["Operand", "PathOperand"]
 
 Operand: TypeAlias = Union["PathOperand", PathData, str]
-NOT_COPIED: Final = frozenset({"id", "transform"})
+NOT_COPIED: Final = frozenset({"id", "transform", "clip-path"})
 
 
 class PathOperand(Element):
@@ -40,17 +40,25 @@ class PathOperand(Element):
     """Attributes describing the geometry; not copied by :meth:`to_path`."""
 
     def local_outline(self) -> PathData:
-        """Outline in the element's own coordinates (``transform`` ignored)."""
-        raise NotImplementedError(f"<{self.tag}> has no outline")
+        """Outline in the element's own coordinates (``t`` and clipping ignored)."""
+        raise TypeError(f"<{self.tag}> has no outline")
 
     def outline(self) -> PathData:
-        """Outline with the element's ``transform`` applied."""
+        """Outline in parent coordinates: clipped by ``clip-path``, then ``t`` applied."""
         data = self.local_outline()
-        raw = self.attributes.get("transform")
+        clip = clip_outline(self)
+        if clip is not None:
+            from ..ops.boolean import BooleanOp, combine
+
+            data = combine(data, clip, BooleanOp.INTERSECTION)
+        raw = self.attributes.get(self.transform_attribute)  # type: ignore[attr-defined]
         return data if raw is None else data.transformed(as_transform(raw))
 
     def to_path(self, **kwargs: Any) -> Path:
-        """An equivalent ``<path>``; keywords override copied attributes."""
+        """An equivalent ``<path>`` with ``t`` and any clip baked in.
+
+        Presentation attributes are copied; keywords override them.
+        """
         from .shapes import Path
 
         path = Path(self.outline())
@@ -59,6 +67,10 @@ class PathOperand(Element):
         )
         path.update(**kwargs)
         return path
+
+    def flatten_clip(self) -> Path:
+        """The visible area as one ``<path>``: :meth:`to_path` with the clip applied."""
+        return self.to_path()
 
     def _with_data(self, data: PathData) -> Path:
         path = self.to_path()
@@ -185,6 +197,52 @@ class PathOperand(Element):
         from ..ops.measure import point_at_length
 
         return point_at_length(self, distance)
+
+
+def union_outline(children: Any) -> PathData:
+    """Union of the outlines of drawable *children*; raises for children without one."""
+    from ..ops.boolean import union
+    from ._transformable import Transformable
+
+    parts = []
+    for child in children:
+        if child.tag == "defs" or not isinstance(child, Transformable):
+            continue
+        if not isinstance(child, PathOperand):
+            raise TypeError(f"<{child.tag}> has no vector outline, so its group cannot become a path")
+        parts.append(child)
+    if not parts:
+        return PathData()
+    return parts[0].outline() if len(parts) == 1 else union(*parts)
+
+
+def resolve(element: Element, value: Any) -> Element | None:
+    """The element an attribute value refers to, if it can be found."""
+    target = getattr(value, "element", None)
+    if isinstance(target, Element):
+        return target
+    if value is None:
+        return None
+    text = str(value.svg_value() if hasattr(value, "svg_value") else value).strip()
+    if text.startswith("url(") and text.endswith(")"):
+        text = text[4:-1].strip("'\" ")
+    return element.root().get_element_by_id(text[1:]) if text.startswith("#") else None
+
+
+def clip_outline(element: Element) -> PathData | None:
+    """The clip region of *element* in its local coordinates, or ``None``."""
+    clip = resolve(element, element.attributes.get("clip-path"))
+    if clip is None:
+        return None
+    if not isinstance(clip, PathOperand):
+        raise TypeError(f"clip-path refers to <{clip.tag}>, not a <clipPath>")
+    data = clip.outline()
+    if str(clip.get("clipPathUnits", "userSpaceOnUse")) == "objectBoundingBox":
+        box = element.local_outline().bbox if isinstance(element, PathOperand) else None
+        if box is None:
+            return PathData()
+        data = data.transformed(Matrix(box.width, 0, 0, box.height, box.x, box.y))
+    return data
 
 
 def _operand(value: object) -> bool:

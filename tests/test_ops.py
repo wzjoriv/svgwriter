@@ -3,6 +3,7 @@ from __future__ import annotations
 import math
 import warnings
 
+import numpy as np
 import pytest
 
 import svgwriter as svg
@@ -153,12 +154,31 @@ class TestText:
 
 
 class TestRasterize:
-    def test_png_output(self) -> None:
+    def test_array_output(self) -> None:
         doc = svg.Document(20, 10)
         doc.rect(0, 0, 20, 10, fill="red")
-        png = ops.rasterize(doc, scale=2, background="white")
-        assert png.startswith(b"\x89PNG") and int.from_bytes(png[16:20], "big") == 40
+        pixels = ops.rasterize(doc, scale=2, background="white")
+        assert pixels.shape == (20, 40, 4) and pixels.dtype == np.float32
+        assert np.allclose(pixels[5, 5], (1, 0, 0, 1))
+
+    def test_transparent_background(self) -> None:
+        assert ops.rasterize(svg.Document(3, 3))[..., 3].max() == 0
 
     def test_size_fallbacks(self) -> None:
-        assert ops.rasterize(svg.Document(root=svg.Svg(view_box=(0, 0, 7, 3)))).startswith(b"\x89PNG")
-        assert int.from_bytes(ops.rasterize(svg.Document(root=svg.Svg()))[16:20], "big") == 300
+        assert ops.rasterize(svg.Document(root=svg.Svg(view_box=(0, 0, 7, 3)))).shape == (3, 7, 4)
+        assert ops.rasterize(svg.Document(root=svg.Svg())).shape[:2] == (300, 300)
+
+    def test_png_and_formats(self) -> None:
+        doc = svg.Document(20, 10)
+        png = ops.render_png(doc, scale=2)
+        assert png[:4] == bytes.fromhex("89504e47") and int.from_bytes(png[16:20], "big") == 40
+        pixels = np.ones((2, 2, 4), np.float32)
+        assert ops.encode(pixels, "jpeg")[:2] == bytes.fromhex("ffd8")
+        assert ops.encode((pixels * 255).astype(np.uint8), "webp")[8:12] == b"WEBP"
+        with pytest.raises(ValueError, match="unknown image format"):
+            ops.encode(pixels, "bmp")
+
+    def test_bad_svg(self) -> None:
+        with pytest.raises(ValueError, match="could not parse"):
+            ops.render_svg("<nope", 1, 1)
+

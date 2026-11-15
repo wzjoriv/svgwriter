@@ -28,12 +28,26 @@ class TestT:
         r.t = None
         assert not r.has("transform")
         r.t = Matrix.translate(1)
-        assert r.matrix.isclose(Matrix.translate(1))
+        assert r.t.isclose(Matrix.translate(1)) and str(r.t) == "translate(1)"
 
-    def test_t_is_a_copy(self) -> None:
+    def test_t_is_an_immutable_matrix(self) -> None:
         r = svg.Rect(0, 0, 1, 1)
-        r.t.translate(5)
-        assert not r.has("transform")
+        assert isinstance(r.t, Matrix) and r.t.is_identity
+        with pytest.raises(AttributeError):
+            r.t.e = 5  # type: ignore[misc]
+
+    def test_composes_into_one_matrix(self) -> None:
+        r = svg.Rect(0, 0, 10, 10).translate(5).rotate(90).scale(2).translate(-5)
+        assert str(r.t).count("(") <= 2 and r.t.isclose(
+            Matrix.translate(-5) @ Matrix.translate(10, 5) @ Matrix.scale(2) @ Matrix.translate(-10, -5)
+            @ Matrix.rotate(90, 10, 5) @ Matrix.translate(5)
+        )
+
+    def test_parsed_transform_is_kept_until_changed(self) -> None:
+        r = svg.parse('<rect transform="translate(1) translate(2)"/>')
+        assert str(r.get("transform")) == "translate(1) translate(2)" and r.t.isclose("translate(3)")
+        r.rotate(0)
+        assert str(r.get("transform")) == "translate(3)"
 
     def test_reset(self) -> None:
         assert not svg.Rect(0, 0, 1, 1).rotate(5).reset().has("transform")
@@ -160,7 +174,7 @@ class TestPaintServers:
 
     def test_pattern(self) -> None:
         p = svg.Pattern(x=0, y=0, width=10, height=10).scale(2)
-        assert str(p.get("patternTransform")) == "translate(5 5) scale(2) translate(-5 -5)"
+        assert str(p.get("patternTransform")) == "matrix(2 0 0 2 -5 -5)" and p.anchor == (5, 5)
 
     def test_clip_path(self) -> None:
         cp = svg.ClipPath(svg.Circle(5, 5, 5)).translate(1)
@@ -170,3 +184,30 @@ class TestPaintServers:
 def test_path_move_to_draws_and_place_at_places() -> None:
     p = svg.Path().move_to(0, 0).line_to(10, 0).place_at(100, 100)
     assert str(p.d) == "M0 0 L10 0" and close(p.position, (100, 100))
+
+
+def test_path_anchor_follows_edits_unless_pinned() -> None:
+    p = svg.Path().move_to(0, 0).line_to(10, 0)
+    assert p.anchor == (5, 0)
+    p.line_to(10, 20)
+    assert p.anchor == (5, 10)
+    p.anchor = (0, 0)
+    p.line_to(100, 100)
+    assert p.anchor == (0, 0)
+
+
+class TestConciseOutput:
+    @pytest.mark.parametrize(
+        ("build", "text"),
+        [
+            (lambda: svg.Rect(0, 0, 10, 10).rotate(90), "rotate(90 5 5)"),
+            (lambda: svg.Rect(0, 0, 10, 10).translate(3, 4), "translate(3 4)"),
+            (lambda: svg.Rect(0, 0, 10, 10).scale(2, about=(0, 0)), "scale(2)"),
+            (lambda: svg.Rect(0, 0, 10, 10).skew(30, about=(0, 0)), "skewX(30)"),
+            (lambda: svg.Rect(0, 0, 10, 10).scale(1, -1, about=(0, 0)), "scale(1 -1)"),
+            (lambda: svg.Rect(0, 0, 10, 10).rotate(45).rotate(-45), None),
+        ],
+    )
+    def test_shortest_text(self, build, text) -> None:
+        el = build()
+        assert el.get("transform") is None if text is None else str(el.get("transform")) == text

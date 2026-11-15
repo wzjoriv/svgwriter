@@ -119,7 +119,7 @@ class TestKeywordForwarding:
         assert attrs["class"] == "a b"
         assert str(attrs["style"]) == "pointer-events:none"
         assert attrs["externalResourcesRequired"] is False
-        assert rect.transform == Transform().rotate(5)
+        assert rect.transform.isclose(Transform().rotate(5))
 
     def test_unknown_presentation_attributes_pass_through(self) -> None:
         g = svg.Group(shape_rendering="crispEdges", marker_end="url(#m)", attrs={"data:x": "1"})
@@ -349,7 +349,7 @@ class TestPaintServers:
     def test_gradient_transform_property_override(self) -> None:
         grad = svg.LinearGradient(transform="rotate(45)")
         assert "gradientTransform" in grad.attributes and "transform" not in grad.attributes
-        assert grad.transform == Transform().rotate(45)
+        assert grad.transform.isclose("rotate(45)")
         pattern = svg.Pattern(width=10, height=10, pattern_units="userSpaceOnUse")
         pattern.transform = Transform().scale(2)
         assert str(pattern.attributes["patternTransform"]) == "scale(2)"
