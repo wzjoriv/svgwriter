@@ -93,7 +93,7 @@ class TestBasicShapes:
         assert rect is not None
         assert rect.x == Length(2, svg.Unit.MM)
         assert rect.width == Length(5)
-        assert rect.fill == PaintRef(svg.FuncIRI("#g"), Color(255, 0, 0))
+        assert rect.fill == PaintRef(svg.FuncIRI("#g"), Color(1, 0, 0))
         assert rect.y is None
         del rect.x
         assert rect.x is None

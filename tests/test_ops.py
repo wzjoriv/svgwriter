@@ -23,7 +23,7 @@ class TestErrors:
         with pytest.raises(TypeError):
             _ = svg.Circle() | 5  # type: ignore[operator]
         with pytest.raises(TypeError):
-            _ = svg.Circle() - 5  # type: ignore[operator]
+            _ = svg.Circle() - object()  # type: ignore[operator]
 
 
 class TestBooleanOps:

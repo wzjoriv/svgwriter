@@ -53,7 +53,10 @@ class BBox(NamedTuple):
 
     @classmethod
     def from_points(cls, points: Iterable[Point | tuple[float, float]]) -> BBox:
-        xs, ys = zip(*points, strict=False)
+        pairs = list(points)
+        if not pairs:
+            return cls(0.0, 0.0, 0.0, 0.0)
+        xs, ys = zip(*pairs, strict=True)
         return cls(min(xs), min(ys), max(xs) - min(xs), max(ys) - min(ys))
 
     @property

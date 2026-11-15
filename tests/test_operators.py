@@ -23,7 +23,7 @@ class TestContainerOperators:
     def test_iadd_rejects_non_elements(self) -> None:
         group = svg.Group()
         with pytest.raises(TypeError, match="iterable of elements"):
-            group += 5  # type: ignore[arg-type]
+            group += object()  # type: ignore[arg-type]
         with pytest.raises(TypeError, match="expected elements"):
             group += [svg.Rect(), 3]  # type: ignore[list-item]
 
@@ -43,7 +43,9 @@ class TestContainerOperators:
 
     def test_plus_rejects_other_types(self) -> None:
         with pytest.raises(TypeError):
-            _ = svg.Rect() + 3  # type: ignore[operator]
+            _ = svg.Rect() + object()  # type: ignore[operator]
+        with pytest.raises(TypeError):
+            _ = svg.Rect() + (1, 2, 3)  # type: ignore[operator]
 
     def test_mod_is_gone(self) -> None:
         with pytest.raises(TypeError):
@@ -236,8 +238,8 @@ class TestColorOperators:
         assert (white * 0.5).hex == "#808080"
         assert (0.5 * white).hex == "#808080"
         assert (white / 2).hex == "#808080"
-        assert (Color(200, 100, 50) * 2).hex == "#ffc864"
-        assert (Color.parse("red") * Color(255, 128, 0)).hex == "#ff0000"
+        assert (Color.from_uint8(200, 100, 50) * 2).hex == "#ffc864"
+        assert (Color.parse("red") * Color(1, 0.5, 0)).hex == "#ff0000"
 
     def test_in_place_forms_rebind(self) -> None:
         c = Color.parse("white")
@@ -247,14 +249,14 @@ class TestColorOperators:
 
     def test_bad_operands(self) -> None:
         with pytest.raises(TypeError):
-            _ = Color(1, 2, 3) + 3  # type: ignore[operator]
+            _ = Color(0, 0, 0) + 3  # type: ignore[operator]
         with pytest.raises(TypeError):
-            _ = Color(1, 2, 3) * "x"  # type: ignore[operator]
+            _ = Color(0, 0, 0) * "x"  # type: ignore[operator]
         with pytest.raises(TypeError):
-            _ = Color(1, 2, 3) / "x"  # type: ignore[operator]
+            _ = Color(0, 0, 0) / "x"  # type: ignore[operator]
         with pytest.raises(TypeError):
-            _ = [1] + Color(1, 2, 3)  # type: ignore[operator]
+            _ = [1] + Color(0, 0, 0)  # type: ignore[operator]
 
     def test_channel_error_names_the_channel(self) -> None:
         with pytest.raises(ValueError, match="g=300"):
-            Color(0, 300, 0)
+            Color(0, 300, 0)  # noqa: B018

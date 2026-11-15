@@ -14,6 +14,7 @@ from .._internal._typing import ElementId
 from ..attributes.names import KNOWN_ATTRIBUTES, UNSUPPORTED_ATTRIBUTES, py_name, svg_name
 from ..attributes.reference import IRI, FuncIRI
 from ..attributes.values import format_value
+from ..color.color import Color, as_color
 from ._categories import Category, ContentModel
 from ._compose import Composable
 
@@ -37,6 +38,13 @@ AttrValue = Any
 Child: TypeAlias = Union["Element", str]
 
 HREF_ATTRIBUTES: Final = frozenset({"xlink:href"})
+COLOR_OPACITY: Final = {
+    "fill": "fill-opacity",
+    "stroke": "stroke-opacity",
+    "stop-color": "stop-opacity",
+    "flood-color": "flood-opacity",
+}
+COLOR_ATTRIBUTES: Final = frozenset({*COLOR_OPACITY, "color", "lighting-color"})
 _XML_NAME_RE: Final = re.compile(r"^[A-Za-z_][\w.\-]*$")
 
 
@@ -187,6 +195,13 @@ class Element(Composable):
         if value is None:
             self.attributes.pop(key, None)
             return
+        if key in COLOR_ATTRIBUTES and not isinstance(value, (str, Element)) and not hasattr(value, "svg_value"):
+            value = as_color(value)
+        if isinstance(value, Color) and value.a < 1.0 and key in COLOR_ATTRIBUTES:
+            if key not in COLOR_OPACITY:
+                raise ValueError(f"{key} has no opacity in SVG 1.1; use an opaque color")
+            self.attributes[COLOR_OPACITY[key]] = value.a
+            value = value.opaque
         if isinstance(value, Element):
             value = value.href if key in HREF_ATTRIBUTES else value.ref
         elif isinstance(value, FuncIRI) and key in HREF_ATTRIBUTES:

@@ -6,6 +6,8 @@ import math
 from dataclasses import dataclass
 from typing import Final, NamedTuple, overload
 
+import numpy as np
+
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._speedups import format_number
 from .._internal._typing import Matrix6
@@ -60,6 +62,16 @@ class Matrix:
         return rotation
 
     @classmethod
+    def flip_x(cls, x: float = 0.0) -> Matrix:
+        """Mirror across the vertical line through *x*."""
+        return cls(-1.0, 0.0, 0.0, 1.0, 2.0 * x, 0.0)
+
+    @classmethod
+    def flip_y(cls, y: float = 0.0) -> Matrix:
+        """Mirror across the horizontal line through *y*."""
+        return cls(1.0, 0.0, 0.0, -1.0, 0.0, 2.0 * y)
+
+    @classmethod
     def skew_x(cls, angle: float) -> Matrix:
         return cls(1.0, 0.0, math.tan(math.radians(angle)), 1.0, 0.0, 0.0)
 
@@ -71,7 +83,11 @@ class Matrix:
     def __matmul__(self, other: Matrix) -> Matrix: ...
     @overload
     def __matmul__(self, other: Point | tuple[float, float]) -> Point: ...
-    def __matmul__(self, other: Matrix | Point | tuple[float, float]) -> Matrix | Point:
+    @overload
+    def __matmul__(self, other: np.ndarray) -> np.ndarray: ...
+    def __matmul__(self, other: Matrix | Point | tuple[float, float] | np.ndarray) -> Matrix | Point | np.ndarray:
+        if isinstance(other, np.ndarray):
+            return self.apply_points(other)
         if isinstance(other, tuple):
             return self.apply(*other)
         if not isinstance(other, Matrix):
@@ -108,6 +124,33 @@ class Matrix:
 
     def apply(self, x: float, y: float) -> Point:
         return Point(self.a * x + self.c * y + self.e, self.b * x + self.d * y + self.f)
+
+    def apply_points(self, points: np.ndarray) -> np.ndarray:
+        """Map an ``(..., 2)`` array of points in one vectorized step.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> Matrix.translate(1, 2) @ np.array([[0, 0], [1, 1]])
+        array([[1., 2.],
+               [2., 3.]])
+        """
+        array = np.asarray(points, dtype=float)
+        if array.shape[-1:] != (2,):
+            raise ValueError(f"points must have a last axis of length 2, got shape {array.shape}")
+        return array @ np.array([[self.a, self.b], [self.c, self.d]]) + np.array([self.e, self.f])
+
+    def __array__(self, dtype: object = None, copy: object = None) -> np.ndarray:
+        """The 3x3 homogeneous matrix."""
+        return np.array([[self.a, self.c, self.e], [self.b, self.d, self.f], [0.0, 0.0, 1.0]], dtype=dtype)
+
+    @classmethod
+    def from_array(cls, array: object) -> Matrix:
+        """Build from a 3x3 (or 2x3) array in ``[[a, c, e], [b, d, f]]`` layout."""
+        m = np.asarray(array, dtype=float)
+        if m.shape not in ((3, 3), (2, 3)):
+            raise ValueError(f"expected a 2x3 or 3x3 array, got shape {m.shape}")
+        return cls(m[0, 0], m[1, 0], m[0, 1], m[1, 1], m[0, 2], m[1, 2])
 
     def as_tuple(self) -> Matrix6:
         return (self.a, self.b, self.c, self.d, self.e, self.f)

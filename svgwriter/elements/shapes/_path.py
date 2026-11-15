@@ -23,6 +23,7 @@ from ...path.commands import (
 )
 from ...path.data import BBox, PathData, PathDataLike
 from .._geometry import Operand
+from .._transformable import offset
 from ..base import Element
 from ._base import Shape
 
@@ -176,7 +177,7 @@ class Path(Shape, tag="path"):
 
     def __iadd__(self, other: Path | PathData | str) -> Self:
         if not isinstance(other, (Path, PathData, str)):
-            return NotImplemented
+            return super().__iadd__(other)  # type: ignore[no-any-return]
         self.d = self.d + (other.d if isinstance(other, Path) else other)
         return self
 
@@ -189,6 +190,8 @@ class Path(Shape, tag="path"):
         return NotImplemented if result is NotImplemented else self._replace(result.d)
 
     def __isub__(self, other: Operand) -> Self:
+        if offset(other) is not None:
+            return super().__isub__(other)  # type: ignore[no-any-return]
         result = self.__sub__(other)
         return NotImplemented if result is NotImplemented else self._replace(result.d)
 

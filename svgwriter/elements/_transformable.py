@@ -5,17 +5,32 @@ from __future__ import annotations
 from numbers import Real
 from typing import Any, ClassVar, TypeVar
 
+import numpy as np
+
 from ..path.data import BBox
 from ..transform.matrix import IDENTITY, Matrix, Point
 from ..transform.ops import TransformOp
 from ..transform.transform import Transform, TransformLike, as_transform
 from .base import Child, Element
 
-__all__ = ["PointLike", "Transformable", "children_bbox"]
+__all__ = ["PointLike", "Transformable", "children_bbox", "offset"]
 
 PointLike = tuple[float, float] | Point
 E = TypeVar("E", bound="Transformable")
 _TRANSFORMS = (Transform, TransformOp, Matrix)
+
+
+def offset(value: object) -> tuple[float, float] | None:
+    """*value* as an ``(x, y)`` pair: a number broadcasts, a 2-sequence of numbers is taken as is."""
+    if isinstance(value, np.ndarray):
+        if value.dtype.kind not in "iuf" or value.shape not in ((), (2,)):
+            return None
+        value = value.item() if value.shape == () else tuple(value.tolist())
+    if isinstance(value, Real) and not isinstance(value, bool):
+        return (float(value), float(value))
+    if isinstance(value, (tuple, list, Point)) and len(value) == 2 and all(isinstance(v, Real) for v in value):
+        return (float(value[0]), float(value[1]))
+    return None
 
 
 def _as_matrix(value: TransformLike) -> Matrix:
@@ -63,6 +78,7 @@ class Transformable(Element):
     """
 
     transform_attribute: ClassVar[str] = "transform"
+    __array_ufunc__ = None
     _anchor: tuple[float, float] | None = None
 
     def __init__(
@@ -226,6 +242,14 @@ class Transformable(Element):
         """Skew along x then y by angles in degrees about the anchor and return ``self``."""
         return self._compose(Matrix.skew_y(y_degrees) @ Matrix.skew_x(x_degrees), local, about)
 
+    def flip_x(self: E, *, about: PointLike | None = None, local: bool = False) -> E:
+        """Mirror left-right (across the vertical line through the anchor) and return ``self``."""
+        return self.scale(-1, 1, about=about, local=local)
+
+    def flip_y(self: E, *, about: PointLike | None = None, local: bool = False) -> E:
+        """Mirror top-bottom (across the horizontal line through the anchor) and return ``self``."""
+        return self.scale(1, -1, about=about, local=local)
+
     def apply(self: E, transform: TransformLike, *, local: bool = False) -> E:
         """Compose an arbitrary transform (no pivot), in the parent frame unless *local*."""
         return self._compose(_as_matrix(transform), local, pivot=False)
@@ -235,27 +259,81 @@ class Transformable(Element):
         self.t = None
         return self
 
-    def __matmul__(self: E, transform: TransformLike) -> E:
-        """``el @ M``: a copy with *M* applied in the local frame."""
-        if not isinstance(transform, (*_TRANSFORMS, str)):
+    def _transformed_by(self: E, operator: str, operand: object, in_place: bool) -> E:
+        """Apply an arithmetic operator; ``NotImplemented`` when *operand* does not fit."""
+        target = self if in_place else self.copy()
+        if operator == "@":
+            if isinstance(operand, Real):
+                return target.rotate(float(operand))
+            if isinstance(operand, (*_TRANSFORMS, str)):
+                return target.apply(operand, local=True)  # type: ignore[arg-type]
             return NotImplemented
-        return self.copy().apply(transform, local=True)
+        pair = offset(operand)
+        if pair is None:
+            if operator == "*" and isinstance(operand, (*_TRANSFORMS, str)):
+                raise TypeError("use M @ element (parent frame) or element @ M (local frame) to apply a transform")
+            return NotImplemented
+        x, y = pair
+        if operator == "+":
+            return target.translate(x, y)
+        if operator == "-":
+            return target.translate(-x, -y)
+        if operator == "*":
+            return target.scale(x, y)
+        if x == 0 or y == 0:
+            raise ZeroDivisionError("cannot scale an element by 1/0")
+        return target.scale(1 / x, 1 / y)
+
+    def __add__(self, other: Any) -> Any:
+        """``el + (dx, dy)``: a translated copy; ``el + other_element`` groups them."""
+        result = self._transformed_by("+", other, in_place=False)
+        return super().__add__(other) if result is NotImplemented else result
+
+    def __radd__(self, other: Any) -> Any:
+        result = self._transformed_by("+", other, in_place=False)
+        return super().__radd__(other) if result is NotImplemented else result
+
+    def __iadd__(self, other: Any) -> Any:
+        """``el += (dx, dy)`` moves in place; containers still append with ``+= element``."""
+        result = self._transformed_by("+", other, in_place=True)
+        if result is not NotImplemented:
+            return result
+        parent = super()
+        return parent.__iadd__(other) if hasattr(parent, "__iadd__") else NotImplemented  # type: ignore[misc]
+
+    def __sub__(self, other: Any) -> Any:
+        """``el - (dx, dy)``: a copy translated by the negated offset."""
+        return self._transformed_by("-", other, in_place=False)
+
+    def __isub__(self, other: Any) -> Any:
+        return self._transformed_by("-", other, in_place=True)
+
+    def __mul__(self: E, factor: float | tuple[float, float]) -> E:
+        """``el * k`` or ``el * (sx, sy)``: a copy scaled about the anchor."""
+        return self._transformed_by("*", factor, in_place=False)
+
+    def __rmul__(self: E, factor: float) -> E:
+        return self._transformed_by("*", factor, in_place=False)
+
+    def __imul__(self: E, factor: float | tuple[float, float]) -> E:
+        return self._transformed_by("*", factor, in_place=True)
+
+    def __truediv__(self: E, divisor: float | tuple[float, float]) -> E:
+        """``el / k``: a copy scaled by ``1/k`` about the anchor."""
+        return self._transformed_by("/", divisor, in_place=False)
+
+    def __itruediv__(self: E, divisor: float | tuple[float, float]) -> E:
+        return self._transformed_by("/", divisor, in_place=True)
+
+    def __matmul__(self: E, operand: TransformLike | float) -> E:
+        """``el @ degrees`` rotates a copy about the anchor; ``el @ M`` applies *M* in the local frame."""
+        return self._transformed_by("@", operand, in_place=False)
+
+    def __imatmul__(self: E, operand: TransformLike | float) -> E:
+        return self._transformed_by("@", operand, in_place=True)
 
     def __rmatmul__(self: E, transform: TransformLike) -> E:
         """``M @ el``: a copy with *M* applied in the parent frame."""
         if not isinstance(transform, (*_TRANSFORMS, str)):
             return NotImplemented
         return self.copy().apply(transform)
-
-    def __mul__(self: E, factor: float | tuple[float, float]) -> E:
-        """``el * k``: a copy scaled by *k* (or ``(sx, sy)``) about the anchor."""
-        if isinstance(factor, Real):
-            return self.copy().scale(float(factor))
-        if isinstance(factor, tuple) and len(factor) == 2:
-            return self.copy().scale(*factor)
-        if isinstance(factor, (*_TRANSFORMS, str)):
-            raise TypeError("use M @ element (parent frame) or element @ M (local frame) to apply a transform")
-        return NotImplemented
-
-    def __rmul__(self: E, factor: float) -> E:
-        return self.__mul__(factor)

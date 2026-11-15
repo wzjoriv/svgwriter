@@ -48,13 +48,20 @@ the geometry. Reading `c.cx` returns the local value; reading where the shape *i
   emitting `transform="translate(...)"` for every shape (noisy output, surprising `c.cx`).
 
 ### Operators on elements
+Element operands keep structural meanings; numbers and pairs transform a copy (in-place forms mutate).
+
 | expression | meaning |
 |---|---|
-| `a + b` | new `<g>` holding both (moved, not copied) |
-| `M @ el` | copy of `el` with `M` applied in the parent frame (`t = M @ t`), type kept |
-| `el @ M` | copy with `M` applied in the local frame (`t = t @ M`) |
-| `el * k` | copy scaled by number `k` (or `(sx, sy)`) about the anchor |
-| `a | b`, `a & b`, `a - b`, `a ^ b` | boolean path ops (skia), result is a `<path>` |
+| `a + b` | new `<g>` holding both (moved, not copied); `group += el` appends |
+| `el + (dx, dy)`, `el - (dx, dy)` | translated copy; a bare number broadcasts to `(d, d)` like numpy |
+| `el * k`, `el / k`, `el * (sx, sy)` | copy scaled about the anchor |
+| `el @ degrees` | copy rotated about the anchor ("el at 30°") |
+| `M @ el` / `el @ M` | copy with matrix `M` applied in the parent / local frame |
+| `a | b`, `a & b`, `a - b`, `a ^ b` | boolean path ops (skia) on shapes, text, groups, `<use>`; result is a `<path>` |
+| `+=`, `-=`, `*=`, `/=`, `@=` | the same, in place |
+
+Also `flip_x()` / `flip_y()` (mirror about the anchor). Elements set `__array_ufunc__ = None` (numpy's
+opt-out) so `el + np.array([dx, dy])` reaches the element instead of broadcasting into an object array.
 
 `@` follows matrix algebra (`M @ el` reads "apply M to el", like `M @ point`). Baking a transform into
 coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into `d`.

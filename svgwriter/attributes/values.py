@@ -6,6 +6,8 @@ import enum
 from collections.abc import Mapping
 from functools import singledispatch
 
+import numpy as np
+
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._speedups import format_number
 from .protocols import SupportsSVG
@@ -58,6 +60,18 @@ def _format_sequence(value: tuple[object, ...] | list[object], precision: int = 
         else:
             parts.append(format_value(item, precision))
     return " ".join(parts)
+
+
+@format_value.register(np.ndarray)
+def _format_array(value: np.ndarray, precision: int = DEFAULT_PRECISION) -> str:
+    if value.ndim == 2:
+        return " ".join(",".join(format_number(float(v), precision) for v in row) for row in value)
+    return " ".join(format_number(float(v), precision) for v in value.ravel())
+
+
+@format_value.register(np.generic)
+def _format_scalar(value: np.generic, precision: int = DEFAULT_PRECISION) -> str:
+    return format_value(value.item(), precision)
 
 
 @format_value.register(Mapping)

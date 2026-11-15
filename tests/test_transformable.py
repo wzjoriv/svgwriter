@@ -152,7 +152,11 @@ class TestOperators:
 
     def test_junk_rejected(self) -> None:
         with pytest.raises(TypeError):
-            _ = svg.Circle() @ 5  # type: ignore[operator]
+            _ = svg.Circle() @ object()  # type: ignore[operator]
+        with pytest.raises(TypeError):
+            _ = svg.Circle() + (1, "x")  # type: ignore[operator]
+        with pytest.raises(ZeroDivisionError):
+            _ = svg.Circle() / 0
         with pytest.raises(TypeError):
             _ = svg.Circle() * "x"  # type: ignore[operator]
 
@@ -211,3 +215,143 @@ class TestConciseOutput:
     def test_shortest_text(self, build, text) -> None:
         el = build()
         assert el.get("transform") is None if text is None else str(el.get("transform")) == text
+
+
+TRANSFORMABLE_TAGS = {
+    "rect", "circle", "ellipse", "line", "polyline", "polygon", "path", "text", "g", "use", "image", "a",
+    "switch", "defs", "clipPath", "linearGradient", "radialGradient", "pattern",
+}
+
+
+@pytest.mark.parametrize("tag", sorted(TRANSFORMABLE_TAGS))
+def test_every_transformable_element_has_the_methods(tag: str) -> None:
+    cls = svg.Element.lookup(tag)
+    assert cls is not None and issubclass(cls, svg.elements.Transformable)
+    el = cls()
+    el.translate(1, 2).rotate(10).scale(2).skew(5)
+    attribute = {"linearGradient": "gradientTransform", "radialGradient": "gradientTransform",
+                 "pattern": "patternTransform"}.get(tag, "transform")
+    assert el.has(attribute) and not el.t.is_identity
+
+
+def test_no_other_element_pretends_to_transform() -> None:
+    extra = {tag for tag, cls in svg.Element.registered().items() if issubclass(cls, svg.elements.Transformable)}
+    assert extra == TRANSFORMABLE_TAGS
+
+
+class TestArithmetic:
+    def test_plus_minus_translate_copies(self) -> None:
+        c = svg.Circle(0, 0, 1)
+        assert close((c + (3, 4)).position, (3, 4)) and close((c - (3, 4)).position, (-3, -4))
+        assert close((c + 2).position, (2, 2)) and close(((1, 1) + c).position, (1, 1))
+        assert c.t.is_identity
+
+    def test_in_place(self) -> None:
+        c = svg.Circle(0, 0, 1)
+        same = c
+        c += (5, 0)
+        c -= (1, 0)
+        c *= 2
+        c /= 2
+        c @= 90
+        assert c is same and close(c.position, (4, 0)) and c.bounds() == pytest.approx((3, -1, 2, 2))
+
+    def test_at_number_rotates_about_anchor(self) -> None:
+        r = svg.Rect(0, 0, 4, 2) @ 90
+        assert str(r.t) == "rotate(90 2 1)" and r.bounds() == pytest.approx((1, -1, 2, 4))
+
+    def test_divide(self) -> None:
+        assert (svg.Circle(5, 5, 4) / 2).bounds() == pytest.approx((3, 3, 4, 4))
+        assert (svg.Circle(5, 5, 4) / (2, 1)).bounds() == pytest.approx((3, 1, 4, 8))
+
+    def test_element_operands_keep_their_meaning(self) -> None:
+        a, b = svg.Rect(0, 0, 10, 10), svg.Rect(5, 0, 10, 10)
+        assert isinstance(a + b, svg.Group)
+        assert (a - b).exact_bbox() == (0, 0, 5, 10)
+
+    def test_path_in_place_offsets(self) -> None:
+        p = svg.Path("M0 0 L10 0")
+        p -= (1, 1)
+        p += (0, 3)
+        assert str(p.d) == "M0 0 L10 0" and close(p.position, (4, 2))
+        p += svg.Path("M0 5 H1")
+        assert str(p.d) == "M0 0 L10 0 M0 5 H1"
+
+    def test_group_plus_equals(self) -> None:
+        g = svg.Group()
+        g += svg.Rect(0, 0, 1, 1)
+        g += (10, 0)
+        assert len(g) == 1 and close(g.position, (10.5, 0.5))
+
+    def test_numpy_operands(self) -> None:
+        np = pytest.importorskip("numpy")
+        c = svg.Circle(0, 0, 1) + np.array([2.0, 3.0])
+        assert close(c.position, (2, 3))
+        assert close((svg.Circle(0, 0, 1) + np.float32(1.5)).position, (1.5, 1.5))
+        assert (svg.Circle(0, 0, 1) * np.int64(2)).bounds() == pytest.approx((-2, -2, 4, 4))
+
+
+class TestFlip:
+    def test_flip_about_anchor(self) -> None:
+        tri = svg.Polygon([(0, 0), (10, 0), (0, 5)]).flip_x()
+        assert tri.bounds() == pytest.approx((0, 0, 10, 5)) and str(tri.t) == "matrix(-1 0 0 1 10 0)"
+        assert close(tri.t.apply(0, 0), (10, 0))
+        assert close(svg.Rect(0, 0, 4, 4).flip_y().t.apply(0, 0), (0, 4))
+
+    def test_flip_twice_is_identity_and_about(self) -> None:
+        assert svg.Rect(0, 0, 4, 4).flip_x().flip_x().t.is_identity
+        assert close(svg.Circle(5, 0, 1).flip_x(about=(0, 0)).position, (-5, 0))
+
+    def test_matrix_flips(self) -> None:
+        assert Matrix.flip_x(3).apply(1, 7) == (5, 7) and Matrix.flip_y(1).apply(4, 0) == (4, 2)
+
+
+def test_text_rotate_is_the_transform_and_rotate_underscore_is_per_glyph() -> None:
+    t = svg.Text("Hi", x=0, y=10, rotate=[5, 10])
+    t.rotate(30, about=(0, 0))
+    assert str(t.get("transform")) == "rotate(30)" and t.rotate_ == (5, 10)
+
+
+class TestNumpy:
+    def test_polyline_points_are_a_read_only_array(self) -> None:
+        np = pytest.importorskip("numpy")
+        xs = np.linspace(0, 10, 5)
+        line = svg.Polyline(np.column_stack((xs, xs ** 2)))
+        assert line.points.shape == (5, 2) and not line.points.flags.writeable
+        assert str(line).startswith('<polyline points="0,0 2.5,6.25')
+        assert line.bbox == (0, 0, 10, 100)
+
+    def test_points_from_text_and_validation(self) -> None:
+        p = svg.Polygon("0,0 4,0 4,3")
+        assert p.points.tolist() == [[0, 0], [4, 0], [4, 3]] and p.area == 6
+        with pytest.raises(ValueError, match=r"shape \(N, 2\)"):
+            svg.Polygon([[1, 2, 3]])
+        assert svg.Polygon().points.shape == (0, 2) and svg.Polygon() .bbox == (0, 0, 0, 0)
+
+    def test_parsed_points_become_arrays_and_compare(self) -> None:
+        p = svg.parse('<polygon points="1,2 3,4"/>')
+        assert p.points.tolist() == [[1, 2], [3, 4]]
+        assert svg.Polygon([(1, 2), (3, 4)]).attributes == svg.Polygon([(1, 2), (3, 4)]).attributes
+
+    def test_matrix_maps_arrays_batch_and_broadcast(self) -> None:
+        np = pytest.importorskip("numpy")
+        m = Matrix.rotate(90)
+        batch = np.zeros((3, 4, 2)) + [1, 0]
+        out = m @ batch
+        assert out.shape == (3, 4, 2) and np.allclose(out[..., 0], 0) and np.allclose(out[..., 1], 1)
+        assert np.allclose(m @ np.array([1.0, 0.0]), [0, 1])
+        with pytest.raises(ValueError, match="last axis"):
+            m @ np.zeros((2, 3))
+
+    def test_matrix_array_round_trip(self) -> None:
+        np = pytest.importorskip("numpy")
+        m = Matrix(1, 2, 3, 4, 5, 6)
+        assert np.asarray(m).shape == (3, 3) and Matrix.from_array(np.asarray(m)) == m
+        assert Matrix.from_array(np.asarray(m) @ np.asarray(Matrix.translate(1))).isclose(m @ Matrix.translate(1))
+        with pytest.raises(ValueError):
+            Matrix.from_array(np.eye(4))
+
+    def test_color_array(self) -> None:
+        np = pytest.importorskip("numpy")
+        assert np.allclose(np.asarray(svg.Color(1, 0.5, 0)), [1, 0.5, 0, 1])
+        assert svg.Rect(fill=np.array([0, 0, 1.0])).get("fill").hex == "#0000ff"

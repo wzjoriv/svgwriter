@@ -125,7 +125,10 @@ class PathOperand(Element):
         return self.intersection(other) if _operand(other) else NotImplemented
 
     def __sub__(self, other: Operand) -> Path:
-        return self.difference(other) if _operand(other) else NotImplemented
+        """``a - b`` is the boolean difference; ``a - (dx, dy)`` translates a copy."""
+        if not _operand(other):
+            return super().__sub__(other)  # type: ignore[misc]
+        return self.difference(other)
 
     def __rsub__(self, other: Operand) -> Path:
         from ..ops.boolean import BooleanOp

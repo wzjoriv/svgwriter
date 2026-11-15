@@ -51,7 +51,7 @@ def render_svg(
         ``float32`` array of shape ``(rows, columns, 4)``, straight (not
         premultiplied) RGBA in ``0..1``.
     """
-    from ..color.color import parse_color
+    from ..color.color import as_color
 
     data = text.encode("utf-8")
     dom = skia.SVGDOM.MakeFromStream(skia.MemoryStream(data, True))
@@ -61,8 +61,8 @@ def render_svg(
     surface = skia.Surface(columns, rows)
     with surface as canvas:
         if background is not None:
-            color = parse_color(background)
-            canvas.clear(skia.Color(color.r, color.g, color.b))
+            r, g, b, a = as_color(background).uint8
+            canvas.clear(skia.Color(r, g, b, a))
         canvas.scale(scale, scale)
         dom.setContainerSize(skia.Size(width, height))
         dom.render(canvas)
