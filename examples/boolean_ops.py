@@ -22,7 +22,7 @@ FONT = "Arial, Helvetica, sans-serif"
 
 def petals() -> list[svg.Path]:
     petal = svg.Ellipse(CENTER, CENTER - 50, 22, 50)
-    return [petal.copy().rotate(360 * i / PETALS, about=(CENTER, CENTER)) for i in range(PETALS)]
+    return [petal.clone().rotate(360 * i / PETALS, about=(CENTER, CENTER)) for i in range(PETALS)]
 
 
 def build() -> svg.Document:

@@ -170,7 +170,7 @@ class Path(Shape, tag="path"):
     def __add__(self, other: Element | Iterable[Element]) -> Group: ...
     def __add__(self, other: Path | PathData | str | Element | Iterable[Element]) -> Path | Group:
         if isinstance(other, (Path, PathData, str)):
-            clone = self.copy()
+            clone = self.clone()
             clone.d = self.d + (other.d if isinstance(other, Path) else other)
             return clone
         return super().__add__(other)

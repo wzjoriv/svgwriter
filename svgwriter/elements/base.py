@@ -5,7 +5,7 @@ from __future__ import annotations
 import difflib
 import re
 from collections.abc import Iterable, Iterator, Mapping
-from typing import TYPE_CHECKING, Any, ClassVar, Final, TypeAlias, TypeVar, Union, overload
+from typing import TYPE_CHECKING, Any, ClassVar, Final, Literal, TypeAlias, TypeVar, Union, overload
 
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._ids import next_id
@@ -21,6 +21,7 @@ from ._compose import Composable
 if TYPE_CHECKING:
     from .._internal._typing import AnyPath
     from ..attributes.protocols import TextSink
+    from .structure import Use
 
 __all__ = [
     "AttrValue",
@@ -337,18 +338,69 @@ class Element(Composable):
             node = node.parent
         return node
 
-    def copy(self: E) -> E:
-        """Deep copy, detached from any parent."""
-        clone = type(self).__new__(type(self))
-        clone.__dict__.update(self.__dict__)
-        clone.attributes = dict(self.attributes)
-        clone.parent = None
-        clone.children = []
+    @overload
+    def clone(self: E, linked: Literal[False] = False) -> E: ...
+    @overload
+    def clone(self, linked: Literal[True]) -> Use: ...
+    def clone(self, linked: bool = False) -> Element:
+        """A deep, detached copy; or with *linked*, a ``<use>`` that renders this element.
+
+        Parameters
+        ----------
+        linked : bool
+            ``False`` copies the whole subtree (pixels included), so edits
+            never reach the original. ``True`` returns a ``<use>``
+            referencing this element (giving it an id), so edits to the
+            original show through every linked clone.
+
+        Returns
+        -------
+        Element
+            A copy of the same class, or a :class:`~svgwriter.Use`.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> star = svg.circle(0, 0, 5, id="dot")
+        >>> star.clone().id, star.clone(linked=True).tag
+        ('dot', 'use')
+
+        Notes
+        -----
+        A linked clone needs the original in the same document: placed
+        anywhere, or unplaced, in which case it moves into ``<defs>`` when
+        the ``<use>`` joins the document. ``copy.copy`` and ``copy.deepcopy``
+        both behave like ``clone()``.
+        """
+        if linked:
+            from .structure import Use
+
+            return Use(self)
+        duplicate = type(self).__new__(type(self))
+        object.__setattr__(duplicate, "__dict__", dict(self.__dict__))
+        duplicate.attributes = {
+            k: v.clone() if hasattr(v, "clone") and not isinstance(v, Element) else v
+            for k, v in self.attributes.items()
+        }
+        duplicate.parent = None
+        duplicate.children = []
         for child in self.children:
-            clone.children.append(child if isinstance(child, str) else child.copy())
             if isinstance(child, Element):
-                clone.children[-1].parent = clone  # type: ignore[union-attr]
-        return clone
+                copied = child.clone()
+                copied.parent = duplicate
+                duplicate.children.append(copied)
+            else:
+                duplicate.children.append(child)
+        return duplicate
+
+    copy = clone
+    """Same as :meth:`clone`."""
+
+    def __copy__(self: E) -> E:
+        return self.clone()
+
+    def __deepcopy__(self: E, memo: dict[int, object]) -> E:
+        return self.clone()
 
     def to_string(self, **options: Any) -> str:
         """Serialize; see :class:`svgwriter.io.SerializeOptions`."""

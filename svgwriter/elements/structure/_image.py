@@ -115,6 +115,13 @@ class Pixels:
         alpha = np.broadcast_to(np.asarray(self.alpha, dtype=np.float32), rgb.shape[:2] + (1,))
         return np.concatenate([rgb, alpha], axis=2)
 
+    def clone(self) -> Pixels:
+        """An independent copy of the pixel arrays."""
+        if self._color is None:
+            return Pixels(None, source=self._source)
+        alpha = self._alpha if np.isscalar(self._alpha) else np.array(self._alpha)
+        return Pixels(np.array(self._color), alpha)
+
     def encode(self, format: str = "png", *, quality: int = 90) -> bytes:
         from ...ops.render import encode
 

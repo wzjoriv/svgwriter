@@ -141,3 +141,63 @@ class TestRasterizeElement:
     def test_group(self) -> None:
         g = svg.Group(svg.Rect(0, 0, 2, 2, fill="red"), svg.Rect(4, 0, 2, 2, fill="blue"))
         assert g.rasterize().shape == (2, 6, 4)
+
+
+class TestClone:
+    def test_deep_clone_is_independent(self) -> None:
+        g = svg.Group(svg.Rect(0, 0, 1, 1, fill="red"), id="g").rotate(10)
+        c = g.clone()
+        assert type(c) is svg.Group and c is not g and c[0] is not g[0] and c.parent is None
+        c[0].fill = "blue"
+        c.translate(5)
+        assert str(g[0].get("fill")) == "red" and str(g.t) == "rotate(10 0.5 0.5)"
+
+    def test_clone_copies_pixels_and_anchor(self) -> None:
+        img = svg.Image(np.zeros((2, 2, 3)), anchor=(0, 0))
+        c = img.clone()
+        c.color[0, 0] = 1
+        assert img.color.max() == 0 and c.anchor == (0, 0)
+
+    def test_linked_clone_is_a_use(self) -> None:
+        doc = svg.Document(20, 20)
+        r = doc.rect(0, 0, 4, 4, fill="red")
+        u = r.clone(linked=True) + (10, 0)
+        doc += u
+        assert isinstance(u, svg.Use) and u.target == r.id and r.parent is doc.root
+        r.width = 6
+        assert u.exact_bbox() == (10, 0, 6, 4)
+
+    def test_linked_clone_of_unplaced_element_goes_to_defs(self) -> None:
+        doc = svg.Document(20, 20)
+        star = svg.Circle(0, 0, 2)
+        doc += star.clone(linked=True)
+        assert star.parent is doc.defs
+
+    def test_copy_module(self) -> None:
+        import copy
+
+        r = svg.Rect(fill="red")
+        assert copy.copy(r) is not r and copy.deepcopy(r).get("fill") == r.get("fill")
+
+
+class TestUseAppearance:
+    def test_target_style_wins_and_use_style_is_inherited(self) -> None:
+        doc = svg.Document(20, 20)
+        r = doc.define(svg.Rect(0, 0, 2, 2, fill="red"))
+        u = doc.use(r, x=5, stroke="blue", fill="green")
+        p = u.to_path()
+        assert str(p.get("fill")) == "red" and str(p.get("stroke")) == "blue"
+        assert p.exact_bbox() == (5, 0, 2, 2) and not p.has("xlink:href") and not p.has("x")
+
+    def test_target_transform_applies_but_not_its_parents(self) -> None:
+        doc = svg.Document(20, 20)
+        g = doc.group().translate(100, 100)
+        r = svg.Rect(0, 0, 2, 2, id="r").translate(1, 0)
+        g += r
+        u = doc.use(r)
+        assert u.exact_bbox() == (1, 0, 2, 2)
+
+
+def test_copy_is_clone() -> None:
+    r = svg.Rect(fill="red")
+    assert svg.Rect.copy is svg.Rect.clone and r.copy() is not r and r.copy(linked=True).tag == "use"

@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from ..._internal._constants import SVG_VERSION
 from ..._internal._typing import Self
 from ...attributes.length import LengthLike
+from ...attributes.names import PRESENTATION_ATTRIBUTES
 from ...path.data import BBox, PathData
 from ...transform.matrix import Matrix
 from .._geometry import PathOperand, union_outline
@@ -22,6 +23,9 @@ from .._transformable import children_bbox
 from .._viewport import FitToViewBox, Positioned, positioned_bbox, user_units
 from ..base import Category, Child, Element
 from ..container import GraphicsContainer
+
+if TYPE_CHECKING:
+    from ..shapes import Path
 
 __all__ = ["A", "Defs", "Group", "Svg", "Switch", "Symbol", "Use"]
 
@@ -131,6 +135,24 @@ class Use(PathOperand, GraphicsElement, XLinkAttributes, Positioned, tag="use", 
         if inner is None:
             return None
         return BBox(inner.x + user_units(self.get("x")), inner.y + user_units(self.get("y")), inner.width, inner.height)
+
+    geometry_attributes: ClassVar[frozenset[str]] = frozenset({"x", "y", "width", "height", "xlink:href"})
+
+    def to_path(self, **kwargs: Any) -> Path:
+        """The referenced outline as a ``<path>``, styled as SVG renders it.
+
+        The target's own presentation attributes win; anything it does not
+        set is inherited from the ``<use>``.
+        """
+        path = super().to_path()
+        target = self.root().get_element_by_id(self.target) if self.target else None
+        if isinstance(target, PathOperand):
+            path.attributes.update(
+                (k, v) for k, v in target.attributes.items()
+                if k in PRESENTATION_ATTRIBUTES and k not in target.geometry_attributes and k != "clip-path"
+            )
+        path.update(**kwargs)
+        return path
 
     def local_outline(self) -> PathData:
         """The referenced element's outline, offset by ``x``/``y``."""

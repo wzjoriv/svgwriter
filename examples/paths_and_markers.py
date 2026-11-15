@@ -26,7 +26,7 @@ def build() -> svg.Document:
 
     pie = svg.PathBuilder().move_to(150, 150).line_to(150, 60).arc_to(90, 90, 0, False, True, 228, 195).close()
     slice_ = doc.path(pie, fill="gold", stroke="black", opacity=0.7)
-    doc += slice_.copy().rotate(180, about=(150, 150))
+    doc += slice_.clone().rotate(180, about=(150, 150))
 
     with doc.group(stroke="navy", fill="none") as outlines:
         outlines += [

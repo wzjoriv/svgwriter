@@ -149,7 +149,7 @@ def renderable_copy(root: Element) -> Element:
     """
     from ..elements.text import Text
 
-    copy = root.copy()
+    copy = root.clone()
     if isinstance(copy, Text):
         return copy.to_path(id=copy.id)
     for text in [e for e in copy.iter() if isinstance(e, Text)]:

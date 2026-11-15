@@ -76,7 +76,7 @@ presentation attributes.
 ring = svg.circle(50, 50, 40, fill="teal") - svg.circle(50, 50, 25)
 stencil = svg.rect(0, 0, 120, 50) - svg.text("Hi", x=10, y=40, font_size=40, font_family="Arial")
 petal = svg.ellipse(50, 20, 10, 20)
-flower = petal.union(*(petal.copy().rotate(a, about=(50, 50)) for a in range(60, 360, 60)))
+flower = petal.union(*(petal.clone().rotate(a, about=(50, 50)) for a in range(60, 360, 60)))
 ```
 
 ## Geometry with skia-python

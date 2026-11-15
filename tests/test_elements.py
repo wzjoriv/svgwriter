@@ -233,7 +233,7 @@ class TestElementApi:
 
     def test_copy_is_deep_and_detached(self) -> None:
         g = svg.Group(svg.Rect(1, 1, 1, 1), fill="red")
-        clone = svg.Svg(g).find(svg.Group).copy()  # type: ignore[union-attr]
+        clone = svg.Svg(g).find(svg.Group).clone()  # type: ignore[union-attr]
         assert clone.parent is None
         clone.find(svg.Rect).set("x", 9)  # type: ignore[union-attr]
         assert g.find(svg.Rect).get("x") == 1  # type: ignore[union-attr]

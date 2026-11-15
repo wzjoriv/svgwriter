@@ -261,7 +261,7 @@ class Transformable(Element):
 
     def _transformed_by(self: E, operator: str, operand: object, in_place: bool) -> E:
         """Apply an arithmetic operator; ``NotImplemented`` when *operand* does not fit."""
-        target = self if in_place else self.copy()
+        target = self if in_place else self.clone()
         if operator == "@":
             if isinstance(operand, Real):
                 return target.rotate(float(operand))
@@ -336,4 +336,4 @@ class Transformable(Element):
         """``M @ el``: a copy with *M* applied in the parent frame."""
         if not isinstance(transform, (*_TRANSFORMS, str)):
             return NotImplemented
-        return self.copy().apply(transform)
+        return self.clone().apply(transform)

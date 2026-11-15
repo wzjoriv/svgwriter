@@ -60,10 +60,10 @@ class Convertible(Transformable):
         from .structure import Group
 
         if isinstance(self, Group):
-            group = self.copy()
+            group = self.clone()
             group.update(**kwargs)
             return group
-        return Group(self.copy(), **kwargs)
+        return Group(self.clone(), **kwargs)
 
     def to_image(self, *, scale: float = 1.0, padding: float = 0.0, background: str | None = None) -> Image:
         """Rasterize into an ``<image>`` placed over this element's bounds.
