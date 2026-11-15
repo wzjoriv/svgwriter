@@ -176,10 +176,20 @@ class TestParser:
         with warnings.catch_warnings(record=True) as caught:
             warnings.simplefilter("always")
             svg.parse(source, strictness=Strictness.WARN)
-        assert len(caught) == 2
+        assert len(caught) == 1
         with pytest.raises(SVGParseError):
             svg.parse(source, strictness=Strictness.STRICT)
         assert Strictness.STRICT > Strictness.WARN > Strictness.LENIENT
+
+    def test_foreign_namespace_attributes_round_trip(self) -> None:
+        source = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:x="urn:x"><rect x:a="1" width="2"/></svg>'
+        rect = svg.parse(source).find(svg.Rect)
+        assert rect.get("{urn:x}a") == "1"
+        text = rect.to_string(xml_declaration=False)
+        assert 'xmlns:ns0="urn:x"' in text and 'ns0:a="1"' in text
+        assert svg.parse(text).get("{urn:x}a") == "1"
+        rect.set("{urn:y}b", 2)
+        assert 'xmlns:ns1="urn:y" ns1:b="2"' in rect.to_string(xml_declaration=False)
 
     def test_malformed(self) -> None:
         with pytest.raises(SVGParseError):

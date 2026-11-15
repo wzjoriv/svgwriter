@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NoReturn
 
-from ..attributes.length import Length
+from ..attributes.length import Length, Unit
+
+PERCENT = 100.0
 
 if TYPE_CHECKING:
     from ..ops.text import GlyphBox
@@ -16,15 +18,25 @@ if TYPE_CHECKING:
 __all__ = ["Glyph", "number_list"]
 
 
-def number_list(value: Any) -> list[float]:
-    """An SVG number or length list (``"1 2,3"``, a number or a sequence) as floats."""
+def _units(value: Any, reference: float) -> float:
+    length = Length.parse(value)
+    if length.unit is Unit.PERCENT:
+        return length.value * reference / PERCENT
+    return length.to_user_units()
+
+
+def number_list(value: Any, reference: float = 0.0) -> list[float]:
+    """An SVG number or length list (``"1 2,3"``, a number or a sequence) as floats.
+
+    Percentages resolve against *reference*.
+    """
     if value is None:
         return []
     if isinstance(value, (list, tuple)):
-        return [Length.parse(v).to_user_units() for v in value]
+        return [_units(v, reference) for v in value]
     if isinstance(value, (int, float)):
         return [float(value)]
-    return [Length.parse(v).to_user_units() for v in str(value).replace(",", " ").split()]
+    return [_units(v, reference) for v in str(value).replace(",", " ").split()]
 
 
 class Glyph:

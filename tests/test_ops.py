@@ -197,3 +197,12 @@ class TestTextRendering:
         doc.rect(0, 0, 60, 30, fill="black").clip(svg.Text("W", x=0, y=25, font_size=30))
         alpha = ops.rasterize(doc)[..., 3]
         assert 0 < alpha.mean() < 0.9
+
+    def test_rendered_text_inherits_font_from_ancestors_and_css(self) -> None:
+        doc = svg.Document(200, 60)
+        doc.style(".big { font-size: 40px }")
+        small = svg.Text("Wg", x=0, y=50, class_="big")
+        doc.group(font_size=10).add(svg.Text("Wg", x=100, y=50))
+        doc += small
+        alpha = ops.rasterize(doc)[..., 3]
+        assert alpha[:, :90].sum() > 4 * alpha[:, 100:].sum()

@@ -23,6 +23,9 @@ __all__ = ["SerializeOptions", "Writer", "iter_chunks", "to_string", "write"]
 DEFAULT_ENCODING = "utf-8"
 
 
+FOREIGN_PREFIX = "ns"
+
+
 def _default_namespaces() -> dict[str, str]:
     return {"xmlns": SVG_NS, "xmlns:xlink": XLINK_NS}
 
@@ -87,7 +90,16 @@ class Writer:
         return format_value(value, self.options.precision)
 
     def _open_tag(self, element: Element, extra: dict[str, str]) -> str:
-        attributes = {**extra, **{k: self._value(k, v) for k, v in element.attributes.items()}}
+        attributes = dict(extra)
+        prefixes: dict[str, str] = {}
+        for key, value in element.attributes.items():
+            if key.startswith("{"):
+                namespace, _, local = key[1:].partition("}")
+                if namespace not in prefixes:
+                    prefixes[namespace] = f"{FOREIGN_PREFIX}{len(prefixes)}"
+                    attributes[f"xmlns:{prefixes[namespace]}"] = namespace
+                key = f"{prefixes[namespace]}:{local}"
+            attributes[key] = self._value(key, value)
         parts = [element.tag] + [f'{k}="{escape_attribute(v)}"' for k, v in attributes.items()]
         return "<" + " ".join(parts)
 

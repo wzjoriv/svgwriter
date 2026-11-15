@@ -187,8 +187,11 @@ class Element(Composable):
 
     @chainable
     def set(self, name: str, value: AttrValue) -> None:
-        """Set one attribute; ``None`` removes it."""
-        key = svg_name(name)
+        """Set one attribute; ``None`` removes it.
+
+        Attributes in other namespaces use Clark notation: ``"{uri}name"``.
+        """
+        key = name if name.startswith("{") else svg_name(name)
         if key in UNSUPPORTED_ATTRIBUTES:
             raise ValueError(
                 f"{key!r} is a scripting/browser attribute; svgwriter writes static graphics and does not support it"
@@ -290,6 +293,25 @@ class Element(Composable):
         self.children = [c for c in self.children if not isinstance(c, str)]
         if value:
             self.insert(0, value)
+
+    def computed(self, name: str, default: object = None) -> object:
+        """The value SVG would use for property *name* (SVG spelling or Python spelling).
+
+        Looks at the inline ``style``, matching ``<style>`` rules, the
+        presentation attribute, then ancestors for inherited properties.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> g = svg.group(fill="red", font_size=30)
+        >>> t = g.add(svg.text("hi", style="font-size: 12px"))
+        >>> t.computed("fill"), t.computed("font_size"), t.computed("opacity", 1)
+        ('red', '12px', 1)
+        """
+        from ..attributes.cascade import computed
+
+        value = computed(self, svg_name(name), default)
+        return value.svg_value() if hasattr(value, "svg_value") and not isinstance(value, (int, float)) else value
 
     def __len__(self) -> int:
         return len(self.children)

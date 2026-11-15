@@ -69,7 +69,7 @@ def _convert(node: ET.Element, strictness: Strictness) -> Element:
         elif key_ns in _PREFIXES:
             attributes[f"{_PREFIXES[key_ns]}:{key_local}"] = value
         else:
-            _complain(f"dropping foreign attribute {key!r}", strictness)
+            attributes[key] = value
 
     cls = Element.lookup(local) if namespace in (SVG_NS, None) else None
     element: Element

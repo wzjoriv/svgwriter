@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Final
 import numpy as np
 import skia
 
-from ..attributes.length import Length
+from ..attributes.length import Length, Unit
 from ..transform.matrix import IDENTITY, Matrix
 from ._layers import draw_image, hidden, layers
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from ..document import Document
     from ..elements.base import Element
 
-__all__ = ["DEFAULT_SIZE", "encode", "rasterize", "render_png", "render_svg", "render_tree", "skia_renderer"]
+__all__ = ["DEFAULT_SIZE", "document_size", "encode", "rasterize", "render_png", "render_svg", "render_tree", "skia_renderer"]
 
 DEFAULT_SIZE: Final = 300.0
 DEFAULT_QUALITY: Final = 90
@@ -25,12 +25,23 @@ CHANNEL_MAX: Final = 255
 DISPLAY: Final = "display"
 
 
-def _size(document: Document) -> tuple[float, float]:
+def _dimension(value: object, fallback: float) -> float:
+    if value is None:
+        return fallback
+    length = Length.parse(value)
+    return fallback if length.unit is Unit.PERCENT else length.to_user_units()
+
+
+def document_size(document: Document) -> tuple[float, float]:
+    """Canvas size in user units: ``width``/``height``, else the ``viewBox`` size, else 300.
+
+    Percentages resolve against the ``viewBox`` (or 300) since there is no
+    surrounding viewport.
+    """
     root = document.root
     box = root.view_box
-    width, height = root.get("width"), root.get("height")
-    w = Length.parse(width).to_user_units() if width is not None else (box.width if box else DEFAULT_SIZE)
-    h = Length.parse(height).to_user_units() if height is not None else (box.height if box else DEFAULT_SIZE)
+    w = _dimension(root.get("width"), box.width if box else DEFAULT_SIZE)
+    h = _dimension(root.get("height"), box.height if box else DEFAULT_SIZE)
     return float(max(1, math.ceil(w))), float(max(1, math.ceil(h)))
 
 
@@ -101,6 +112,7 @@ def render_tree(
     view: Matrix = IDENTITY,
     scale: float = 1.0,
     background: str | None = None,
+    viewport: bool = False,
 ) -> np.ndarray:
     """Render the tree under *root*, drawing embedded ``<image>`` pixels in paint order.
 
@@ -118,6 +130,8 @@ def render_tree(
         Pixels per user unit.
     background : color, optional
         Painted under the drawing.
+    viewport : bool
+        *root* is the outermost ``<svg>``: draw it at exactly ``width x height``.
 
     Returns
     -------
@@ -129,6 +143,8 @@ def render_tree(
     surface = _surface(width, height, scale, background)
     canvas = surface.getCanvas()
     root = renderable_copy(root)
+    if viewport:
+        root.attributes["width"], root.attributes["height"] = width, height
     parts = layers(root)
     for run, image in parts:
         if run or len(parts) == 1:
@@ -147,17 +163,20 @@ def renderable_copy(root: Element) -> Element:
 
     skia's SVG renderer draws no text, so text is drawn as paths.
     """
+    from ..attributes.cascade import resolve_styles
     from ..elements.text import Text
 
     copy = root.clone()
+    resolve_styles(copy)
     if isinstance(copy, Text):
         return copy.to_path(id=copy.id)
     for text in [e for e in copy.iter() if isinstance(e, Text)]:
         parent = text.parent
         assert parent is not None
+        outline = text.to_path(id=text.id)
         index = parent.children.index(text)
         parent.remove(text)
-        parent.insert(index, text.to_path(id=text.id))
+        parent.insert(index, outline)
     return copy
 
 
@@ -170,7 +189,13 @@ def _view(document: Document, width: float, height: float) -> Matrix:
             @ Matrix.scale(s) @ Matrix.translate(-box.min_x, -box.min_y))
 
 
-def rasterize(document: Document, *, scale: float = 1.0, background: str | None = None) -> np.ndarray:
+def rasterize(
+    document: Document,
+    *,
+    scale: float = 1.0,
+    size: tuple[int, int] | None = None,
+    background: str | None = None,
+) -> np.ndarray:
     """Render *document* into an RGBA array, embedded images included.
 
     Parameters
@@ -178,7 +203,11 @@ def rasterize(document: Document, *, scale: float = 1.0, background: str | None 
     document : Document
         What to draw; SMIL animation is not evaluated.
     scale : float
-        Pixels per user unit of the document's ``width``/``height``.
+        Pixels per user unit of the document's size (see :func:`document_size`).
+    size : (int, int), optional
+        Exact output ``(columns, rows)``; a ``viewBox`` drawing is fitted
+        into it and *scale* is ignored. Without a ``viewBox`` this is the
+        viewport size in user units.
     background : color, optional
         Painted under the drawing; transparent when omitted.
 
@@ -195,9 +224,16 @@ def rasterize(document: Document, *, scale: float = 1.0, background: str | None 
     >>> rasterize(doc).shape
     (2, 4, 4)
     """
-    width, height = _size(document)
+    width, height = document_size(document)
+    if size is not None:
+        columns, rows = size
+        if document.root.view_box is None:
+            width, height, scale = float(columns), float(rows), 1.0
+        else:
+            scale = min(columns / width, rows / height)
+            width, height = columns / scale, rows / scale
     return render_tree(document.root, lambda text: text, width, height, view=_view(document, width, height),
-                       scale=scale, background=background)
+                       scale=scale, background=background, viewport=True)
 
 
 def encode(pixels: np.ndarray, format: str = "png", *, quality: int = DEFAULT_QUALITY) -> bytes:

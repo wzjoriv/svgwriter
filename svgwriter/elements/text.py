@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any, ClassVar, TypeAlias
 
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._typing import LengthAdjust
+from ..attributes.cascade import Rule, computed, rules_of
 from ..attributes.length import Length, LengthLike
 from ._geometry import PathOperand
 from ._glyph import Glyph, number_list
@@ -104,6 +105,37 @@ def _first(value: Any) -> float:
     return 0.0 if value is None else Length.parse(value).to_user_units()
 
 
+FONT_WEIGHTS = {"normal": 400, "bold": 700, "bolder": 700, "lighter": 300}
+FONT_SIZE_KEYWORDS = {"xx-small": 9.0, "x-small": 10.0, "small": 13.0, "medium": 16.0, "large": 18.0,
+                      "x-large": 24.0, "xx-large": 32.0, "smaller": 13.0, "larger": 19.0}
+
+
+def _font_weight(value: object) -> int:
+    text = str(value).strip()
+    return FONT_WEIGHTS.get(text, int(text) if text.isdigit() else FONT_WEIGHTS["normal"])
+
+
+def _font_size(value: object) -> float:
+    text = str(value).strip()
+    if text in FONT_SIZE_KEYWORDS:
+        return FONT_SIZE_KEYWORDS[text]
+    try:
+        size = Length.parse(value)
+    except ValueError:
+        return DEFAULT_FONT_SIZE
+    return size.value * DEFAULT_FONT_SIZE / 100 if size.unit.value == "%" else size.to_user_units()
+
+
+def _viewport(element: Element) -> tuple[float, float]:
+    root = element.root()
+    box = getattr(root, "view_box", None)
+    return (box.width, box.height) if box else (0.0, 0.0)
+
+
+_PRESERVE = {10: " ", 13: " ", 9: " "}
+_DEFAULT = {10: None, 13: None, 9: " "}
+
+
 def _all_text(element: Element) -> str:
     return "".join(c if isinstance(c, str) else _all_text(c) for c in element.children)
 
@@ -142,28 +174,46 @@ class Text(PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag="tex
 
     @property
     def characters(self) -> str:
-        """All character data, ``tspan`` content included."""
-        return _all_text(self)
+        """The rendered characters: all character data (``tspan`` content included) after
+        SVG's ``xml:space`` handling (newlines dropped, tabs to spaces, runs of spaces
+        collapsed, ends trimmed) unless ``xml:space="preserve"``.
+        """
+        raw = _all_text(self)
+        if str(computed(self, "xml:space", "default", self._rules())) == "preserve":
+            return raw.translate(_PRESERVE)
+        return " ".join(raw.translate(_DEFAULT).split())
+
+    def _rules(self) -> list[Rule]:
+        root = self.root()
+        return rules_of(root) if root is not self else []
 
     def layout(self) -> list[GlyphBox]:
         """Per-character placement (skia fonts, SVG ``x``/``y``/``dx``/``dy``/``rotate`` rules).
 
+        Font properties are computed (CSS and inheritance applied).
         ``tspan`` positioning and styling are not applied yet.
         """
         from ..ops.text import layout_glyphs
 
+        rules = self._rules()
+
+        def style(name: str, default: object) -> object:
+            return computed(self, name, default, rules)
+
+        width, height = _viewport(self)
+        size = _font_size(style("font-size", DEFAULT_FONT_SIZE))
         return layout_glyphs(
             self.characters,
-            str(self.get("font-family", DEFAULT_FONT_FAMILY)),
-            _first(self.get("font-size", DEFAULT_FONT_SIZE)),
-            x=number_list(self.get("x")) or [0.0],
-            y=number_list(self.get("y")) or [0.0],
-            dx=number_list(self.get("dx")),
-            dy=number_list(self.get("dy")),
+            str(style("font-family", DEFAULT_FONT_FAMILY)),
+            size,
+            x=number_list(self.get("x"), width) or [0.0],
+            y=number_list(self.get("y"), height) or [0.0],
+            dx=number_list(self.get("dx"), width),
+            dy=number_list(self.get("dy"), height),
             rotate=number_list(self.get("rotate")),
-            anchor=str(self.get("text-anchor", "start")),  # type: ignore[arg-type]
-            weight=self.get("font-weight", "normal"),
-            italic=str(self.get("font-style", "")) in ("italic", "oblique"),
+            anchor=str(style("text-anchor", "start")),  # type: ignore[arg-type]
+            weight=_font_weight(style("font-weight", "normal")),
+            italic=str(style("font-style", "")) in ("italic", "oblique"),
         )
 
     def local_bbox(self) -> BBox | None:
