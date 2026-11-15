@@ -101,3 +101,92 @@ class TestGlyphGroup:
         plain = svg.ops.rasterize(doc).copy()
         t[0].translate(0, -15)
         assert (svg.ops.rasterize(doc) != plain).any()
+
+
+class TestTSpans:
+    def test_tspan_font_and_position_apply(self) -> None:
+        t = svg.Text("ab", x=0, y=20, font_size=10, font_family=FONT)
+        t.span("cd", font_size=40, dy=5)
+        boxes = t.layout()
+        assert [b.char for b in boxes] == list("abcd") and boxes[2].y == 25 and boxes[3].y == 25
+        assert boxes[2].advance > 2 * boxes[0].advance
+
+    def test_innermost_positioning_wins(self) -> None:
+        t = svg.Text(x=[0, 100], y=20, font_family=FONT)
+        t.span("ab", x=[50])
+        assert [b.x for b in t.layout()][:1] == [50]
+
+    def test_whitespace_collapses_across_runs(self) -> None:
+        t = svg.Text("\n   a  ", font_family=FONT)
+        t.span("  b\t")
+        assert t.characters == "a b"
+
+    def test_preserve(self) -> None:
+        t = svg.Text(" a\tb ", xml_space="preserve")
+        assert t.characters == " a b "
+
+    def test_runs_and_glyph_styles_follow_tspans(self) -> None:
+        t = svg.Text("ab", x=0, y=20, fill="black", font_family=FONT)
+        t.span("cd", fill="red")
+        runs = t.runs()
+        assert len(runs) == 2 and str(runs[1].get("fill")) == "red" and str(runs[0].get("fill")) == "black"
+        assert str(t.glyphs()[3].get("fill")) == "red"
+
+    def test_tspan_colour_renders(self) -> None:
+        doc = svg.Document(120, 40)
+        t = doc.text("aa", x=0, y=30, font_size=30, fill="black", font_family=FONT)
+        t.span("WW", fill="red")
+        pixels = svg.ops.rasterize(doc, background="white")
+        reds = (pixels[..., 0] > 0.8) & (pixels[..., 1] < 0.2)
+        assert reds[:, 40:].any() and not reds[:, :25].any()
+
+
+class TestRanges:
+    def test_slice_basics(self) -> None:
+        t = text("Hello world")
+        rng = t[6:]
+        assert rng.chars == "world" and len(rng) == 5 and [g.char for g in rng] == list("world")
+        with pytest.raises(ValueError, match="contiguous"):
+            _ = t[::2]
+
+    def test_translate_range_moves_only_it(self) -> None:
+        t = text("Hello world")
+        before = [g.position.y for g in t]
+        t[6:11].translate(0, -5)
+        after = [g.position.y for g in t]
+        assert after[6:] == [y - 5 for y in before[6:]] and after[:6] == before[:6]
+        t[0:2].translate(3)
+        assert t[2].position.x == pytest.approx(text("Hello world")[2].position.x)
+
+    def test_rotate_range(self) -> None:
+        t = text()
+        t[1:3].rotate(30)
+        assert [g.angle for g in t] == [0, 30, 30, 0, 0]
+
+    def test_styling_wraps_in_tspan_and_keeps_characters(self) -> None:
+        t = text("Hello world")
+        t[6:11].fill = "red"
+        assert t.characters == "Hello world" and isinstance(t.children[1], svg.TSpan)
+        assert str(t.children[1].get("fill")) == "red" and t[6].char == "w"
+        span = t[0:5].wrap(font_weight="bold")
+        assert span.text == "Hello" and t.children[0] is span
+
+    def test_wrap_errors(self) -> None:
+        t = text("Hello world")
+        t[6:11].fill = "red"
+        with pytest.raises(ValueError, match="crosses"):
+            t[3:8].fill = "blue"
+        with pytest.raises(ValueError, match="empty"):
+            t[2:2].wrap(fill="red")
+        with pytest.raises(AttributeError):
+            t[0:2].nonsense = 1
+
+    def test_range_bounds_and_path(self) -> None:
+        t = text("Hello world")
+        b = t[6:].bounds()
+        assert b is not None and b.x > t[0:5].bounds().x + 20
+        assert t[6:].to_path().exact_bbox() == pytest.approx(tuple(b), abs=0.5)
+
+    def test_range_scale_hint(self) -> None:
+        with pytest.raises(TypeError, match=r"glyphs\(\)\[1:3\]"):
+            text()[1:3].scale(2)

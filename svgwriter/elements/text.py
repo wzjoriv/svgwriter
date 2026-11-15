@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import enum
 from collections.abc import Iterator, Sequence
-from typing import TYPE_CHECKING, Any, ClassVar, TypeAlias
+from typing import TYPE_CHECKING, Any, ClassVar, TypeAlias, overload
 
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._typing import LengthAdjust
-from ..attributes.cascade import Rule, computed, rules_of
-from ..attributes.length import Length, LengthLike
+from ..attributes.length import LengthLike
+from ..attributes.names import PRESENTATION_ATTRIBUTES
 from ._geometry import PathOperand
-from ._glyph import Glyph, number_list
+from ._glyph import Glyph, GlyphRange
 from ._mixins import (
     ConditionalAttributes,
     CoreAttributes,
@@ -19,6 +19,7 @@ from ._mixins import (
     PresentationAttributes,
     XLinkAttributes,
 )
+from ._textlayout import collect, layout
 from .base import Category, Child, ContentModel, Element
 from .container import Container
 
@@ -97,45 +98,6 @@ class _TextLength(Element):
         self.update(text_length=text_length, length_adjust=length_adjust)
 
 
-def _first(value: Any) -> float:
-    if isinstance(value, (list, tuple)):
-        value = value[0] if value else 0
-    elif isinstance(value, str):
-        value = value.replace(",", " ").split()[0] if value.strip() else 0
-    return 0.0 if value is None else Length.parse(value).to_user_units()
-
-
-FONT_WEIGHTS = {"normal": 400, "bold": 700, "bolder": 700, "lighter": 300}
-FONT_SIZE_KEYWORDS = {"xx-small": 9.0, "x-small": 10.0, "small": 13.0, "medium": 16.0, "large": 18.0,
-                      "x-large": 24.0, "xx-large": 32.0, "smaller": 13.0, "larger": 19.0}
-
-
-def _font_weight(value: object) -> int:
-    text = str(value).strip()
-    return FONT_WEIGHTS.get(text, int(text) if text.isdigit() else FONT_WEIGHTS["normal"])
-
-
-def _font_size(value: object) -> float:
-    text = str(value).strip()
-    if text in FONT_SIZE_KEYWORDS:
-        return FONT_SIZE_KEYWORDS[text]
-    try:
-        size = Length.parse(value)
-    except ValueError:
-        return DEFAULT_FONT_SIZE
-    return size.value * DEFAULT_FONT_SIZE / 100 if size.unit.value == "%" else size.to_user_units()
-
-
-def _viewport(element: Element) -> tuple[float, float]:
-    root = element.root()
-    box = getattr(root, "view_box", None)
-    return (box.width, box.height) if box else (0.0, 0.0)
-
-
-_PRESERVE = {10: " ", 13: " ", 9: " "}
-_DEFAULT = {10: None, 13: None, 9: " "}
-
-
 def _all_text(element: Element) -> str:
     return "".join(c if isinstance(c, str) else _all_text(c) for c in element.children)
 
@@ -178,43 +140,13 @@ class Text(PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag="tex
         SVG's ``xml:space`` handling (newlines dropped, tabs to spaces, runs of spaces
         collapsed, ends trimmed) unless ``xml:space="preserve"``.
         """
-        raw = _all_text(self)
-        if str(computed(self, "xml:space", "default", self._rules())) == "preserve":
-            return raw.translate(_PRESERVE)
-        return " ".join(raw.translate(_DEFAULT).split())
-
-    def _rules(self) -> list[Rule]:
-        root = self.root()
-        return rules_of(root) if root is not self else []
+        return "".join(c.char for c in collect(self))
 
     def layout(self) -> list[GlyphBox]:
-        """Per-character placement (skia fonts, SVG ``x``/``y``/``dx``/``dy``/``rotate`` rules).
-
-        Font properties are computed (CSS and inheritance applied).
-        ``tspan`` positioning and styling are not applied yet.
+        """Per-character placement: fonts from each run's computed style, SVG positioning lists
+        (innermost ``tspan`` first), ``text-anchor`` per text chunk.
         """
-        from ..ops.text import layout_glyphs
-
-        rules = self._rules()
-
-        def style(name: str, default: object) -> object:
-            return computed(self, name, default, rules)
-
-        width, height = _viewport(self)
-        size = _font_size(style("font-size", DEFAULT_FONT_SIZE))
-        return layout_glyphs(
-            self.characters,
-            str(style("font-family", DEFAULT_FONT_FAMILY)),
-            size,
-            x=number_list(self.get("x"), width) or [0.0],
-            y=number_list(self.get("y"), height) or [0.0],
-            dx=number_list(self.get("dx"), width),
-            dy=number_list(self.get("dy"), height),
-            rotate=number_list(self.get("rotate")),
-            anchor=str(style("text-anchor", "start")),  # type: ignore[arg-type]
-            weight=_font_weight(style("font-weight", "normal")),
-            italic=str(style("font-style", "")) in ("italic", "oblique"),
-        )
+        return layout(self)
 
     def local_bbox(self) -> BBox | None:
         return self.local_outline().bbox
@@ -229,16 +161,25 @@ class Text(PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag="tex
         """Number of characters."""
         return len(self.characters)
 
-    def __getitem__(self, index: int) -> Glyph:
-        """A live :class:`Glyph` handle on one character.
+    @overload
+    def __getitem__(self, index: int) -> Glyph: ...
+    @overload
+    def __getitem__(self, index: slice) -> GlyphRange: ...
+    def __getitem__(self, index: int | slice) -> Glyph | GlyphRange:
+        """A live :class:`Glyph` (``text[i]``) or :class:`GlyphRange` (``text[a:b]``).
 
         Examples
         --------
-        >>> t = Text("Hello", x=0, y=20)
-        >>> t[-1].char, len(t)
-        ('o', 5)
+        >>> t = Text("Hello world", x=0, y=20)
+        >>> t[-1].char, t[6:].chars, len(t)
+        ('d', 'world', 11)
         """
         count = len(self.characters)
+        if isinstance(index, slice):
+            start, stop, step = index.indices(count)
+            if step != 1:
+                raise ValueError("text ranges must be contiguous (step 1)")
+            return GlyphRange(self, start, max(start, stop))
         if not -count <= index < count:
             raise IndexError(f"text has {count} characters, index {index} is out of range")
         return Glyph(self, index % count)
@@ -247,18 +188,48 @@ class Text(PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag="tex
         """The characters as :class:`Glyph` handles; ``children`` holds the runs and spans."""
         return (Glyph(self, i) for i in range(len(self.characters)))
 
-    def _styled_path(self, data: PathData) -> Path:
+    def run_style(self, source: Element) -> dict[str, object]:
+        """Presentation attributes for glyphs from *source*: this text's, then each enclosing ``tspan``'s."""
+        chain = []
+        node: Element | None = source
+        while node is not None and node is not self:
+            chain.append(node)
+            node = node.parent
+        style = {k: v for k, v in self.attributes.items()
+                 if k in PRESENTATION_ATTRIBUTES and k not in self.geometry_attributes and k != "clip-path"}
+        for element in reversed(chain):
+            style.update((k, v) for k, v in element.attributes.items()
+                         if k in PRESENTATION_ATTRIBUTES and k not in self.geometry_attributes)
+        return style
+
+    def _styled_path(self, data: PathData, source: Element | None = None) -> Path:
         from .shapes import Path
 
         path = Path(data)
-        path.attributes.update(
-            (k, v) for k, v in self.attributes.items()
-            if k not in ("id", "transform", "clip-path") and k not in self.geometry_attributes
-        )
+        path.attributes.update(self.run_style(source if source is not None else self))
         return path
+
+    def runs(self) -> list[Path]:
+        """Outline paths in local coordinates, one per consecutive run with the same source element."""
+        from ..path.data import PathData
+
+        paths: list[Path] = []
+        current: Element | None = None
+        data = PathData()
+        for box in self.layout():
+            if box.source is not current and len(data):
+                paths.append(self._styled_path(data, current))
+                data = PathData()
+            current = box.source
+            data = data + box.placed()
+        if len(data):
+            paths.append(self._styled_path(data, current))
+        return paths
 
     def glyphs(self, *, skip_blank: bool = False) -> Group:
         """One outline ``<path>`` per character, in a ``<g>`` carrying this text's transform.
+
+        Each path is styled like its run (``tspan`` styles included).
 
         Parameters
         ----------
@@ -279,7 +250,7 @@ class Text(PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag="tex
             data = box.placed()
             if skip_blank and not len(data):
                 continue
-            group.append(self._styled_path(data))
+            group.append(self._styled_path(data, box.source))
         return group
 
     def span(self, text: str, **kwargs: Any) -> TSpan:

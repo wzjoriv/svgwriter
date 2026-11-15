@@ -169,15 +169,26 @@ def renderable_copy(root: Element) -> Element:
     copy = root.clone()
     resolve_styles(copy)
     if isinstance(copy, Text):
-        return copy.to_path(id=copy.id)
+        return _outlined(copy)
     for text in [e for e in copy.iter() if isinstance(e, Text)]:
         parent = text.parent
         assert parent is not None
-        outline = text.to_path(id=text.id)
+        outline = _outlined(text)
         index = parent.children.index(text)
         parent.remove(text)
         parent.insert(index, outline)
     return copy
+
+
+def _outlined(text: Text) -> Element:
+    """*text* as a ``<g>`` of per-run outline paths (keeps its transform, clip and opacity)."""
+    from ..elements.structure import Group
+
+    group = Group(*text.runs(), id=text.id, t=text.t)
+    for name in ("clip-path", "mask", "filter", "opacity", "display", "visibility"):
+        if text.has(name):
+            group.attributes[name] = text.attributes[name]
+    return group
 
 
 def _view(document: Document, width: float, height: float) -> Matrix:

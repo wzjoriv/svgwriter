@@ -5,6 +5,7 @@ from __future__ import annotations
 import warnings
 from collections.abc import Sequence
 from dataclasses import dataclass, replace
+from functools import lru_cache
 from typing import TYPE_CHECKING, Any, Final, Literal
 
 import skia
@@ -16,7 +17,7 @@ from ._skia import from_skia
 if TYPE_CHECKING:
     from ..elements.shapes import Path
 
-__all__ = ["Anchor", "FontWeight", "GlyphBox", "layout_glyphs", "text_outline", "text_to_path", "text_width"]
+__all__ = ["Anchor", "FontWeight", "GlyphBox", "glyph_shape", "layout_glyphs", "text_outline", "text_to_path", "text_width"]
 
 Anchor = Literal["start", "middle", "end"]
 FontWeight = int | Literal["normal", "bold"]
@@ -28,6 +29,9 @@ BOLD_WEIGHT: Final = 700
 NORMAL_WIDTH: Final = 5
 GENERIC_FAMILIES: Final = frozenset({"serif", "sans-serif", "monospace", "cursive", "fantasy"})
 _ANCHOR_SHIFT: Final = {"start": 0.0, "middle": 0.5, "end": 1.0}
+ANCHOR_SHIFT: Final = _ANCHOR_SHIFT
+FONT_CACHE: Final = 64
+GLYPH_CACHE: Final = 8192
 
 
 def _weight(value: FontWeight) -> int:
@@ -38,6 +42,7 @@ def _weight(value: FontWeight) -> int:
     return int(value)
 
 
+@lru_cache(maxsize=FONT_CACHE)
 def _font(font_family: str, size: float, weight: FontWeight, italic: bool) -> Any:
     slant = skia.FontStyle.kItalic_Slant if italic else skia.FontStyle.kUpright_Slant
     families = [name.strip().strip("'\"") for name in font_family.split(",") if name.strip()]
@@ -54,6 +59,18 @@ def _font(font_family: str, size: float, weight: FontWeight, italic: bool) -> An
             stacklevel=3,
         )
     return skia.Font(typeface, size)
+
+
+@lru_cache(maxsize=GLYPH_CACHE)
+def glyph_shape(char: str, font_family: str, size: float, weight: FontWeight = "normal",
+                italic: bool = False) -> tuple[PathData, float]:
+    """Outline (origin on the baseline) and advance width of one character; cached."""
+    font = _font(font_family, size, weight, italic)
+    glyphs = font.textToGlyphs(char)
+    if not len(glyphs):
+        return PathData(), 0.0
+    outline = font.getPath(glyphs[0])
+    return (from_skia(outline) if outline is not None else PathData()), float(font.getWidths(glyphs)[0])
 
 
 def text_width(
@@ -95,7 +112,7 @@ def text_outline(
     return from_skia(combined)
 
 
-@dataclass(frozen=True)
+@dataclass
 class GlyphBox:
     """One laid-out character: its outline in local glyph space and where it sits."""
 
@@ -105,6 +122,7 @@ class GlyphBox:
     y: float
     angle: float
     advance: float
+    source: Any = None
 
     def placed(self) -> PathData:
         """The outline rotated by ``angle`` and moved to ``(x, y)``."""
