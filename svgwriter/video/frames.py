@@ -20,6 +20,17 @@ class RGBAArray(Protocol):
     """An array of shape ``(height, width, 4)`` and dtype ``uint8``.
 
     NumPy arrays qualify, as does anything with ``shape`` and ``tobytes``.
+
+    See Also
+    --------
+    Frame : What a renderer's output is wrapped into.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from svgwriter.video import RGBAArray
+    >>> isinstance(np.zeros((6, 8, 4), dtype="uint8"), RGBAArray)
+    True
     """
 
     @property
@@ -34,7 +45,27 @@ FrameData: TypeAlias = bytes | bytearray | memoryview | RGBAArray
 
 @dataclass(frozen=True, slots=True)
 class Frame:
-    """One rendered frame, ready for the encoder."""
+    """One rendered frame, ready for the encoder.
+
+    Parameters
+    ----------
+    index : int
+        Position in the sequence, starting at 0.
+    time : float
+        Sample time in seconds.
+    width : int
+        Width in pixels.
+    height : int
+        Height in pixels.
+    data : bytes
+        Encoded PNG bytes, or raw RGBA bytes when `png` is False.
+    png : bool
+        Whether `data` is a PNG file rather than raw pixels.
+
+    See Also
+    --------
+    to_frame : Build a frame from renderer output.
+    """
 
     index: int
     time: float
@@ -50,7 +81,45 @@ def _png_size(data: bytes) -> tuple[int, int]:
 
 
 def to_frame(index: int, time: float, data: FrameData) -> Frame:
-    """Check and wrap renderer output."""
+    """Check and wrap renderer output.
+
+    Parameters
+    ----------
+    index : int
+        Position of the frame in the sequence.
+    time : float
+        Sample time in seconds.
+    data : bytes, bytearray, memoryview or RGBAArray
+        PNG bytes or an ``(height, width, 4)`` uint8 array.
+
+    Returns
+    -------
+    Frame
+        The wrapped frame with its pixel size read from `data`.
+
+    Raises
+    ------
+    TypeError
+        If bytes are not a PNG, or `data` is of an unsupported type.
+    ValueError
+        If an array does not have shape ``(height, width, 4)`` and dtype uint8.
+
+    See Also
+    --------
+    frame_times : The sample times passed as `time`.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from svgwriter.video.frames import to_frame
+    >>> frame = to_frame(0, 0.0, np.zeros((6, 8, 4), dtype="uint8"))
+    >>> frame.width, frame.height, frame.png
+    (8, 6, False)
+    >>> to_frame(0, 0.0, b"abc")
+    Traceback (most recent call last):
+    ...
+    TypeError: renderer returned bytes that are not a PNG; return PNG bytes or an RGBA array
+    """
     if isinstance(data, (bytes, bytearray, memoryview)):
         raw = bytes(data)
         if not raw.startswith(PNG_SIGNATURE):
@@ -69,7 +138,35 @@ def to_frame(index: int, time: float, data: FrameData) -> Frame:
 
 
 def frame_times(fps: float, duration: float) -> list[float]:
-    """Sample times ``0, 1/fps, ...`` covering *duration* seconds."""
+    """Sample times ``0, 1/fps, ...`` covering *duration* seconds.
+
+    Parameters
+    ----------
+    fps : float
+        Frames per second. Must be positive.
+    duration : float
+        Length in seconds. Must be positive.
+
+    Returns
+    -------
+    list of float
+        One time per frame; at least one.
+
+    Raises
+    ------
+    ValueError
+        If `fps` or `duration` is not positive.
+
+    See Also
+    --------
+    iter_frames : Renders a frame at each of these times.
+
+    Examples
+    --------
+    >>> from svgwriter.video import frame_times
+    >>> frame_times(4, 1)
+    [0.0, 0.25, 0.5, 0.75]
+    """
     if fps <= 0:
         raise ValueError(f"fps must be positive, got {fps}")
     if duration <= 0:

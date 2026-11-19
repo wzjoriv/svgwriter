@@ -21,7 +21,24 @@ _TRANSFORMS = (Transform, TransformOp, Matrix)
 
 
 def offset(value: object) -> tuple[float, float] | None:
-    """*value* as an ``(x, y)`` pair: a number broadcasts, a 2-sequence of numbers is taken as is."""
+    """*value* as an ``(x, y)`` pair: a number broadcasts, a 2-sequence of numbers is taken as is.
+
+    Parameters
+    ----------
+    value : object
+        A number, a pair of numbers or a one-dimensional numpy array of either.
+
+    Returns
+    -------
+    tuple of float or None
+        The pair, or None if *value* is not a number or a pair of numbers.
+
+    Examples
+    --------
+    >>> from svgwriter.elements._transformable import offset
+    >>> offset(3), offset((1, 2)), offset("x")
+    ((3.0, 3.0), (1.0, 2.0), None)
+    """
     if isinstance(value, np.ndarray):
         if value.dtype.kind not in "iuf" or value.shape not in ((), (2,)):
             return None
@@ -38,7 +55,25 @@ def _as_matrix(value: TransformLike) -> Matrix:
 
 
 def children_bbox(element: Element) -> BBox | None:
-    """Union of the children's :meth:`Transformable.bounds` (a nested ``<svg>`` counts its viewport)."""
+    """Union of the children's :meth:`Transformable.bounds` (a nested ``<svg>`` counts its viewport).
+
+    Parameters
+    ----------
+    element : Element
+        The parent whose children are measured.
+
+    Returns
+    -------
+    BBox or None
+        The combined box in the parent's coordinates, or None if no child has bounds.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.elements._transformable import children_bbox
+    >>> children_bbox(svg.group(svg.rect(0, 0, 2, 2), svg.rect(5, 5, 1, 1)))
+    BBox(x=0.0, y=0.0, width=6.0, height=6.0)
+    """
     from ._viewport import positioned_bbox
 
     result: BBox | None = None
@@ -64,9 +99,13 @@ class Transformable(Element):
     Parameters
     ----------
     t : Transform, Matrix or str, optional
-        Initial transform (``transform=`` is accepted as an alias).
+        Initial transform (``transform=`` is accepted as an alias). Defaults to None.
     anchor : (float, float), optional
-        Pivot in local coordinates; the bounding-box centre when omitted.
+        Pivot in local coordinates. Defaults to the bounding-box centre.
+
+    See Also
+    --------
+    svgwriter.elements._convert.Convertible : Conversions and clipping on top of this class.
 
     Examples
     --------
@@ -107,6 +146,12 @@ class Transformable(Element):
         """The transform as an affine :class:`~svgwriter.Matrix`; assign to replace it.
 
         Written to SVG as the shortest equivalent ``transform`` text.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 1, 1).translate(2, 3).t.apply(0, 0)
+        Point(x=2.0, y=3.0)
         """
         raw = self.attributes.get(self.transform_attribute)
         if raw is None:
@@ -123,7 +168,15 @@ class Transformable(Element):
 
     @property
     def transform(self) -> Matrix:
-        """Same as :attr:`t`, under the SVG attribute's name."""
+        """Same as :attr:`t`, under the SVG attribute's name.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> r = svg.rect(0, 0, 1, 1).translate(2, 3)
+        >>> r.transform == r.t
+        True
+        """
         return self.t
 
     @transform.setter
@@ -131,7 +184,19 @@ class Transformable(Element):
         self.t = value
 
     def local_bbox(self) -> BBox | None:
-        """Bounding box in local coordinates (before :attr:`t`), if known."""
+        """Bounding box in local coordinates (before :attr:`t`), if known.
+
+        Returns
+        -------
+        BBox or None
+            The box, or None when the element has no known extent. Subclasses override this.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(1, 2, 3, 4).local_bbox()
+        BBox(x=1.0, y=2.0, width=3.0, height=4.0)
+        """
         return None
 
     @property
@@ -139,6 +204,13 @@ class Transformable(Element):
         """Pivot in local coordinates; the bounding-box centre unless set.
 
         Assign ``None`` to go back to the centre.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> r = svg.rect(0, 0, 10, 4)
+        >>> r.anchor
+        Point(x=5.0, y=2.0)
         """
         if self._anchor is not None:
             return Point(*self._anchor)
@@ -151,7 +223,16 @@ class Transformable(Element):
 
     @property
     def position(self) -> Point:
-        """The anchor in parent coordinates; assign to move the element there."""
+        """The anchor in parent coordinates; assign to move the element there.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> r = svg.rect(0, 0, 10, 10)
+        >>> r.position = (20, 20)
+        >>> r.position
+        Point(x=20.0, y=20.0)
+        """
         return self.t.apply(*self.anchor)
 
     @position.setter
@@ -160,12 +241,41 @@ class Transformable(Element):
         self.translate(value[0] - here.x, value[1] - here.y)
 
     def place(self: E, x: float, y: float) -> E:
-        """Translate so the anchor lands on ``(x, y)`` in parent coordinates."""
+        """Translate so the anchor lands on ``(x, y)`` in parent coordinates.
+
+        Parameters
+        ----------
+        x, y : float
+            Target position of the anchor.
+
+        Returns
+        -------
+        Transformable
+            This element.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.circle(0, 0, 1).place(10, 20).position
+        Point(x=10.0, y=20.0)
+        """
         self.position = (x, y)
         return self
 
     def bounds(self) -> BBox | None:
-        """Bounding box in parent coordinates (after :attr:`t`)."""
+        """Bounding box in parent coordinates (after :attr:`t`).
+
+        Returns
+        -------
+        BBox or None
+            The box enclosing the transformed local box, or None when unknown.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 2, 2).translate(5, 5).bounds()
+        BBox(x=5.0, y=5.0, width=2.0, height=2.0)
+        """
         box = self.local_bbox()
         if box is None:
             return None
@@ -189,13 +299,24 @@ class Transformable(Element):
     def translate(self: E, dx: float, dy: float = 0.0, *, local: bool = False) -> E:
         """Move by ``(dx, dy)`` and return ``self``.
 
+        The offset is added to the transform, in the parent frame unless *local*.
+
         Parameters
         ----------
         dx, dy : float
-            Offset in user units.
-        local : bool
+            Offset in user units. *dy* defaults to 0.
+        local : bool, optional
             Measure along the element's own (rotated, scaled) axes instead
-            of the parent's.
+            of the parent's. Defaults to False.
+
+        Returns
+        -------
+        Transformable
+            This element.
+
+        See Also
+        --------
+        place : Move the anchor to an absolute position.
 
         Examples
         --------
@@ -215,8 +336,19 @@ class Transformable(Element):
         about : (float, float), optional
             Pivot; in parent coordinates, or local ones with *local*.
             Defaults to the :attr:`anchor`.
-        local : bool
-            Compose in the element's own frame.
+        local : bool, optional
+            Compose in the element's own frame. Defaults to False.
+
+        Returns
+        -------
+        Transformable
+            This element.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 10, 10).rotate(90).bounds()
+        BBox(x=0.0, y=0.0, width=10.0, height=10.0)
         """
         return self._compose(Matrix.rotate(degrees), local, about)
 
@@ -228,11 +360,16 @@ class Transformable(Element):
         Parameters
         ----------
         sx, sy : float
-            Factors along x and y; negative values mirror.
+            Factors along x and y; negative values mirror. *sy* defaults to *sx*.
         about : (float, float), optional
-            Fixed point instead of the :attr:`anchor`.
-        local : bool
-            Scale along the element's own axes instead of the parent's.
+            Fixed point. Defaults to the :attr:`anchor`.
+        local : bool, optional
+            Scale along the element's own axes instead of the parent's. Defaults to False.
+
+        Returns
+        -------
+        Transformable
+            This element.
 
         Examples
         --------
@@ -246,23 +383,121 @@ class Transformable(Element):
         self: E, x_degrees: float = 0.0, y_degrees: float = 0.0, *, about: PointLike | None = None,
         local: bool = False,
     ) -> E:
-        """Skew along x then y by angles in degrees about the anchor and return ``self``."""
+        """Skew along x then y by angles in degrees about the anchor and return ``self``.
+
+        Parameters
+        ----------
+        x_degrees, y_degrees : float, optional
+            Skew angles along x and y. Defaults to 0.
+        about : (float, float), optional
+            Fixed point. Defaults to the :attr:`anchor`.
+        local : bool, optional
+            Compose in the element's own frame. Defaults to False.
+
+        Returns
+        -------
+        Transformable
+            This element.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 10, 10).skew(45).bounds()
+        BBox(x=-5.0, y=0.0, width=20.0, height=10.0)
+        """
         return self._compose(Matrix.skew_y(y_degrees) @ Matrix.skew_x(x_degrees), local, about)
 
     def flip_x(self: E, *, about: PointLike | None = None, local: bool = False) -> E:
-        """Mirror left-right (across the vertical line through the anchor) and return ``self``."""
+        """Mirror left-right (across the vertical line through the anchor) and return ``self``.
+
+        Parameters
+        ----------
+        about : (float, float), optional
+            Point on the mirror line. Defaults to the :attr:`anchor`.
+        local : bool, optional
+            Compose in the element's own frame. Defaults to False.
+
+        Returns
+        -------
+        Transformable
+            This element.
+
+        See Also
+        --------
+        flip_y : Mirror top-bottom.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 10, 10).flip_x(about=(0, 0)).bounds()
+        BBox(x=-10.0, y=0.0, width=10.0, height=10.0)
+        """
         return self.scale(-1, 1, about=about, local=local)
 
     def flip_y(self: E, *, about: PointLike | None = None, local: bool = False) -> E:
-        """Mirror top-bottom (across the horizontal line through the anchor) and return ``self``."""
+        """Mirror top-bottom (across the horizontal line through the anchor) and return ``self``.
+
+        Parameters
+        ----------
+        about : (float, float), optional
+            Point on the mirror line. Defaults to the :attr:`anchor`.
+        local : bool, optional
+            Compose in the element's own frame. Defaults to False.
+
+        Returns
+        -------
+        Transformable
+            This element.
+
+        See Also
+        --------
+        flip_x : Mirror left-right.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 10, 10).flip_y(about=(0, 0)).bounds()
+        BBox(x=0.0, y=-10.0, width=10.0, height=10.0)
+        """
         return self.scale(1, -1, about=about, local=local)
 
     def apply(self: E, transform: TransformLike, *, local: bool = False) -> E:
-        """Compose an arbitrary transform (no pivot), in the parent frame unless *local*."""
+        """Compose an arbitrary transform (no pivot), in the parent frame unless *local*.
+
+        Parameters
+        ----------
+        transform : Transform, Matrix or str
+            The transform to compose.
+        local : bool, optional
+            Apply in the element's own frame. Defaults to False.
+
+        Returns
+        -------
+        Transformable
+            This element.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 1, 1).apply("translate(4 5)").position
+        Point(x=4.5, y=5.5)
+        """
         return self._compose(_as_matrix(transform), local, pivot=False)
 
     def reset(self: E) -> E:
-        """Drop the transform and return ``self``."""
+        """Drop the transform and return ``self``.
+
+        Returns
+        -------
+        Transformable
+            This element.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 1, 1).translate(3, 3).reset().t.is_identity
+        True
+        """
         self.t = None
         return self
 

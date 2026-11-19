@@ -119,11 +119,37 @@ def _element(item: dict[str, Any], files: dict[str, Any]) -> Element | None:
 def read_excalidraw(text: str) -> Document:
     """An Excalidraw scene as a document (sloppiness and hachure fills are drawn clean and solid).
 
-    Notes
-    -----
     Elements become native SVG: rectangles, ellipses, diamonds (polygons),
     lines and arrows (paths with arrowheads), freedraw, text (one ``<text>``
     per line) and embedded images; ``groupIds`` become nested ``<g>``.
+
+    Parameters
+    ----------
+    text : str
+        The scene JSON.
+
+    Returns
+    -------
+    Document
+        The drawing as native SVG elements.
+
+    Raises
+    ------
+    ValueError
+        If the JSON is not an Excalidraw scene.
+
+    See Also
+    --------
+    to_excalidraw : Write a scene.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._excalidraw import read_excalidraw, to_excalidraw
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
+    >>> len(read_excalidraw(to_excalidraw(doc)))
+    1
     """
     from ..document import Document
     from ..elements.structure import Group
@@ -150,7 +176,33 @@ def read_excalidraw(text: str) -> Document:
 
 
 def to_excalidraw(document: Document, *, seed: int = 0) -> str:
-    """An Excalidraw scene of the flattened outlines (one ``line`` element per subpath)."""
+    """An Excalidraw scene of the flattened outlines (one ``line`` element per subpath).
+
+    Parameters
+    ----------
+    document : Document
+        The document to convert.
+    seed : int, optional
+        Seed for the random ids and seeds Excalidraw stores, so output is reproducible. Defaults to 0.
+
+    Returns
+    -------
+    str
+        The scene as JSON text.
+
+    See Also
+    --------
+    read_excalidraw : Read a scene back.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._excalidraw import to_excalidraw
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
+    >>> to_excalidraw(doc, seed=1) == to_excalidraw(doc, seed=1)
+    True
+    """
     from ._cnc import polylines
     from ._flatten import flatten
 

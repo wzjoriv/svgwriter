@@ -25,7 +25,19 @@ class Attr(Generic[T]):
     convert : callable, optional
         Applied to raw strings (for instance values read by the parser).
     default : object, optional
-        Returned when the attribute is not set.
+        Returned when the attribute is not set. Defaults to None.
+
+    See Also
+    --------
+    LengthAttr : Attribute that reads lengths.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.Rect.width.key
+    'width'
+    >>> svg.Rect(width=3).width
+    3.0
     """
 
     __slots__ = ("convert", "default", "name", "svg")
@@ -69,6 +81,14 @@ class Attr(Generic[T]):
 
     @property
     def key(self) -> str:
+        """The SVG attribute name this descriptor reads and writes.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Rect.stroke_width.key
+        'stroke-width'
+        """
         assert self.svg is not None
         return self.svg
 
@@ -78,6 +98,13 @@ class Attr(Generic[T]):
 
 class LengthAttr(Attr["float | Length"]):
     """A length attribute: reads a ``float`` when unitless, a :class:`~svgwriter.Length` when it has a unit.
+
+    Takes the same parameters as `Attr`. Values that cannot be parsed as a
+    length are returned unchanged.
+
+    See Also
+    --------
+    Attr : The general attribute descriptor.
 
     Examples
     --------

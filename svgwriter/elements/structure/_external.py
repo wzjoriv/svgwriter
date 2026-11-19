@@ -17,7 +17,28 @@ __all__ = ["ColorProfile", "StyleElement", "View"]
 
 
 class StyleElement(CoreAttributes, tag="style", content=ContentModel.TEXT):
-    """``<style>``: an embedded style sheet."""
+    """``<style>``: an embedded style sheet.
+
+    Parameters
+    ----------
+    css : str or StyleSheet, optional
+        The style sheet text, or a :class:`~svgwriter.StyleSheet` to render.
+        Defaults to empty.
+    type : str, optional
+        Style language. Defaults to ``"text/css"``.
+    media : str, optional
+        Media query the sheet applies to. Defaults to None.
+    title : str, optional
+        Alternate style sheet title. Defaults to None.
+    **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.StyleElement("circle { fill: red }"))
+    '<style type="text/css">circle { fill: red }</style>'
+    """
 
     def __init__(
         self,
@@ -34,6 +55,16 @@ class StyleElement(CoreAttributes, tag="style", content=ContentModel.TEXT):
 
     @property
     def text(self) -> str:
+        """The style sheet text; assign a string or a :class:`~svgwriter.StyleSheet`.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> style = svg.StyleElement()
+        >>> style.text = "rect { fill: blue }"
+        >>> style.text
+        'rect { fill: blue }'
+        """
         return super().text
 
     @text.setter
@@ -42,7 +73,24 @@ class StyleElement(CoreAttributes, tag="style", content=ContentModel.TEXT):
 
 
 class View(FitToViewBox, ExternalResourcesAttribute, CoreAttributes, tag="view", content=ContentModel.EMPTY):
-    """``<view>``: a named view into the document."""
+    """``<view>``: a named view into the document.
+
+    Parameters
+    ----------
+    view_target : str, optional
+        Elements the view targets. Defaults to None.
+    zoom_and_pan : str, optional
+        ``"magnify"`` or ``"disable"``. Defaults to None.
+    **kwargs
+        ``view_box``, ``preserve_aspect_ratio``, core and other SVG
+        attributes in Python spelling.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.View(id="zoomed", view_box=(0, 0, 50, 50)))
+    '<view id="zoomed" viewBox="0 0 50 50"/>'
+    """
 
     def __init__(self, *, view_target: str | None = None, zoom_and_pan: str | None = None, **kwargs: Any) -> None:
         super().__init__(**kwargs)
@@ -50,7 +98,27 @@ class View(FitToViewBox, ExternalResourcesAttribute, CoreAttributes, tag="view",
 
 
 class ColorProfile(XLinkAttributes, CoreAttributes, tag="color-profile", content=ContentModel.ELEMENTS):
-    """``<color-profile>``: an ICC profile referenced by ``icc-color``."""
+    """``<color-profile>``: an ICC profile referenced by ``icc-color``.
+
+    Parameters
+    ----------
+    name : str
+        Name used to refer to the profile from ``icc-color``.
+    href : str, optional
+        Location of the profile. Defaults to None.
+    local : str, optional
+        Name of a locally installed profile. Defaults to None.
+    rendering_intent : str, optional
+        Rendering intent, such as ``"perceptual"``. Defaults to None.
+    **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.ColorProfile("sRGB", "srgb.icc"))
+    '<color-profile xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="srgb.icc" name="sRGB"/>'
+    """
 
     def __init__(
         self,

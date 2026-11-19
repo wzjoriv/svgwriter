@@ -27,18 +27,32 @@ def _ellipse_outline(cx: float, cy: float, rx: float, ry: float) -> PathData:
 
 
 class Rect(Shape, tag="rect"):
-    """``<rect>``.
+    """``<rect>``: an axis-aligned rectangle with optional rounded corners.
+
+    Giving only one of `rx` and `ry` uses it for both, and radii are clamped
+    to half the width and height, as SVG specifies.
 
     Parameters
     ----------
-    x, y : length
-        Top-left corner.
-    width, height : length
-        Size.
+    x, y : length, optional
+        Top-left corner. Defaults to 0.
+    width, height : length, optional
+        Size. Defaults to 0.
     rx, ry : length, optional
-        Corner radii.
+        Corner radii. Defaults to None.
     **kwargs
-        Presentation, core, conditional and other attributes.
+        Presentation, core and other SVG attributes in Python spelling.
+
+    See Also
+    --------
+    Circle : A circle from its center and radius.
+    Path : Arbitrary outlines.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.Rect(1, 2, 3, 4, rx=1))
+    '<rect x="1" y="2" width="3" height="4" rx="1"/>'
     """
 
     geometry_attributes: ClassVar[frozenset[str]] = frozenset({"x", "y", "width", "height", "rx", "ry"})
@@ -65,23 +79,85 @@ class Rect(Shape, tag="rect"):
 
     @classmethod
     def square(cls, size: float, *, center: tuple[float, float] | None = None, **kwargs: Any) -> Self:
-        """A square of side *size*, at the origin or centred on *center*."""
+        """Create a square of a given side.
+
+        The square sits at the origin unless `center` is given.
+
+        Parameters
+        ----------
+        size : float
+            Side length.
+        center : tuple of float, optional
+            Center ``(x, y)`` of the square. Defaults to None, placing the
+            top-left corner at the origin.
+        **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+        Returns
+        -------
+        Rect
+            The new rectangle.
+
+        See Also
+        --------
+        from_center : Rectangles that are not square.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> str(svg.Rect.square(10, center=(10, 10)))
+        '<rect x="5" y="5" width="10" height="10"/>'
+        """
         if center is not None:
             return cls.from_center(center, (size, size), **kwargs)
         return cls(width=size, height=size, **kwargs)
 
     @classmethod
     def from_bbox(cls, box: BBox, **kwargs: Any) -> Self:
-        """A rectangle covering *box*."""
+        """Create a rectangle covering a bounding box.
+
+        Parameters
+        ----------
+        box : BBox
+            The area to cover.
+        **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+        Returns
+        -------
+        Rect
+            The new rectangle.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> str(svg.Rect.from_bbox(svg.BBox(1, 2, 3, 4)))
+        '<rect x="1" y="2" width="3" height="4"/>'
+        """
         return cls(box.x, box.y, box.width, box.height, **kwargs)
 
     @classmethod
     def from_corners(cls, first: tuple[float, float], second: tuple[float, float], **kwargs: Any) -> Self:
-        """The rectangle spanned by two opposite corners, in any order.
+        """Create the rectangle spanned by two opposite corners.
+
+        The corners may be given in any order.
+
+        Parameters
+        ----------
+        first, second : tuple of float
+            Opposite corners ``(x, y)``.
+        **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+        Returns
+        -------
+        Rect
+            The new rectangle.
 
         Examples
         --------
-        >>> str(Rect.from_corners((30, 40), (10, 20)))
+        >>> import svgwriter as svg
+        >>> str(svg.Rect.from_corners((30, 40), (10, 20)))
         '<rect x="10" y="20" width="20" height="20"/>'
         """
         (x0, y0), (x1, y1) = first, second
@@ -89,11 +165,26 @@ class Rect(Shape, tag="rect"):
 
     @classmethod
     def from_center(cls, center: tuple[float, float], size: tuple[float, float], **kwargs: Any) -> Self:
-        """A rectangle of ``(width, height)`` *size* centred on *center*.
+        """Create a rectangle of a given size around a center point.
+
+        Parameters
+        ----------
+        center : tuple of float
+            Center ``(x, y)``.
+        size : tuple of float
+            ``(width, height)``.
+        **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+        Returns
+        -------
+        Rect
+            The new rectangle.
 
         Examples
         --------
-        >>> str(Rect.from_center((50, 50), (20, 10), rx=2))
+        >>> import svgwriter as svg
+        >>> str(svg.Rect.from_center((50, 50), (20, 10), rx=2))
         '<rect x="40" y="45" width="20" height="10" rx="2"/>'
         """
         (cx, cy), (w, h) = center, size
@@ -101,10 +192,33 @@ class Rect(Shape, tag="rect"):
 
     @property
     def bbox(self) -> BBox:
+        """Geometric bounding box in user units.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Rect(1, 2, 3, 4).bbox
+        BBox(x=1.0, y=2.0, width=3.0, height=4.0)
+        """
         return BBox(user_units(self.x), user_units(self.y), user_units(self.width), user_units(self.height))
 
     def corner_radii(self) -> tuple[float, float]:
-        """Effective ``(rx, ry)`` after SVG's defaulting and clamping rules."""
+        """Return the effective corner radii.
+
+        A missing radius takes the other's value, and each is clamped to half
+        the corresponding side.
+
+        Returns
+        -------
+        tuple of float
+            The effective ``(rx, ry)`` in user units.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Rect(0, 0, 10, 10, rx=20).corner_radii()
+        (5.0, 5.0)
+        """
         rx = None if self.rx is None else user_units(self.rx)
         ry = None if self.ry is None else user_units(self.ry)
         rx = ry if rx is None else rx
@@ -113,6 +227,7 @@ class Rect(Shape, tag="rect"):
         return min(rx or 0.0, box.width / 2), min(ry or 0.0, box.height / 2)
 
     def local_outline(self) -> PathData:
+        """The outline as path data, with arcs at rounded corners."""
         x, y, w, h = self.bbox
         rx, ry = self.corner_radii()
         builder = PathBuilder().move_to(x + rx, y).horizontal_to(x + w - rx)
@@ -131,7 +246,27 @@ class Rect(Shape, tag="rect"):
 
 
 class Circle(Shape, tag="circle"):
-    """``<circle>`` centered at ``(cx, cy)`` with radius ``r``."""
+    """``<circle>``: a circle from its center and radius.
+
+    Parameters
+    ----------
+    cx, cy : length, optional
+        Center. Defaults to 0.
+    r : length, optional
+        Radius. Defaults to 0.
+    **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+    See Also
+    --------
+    Ellipse : Different horizontal and vertical radii.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.Circle(5, 5, 3))
+    '<circle cx="5" cy="5" r="3"/>'
+    """
 
     geometry_attributes: ClassVar[frozenset[str]] = frozenset({"cx", "cy", "r"})
     cx = LengthAttr()
@@ -144,26 +279,82 @@ class Circle(Shape, tag="circle"):
 
     @classmethod
     def from_bbox(cls, box: BBox, **kwargs: Any) -> Self:
-        """Largest circle centered in *box*."""
+        """Create the largest circle centered in a bounding box.
+
+        Parameters
+        ----------
+        box : BBox
+            The area to fit.
+        **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+        Returns
+        -------
+        Circle
+            The new circle.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> str(svg.Circle.from_bbox(svg.BBox(0, 0, 10, 20)))
+        '<circle cx="5" cy="10" r="5"/>'
+        """
         center = box.center
         return cls(center.x, center.y, min(box.width, box.height) / 2.0, **kwargs)
 
     @property
     def area(self) -> float:
+        """Enclosed area in square user units.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> round(svg.Circle(0, 0, 1).area, 4)
+        3.1416
+        """
         return math.pi * user_units(self.r) ** 2
 
     @property
     def bbox(self) -> BBox:
+        """Geometric bounding box in user units.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Circle(0, 0, 2).bbox
+        BBox(x=-2.0, y=-2.0, width=4.0, height=4.0)
+        """
         cx, cy, r = user_units(self.cx), user_units(self.cy), user_units(self.r)
         return BBox(cx - r, cy - r, 2 * r, 2 * r)
 
     def local_outline(self) -> PathData:
+        """The outline as path data, two half-circle arcs."""
         r = user_units(self.r)
         return _ellipse_outline(user_units(self.cx), user_units(self.cy), r, r)
 
 
 class Ellipse(Shape, tag="ellipse"):
-    """``<ellipse>`` centered at ``(cx, cy)`` with radii ``rx`` and ``ry``."""
+    """``<ellipse>``: an ellipse from its center and two radii.
+
+    Parameters
+    ----------
+    cx, cy : length, optional
+        Center. Defaults to 0.
+    rx, ry : length, optional
+        Horizontal and vertical radii. Defaults to 0.
+    **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+    See Also
+    --------
+    Circle : Equal radii.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.Ellipse(5, 5, 3, 2))
+    '<ellipse cx="5" cy="5" rx="3" ry="2"/>'
+    """
 
     geometry_attributes: ClassVar[frozenset[str]] = frozenset({"cx", "cy", "rx", "ry"})
     cx = LengthAttr()
@@ -179,21 +370,69 @@ class Ellipse(Shape, tag="ellipse"):
 
     @classmethod
     def from_bbox(cls, box: BBox, **kwargs: Any) -> Self:
-        """The ellipse inscribed in *box*."""
+        """Create the ellipse inscribed in a bounding box.
+
+        Parameters
+        ----------
+        box : BBox
+            The area to fill.
+        **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+        Returns
+        -------
+        Ellipse
+            The new ellipse.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> str(svg.Ellipse.from_bbox(svg.BBox(0, 0, 10, 20)))
+        '<ellipse cx="5" cy="10" rx="5" ry="10"/>'
+        """
         center = box.center
         return cls(center.x, center.y, box.width / 2.0, box.height / 2.0, **kwargs)
 
     @property
     def bbox(self) -> BBox:
+        """Geometric bounding box in user units.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Ellipse(5, 5, 3, 2).bbox
+        BBox(x=2.0, y=3.0, width=6.0, height=4.0)
+        """
         cx, cy, rx, ry = (user_units(v) for v in (self.cx, self.cy, self.rx, self.ry))
         return BBox(cx - rx, cy - ry, 2 * rx, 2 * ry)
 
     def local_outline(self) -> PathData:
+        """The outline as path data, two half-ellipse arcs."""
         return _ellipse_outline(*(user_units(v) for v in (self.cx, self.cy, self.rx, self.ry)))
 
 
 class Line(Shape, tag="line"):
-    """``<line>`` from ``(x1, y1)`` to ``(x2, y2)``."""
+    """``<line>``: a straight segment between two points.
+
+    Parameters
+    ----------
+    x1, y1 : length, optional
+        Start point. Defaults to 0.
+    x2, y2 : length, optional
+        End point. Defaults to 0.
+    **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+    See Also
+    --------
+    Polyline : Several connected segments.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.Line(0, 0, 3, 4))
+    '<line x1="0" y1="0" x2="3" y2="4"/>'
+    """
 
     geometry_attributes: ClassVar[frozenset[str]] = frozenset({"x1", "y1", "x2", "y2"})
     x1 = LengthAttr()
@@ -209,11 +448,28 @@ class Line(Shape, tag="line"):
 
     @property
     def length(self) -> float:
+        """Distance between the end points in user units.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Line(0, 0, 3, 4).length
+        5.0
+        """
         return math.hypot(user_units(self.x2) - user_units(self.x1), user_units(self.y2) - user_units(self.y1))
 
     @property
     def bbox(self) -> BBox:
+        """Geometric bounding box in user units.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Line(0, 0, 3, 4).bbox
+        BBox(x=0.0, y=0.0, width=3.0, height=4.0)
+        """
         return BBox.from_points([(user_units(self.x1), user_units(self.y1)), (user_units(self.x2), user_units(self.y2))])
 
     def local_outline(self) -> PathData:
+        """The outline as path data, a single segment."""
         return PathBuilder().move_to(user_units(self.x1), user_units(self.y1)).line_to(user_units(self.x2), user_units(self.y2)).build()

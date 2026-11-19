@@ -35,9 +35,34 @@ def _path(item: Item, height: float) -> str:
 def to_eps(document: Document) -> str:
     """EPS (PostScript level 2) in points, one user unit per point.
 
+    The document is flattened first, so gradients become solid colours and images are skipped.
+
+    Parameters
+    ----------
+    document : Document
+        The document to convert.
+
+    Returns
+    -------
+    str
+        PostScript source.
+
+    See Also
+    --------
+    svgwriter.export._tikz.to_tikz : Another flattened vector format.
+
     Notes
     -----
     PostScript has no transparency; translucent paints are written opaque.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._eps import to_eps
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 10, 10, fill="red")
+    >>> to_eps(doc).splitlines()[:2]
+    ['%!PS-Adobe-3.0 EPSF-3.0', '%%BoundingBox: 0 0 10 10']
     """
     scene = flatten(document)
     lines = [

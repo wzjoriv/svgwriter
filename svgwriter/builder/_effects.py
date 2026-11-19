@@ -41,20 +41,41 @@ def drop_shadow(
     opacity: Opacity = DEFAULT_SHADOW_OPACITY,
     **kwargs: Any,
 ) -> Filter:
-    """A blurred, offset, tinted copy of the alpha merged under the source.
+    """Build a drop-shadow filter.
+
+    The filter makes a blurred, offset, tinted copy of the source alpha and
+    merges it under the source graphic. The filter region is enlarged so the
+    shadow is not clipped.
 
     Parameters
     ----------
-    dx, dy : float
-        Shadow offset.
-    blur : float
-        Gaussian standard deviation.
-    color : Color or str
-        Shadow color.
-    opacity : float
-        Shadow opacity.
+    dx, dy : float, optional
+        Shadow offset. Defaults to 2.0.
+    blur : float, optional
+        Gaussian standard deviation. Defaults to 2.0.
+    color : Color or str, optional
+        Shadow color. Defaults to ``"black"``.
+    opacity : float, optional
+        Shadow opacity. Defaults to 0.5.
     **kwargs
         Forwarded to :class:`~svgwriter.elements.filters.Filter`.
+
+    Returns
+    -------
+    Filter
+        A filter to add to ``<defs>`` and reference with ``filter="url(#id)"``.
+
+    See Also
+    --------
+    glow : A soft halo instead of an offset shadow.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.builder import drop_shadow
+    >>> shadow = drop_shadow(dx=3, dy=3, blur=1)
+    >>> type(shadow).__name__, len(shadow.children)
+    ('Filter', 5)
     """
     kwargs.setdefault("x", FILTER_MARGIN)
     kwargs.setdefault("y", FILTER_MARGIN)
@@ -69,13 +90,65 @@ def drop_shadow(
 
 
 def glow(radius: float = DEFAULT_BLUR, **kwargs: Any) -> Filter:
-    """A soft glow in the element's own colors."""
+    """Build a soft glow filter in the element's own colors.
+
+    A blurred copy of the source graphic is merged under the source.
+
+    Parameters
+    ----------
+    radius : float, optional
+        Gaussian standard deviation. Defaults to 2.0.
+    **kwargs
+        Forwarded to :class:`~svgwriter.elements.filters.Filter`.
+
+    Returns
+    -------
+    Filter
+        A filter to add to ``<defs>`` and reference with ``filter="url(#id)"``.
+
+    See Also
+    --------
+    drop_shadow : An offset, tinted shadow.
+
+    Examples
+    --------
+    >>> from svgwriter.builder import glow
+    >>> [child.tag for child in glow(3).children]
+    ['feGaussianBlur', 'feMerge']
+    """
     blurred = FeGaussianBlur(radius, in_=StandardInput.SOURCE_GRAPHIC)
     return Filter(blurred, FeMerge(blurred, StandardInput.SOURCE_GRAPHIC), **kwargs)
 
 
 def arrow_marker(color: Color | str = "black", size: float = MARKER_SIZE, **kwargs: Any) -> Marker:
-    """A filled triangular arrowhead for ``marker-end``."""
+    """Build a filled triangular arrowhead for ``marker-end``.
+
+    The marker orients itself along the line it decorates.
+
+    Parameters
+    ----------
+    color : Color or str, optional
+        Fill of the arrowhead. Defaults to ``"black"``.
+    size : float, optional
+        Width and height of the marker. Defaults to 10.0.
+    **kwargs
+        Forwarded to :class:`~svgwriter.elements.clip.Marker`.
+
+    Returns
+    -------
+    Marker
+        A marker to add to ``<defs>``.
+
+    See Also
+    --------
+    svgwriter.builder.arrow : An arrow drawn directly as a path.
+
+    Examples
+    --------
+    >>> from svgwriter.builder import arrow_marker
+    >>> arrow_marker("red", 4).to_string(xml_declaration=False, pretty=False)
+    '<marker viewBox="0 0 4 4" refX="4" refY="2" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 L4 2 L0 4 Z" fill="red"/></marker>'
+    """
     head = PathBuilder().move_to(0, 0).line_to(size, size / 2).line_to(0, size).close()
     kwargs.setdefault("orient", "auto")
     return Marker(
@@ -91,6 +164,21 @@ def arrow_marker(color: Color | str = "black", size: float = MARKER_SIZE, **kwar
 
 def drawing(width: float, height: float, **root: Any) -> Callable[[Callable[Concatenate[Document, P], object]], Callable[P, Document]]:
     """Turn ``f(doc, *args)`` into ``f(*args) -> Document``.
+
+    The decorated function receives a fresh :class:`~svgwriter.Document` of the
+    given size on every call and draws into it; its return value is ignored.
+
+    Parameters
+    ----------
+    width, height : float
+        Size of the document created for each call.
+    **root
+        Attributes forwarded to the :class:`~svgwriter.Document` constructor.
+
+    Returns
+    -------
+    callable
+        A decorator producing a function that returns the finished document.
 
     Examples
     --------

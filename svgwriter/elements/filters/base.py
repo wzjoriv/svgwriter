@@ -23,7 +23,14 @@ __all__ = [
 
 
 class StandardInput(str, enum.Enum):
-    """Keywords accepted by ``in`` and ``in2``."""
+    """Keywords accepted by ``in`` and ``in2``.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.StandardInput.SOURCE_ALPHA.value
+    'SourceAlpha'
+    """
 
     SOURCE_GRAPHIC = "SourceGraphic"
     SOURCE_ALPHA = "SourceAlpha"
@@ -37,14 +44,58 @@ FilterInput: TypeAlias = Union[StandardInput, str, "FilterPrimitive"]
 
 
 def resolve_input(value: FilterInput | None) -> StandardInput | str | None:
-    """Turn a primitive into its ``result`` name; pass keywords through."""
+    """Turn a primitive into the name of its result.
+
+    Referring to a primitive by element lets its ``result`` name be generated
+    on demand; keywords and strings pass through unchanged.
+
+    Parameters
+    ----------
+    value : StandardInput, str, FilterPrimitive or None
+        An input keyword, a result name or the primitive producing the input.
+
+    Returns
+    -------
+    StandardInput, str or None
+        The result name for a primitive, otherwise `value` itself.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.resolve_input(svg.FeOffset(id="shift"))
+    'shift-out'
+    >>> svg.resolve_input("SourceAlpha")
+    'SourceAlpha'
+    """
     if isinstance(value, FilterPrimitive):
         return value.result
     return value
 
 
 class FilterPrimitive(Positioned, PresentationAttributes, CoreAttributes, category=Category.FILTER_PRIMITIVE):
-    """Base of every ``fe*`` element: sub-region and ``result`` name."""
+    """Base of every ``fe*`` element: sub-region and ``result`` name.
+
+    Parameters
+    ----------
+    *args : Element
+        Initial children.
+    result : str, optional
+        Name later primitives use to refer to this output. Defaults to None,
+        which generates one on first access.
+    **kwargs
+        Sub-region (``x``, ``y``, ``width``, ``height``), presentation, core
+        and other SVG attributes in Python spelling.
+
+    See Also
+    --------
+    Filter : The container that holds primitives.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.FeOffset(result="shifted"))
+    '<feOffset result="shifted" dx="0" dy="0"/>'
+    """
 
     def __init__(self, *args: Child, result: str | None = None, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -52,7 +103,14 @@ class FilterPrimitive(Positioned, PresentationAttributes, CoreAttributes, catego
 
     @property
     def result(self) -> str:
-        """The result name, generated on first access if unset."""
+        """The result name, generated on first access if unset.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.FeOffset(id="shift").result
+        'shift-out'
+        """
         name = self.attributes.get("result")
         if name is None:
             name = self.ensure_id() + "-out"
@@ -64,7 +122,24 @@ class FilterPrimitive(Positioned, PresentationAttributes, CoreAttributes, catego
 
 
 class SingleInput(FilterPrimitive):
-    """Primitives that read one input (``in``)."""
+    """Primitives that read one input (``in``).
+
+    Parameters
+    ----------
+    *args : Element
+        Initial children.
+    in_ : StandardInput, str or FilterPrimitive, optional
+        The input: a keyword, a result name or the primitive producing it.
+        Defaults to None, meaning the previous primitive's result.
+    **kwargs
+        ``result``, sub-region and other SVG attributes in Python spelling.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.FeOffset(in_="SourceAlpha"))
+    '<feOffset in="SourceAlpha" dx="0" dy="0"/>'
+    """
 
     def __init__(self, *args: Child, in_: FilterInput | None = None, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -72,7 +147,23 @@ class SingleInput(FilterPrimitive):
 
 
 class TwoInputs(SingleInput):
-    """Primitives that combine ``in`` and ``in2``."""
+    """Primitives that combine ``in`` and ``in2``.
+
+    Parameters
+    ----------
+    *args : Element
+        Initial children.
+    in2 : StandardInput, str or FilterPrimitive, optional
+        The second input. Defaults to None.
+    **kwargs
+        ``in_``, ``result``, sub-region and other SVG attributes in Python spelling.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.FeBlend(in_="SourceGraphic", in2="shade"))
+    '<feBlend in="SourceGraphic" in2="shade"/>'
+    """
 
     def __init__(self, *args: Child, in2: FilterInput | None = None, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -101,7 +192,17 @@ class Filter(
         Intermediate image resolution.
     **kwargs
         Region (``x``, ``y``, ``width``, ``height``), ``href`` and
-        presentation/core attributes.
+        presentation/core attributes in Python spelling.
+
+    See Also
+    --------
+    FilterPrimitive : Base of the elements a filter contains.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.Filter(svg.FeGaussianBlur(std_deviation=1), id="soft"))
+    '<filter id="soft"><feGaussianBlur stdDeviation="1"/></filter>'
     """
 
     def __init__(
@@ -117,4 +218,12 @@ class Filter(
 
     @property
     def primitives(self) -> list[FilterPrimitive]:
+        """The filter-primitive children in evaluation order.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Filter(svg.FeOffset(), svg.FeTile()).primitives
+        [<FeOffset feOffset dx='0' dy='0'>, <FeTile feTile>]
+        """
         return [c for c in self if isinstance(c, FilterPrimitive)]

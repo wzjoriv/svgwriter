@@ -47,7 +47,28 @@ def _short_number(text: str) -> str:
 
 
 class BBox(NamedTuple):
-    """Axis-aligned bounding box."""
+    """Axis-aligned bounding box.
+
+    A named tuple, so it unpacks as ``x, y, width, height``.
+
+    Parameters
+    ----------
+    x, y : float
+        Top-left corner.
+    width, height : float
+        Extent along each axis.
+
+    See Also
+    --------
+    PathData.bbox : The bounding box of path data.
+
+    Examples
+    --------
+    >>> from svgwriter.pathdata import BBox
+    >>> x, y, w, h = BBox(1, 2, 3, 4)
+    >>> w, h
+    (3, 4)
+    """
 
     x: float
     y: float
@@ -56,6 +77,24 @@ class BBox(NamedTuple):
 
     @classmethod
     def from_points(cls, points: Iterable[Point | tuple[float, float]]) -> BBox:
+        """Return the smallest box containing every point.
+
+        Parameters
+        ----------
+        points : iterable of Point or tuple of float
+            The points to enclose.
+
+        Returns
+        -------
+        BBox
+            The enclosing box; an empty input gives a zero box at the origin.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import BBox
+        >>> BBox.from_points([(0, 0), (4, 2)])
+        BBox(x=0, y=0, width=4, height=2)
+        """
         pairs = list(points)
         if not pairs:
             return cls(0.0, 0.0, 0.0, 0.0)
@@ -64,9 +103,35 @@ class BBox(NamedTuple):
 
     @property
     def center(self) -> Point:
+        """The centre of the box.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import BBox
+        >>> BBox(0, 0, 4, 2).center
+        Point(x=2.0, y=1.0)
+        """
         return Point(self.x + self.width / 2.0, self.y + self.height / 2.0)
 
     def union(self, other: BBox) -> BBox:
+        """Return the smallest box containing this box and another.
+
+        Parameters
+        ----------
+        other : BBox
+            The box to merge with.
+
+        Returns
+        -------
+        BBox
+            The combined box.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import BBox
+        >>> BBox(0, 0, 4, 2).union(BBox(10, 10, 1, 1))
+        BBox(x=0, y=0, width=11, height=11)
+        """
         return BBox.from_points(
             [(self.x, self.y), (self.x + self.width, self.y + self.height),
              (other.x, other.y), (other.x + other.width, other.y + other.height)]
@@ -101,13 +166,27 @@ def _reflect(control: Point, about: Point) -> Point:
 class PathData(Sequence[PathCommand]):
     """A parsed, immutable sequence of path commands.
 
+    Supports indexing, slicing, iteration, concatenation with ``+`` and
+    transformation with ``@``. Instances are hashable and compare by their commands.
+
     Parameters
     ----------
-    commands : str or iterable of PathCommand
-        Path data text or commands.
+    commands : str or iterable of PathCommand, optional
+        Path data text, or commands. Defaults to an empty path.
+
+    Raises
+    ------
+    PathSyntaxError
+        If `commands` is text that is not valid path data.
+
+    See Also
+    --------
+    PathBuilder : Fluent construction of path data.
 
     Examples
     --------
+    >>> from svgwriter.pathdata import PathData
+    >>> from svgwriter.transform import Matrix
     >>> d = PathData("M0 0 h10 v10 z")
     >>> str(d.to_absolute())
     'M0 0 H10 V10 Z'
@@ -161,7 +240,7 @@ class PathData(Sequence[PathCommand]):
         return NotImplemented
 
     def __matmul__(self, transform: TransformLike) -> PathData:
-        """``data @ M`` (or ``M @ data``): coordinates mapped through *M*."""
+        """Return the data with coordinates mapped through a transform (``data @ M``)."""
         if not isinstance(transform, (str, Matrix)) and not hasattr(transform, "to_matrix"):
             return NotImplemented
         return self.transformed(transform)
@@ -170,12 +249,50 @@ class PathData(Sequence[PathCommand]):
         return self.__matmul__(transform)
 
     def transformed(self, transform: TransformLike) -> PathData:
-        """Bake *transform* into the coordinates; arcs stay arcs."""
+        """Bake a transform into the coordinates.
+
+        The data is normalized first, so the result uses only absolute
+        ``M``, ``L``, ``C``, ``Q``, ``A`` and ``Z``; arcs stay exact arcs.
+
+        Parameters
+        ----------
+        transform : Matrix or Transform or str
+            The transform to apply; text is parsed as an SVG transform list.
+
+        Returns
+        -------
+        PathData
+            New path data with the transform applied.
+
+        See Also
+        --------
+        normalized : The simplification step used first.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import PathData
+        >>> str(PathData("M0 0 h10").transformed("translate(5 5)"))
+        'M5 5 L15 5'
+        """
         matrix = transform if isinstance(transform, Matrix) else as_transform(transform).to_matrix()
         return PathData(transform_commands(self.normalized(), matrix))
 
     def subpaths(self) -> list[PathData]:
-        """Split at each ``moveto``; every piece is absolute."""
+        """Split at each ``moveto``.
+
+        Every piece is made absolute, so each can be used on its own.
+
+        Returns
+        -------
+        list of PathData
+            One path per subpath.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import PathData
+        >>> [str(p) for p in PathData("M0 0 h10 M20 20 h5").subpaths()]
+        ['M0 0 H10', 'M20 20 H25']
+        """
         pieces: list[list[PathCommand]] = []
         for _, command in self.walk():
             if isinstance(command, MoveTo) or not pieces:
@@ -187,7 +304,19 @@ class PathData(Sequence[PathCommand]):
         return f"PathData({str(self)!r})"
 
     def walk(self) -> Iterator[tuple[Point, PathCommand]]:
-        """Yield ``(current_point, absolute_command)`` pairs."""
+        """Iterate the commands in absolute form with the pen position before each.
+
+        Yields
+        ------
+        tuple of (Point, PathCommand)
+            The current point before the command, and the command made absolute.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import PathData
+        >>> [(tuple(p), str(c)) for p, c in PathData("M1 1 h2").walk()]
+        [((0.0, 0.0), 'M1 1'), ((1.0, 1.0), 'H3')]
+        """
         current = start = ORIGIN
         for command in self._commands:
             absolute = command.to_absolute(current)
@@ -215,8 +344,18 @@ class PathData(Sequence[PathCommand]):
         Coordinates are absolute; ``H``/``V`` count as points on their line.
         Arc radii and flags are not nodes.
 
+        Returns
+        -------
+        numpy.ndarray
+            Array of shape ``(N, 2)``.
+
+        See Also
+        --------
+        with_nodes : Rebuild the path from edited nodes.
+
         Examples
         --------
+        >>> from svgwriter.pathdata import PathData
         >>> PathData("M0 0 h10 Q15 5 10 10").nodes().tolist()
         [[0.0, 0.0], [10.0, 0.0], [15.0, 5.0], [10.0, 10.0]]
         """
@@ -228,12 +367,36 @@ class PathData(Sequence[PathCommand]):
         return np.array(pairs, dtype=float).reshape(-1, 2)
 
     def with_nodes(self, nodes: object) -> PathData:
-        """The same commands with coordinates taken from an ``(N, 2)`` array (see :meth:`nodes`).
+        """Return the same commands with coordinates taken from an ``(N, 2)`` array.
+
+        The commands are made absolute and ``H``/``V`` become ``L`` so every
+        node has both coordinates.
+
+        Parameters
+        ----------
+        nodes : array_like
+            New coordinates, in the order and shape returned by `nodes`.
+
+        Returns
+        -------
+        PathData
+            Path data with the new coordinates.
 
         Raises
         ------
         ValueError
-            When the array's shape does not match the path's node count.
+            If the array's shape does not match the path's node count.
+
+        See Also
+        --------
+        nodes : The coordinate array this method consumes.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import PathData
+        >>> d = PathData("M0 0 L10 0")
+        >>> str(d.with_nodes(d.nodes() + 1))
+        'M1 1 L11 1'
         """
         commands = self._editable()
         array = np.asarray(nodes, dtype=float)
@@ -250,10 +413,38 @@ class PathData(Sequence[PathCommand]):
         return PathData(rebuilt)
 
     def to_absolute(self) -> PathData:
+        """Return the path with every command in absolute form.
+
+        Returns
+        -------
+        PathData
+            Equivalent path data using only uppercase commands.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import PathData
+        >>> str(PathData("M1 1 l2 2").to_absolute())
+        'M1 1 L3 3'
+        """
         return PathData(command for _, command in self.walk())
 
     def normalized(self) -> PathData:
-        """Absolute commands using only M, L, C, Q, A and Z."""
+        """Return absolute commands using only ``M``, ``L``, ``C``, ``Q``, ``A`` and ``Z``.
+
+        ``H`` and ``V`` become ``L``, and smooth curves get their reflected
+        control point written out.
+
+        Returns
+        -------
+        PathData
+            Normalized path data.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import PathData
+        >>> str(PathData("M0 0 h10 v5").normalized())
+        'M0 0 L10 0 L10 5'
+        """
         result: list[PathCommand] = []
         previous: PathCommand | None = None
         last_control: Point | None = None
@@ -279,7 +470,21 @@ class PathData(Sequence[PathCommand]):
         return PathData(result)
 
     def points(self) -> Iterator[Point]:
-        """Yield points sampled along the path's outline."""
+        """Iterate points sampled along the path's outline.
+
+        Curves and arcs are sampled at fixed resolution; lines contribute their end points.
+
+        Yields
+        ------
+        Point
+            Successive outline points.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import PathData
+        >>> [tuple(p) for p in PathData("M0 0 L1 1").points()]
+        [(0.0, 0.0), (1.0, 1.0)]
+        """
         current = ORIGIN
         for command in self.normalized():
             if isinstance(command, (MoveTo, LineTo)):
@@ -301,12 +506,45 @@ class PathData(Sequence[PathCommand]):
 
     @cached_property
     def bbox(self) -> BBox | None:
-        """Approximate bounding box, or ``None`` for empty data."""
+        """Approximate bounding box, or ``None`` for empty data.
+
+        Computed from sampled outline points, so curves are approximate.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import PathData
+        >>> PathData("M0 0 L10 0 L10 10").bbox
+        BBox(x=0.0, y=0.0, width=10.0, height=10.0)
+        >>> PathData().bbox is None
+        True
+        """
         points = list(self.points())
         return BBox.from_points(points) if points else None
 
     def svg_value(self, precision: int = DEFAULT_PRECISION, *, compact: bool = False) -> str:
-        """Serialize; ``compact`` drops repeated letters and spaces."""
+        """Serialize the path as text for the ``d`` attribute.
+
+        Parameters
+        ----------
+        precision : int, optional
+            Maximum number of decimal places. Defaults to the library default precision.
+        compact : bool, optional
+            Drop repeated command letters and unneeded spaces. Defaults to False.
+
+        Returns
+        -------
+        str
+            The path data text.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import PathData
+        >>> d = PathData("M0 0.5 L1.25 -0.5 L3 3")
+        >>> d.svg_value()
+        'M0 0.5 L1.25 -0.5 L3 3'
+        >>> d.svg_value(compact=True)
+        'M0 .5 1.25-.5 3 3'
+        """
         if not compact:
             return " ".join(command.svg_value(precision) for command in self._commands)
         out: list[str] = []

@@ -23,6 +23,17 @@ __all__ = ["SceneError", "build_parser", "load_scene", "main"]
 
 
 def build_parser() -> argparse.ArgumentParser:
+    """Build the ``svgwriter`` argument parser with every sub-command attached.
+
+    Returns
+    -------
+    argparse.ArgumentParser
+        The parser used by :func:`main`.
+
+    See Also
+    --------
+    main : Parse arguments and run a command.
+    """
     parser = argparse.ArgumentParser(prog="svgwriter", description="Write, reformat, inspect and animate SVG 1.1 files.")
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -32,5 +43,21 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    """Run the command line.
+
+    Parameters
+    ----------
+    argv : sequence of str, optional
+        Arguments without the program name. Defaults to ``sys.argv[1:]``.
+
+    Returns
+    -------
+    int
+        The process exit status; 0 on success.
+
+    See Also
+    --------
+    build_parser : The parser that interprets `argv`.
+    """
     args = build_parser().parse_args(argv)
     return int(args.func(args))

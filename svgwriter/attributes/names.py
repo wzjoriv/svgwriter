@@ -112,6 +112,32 @@ def svg_name(name: str) -> str:
     Trailing underscores are dropped (``class_``, ``in_``), ``xlink_`` and
     ``xml_`` become namespace prefixes, known camelCase attributes are
     restored, and remaining underscores become hyphens.
+
+    Parameters
+    ----------
+    name : str
+        Python keyword name.
+
+    Returns
+    -------
+    str
+        The SVG attribute name.
+
+    See Also
+    --------
+    py_name : The inverse mapping.
+
+    Examples
+    --------
+    >>> from svgwriter.attributes import svg_name
+    >>> svg_name("stroke_width")
+    'stroke-width'
+    >>> svg_name("view_box")
+    'viewBox'
+    >>> svg_name("xlink_href")
+    'xlink:href'
+    >>> svg_name("class_")
+    'class'
     """
     name = name.rstrip("_")
     if ":" in name or name in CAMEL_CASE_ATTRIBUTES:
@@ -127,7 +153,32 @@ def svg_name(name: str) -> str:
 
 @lru_cache(maxsize=1024)
 def py_name(name: str) -> str:
-    """Translate an SVG attribute name into a Python keyword."""
+    """Translate an SVG attribute name into a Python keyword.
+
+    Parameters
+    ----------
+    name : str
+        SVG attribute name.
+
+    Returns
+    -------
+    str
+        A valid Python identifier; reserved words get a trailing underscore.
+
+    See Also
+    --------
+    svg_name : The inverse mapping.
+
+    Examples
+    --------
+    >>> from svgwriter.attributes import py_name
+    >>> py_name("viewBox")
+    'view_box'
+    >>> py_name("xlink:href")
+    'xlink_href'
+    >>> py_name("class")
+    'class_'
+    """
     if name in CAMEL_CASE_ATTRIBUTES:
         return "".join("_" + c.lower() if c.isupper() else c for c in name)
     py = name.replace(":", "_").replace("-", "_")

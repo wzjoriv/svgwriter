@@ -27,7 +27,28 @@ StopSpec: TypeAlias = tuple[float, Color | str] | tuple[float, Color | str, floa
 
 
 class Stop(PresentationAttributes, CoreAttributes, tag="stop", category=Category.GRADIENT):
-    """``<stop>``: one color stop of a gradient."""
+    """``<stop>``: one color stop of a gradient.
+
+    Parameters
+    ----------
+    offset : float or str, optional
+        Position along the gradient vector, 0 to 1 or a percentage. Defaults to 0.
+    stop_color : Color or str, optional
+        The color at the offset.
+    stop_opacity : float, optional
+        The opacity at the offset.
+    **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+    See Also
+    --------
+    Gradient.add_stop : Create and append a stop in one call.
+
+    Examples
+    --------
+    >>> str(Stop(0.5, "red", 0.5))
+    '<stop offset="0.5" stop-color="red" stop-opacity="0.5"/>'
+    """
 
     def __init__(
         self,
@@ -49,7 +70,26 @@ class Gradient(
     Container[Stop],
     category=Category.GRADIENT,
 ):
-    """Shared base of linear and radial gradients."""
+    """Shared base of linear and radial gradients.
+
+    Holds the color stops and the attributes common to both kinds.
+
+    Parameters
+    ----------
+    *stops : Stop
+        Color stops.
+    gradient_units : {"objectBoundingBox", "userSpaceOnUse"}, optional
+        Coordinate system of the gradient vector.
+    spread_method : {"pad", "reflect", "repeat"}, optional
+        What happens beyond the ends of the vector.
+    **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+    See Also
+    --------
+    LinearGradient : Gradient along a line.
+    RadialGradient : Gradient around a center.
+    """
 
     def __init__(
         self,
@@ -69,11 +109,55 @@ class Gradient(
         return None
 
     def add_stop(self, offset: float, color: Color | str, opacity: Opacity | None = None, **kwargs: Any) -> Stop:
+        """Append a color stop and return it.
+
+        Parameters
+        ----------
+        offset : float
+            Position along the gradient vector, 0 to 1.
+        color : Color or str
+            The stop color.
+        opacity : float, optional
+            The stop opacity. Defaults to None.
+        **kwargs
+            Further attributes of the :class:`Stop`.
+
+        Returns
+        -------
+        Stop
+            The new stop, already a child of the gradient.
+
+        Examples
+        --------
+        >>> g = LinearGradient()
+        >>> _ = g.add_stop(0, "red")
+        >>> str(g)
+        '<linearGradient><stop offset="0" stop-color="red"/></linearGradient>'
+        """
         return self.add(Stop(offset, color, opacity, **kwargs))
 
     @classmethod
     def from_colors(cls, colors: Sequence[Color | str], **kwargs: Any) -> Self:
-        """Evenly spaced stops."""
+        """Create a gradient with evenly spaced stops.
+
+        Parameters
+        ----------
+        colors : sequence of Color or str
+            One color per stop, the first at offset 0 and the last at 1.
+        **kwargs
+            Attributes of the gradient.
+
+        Returns
+        -------
+        Gradient
+            A new gradient of the calling class.
+
+        Examples
+        --------
+        >>> g = LinearGradient.from_colors(["red", "blue"])
+        >>> [s.get("offset") for s in g]
+        [0.0, 1.0]
+        """
         gradient = cls(**kwargs)
         last = max(len(colors) - 1, 1)
         for index, color in enumerate(colors):
@@ -82,6 +166,26 @@ class Gradient(
 
     @classmethod
     def from_stops(cls, stops: Iterable[StopSpec], **kwargs: Any) -> Self:
+        """Create a gradient from ``(offset, color)`` or ``(offset, color, opacity)`` tuples.
+
+        Parameters
+        ----------
+        stops : iterable of tuple
+            Stop specifications.
+        **kwargs
+            Attributes of the gradient.
+
+        Returns
+        -------
+        Gradient
+            A new gradient of the calling class.
+
+        Examples
+        --------
+        >>> g = LinearGradient.from_stops([(0, "red"), (1, "blue", 0.5)])
+        >>> len(g), g[1].get("stop-opacity")
+        (2, 0.5)
+        """
         gradient = cls(**kwargs)
         for spec in stops:
             gradient.add_stop(*spec)
@@ -89,7 +193,7 @@ class Gradient(
 
 
 class LinearGradient(Gradient, tag="linearGradient"):
-    """``<linearGradient>``.
+    """``<linearGradient>``: a gradient along a line.
 
     Parameters
     ----------
@@ -97,9 +201,22 @@ class LinearGradient(Gradient, tag="linearGradient"):
         Color stops.
     x1, y1, x2, y2 : length, optional
         The gradient vector.
+    gradient_units : {"objectBoundingBox", "userSpaceOnUse"}, optional
+        Coordinate system of the vector.
+    spread_method : {"pad", "reflect", "repeat"}, optional
+        What happens beyond the ends of the vector.
     **kwargs
-        ``gradient_units``, ``spread_method``, ``transform``, ``href`` and
-        presentation/core attributes.
+        ``transform``, ``href`` and other presentation, core and SVG attributes
+        in Python spelling.
+
+    See Also
+    --------
+    RadialGradient : Gradient around a center.
+
+    Examples
+    --------
+    >>> str(LinearGradient(Stop(0, "red"), x2=1))
+    '<linearGradient x2="1"><stop offset="0" stop-color="red"/></linearGradient>'
     """
 
     def __init__(
@@ -115,6 +232,19 @@ class LinearGradient(Gradient, tag="linearGradient"):
         self.update(x1=x1, y1=y1, x2=x2, y2=y2)
 
     def local_bbox(self) -> BBox | None:
+        """Box spanned by the gradient vector.
+
+        Returns
+        -------
+        BBox or None
+            The unit box for ``objectBoundingBox`` units, otherwise the box
+            around the vector's end points.
+
+        Examples
+        --------
+        >>> LinearGradient(x1=0, y1=0, x2=10, y2=5, gradient_units="userSpaceOnUse").local_bbox().width
+        10.0
+        """
         box = self._units_bbox("gradientUnits")
         if box is not None:
             return box
@@ -123,15 +253,80 @@ class LinearGradient(Gradient, tag="linearGradient"):
 
     @classmethod
     def horizontal(cls, *colors: Color | str, **kwargs: Any) -> Self:
+        """Create an evenly spaced left-to-right gradient.
+
+        Parameters
+        ----------
+        *colors : Color or str
+            The stop colors.
+        **kwargs
+            Further attributes of the gradient.
+
+        Returns
+        -------
+        LinearGradient
+            A gradient from ``(0, 0)`` to ``(1, 0)`` in bounding-box units.
+
+        Examples
+        --------
+        >>> LinearGradient.horizontal("red", "blue").get("x2")
+        1
+        """
         return cls.from_colors(colors, x1=0, y1=0, x2=1, y2=0, **kwargs)
 
     @classmethod
     def vertical(cls, *colors: Color | str, **kwargs: Any) -> Self:
+        """Create an evenly spaced top-to-bottom gradient.
+
+        Parameters
+        ----------
+        *colors : Color or str
+            The stop colors.
+        **kwargs
+            Further attributes of the gradient.
+
+        Returns
+        -------
+        LinearGradient
+            A gradient from ``(0, 0)`` to ``(0, 1)`` in bounding-box units.
+
+        Examples
+        --------
+        >>> LinearGradient.vertical("red", "blue").get("y2")
+        1
+        """
         return cls.from_colors(colors, x1=0, y1=0, x2=0, y2=1, **kwargs)
 
 
 class RadialGradient(Gradient, tag="radialGradient"):
-    """``<radialGradient>``."""
+    """``<radialGradient>``: a gradient around a center.
+
+    Parameters
+    ----------
+    *stops : Stop
+        Color stops.
+    cx, cy : length, optional
+        Center of the outer circle.
+    r : length, optional
+        Radius of the outer circle.
+    fx, fy : length, optional
+        Focal point.
+    gradient_units : {"objectBoundingBox", "userSpaceOnUse"}, optional
+        Coordinate system of the circle.
+    spread_method : {"pad", "reflect", "repeat"}, optional
+        What happens beyond the circle.
+    **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+    See Also
+    --------
+    LinearGradient : Gradient along a line.
+
+    Examples
+    --------
+    >>> str(RadialGradient(cx=0.5, cy=0.5, r=0.5))
+    '<radialGradient cx="0.5" cy="0.5" r="0.5"/>'
+    """
 
     def __init__(
         self,
@@ -147,6 +342,18 @@ class RadialGradient(Gradient, tag="radialGradient"):
         self.update(cx=cx, cy=cy, r=r, fx=fx, fy=fy)
 
     def local_bbox(self) -> BBox | None:
+        """Box of the gradient's outer circle.
+
+        Returns
+        -------
+        BBox or None
+            The unit box for ``objectBoundingBox`` units, otherwise the circle's box.
+
+        Examples
+        --------
+        >>> RadialGradient(cx=5, cy=5, r=2, gradient_units="userSpaceOnUse").local_bbox().width
+        4.0
+        """
         box = self._units_bbox("gradientUnits")
         if box is not None:
             return box
@@ -167,7 +374,27 @@ class Pattern(
     tag="pattern",
     category=Category.PAINT_SERVER,
 ):
-    """``<pattern>``: a tile of graphics used as paint."""
+    """``<pattern>``: a tile of graphics used as paint.
+
+    Parameters
+    ----------
+    *children : Element
+        The graphics of one tile.
+    pattern_units : {"objectBoundingBox", "userSpaceOnUse"}, optional
+        Coordinate system of ``x``, ``y``, ``width`` and ``height``.
+    pattern_content_units : {"objectBoundingBox", "userSpaceOnUse"}, optional
+        Coordinate system of the tile's content.
+    **kwargs
+        ``x``, ``y``, ``width``, ``height``, ``view_box``, ``transform`` and other
+        presentation, core and SVG attributes in Python spelling.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> p = Pattern(svg.Circle(2, 2, 2), width=4, height=4, pattern_units="userSpaceOnUse")
+    >>> p.local_bbox().width
+    4.0
+    """
 
     def __init__(
         self,
@@ -182,4 +409,16 @@ class Pattern(
     transform_attribute: ClassVar[str] = "patternTransform"
 
     def local_bbox(self) -> BBox | None:
+        """Box of one tile from its ``x``, ``y``, ``width`` and ``height``.
+
+        Returns
+        -------
+        BBox or None
+            The tile rectangle.
+
+        Examples
+        --------
+        >>> Pattern(width=10, height=10, pattern_units="userSpaceOnUse").local_bbox().height
+        10.0
+        """
         return positioned_bbox(self)

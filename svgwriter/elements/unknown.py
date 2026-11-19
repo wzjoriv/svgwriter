@@ -11,7 +11,25 @@ __all__ = ["UnknownElement"]
 
 
 class UnknownElement(Element, content=ContentModel.MIXED):
-    """An element without a dedicated class (foreign or unsupported)."""
+    """An element without a dedicated class (foreign or unsupported).
+
+    Parameters
+    ----------
+    tag : str
+        The element name.
+    *children : Element or str
+        Child elements and text.
+    namespace : str, optional
+        Namespace URI of the element. Defaults to None.
+    **kwargs
+        Attributes, as for :class:`~svgwriter.Element`.
+
+    Examples
+    --------
+    >>> from svgwriter.elements.unknown import UnknownElement
+    >>> UnknownElement("widget", "hi").tag
+    'widget'
+    """
 
     namespace: str | None = None
 

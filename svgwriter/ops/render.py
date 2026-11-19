@@ -51,7 +51,24 @@ def document_size(document: Document) -> tuple[float, float]:
     """Canvas size in user units: ``width``/``height``, else the ``viewBox`` size, else 300.
 
     Percentages resolve against the ``viewBox`` (or 300) since there is no
-    surrounding viewport.
+    surrounding viewport. Sizes are rounded up to whole units.
+
+    Parameters
+    ----------
+    document : Document
+        The document to measure.
+
+    Returns
+    -------
+    (float, float)
+        Width and height in user units.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops.render import document_size
+    >>> document_size(svg.Document(40, 20))
+    (40.0, 20.0)
     """
     root = document.root
     box = root.view_box
@@ -102,10 +119,10 @@ def render_svg(
         A complete SVG document.
     width, height : float
         Size in user units; the pixel size is this times *scale*, rounded up.
-    scale : float
-        Pixels per user unit.
+    scale : float, optional
+        Pixels per user unit. Defaults to 1.0.
     background : color, optional
-        Painted under the drawing; transparent when omitted.
+        Painted under the drawing; transparent when omitted. Defaults to None.
 
     Returns
     -------
@@ -113,10 +130,32 @@ def render_svg(
         ``float32`` array of shape ``(rows, columns, 4)``, straight (not
         premultiplied) RGBA in ``0..1``.
 
+    Raises
+    ------
+    ValueError
+        If skia cannot parse the document.
+
+    See Also
+    --------
+    rasterize : Render a :class:`~svgwriter.Document`, embedded images included.
+
     Notes
     -----
-    Text is drawn by skia's SVG renderer, which does not load ``<image>``
-    content; :func:`render_tree` and :func:`rasterize` draw embedded images.
+    Skia's SVG renderer does not load ``<image>`` content; :func:`render_tree`
+    and :func:`rasterize` draw embedded images.
+
+    Examples
+    --------
+    >>> from svgwriter.ops import render_svg
+    >>> text = (
+    ...     '<svg xmlns="http://www.w3.org/2000/svg" width="4" height="2">'
+    ...     '<rect width="4" height="2" fill="red"/></svg>'
+    ... )
+    >>> pixels = render_svg(text, 4, 2)
+    >>> pixels.shape
+    (2, 4, 4)
+    >>> pixels[0, 0].tolist()
+    [1.0, 0.0, 0.0, 1.0]
     """
     surface = _surface(width, height, scale, background)
     _paint_svg(surface.getCanvas(), text, width, height)
@@ -146,23 +185,38 @@ def render_tree(
         Turns the serialized *root* into a complete SVG document.
     width, height : float
         Canvas size in user units.
-    view : Matrix
+    view : Matrix, optional
         Maps *root*'s parent coordinates to canvas user units (the ``viewBox`` mapping).
-    scale : float
-        Pixels per user unit.
+        Defaults to the identity.
+    scale : float, optional
+        Pixels per user unit. Defaults to 1.0.
     background : color, optional
-        Painted under the drawing.
-    viewport : bool
-        *root* is the outermost ``<svg>``: draw it at exactly ``width x height``.
+        Painted under the drawing. Defaults to None.
+    viewport : bool, optional
+        *root* is the outermost ``<svg>``: draw it at exactly ``width x height``. Defaults to False.
     view_box : ViewBox, optional
-        Replace the root's ``viewBox`` while drawing (used for padding).
-    snapshot : bool
-        Return the ``skia.Image`` instead of an array (encoders use it directly).
+        Replace the root's ``viewBox`` while drawing (used for padding). Defaults to None.
+    snapshot : bool, optional
+        Return the ``skia.Image`` instead of an array (encoders use it directly). Defaults to False.
 
     Returns
     -------
-    numpy.ndarray
-        ``float32`` ``(rows, columns, 4)`` straight RGBA in ``0..1``.
+    numpy.ndarray or skia.Image
+        ``float32`` ``(rows, columns, 4)`` straight RGBA in ``0..1``, or the image when
+        *snapshot* is true.
+
+    See Also
+    --------
+    rasterize : Render a whole document.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops.render import render_tree
+    >>> doc = svg.Document(4, 2)
+    >>> _ = doc.rect(0, 0, 4, 2, fill="red")
+    >>> render_tree(doc.root, lambda text: text, 4, 2, viewport=True).shape
+    (2, 4, 4)
     """
     surface = _surface(width, height, scale, background)
     paint_tree(surface.getCanvas(), root, wrap, width, height, view=view, viewport=viewport, view_box=view_box)
@@ -180,7 +234,42 @@ def paint_tree(
     viewport: bool = False,
     view_box: ViewBox | None = None,
 ) -> None:
-    """Paint the tree under *root* onto any skia canvas (raster, PDF, ...); see :func:`render_tree`."""
+    """Paint the tree under *root* onto any skia canvas (raster, PDF, ...).
+
+    Text becomes outlines and embedded images are drawn in paint order; the arguments
+    match :func:`render_tree`.
+
+    Parameters
+    ----------
+    canvas : skia.Canvas
+        Destination canvas.
+    root : Element
+        A root ``<svg>`` or any element.
+    wrap : callable
+        Turns the serialized *root* into a complete SVG document.
+    width, height : float
+        Canvas size in user units.
+    view : Matrix, optional
+        Maps *root*'s parent coordinates to canvas user units. Defaults to the identity.
+    viewport : bool, optional
+        *root* is the outermost ``<svg>``: draw it at exactly ``width x height``. Defaults to False.
+    view_box : ViewBox, optional
+        Replace the root's ``viewBox`` while drawing. Defaults to None.
+
+    See Also
+    --------
+    render_tree : Paint onto a new raster surface and return the pixels.
+
+    Examples
+    --------
+    >>> import skia
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops.render import paint_tree
+    >>> doc = svg.Document(4, 2)
+    >>> _ = doc.rect(0, 0, 4, 2, fill="red")
+    >>> surface = skia.Surface(4, 2)
+    >>> paint_tree(surface.getCanvas(), doc.root, lambda text: text, 4, 2, viewport=True)
+    """
     from ..io.writer import to_string
 
     root = renderable_copy(root)
@@ -203,7 +292,27 @@ def paint_tree(
 def renderable_copy(root: Element) -> Element:
     """A copy of *root* with every ``<text>`` replaced by its glyph outlines.
 
-    skia's SVG renderer draws no text, so text is drawn as paths.
+    Skia's SVG renderer draws no text, so text is drawn as paths. Styles are resolved,
+    local image links embedded and ellipses converted to paths on the copy.
+
+    Parameters
+    ----------
+    root : Element
+        The tree to copy; it is not modified.
+
+    Returns
+    -------
+    Element
+        A render-ready copy.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops.render import renderable_copy
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 5, 5)
+    >>> renderable_copy(doc.root) is doc.root
+    False
     """
     from ..attributes.cascade import resolve_styles
     from ..elements.text import Text
@@ -274,24 +383,33 @@ def rasterize(
     ----------
     document : Document
         What to draw; SMIL animation is not evaluated.
-    scale : float
-        Pixels per user unit of the document's size (see :func:`document_size`).
+    scale : float, optional
+        Pixels per user unit of the document's size (see :func:`document_size`). Defaults to 1.0.
     size : (int, int), optional
         Exact output ``(columns, rows)``; a ``viewBox`` drawing is fitted
         into it and *scale* is ignored. Without a ``viewBox`` this is the
-        viewport size in user units.
-    padding : float
+        viewport size in user units. Defaults to None.
+    padding : float, optional
         Margin around the drawing in its own (``viewBox``) units; with
-        *size* the padded drawing is fitted and centred.
+        *size* the padded drawing is fitted and centred. Defaults to 0.0.
     background : color, optional
-        Painted under the drawing; transparent when omitted.
-    snapshot : bool
-        Return a ``skia.Image`` instead (no conversion; for encoding).
+        Painted under the drawing; transparent when omitted. Defaults to None.
+    snapshot : bool, optional
+        Return a ``skia.Image`` instead (no conversion; for encoding). Defaults to False.
 
     Returns
     -------
-    numpy.ndarray
-        ``float32`` ``(rows, columns, 4)`` straight RGBA in ``0..1``.
+    numpy.ndarray or skia.Image
+        ``float32`` ``(rows, columns, 4)`` straight RGBA in ``0..1``, or the image when
+        *snapshot* is true.
+
+    See Also
+    --------
+    render_png : Render straight to PNG bytes.
+
+    Notes
+    -----
+    Output is deterministic: the same document gives the same pixels.
 
     Examples
     --------
@@ -302,10 +420,6 @@ def rasterize(
     (2, 4, 4)
     >>> rasterize(doc, size=(32, 32), padding=1).shape
     (32, 32, 4)
-
-    Notes
-    -----
-    Output is deterministic: the same document gives the same pixels.
     """
     width, height = document_size(document)
     box = document.root.view_box
@@ -328,7 +442,39 @@ def rasterize(
 
 
 def encode_image(image: Any, format: str = "png", *, quality: int = DEFAULT_QUALITY) -> bytes:
-    """Encode a ``skia.Image`` as PNG, JPEG or WebP bytes."""
+    """Encode a ``skia.Image`` as PNG, JPEG or WebP bytes.
+
+    Parameters
+    ----------
+    image : skia.Image
+        The image to encode.
+    format : {"png", "jpeg", "jpg", "webp"}, optional
+        Output format, case-insensitive. Defaults to "png".
+    quality : int, optional
+        Compression quality for lossy formats, 0 to 100. Defaults to 90.
+
+    Returns
+    -------
+    bytes
+        The encoded file.
+
+    Raises
+    ------
+    ValueError
+        If *format* is unknown or skia cannot encode the image.
+
+    See Also
+    --------
+    encode : Encode an RGBA array instead.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops.render import encode_image, rasterize
+    >>> doc = svg.Document(4, 4)
+    >>> encode_image(rasterize(doc, snapshot=True), "jpeg")[:2] == bytes.fromhex("ffd8")
+    True
+    """
     try:
         kind = FORMATS[format.lower()]
     except KeyError:
@@ -342,8 +488,33 @@ def encode_image(image: Any, format: str = "png", *, quality: int = DEFAULT_QUAL
 def encode(pixels: np.ndarray, format: str = "png", *, quality: int = DEFAULT_QUALITY) -> bytes:
     """Encode an RGBA array (floats in ``0..1`` or ``uint8``) as PNG, JPEG or WebP bytes.
 
+    Parameters
+    ----------
+    pixels : numpy.ndarray
+        Straight RGBA array of shape ``(rows, columns, 4)``; floats are scaled from ``0..1``.
+    format : {"png", "jpeg", "jpg", "webp"}, optional
+        Output format, case-insensitive. Defaults to "png".
+    quality : int, optional
+        Compression quality for lossy formats, 0 to 100. Defaults to 90.
+
+    Returns
+    -------
+    bytes
+        The encoded file.
+
+    Raises
+    ------
+    ValueError
+        If *format* is unknown or skia cannot encode the image.
+
+    See Also
+    --------
+    encode_image : Encode a ``skia.Image`` without converting it.
+
     Examples
     --------
+    >>> import numpy as np
+    >>> from svgwriter.ops import encode
     >>> encode(np.ones((1, 1, 4)))[:4] == bytes.fromhex("89504e47")
     True
     """
@@ -358,7 +529,33 @@ def encode(pixels: np.ndarray, format: str = "png", *, quality: int = DEFAULT_QU
 
 
 def render_png(document: Document, *, scale: float = 1.0, background: str | None = None) -> bytes:
-    """Render *document* to PNG bytes."""
+    """Render *document* to PNG bytes.
+
+    Parameters
+    ----------
+    document : Document
+        What to draw.
+    scale : float, optional
+        Pixels per user unit. Defaults to 1.0.
+    background : color, optional
+        Painted under the drawing; transparent when omitted. Defaults to None.
+
+    Returns
+    -------
+    bytes
+        The PNG file.
+
+    See Also
+    --------
+    rasterize : Get the pixels as an array.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops import render_png
+    >>> render_png(svg.Document(4, 4))[:4] == bytes.fromhex("89504e47")
+    True
+    """
     return encode_image(rasterize(document, scale=scale, background=background, snapshot=True))
 
 
@@ -368,6 +565,35 @@ def skia_renderer(document: Document, time: float) -> np.ndarray:
     Draws the document as it is at each frame (use ``update=`` to change it
     over time) on white, and returns raw pixels so ffmpeg needs no PNG
     decoding.
+
+    Parameters
+    ----------
+    document : Document
+        The document to draw.
+    time : float
+        The frame time; unused, since the document itself carries the state.
+
+    Returns
+    -------
+    numpy.ndarray
+        ``uint8`` array of shape ``(rows, columns, 4)``.
+
+    Raises
+    ------
+    ValueError
+        If skia cannot read the rendered pixels.
+
+    See Also
+    --------
+    rasterize : Render with transparency and float output.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops import skia_renderer
+    >>> frame = skia_renderer(svg.Document(4, 2), 0.0)
+    >>> frame.shape, frame.dtype.name
+    ((2, 4, 4), 'uint8')
     """
     del time
     image = document.rasterize(background="white", snapshot=True)

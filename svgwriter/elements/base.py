@@ -61,11 +61,27 @@ class Element(Composable):
     *children : Element or str
         Child elements and text nodes.
     id : str, optional
-        The element id.
+        The element id. Defaults to None.
     attrs : mapping, optional
-        Extra attributes given by their SVG names.
+        Extra attributes given by their SVG names. Defaults to None.
     **extra
         Any other attribute, Python spelling.
+
+    Raises
+    ------
+    UnknownKeywordError
+        If a keyword is not a known SVG attribute.
+
+    See Also
+    --------
+    svgwriter.elements.container.Container : Elements that hold children.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> el = svg.rect(0, 0, 10, 10, stroke_width=2)
+    >>> el.tag, el.attributes["stroke-width"]
+    ('rect', 2)
     """
 
     tag: ClassVar[str] = ""
@@ -141,12 +157,46 @@ class Element(Composable):
 
     @classmethod
     def lookup(cls, tag: str) -> type[Element] | None:
-        """Return the registered class for *tag*."""
+        """Return the registered class for *tag*.
+
+        Parameters
+        ----------
+        tag : str
+            An SVG tag name.
+
+        Returns
+        -------
+        type[Element] or None
+            The class registered for the tag, or None if there is none.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Element.lookup("rect").__name__
+        'Rect'
+        """
         return cls._registry.get(tag)
 
     @classmethod
     def registered(cls, category: Category | None = None) -> dict[str, type[Element]]:
-        """Registered element classes, optionally filtered by category."""
+        """Registered element classes, optionally filtered by category.
+
+        Parameters
+        ----------
+        category : Category, optional
+            Keep only classes of this category. Defaults to None (all).
+
+        Returns
+        -------
+        dict[str, type[Element]]
+            Registered classes keyed by tag.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> "circle" in svg.Element.registered()
+        True
+        """
         return {
             tag: klass for tag, klass in cls._registry.items()
             if category is None or klass.category is category
@@ -154,7 +204,24 @@ class Element(Composable):
 
     @classmethod
     def from_attributes(cls: type[E], attributes: Mapping[str, str]) -> E:
-        """Build an instance from raw SVG attributes, bypassing ``__init__``."""
+        """Build an instance from raw SVG attributes, bypassing ``__init__``.
+
+        Parameters
+        ----------
+        attributes : mapping of str to str
+            Attributes by SVG name, stored as given.
+
+        Returns
+        -------
+        Element
+            A new instance of this class.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Rect.from_attributes({"width": "5"}).attributes
+        {'width': '5'}
+        """
         obj = cls.__new__(cls)
         Element.__init__(obj)
         obj.attributes.update(attributes)
@@ -162,6 +229,22 @@ class Element(Composable):
 
     @property
     def id(self) -> str | None:
+        """The element id, or None.
+
+        Assigning validates the name as an XML name; assigning None removes it.
+
+        Raises
+        ------
+        ValueError
+            On assignment, if the value is not a valid id.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> el = svg.rect(0, 0, 1, 1, id="a")
+        >>> el.id
+        'a'
+        """
         value = self.attributes.get("id")
         return None if value is None else str(value)
 
@@ -175,19 +258,49 @@ class Element(Composable):
         self.attributes = {"id": value, **{k: v for k, v in self.attributes.items() if k != "id"}}
 
     def ensure_id(self) -> ElementId:
-        """Return the id, assigning a generated one if needed."""
+        """Return the id, assigning a generated one if needed.
+
+        Returns
+        -------
+        str
+            The existing or newly generated id.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 1, 1, id="a").ensure_id()
+        'a'
+        """
         if self.id is None:
             self.id = next_id(self.tag or "el")
         return ElementId(self.id or "")
 
     @property
     def ref(self) -> FuncIRI:
-        """``url(#id)`` for this element, assigning an id if needed."""
+        """``url(#id)`` for this element, assigning an id if needed.
+
+        Use it for paint and reference attributes such as ``fill`` or ``clip_path``.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 1, 1, id="a").ref.svg_value()
+        'url(#a)'
+        """
         return FuncIRI("#" + self.ensure_id(), self)
 
     @property
     def href(self) -> IRI:
-        """``#id`` for this element, assigning an id if needed."""
+        """``#id`` for this element, assigning an id if needed.
+
+        Use it for ``xlink:href`` style references.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 1, 1, id="a").href.svg_value()
+        '#a'
+        """
         return IRI("#" + self.ensure_id(), self)
 
     @chainable
@@ -195,6 +308,33 @@ class Element(Composable):
         """Set one attribute; ``None`` removes it.
 
         Attributes in other namespaces use Clark notation: ``"{uri}name"``.
+        Colors with alpha are split into the color and its ``*-opacity``
+        attribute, and elements are replaced by references to them.
+
+        Parameters
+        ----------
+        name : str
+            The attribute name, Python or SVG spelling.
+        value : object
+            The new value; None removes the attribute.
+
+        Raises
+        ------
+        ValueError
+            If the attribute is unsupported, or a color with alpha is given to
+            an attribute without an opacity counterpart.
+
+        See Also
+        --------
+        update : Set several attributes at once.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> r = svg.rect(0, 0, 1, 1)
+        >>> _ = r.set("stroke_width", 3)
+        >>> r.attributes["stroke-width"]
+        3
         """
         key = name if name.startswith("{") else svg_name(name)
         if key in UNSUPPORTED_ATTRIBUTES:
@@ -221,7 +361,27 @@ class Element(Composable):
 
     @chainable
     def update(self, attributes: Mapping[str, AttrValue] | None = None, /, **kwargs: AttrValue) -> None:
-        """Set several attributes; ``None`` values are skipped."""
+        """Set several attributes; ``None`` values are skipped.
+
+        Parameters
+        ----------
+        attributes : mapping, optional
+            Attributes by name. Defaults to None.
+        **kwargs
+            More attributes, Python spelling.
+
+        See Also
+        --------
+        set : Set a single attribute.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> r = svg.rect(0, 0, 1, 1)
+        >>> _ = r.update(fill="red", stroke=None)
+        >>> r.get("fill")
+        'red'
+        """
         for name, value in {**(attributes or {}), **kwargs}.items():
             if value is not None:
                 self.set(name, value)
@@ -231,16 +391,100 @@ class Element(Composable):
     @overload
     def get(self, name: str, default: T) -> AttrValue | T: ...
     def get(self, name: str, default: object = None) -> object:
+        """Return an attribute value, or *default* if it is not set.
+
+        Parameters
+        ----------
+        name : str
+            The attribute name, Python or SVG spelling.
+        default : object, optional
+            Returned when the attribute is absent. Defaults to None.
+
+        Returns
+        -------
+        object
+            The stored value or the default.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> r = svg.rect(0, 0, 1, 1, stroke_width=2)
+        >>> r.get("stroke_width"), r.get("fill", "none")
+        (2, 'none')
+        """
         return self.attributes.get(svg_name(name), default)
 
     def has(self, name: str) -> bool:
+        """Report whether an attribute is set.
+
+        Parameters
+        ----------
+        name : str
+            The attribute name, Python or SVG spelling.
+
+        Returns
+        -------
+        bool
+            True if the attribute is present.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 1, 1).has("width")
+        True
+        """
         return svg_name(name) in self.attributes
 
     def discard(self, name: str) -> None:
+        """Remove an attribute if it is set.
+
+        Parameters
+        ----------
+        name : str
+            The attribute name, Python or SVG spelling.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> r = svg.rect(0, 0, 1, 1)
+        >>> r.discard("width")
+        >>> r.has("width")
+        False
+        """
         self.attributes.pop(svg_name(name), None)
 
     def append(self, child: C) -> C:
-        """Append a child element or text node and return it."""
+        """Append a child element or text node and return it.
+
+        An element that already has a parent is moved. Elements referenced by
+        the child but not yet placed are collected into the root ``<defs>``.
+
+        Parameters
+        ----------
+        child : Element or str
+            The child to append.
+
+        Returns
+        -------
+        Element or str
+            The appended child.
+
+        Raises
+        ------
+        TypeError
+            If the content model forbids the child, or it is not an element or str.
+
+        See Also
+        --------
+        insert : Add a child at a given position.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> g = svg.group()
+        >>> g.append(svg.circle(0, 0, 1)).tag
+        'circle'
+        """
         if isinstance(child, str):
             if ContentModel.TEXT not in self.content:
                 raise TypeError(f"<{self.tag}> cannot contain text")
@@ -269,20 +513,88 @@ class Element(Composable):
                     root.defs().append(target)  # type: ignore[attr-defined]
 
     def extend(self, children: Iterable[Child]) -> None:
+        """Append every child in *children*.
+
+        Parameters
+        ----------
+        children : iterable of Element or str
+            The children to append, in order.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> g = svg.group()
+        >>> g.extend([svg.circle(0, 0, 1), svg.circle(1, 1, 1)])
+        >>> len(g)
+        2
+        """
         for child in children:
             self.append(child)
 
     def insert(self, index: int, child: C) -> C:
+        """Insert a child at *index* and return it.
+
+        Parameters
+        ----------
+        index : int
+            Position among the children.
+        child : Element or str
+            The child to insert.
+
+        Returns
+        -------
+        Element or str
+            The inserted child.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> g = svg.group(svg.circle(0, 0, 1))
+        >>> _ = g.insert(0, svg.rect(0, 0, 1, 1))
+        >>> [c.tag for c in g]
+        ['rect', 'circle']
+        """
         self.append(child)
         self.children.insert(index, self.children.pop())
         return child
 
     def remove(self, child: Child) -> None:
+        """Remove a child and detach it from this element.
+
+        Parameters
+        ----------
+        child : Element or str
+            The child to remove.
+
+        Raises
+        ------
+        ValueError
+            If the child is not present.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> c = svg.circle(0, 0, 1)
+        >>> g = svg.group(c)
+        >>> g.remove(c)
+        >>> len(g)
+        0
+        """
         self.children.remove(child)
         if isinstance(child, Element):
             child.parent = None
 
     def clear(self) -> None:
+        """Remove and detach every child.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> g = svg.group(svg.circle(0, 0, 1))
+        >>> g.clear()
+        >>> len(g)
+        0
+        """
         for child in self.children:
             if isinstance(child, Element):
                 child.parent = None
@@ -290,7 +602,17 @@ class Element(Composable):
 
     @property
     def text(self) -> str:
-        """Concatenated direct text children."""
+        """Concatenated direct text children.
+
+        Assigning replaces the existing text nodes with a single one.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> t = svg.text("hi")
+        >>> t.text
+        'hi'
+        """
         return "".join(c for c in self.children if isinstance(c, str))
 
     @text.setter
@@ -328,7 +650,28 @@ class Element(Composable):
         return True
 
     def iter(self, tag: str | None = None, *, max_depth: float = float("inf")) -> Iterator[Element]:
-        """Depth-first walk over this element and its descendants."""
+        """Depth-first walk over this element and its descendants.
+
+        Parameters
+        ----------
+        tag : str, optional
+            Yield only elements with this tag. Defaults to None (all).
+        max_depth : float, optional
+            Deepest level to descend to; ``0`` is this element only.
+            Defaults to infinity.
+
+        Yields
+        ------
+        Element
+            Elements in document order, starting with this one.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> g = svg.group(svg.circle(0, 0, 1), svg.rect(0, 0, 1, 1))
+        >>> [e.tag for e in g.iter()]
+        ['g', 'circle', 'rect']
+        """
         stack: list[tuple[Element, int]] = [(self, 0)]
         while stack:
             element, depth = stack.pop()
@@ -344,7 +687,29 @@ class Element(Composable):
     @overload
     def find(self, match: str) -> Element | None: ...
     def find(self, match: type[Element] | str) -> Element | None:
-        """First descendant (or self) matching a tag or class."""
+        """First descendant (or self) matching a tag or class.
+
+        Parameters
+        ----------
+        match : str or type
+            A tag name or an element class.
+
+        Returns
+        -------
+        Element or None
+            The first match in document order, or None.
+
+        See Also
+        --------
+        find_all : Every match.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> g = svg.group(svg.circle(0, 0, 1))
+        >>> g.find("circle").tag, g.find("rect")
+        ('circle', None)
+        """
         return next(iter(self.find_all(match)), None)
 
     @overload
@@ -352,14 +717,67 @@ class Element(Composable):
     @overload
     def find_all(self, match: str) -> list[Element]: ...
     def find_all(self, match: type[Element] | str) -> list[Element]:
+        """Every descendant (and self) matching a tag or class.
+
+        Parameters
+        ----------
+        match : str or type
+            A tag name or an element class.
+
+        Returns
+        -------
+        list of Element
+            The matches in document order.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> g = svg.group(svg.circle(0, 0, 1), svg.circle(1, 1, 1))
+        >>> len(g.find_all("circle"))
+        2
+        """
         if isinstance(match, str):
             return list(self.iter(match))
         return [e for e in self.iter() if isinstance(e, match)]
 
     def get_element_by_id(self, element_id: str) -> Element | None:
+        """Find the element with the given id in this subtree.
+
+        Parameters
+        ----------
+        element_id : str
+            The id to look for.
+
+        Returns
+        -------
+        Element or None
+            The matching element, or None.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> g = svg.group(svg.circle(0, 0, 1, id="dot"))
+        >>> g.get_element_by_id("dot").tag
+        'circle'
+        """
         return next((e for e in self.iter() if e.id == element_id), None)
 
     def root(self) -> Element:
+        """Return the topmost ancestor, or this element if it has no parent.
+
+        Returns
+        -------
+        Element
+            The root of the tree this element belongs to.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> c = svg.circle(0, 0, 1)
+        >>> g = svg.group(c)
+        >>> c.root() is g
+        True
+        """
         node = self
         while node.parent is not None:
             node = node.parent
@@ -430,13 +848,55 @@ class Element(Composable):
         return self.clone()
 
     def to_string(self, **options: Any) -> str:
-        """Serialize; see :class:`svgwriter.io.SerializeOptions`."""
+        """Serialize to an SVG string; see :class:`svgwriter.io.SerializeOptions`.
+
+        Parameters
+        ----------
+        **options
+            Serialization options such as ``pretty`` or ``xml_declaration``.
+
+        Returns
+        -------
+        str
+            The SVG markup.
+
+        See Also
+        --------
+        save : Write to a file or stream.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.circle(0, 0, 1).to_string(xml_declaration=False, pretty=False)
+        '<circle cx="0" cy="0" r="1"/>'
+        """
         from ..io.writer import to_string
 
         return to_string(self, **options)
 
     def save(self, target: AnyPath | TextSink, **options: Any) -> None:
-        """Write to a path or text stream."""
+        """Write to a path or text stream.
+
+        Parameters
+        ----------
+        target : path or text stream
+            Where to write the SVG markup.
+        **options
+            Serialization options, as for :meth:`to_string`.
+
+        See Also
+        --------
+        to_string : Serialize to a string.
+
+        Examples
+        --------
+        >>> import io
+        >>> import svgwriter as svg
+        >>> buffer = io.StringIO()
+        >>> svg.circle(0, 0, 1).save(buffer, xml_declaration=False, pretty=False)
+        >>> buffer.getvalue()
+        '<circle cx="0" cy="0" r="1"/>'
+        """
         from ..io.writer import write
 
         write(self, target, **options)
@@ -462,6 +922,22 @@ class UnknownAttributeError(AttributeError):
 
     The "did you mean" suggestion is computed only when the message is shown,
     so ``getattr(element, name, default)`` stays cheap.
+
+    Parameters
+    ----------
+    owner : str
+        The class name of the element.
+    name : str
+        The attribute that was requested.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> try:
+    ...     svg.rect(0, 0, 1, 1).widht
+    ... except AttributeError as error:
+    ...     print("did you mean 'width'?" in str(error))
+    True
     """
 
     def __init__(self, owner: str, name: str) -> None:
@@ -477,7 +953,24 @@ class UnknownAttributeError(AttributeError):
 
 
 class UnknownKeywordError(UnknownAttributeError, TypeError):
-    """An unknown keyword argument (likely a typo); custom attributes go in ``attrs={...}``."""
+    """An unknown keyword argument (likely a typo); custom attributes go in ``attrs={...}``.
+
+    Parameters
+    ----------
+    owner : str
+        The class name of the element.
+    name : str
+        The keyword that was given.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> try:
+    ...     svg.rect(0, 0, 1, 1, widht=3)
+    ... except TypeError as error:
+    ...     print(type(error).__name__)
+    UnknownKeywordError
+    """
 
     def __str__(self) -> str:
         hint = difflib.get_close_matches(self.attribute, _PY_NAMES, n=1)

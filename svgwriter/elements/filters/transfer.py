@@ -24,6 +24,15 @@ def _numbers(value: Any) -> list[float]:
 
 
 class TransferType(str, enum.Enum):
+    """Transfer function types of :class:`FeFunc`.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.TransferType.GAMMA.value
+    'gamma'
+    """
+
     IDENTITY = "identity"
     TABLE = "table"
     DISCRETE = "discrete"
@@ -32,7 +41,31 @@ class TransferType(str, enum.Enum):
 
 
 class FeFunc(CoreAttributes, content=ContentModel.ELEMENTS):
-    """Shared base of the four channel transfer functions."""
+    """Shared base of the four channel transfer functions.
+
+    Parameters
+    ----------
+    type : TransferType, optional
+        Kind of function. Defaults to ``TransferType.IDENTITY``.
+    table_values : sequence of float, optional
+        Lookup table for ``table`` and ``discrete``. Defaults to None.
+    slope, intercept : float, optional
+        Coefficients of ``linear``. Default to None.
+    amplitude, exponent, offset : float, optional
+        Coefficients of ``gamma``. Default to None.
+    **kwargs
+        Core and other SVG attributes in Python spelling.
+
+    See Also
+    --------
+    FeComponentTransfer : The primitive that holds these functions.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.FeFuncR.linear(2, 0.1))
+    '<feFuncR type="linear" slope="2" intercept="0.1"/>'
+    """
 
     def __init__(
         self,
@@ -59,18 +92,105 @@ class FeFunc(CoreAttributes, content=ContentModel.ELEMENTS):
 
     @classmethod
     def linear(cls, slope: float, intercept: float = 0, **kwargs: Any) -> Self:
+        """Create a linear transfer function, ``slope * C + intercept``.
+
+        Parameters
+        ----------
+        slope : float
+            Multiplier.
+        intercept : float, optional
+            Added constant. Defaults to 0.
+        **kwargs
+            Core and other SVG attributes in Python spelling.
+
+        Returns
+        -------
+        FeFunc
+            The new function element.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> str(svg.FeFuncA.linear(0.5))
+        '<feFuncA type="linear" slope="0.5" intercept="0"/>'
+        """
         return cls(TransferType.LINEAR, slope=slope, intercept=intercept, **kwargs)
 
     @classmethod
     def table(cls, *values: float, **kwargs: Any) -> Self:
+        """Create a piecewise-linear transfer function from lookup values.
+
+        Parameters
+        ----------
+        *values : float
+            Table entries, evenly spaced over the input range.
+        **kwargs
+            Core and other SVG attributes in Python spelling.
+
+        Returns
+        -------
+        FeFunc
+            The new function element.
+
+        See Also
+        --------
+        evaluate : Apply the function to a value.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> str(svg.FeFuncR.table(0, 1))
+        '<feFuncR type="table" tableValues="0 1"/>'
+        """
         return cls(TransferType.TABLE, table_values=values, **kwargs)
 
     @classmethod
     def gamma(cls, amplitude: float = 1, exponent: float = 1, offset: float = 0, **kwargs: Any) -> Self:
+        """Create a gamma transfer function, ``amplitude * C ** exponent + offset``.
+
+        Parameters
+        ----------
+        amplitude : float, optional
+            Multiplier. Defaults to 1.
+        exponent : float, optional
+            Power applied to the channel. Defaults to 1.
+        offset : float, optional
+            Added constant. Defaults to 0.
+        **kwargs
+            Core and other SVG attributes in Python spelling.
+
+        Returns
+        -------
+        FeFunc
+            The new function element.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.FeFuncG.gamma(2, 3).evaluate(0.5)
+        0.25
+        """
         return cls(TransferType.GAMMA, amplitude=amplitude, exponent=exponent, offset=offset, **kwargs)
 
     def evaluate(self, c: float) -> float:
-        """Apply this transfer function to a channel value in ``0..1``."""
+        """Apply this transfer function to a channel value.
+
+        Parameters
+        ----------
+        c : float
+            Channel value in ``0..1``.
+
+        Returns
+        -------
+        float
+            The transformed value.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.FeFuncR.linear(2, 0.1).evaluate(0.5)
+        1.1
+        """
         kind = TransferType(self.get("type", TransferType.IDENTITY))
         table = _numbers(self.get("tableValues"))
         if kind is TransferType.LINEAR:
@@ -87,23 +207,81 @@ class FeFunc(CoreAttributes, content=ContentModel.ELEMENTS):
 
 
 class FeFuncR(FeFunc, tag="feFuncR"):
-    """``<feFuncR>``."""
+    """``<feFuncR>``: the transfer function of the red channel.
+
+    Takes the parameters of :class:`FeFunc`.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.FeFuncR.table(0, 1))
+    '<feFuncR type="table" tableValues="0 1"/>'
+    """
 
 
 class FeFuncG(FeFunc, tag="feFuncG"):
-    """``<feFuncG>``."""
+    """``<feFuncG>``: the transfer function of the green channel.
+
+    Takes the parameters of :class:`FeFunc`.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.FeFuncG.tag
+    'feFuncG'
+    """
 
 
 class FeFuncB(FeFunc, tag="feFuncB"):
-    """``<feFuncB>``."""
+    """``<feFuncB>``: the transfer function of the blue channel.
+
+    Takes the parameters of :class:`FeFunc`.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.FeFuncB.tag
+    'feFuncB'
+    """
 
 
 class FeFuncA(FeFunc, tag="feFuncA"):
-    """``<feFuncA>``."""
+    """``<feFuncA>``: the transfer function of the alpha channel.
+
+    Takes the parameters of :class:`FeFunc`.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.FeFuncA.tag
+    'feFuncA'
+    """
 
 
 class FeComponentTransfer(SingleInput, Container[FeFunc], tag="feComponentTransfer"):
-    """``<feComponentTransfer>``: per-channel remapping."""
+    """``<feComponentTransfer>``: per-channel remapping.
+
+    Parameters
+    ----------
+    *functions : FeFunc
+        Channel functions to add as children.
+    red, green, blue, alpha : FeFunc, optional
+        Functions for one channel each; they are converted to the matching
+        ``feFuncR``/``G``/``B``/``A`` element. Default to None.
+    **kwargs
+        Sub-region (``x``, ``y``, ``width``, ``height``), ``result``, ``in_``
+        and other SVG attributes in Python spelling.
+
+    See Also
+    --------
+    FeColorMatrix : Mix channels with a matrix.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.FeComponentTransfer(red=svg.FeFuncR.linear(2)))
+    '<feComponentTransfer><feFuncR type="linear" slope="2" intercept="0"/></feComponentTransfer>'
+    """
 
     def __init__(
         self,

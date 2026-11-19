@@ -24,7 +24,28 @@ Point = tuple[float, float]
 
 
 def polylines(data: object, tolerance: float) -> list[tuple[list[Point], bool]]:
-    """Subpaths as point lists (curves subdivided to within *tolerance*), each with a closed flag."""
+    """Subpaths as point lists (curves subdivided to within *tolerance*), each with a closed flag.
+
+    Parameters
+    ----------
+    data : PathData
+        The outline to flatten.
+    tolerance : float
+        Maximum deviation allowed when curves become line segments, in the data's units.
+
+    Returns
+    -------
+    list of (list of (float, float), bool)
+        One entry per subpath: its points and whether it was closed. Closed subpaths repeat
+        their first point at the end.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._cnc import polylines
+    >>> polylines(svg.PathData("M0 0 L10 0 L10 10 Z"), 0.1)
+    [([(0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 0.0)], True)]
+    """
     result: list[tuple[list[Point], bool]] = []
     points: list[Point] = []
     current: Point = (0.0, 0.0)
@@ -75,7 +96,35 @@ def _n(value: float) -> str:
 
 
 def to_dxf(document: Document, *, tolerance: float = DEFAULT_TOLERANCE, unit_mm: float = MM_PER_USER_UNIT) -> str:
-    """AutoCAD DXF R12: one ``POLYLINE`` per subpath, in millimetres, y up, layer per colour."""
+    """AutoCAD DXF R12: one ``POLYLINE`` per subpath, in millimetres, y up, layer per colour.
+
+    Parameters
+    ----------
+    document : Document
+        The document to convert.
+    tolerance : float, optional
+        Maximum deviation (mm) when curves become line segments. Defaults to 0.05.
+    unit_mm : float, optional
+        Millimetres per user unit. Defaults to 25.4 / 96 (96 user units per inch).
+
+    Returns
+    -------
+    str
+        DXF text.
+
+    See Also
+    --------
+    to_hpgl : Plotter output.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._cnc import to_dxf
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
+    >>> to_dxf(doc).count("POLYLINE")
+    1
+    """
     scene = flatten(document)
     lines = ["0", "SECTION", "2", "HEADER", "9", "$INSUNITS", "70", "4", "0", "ENDSEC",
              "0", "SECTION", "2", "ENTITIES"]
@@ -91,7 +140,35 @@ def to_dxf(document: Document, *, tolerance: float = DEFAULT_TOLERANCE, unit_mm:
 
 
 def to_hpgl(document: Document, *, tolerance: float = DEFAULT_TOLERANCE, unit_mm: float = MM_PER_USER_UNIT) -> str:
-    """HPGL for pen plotters and cutters: one pen per distinct colour (40 units/mm, y up)."""
+    """HPGL for pen plotters and cutters: one pen per distinct colour (40 units/mm, y up).
+
+    Parameters
+    ----------
+    document : Document
+        The document to convert.
+    tolerance : float, optional
+        Maximum deviation (mm) when curves become line segments. Defaults to 0.05.
+    unit_mm : float, optional
+        Millimetres per user unit. Defaults to 25.4 / 96 (96 user units per inch).
+
+    Returns
+    -------
+    str
+        HPGL text.
+
+    See Also
+    --------
+    to_gcode : Machine toolpaths.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._cnc import to_hpgl
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
+    >>> to_hpgl(doc).splitlines()[:2]
+    ['IN;', 'SP1;PU0,106;']
+    """
     scene = flatten(document)
     pens: dict[str, int] = {}
     scale = unit_mm * HPGL_UNITS_PER_MM
@@ -121,16 +198,38 @@ def to_gcode(
 
     Parameters
     ----------
-    tolerance : float
-        Maximum deviation (mm) when curves become line segments.
-    unit_mm : float
-        Millimetres per user unit (96 user units per inch by default).
-    feed : float
-        Cutting feed rate in mm/min.
-    travel_z, cut_z : float
-        Tool heights for ``mode="mill"``.
-    mode : {"mill", "laser"}
-        Raise and lower Z, or switch the laser with ``M3 S<power>``/``M5``.
+    document : Document
+        The document to convert.
+    tolerance : float, optional
+        Maximum deviation (mm) when curves become line segments. Defaults to 0.05.
+    unit_mm : float, optional
+        Millimetres per user unit (96 user units per inch by default). Defaults to 25.4 / 96.
+    feed : float, optional
+        Cutting feed rate in mm/min. Defaults to 1000.0.
+    travel_z, cut_z : float, optional
+        Tool heights for ``mode="mill"``. Default to 2.0 and -0.5.
+    mode : {"mill", "laser"}, optional
+        Raise and lower Z, or switch the laser with ``M3 S<power>``/``M5``. Defaults to "mill".
+    power : float, optional
+        Laser power for ``mode="laser"``. Defaults to 1000.0.
+
+    Returns
+    -------
+    str
+        G-code text.
+
+    See Also
+    --------
+    to_dxf : CAD output.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._cnc import to_gcode
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
+    >>> to_gcode(doc).splitlines()[:3]
+    ['G21 (millimetres)', 'G90 (absolute)', 'G17']
     """
     scene = flatten(document)
     out = ["G21 (millimetres)", "G90 (absolute)", "G17"]

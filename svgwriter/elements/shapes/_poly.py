@@ -20,7 +20,24 @@ _EMPTY.flags.writeable = False
 
 
 class PointList:
-    """Immutable ``points`` attribute value wrapping an ``(N, 2)`` array."""
+    """Immutable ``points`` attribute value wrapping an ``(N, 2)`` array.
+
+    Parameters
+    ----------
+    array : numpy.ndarray
+        Read-only ``(N, 2)`` float array of vertices.
+
+    See Also
+    --------
+    as_points : Build such an array from other inputs.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from svgwriter.elements.shapes._poly import PointList
+    >>> PointList(np.array([[0.0, 0.0], [1.0, 2.0]]))
+    PointList([[0.0, 0.0], [1.0, 2.0]])
+    """
 
     __slots__ = ("array",)
 
@@ -37,6 +54,25 @@ class PointList:
         return self.array if dtype is None else self.array.astype(dtype)
 
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
+        """Serialize as SVG ``points`` text.
+
+        Parameters
+        ----------
+        precision : int, optional
+            Maximum decimal places. Defaults to the library default.
+
+        Returns
+        -------
+        str
+            Space-separated ``x,y`` pairs.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from svgwriter.elements.shapes._poly import PointList
+        >>> PointList(np.array([[0.0, 0.0], [1.5, 2.0]])).svg_value()
+        '0,0 1.5,2'
+        """
         return " ".join(f"{format_number(x, precision)},{format_number(y, precision)}" for x, y in self.array.tolist())
 
     def __repr__(self) -> str:
@@ -44,7 +80,29 @@ class PointList:
 
 
 def as_points(value: PointsLike | str) -> np.ndarray:
-    """*value* as a read-only ``(N, 2)`` float array."""
+    """Convert point input to a read-only ``(N, 2)`` float array.
+
+    Parameters
+    ----------
+    value : array-like or str
+        Vertices as a sequence of pairs, an array or SVG points text.
+
+    Returns
+    -------
+    numpy.ndarray
+        Read-only float array of shape ``(N, 2)``; empty input gives ``(0, 2)``.
+
+    Raises
+    ------
+    ValueError
+        If the input does not have shape ``(N, 2)``.
+
+    Examples
+    --------
+    >>> from svgwriter.elements.shapes._poly import as_points
+    >>> as_points("0,0 1,2").tolist()
+    [[0.0, 0.0], [1.0, 2.0]]
+    """
     array = np.array(parse_points(value) if isinstance(value, str) else value, dtype=float)
     if array.size == 0:
         return _EMPTY
@@ -59,7 +117,26 @@ FULL_CIRCLE: Final = 360.0
 
 
 class Polyline(Shape, tag="polyline"):
-    """``<polyline>``: an open sequence of straight segments."""
+    """``<polyline>``: an open sequence of straight segments.
+
+    Parameters
+    ----------
+    points : array-like or str, optional
+        Vertices as ``(N, 2)`` pairs or SVG points text. Defaults to no points.
+    **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+    See Also
+    --------
+    Polygon : The closed variant.
+    Path.from_points : The same outline as a ``<path>``.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.Polyline([(0, 0), (1, 2)]))
+    '<polyline points="0,0 1,2"/>'
+    """
 
     geometry_attributes: ClassVar[frozenset[str]] = frozenset({"points"})
 
@@ -69,7 +146,20 @@ class Polyline(Shape, tag="polyline"):
 
     @property
     def points(self) -> np.ndarray:
-        """Vertices as a read-only ``(N, 2)`` float array; assign any ``(N, 2)`` array-like or SVG text."""
+        """Vertices as a read-only ``(N, 2)`` float array.
+
+        Assign any ``(N, 2)`` array-like or SVG points text to replace them.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> line = svg.Polyline("0,0 1,2")
+        >>> line.points.tolist()
+        [[0.0, 0.0], [1.0, 2.0]]
+        >>> line.points = [(5, 5), (6, 6)]
+        >>> str(line)
+        '<polyline points="5,5 6,6"/>'
+        """
         raw = self.attributes.get("points")
         if raw is None:
             return _EMPTY
@@ -84,13 +174,46 @@ class Polyline(Shape, tag="polyline"):
 
     @classmethod
     def regular(cls, cx: float, cy: float, radius: float, sides: int, **kwargs: Any) -> Self:
-        """Vertices of a regular polygon, starting at the top."""
+        """Create the vertices of a regular polygon.
+
+        The first vertex is at the top and the rest follow clockwise.
+
+        Parameters
+        ----------
+        cx, cy : float
+            Center.
+        radius : float
+            Distance from the center to each vertex.
+        sides : int
+            Number of vertices.
+        **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+        Returns
+        -------
+        Polyline
+            The new element; on :class:`Polygon` it is closed.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> str(svg.Polygon.regular(0, 0, 10, 4))
+        '<polygon points="0,-10 10,0 0,10 -10,0"/>'
+        """
         step = FULL_CIRCLE / sides
         angles = np.radians(np.arange(sides) * step)
         return cls(np.column_stack((cx + radius * np.sin(angles), cy - radius * np.cos(angles))), **kwargs)
 
     @property
     def bbox(self) -> BBox:
+        """Geometric bounding box of the vertices; no points give a zero box.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Polyline([(0, 0), (4, 3)]).bbox
+        BBox(x=0.0, y=0.0, width=4.0, height=3.0)
+        """
         pts = self.points
         if not len(pts):
             return BBox(0.0, 0.0, 0.0, 0.0)
@@ -107,18 +230,47 @@ class Polyline(Shape, tag="polyline"):
         return builder
 
     def local_outline(self) -> PathData:
+        """The outline as path data, open."""
         return self._builder().build()
 
 
 class Polygon(Polyline, tag="polygon"):
-    """``<polygon>``: a closed ``Polyline``."""
+    """``<polygon>``: a closed ``Polyline``.
+
+    Takes the same parameters as :class:`Polyline`; the last vertex joins the first.
+
+    Parameters
+    ----------
+    points : array-like or str, optional
+        Vertices as ``(N, 2)`` pairs or SVG points text. Defaults to no points.
+    **kwargs
+        Presentation, core and other SVG attributes in Python spelling.
+
+    See Also
+    --------
+    Polyline : The open variant.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.Polygon([(0, 0), (4, 0), (4, 3)]))
+    '<polygon points="0,0 4,0 4,3"/>'
+    """
 
     @property
     def area(self) -> float:
-        """Signed-area magnitude (shoelace formula)."""
+        """Enclosed area from the shoelace formula, in square user units.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Polygon([(0, 0), (4, 0), (4, 3)]).area
+        6.0
+        """
         x, y = self.points.T
         return float(abs(np.dot(x, np.roll(y, -1)) - np.dot(y, np.roll(x, -1))) / 2.0)
 
     def local_outline(self) -> PathData:
+        """The outline as path data, closed."""
         builder = self._builder()
         return builder.close().build() if len(builder) else builder.build()

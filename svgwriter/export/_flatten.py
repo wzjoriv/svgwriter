@@ -26,7 +26,41 @@ DEFAULT_MITER: Final = 4.0
 
 @dataclass
 class Item:
-    """One painted path: geometry in page units plus solid paints."""
+    """One painted path: geometry in page units plus solid paints.
+
+    Attributes
+    ----------
+    data : PathData
+        Outline in page coordinates.
+    fill, stroke : Color or None
+        Solid paints; None means no paint.
+    fill_opacity, stroke_opacity : float
+        Opacity of each paint, group opacity included.
+    evenodd : bool
+        Whether the fill uses the even-odd rule.
+    stroke_width : float
+        Stroke width in page units.
+    linecap, linejoin : str
+        ``stroke-linecap`` and ``stroke-linejoin`` values.
+    miter_limit : float
+        ``stroke-miterlimit``.
+    dashes : tuple of float
+        Dash lengths in page units; empty for a solid stroke.
+
+    See Also
+    --------
+    flatten : Produce items from a document.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._flatten import flatten
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 10, 10, fill="red")
+    >>> item = flatten(doc).items[0]
+    >>> item.fill.hex, item.stroke
+    ('#ff0000', None)
+    """
 
     data: PathData
     fill: Color | None
@@ -43,7 +77,29 @@ class Item:
 
 @dataclass
 class Scene:
-    """The flattened page: size in user units and its items in paint order."""
+    """The flattened page: size in user units and its items in paint order.
+
+    Attributes
+    ----------
+    width, height : float
+        Page size in user units.
+    items : list of Item
+        Painted paths, first painted first.
+    skipped : list of str
+        Descriptions of elements that could not be represented.
+
+    See Also
+    --------
+    flatten : Produce a scene from a document.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._flatten import flatten
+    >>> scene = flatten(svg.Document(10, 5))
+    >>> (scene.width, scene.height, scene.items)
+    (10.0, 5.0, [])
+    """
 
     width: float
     height: float
@@ -52,7 +108,29 @@ class Scene:
 
 
 def to_cubic(data: PathData) -> list[tuple[str, tuple[float, ...]]]:
-    """``M``/``L``/``C``/``Z`` operations (quadratics and arcs converted) for PostScript-like targets."""
+    """``M``/``L``/``C``/``Z`` operations (quadratics and arcs converted) for PostScript-like targets.
+
+    Parameters
+    ----------
+    data : PathData
+        The outline to convert.
+
+    Returns
+    -------
+    list of (str, tuple of float)
+        Each operation letter with its absolute coordinates.
+
+    See Also
+    --------
+    flatten : Build the items whose data this converts.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._flatten import to_cubic
+    >>> to_cubic(svg.PathData("M0 0 L10 0 Z"))
+    [('M', (0.0, 0.0)), ('L', (10.0, 0.0)), ('Z', ())]
+    """
     from ..ops._skia import from_skia, to_skia
 
     ops: list[tuple[str, tuple[float, ...]]] = []
@@ -132,10 +210,39 @@ def _hidden(leaf: Element, root: Element) -> bool:
 def flatten(document: Document) -> Scene:
     """Reduce *document* to :class:`Item` paths in its user space (``viewBox`` applied).
 
+    Parameters
+    ----------
+    document : Document
+        The document to flatten.
+
+    Returns
+    -------
+    Scene
+        The page size and the painted paths.
+
+    Warns
+    -----
+    UserWarning
+        When elements cannot be represented and are skipped.
+
+    See Also
+    --------
+    to_cubic : Convert an item's outline for PostScript-like targets.
+
     Notes
     -----
     Gradients and patterns become their first stop color; images, masks,
     filters and markers are not represented and are listed in ``skipped``.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._flatten import flatten
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 10, 10, fill="red")
+    >>> scene = flatten(doc)
+    >>> len(scene.items), scene.skipped
+    (1, [])
     """
     from ..attributes.cascade import rules_of
     from ..elements._geometry import PathOperand

@@ -25,7 +25,14 @@ TEXT_MARGIN: Final = 4.0
 
 
 class SceneError(ValueError):
-    """A scene script does not define a document."""
+    """A scene script does not define a document.
+
+    Subclasses :class:`ValueError`.
+
+    See Also
+    --------
+    load_scene : Raises it.
+    """
 
 
 def load_scene(path: str | Path) -> tuple[Document, Callable[[Document, float], object] | None, dict[str, Any]]:
@@ -35,6 +42,26 @@ def load_scene(path: str | Path) -> tuple[Document, Callable[[Document, float], 
     :class:`~svgwriter.Document`, or a module-level ``document``. It may
     define ``update(document, seconds)`` and the settings ``FPS``,
     ``DURATION`` and ``RENDERER``.
+
+    Parameters
+    ----------
+    path : str or pathlib.Path
+        An ``.svg`` file or a Python scene script.
+
+    Returns
+    -------
+    tuple
+        The document, the optional ``update`` callable (None when absent) and a
+        dict of the lowercase settings that the script defined.
+
+    Raises
+    ------
+    SceneError
+        If a Python script defines neither ``build()``/``scene()`` nor ``document``.
+
+    See Also
+    --------
+    svgwriter.Document.render_animation : Renders the loaded document.
     """
     source = Path(path)
     if source.suffix.lower() == ".svg":
@@ -103,6 +130,17 @@ def _cmd_outline(args: argparse.Namespace) -> int:
 
 
 def add_media_commands(commands: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    """Register ``animate``, ``render`` and ``outline``.
+
+    Parameters
+    ----------
+    commands : argparse._SubParsersAction
+        The sub-parser collection of the main parser.
+
+    See Also
+    --------
+    svgwriter.cli._basic.add_basic_commands : The commands that need neither ffmpeg nor skia.
+    """
     animate = commands.add_parser(
         "animate",
         help="render a scene to mp4/gif/webm through ffmpeg",

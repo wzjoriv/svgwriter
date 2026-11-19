@@ -8,7 +8,14 @@ __all__ = ["Category", "ContentModel"]
 
 
 class ContentModel(enum.Flag):
-    """What an element may contain."""
+    """What an element may contain.
+
+    Examples
+    --------
+    >>> from svgwriter.elements._categories import ContentModel
+    >>> ContentModel.TEXT in ContentModel.MIXED
+    True
+    """
 
     EMPTY = 0
     TEXT = enum.auto()
@@ -17,7 +24,14 @@ class ContentModel(enum.Flag):
 
 
 class Category(enum.Enum):
-    """SVG 1.1 element categories (section 1.6)."""
+    """SVG 1.1 element categories (section 1.6).
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.Rect.category.name
+    'SHAPE'
+    """
 
     ANIMATION = enum.auto()
     CONTAINER = enum.auto()

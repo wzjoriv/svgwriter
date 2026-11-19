@@ -15,10 +15,35 @@ FULL_TURN: Final = 2.0 * math.pi
 
 @dataclass(frozen=True)
 class CenterArc:
-    """An arc in center parameterization.
+    """An elliptical arc in center parameterization.
 
-    Angles are in radians; ``sweep`` is signed (positive is clockwise in
-    SVG's y-down coordinate system).
+    Describes the arc by the ellipse centre, radii and rotation plus a start
+    angle and a signed sweep, which is easier to sample than the endpoint form.
+
+    Parameters
+    ----------
+    cx, cy : float
+        Centre of the ellipse.
+    rx, ry : float
+        Radii of the ellipse along its own axes.
+    rotation : float
+        Rotation of the ellipse's x axis, in degrees.
+    start_angle : float
+        Angle of the arc's first point on the ellipse, in radians.
+    sweep : float
+        Signed angular extent in radians; positive is clockwise in SVG's
+        y-down coordinate system.
+
+    See Also
+    --------
+    endpoint_to_center : Build a `CenterArc` from SVG endpoint parameters.
+
+    Examples
+    --------
+    >>> from svgwriter.pathdata import CenterArc
+    >>> arc = CenterArc(0, 0, 5, 5, 0, 0.0, 3.141592653589793)
+    >>> arc.sweep > 0
+    True
     """
 
     cx: float
@@ -30,7 +55,27 @@ class CenterArc:
     sweep: float
 
     def point_at(self, t: float) -> Point:
-        """Point at parameter ``t`` in ``0..1`` along the arc."""
+        """Return the point at parameter `t` along the arc.
+
+        Parameters
+        ----------
+        t : float
+            Position along the arc, from 0 (start) to 1 (end).
+
+        Returns
+        -------
+        Point
+            The point on the arc.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import endpoint_to_center
+        >>> from svgwriter.transform import Point
+        >>> arc = endpoint_to_center(Point(0, 0), Point(10, 0), 5, 5, 0, False, True)
+        >>> p = arc.point_at(0.5)
+        >>> round(p.x, 6), round(p.y, 6)
+        (5.0, -5.0)
+        """
         angle = self.start_angle + self.sweep * t
         phi = math.radians(self.rotation)
         cos_phi, sin_phi = math.cos(phi), math.sin(phi)
@@ -39,6 +84,26 @@ class CenterArc:
         return Point(cos_phi * x - sin_phi * y + self.cx, sin_phi * x + cos_phi * y + self.cy)
 
     def sample(self, count: int) -> list[Point]:
+        """Return evenly spaced points along the arc.
+
+        Parameters
+        ----------
+        count : int
+            Number of segments; the result has ``count + 1`` points including both ends.
+
+        Returns
+        -------
+        list of Point
+            Points from the start to the end of the arc.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import endpoint_to_center
+        >>> from svgwriter.transform import Point
+        >>> arc = endpoint_to_center(Point(0, 0), Point(10, 0), 5, 5, 0, False, True)
+        >>> len(arc.sample(4))
+        5
+        """
         return [self.point_at(i / count) for i in range(count + 1)]
 
 
@@ -58,11 +123,43 @@ def endpoint_to_center(
     large_arc: bool,
     sweep: bool,
 ) -> CenterArc | None:
-    """Convert endpoint arc parameters to a ``CenterArc``.
+    """Convert endpoint arc parameters to a `CenterArc`.
 
-    Returns ``None`` when the arc degenerates to a straight line (zero
-    radius or coincident endpoints). Radii that are too small are scaled
-    up as the specification requires.
+    Implements the conversion from SVG 1.1 appendix F.6.5. Radii that are too
+    small to span the endpoints are scaled up as the specification requires.
+
+    Parameters
+    ----------
+    start, end : Point
+        The arc's start and end points.
+    rx, ry : float
+        Ellipse radii.
+    rotation : float
+        Rotation of the ellipse's x axis, in degrees.
+    large_arc : bool
+        Choose the arc spanning more than half the ellipse.
+    sweep : bool
+        Choose the arc drawn in the positive-angle (clockwise) direction.
+
+    Returns
+    -------
+    CenterArc or None
+        The centre form, or ``None`` when the arc degenerates to a straight
+        line (zero radius or coincident endpoints).
+
+    See Also
+    --------
+    CenterArc : The returned parameterization.
+
+    Examples
+    --------
+    >>> from svgwriter.pathdata import endpoint_to_center
+    >>> from svgwriter.transform import Point
+    >>> arc = endpoint_to_center(Point(0, 0), Point(10, 0), 5, 5, 0, False, True)
+    >>> arc.cx, arc.cy
+    (5.0, 0.0)
+    >>> endpoint_to_center(Point(0, 0), Point(0, 0), 5, 5, 0, False, True) is None
+    True
     """
     if start == end or rx == 0 or ry == 0:
         return None

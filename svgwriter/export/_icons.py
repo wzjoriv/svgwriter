@@ -33,10 +33,35 @@ def _pngs(document: Document, sizes: Iterable[int], padding: float) -> dict[int,
 def to_ico(document: Document, *, sizes: Iterable[int] = ICO_SIZES, padding: float = 0.0) -> bytes:
     """A Windows icon with one square PNG per size (Vista and later).
 
+    Parameters
+    ----------
+    document : Document
+        The drawing to rasterize at each size.
+    sizes : iterable of int, optional
+        Pixel sizes, each at most 256. Defaults to (16, 24, 32, 48, 64, 128, 256).
+    padding : float, optional
+        Margin around the drawing in its own units. Defaults to 0.0.
+
+    Returns
+    -------
+    bytes
+        The ICO file.
+
     Raises
     ------
     ValueError
         For sizes above 256 pixels, which ICO cannot hold.
+
+    See Also
+    --------
+    to_icns : The macOS counterpart.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._icons import to_ico
+    >>> to_ico(svg.Document(8, 8), sizes=(16, 32))[:4] == bytes.fromhex("00000100")
+    True
     """
     images = _pngs(document, sizes, padding)
     if any(size > ICO_MAX or size < 1 for size in images):
@@ -52,7 +77,38 @@ def to_ico(document: Document, *, sizes: Iterable[int] = ICO_SIZES, padding: flo
 
 
 def to_icns(document: Document, *, sizes: Iterable[int] = ICNS_SIZES, padding: float = 0.0) -> bytes:
-    """A macOS icon family: each size stored as PNG under its standard and Retina type codes."""
+    """A macOS icon family: each size stored as PNG under its standard and Retina type codes.
+
+    Parameters
+    ----------
+    document : Document
+        The drawing to rasterize at each size.
+    sizes : iterable of int, optional
+        Pixel sizes from 16, 32, 64, 128, 256, 512 and 1024. Defaults to all of them.
+    padding : float, optional
+        Margin around the drawing in its own units. Defaults to 0.0.
+
+    Returns
+    -------
+    bytes
+        The ICNS file.
+
+    Raises
+    ------
+    ValueError
+        For sizes ICNS has no type code for.
+
+    See Also
+    --------
+    to_ico : The Windows counterpart.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._icons import to_icns
+    >>> to_icns(svg.Document(8, 8), sizes=(16,))[:4]
+    b'icns'
+    """
     unknown = [s for s in sizes if s not in ICNS_TYPES]
     if unknown:
         raise ValueError(f"ICNS sizes must be among {sorted(ICNS_TYPES)}, got {unknown}")
@@ -84,7 +140,34 @@ def _largest_png(data: bytes) -> bytes:
 
 
 def read_icon(data: bytes) -> Document:
-    """The largest image of an ICO or ICNS file as a document (PNG-backed entries only)."""
+    """The largest image of an ICO or ICNS file as a document (PNG-backed entries only).
+
+    Parameters
+    ----------
+    data : bytes
+        The icon file contents.
+
+    Returns
+    -------
+    Document
+        A document holding the image at its pixel size.
+
+    Raises
+    ------
+    ValueError
+        If the data is not an icon file or holds no PNG image.
+
+    See Also
+    --------
+    to_ico : Write an ICO file.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._icons import read_icon, to_ico
+    >>> read_icon(to_ico(svg.Document(8, 8), sizes=(16, 32))).root.view_box.width
+    32
+    """
     from ._builtin import read_image
 
     png = _largest_png(data)

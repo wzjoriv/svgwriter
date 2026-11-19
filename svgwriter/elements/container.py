@@ -26,17 +26,60 @@ _CURSORS: weakref.WeakKeyDictionary[Element, Stack[Element]] = weakref.WeakKeyDi
 
 
 def attach_cursor(element: Element, stack: Stack[Element] | None) -> None:
-    """Let ``with element:`` move *stack*'s insertion point."""
+    """Let ``with element:`` move *stack*'s insertion point.
+
+    Parameters
+    ----------
+    element : Element
+        The element used in a ``with`` statement.
+    stack : Stack of Element or None
+        The insertion stack to move; None does nothing.
+    """
     if stack is not None:
         _CURSORS[element] = stack
 
 
 def cursor_of(element: Element) -> Stack[Element] | None:
+    """Return the insertion stack attached to *element*, if any.
+
+    Parameters
+    ----------
+    element : Element
+        The element to look up.
+
+    Returns
+    -------
+    Stack of Element or None
+        The stack set by :func:`attach_cursor`, or None.
+    """
     return _CURSORS.get(element)
 
 
 def flatten(items: Insertable) -> list[Element | str]:
-    """One element, a text run or an iterable of elements, as a list."""
+    """One element, a text run or an iterable of elements, as a list.
+
+    Parameters
+    ----------
+    items : Element, str or iterable of Element
+        What to normalize.
+
+    Returns
+    -------
+    list
+        The items as a list.
+
+    Raises
+    ------
+    TypeError
+        If *items* is not an element, a string or an iterable of elements.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.elements.container import flatten
+    >>> len(flatten([svg.circle(0, 0, 1), svg.circle(1, 1, 1)]))
+    2
+    """
     if isinstance(items, (Element, str)):
         return [items]
     try:
@@ -50,12 +93,61 @@ def flatten(items: Insertable) -> list[Element | str]:
 
 
 class Container(Element, Generic[ChildT]):
-    """Adds typed ``add``/iteration and ``+=`` for elements with a known child type."""
+    """Adds typed ``add``/iteration and ``+=`` for elements with a known child type.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> g = svg.group()
+    >>> g += [svg.circle(0, 0, 1), svg.rect(0, 0, 1, 1)]
+    >>> len(g), g[0].tag
+    (2, 'circle')
+    """
 
     def add(self, child: ChildT) -> ChildT:
+        """Append a child and return it.
+
+        Parameters
+        ----------
+        child : Element
+            The child to append.
+
+        Returns
+        -------
+        Element
+            The appended child.
+
+        See Also
+        --------
+        add_all : Append several children.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.group().add(svg.circle(0, 0, 1)).tag
+        'circle'
+        """
         return self.append(child)
 
     def add_all(self, children: Iterable[ChildT]) -> list[ChildT]:
+        """Append every child and return them as a list.
+
+        Parameters
+        ----------
+        children : iterable of Element
+            The children to append, in order.
+
+        Returns
+        -------
+        list of Element
+            The appended children.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> len(svg.group().add_all([svg.circle(0, 0, 1), svg.circle(1, 1, 1)]))
+        2
+        """
         return [self.append(child) for child in children]
 
     def __iadd__(self, children: ChildT | Iterable[ChildT]) -> Self:
@@ -84,6 +176,19 @@ class GraphicsContainer(  # type: ignore[misc]
 
     ``text`` is the :meth:`ElementFactory.text` shortcut here; these
     elements never hold character data.
+
+    See Also
+    --------
+    svgwriter.elements.container.Container : Typed child lists.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> g = svg.group()
+    >>> with g:
+    ...     _ = g.circle(5, 5, 2)
+    >>> len(g)
+    1
     """
 
     def _place(self, element: E) -> E:
@@ -103,6 +208,17 @@ class GraphicsContainer(  # type: ignore[misc]
 
         The root ``<svg>``'s when this container is inside one, otherwise a
         ``<defs>`` child of this container.
+
+        Returns
+        -------
+        Defs
+            The existing or newly created ``<defs>``.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.group().definitions().tag
+        'defs'
         """
         from .structure import Defs, Svg
 

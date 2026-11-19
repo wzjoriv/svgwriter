@@ -41,7 +41,30 @@ _ARC_FLAG_POSITIONS: Final = (3, 4)
 
 
 class PathSyntaxError(ValueError):
-    """Raised for malformed path data."""
+    """Raised for malformed path data.
+
+    A `ValueError` that records where in the text parsing failed.
+
+    Parameters
+    ----------
+    message : str
+        What went wrong.
+    position : int
+        Character offset of the error; also stored as the ``position`` attribute.
+
+    See Also
+    --------
+    parse_path : Raises this error.
+
+    Examples
+    --------
+    >>> from svgwriter.pathdata import PathSyntaxError, parse_path
+    >>> try:
+    ...     parse_path("L1 1")
+    ... except PathSyntaxError as error:
+    ...     print(error)
+    path data must start with a moveto at offset 0
+    """
 
     def __init__(self, message: str, position: int) -> None:
         super().__init__(f"{message} at offset {position}")
@@ -104,7 +127,36 @@ def _build(code: str, relative: bool, args: list[float]) -> PathCommand:
 
 
 def iter_commands(text: str) -> Iterator[PathCommand]:
-    """Yield commands from path data, expanding implicit repeats."""
+    """Iterate the commands of path data text, expanding implicit repeats.
+
+    ``M0 0 1 1`` yields a ``MoveTo`` followed by a ``LineTo``; a repeated
+    ``moveto`` becomes a ``lineto`` of the same case. Empty text yields nothing.
+
+    Parameters
+    ----------
+    text : str
+        Path data, as in the ``d`` attribute.
+
+    Yields
+    ------
+    PathCommand
+        The commands in order.
+
+    Raises
+    ------
+    PathSyntaxError
+        If the text is malformed or does not start with a moveto.
+
+    See Also
+    --------
+    parse_path : The same, collected into a list.
+
+    Examples
+    --------
+    >>> from svgwriter.pathdata import iter_commands
+    >>> [str(c) for c in iter_commands("M0 0 1 1 l2 2")]
+    ['M0 0', 'L1 1', 'l2 2']
+    """
     scanner = _Scanner(text)
     if scanner.at_end():
         return
@@ -128,5 +180,31 @@ def iter_commands(text: str) -> Iterator[PathCommand]:
 
 
 def parse_path(text: str) -> list[PathCommand]:
-    """Parse path data into a list of commands."""
+    """Parse path data text into a list of commands.
+
+    Parameters
+    ----------
+    text : str
+        Path data, as in the ``d`` attribute.
+
+    Returns
+    -------
+    list of PathCommand
+        The parsed commands.
+
+    Raises
+    ------
+    PathSyntaxError
+        If the text is malformed or does not start with a moveto.
+
+    See Also
+    --------
+    iter_commands : Lazy version.
+
+    Examples
+    --------
+    >>> from svgwriter.pathdata import parse_path
+    >>> [str(c) for c in parse_path("M0 0 L1 1 z")]
+    ['M0 0', 'L1 1', 'z']
+    """
     return list(iter_commands(text))

@@ -35,7 +35,28 @@ _ICC_RE: Final = re.compile(r"\s+(icc-color\([^)]*\))\s*$")
 
 
 def clamp(value: N, low: N, high: N) -> N:
-    """Clamp *value* into ``[low, high]``."""
+    """Clamp a value into a range.
+
+    Parameters
+    ----------
+    value : int or float
+        The value to clamp.
+    low, high : int or float
+        Lower and upper bounds, inclusive.
+
+    Returns
+    -------
+    int or float
+        `low` if `value` is below it, `high` if above, otherwise `value`.
+
+    Examples
+    --------
+    >>> from svgwriter.color import clamp
+    >>> clamp(5, 0, 1)
+    1
+    >>> clamp(-0.5, 0.0, 1.0)
+    0.0
+    """
     return max(low, min(high, value))
 
 
@@ -43,19 +64,34 @@ def clamp(value: N, low: N, high: N) -> N:
 class Color:
     """An sRGB color with straight alpha; every channel is a float in ``0..1``.
 
+    Colors are immutable, support ``+`` (even mix), ``*`` and ``/`` (scaling),
+    and iterate as ``r, g, b, a``.
+
     Parameters
     ----------
     r, g, b : float
         Red, green and blue in ``0..1``.
-    a : float
-        Alpha (opacity) in ``0..1``; 1 is opaque.
+    a : float, optional
+        Alpha (opacity) in ``0..1``; 1 is opaque. Defaults to 1.0.
     icc : str, optional
-        An ``icc-color(...)`` specification kept alongside the sRGB value.
+        An ``icc-color(...)`` specification kept alongside the sRGB value. Defaults to None.
     name : str, optional
-        Keyword written instead of hex (set when parsed from a name).
+        Keyword written instead of hex (set when parsed from a name); ignored
+        when comparing. Defaults to None.
+
+    Raises
+    ------
+    ValueError
+        If any channel is outside ``0..1``.
+
+    See Also
+    --------
+    as_color : Coerce names, tuples and colors into a `Color`.
+    parse_color : Parse CSS color text.
 
     Examples
     --------
+    >>> from svgwriter.color import Color
     >>> Color(1, 0.5, 0).hex
     '#ff8000'
     >>> Color.parse("#f80").uint8
@@ -91,53 +127,174 @@ class Color:
 
     @classmethod
     def parse(cls, text: str) -> Color:
-        """Parse a name, ``#rgb[a]``, ``#rrggbb[aa]``, ``rgb[a](...)`` or ``hsl[a](...)``."""
+        """Parse a name, ``#rgb[a]``, ``#rrggbb[aa]``, ``rgb[a](...)`` or ``hsl[a](...)``.
+
+        Parameters
+        ----------
+        text : str
+            Color text.
+
+        Returns
+        -------
+        Color
+            The parsed color.
+
+        Raises
+        ------
+        ValueError
+            If the text is not a recognized color.
+
+        See Also
+        --------
+        parse_color : The equivalent function.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color.parse("#f80").hex
+        '#ff8800'
+        """
         return parse_color(text)
 
     @classmethod
     def from_uint8(cls, r: int, g: int, b: int, a: int = CHANNEL_MAX) -> Color:
-        """Build from ``0..255`` channels."""
+        """Build a color from ``0..255`` channels.
+
+        Parameters
+        ----------
+        r, g, b : int
+            Red, green and blue; clamped to ``0..255``.
+        a : int, optional
+            Alpha; clamped to ``0..255``. Defaults to 255 (opaque).
+
+        Returns
+        -------
+        Color
+            The color with channels scaled to ``0..1``.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color.from_uint8(255, 0, 0).hex
+        '#ff0000'
+        """
         return cls(*(clamp(int(c), 0, CHANNEL_MAX) / CHANNEL_MAX for c in (r, g, b, a)))
 
     @classmethod
     def from_hsl(cls, hue: float, saturation: float, lightness: float, alpha: float = 1.0) -> Color:
-        """Build from hue in degrees and saturation, lightness and alpha in ``0..1``."""
+        """Build a color from hue, saturation and lightness.
+
+        Parameters
+        ----------
+        hue : float
+            Hue in degrees; wrapped into ``0..360``.
+        saturation, lightness : float
+            Saturation and lightness in ``0..1``.
+        alpha : float, optional
+            Opacity in ``0..1``. Defaults to 1.0.
+
+        Returns
+        -------
+        Color
+            The corresponding sRGB color.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color.from_hsl(240, 1, 0.5).hex
+        '#0000ff'
+        """
         r, g, b = colorsys.hls_to_rgb((hue % DEGREES) / DEGREES, lightness, saturation)
         return cls(r, g, b, alpha)
 
     @property
     def rgb(self) -> tuple[float, float, float]:
+        """The red, green and blue channels as floats in ``0..1``.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color(1, 0.5, 0).rgb
+        (1, 0.5, 0)
+        """
         return (self.r, self.g, self.b)
 
     @property
     def rgba(self) -> tuple[float, float, float, float]:
+        """The red, green, blue and alpha channels as floats in ``0..1``.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color(1, 0.5, 0).rgba
+        (1, 0.5, 0, 1.0)
+        """
         return (self.r, self.g, self.b, self.a)
 
     @property
     def uint8(self) -> tuple[int, int, int, int]:
-        """RGBA as ``0..255`` integers."""
+        """RGBA as ``0..255`` integers.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color(1, 0.5, 0).uint8
+        (255, 128, 0, 255)
+        """
         return tuple(round(c * CHANNEL_MAX) for c in self.rgba)  # type: ignore[return-value]
 
     @property
     def hex(self) -> str:
-        """``#rrggbb``, or ``#rrggbbaa`` when translucent."""
+        """The hex form: ``#rrggbb``, or ``#rrggbbaa`` when translucent.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color(1, 0.5, 0).hex
+        '#ff8000'
+        >>> Color(1, 0, 0, 0.5).hex
+        '#ff000080'
+        """
         r, g, b, a = self.uint8
         return f"#{r:02x}{g:02x}{b:02x}" + (f"{a:02x}" if a < CHANNEL_MAX else "")
 
     @property
     def hsl(self) -> tuple[float, float, float]:
-        """Hue in degrees, saturation and lightness in ``0..1``."""
+        """Hue in degrees, saturation and lightness in ``0..1``.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color.parse("blue").hsl
+        (240.0, 1.0, 0.5)
+        """
         h, light, s = colorsys.rgb_to_hls(*self.rgb)
         return (h * DEGREES, s, light)
 
     @property
     def opaque(self) -> Color:
-        """This color with alpha 1."""
+        """This color with alpha 1.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color(1, 0, 0, 0.5).opaque.a
+        1.0
+        """
         return self if self.a == 1.0 else replace(self, a=1.0, name=None)
 
     @property
     def luminance(self) -> float:
-        """Relative luminance per WCAG."""
+        """Relative luminance per WCAG, from 0 (black) to 1 (white).
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color.parse("black").luminance
+        0.0
+        >>> round(Color.parse("white").luminance, 6)
+        1.0
+        """
 
         def linear(v: float) -> float:
             if v <= SRGB_THRESHOLD:
@@ -147,28 +304,136 @@ class Color:
         return sum(w * linear(c) for w, c in zip(LUMA_WEIGHTS, self.rgb, strict=True))
 
     def with_alpha(self, alpha: Opacity) -> Color:
-        """The same color with alpha *alpha*."""
+        """Return the same color with a different alpha.
+
+        Parameters
+        ----------
+        alpha : float
+            New opacity in ``0..1``.
+
+        Returns
+        -------
+        Color
+            A copy with the given alpha.
+
+        Raises
+        ------
+        ValueError
+            If `alpha` is outside ``0..1``.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color.parse("red").with_alpha(0.5).a
+        0.5
+        """
         return replace(self, a=float(alpha), name=None if alpha != 1 else self.name)
 
     def lighten(self, amount: Opacity) -> Color:
-        """Raise HSL lightness by *amount* (negative darkens)."""
+        """Raise HSL lightness by an amount.
+
+        Parameters
+        ----------
+        amount : float
+            Change in lightness on a ``0..1`` scale; negative darkens. The result is clamped.
+
+        Returns
+        -------
+        Color
+            The adjusted color.
+
+        See Also
+        --------
+        darken : Lower lightness instead.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color(0.5, 0.5, 0.5).lighten(0.2).hex
+        '#b2b2b2'
+        """
         h, s, light = self.hsl
         return Color.from_hsl(h, s, clamp(light + amount, 0.0, 1.0), self.a)
 
     def darken(self, amount: Opacity) -> Color:
+        """Lower HSL lightness by an amount.
+
+        Parameters
+        ----------
+        amount : float
+            Decrease in lightness on a ``0..1`` scale.
+
+        Returns
+        -------
+        Color
+            The adjusted color.
+
+        See Also
+        --------
+        lighten : Raise lightness instead.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color(0.5, 0.5, 0.5).darken(0.2).hex
+        '#4c4c4c'
+        """
         return self.lighten(-amount)
 
     def mix(self, other: ColorLike, weight: Opacity = 0.5) -> Color:
-        """Linear blend of every channel; *weight* is the share of *other*."""
+        """Blend linearly with another color.
+
+        Parameters
+        ----------
+        other : Color or str or sequence of float
+            The color to mix in.
+        weight : float, optional
+            Share of `other` in the result, from 0 to 1. Defaults to 0.5.
+
+        Returns
+        -------
+        Color
+            The blended color; alpha is blended too.
+
+        Raises
+        ------
+        ValueError
+            If `other` is not a valid color.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color.parse("red").mix("blue", 0.25).hex
+        '#bf0040'
+        """
         other = as_color(other)
         return Color(*(a + (b - a) * weight for a, b in zip(self.rgba, other.rgba, strict=True)))
 
     def scale(self, factor: float) -> Color:
-        """Multiply the color channels (not alpha) by *factor*, clamped to ``0..1``."""
+        """Multiply the color channels by a factor.
+
+        Alpha is unchanged and channels are clamped to ``0..1``.
+
+        Parameters
+        ----------
+        factor : float
+            Multiplier; above 1 brightens, below 1 darkens.
+
+        Returns
+        -------
+        Color
+            The scaled color.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color(0.5, 0.2, 0.1).scale(2).hex
+        '#ff6633'
+        """
         return Color(*(clamp(c * factor, 0.0, 1.0) for c in self.rgb), self.a)
 
     def __add__(self, other: ColorLike) -> Color:
-        """Even mix."""
+        """Mix evenly with another color (``color + other``)."""
         try:
             return self.mix(other)
         except (TypeError, ValueError):
@@ -198,21 +463,73 @@ class Color:
         return iter(self.rgba)
 
     def __array__(self, dtype: object = None, copy: object = None) -> np.ndarray:
-        """``[r, g, b, a]`` as floats in ``0..1``."""
+        """Return ``[r, g, b, a]`` as floats in ``0..1`` for NumPy."""
         return np.array(self.rgba, dtype=dtype or np.float64)
 
     def with_icc(self, spec: str) -> Color:
+        """Return the color with an ICC specification attached.
+
+        Parameters
+        ----------
+        spec : str
+            An ``icc-color(...)`` specification, written after the sRGB fallback.
+
+        Returns
+        -------
+        Color
+            A copy carrying the specification.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color.parse("red").with_icc("icc-color(profile, 1)").svg_value()
+        'red icc-color(profile, 1)'
+        """
         return replace(self, icc=spec)
 
     def to_css(self) -> str:
-        """CSS text: the name or hex when opaque, ``rgba(...)`` otherwise."""
+        """Return CSS text for the color.
+
+        Returns
+        -------
+        str
+            The name or hex when opaque, ``rgba(...)`` otherwise.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color.parse("red").to_css()
+        'red'
+        >>> Color(1, 0, 0, 0.5).to_css()
+        'rgba(255, 0, 0, 0.5)'
+        """
         if self.a == 1.0:
             return self.name or self.hex
         r, g, b, _ = self.uint8
         return f"rgba({r}, {g}, {b}, {format_number(self.a, DEFAULT_PRECISION)})"
 
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
-        """SVG 1.1 text (name or ``#rrggbb``); alpha is written separately as an opacity."""
+        """Return SVG 1.1 color text.
+
+        The name or ``#rrggbb`` is written; alpha is not part of the text and
+        is emitted separately as an opacity attribute.
+
+        Parameters
+        ----------
+        precision : int, optional
+            Unused; accepted for a uniform interface. Defaults to the library default precision.
+
+        Returns
+        -------
+        str
+            The color text, followed by any ICC specification.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> Color(1, 0, 0, 0.5).svg_value()
+        '#ff0000'
+        """
         text = self.name if self.name and self.a == 1.0 else self.opaque.hex
         return f"{text} {self.icc}" if self.icc else text
 
@@ -227,12 +544,34 @@ ColorLike: TypeAlias = Color | str | Sequence[float]
 def as_color(value: ColorLike) -> Color:
     """Coerce a :data:`ColorLike` into a :class:`Color`.
 
+    Parameters
+    ----------
+    value : Color or str or sequence of float
+        A color, color text, or a 3- or 4-sequence of floats in ``0..1``.
+
+    Returns
+    -------
+    Color
+        `value` itself if it is already a `Color`.
+
     Raises
     ------
     ValueError
         For unknown names or channels outside ``0..1``.
     TypeError
         For anything that is not a color.
+
+    See Also
+    --------
+    parse_color : Parse text only.
+
+    Examples
+    --------
+    >>> from svgwriter.color import as_color
+    >>> as_color("blue").hex
+    '#0000ff'
+    >>> as_color((1, 0, 0)).hex
+    '#ff0000'
     """
     if isinstance(value, Color):
         return value
@@ -279,10 +618,30 @@ def _function(kind: str, body: str, text: str) -> Color:
 def parse_color(text: str) -> Color:
     """Parse a color keyword, hex, ``rgb[a](...)`` or ``hsl[a](...)``.
 
-    An optional trailing ``icc-color(...)`` is preserved.
+    An optional trailing ``icc-color(...)`` is preserved. Results are cached.
+
+    Parameters
+    ----------
+    text : str
+        Color text such as ``"tomato"``, ``"#f80"``, ``"rgb(255 0 0)"`` or ``"hsl(120, 100%, 50%)"``.
+
+    Returns
+    -------
+    Color
+        The parsed color.
+
+    Raises
+    ------
+    ValueError
+        If the text is not a recognized color.
+
+    See Also
+    --------
+    as_color : Also accepts colors and channel sequences.
 
     Examples
     --------
+    >>> from svgwriter.color import parse_color
     >>> parse_color("tomato").uint8
     (255, 99, 71, 255)
     >>> parse_color("hsl(120, 100%, 50%)").hex

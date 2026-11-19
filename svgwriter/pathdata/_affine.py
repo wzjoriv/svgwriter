@@ -12,7 +12,31 @@ __all__ = ["transform_arc", "transform_commands"]
 
 
 def transform_arc(arc: ArcTo, matrix: Matrix) -> ArcTo:
-    """Map an absolute arc through *matrix*, keeping it an exact ellipse."""
+    """Map an absolute arc through a matrix, keeping it an exact ellipse.
+
+    The transformed ellipse's radii and rotation are recovered from the
+    mapped axes; the sweep flag flips when the matrix reverses orientation.
+
+    Parameters
+    ----------
+    arc : ArcTo
+        An absolute arc command.
+    matrix : Matrix
+        The affine transform to apply.
+
+    Returns
+    -------
+    ArcTo
+        The transformed absolute arc.
+
+    Examples
+    --------
+    >>> from svgwriter.pathdata import ArcTo
+    >>> from svgwriter.pathdata._affine import transform_arc
+    >>> from svgwriter.transform import Matrix
+    >>> str(transform_arc(ArcTo(5, 5, 0, False, True, 10, 0), Matrix.scale(2)))
+    'A10 10 0 0 1 20 0'
+    """
     end = matrix.apply(arc.x, arc.y)
     phi = math.radians(arc.rotation)
     cos_phi, sin_phi = math.cos(phi), math.sin(phi)
@@ -31,7 +55,33 @@ def transform_arc(arc: ArcTo, matrix: Matrix) -> ArcTo:
 
 
 def transform_commands(commands: Iterable[PathCommand], matrix: Matrix) -> Iterator[PathCommand]:
-    """Map normalized (absolute M/L/C/Q/A/Z) commands through *matrix*."""
+    """Map normalized commands through a matrix.
+
+    Parameters
+    ----------
+    commands : iterable of PathCommand
+        Absolute ``M``, ``L``, ``C``, ``Q``, ``A`` and ``Z`` commands, as from `PathData.normalized`.
+    matrix : Matrix
+        The affine transform to apply.
+
+    Yields
+    ------
+    PathCommand
+        The transformed commands.
+
+    Raises
+    ------
+    TypeError
+        If a command other than the normalized set is given.
+
+    Examples
+    --------
+    >>> from svgwriter.pathdata import LineTo, MoveTo
+    >>> from svgwriter.pathdata._affine import transform_commands
+    >>> from svgwriter.transform import Matrix
+    >>> [str(c) for c in transform_commands([MoveTo(0, 0), LineTo(1, 1)], Matrix.translate(5, 0))]
+    ['M5 0', 'L6 1']
+    """
     for command in commands:
         if isinstance(command, (MoveTo, LineTo)):
             yield type(command)(*matrix.apply(command.x, command.y))

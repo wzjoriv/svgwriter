@@ -16,6 +16,13 @@ class Composable:
     """Mixin giving every element ``+`` and reflected ``+``.
 
     The operands are moved into the new group, not copied.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> pair = svg.circle(0, 0, 1) + svg.rect(0, 0, 1, 1)
+    >>> pair.tag, len(pair)
+    ('g', 2)
     """
 
     __slots__ = ()

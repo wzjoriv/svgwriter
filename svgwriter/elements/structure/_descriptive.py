@@ -16,15 +16,65 @@ class _Descriptive(StyleAttributes, CoreAttributes, category=Category.DESCRIPTIV
 
 
 class Desc(_Descriptive, tag="desc"):
-    """``<desc>``: a long description."""
+    """``<desc>``: a long description.
+
+    Parameters
+    ----------
+    text : str, optional
+        The description text. Defaults to empty.
+    **kwargs
+        Style, core and other SVG attributes in Python spelling.
+
+    See Also
+    --------
+    Title : A short, tooltip-style description.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.Desc("A red square"))
+    '<desc>A red square</desc>'
+    """
 
 
 class Title(_Descriptive, tag="title"):
-    """``<title>``: a short, tooltip-style description."""
+    """``<title>``: a short, tooltip-style description.
+
+    Parameters
+    ----------
+    text : str, optional
+        The title text. Defaults to empty.
+    **kwargs
+        Style, core and other SVG attributes in Python spelling.
+
+    See Also
+    --------
+    Desc : A longer description.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.Title("Square"))
+    '<title>Square</title>'
+    """
 
 
 class Metadata(CoreAttributes, tag="metadata", category=Category.DESCRIPTIVE, content=ContentModel.MIXED):
-    """``<metadata>``: arbitrary content, usually RDF in a foreign namespace."""
+    """``<metadata>``: arbitrary content, usually RDF in a foreign namespace.
+
+    Parameters
+    ----------
+    *children : Element or str
+        The content.
+    **kwargs
+        Core and other SVG attributes in Python spelling.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> str(svg.Metadata("licensed"))
+    '<metadata>licensed</metadata>'
+    """
 
     def __init__(self, *children: Child, **kwargs: Any) -> None:
         super().__init__(*children, **kwargs)

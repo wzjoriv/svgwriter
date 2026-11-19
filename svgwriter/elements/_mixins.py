@@ -35,6 +35,15 @@ __all__ = [
 
 
 class XmlSpace(str, enum.Enum):
+    """Values of ``xml:space``: whether whitespace is collapsed or kept.
+
+    Examples
+    --------
+    >>> from svgwriter.elements._mixins import XmlSpace
+    >>> XmlSpace.PRESERVE.value
+    'preserve'
+    """
+
     DEFAULT = "default"
     PRESERVE = "preserve"
 
@@ -46,7 +55,27 @@ def _words(value: str | Sequence[str] | None) -> str | None:
 
 
 class CoreAttributes(Element):
-    """``id``, ``xml:base``, ``xml:lang`` and ``xml:space``."""
+    """``id``, ``xml:base``, ``xml:lang`` and ``xml:space``.
+
+    Parameters
+    ----------
+    *args : Element or str
+        Children.
+    xml_base : str, optional
+        Base URI for relative references. Defaults to None.
+    xml_lang : str, optional
+        Language of the element's content. Defaults to None.
+    xml_space : XmlSpace, optional
+        Whitespace handling. Defaults to None.
+    **kwargs
+        Passed on to the next base class.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.group(xml_lang="en").get("xml:lang")
+    'en'
+    """
 
     def __init__(
         self,
@@ -61,7 +90,27 @@ class CoreAttributes(Element):
 
 
 class ConditionalAttributes(Element):
-    """``requiredFeatures``, ``requiredExtensions`` and ``systemLanguage``."""
+    """``requiredFeatures``, ``requiredExtensions`` and ``systemLanguage``.
+
+    Parameters
+    ----------
+    *args : Element or str
+        Children.
+    required_features : str or sequence of str, optional
+        Feature strings, joined by spaces. Defaults to None.
+    required_extensions : str or sequence of str, optional
+        Extension URIs, joined by spaces. Defaults to None.
+    system_language : str or sequence of str, optional
+        Language tags, joined by commas. Defaults to None.
+    **kwargs
+        Passed on to the next base class.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.group(system_language=["en", "fr"]).get("systemLanguage")
+    'en,fr'
+    """
 
     def __init__(
         self,
@@ -80,7 +129,26 @@ class ConditionalAttributes(Element):
 
 
 class StyleAttributes(Element):
-    """``class`` and ``style``."""
+    """``class`` and ``style``.
+
+    Parameters
+    ----------
+    *args : Element or str
+        Children.
+    class_ : str or sequence of str, optional
+        Class names. Defaults to None.
+    style : Style, mapping or str, optional
+        Inline CSS declarations. Defaults to None.
+    **kwargs
+        Passed on to the next base class.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> g = svg.group(class_=["a", "b"], style="fill: red")
+    >>> g.classes, g.style["fill"]
+    (['a', 'b'], 'red')
+    """
 
     def __init__(
         self,
@@ -96,16 +164,47 @@ class StyleAttributes(Element):
 
     @property
     def classes(self) -> list[str]:
+        """The class names in the ``class`` attribute.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.group(class_="a b").classes
+        ['a', 'b']
+        """
         return str(self.attributes.get("class", "")).split()
 
     @chainable
     def add_class(self, *names: str) -> None:
+        """Add class names that are not already present.
+
+        Parameters
+        ----------
+        *names : str
+            The class names to add.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> g = svg.group(class_="a")
+        >>> _ = g.add_class("a", "b")
+        >>> g.classes
+        ['a', 'b']
+        """
         merged = self.classes + [n for n in names if n not in self.classes]
         self.attributes["class"] = " ".join(merged)
 
     @property
     def style(self) -> Style:
-        """A copy of the ``style`` attribute; assign to change it."""
+        """A copy of the ``style`` attribute; assign to change it.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> g = svg.group(style="fill: red")
+        >>> g.style["fill"]
+        'red'
+        """
         raw = self.attributes.get("style")
         return Style(raw) if raw is not None else Style()
 
@@ -123,6 +222,48 @@ class PresentationAttributes(StyleAttributes):
 
     Common properties are explicit keywords; any other presentation
     attribute can be passed through ``**kwargs``.
+
+    Parameters
+    ----------
+    *args : Element or str
+        Children.
+    fill, stroke : color, str or Element, optional
+        Paint for the interior and the outline. Defaults to None.
+    fill_opacity, stroke_opacity, opacity : float, optional
+        Opacity from 0 to 1. Defaults to None.
+    fill_rule : {"nonzero", "evenodd"}, optional
+        Interior rule. Defaults to None.
+    stroke_width : length, optional
+        Outline width. Defaults to None.
+    stroke_linecap : {"butt", "round", "square"}, optional
+        Shape of line ends. Defaults to None.
+    stroke_linejoin : {"miter", "round", "bevel"}, optional
+        Shape of line corners. Defaults to None.
+    stroke_miterlimit : float, optional
+        Miter length limit. Defaults to None.
+    stroke_dasharray : sequence of float or str, optional
+        Dash pattern. Defaults to None.
+    stroke_dashoffset : length, optional
+        Start of the dash pattern. Defaults to None.
+    display, visibility : str, optional
+        Rendering switches. Defaults to None.
+    color : str, optional
+        The ``currentColor`` value. Defaults to None.
+    clip_path, mask, filter : str or Element, optional
+        Reference to a clip path, mask or filter. Defaults to None.
+    font_family, font_weight, text_anchor : str, optional
+        Text properties; *font_weight* may also be an int. Defaults to None.
+    font_size : length, optional
+        Text size. Defaults to None.
+    **kwargs
+        Passed on to the next base class.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> r = svg.rect(0, 0, 1, 1, fill="red", stroke_width=2)
+    >>> r.get("fill"), r.stroke_width
+    ('red', 2.0)
     """
 
     fill = Attr[PaintValue](convert=parse_paint)
@@ -184,12 +325,37 @@ class PresentationAttributes(StyleAttributes):
         )
 
     def presentation(self) -> dict[str, Any]:
-        """Presentation attributes currently set as XML attributes."""
+        """Presentation attributes currently set as XML attributes.
+
+        Returns
+        -------
+        dict
+            Attribute values keyed by SVG name.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 1, 1, fill="red").presentation()
+        {'fill': 'red'}
+        """
         return {k: v for k, v in self.attributes.items() if k in PRESENTATION_ATTRIBUTES}
 
     @chainable
     def to_css(self) -> None:
-        """Move presentation attributes into the ``style`` attribute."""
+        """Move presentation attributes into the ``style`` attribute.
+
+        See Also
+        --------
+        from_css : The reverse.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> r = svg.rect(0, 0, 1, 1, fill="red")
+        >>> _ = r.to_css()
+        >>> r.has("fill"), r.style["fill"]
+        (False, 'red')
+        """
         style = self.style
         for name, value in self.presentation().items():
             style[name] = value
@@ -198,7 +364,20 @@ class PresentationAttributes(StyleAttributes):
 
     @chainable
     def from_css(self) -> None:
-        """Move presentation properties out of ``style`` into attributes."""
+        """Move presentation properties out of ``style`` into attributes.
+
+        See Also
+        --------
+        to_css : The reverse.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> r = svg.rect(0, 0, 1, 1, style="fill: red")
+        >>> _ = r.from_css()
+        >>> r.get("fill")
+        'red'
+        """
         style = self.style
         for name, value in style.presentation_only().items():
             self.attributes[name] = value
@@ -207,7 +386,25 @@ class PresentationAttributes(StyleAttributes):
 
 
 class XLinkAttributes(Element):
-    """``xlink:href`` and the other XLink attributes."""
+    """``xlink:href`` and the other XLink attributes.
+
+    Parameters
+    ----------
+    *args : Element or str
+        Children.
+    href : str or Element, optional
+        The link target; an element becomes a ``#id`` reference. Defaults to None.
+    xlink_title, xlink_show, xlink_actuate, xlink_role, xlink_arcrole : str, optional
+        The remaining XLink attributes. Defaults to None.
+    **kwargs
+        Passed on to the next base class.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.a(href="#a").target
+    'a'
+    """
 
     def __init__(
         self,
@@ -232,13 +429,39 @@ class XLinkAttributes(Element):
 
     @property
     def target(self) -> str | None:
-        """The referenced id for local ``#id`` links."""
+        """The referenced id for local ``#id`` links.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.a(href="#a").target
+        'a'
+        """
         raw = self.attributes.get("xlink:href")
         text = None if raw is None else str(raw)
         return text[1:] if text and text.startswith("#") else None
 
 
 class ExternalResourcesAttribute(Element):
+    """``externalResourcesRequired``.
+
+    Parameters
+    ----------
+    *args : Element or str
+        Children.
+    external_resources_required : bool, optional
+        Whether external resources must load for the document to render.
+        Defaults to None.
+    **kwargs
+        Passed on to the next base class.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.group(external_resources_required=True).get("externalResourcesRequired")
+    True
+    """
+
     def __init__(self, *args: Child, external_resources_required: bool | None = None, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.update(external_resources_required=external_resources_required)
@@ -251,4 +474,15 @@ class GraphicsElement(
     ConditionalAttributes,
     CoreAttributes,
 ):
-    """Rendered element carrying every common attribute group."""
+    """Rendered element carrying every common attribute group.
+
+    Combines the core, conditional, presentation and external-resource
+    attributes with transforms and conversions; its parameters are those
+    of the groups it combines.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> issubclass(svg.Rect, svg.elements._mixins.GraphicsElement)
+    True
+    """

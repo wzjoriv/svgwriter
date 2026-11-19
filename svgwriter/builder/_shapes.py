@@ -31,7 +31,38 @@ TOOTH_DEPTH_RATIO: Final = 0.15
 def shape_factory(name: str) -> Callable[[Callable[P, E]], Callable[P, E]]:
     """Register a function returning an element under *name*.
 
-    The wrapper checks the return type, so plugins fail loudly.
+    The wrapper checks the return type, so plugins fail loudly. Registered
+    shapes are listed by ``python -m svgwriter shapes`` and drawn by
+    ``python -m svgwriter draw``.
+
+    Parameters
+    ----------
+    name : str
+        The name to register the shape under.
+
+    Returns
+    -------
+    callable
+        A decorator that registers the function and returns the checking wrapper.
+
+    Raises
+    ------
+    ValueError
+        If `name` is already registered.
+    TypeError
+        When the decorated function is called and does not return an element.
+
+    See Also
+    --------
+    SHAPES : The registry of shapes.
+
+    Examples
+    --------
+    >>> from svgwriter import Circle
+    >>> from svgwriter.builder import shape_factory
+    >>> @shape_factory("disc")  # doctest: +SKIP
+    ... def disc(cx, cy, r, **kwargs):
+    ...     return Circle(cx, cy, r, **kwargs)
     """
 
     def decorate(func: Callable[P, E]) -> Callable[P, E]:
@@ -66,20 +97,103 @@ def star(
     points: int = DEFAULT_STAR_POINTS,
     **kwargs: Any,
 ) -> Polygon:
-    """A star polygon with *points* tips, pointing up."""
+    """Build a star polygon with *points* tips, pointing up.
+
+    Parameters
+    ----------
+    cx, cy : float
+        Center.
+    outer : float
+        Radius of the tips.
+    inner : float, optional
+        Radius of the notches. Defaults to half of `outer`.
+    points : int, optional
+        Number of tips. Defaults to 5.
+    **kwargs
+        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`.
+
+    Returns
+    -------
+    Polygon
+        The star.
+
+    See Also
+    --------
+    regular_polygon : A polygon without notches.
+
+    Examples
+    --------
+    >>> from svgwriter.builder import star
+    >>> len(star(50, 50, 40).points)
+    10
+    """
     inner = outer * DEFAULT_INNER_RATIO if inner is None else inner
     return Polygon(_ring(cx, cy, [outer, inner] * points, -QUARTER_TURN), **kwargs)
 
 
 @shape_factory("polygon")
 def regular_polygon(cx: float, cy: float, radius: float, sides: int = 6, **kwargs: Any) -> Polygon:
-    """A regular polygon with one vertex pointing up."""
+    """Build a regular polygon with one vertex pointing up.
+
+    Parameters
+    ----------
+    cx, cy : float
+        Center.
+    radius : float
+        Distance from the center to each vertex.
+    sides : int, optional
+        Number of sides. Defaults to 6.
+    **kwargs
+        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`.
+
+    Returns
+    -------
+    Polygon
+        The polygon.
+
+    See Also
+    --------
+    star : A polygon with alternating radii.
+
+    Examples
+    --------
+    >>> from svgwriter.builder import regular_polygon
+    >>> regular_polygon(0, 0, 10, sides=3).to_string(xml_declaration=False, pretty=False)
+    '<polygon points="0,-10 8.6603,5 -8.6603,5"/>'
+    """
     return Polygon(_ring(cx, cy, [radius] * sides, -QUARTER_TURN), **kwargs)
 
 
 @shape_factory("gear")
 def gear(cx: float, cy: float, radius: float, teeth: int = DEFAULT_TEETH, **kwargs: Any) -> Polygon:
-    """A gear outline with square-ish teeth."""
+    """Build a gear outline with square-ish teeth.
+
+    Parameters
+    ----------
+    cx, cy : float
+        Center.
+    radius : float
+        Radius of the tooth tips.
+    teeth : int, optional
+        Number of teeth. Defaults to 12.
+    **kwargs
+        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`.
+
+    Returns
+    -------
+    Polygon
+        The gear; the tooth root sits 15% of `radius` below the tips.
+
+    See Also
+    --------
+    star : Another composite polygon.
+
+    Examples
+    --------
+    >>> from svgwriter.builder import gear
+    >>> len(gear(0, 0, 20, teeth=8).points)
+    32
+    """
     depth = radius * TOOTH_DEPTH_RATIO
     radii = [radius, radius, radius - depth, radius - depth] * teeth
     return Polygon(_ring(cx, cy, radii, 0.0), **kwargs)
@@ -87,7 +201,35 @@ def gear(cx: float, cy: float, radius: float, teeth: int = DEFAULT_TEETH, **kwar
 
 @shape_factory("arrow")
 def arrow(x1: float, y1: float, x2: float, y2: float, head: float = DEFAULT_HEAD_SIZE, **kwargs: Any) -> Path:
-    """A line with an open arrowhead at ``(x2, y2)``."""
+    """Build a line with an open arrowhead at ``(x2, y2)``.
+
+    Parameters
+    ----------
+    x1, y1 : float
+        Start of the shaft.
+    x2, y2 : float
+        Tip of the arrow.
+    head : float, optional
+        Length of each head stroke. Defaults to 10.0.
+    **kwargs
+        Presentation attributes forwarded to :class:`~svgwriter.elements.Path`;
+        ``fill`` defaults to ``"none"``.
+
+    Returns
+    -------
+    Path
+        The arrow as a single path.
+
+    See Also
+    --------
+    svgwriter.builder.arrow_marker : An arrowhead as a reusable marker.
+
+    Examples
+    --------
+    >>> from svgwriter.builder import arrow
+    >>> arrow(0, 0, 10, 0).to_string(xml_declaration=False, pretty=False)
+    '<path d="M0 0 L10 0 M1.3397 5 L10 0 M1.3397 -5 L10 0" fill="none"/>'
+    """
     angle = math.atan2(y2 - y1, x2 - x1)
     spread = math.radians(ARROW_HEAD_ANGLE)
     builder = PathBuilder().move_to(x1, y1).line_to(x2, y2)

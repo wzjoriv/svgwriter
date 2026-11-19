@@ -94,7 +94,36 @@ def _color(layer: str) -> str:
 
 
 def read_dxf(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
-    """``LINE``, ``POLYLINE``, ``LWPOLYLINE`` (with bulges), ``CIRCLE``, ``ARC`` and ``ELLIPSE`` entities."""
+    """Read DXF ``LINE``, ``POLYLINE``, ``LWPOLYLINE`` (with bulges), ``CIRCLE``, ``ARC`` and ``ELLIPSE`` entities.
+
+    Each entity becomes a stroked path, coloured from its layer name when that is a hex colour.
+
+    Parameters
+    ----------
+    text : str
+        The DXF text.
+    unit_mm : float, optional
+        Millimetres per user unit. Defaults to 25.4 / 96.
+
+    Returns
+    -------
+    Document
+        The drawing, y flipped to SVG's downward axis.
+
+    See Also
+    --------
+    read_hpgl : Read plotter files.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._cnc import to_dxf
+    >>> from svgwriter.export._cnc_read import read_dxf
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
+    >>> len(read_dxf(to_dxf(doc)))
+    1
+    """
     strokes: list[Stroke] = []
     polyline: tuple[str, list[Point], bool] | None = None
     for kind, fields in _entities(_pairs(text)):
@@ -149,7 +178,30 @@ def read_dxf(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
 
 
 def read_hpgl(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
-    """``PU``/``PD``/``PA``/``PR``/``SP`` pen moves; pens use the standard colour palette."""
+    """Read HPGL ``PU``/``PD``/``PA``/``PR``/``SP`` pen moves; pens use the standard colour palette.
+
+    Parameters
+    ----------
+    text : str
+        The HPGL text.
+    unit_mm : float, optional
+        Millimetres per user unit. Defaults to 25.4 / 96.
+
+    Returns
+    -------
+    Document
+        The drawing, with one stroked path per pen-down run.
+
+    See Also
+    --------
+    read_dxf : Read CAD files.
+
+    Examples
+    --------
+    >>> from svgwriter.export._cnc_read import read_hpgl
+    >>> len(read_hpgl("IN;SP1;PU0,0;PD400,0,400,400;PU;"))
+    1
+    """
     strokes: list[Stroke] = []
     pen, down, relative = 1, False, False
     x = y = 0.0
@@ -194,7 +246,36 @@ def read_hpgl(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
 
 
 def read_gcode(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
-    """Cutting moves (``G1``/``G2``/``G3`` while Z <= 0 or the laser is on) become paths; ``G20`` inches handled."""
+    """Read G-code cutting moves (``G1``/``G2``/``G3`` while Z <= 0 or the laser is on) as paths.
+
+    Inch programs (``G20``) are converted to millimetres.
+
+    Parameters
+    ----------
+    text : str
+        The G-code text.
+    unit_mm : float, optional
+        Millimetres per user unit. Defaults to 25.4 / 96.
+
+    Returns
+    -------
+    Document
+        The drawing, with one stroked path per cutting run.
+
+    See Also
+    --------
+    read_hpgl : Read plotter files.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._cnc import to_gcode
+    >>> from svgwriter.export._cnc_read import read_gcode
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
+    >>> len(read_gcode(to_gcode(doc)))
+    1
+    """
     strokes: list[Stroke] = []
     x = y = 0.0
     z = 0.0

@@ -19,7 +19,29 @@ _PREFIXES: Final = {XLINK_NS: "xlink", XML_NS: "xml"}
 
 
 class Strictness(enum.IntEnum):
-    """How to treat unknown elements and foreign attributes."""
+    """How to treat unknown elements and unsupported attributes while parsing.
+
+    Members are ordered by severity, so they compare as integers.
+
+    Attributes
+    ----------
+    LENIENT : int
+        Accept everything silently; unknown elements become generic elements.
+    WARN : int
+        Accept everything but emit a warning for each problem.
+    STRICT : int
+        Raise :class:`SVGParseError` on the first problem.
+
+    See Also
+    --------
+    parse : Parse SVG text using one of these levels.
+
+    Examples
+    --------
+    >>> from svgwriter.io import Strictness
+    >>> Strictness.STRICT > Strictness.LENIENT
+    True
+    """
 
     LENIENT = 0
     WARN = 1
@@ -27,7 +49,23 @@ class Strictness(enum.IntEnum):
 
 
 class SVGParseError(ValueError):
-    """Raised for malformed input or, when strict, unsupported content."""
+    """Raised for malformed input or, when strict, unsupported content.
+
+    Subclasses :class:`ValueError`.
+
+    See Also
+    --------
+    parse : The function that raises it.
+
+    Examples
+    --------
+    >>> from svgwriter.io import SVGParseError, parse
+    >>> try:
+    ...     parse("<svg")
+    ... except SVGParseError:
+    ...     print("malformed")
+    malformed
+    """
 
 
 def _split(name: str) -> tuple[str | None, str]:
@@ -93,17 +131,38 @@ def _convert(node: ET.Element, strictness: Strictness) -> Element:
 def parse(source: str | bytes, *, strictness: Strictness = Strictness.LENIENT) -> Element:
     """Parse SVG text into an element tree.
 
+    Reads the text with ``xml.etree`` and rebuilds it with the library's element
+    classes, so the result can be edited and written back out.
+
     Parameters
     ----------
     source : str or bytes
         The document. A DOCTYPE and XML declaration are accepted.
-    strictness : Strictness
-        What to do with unknown elements and foreign attributes.
+    strictness : Strictness, optional
+        What to do with unknown elements and unsupported attributes. Defaults to
+        ``Strictness.LENIENT``.
 
     Returns
     -------
     Element
         The root, usually an :class:`~svgwriter.elements.Svg`.
+
+    Raises
+    ------
+    SVGParseError
+        If the text is not well-formed XML, or, when strict, contains unknown
+        elements or scripting attributes.
+
+    See Also
+    --------
+    parse_file : Parse from a file path.
+
+    Examples
+    --------
+    >>> from svgwriter.io import parse
+    >>> root = parse('<svg xmlns="http://www.w3.org/2000/svg"><circle cx="1" cy="2" r="3"/></svg>')
+    >>> type(root).__name__, root.children
+    ('Svg', [<Circle circle cx='1' cy='2' r='3'>])
     """
     try:
         root = ET.fromstring(source)
@@ -113,6 +172,43 @@ def parse(source: str | bytes, *, strictness: Strictness = Strictness.LENIENT) -
 
 
 def parse_file(path: AnyPath, *, strictness: Strictness = Strictness.LENIENT) -> Element:
-    """Parse an SVG file."""
+    """Parse an SVG file.
+
+    Reads the file as bytes, so the encoding declared in the XML prolog is honored.
+
+    Parameters
+    ----------
+    path : str or os.PathLike
+        The file to read.
+    strictness : Strictness, optional
+        What to do with unknown elements and unsupported attributes. Defaults to
+        ``Strictness.LENIENT``.
+
+    Returns
+    -------
+    Element
+        The root, usually an :class:`~svgwriter.elements.Svg`.
+
+    Raises
+    ------
+    SVGParseError
+        If the content is malformed or, when strict, unsupported.
+    FileNotFoundError
+        If `path` does not exist.
+
+    See Also
+    --------
+    parse : Parse from text instead of a file.
+
+    Examples
+    --------
+    >>> import tempfile, pathlib
+    >>> from svgwriter.io import parse_file
+    >>> with tempfile.TemporaryDirectory() as folder:
+    ...     path = pathlib.Path(folder) / "a.svg"
+    ...     _ = path.write_text('<svg xmlns="http://www.w3.org/2000/svg"/>')
+    ...     print(type(parse_file(path)).__name__)
+    Svg
+    """
     with open(path, "rb") as handle:
         return parse(handle.read(), strictness=strictness)

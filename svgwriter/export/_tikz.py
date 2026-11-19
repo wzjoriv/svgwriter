@@ -40,12 +40,32 @@ def _path(item: Item) -> str:
 def to_tikz(document: Document, *, standalone: bool = False) -> str:
     """A ``tikzpicture`` in the document's user units (1 unit = 1 pt, y down as in SVG).
 
+    The document is flattened first, so gradients become solid colours and images are skipped.
+
     Parameters
     ----------
     document : Document
         The drawing.
-    standalone : bool
-        Wrap in a compilable ``standalone`` LaTeX document.
+    standalone : bool, optional
+        Wrap in a compilable ``standalone`` LaTeX document. Defaults to False.
+
+    Returns
+    -------
+    str
+        LaTeX source.
+
+    See Also
+    --------
+    svgwriter.export._eps.to_eps : Another flattened vector format.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._tikz import to_tikz
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 10, 10, fill="red")
+    >>> "begin{tikzpicture}" in to_tikz(doc)
+    True
     """
     scene = flatten(document)
     colors: dict[tuple[int, int, int], str] = {}

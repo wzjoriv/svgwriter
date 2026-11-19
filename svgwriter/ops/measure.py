@@ -37,14 +37,54 @@ def _skia_path(item: Geometry, feature: str) -> tuple[Any, Any]:
 
 
 def bounds(item: Geometry) -> BBox:
-    """Tight bounding box computed from the curves, not from samples."""
+    """Tight bounding box computed from the curves, not from samples.
+
+    Parameters
+    ----------
+    item : shape, text, PathData or str
+        The outline to measure.
+
+    Returns
+    -------
+    BBox
+        The smallest axis-aligned box around the outline.
+
+    Examples
+    --------
+    >>> from svgwriter.ops import bounds
+    >>> box = bounds("M0 0 L10 20")
+    >>> (box.width, box.height)
+    (10.0, 20.0)
+    """
     _, path = _skia_path(item, "exact bounds")
     rect = path.computeTightBounds()
     return BBox(rect.left(), rect.top(), rect.width(), rect.height())
 
 
 def contains(item: Geometry, x: float, y: float) -> bool:
-    """Whether ``(x, y)`` is inside the filled outline (honours ``fill-rule``)."""
+    """Whether ``(x, y)`` is inside the filled outline (honours ``fill-rule``).
+
+    Parameters
+    ----------
+    item : shape, text, PathData or str
+        The outline to test.
+    x, y : float
+        The point, in the outline's user units.
+
+    Returns
+    -------
+    bool
+        True when the point is filled.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops import contains
+    >>> contains(svg.Circle(50, 50, 40), 50, 50)
+    True
+    >>> contains(svg.Circle(50, 50, 40), 5, 5)
+    False
+    """
     _, path = _skia_path(item, "hit testing")
     return bool(path.contains(x, y))
 
@@ -59,7 +99,28 @@ def _lengths(skia: Any, path: Any) -> list[float]:
 
 
 def total_length(item: Geometry) -> float:
-    """Length of every subpath added together, like ``getTotalLength()``."""
+    """Length of every subpath added together, like ``getTotalLength()``.
+
+    Parameters
+    ----------
+    item : shape, text, PathData or str
+        The outline to measure.
+
+    Returns
+    -------
+    float
+        Length in user units.
+
+    See Also
+    --------
+    point_at_length : Find the point at a given distance.
+
+    Examples
+    --------
+    >>> from svgwriter.ops import total_length
+    >>> total_length("M0 0 L30 40")
+    50.0
+    """
     skia, path = _skia_path(item, "path length")
     return sum(_lengths(skia, path))
 
@@ -87,12 +148,67 @@ def point_at_length(item: Geometry, distance: float) -> Point:
     """Point *distance* along the outline, like ``getPointAtLength()``.
 
     Distances are clamped to ``0..total_length``.
+
+    Parameters
+    ----------
+    item : shape, text, PathData or str
+        The outline to walk along.
+    distance : float
+        Distance from the start in user units.
+
+    Returns
+    -------
+    Point
+        The position on the outline.
+
+    Raises
+    ------
+    ValueError
+        If the outline has zero length.
+
+    See Also
+    --------
+    tangent_at_length : The direction at the same position.
+
+    Examples
+    --------
+    >>> from svgwriter.ops import point_at_length
+    >>> point_at_length("M0 0 L30 40", 25)
+    Point(x=15.0, y=20.0)
     """
     return _position(item, distance, "point at length")[0]
 
 
 def tangent_at_length(item: Geometry, distance: float) -> Point:
-    """Unit tangent direction *distance* along the outline."""
+    """Unit tangent direction *distance* along the outline.
+
+    Parameters
+    ----------
+    item : shape, text, PathData or str
+        The outline to walk along.
+    distance : float
+        Distance from the start in user units; clamped to ``0..total_length``.
+
+    Returns
+    -------
+    Point
+        A unit vector pointing along the outline.
+
+    Raises
+    ------
+    ValueError
+        If the outline has zero length.
+
+    See Also
+    --------
+    point_at_length : The position at the same distance.
+
+    Examples
+    --------
+    >>> from svgwriter.ops import tangent_at_length
+    >>> tangent_at_length("M0 0 L30 0", 5)
+    Point(x=1.0, y=0.0)
+    """
     return _position(item, distance, "tangent at length")[1]
 
 
@@ -106,16 +222,35 @@ def stroke_to_path(
 ) -> PathData:
     """The filled outline a stroke of *width* would paint.
 
+    The result can be filled, combined with other outlines or exported in place of the stroke.
+
     Parameters
     ----------
     item : shape, text, PathData or str
         The outline to stroke.
-    width : float
-        Stroke width in user units.
-    cap, join : str
-        ``stroke-linecap`` and ``stroke-linejoin`` values.
-    miter_limit : float
-        ``stroke-miterlimit``.
+    width : float, optional
+        Stroke width in user units. Defaults to 1.0.
+    cap : {"butt", "round", "square"}, optional
+        ``stroke-linecap`` value. Defaults to "butt".
+    join : {"miter", "round", "bevel"}, optional
+        ``stroke-linejoin`` value. Defaults to "miter".
+    miter_limit : float, optional
+        ``stroke-miterlimit``. Defaults to 4.0.
+
+    Returns
+    -------
+    PathData
+        The outline of the stroked area.
+
+    See Also
+    --------
+    bounds : Measure the resulting outline.
+
+    Examples
+    --------
+    >>> from svgwriter.ops import stroke_to_path
+    >>> str(stroke_to_path("M0 0 L10 0", 2))
+    'M0 -1 L10 -1 L10 1 L0 1 L0 -1 Z'
     """
     skia, path = _skia_path(item, "stroke to path")
     paint = skia.Paint(

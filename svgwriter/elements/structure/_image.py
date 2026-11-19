@@ -38,10 +38,32 @@ def _normalize(array: np.ndarray) -> np.ndarray:
 
 
 class Pixels:
-    """Image data: ``color`` ``(H, W, C)`` with ``C`` in {1, 3} and ``alpha`` broadcastable to it.
+    """Image data: color channels plus a broadcastable alpha.
 
-    Both are ``float32`` in ``0..1``. A fully opaque image keeps ``alpha``
-    as the scalar ``1.0``. Written as a PNG ``data:`` URI.
+    ``color`` is ``(H, W, C)`` with ``C`` in {1, 3} and ``alpha`` broadcasts
+    to it. Both are ``float32`` in ``0..1``. A fully opaque image keeps
+    ``alpha`` as the scalar ``1.0``. Written as a PNG ``data:`` URI.
+
+    Parameters
+    ----------
+    color : numpy.ndarray or None
+        ``float32`` ``(H, W, 1|3)`` color channels; None when the pixels are
+        still an undecoded ``data:`` URI.
+    alpha : numpy.ndarray or float, optional
+        Opacity, ``1.0`` or an array broadcastable to ``color``. Defaults to 1.0.
+    source : str, optional
+        The ``data:`` URI to decode lazily when `color` is None. Defaults to None.
+
+    See Also
+    --------
+    Image : The ``<image>`` element holding pixels.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from svgwriter.elements.structure import Pixels
+    >>> Pixels.from_array(np.zeros((2, 3, 3)))
+    Pixels(2x3, channels=3, opaque=True)
     """
 
     __slots__ = ("_alpha", "_color", "_source")
@@ -53,7 +75,37 @@ class Pixels:
 
     @classmethod
     def from_array(cls, array: object, alpha: object = None) -> Pixels:
-        """Split an ``(H, W)``, ``(H, W, 1|2|3|4)`` array (float 0..1 or uint8) into color and alpha."""
+        """Create pixels from an array, splitting off any embedded alpha channel.
+
+        Parameters
+        ----------
+        array : array-like
+            ``(H, W)`` or ``(H, W, 1|2|3|4)`` values, floats in ``0..1`` or
+            ``uint8``. Two and four channels carry alpha last.
+        alpha : array-like or float, optional
+            Separate alpha broadcastable to ``(H, W)``. Defaults to None.
+
+        Returns
+        -------
+        Pixels
+            The color and alpha as ``float32`` arrays.
+
+        Raises
+        ------
+        ValueError
+            If the shape is unsupported, float values leave ``0..1``, or
+            alpha is given both in `array` and as `alpha`.
+        TypeError
+            If the array is not numeric.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from svgwriter.elements.structure import Pixels
+        >>> px = Pixels.from_array(np.zeros((1, 2, 4)))
+        >>> px.color.shape, px.alpha.shape
+        ((1, 2, 3), (1, 2, 1))
+        """
         data = _normalize(np.asarray(array))
         if data.ndim == 2:
             data = data[..., None]
@@ -71,7 +123,31 @@ class Pixels:
 
     @classmethod
     def decode(cls, data: bytes) -> Pixels:
-        """Decode PNG, JPEG, WebP, GIF or BMP bytes."""
+        """Decode encoded image bytes.
+
+        Parameters
+        ----------
+        data : bytes
+            PNG, JPEG, WebP, GIF or BMP file contents.
+
+        Returns
+        -------
+        Pixels
+            The decoded pixels.
+
+        Raises
+        ------
+        ValueError
+            If the data is damaged or in an unknown format.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from svgwriter.elements.structure import Pixels
+        >>> png = Pixels.from_array(np.zeros((2, 2, 3))).encode()
+        >>> Pixels.decode(png)
+        Pixels(2x2, channels=3, opaque=True)
+        """
         encoded = skia.Data.MakeWithCopy(data)
         try:
             codec = skia.Codec.MakeFromData(encoded)
@@ -94,35 +170,94 @@ class Pixels:
 
     @property
     def color(self) -> np.ndarray:
+        """Color channels, ``float32`` ``(H, W, 1|3)`` in ``0..1``; editable in place."""
         self._load()
         assert self._color is not None
         return self._color
 
     @property
     def alpha(self) -> np.ndarray | float:
+        """Alpha: ``1.0`` when opaque, else ``float32`` ``(H, W, 1)``."""
         self._load()
         return self._alpha
 
     @property
     def shape(self) -> tuple[int, int]:
-        """``(rows, columns)``."""
+        """Pixel ``(rows, columns)``.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from svgwriter.elements.structure import Pixels
+        >>> Pixels.from_array(np.zeros((2, 3, 3))).shape
+        (2, 3)
+        """
         return self.color.shape[:2]  # type: ignore[return-value]
 
     def rgba(self) -> np.ndarray:
-        """``(H, W, 4)`` float32 straight RGBA."""
+        """Combine color and alpha into one array.
+
+        Returns
+        -------
+        numpy.ndarray
+            ``(H, W, 4)`` ``float32`` straight (unpremultiplied) RGBA;
+            grayscale is expanded to three channels.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from svgwriter.elements.structure import Pixels
+        >>> Pixels.from_array(np.ones((1, 1))).rgba().tolist()
+        [[[1.0, 1.0, 1.0, 1.0]]]
+        """
         color = self.color
         rgb = np.repeat(color, 3, axis=2) if color.shape[2] == 1 else color
         alpha = np.broadcast_to(np.asarray(self.alpha, dtype=np.float32), rgb.shape[:2] + (1,))
         return np.concatenate([rgb, alpha], axis=2)
 
     def clone(self) -> Pixels:
-        """An independent copy of the pixel arrays."""
+        """Copy the pixel arrays.
+
+        Returns
+        -------
+        Pixels
+            An independent copy; editing it leaves this one unchanged.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from svgwriter.elements.structure import Pixels
+        >>> px = Pixels.from_array(np.zeros((1, 1, 3)))
+        >>> px.clone() == px
+        True
+        """
         if self._color is None:
             return Pixels(None, source=self._source)
         alpha = self._alpha if np.isscalar(self._alpha) else np.array(self._alpha)
         return Pixels(np.array(self._color), alpha)
 
     def encode(self, format: str = "png", *, quality: int = 90) -> bytes:
+        """Encode the pixels as an image file.
+
+        Parameters
+        ----------
+        format : {"png", "jpeg", "webp"}, optional
+            Output format. Defaults to ``"png"``.
+        quality : int, optional
+            Compression quality for lossy formats. Defaults to 90.
+
+        Returns
+        -------
+        bytes
+            The encoded file contents.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from svgwriter.elements.structure import Pixels
+        >>> Pixels.from_array(np.zeros((2, 2, 3))).encode()[1:4]
+        b'PNG'
+        """
         from ...ops.render import encode
 
         return encode(self.rgba(), format, quality=quality)
@@ -137,6 +272,26 @@ class Pixels:
     __hash__ = None  # type: ignore[assignment]
 
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
+        """Serialize as a ``data:`` URI.
+
+        Parameters
+        ----------
+        precision : int, optional
+            Unused; present for the attribute-value protocol. Defaults to
+            the library default.
+
+        Returns
+        -------
+        str
+            A base64 PNG ``data:`` URI, or the original URI if never decoded.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from svgwriter.elements.structure import Pixels
+        >>> Pixels.from_array(np.zeros((1, 1, 3))).svg_value()[:30]
+        'data:image/png;base64,iVBORw0K'
+        """
         if self._color is None and self._source is not None:
             return self._source
         return f"{DATA_URI_PREFIX}image/png;base64," + base64.b64encode(self.encode("png")).decode("ascii")
@@ -168,19 +323,31 @@ class Image(
 
     Parameters
     ----------
-    source : array, str or None
+    source : array, str or None, optional
         A pixel array (``(H, W)``, ``(H, W, 3)`` or ``(H, W, 4)``; floats in
-        ``0..1`` or ``uint8``) to embed, or a URL/path to link.
-    x, y : length
-        Top-left corner.
+        ``0..1`` or ``uint8``) to embed, or a URL/path to link. Defaults to None.
+    x, y : length, optional
+        Top-left corner. Defaults to None.
     width, height : length, optional
         Display size; defaults to the pixel size for embedded images.
     alpha : array or float, optional
-        Separate alpha, broadcastable to ``(H, W)``.
+        Separate alpha, broadcastable to ``(H, W)``. Defaults to None.
     preserve_aspect_ratio : PreserveAspectRatio or str, optional
-        How the pixels fit the box.
+        How the pixels fit the box. Defaults to None.
     **kwargs
-        Presentation and other attributes.
+        Presentation, core and other SVG attributes in Python spelling.
+
+    See Also
+    --------
+    Image.open : Embed an image file.
+    Pixels : The pixel container behind an embedded image.
+
+    Notes
+    -----
+    ``color`` is ``float32`` ``(H, W, C)`` (``C`` is 1 for grayscale, else 3)
+    and ``alpha`` is the scalar ``1.0`` when fully opaque, otherwise
+    ``(H, W, 1)``, so ``color * alpha`` always broadcasts. Edit them in
+    place or assign new arrays. Pixels are written as a PNG ``data:`` URI.
 
     Examples
     --------
@@ -192,13 +359,6 @@ class Image(
     >>> img.color[..., 0] = 1.0
     >>> img.rgba()[0, 0].tolist()
     [1.0, 0.0, 0.0, 1.0]
-
-    Notes
-    -----
-    ``color`` is ``float32`` ``(H, W, C)`` (``C`` is 1 for grayscale, else 3)
-    and ``alpha`` is the scalar ``1.0`` when fully opaque, otherwise
-    ``(H, W, 1)``, so ``color * alpha`` always broadcasts. Edit them in
-    place or assign new arrays. Pixels are written as a PNG ``data:`` URI.
     """
 
     def __init__(
@@ -225,7 +385,37 @@ class Image(
 
     @classmethod
     def open(cls, path: str | os.PathLike[str], **kwargs: Any) -> Image:
-        """Decode an image file (PNG, JPEG, WebP, GIF, BMP) into an embedded ``<image>``."""
+        """Decode an image file into an embedded ``<image>``.
+
+        Parameters
+        ----------
+        path : str or os.PathLike
+            A PNG, JPEG, WebP, GIF or BMP file.
+        **kwargs
+            Attributes for the image, as in the constructor.
+
+        Returns
+        -------
+        Image
+            An image holding the decoded pixels, sized to match them unless
+            `width` and `height` are given.
+
+        Raises
+        ------
+        ValueError
+            If the file cannot be decoded.
+
+        Examples
+        --------
+        >>> import os, tempfile
+        >>> import numpy as np
+        >>> import svgwriter as svg
+        >>> with tempfile.TemporaryDirectory() as folder:
+        ...     name = os.path.join(folder, "pixel.png")
+        ...     _ = open(name, "wb").write(svg.Image(np.zeros((2, 3, 3))).encode())
+        ...     svg.Image.open(name).shape
+        (2, 3)
+        """
         with open(path, "rb") as handle:
             pixels = Pixels.decode(handle.read())
         image = cls(**kwargs)
@@ -242,7 +432,16 @@ class Image(
 
     @property
     def pixels(self) -> Pixels | None:
-        """The embedded :class:`Pixels`, decoding a parsed ``data:`` URI on first use."""
+        """The embedded :class:`Pixels`, or None for a linked image.
+
+        A ``data:`` URI read from a document is decoded on first use.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Image("photo.png").pixels is None
+        True
+        """
         raw = self.attributes.get(HREF)
         if isinstance(raw, Pixels):
             return raw
@@ -260,7 +459,19 @@ class Image(
 
     @property
     def color(self) -> np.ndarray:
-        """Color channels, ``float32`` ``(H, W, 1|3)`` in ``0..1``; editable in place."""
+        """Color channels, ``float32`` ``(H, W, 1|3)`` in ``0..1``; editable in place.
+
+        Assign an array to replace them.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> import svgwriter as svg
+        >>> img = svg.Image(np.zeros((1, 2, 3)))
+        >>> img.color = np.ones((1, 2, 3))
+        >>> float(img.color.min())
+        1.0
+        """
         return self._require().color
 
     @color.setter
@@ -269,7 +480,19 @@ class Image(
 
     @property
     def alpha(self) -> np.ndarray | float:
-        """Alpha: ``1.0`` when opaque, else ``float32`` ``(H, W, 1)``."""
+        """Alpha: ``1.0`` when opaque, else ``float32`` ``(H, W, 1)``.
+
+        Assign a scalar or an array broadcastable to ``(H, W)`` to replace it.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> import svgwriter as svg
+        >>> img = svg.Image(np.zeros((2, 2, 3)))
+        >>> img.alpha = 0.5
+        >>> img.alpha.shape
+        (2, 2, 1)
+        """
         return self._require().alpha
 
     @alpha.setter
@@ -278,16 +501,68 @@ class Image(
 
     @property
     def shape(self) -> tuple[int, int]:
-        """Pixel ``(rows, columns)``."""
+        """Pixel ``(rows, columns)``.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> import svgwriter as svg
+        >>> svg.Image(np.zeros((2, 3))).shape
+        (2, 3)
+        """
         return self._require().shape
 
     def rgba(self) -> np.ndarray:
-        """Combined ``(H, W, 4)`` float32 straight RGBA."""
+        """Combine color and alpha into one array.
+
+        Returns
+        -------
+        numpy.ndarray
+            ``(H, W, 4)`` ``float32`` straight (unpremultiplied) RGBA.
+
+        Raises
+        ------
+        TypeError
+            If the image links to a file rather than embedding pixels.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> import svgwriter as svg
+        >>> svg.Image(np.zeros((1, 1, 3))).rgba().tolist()
+        [[[0.0, 0.0, 0.0, 1.0]]]
+        """
         return self._require().rgba()
 
     def encode(self, format: str = "png", *, quality: int = 90) -> bytes:
-        """The pixels as PNG, JPEG or WebP bytes."""
+        """Encode the pixels as an image file.
+
+        Parameters
+        ----------
+        format : {"png", "jpeg", "webp"}, optional
+            Output format. Defaults to ``"png"``.
+        quality : int, optional
+            Compression quality for lossy formats. Defaults to 90.
+
+        Returns
+        -------
+        bytes
+            The encoded file contents.
+
+        Raises
+        ------
+        TypeError
+            If the image links to a file rather than embedding pixels.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> import svgwriter as svg
+        >>> svg.Image(np.zeros((2, 2, 3))).encode("jpeg")[0]
+        255
+        """
         return self._require().encode(format, quality=quality)
 
     def local_bbox(self) -> BBox | None:
+        """The ``x``/``y``/``width``/``height`` box, or None if unsized."""
         return positioned_bbox(self)

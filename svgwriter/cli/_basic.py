@@ -61,7 +61,19 @@ def _cmd_info(args: argparse.Namespace) -> int:
 
 
 def emit(root: Element, args: argparse.Namespace) -> None:
-    """Write *root* to ``--output`` or stdout using the output options."""
+    """Write *root* to ``--output`` or stdout using the output options.
+
+    Parameters
+    ----------
+    root : Element
+        Root of the tree to write.
+    args : argparse.Namespace
+        Parsed arguments providing ``output``, ``compact`` and ``precision``.
+
+    See Also
+    --------
+    output_options : Adds the matching arguments to a parser.
+    """
     options = SerializeOptions(pretty=not args.compact, precision=args.precision, compact_paths=args.compact)
     if args.output:
         root.save(args.output, options=options)
@@ -70,12 +82,34 @@ def emit(root: Element, args: argparse.Namespace) -> None:
 
 
 def output_options(sub: argparse.ArgumentParser) -> None:
+    """Add ``--output``, ``--compact`` and ``--precision`` to a sub-command parser.
+
+    Parameters
+    ----------
+    sub : argparse.ArgumentParser
+        The parser of a sub-command that writes SVG.
+
+    See Also
+    --------
+    emit : Consumes the parsed values.
+    """
     sub.add_argument("-o", "--output", help="write here instead of stdout")
     sub.add_argument("--compact", action="store_true", help="single-line output, shortest path data")
     sub.add_argument("--precision", type=int, default=SerializeOptions().precision)
 
 
 def add_basic_commands(commands: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    """Register ``shapes``, ``elements``, ``draw``, ``format`` and ``info``.
+
+    Parameters
+    ----------
+    commands : argparse._SubParsersAction
+        The sub-parser collection of the main parser.
+
+    See Also
+    --------
+    svgwriter.cli._media.add_media_commands : The commands that need ffmpeg or skia.
+    """
     commands.add_parser("shapes", help="list registered composite shapes").set_defaults(func=_cmd_shapes)
     commands.add_parser("elements", help="list supported elements by category").set_defaults(func=_cmd_elements)
 

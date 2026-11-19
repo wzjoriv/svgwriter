@@ -17,7 +17,37 @@ __all__ = ["format_value"]
 
 @singledispatch
 def format_value(value: object, precision: int = DEFAULT_PRECISION) -> str:
-    """Render *value* as the text of an SVG attribute."""
+    """Render a value as the text of an SVG attribute.
+
+    Dispatches on type: strings pass through, booleans become ``true``/``false``,
+    floats use the shortest form, sequences are space-separated (with ``x,y``
+    pairs for nested ones), NumPy arrays are flattened, enums use their value, and
+    objects with an ``svg_value`` method render themselves. Other types use `str`.
+
+    Parameters
+    ----------
+    value : object
+        The value to render.
+    precision : int, optional
+        Maximum number of decimal places for floats. Defaults to the library default precision.
+
+    Returns
+    -------
+    str
+        The attribute text.
+
+    See Also
+    --------
+    svgwriter.attributes.SupportsSVG : Protocol for self-rendering objects.
+
+    Examples
+    --------
+    >>> from svgwriter.attributes import format_value
+    >>> format_value(1.5), format_value(True), format_value([1, 2.5])
+    ('1.5', 'true', '1 2.5')
+    >>> format_value([(1, 2), (3, 4)])
+    '1,2 3,4'
+    """
     if isinstance(value, SupportsSVG):
         return value.svg_value(precision)
     return str(value)

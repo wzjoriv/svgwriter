@@ -27,7 +27,26 @@ _DEFAULT: Final = {10: None, 13: None, 9: " "}
 
 @dataclass
 class Char:
-    """One rendered character with the chain of elements it sits in (innermost first)."""
+    """One rendered character with the chain of elements it sits in (innermost first).
+
+    Parameters
+    ----------
+    char : str
+        The character after whitespace handling.
+    chain : tuple of Element
+        The element holding the character followed by its ancestors up to the text.
+    child : int
+        Index of the character data within the innermost element's children.
+    offset : int
+        Index of the character within that string.
+    local : dict of int to int
+        For each element in the chain (keyed by ``id``), how many characters
+        of that element precede this one.
+
+    See Also
+    --------
+    collect : Produce the characters of a text.
+    """
 
     char: str
     chain: tuple[Element, ...]
@@ -44,9 +63,29 @@ def _units(value: object, reference: float) -> float:
 
 
 def number_list(value: object, reference: float = 0.0) -> list[float]:
-    """An SVG number or length list (``"1 2,3"``, a number or a sequence) as floats.
+    """Convert an SVG number or length list to floats.
 
-    Percentages resolve against *reference*.
+    Accepts a string such as ``"1 2,3"``, a single number or a sequence of
+    numbers and lengths.
+
+    Parameters
+    ----------
+    value : object
+        The list to convert; ``None`` gives an empty list.
+    reference : float, optional
+        Value that percentages resolve against. Defaults to 0.0.
+
+    Returns
+    -------
+    list of float
+        The values in user units.
+
+    Examples
+    --------
+    >>> number_list("1 2,3")
+    [1.0, 2.0, 3.0]
+    >>> number_list("50%", 200)
+    [100.0]
     """
     if value is None:
         return []
@@ -69,7 +108,27 @@ def _raw(element: Element, chain: tuple[Element, ...], out: list[tuple[str, tupl
 
 
 def collect(text: Element) -> list[Char]:
-    """Rendered characters of *text* after ``xml:space`` handling, each with its element chain."""
+    """Collect the rendered characters of a text.
+
+    Applies ``xml:space`` handling: newlines are dropped, tabs become spaces
+    and runs of spaces collapse, unless ``xml:space="preserve"``.
+
+    Parameters
+    ----------
+    text : Element
+        A ``<text>`` element.
+
+    Returns
+    -------
+    list of Char
+        One entry per rendered character, each with its element chain.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> "".join(c.char for c in collect(svg.text("a  b", x=0, y=0)))
+    'a b'
+    """
     raw: list[tuple[str, tuple[Element, ...], int, int]] = []
     _raw(text, (text,), raw)
     preserve = str(text.get("xml:space", "default")) == "preserve"
@@ -155,6 +214,12 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
     -------
     list of GlyphBox
         One box per rendered character; ``source`` is the innermost element.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> len(layout(svg.text("abc", x=0, y=20)))
+    3
     """
     from ..ops.text import ANCHOR_SHIFT, GlyphBox, glyph_shape
 

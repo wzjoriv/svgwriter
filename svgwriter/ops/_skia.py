@@ -27,7 +27,31 @@ Geometry: TypeAlias = Union["PathOperand", PathData, str]
 
 
 def geometry_data(item: Geometry) -> tuple[PathData, bool]:
-    """Path data in user units plus whether it fills even-odd."""
+    """Path data in user units plus whether it fills even-odd.
+
+    Parameters
+    ----------
+    item : shape, text, PathData or str
+        Anything with an outline.
+
+    Returns
+    -------
+    (PathData, bool)
+        The outline (with the element's own transform applied) and whether its
+        ``fill-rule`` is ``evenodd``.
+
+    Raises
+    ------
+    TypeError
+        If *item* has no outline.
+
+    Examples
+    --------
+    >>> from svgwriter.ops._skia import geometry_data
+    >>> data, evenodd = geometry_data("M0 0 L10 0 L10 10 Z")
+    >>> evenodd
+    False
+    """
     from ..elements._geometry import PathOperand
 
     if isinstance(item, PathOperand):
@@ -40,7 +64,34 @@ def geometry_data(item: Geometry) -> tuple[PathData, bool]:
 
 
 def to_skia(data: PathData, *, evenodd: bool = False) -> Any:
-    """Build a ``skia.Path`` from path data."""
+    """Build a ``skia.Path`` from path data.
+
+    Relative commands, shorthands and arcs are normalised first, so any valid path data
+    converts.
+
+    Parameters
+    ----------
+    data : PathData
+        The outline to convert.
+    evenodd : bool, optional
+        Give the path an even-odd fill type. Defaults to False.
+
+    Returns
+    -------
+    skia.Path
+        The equivalent skia path.
+
+    See Also
+    --------
+    from_skia : The inverse conversion.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops import to_skia
+    >>> to_skia(svg.PathData("M0 0 L10 0 L10 10 Z")).countVerbs()
+    4
+    """
     path = skia.Path()
     for command in data.normalized():
         if isinstance(command, MoveTo):
@@ -67,6 +118,27 @@ def from_skia(path: Any) -> PathData:
 
     Even-odd results are rewritten to nonzero winding first, so the data
     fills correctly without a ``fill-rule``.
+
+    Parameters
+    ----------
+    path : skia.Path
+        The path to read.
+
+    Returns
+    -------
+    PathData
+        Absolute ``M``, ``L``, ``Q``, ``C`` and ``Z`` commands; conics become quadratics.
+
+    See Also
+    --------
+    to_skia : The inverse conversion.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops import from_skia, to_skia
+    >>> str(from_skia(to_skia(svg.PathData("M0 0 H10 V10 Z"))))
+    'M0 0 L10 0 L10 10 Z'
     """
     if path.getFillType() != skia.PathFillType.kWinding:
         path = skia.AsWinding(path) or path

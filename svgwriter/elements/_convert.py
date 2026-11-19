@@ -29,16 +29,39 @@ class Convertible(Transformable):
     Every conversion returns a new element or array and leaves this one
     unchanged. A conversion that cannot be done raises ``TypeError`` naming
     the element and the alternatives.
+
+    See Also
+    --------
+    svgwriter.elements._transformable.Transformable : Transforms and anchors.
     """
 
     def to_path(self, **kwargs: Any) -> Path:
         """An equivalent ``<path>``.
+
+        Shapes override this to return their outline; the base implementation
+        is for elements that have none.
+
+        Parameters
+        ----------
+        **kwargs
+            Options understood by the overriding implementations.
+
+        Returns
+        -------
+        Path
+            A new ``<path>`` element.
 
         Raises
         ------
         TypeError
             When the element has no vector outline (an ``<image>``, for
             instance).
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.circle(5, 5, 2).to_path().tag
+        'path'
         """
         raise TypeError(
             f"<{self.tag}> has no vector outline and cannot become a path; "
@@ -49,6 +72,16 @@ class Convertible(Transformable):
         """A ``<g>`` holding a copy of this element; keywords become group attributes.
 
         A group returns a copy of itself.
+
+        Parameters
+        ----------
+        **kwargs
+            Attributes set on the group.
+
+        Returns
+        -------
+        Group
+            A new ``<g>``.
 
         Examples
         --------
@@ -70,12 +103,12 @@ class Convertible(Transformable):
 
         Parameters
         ----------
-        scale : float
-            Pixels per user unit.
-        padding : float
-            Extra margin in user units.
+        scale : float, optional
+            Pixels per user unit. Defaults to 1.0.
+        padding : float, optional
+            Extra margin in user units. Defaults to 0.0.
         background : color, optional
-            Painted under the element; transparent when omitted.
+            Painted under the element. Defaults to None (transparent).
 
         Returns
         -------
@@ -103,7 +136,21 @@ class Convertible(Transformable):
         *shapes : Element
             Shapes, text or ``<use>``; a single :class:`ClipPath` is used as is.
         units : {"userSpaceOnUse", "objectBoundingBox"}, optional
-            ``clipPathUnits`` for a new clip path.
+            ``clipPathUnits`` for a new clip path. Defaults to None.
+
+        Returns
+        -------
+        Convertible
+            This element.
+
+        Raises
+        ------
+        TypeError
+            If no shape is given.
+
+        See Also
+        --------
+        unclip : Remove the clip.
 
         Examples
         --------
@@ -129,13 +176,33 @@ class Convertible(Transformable):
         return self
 
     def unclip(self: E) -> E:
-        """Remove the clip and return ``self``."""
+        """Remove the clip and return ``self``.
+
+        Returns
+        -------
+        Convertible
+            This element.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> art = svg.rect(0, 0, 9, 9).clip(svg.circle(4, 4, 3)).unclip()
+        >>> art.clip_region is None
+        True
+        """
         self.discard("clip-path")
         return self
 
     @property
     def clip_region(self) -> ClipPath | None:
-        """The ``<clipPath>`` this element is clipped by, if it can be found."""
+        """The ``<clipPath>`` this element is clipped by, if it can be found.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 9, 9).clip_region is None
+        True
+        """
         from ._geometry import resolve
         from .clip import ClipPath
 
@@ -143,7 +210,19 @@ class Convertible(Transformable):
         return region if isinstance(region, ClipPath) else None
 
     def render_bounds(self) -> BBox | None:
-        """:meth:`bounds` grown by half the stroke width."""
+        """:meth:`bounds` grown by half the stroke width.
+
+        Returns
+        -------
+        BBox or None
+            The box including the stroke, or None when :meth:`bounds` is unknown.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.rect(0, 0, 10, 10, stroke="black", stroke_width=2).render_bounds()
+        BBox(x=-1.0, y=-1.0, width=12.0, height=12.0)
+        """
         box = self.bounds()
         if box is None:
             return None
@@ -163,12 +242,12 @@ class Convertible(Transformable):
 
         Parameters
         ----------
-        scale : float
-            Pixels per user unit.
-        padding : float
-            Extra margin in user units.
+        scale : float, optional
+            Pixels per user unit. Defaults to 1.0.
+        padding : float, optional
+            Extra margin in user units. Defaults to 0.0.
         background : color, optional
-            Painted under the element; transparent when omitted.
+            Painted under the element. Defaults to None (transparent).
 
         Returns
         -------

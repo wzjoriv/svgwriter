@@ -64,7 +64,37 @@ def _font(font_family: str, size: float, weight: FontWeight, italic: bool) -> An
 @lru_cache(maxsize=GLYPH_CACHE)
 def glyph_shape(char: str, font_family: str, size: float, weight: FontWeight = "normal",
                 italic: bool = False) -> tuple[PathData, float]:
-    """Outline (origin on the baseline) and advance width of one character; cached."""
+    """Outline (origin on the baseline) and advance width of one character; cached.
+
+    Parameters
+    ----------
+    char : str
+        A single character.
+    font_family : str
+        Family name or comma-separated fallback list.
+    size : float
+        Font size in user units.
+    weight : int or {"normal", "bold"}, optional
+        Font weight. Defaults to "normal".
+    italic : bool, optional
+        Use the italic style. Defaults to False.
+
+    Returns
+    -------
+    (PathData, float)
+        The glyph outline and its advance width.
+
+    See Also
+    --------
+    layout_glyphs : Lay out a whole string.
+
+    Examples
+    --------
+    >>> from svgwriter.ops.text import glyph_shape
+    >>> outline, advance = glyph_shape("A", "sans-serif", 16)
+    >>> advance > 0
+    True
+    """
     font = _font(font_family, size, weight, italic)
     glyphs = font.textToGlyphs(char)
     if not len(glyphs):
@@ -81,7 +111,36 @@ def text_width(
     weight: FontWeight = "normal",
     italic: bool = False,
 ) -> float:
-    """Advance width of *text* set in the given font."""
+    """Advance width of *text* set in the given font.
+
+    Parameters
+    ----------
+    text : str
+        The characters to measure.
+    font_family : str, optional
+        Family name or comma-separated fallback list. Defaults to "sans-serif".
+    size : float, optional
+        Font size in user units. Defaults to 16.0.
+    weight : int or {"normal", "bold"}, optional
+        Font weight. Defaults to "normal".
+    italic : bool, optional
+        Use the italic style. Defaults to False.
+
+    Returns
+    -------
+    float
+        Width in user units.
+
+    See Also
+    --------
+    text_outline : The glyph outlines themselves.
+
+    Examples
+    --------
+    >>> from svgwriter.ops import text_width
+    >>> text_width("Hello") > text_width("Hi") > 0
+    True
+    """
     return float(_font(font_family, size, weight, italic).measureText(text))
 
 
@@ -100,6 +159,38 @@ def text_outline(
 
     ``font_family`` may be a CSS-style list (``"Inter, Arial, sans-serif"``);
     the first installed family wins.
+
+    Parameters
+    ----------
+    text : str
+        The characters to outline.
+    font_family : str, optional
+        Family name or comma-separated fallback list. Defaults to "sans-serif".
+    size : float, optional
+        Font size in user units. Defaults to 16.0.
+    x, y : float, optional
+        Baseline position of the anchor point. Defaults to 0.0.
+    anchor : {"start", "middle", "end"}, optional
+        Horizontal alignment, as ``text-anchor``. Defaults to "start".
+    weight : int or {"normal", "bold"}, optional
+        Font weight. Defaults to "normal".
+    italic : bool, optional
+        Use the italic style. Defaults to False.
+
+    Returns
+    -------
+    PathData
+        The combined outline of all glyphs.
+
+    See Also
+    --------
+    text_to_path : The same outline wrapped in a ``<path>`` element.
+
+    Examples
+    --------
+    >>> from svgwriter.ops import text_outline
+    >>> len(text_outline("Hi", size=24)) > 0
+    True
     """
     font = _font(font_family, size, weight, italic)
     glyphs = font.textToGlyphs(text)
@@ -114,7 +205,34 @@ def text_outline(
 
 @dataclass
 class GlyphBox:
-    """One laid-out character: its outline in local glyph space and where it sits."""
+    """One laid-out character: its outline in local glyph space and where it sits.
+
+    Attributes
+    ----------
+    char : str
+        The character.
+    outline : PathData
+        Glyph outline with its origin on the baseline.
+    x, y : float
+        Position of the glyph origin.
+    angle : float
+        Rotation in degrees.
+    advance : float
+        Advance width of the glyph.
+    source : object, optional
+        The element the character came from, if any. Defaults to None.
+
+    See Also
+    --------
+    layout_glyphs : Produce glyph boxes for a string.
+
+    Examples
+    --------
+    >>> from svgwriter.ops.text import layout_glyphs
+    >>> box = layout_glyphs("A", x=(5.0,), y=(7.0,))[0]
+    >>> (box.char, box.x, box.y)
+    ('A', 5.0, 7.0)
+    """
 
     char: str
     outline: PathData
@@ -125,7 +243,19 @@ class GlyphBox:
     source: Any = None
 
     def placed(self) -> PathData:
-        """The outline rotated by ``angle`` and moved to ``(x, y)``."""
+        """The outline rotated by ``angle`` and moved to ``(x, y)``.
+
+        Returns
+        -------
+        PathData
+            The glyph outline in text space.
+
+        Examples
+        --------
+        >>> from svgwriter.ops.text import layout_glyphs
+        >>> len(layout_glyphs("A")[0].placed()) > 0
+        True
+        """
         return self.outline.transformed(Matrix.translate(self.x, self.y) @ Matrix.rotate(self.angle))
 
 
@@ -153,21 +283,38 @@ def layout_glyphs(
     ----------
     text : str
         Characters to lay out.
-    font_family, size, weight, italic
-        The font, as in :func:`text_outline`.
-    x, y : sequence of float
-        Absolute positions for the first characters; later ones follow on.
-    dx, dy : sequence of float
-        Relative shifts per character (each shift carries to the following ones).
-    rotate : sequence of float
-        Per-character rotation in degrees; the last value repeats.
-    anchor : {"start", "middle", "end"}
-        ``text-anchor`` applied to the whole run.
+    font_family : str, optional
+        Family name or comma-separated fallback list. Defaults to "sans-serif".
+    size : float, optional
+        Font size in user units. Defaults to 16.0.
+    x, y : sequence of float, optional
+        Absolute positions for the first characters; later ones follow on. Defaults to ``(0.0,)``.
+    dx, dy : sequence of float, optional
+        Relative shifts per character (each shift carries to the following ones). Defaults to none.
+    rotate : sequence of float, optional
+        Per-character rotation in degrees; the last value repeats. Defaults to none.
+    anchor : {"start", "middle", "end"}, optional
+        ``text-anchor`` applied to the whole run. Defaults to "start".
+    weight : int or {"normal", "bold"}, optional
+        Font weight. Defaults to "normal".
+    italic : bool, optional
+        Use the italic style. Defaults to False.
 
     Returns
     -------
     list of GlyphBox
         One entry per character, whitespace included.
+
+    See Also
+    --------
+    text_outline : Outline a whole string without per-character control.
+
+    Examples
+    --------
+    >>> from svgwriter.ops.text import layout_glyphs
+    >>> boxes = layout_glyphs("ab", x=(0.0,), y=(10.0,), rotate=(90.0,))
+    >>> [(b.char, b.angle) for b in boxes]
+    [('a', 90.0), ('b', 90.0)]
     """
     font = _font(font_family, size, weight, italic)
     glyphs = font.textToGlyphs(text)
@@ -206,25 +353,41 @@ def text_to_path(
 ) -> Path:
     """A ``<path>`` tracing the glyphs of *text*.
 
+    Useful when the drawing must not depend on fonts being installed where it is viewed.
+
     Parameters
     ----------
     text : str
         The characters to outline.
-    font_family : str
-        Family name or comma-separated fallback list.
-    size : float
-        Font size in user units.
-    x, y : float
-        Baseline position of the anchor point.
-    anchor : {"start", "middle", "end"}
-        Horizontal alignment, as ``text-anchor``.
-    weight : int or {"normal", "bold"}
-        Font weight.
-    italic : bool
-        Use the italic style.
+    font_family : str, optional
+        Family name or comma-separated fallback list. Defaults to "sans-serif".
+    size : float, optional
+        Font size in user units. Defaults to 16.0.
+    x, y : float, optional
+        Baseline position of the anchor point. Defaults to 0.0.
+    anchor : {"start", "middle", "end"}, optional
+        Horizontal alignment, as ``text-anchor``. Defaults to "start".
+    weight : int or {"normal", "bold"}, optional
+        Font weight. Defaults to "normal".
+    italic : bool, optional
+        Use the italic style. Defaults to False.
     **kwargs
         Attributes for the :class:`~svgwriter.Path`.
 
+    Returns
+    -------
+    Path
+        The ``<path>`` element.
+
+    See Also
+    --------
+    text_outline : The outline as bare path data.
+
+    Examples
+    --------
+    >>> from svgwriter.ops import text_to_path
+    >>> text_to_path("Hi", size=24, fill="navy").tag
+    'path'
     """
     from ..elements.shapes import Path
 

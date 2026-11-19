@@ -22,6 +22,23 @@ class IRI:
 
     ``element`` is the referenced element when the IRI was made from one; it
     lets documents put unplaced definitions into ``<defs>`` automatically.
+
+    Parameters
+    ----------
+    target : str
+        The reference text, such as ``"#grad"`` or ``"image.svg#icon"``.
+    element : Element, optional
+        The referenced element, if known; ignored when comparing. Defaults to None.
+
+    See Also
+    --------
+    FuncIRI : The ``url(...)`` form.
+
+    Examples
+    --------
+    >>> from svgwriter.attributes import IRI
+    >>> str(IRI.local("grad"))
+    '#grad'
     """
 
     target: str
@@ -29,14 +46,60 @@ class IRI:
 
     @classmethod
     def local(cls, element_id: str) -> IRI:
+        """Return a reference to an element of the same document.
+
+        Parameters
+        ----------
+        element_id : str
+            The target's ``id``, without ``#``.
+
+        Returns
+        -------
+        IRI
+            An IRI of the form ``#id``.
+
+        Examples
+        --------
+        >>> from svgwriter.attributes import IRI
+        >>> IRI.local("a").target
+        '#a'
+        """
         return cls("#" + element_id)
 
     @property
     def fragment(self) -> str | None:
+        """The part after ``#``, or ``None`` when there is no fragment.
+
+        Examples
+        --------
+        >>> from svgwriter.attributes import IRI
+        >>> IRI("image.svg#icon").fragment
+        'icon'
+        >>> IRI("image.svg").fragment is None
+        True
+        """
         _, sep, fragment = self.target.partition("#")
         return fragment if sep else None
 
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
+        """Serialize the reference as attribute text.
+
+        Parameters
+        ----------
+        precision : int, optional
+            Unused; accepted for a uniform interface. Defaults to the library default precision.
+
+        Returns
+        -------
+        str
+            The IRI text.
+
+        Examples
+        --------
+        >>> from svgwriter.attributes import IRI
+        >>> IRI.local("a").svg_value()
+        '#a'
+        """
         return self.target
 
     def __str__(self) -> str:
@@ -45,13 +108,57 @@ class IRI:
 
 @dataclass(frozen=True)
 class FuncIRI(IRI):
-    """A functional IRI, ``url(...)``, as used by paint and filter."""
+    """A functional IRI, ``url(...)``, as used by paint and filter.
+
+    Takes the same parameters as `IRI`.
+
+    See Also
+    --------
+    parse_func_iri : Parse ``url(...)`` text.
+
+    Examples
+    --------
+    >>> from svgwriter.attributes import FuncIRI
+    >>> str(FuncIRI("#grad"))
+    'url(#grad)'
+    """
 
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
+        """Serialize the reference as ``url(...)`` text.
+
+        Parameters
+        ----------
+        precision : int, optional
+            Unused; accepted for a uniform interface. Defaults to the library default precision.
+
+        Returns
+        -------
+        str
+            The IRI wrapped in ``url()``.
+        """
         return f"url({self.target})"
 
 
 def parse_func_iri(text: str) -> FuncIRI | None:
-    """Return the ``FuncIRI`` in *text*, or ``None`` when it is not one."""
+    """Parse ``url(...)`` text into a `FuncIRI`.
+
+    Parameters
+    ----------
+    text : str
+        Text such as ``"url(#grad)"``; quotes inside the parentheses are removed.
+
+    Returns
+    -------
+    FuncIRI or None
+        The reference, or ``None`` when the text is not a ``url(...)`` value.
+
+    Examples
+    --------
+    >>> from svgwriter.attributes import parse_func_iri
+    >>> parse_func_iri("url(#a)")
+    FuncIRI(target='#a')
+    >>> parse_func_iri("red") is None
+    True
+    """
     match = _FUNC_IRI_RE.match(text)
     return FuncIRI(match.group(2)) if match else None

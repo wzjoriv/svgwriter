@@ -28,7 +28,35 @@ LINK_CACHE: Final = 64
 
 
 def drawable_order(root: Element) -> list[Element]:
-    """Rendered leaf elements in paint order (containers and definitions skipped)."""
+    """Rendered leaf elements in paint order (containers and definitions skipped).
+
+    Walks the tree depth first, descending into ``svg``, ``g``, ``a`` and ``switch`` and
+    skipping definition-only elements such as ``defs``, ``clipPath`` and gradients.
+
+    Parameters
+    ----------
+    root : Element
+        The element whose descendants are listed.
+
+    Returns
+    -------
+    list of Element
+        Leaf elements, first painted first.
+
+    See Also
+    --------
+    layers : Group the same leaves into runs around embedded images.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops._layers import drawable_order
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 5, 5)
+    >>> _ = doc.circle(5, 5, 2)
+    >>> [e.tag for e in drawable_order(doc.root)]
+    ['rect', 'circle']
+    """
     order: list[Element] = []
 
     def visit(node: Element) -> None:
@@ -77,9 +105,27 @@ def _load(path: str, mtime: float, width: float, height: float) -> Any:
 
 
 def resolve_links(root: Element) -> None:
-    """Embed the pixels of ``<image>`` elements that link to local files (in place, on a render copy).
+    """Embed the pixels of ``<image>`` elements that link to local files.
 
-    Remote URLs are not fetched; unreadable files are left as links and not drawn.
+    Works in place, so call it on a render copy. Relative links resolve against the document's
+    source path and ``xml:base``. Remote URLs are not fetched; unreadable files are left as
+    links and not drawn.
+
+    Parameters
+    ----------
+    root : Element
+        The tree whose ``<image>`` elements are resolved.
+
+    See Also
+    --------
+    layers : Split a resolved tree into vector runs and embedded images.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops._layers import resolve_links
+    >>> doc = svg.Document(10, 10)
+    >>> resolve_links(doc.root)
     """
     from urllib.parse import unquote, urljoin, urlparse
     from urllib.request import url2pathname
@@ -109,7 +155,35 @@ def _length(value: object) -> float:
 
 
 def layers(root: Element) -> list[tuple[list[Element], Image | None]]:
-    """Split the paint order into runs of vector leaves, each followed by an embedded image."""
+    """Split the paint order into runs of vector leaves, each followed by an embedded image.
+
+    Skia's SVG renderer cannot load images, so each run is painted by skia and the image that
+    ends it is drawn separately, keeping z-order.
+
+    Parameters
+    ----------
+    root : Element
+        The tree to split.
+
+    Returns
+    -------
+    list of (list of Element, Image or None)
+        Runs of vector leaves, each paired with the embedded image that follows it. The last
+        pair has ``None`` for its image.
+
+    See Also
+    --------
+    drawable_order : The flat paint order that is split here.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops._layers import layers
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 5, 5)
+    >>> [(len(run), image) for run, image in layers(doc.root)]
+    [(1, None)]
+    """
     from ..elements.structure import Image
 
     result: list[tuple[list[Element], Image | None]] = []
@@ -140,7 +214,30 @@ def _fit(box_w: float, box_h: float, w: float, h: float, ratio: PreserveAspectRa
 
 
 def image_matrix(image: Image) -> Matrix:
-    """Map pixel coordinates of *image* to its parent's user space (``t`` excluded)."""
+    """Map pixel coordinates of *image* to its parent's user space (``t`` excluded).
+
+    Combines the image's ``x``/``y`` offset with the scale and alignment given by its
+    ``width``, ``height`` and ``preserveAspectRatio``.
+
+    Parameters
+    ----------
+    image : Image
+        An ``<image>`` element holding embedded pixels.
+
+    Returns
+    -------
+    Matrix
+        The pixel-to-user-space transform.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops._layers import image_matrix
+    >>> picture = svg.Image(np.zeros((2, 2, 4)), 10, 20, 4, 4)
+    >>> (image_matrix(picture).e, image_matrix(picture).f)
+    (10.0, 20.0)
+    """
     rows, columns = image.shape
     ratio_text = image.get("preserveAspectRatio")
     ratio = ratio_text if isinstance(ratio_text, PreserveAspectRatio) else (
@@ -168,7 +265,31 @@ def _ancestry(image: Element, root: Element) -> tuple[Matrix, float]:
 
 
 def hidden(root: Element, keep: list[Element]) -> list[Element]:
-    """Leaves of *root* outside *keep*, to hide while painting one layer."""
+    """Leaves of *root* outside *keep*, to hide while painting one layer.
+
+    Parameters
+    ----------
+    root : Element
+        The tree being painted.
+    keep : list of Element
+        The leaves that belong to the layer being painted.
+
+    Returns
+    -------
+    list of Element
+        Every drawable leaf of *root* that is not in *keep*.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops._layers import drawable_order, hidden
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 5, 5)
+    >>> _ = doc.circle(5, 5, 2)
+    >>> first, second = drawable_order(doc.root)
+    >>> [e.tag for e in hidden(doc.root, [first])]
+    ['circle']
+    """
     kept = {id(e) for e in keep}
     return [leaf for leaf in drawable_order(root) if id(leaf) not in kept] + (
         [] if root.tag in CONTAINERS or id(root) in kept else [root]
@@ -176,7 +297,23 @@ def hidden(root: Element, keep: list[Element]) -> list[Element]:
 
 
 def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -> None:
-    """Paint *image* with its transforms, opacity, aspect ratio and clip."""
+    """Paint *image* with its transforms, opacity, aspect ratio and clip.
+
+    Parameters
+    ----------
+    canvas : skia.Canvas
+        Destination canvas.
+    image : Image
+        An ``<image>`` element holding embedded pixels.
+    root : Element
+        The tree being rendered; ancestors up to *root* contribute transforms and opacity.
+    view : Matrix
+        Maps *root*'s parent coordinates to canvas user units (the ``viewBox`` mapping).
+
+    See Also
+    --------
+    layers : Decide which images are drawn separately.
+    """
     from ..elements._geometry import clip_outline
     from ._skia import to_skia
 

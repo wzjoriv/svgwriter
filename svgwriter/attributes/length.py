@@ -37,7 +37,23 @@ __all__ = [
 
 
 class Unit(str, enum.Enum):
-    """SVG 1.1 length units."""
+    """SVG 1.1 length units.
+
+    ``NONE`` (also ``USER``) means user units. ``PIXEL`` and ``INCH`` are
+    aliases of ``PX`` and ``IN``. ``str(unit)`` gives the suffix as written in SVG.
+
+    See Also
+    --------
+    Length : A value with a unit.
+
+    Examples
+    --------
+    >>> from svgwriter.attributes import Unit
+    >>> Unit("mm") is Unit.MM
+    True
+    >>> str(Unit.PERCENT)
+    '%'
+    """
 
     NONE = ""
     PX = "px"
@@ -78,10 +94,15 @@ class Length:
     value : float
         The magnitude.
     unit : Unit, optional
-        The unit; ``Unit.NONE`` means user units.
+        The unit; ``Unit.NONE`` means user units. Defaults to ``Unit.NONE``.
+
+    See Also
+    --------
+    Unit : The available units.
 
     Examples
     --------
+    >>> from svgwriter.attributes import Length, Unit
     >>> str(Length(2.5, Unit.MM))
     '2.5mm'
     >>> Length.parse("1in").to_user_units()
@@ -102,7 +123,33 @@ class Length:
     def parse(cls, text: Length) -> Length: ...
     @classmethod
     def parse(cls, text: str | float | Length) -> Length:
-        """Parse ``"12.5mm"``; numbers and lengths pass through."""
+        """Parse length text such as ``"12.5mm"``.
+
+        Numbers become unitless lengths and `Length` values pass through unchanged.
+
+        Parameters
+        ----------
+        text : str or float or Length
+            The value to convert.
+
+        Returns
+        -------
+        Length
+            The parsed length.
+
+        Raises
+        ------
+        ValueError
+            If the text is not a valid length.
+
+        Examples
+        --------
+        >>> from svgwriter.attributes import Length
+        >>> Length.parse("12.5mm")
+        Length(value=12.5, unit=<Unit.MM: 'mm'>)
+        >>> Length.parse(3).value
+        3.0
+        """
         if isinstance(text, Length):
             return text
         if isinstance(text, (int, float)):
@@ -118,7 +165,34 @@ class Length:
     ) -> float:
         """Convert to user units (pixels).
 
-        ``reference`` is the length that ``100%`` resolves to.
+        Absolute units use the dots-per-inch setting; ``em`` and ``ex`` use the font size.
+
+        Parameters
+        ----------
+        dpi : float, optional
+            Pixels per inch for absolute units. Defaults to the library default DPI.
+        font_size : float, optional
+            Font size in pixels for ``em`` and ``ex``. Defaults to the library default font size.
+        reference : float, optional
+            The length that ``100%`` resolves to. Defaults to None.
+
+        Returns
+        -------
+        float
+            The length in user units.
+
+        Raises
+        ------
+        ValueError
+            If the length is a percentage and no `reference` is given.
+
+        Examples
+        --------
+        >>> from svgwriter.attributes import Length, Unit
+        >>> Length(1, Unit.IN).to_user_units(dpi=72)
+        72.0
+        >>> Length(50, Unit.PERCENT).to_user_units(reference=200)
+        100.0
         """
         if self.unit in (Unit.NONE, Unit.PX):
             return self.value
@@ -133,6 +207,24 @@ class Length:
         return self.value * dpi / _ABSOLUTE_PER_INCH[self.unit]
 
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
+        """Serialize the length as attribute text.
+
+        Parameters
+        ----------
+        precision : int, optional
+            Maximum number of decimal places. Defaults to the library default precision.
+
+        Returns
+        -------
+        str
+            The number followed by its unit.
+
+        Examples
+        --------
+        >>> from svgwriter.attributes import Length, Unit
+        >>> Length(1.23456, Unit.PX).svg_value(2)
+        '1.23px'
+        """
         return format_number(self.value, precision) + self.unit.value
 
     def __str__(self) -> str:
@@ -142,6 +234,7 @@ class Length:
         return self.to_user_units()
 
     def __add__(self, other: Length | float) -> Length:
+        """Add a length or number; the units must match unless one is unitless."""
         other = Length.parse(other)
         if other.unit is not self.unit and other.unit is not Unit.NONE:
             raise ValueError(f"cannot add {self.unit!s} and {other.unit!s}")
@@ -169,11 +262,20 @@ def _parse_cached(text: str) -> Length:
 
 
 px = partial(Length, unit=Unit.PX)
+"""Build a `Length` in pixels, as in ``px(5)``."""
 pt = partial(Length, unit=Unit.PT)
+"""Build a `Length` in points, as in ``pt(5)``."""
 pc = partial(Length, unit=Unit.PC)
+"""Build a `Length` in picas, as in ``pc(5)``."""
 mm = partial(Length, unit=Unit.MM)
+"""Build a `Length` in millimetres, as in ``mm(5)``."""
 cm = partial(Length, unit=Unit.CM)
+"""Build a `Length` in centimetres, as in ``cm(5)``."""
 inch = partial(Length, unit=Unit.IN)
+"""Build a `Length` in inches, as in ``inch(5)``."""
 em = partial(Length, unit=Unit.EM)
+"""Build a `Length` in font-size multiples, as in ``em(5)``."""
 ex = partial(Length, unit=Unit.EX)
+"""Build a `Length` in x-height multiples, as in ``ex(5)``."""
 percent = partial(Length, unit=Unit.PERCENT)
+"""Build a `Length` in percentages, as in ``percent(5)``."""

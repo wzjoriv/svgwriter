@@ -19,10 +19,23 @@ class Style(MutableMapping[str, object]):
     """Ordered CSS declarations for a ``style`` attribute.
 
     Keys accept Python spelling (``stroke_width``) or CSS spelling
-    (``stroke-width``).
+    (``stroke-width``). Assigning ``None`` removes a declaration. It is a
+    mutable mapping that keeps insertion order.
+
+    Parameters
+    ----------
+    declarations : Style or mapping or str, optional
+        Initial declarations, or CSS text such as ``"fill:red;stroke:blue"``. Defaults to None.
+    **properties
+        More declarations as keywords.
+
+    See Also
+    --------
+    StyleSheet : Builder for ``<style>`` element text.
 
     Examples
     --------
+    >>> from svgwriter.attributes import Style
     >>> str(Style(fill="red", stroke_width=2))
     'fill:red;stroke-width:2'
     """
@@ -37,7 +50,24 @@ class Style(MutableMapping[str, object]):
 
     @staticmethod
     def parse(text: str) -> dict[str, str]:
-        """Split ``"a:b; c:d"`` into a dict."""
+        """Split CSS declaration text into a dict.
+
+        Parameters
+        ----------
+        text : str
+            Declarations separated by semicolons, such as ``"a:b; c:d"``.
+
+        Returns
+        -------
+        dict of str to str
+            Property names mapped to values; malformed items are skipped.
+
+        Examples
+        --------
+        >>> from svgwriter.attributes import Style
+        >>> Style.parse("a:b; c:d")
+        {'a': 'b', 'c': 'd'}
+        """
         result: dict[str, str] = {}
         for chunk in text.split(";"):
             name, sep, value = chunk.partition(":")
@@ -46,7 +76,19 @@ class Style(MutableMapping[str, object]):
         return result
 
     def presentation_only(self) -> Style:
-        """Return the subset that are SVG presentation properties."""
+        """Return the declarations that are SVG presentation properties.
+
+        Returns
+        -------
+        Style
+            A new style holding only presentation properties such as ``fill``.
+
+        Examples
+        --------
+        >>> from svgwriter.attributes import Style
+        >>> str(Style(fill="red", custom="x").presentation_only())
+        'fill:red'
+        """
         return Style({k: v for k, v in self._data.items() if k in PRESENTATION_ATTRIBUTES})
 
     def __getitem__(self, key: str) -> object:
@@ -71,6 +113,24 @@ class Style(MutableMapping[str, object]):
         return f"Style({self._data!r})"
 
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
+        """Serialize as the text of a ``style`` attribute.
+
+        Parameters
+        ----------
+        precision : int, optional
+            Maximum number of decimal places for numbers. Defaults to the library default precision.
+
+        Returns
+        -------
+        str
+            Declarations joined by semicolons.
+
+        Examples
+        --------
+        >>> from svgwriter.attributes import Style
+        >>> Style(fill="red", stroke_width=1.5).svg_value()
+        'fill:red;stroke-width:1.5'
+        """
         from .values import format_value
 
         return ";".join(f"{k}:{format_value(v, precision)}" for k, v in self._data.items())
@@ -85,8 +145,18 @@ StyleLike: TypeAlias = Style | Mapping[str, object] | str
 class StyleSheet:
     """Builder for the text of a ``<style>`` element.
 
+    Parameters
+    ----------
+    rules : iterable of tuple, optional
+        Initial ``(selector, declarations)`` pairs. Defaults to none.
+
+    See Also
+    --------
+    Style : A single declaration block.
+
     Examples
     --------
+    >>> from svgwriter.attributes import StyleSheet
     >>> sheet = StyleSheet().rule(".accent", fill="tomato")
     >>> sheet.css()
     '.accent { fill:tomato }'
@@ -96,6 +166,28 @@ class StyleSheet:
         self._rules: list[tuple[str, Style]] = [(s, Style(d)) for s, d in rules]
 
     def rule(self, selector: str, declarations: StyleLike | None = None, /, **properties: object) -> StyleSheet:
+        """Append a rule.
+
+        Parameters
+        ----------
+        selector : str
+            CSS selector.
+        declarations : Style or mapping or str, optional
+            Declarations as accepted by `Style`. Defaults to None.
+        **properties
+            More declarations as keywords.
+
+        Returns
+        -------
+        StyleSheet
+            The sheet itself, for chaining.
+
+        Examples
+        --------
+        >>> from svgwriter.attributes import StyleSheet
+        >>> StyleSheet().rule("rect", {"stroke": "blue"}).rule(".a", fill="red").css(" ")
+        'rect { stroke:blue } .a { fill:red }'
+        """
         self._rules.append((selector, Style(declarations, **properties)))
         return self
 
@@ -106,6 +198,24 @@ class StyleSheet:
         return len(self._rules)
 
     def css(self, separator: str = "\n") -> str:
+        """Render the sheet as CSS text.
+
+        Parameters
+        ----------
+        separator : str, optional
+            Text placed between rules. Defaults to a newline.
+
+        Returns
+        -------
+        str
+            One ``selector { declarations }`` entry per rule.
+
+        Examples
+        --------
+        >>> from svgwriter.attributes import StyleSheet
+        >>> StyleSheet().rule(".a", fill="red").css()
+        '.a { fill:red }'
+        """
         return separator.join(f"{selector} {{ {style} }}" for selector, style in self._rules)
 
     def __str__(self) -> str:

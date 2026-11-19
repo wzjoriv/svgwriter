@@ -30,20 +30,55 @@ _OUTPUTS: Final = {
 
 
 class FFmpegNotFoundError(RuntimeError):
-    """``ffmpeg`` is not installed or not on ``PATH``."""
+    """``ffmpeg`` is not installed or not on ``PATH``.
+
+    See Also
+    --------
+    find_ffmpeg : Raises it.
+    """
 
 
 class FFmpegError(RuntimeError):
-    """``ffmpeg`` ran but failed."""
+    """``ffmpeg`` ran but failed.
+
+    The message carries the exit status and the tail of ffmpeg's error output.
+
+    See Also
+    --------
+    encode : Raises it.
+    """
 
 
 def find_ffmpeg(executable: str | None = None) -> str:
     """Full path of the ffmpeg executable.
 
+    Parameters
+    ----------
+    executable : str, optional
+        A name or path to look up. Defaults to ``ffmpeg`` on ``PATH``.
+
+    Returns
+    -------
+    str
+        The resolved path.
+
     Raises
     ------
     FFmpegNotFoundError
         When it cannot be found; nothing has been rendered at that point.
+
+    See Also
+    --------
+    encode : Needs the resolved executable.
+
+    Examples
+    --------
+    >>> from svgwriter.video import FFmpegNotFoundError, find_ffmpeg
+    >>> try:
+    ...     find_ffmpeg("no-such-ffmpeg")
+    ... except FFmpegNotFoundError:
+    ...     print("not found")
+    not found
     """
     found = shutil.which(executable or FFMPEG)
     if found is None:
@@ -55,12 +90,62 @@ def find_ffmpeg(executable: str | None = None) -> str:
 
 
 def output_args(path: AnyPath) -> list[str]:
-    """Encoder arguments chosen from the output file's extension."""
+    """Encoder arguments chosen from the output file's extension.
+
+    Parameters
+    ----------
+    path : str or os.PathLike
+        The output file.
+
+    Returns
+    -------
+    list of str
+        Arguments for ``.mp4``, ``.m4v``, ``.mov``, ``.webm``, ``.gif`` and
+        ``.apng``; an empty list for any other extension, leaving ffmpeg to choose.
+
+    See Also
+    --------
+    input_args : The matching input description.
+
+    Examples
+    --------
+    >>> from svgwriter.video._ffmpeg import output_args
+    >>> output_args("clip.apng")
+    ['-plays', '0', '-f', 'apng']
+    >>> output_args("clip.xyz")
+    []
+    """
     return list(_OUTPUTS.get(os.path.splitext(os.fspath(path))[1].lower(), []))
 
 
 def input_args(first: Frame, fps: float) -> list[str]:
-    """Arguments describing the piped input format."""
+    """Arguments describing the piped input format.
+
+    Parameters
+    ----------
+    first : Frame
+        The first frame; its kind and size describe every frame.
+    fps : float
+        Input frame rate.
+
+    Returns
+    -------
+    list of str
+        PNG image pipe arguments, or raw RGBA arguments with the pixel size.
+
+    See Also
+    --------
+    output_args : The matching output description.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from svgwriter.video.frames import to_frame
+    >>> from svgwriter.video._ffmpeg import input_args
+    >>> frame = to_frame(0, 0.0, np.zeros((6, 8, 4), dtype="uint8"))
+    >>> input_args(frame, 12)[:2], input_args(frame, 12)[-4:]
+    (['-framerate', '12'], ['-s', '8x6', '-i', '-'])
+    """
     rate = ["-framerate", f"{fps:g}"]
     if first.png:
         return [*rate, "-f", "image2pipe", "-c:v", "png", "-i", "-"]
@@ -91,7 +176,38 @@ def _write(process: subprocess.Popen[bytes], data: bytes) -> bool:
 
 
 def encode(frames: Iterable[Frame], path: AnyPath, fps: float, *, executable: str) -> None:
-    """Run ffmpeg once, writing every frame to its stdin."""
+    """Run ffmpeg once, writing every frame to its stdin.
+
+    Parameters
+    ----------
+    frames : iterable of Frame
+        The frames; all must share kind and pixel size.
+    path : str or os.PathLike
+        Output file; the extension picks the encoder.
+    fps : float
+        Frame rate.
+    executable : str
+        Path of the ffmpeg executable, as from :func:`find_ffmpeg`.
+
+    Raises
+    ------
+    ValueError
+        If there are no frames, or a frame differs in kind or size from the first.
+    FFmpegError
+        If ffmpeg exits with a non-zero status.
+
+    See Also
+    --------
+    svgwriter.video.render_animation : Renders and encodes in one call.
+
+    Examples
+    --------
+    >>> from svgwriter.video._ffmpeg import encode
+    >>> encode([], "out.gif", 12, executable="ffmpeg")
+    Traceback (most recent call last):
+    ...
+    ValueError: no frames to encode
+    """
     stream = iter(frames)
     first = next(stream, None)
     if first is None:

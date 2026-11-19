@@ -16,12 +16,47 @@ ViewBoxLike = ViewBox | tuple[float, float, float, float] | str
 
 
 def user_units(value: Any) -> float:
-    """A length attribute in user units; unset counts as zero."""
+    """A length attribute in user units; unset counts as zero.
+
+    Parameters
+    ----------
+    value : length or None
+        A length value such as ``"1in"`` or a number.
+
+    Returns
+    -------
+    float
+        The length in user units.
+
+    Examples
+    --------
+    >>> from svgwriter.elements._viewport import user_units
+    >>> user_units(None), user_units("1in")
+    (0.0, 96.0)
+    """
     return 0.0 if value is None else Length.parse(value).to_user_units()
 
 
 def positioned_bbox(element: Element) -> BBox | None:
-    """``x``/``y``/``width``/``height`` as a box, or ``None`` without a size."""
+    """``x``/``y``/``width``/``height`` as a box, or ``None`` without a size.
+
+    Parameters
+    ----------
+    element : Element
+        An element with ``width`` and ``height`` attributes.
+
+    Returns
+    -------
+    BBox or None
+        The box, or None when a dimension is missing or a percentage.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.elements._viewport import positioned_bbox
+    >>> positioned_bbox(svg.image("a.png", 1, 2, 3, 4))
+    BBox(x=1.0, y=2.0, width=3.0, height=4.0)
+    """
     width, height = element.get("width"), element.get("height")
     if width is None or height is None or "%" in str(width) or "%" in str(height):
         return None
@@ -29,7 +64,25 @@ def positioned_bbox(element: Element) -> BBox | None:
 
 
 class FitToViewBox(Element):
-    """Elements that establish a viewBox."""
+    """Elements that establish a viewBox.
+
+    Parameters
+    ----------
+    *args : Element or str
+        Children.
+    view_box : ViewBox, tuple or str, optional
+        The ``viewBox``. Defaults to None.
+    preserve_aspect_ratio : PreserveAspectRatio or str, optional
+        How the view box fits the viewport. Defaults to None.
+    **kwargs
+        Passed on to the next base class.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.symbol(view_box=(0, 0, 10, 10)).view_box.width
+    10
+    """
 
     def __init__(
         self,
@@ -44,6 +97,15 @@ class FitToViewBox(Element):
 
     @property
     def view_box(self) -> ViewBox | None:
+        """The ``viewBox`` as a :class:`~svgwriter.ViewBox`, or None; assign a tuple or string to set it.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> s = svg.symbol(view_box="0 0 4 2")
+        >>> s.view_box.height
+        2.0
+        """
         raw = self.attributes.get("viewBox")
         if raw is None or isinstance(raw, ViewBox):
             return raw
@@ -60,7 +122,25 @@ class FitToViewBox(Element):
 
 
 class Positioned(Element):
-    """``x``, ``y``, ``width`` and ``height`` keywords."""
+    """``x``, ``y``, ``width`` and ``height`` keywords.
+
+    Parameters
+    ----------
+    *args : Element or str
+        Children.
+    x, y : length, optional
+        Position. Defaults to None.
+    width, height : length, optional
+        Size. Defaults to None.
+    **kwargs
+        Passed on to the next base class.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.image("a.png", 1, 2, 3, 4).width
+    3.0
+    """
 
     x = LengthAttr()
     y = LengthAttr()

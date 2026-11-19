@@ -43,26 +43,43 @@ def _default_namespaces() -> dict[str, str]:
 
 @dataclass(kw_only=True)
 class SerializeOptions:
-    """Output settings.
+    """Output settings for serialization.
+
+    All fields are keyword-only. They control layout, number formatting and the
+    prolog written before the root element.
 
     Parameters
     ----------
-    pretty : bool
+    pretty : bool, optional
         Indent and break lines; ``False`` writes everything on one line.
-    indent : str
-        One level of indentation when pretty.
-    precision : int
-        Maximum decimals for numbers.
-    xml_declaration : bool
-        Emit ``<?xml ...?>``.
-    doctype : bool
-        Emit the SVG 1.1 DOCTYPE.
-    encoding : str
-        Declared and used when writing files.
-    compact_paths : bool
-        Write path data in its shortest form.
-    namespaces : dict
-        Namespace declarations put on a root ``<svg>``.
+        Defaults to True.
+    indent : str, optional
+        One level of indentation when pretty. Defaults to two spaces.
+    precision : int, optional
+        Maximum decimals for numbers. Defaults to 4.
+    xml_declaration : bool, optional
+        Emit ``<?xml ...?>``. Defaults to True.
+    doctype : bool, optional
+        Emit the SVG 1.1 DOCTYPE. Defaults to False.
+    encoding : str, optional
+        Declared and used when writing files. Defaults to ``"utf-8"``.
+    compact_paths : bool, optional
+        Write path data in its shortest form. Defaults to False.
+    namespaces : dict, optional
+        Namespace declarations put on a root ``<svg>``. Defaults to the SVG and
+        XLink namespaces.
+
+    See Also
+    --------
+    Writer : Applies these options.
+    to_string : Serialize with options in one call.
+
+    Examples
+    --------
+    >>> from svgwriter.io import SerializeOptions
+    >>> options = SerializeOptions(pretty=False, precision=2)
+    >>> options.indent, options.precision
+    ('', 2)
     """
 
     pretty: InitVar[bool] = True
@@ -90,7 +107,27 @@ def _uses_xlink(element: Element) -> bool:
 
 
 class Writer:
-    """Turns an element tree into text, honoring :class:`SerializeOptions`."""
+    """Turn an element tree into text, honoring :class:`SerializeOptions`.
+
+    Parameters
+    ----------
+    options : SerializeOptions, optional
+        Pre-built options. Defaults to None, in which case `kwargs` build one.
+    **kwargs
+        Fields of :class:`SerializeOptions`, used when `options` is None.
+
+    See Also
+    --------
+    to_string : Module-level shortcut.
+    write : Module-level shortcut for files and streams.
+
+    Examples
+    --------
+    >>> from svgwriter import Circle
+    >>> from svgwriter.io import Writer
+    >>> Writer(pretty=False, xml_declaration=False).to_string(Circle(5, 5, 2))
+    '<circle cx="5" cy="5" r="2"/>'
+    """
 
     def __init__(self, options: SerializeOptions | None = None, **kwargs: Any) -> None:
         self.options = options if options is not None else SerializeOptions(**kwargs)
@@ -146,7 +183,34 @@ class Writer:
         yield f"</{element.tag}>"
 
     def iter_chunks(self, element: Element, *, xml_declaration: bool | MissingType = MISSING) -> Iterator[str]:
-        """Yield the document in pieces (useful for streaming)."""
+        """Yield the document in pieces (useful for streaming).
+
+        Joining the chunks gives the same text as :meth:`to_string`.
+
+        Parameters
+        ----------
+        element : Element
+            Root of the tree to write.
+        xml_declaration : bool, optional
+            Override the ``xml_declaration`` option for this call. Defaults to
+            the option's value.
+
+        Yields
+        ------
+        str
+            Consecutive fragments of the document.
+
+        See Also
+        --------
+        to_string : Join the chunks into one string.
+
+        Examples
+        --------
+        >>> from svgwriter import Circle
+        >>> from svgwriter.io import Writer
+        >>> list(Writer(pretty=False, xml_declaration=False).iter_chunks(Circle(5, 5, 2)))
+        ['<circle cx="5" cy="5" r="2"', '/>']
+        """
         opts = self.options
         declaration = opts.xml_declaration if xml_declaration is MISSING else xml_declaration
         if declaration:
@@ -158,10 +222,64 @@ class Writer:
             yield opts.newline
 
     def to_string(self, element: Element, **kwargs: Any) -> str:
+        """Serialize *element* to a string.
+
+        Parameters
+        ----------
+        element : Element
+            Root of the tree to write.
+        **kwargs
+            Forwarded to :meth:`iter_chunks` (``xml_declaration``).
+
+        Returns
+        -------
+        str
+            The complete document.
+
+        See Also
+        --------
+        write : Write to a path or stream instead.
+
+        Examples
+        --------
+        >>> from svgwriter import Circle
+        >>> from svgwriter.io import Writer
+        >>> Writer(pretty=False).to_string(Circle(5, 5, 2), xml_declaration=False)
+        '<circle cx="5" cy="5" r="2"/>'
+        """
         return "".join(self.iter_chunks(element, **kwargs))
 
     def write(self, element: Element, target: AnyPath | TextSink, **kwargs: Any) -> None:
-        """Write to a filesystem path or any object with ``write(str)``."""
+        """Write to a filesystem path or any object with ``write(str)``.
+
+        Parameters
+        ----------
+        element : Element
+            Root of the tree to write.
+        target : str, os.PathLike or TextSink
+            Destination path (written with the configured encoding) or text stream.
+        **kwargs
+            Forwarded to :meth:`iter_chunks` (``xml_declaration``).
+
+        Raises
+        ------
+        TypeError
+            If `target` is neither a path nor a text stream.
+
+        See Also
+        --------
+        to_string : Return the text instead.
+
+        Examples
+        --------
+        >>> import io
+        >>> from svgwriter import Circle
+        >>> from svgwriter.io import Writer
+        >>> stream = io.StringIO()
+        >>> Writer(pretty=False, xml_declaration=False).write(Circle(5, 5, 2), stream)
+        >>> stream.getvalue()
+        '<circle cx="5" cy="5" r="2"/>'
+        """
         if isinstance(target, (str, os.PathLike)):
             self._write_path(element, target, **kwargs)
         elif isinstance(target, TextSink):
@@ -185,22 +303,61 @@ def _open_text(path: AnyPath, encoding: str) -> Iterator[IO[str]]:
 
 
 def iter_chunks(element: Element, **kwargs: Any) -> Iterator[str]:
-    """Module-level shortcut for :meth:`Writer.iter_chunks`."""
+    """Yield the serialized document in pieces.
+
+    Module-level shortcut for :meth:`Writer.iter_chunks`.
+
+    Parameters
+    ----------
+    element : Element
+        Root of the tree to write.
+    **kwargs
+        Fields of :class:`SerializeOptions`, plus ``xml_declaration`` to override
+        the prolog for this call.
+
+    Yields
+    ------
+    str
+        Consecutive fragments of the document.
+
+    See Also
+    --------
+    to_string : Join the chunks into one string.
+
+    Examples
+    --------
+    >>> from svgwriter import Circle
+    >>> from svgwriter.io import iter_chunks
+    >>> list(iter_chunks(Circle(5, 5, 2), pretty=False, xml_declaration=False))
+    ['<circle cx="5" cy="5" r="2"', '/>']
+    """
     xml_declaration = kwargs.pop("xml_declaration", MISSING)
     return Writer(**kwargs).iter_chunks(element, xml_declaration=xml_declaration)
 
 
 def to_string(element: Element, *, options: SerializeOptions | None = None, **kwargs: Any) -> str:
-    """Serialize *element*.
+    """Serialize *element* to a string.
+
+    Builds a :class:`Writer` from the options and returns its output in one piece.
 
     Parameters
     ----------
     element : Element
         Root of the tree to write.
     options : SerializeOptions, optional
-        Pre-built options; otherwise keywords build one.
+        Pre-built options; otherwise keywords build one. Defaults to None.
     **kwargs
         Fields of :class:`SerializeOptions` (``pretty``, ``precision``...).
+
+    Returns
+    -------
+    str
+        The complete document.
+
+    See Also
+    --------
+    write : Write to a path or stream.
+    iter_chunks : Stream the text in pieces.
 
     Examples
     --------
@@ -212,6 +369,38 @@ def to_string(element: Element, *, options: SerializeOptions | None = None, **kw
 
 
 def write(element: Element, target: AnyPath | TextSink, **kwargs: Any) -> None:
-    """Write *element* to a path or text stream; keywords as in :func:`to_string`."""
+    """Write *element* to a path or text stream.
+
+    Keywords are the same as in :func:`to_string`.
+
+    Parameters
+    ----------
+    element : Element
+        Root of the tree to write.
+    target : str, os.PathLike or TextSink
+        Destination path or any object with ``write(str)``.
+    **kwargs
+        ``options`` or fields of :class:`SerializeOptions`.
+
+    Raises
+    ------
+    TypeError
+        If `target` is neither a path nor a text stream.
+
+    See Also
+    --------
+    to_string : Return the text instead.
+    svgwriter.io.write_async : Write to a path in a worker thread.
+
+    Examples
+    --------
+    >>> import io
+    >>> from svgwriter import Circle
+    >>> from svgwriter.io import write
+    >>> stream = io.StringIO()
+    >>> write(Circle(5, 5, 2), stream, pretty=False, xml_declaration=False)
+    >>> stream.getvalue()
+    '<circle cx="5" cy="5" r="2"/>'
+    """
     options = kwargs.pop("options", None)
     Writer(options, **kwargs).write(element, target)
