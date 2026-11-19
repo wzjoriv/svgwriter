@@ -119,7 +119,31 @@ def read_svg(data: bytes, **options: Any) -> Document:
     return Document.from_string(data, **options)
 
 
-@register_importer("image", extensions=(".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp"))
+@register_importer("dxf", extensions=(".dxf",))
+def read_dxf(data: bytes, **options: Any) -> Document:
+    """DXF lines, polylines, circles, arcs and ellipses as stroked paths."""
+    from ._cnc_read import read_dxf as read
+
+    return read(data.decode("utf-8", "replace"), **options)
+
+
+@register_importer("hpgl", extensions=(".hpgl", ".plt"))
+def read_hpgl(data: bytes, **options: Any) -> Document:
+    """HPGL pen moves as stroked paths, coloured by pen."""
+    from ._cnc_read import read_hpgl as read
+
+    return read(data.decode("ascii", "replace"), **options)
+
+
+@register_importer("gcode", extensions=(".gcode", ".nc", ".ngc"))
+def read_gcode(data: bytes, **options: Any) -> Document:
+    """G-code cutting moves as stroked paths."""
+    from ._cnc_read import read_gcode as read
+
+    return read(data.decode("ascii", "replace"), **options)
+
+
+@register_importer("image",extensions=(".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp"))
 def read_image(data: bytes) -> Document:
     """A raster image as a document holding one embedded ``<image>`` at its pixel size."""
     from ..document import Document

@@ -66,3 +66,53 @@ def test_matplotlib_figures_can_be_added() -> None:
     assert doc.rasterize()[..., 3].max() == 1.0
     box = doc.content_bounds()
     assert box is not None and math.isfinite(box.width) and box.x == 10
+
+
+class TestImport:
+    @pytest.mark.parametrize("extension", [".dxf", ".plt", ".gcode"])
+    def test_round_trip_keeps_geometry(self, tmp_path, extension: str) -> None:
+        doc = drawing()
+        path = tmp_path / f"x{extension}"
+        doc.save(path)
+        back = svg.Document.open(path)
+        original = doc.content_bounds()
+        box = back.content_bounds()
+        assert len(back) == 2 and box is not None
+        assert box.width == pytest.approx(original.width, abs=1.5) and box.height == pytest.approx(original.height, abs=1.5)
+
+    def test_dxf_colours_from_layers(self, tmp_path) -> None:
+        drawing().save(tmp_path / "x.dxf")
+        back = svg.Document.open(tmp_path / "x.dxf")
+        assert {str(p.get("stroke")) for p in back} == {"#ff0000", "#0000ff"}
+
+    def test_ezdxf_entities(self, tmp_path) -> None:
+        ezdxf = pytest.importorskip("ezdxf")
+        dxf = ezdxf.new("R2010")
+        msp = dxf.modelspace()
+        msp.add_circle((10, 10), 5)
+        msp.add_arc((30, 10), 5, 0, 90)
+        msp.add_lwpolyline([(0, 0, 0, 0, 1.0), (10, 0)], format="xyseb")
+        msp.add_line((0, 20), (40, 20))
+        msp.add_ellipse((50, 10), major_axis=(5, 0), ratio=0.5)
+        dxf.saveas(tmp_path / "e.dxf")
+        back = svg.Document.open(tmp_path / "e.dxf", unit_mm=1.0)
+        assert len(back) == 5
+        circle = back[0].exact_bbox()
+        assert circle.width == pytest.approx(10, abs=0.05)
+        bulge = back[2].exact_bbox()
+        assert bulge.height == pytest.approx(5, abs=0.1)
+
+    def test_gcode_arcs_inches_and_laser(self) -> None:
+        from svgwriter.export._cnc_read import read_gcode
+
+        doc = read_gcode("G20\nM3\nG0 X0 Y0\nG1 X1 Y0\nG2 X1 Y-2 I0 J-1\nM5\nG0 X5 Y5\n", unit_mm=1.0)
+        (path,) = list(doc)
+        box = path.exact_bbox()
+        assert box.width == pytest.approx(25.4 * 2, abs=0.5) and box.height == pytest.approx(50.8, abs=0.5)
+
+    def test_hpgl_relative_and_pens(self) -> None:
+        from svgwriter.export._cnc_read import read_hpgl
+
+        doc = read_hpgl("IN;SP2;PU0,0;PD400,0;PR0,400;PU;SP5;PA0,0;PD0,800;", unit_mm=1.0)
+        assert [str(p.get("stroke")) for p in doc] == ["red", "blue"]
+        assert doc[0].exact_bbox() == pytest.approx((0, -10, 10, 10))
