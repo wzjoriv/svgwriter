@@ -21,7 +21,7 @@ from ._mixins import (
     PresentationAttributes,
     XLinkAttributes,
 )
-from ._textlayout import collect, layout
+from ._textlayout import cluster_bounds, collect, layout
 from .base import Category, Child, ContentModel, Element
 from .container import Container
 
@@ -285,8 +285,8 @@ class Text(PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag="tex
         return sum((box.placed() for box in self.layout()), PathData())
 
     def __len__(self) -> int:
-        """Number of characters."""
-        return len(self.characters)
+        """Number of user-perceived characters (grapheme clusters)."""
+        return len(cluster_bounds(self.characters)) - 1
 
     @overload
     def __getitem__(self, index: int) -> Character: ...
@@ -300,20 +300,26 @@ class Text(PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag="tex
         >>> t = Text("Hello world", x=0, y=20)
         >>> t[-1].char, t[6:].chars, len(t)
         ('d', 'world', 11)
+        >>> accented = Text("café!", x=0, y=20)
+        >>> len(accented), accented[3].char == "é"
+        (5, True)
         """
-        count = len(self.characters)
+        bounds = cluster_bounds(self.characters)
+        count = len(bounds) - 1
         if isinstance(index, slice):
             start, stop, step = index.indices(count)
             if step != 1:
                 raise ValueError("text ranges must be contiguous (step 1)")
-            return CharacterRange(self, start, max(start, stop))
+            return CharacterRange(self, bounds[start], bounds[max(start, stop)])
         if not -count <= index < count:
             raise IndexError(f"text has {count} characters, index {index} is out of range")
-        return Character(self, index % count)
+        index %= count
+        return Character(self, index, bounds[index], bounds[index + 1])
 
     def __iter__(self) -> Iterator[Character]:  # type: ignore[override]
-        """The characters as :class:`Character` handles; ``children`` holds the runs and spans."""
-        return (Character(self, i) for i in range(len(self.characters)))
+        """The characters (grapheme clusters) as :class:`Character` handles; ``children`` holds the runs and spans."""
+        bounds = cluster_bounds(self.characters)
+        return (Character(self, i, bounds[i], bounds[i + 1]) for i in range(len(bounds) - 1))
 
     def run_style(self, source: Element) -> dict[str, object]:
         """Presentation attributes that apply to glyphs coming from *source*.

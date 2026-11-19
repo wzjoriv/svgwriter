@@ -19,7 +19,10 @@ ancestors, and CSS from `<style>` elements all apply, as in a browser. Whitespac
 
 `text[i]` is a live {class}`~svgwriter.elements.text.Character` and `text[a:b]` a `CharacterRange`. Moving and
 rotating them edits SVG's per-character `dx`/`dy`/`rotate` lists, so the result is still real,
-selectable text:
+selectable text: Indexes count user-perceived characters (grapheme clusters): `"é"` written as `e` plus a combining
+accent, a ZWJ emoji family, a flag or a keycap is one character. Text is laid out glyph by glyph without
+a shaping engine, so ligatures and complex scripts (Arabic joining, Indic reordering) are not shaped;
+convert such text to outlines from a renderer that shapes it, or embed the outlines.
 
 ```python
 t = doc.text("wavy text", x=10, y=40, font_size=24)

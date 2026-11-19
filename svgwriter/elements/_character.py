@@ -8,7 +8,7 @@ from collections.abc import Iterator
 from typing import TYPE_CHECKING, Any, NoReturn
 
 from ..attributes.names import PRESENTATION_ATTRIBUTES, svg_name
-from ._textlayout import collect, number_list
+from ._textlayout import cluster_bounds, collect, number_list
 
 if TYPE_CHECKING:
     from ..ops.text import GlyphBox
@@ -294,10 +294,12 @@ class Character(_Characters):
     ((0.0, -4.0, 4.0), (0.0, 20.0, 0.0))
     """
 
-    __slots__ = ()
+    __slots__ = ("_index",)
 
-    def __init__(self, text: Text, index: int) -> None:
-        super().__init__(text, index, index + 1)
+    def __init__(self, text: Text, index: int, start: int | None = None, stop: int | None = None) -> None:
+        start = index if start is None else start
+        super().__init__(text, start, start + 1 if stop is None else stop)
+        object.__setattr__(self, "_index", index)
 
     @property
     def index(self) -> int:
@@ -309,7 +311,7 @@ class Character(_Characters):
         >>> svg.text("abc", x=0, y=10)[2].index
         2
         """
-        return self.start
+        return self._index
 
     def _where(self) -> str:
         return str(self.start)
@@ -324,7 +326,7 @@ class Character(_Characters):
         >>> svg.text("abc", x=0, y=10)[1].char
         'b'
         """
-        return self.text.characters[self.start]
+        return self.text.characters[self.start:self.stop]
 
     @property
     def position(self) -> Point:
@@ -356,7 +358,7 @@ class Character(_Characters):
         return self._boxes()[0].angle
 
     def __repr__(self) -> str:
-        return f"Character({self.char!r}, {self.start})"
+        return f"Character({self.char!r}, {self._index})"
 
 
 class CharacterRange(_Characters):
@@ -388,7 +390,9 @@ class CharacterRange(_Characters):
         return self.stop - self.start
 
     def __iter__(self) -> Iterator[Character]:
-        return (Character(self.text, i) for i in range(self.start, self.stop))
+        bounds = cluster_bounds(self.text.characters)
+        return (Character(self.text, i, bounds[i], bounds[i + 1]) for i in range(len(bounds) - 1)
+                if self.start <= bounds[i] < self.stop)
 
     def __repr__(self) -> str:
         return f"CharacterRange({self.chars!r}, {self.start}, {self.stop})"

@@ -190,3 +190,22 @@ class TestRanges:
     def test_range_scale_hint(self) -> None:
         with pytest.raises(TypeError, match=r"glyphs\(\)\[1:3\]"):
             text()[1:3].scale(2)
+
+
+class TestGraphemeClusters:
+    def test_combining_marks_emoji_and_flags_are_one_character(self) -> None:
+        family = "\U0001f469‍\U0001f469‍\U0001f467"
+        flag = "\U0001f1fa\U0001f1f8"
+        t = svg.text(f"é{family}{flag}1️⃣!", x=0, y=20)
+        assert [c.char for c in t] == ["é", family, flag, "1️⃣", "!"]
+        assert len(t) == 5 and t[1].index == 1 and t[-1].char == "!"
+        assert t[1:3].chars == family + flag
+
+    def test_two_flags_split_between_pairs(self) -> None:
+        t = svg.text("\U0001f1fa\U0001f1f8\U0001f1eb\U0001f1f7", x=0, y=10)
+        assert len(t) == 2
+
+    def test_cluster_handles_edit_the_code_point_lists(self) -> None:
+        t = svg.text("éx", x=0, y=10)
+        t[1].translate(5, 0)
+        assert t.get("dx") is not None and len(t) == 2
