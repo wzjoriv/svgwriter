@@ -35,7 +35,7 @@ pixels = doc.rasterize(scale=2)                          # numpy float32 RGBA, s
 | Colors and images | `Color` in 0-1 floats with alpha (auto `*-opacity`); `Image(numpy_array)` with color channels and broadcastable alpha; `Image.open("photo.png")`; Porter-Duff compositing `a \| b` (over), `a & b` (in), `a - b` (out), `a ^ b`, `a * b` (multiply), `a.composite(b, "screen")` |
 | Documents | `doc[0]`, `doc["logo"]`, `for el in doc`; auto-size to content; definitions land in `<defs>` when referenced; plots and anything with `_repr_svg_` or `savefig` can be added; notebook display |
 | Rendering | skia: `rasterize(size=..., padding=...)` to numpy, embedded and linked images, text, CSS `<style>`; deterministic output |
-| Export / import | Registry by name or extension: SVG, SVGZ, PNG, JPEG, WebP, PDF (vector), TikZ, EPS, DXF, HPGL, G-code, Excalidraw, ICO, ICNS out; SVG, SVGZ, raster images, DXF, HPGL, G-code, Excalidraw, ICO, ICNS in; `svg.export.register(...)` for more |
+| Export / import | Registry by name or extension: SVG, SVGZ, PNG, JPEG, WebP, BMP, GIF, PPM, PDF (vector), TikZ, EPS, DXF, HPGL, G-code, Excalidraw, ICO, ICNS out; SVG, SVGZ, raster images, PNM, DXF, HPGL, G-code, Excalidraw, ICO, ICNS in; `svg.export.register(...)` for more |
 | Animation | SMIL elements, and `doc.render_animation("out.mp4", update=...)` through ffmpeg |
 
 ## Geometry in one minute
