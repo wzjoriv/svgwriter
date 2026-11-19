@@ -4,6 +4,7 @@ Text outlines and measurement from installed fonts.
 
 from __future__ import annotations
 
+import os
 import warnings
 from collections.abc import Sequence
 from dataclasses import dataclass, replace
@@ -19,7 +20,10 @@ from ._skia import from_skia
 if TYPE_CHECKING:
     from ..elements.shapes import Path
 
-__all__ = ["Anchor", "FontWeight", "GlyphBox", "glyph_shape", "layout_glyphs", "text_outline", "text_to_path", "text_width"]
+__all__ = [
+    "Anchor", "FontWeight", "GlyphBox", "glyph_shape", "layout_glyphs", "register_font", "text_outline", "text_to_path",
+    "text_width",
+]
 
 Anchor = Literal["start", "middle", "end"]
 FontWeight = int | Literal["normal", "bold"]
@@ -44,10 +48,69 @@ def _weight(value: FontWeight) -> int:
     return int(value)
 
 
+_REGISTERED: dict[str, list[Any]] = {}
+
+
+def register_font(source: str | os.PathLike[str] | bytes, family: str | None = None) -> str:
+    """Make a TrueType/OpenType font file usable by name in ``font_family``.
+
+    Text layout, measurement, outlines and rendering then use it, without
+    installing it on the system. Register each style file (regular, bold,
+    italic) of a family; the closest weight and slant is chosen.
+
+    Parameters
+    ----------
+    source : str, os.PathLike or bytes
+        A ``.ttf``/``.otf``/``.ttc`` file or its contents.
+    family : str, optional
+        Name to register under. Defaults to None, which uses the family name
+        stored in the font.
+
+    Returns
+    -------
+    str
+        The family name to use in ``font_family``.
+
+    Raises
+    ------
+    ValueError
+        If the data is not a font skia can read.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> # name = svg.register_font("Inter-Regular.ttf")
+    >>> # svg.text("Hello", x=0, y=20, font_family=name).to_path()
+    """
+    if isinstance(source, bytes):
+        typeface = skia.Typeface.MakeFromData(skia.Data.MakeWithCopy(source))
+    else:
+        typeface = skia.Typeface.MakeFromFile(os.fspath(source))
+    if typeface is None:
+        raise ValueError(f"cannot read a font from {source if not isinstance(source, bytes) else 'the data'!r}")
+    name = family or typeface.getFamilyName()
+    _REGISTERED.setdefault(name.lower(), []).append(typeface)
+    _font.cache_clear()
+    glyph_shape.cache_clear()
+    return name
+
+
+def _registered(family: str, weight: int, slant: Any) -> Any:
+    """The registered typeface of *family* closest to the requested weight and slant, if any."""
+    faces = _REGISTERED.get(family.lower())
+    if not faces:
+        return None
+    return min(faces, key=lambda face: (face.fontStyle().slant() != slant, abs(face.fontStyle().weight() - weight)))
+
+
 @lru_cache(maxsize=FONT_CACHE)
 def _font(font_family: str, size: float, weight: FontWeight, italic: bool) -> Any:
     slant = skia.FontStyle.kItalic_Slant if italic else skia.FontStyle.kUpright_Slant
     families = [name.strip().strip("'\"") for name in font_family.split(",") if name.strip()]
+    for family in families:
+        face = _registered(family, _weight(weight), slant)
+        if face is not None:
+            return skia.Font(face, size)
     typeface = None
     for family in families or [DEFAULT_FAMILY]:
         candidate = skia.Typeface(family, skia.FontStyle(_weight(weight), NORMAL_WIDTH, slant))

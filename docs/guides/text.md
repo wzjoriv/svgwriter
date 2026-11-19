@@ -60,3 +60,18 @@ print(svg.ops.text_width("Outline", "sans-serif", 36))
 
 Text takes part in boolean operations (`rect - text`) and clipping (`art.clip(text)`) through its
 outlines.
+
+## Font files
+
+Fonts are found by family name among the installed fonts. To use a font file without installing it,
+register it; layout, measurement, outlines and rendering then use it:
+
+```python
+# family = svg.register_font("Inter-Regular.ttf")   # returns the family name stored in the file
+# svg.text("Hello", x=0, y=40, font_family=family, font_size=32).to_path()
+```
+
+Register each style file (regular, bold, italic); the closest weight and slant is chosen. For a
+document that looks the same everywhere, convert text to outlines with `text.to_path()`: browsers no
+longer support SVG 1.1 `<font>` elements, so outlines are the portable form.
+

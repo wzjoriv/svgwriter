@@ -29,7 +29,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest>=7", "ezdxf>=1.0", "matplotlib>=3.7", "pillow>=10"]
+test = ["pytest>=7", "ezdxf>=1.0", "matplotlib>=3.7", "pillow>=10", "fonttools>=4.40"]
 dev = [
     "svgwriter[test,docs]",
     "stubpy",

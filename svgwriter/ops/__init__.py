@@ -30,7 +30,7 @@ from .measure import (
     total_length,
 )
 from .render import encode, rasterize, render_frame, render_png, render_svg
-from .text import Anchor, FontWeight, text_outline, text_to_path, text_width
+from .text import Anchor, FontWeight, register_font, text_outline, text_to_path, text_width
 
 __all__ = [
     "Anchor",
@@ -52,6 +52,7 @@ __all__ = [
     "encode",
     "rasterize",
     "render_png",
+    "register_font",
     "render_svg",
     "resolve_operator",
     "simplify",
