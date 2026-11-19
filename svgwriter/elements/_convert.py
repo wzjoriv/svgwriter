@@ -266,26 +266,30 @@ class Convertible(Transformable):
         >>> svg.rect(0, 0, 8, 4, fill="red").rasterize(scale=2).shape
         (8, 16, 4)
         """
-        from ..io.writer import to_string
-        from ..ops.render import render_tree
-        from ..transform.matrix import Matrix
-
         box = self.render_bounds()
         if box is None:
             raise TypeError(f"<{self.tag}> has no known size; give it width and height or rasterize the document")
-        x, y = box.x - padding, box.y - padding
-        width, height = box.width + 2 * padding, box.height + 2 * padding
-        defs = "".join(to_string(d, xml_declaration=False, pretty=False) for d in _definitions(self))
+        canvas = type(box)(box.x - padding, box.y - padding, box.width + 2 * padding, box.height + 2 * padding)
+        return render_box(self, canvas, scale, background)
 
-        def wrap(body: str) -> str:
-            return (
-                f'<svg xmlns="{SVG_NS}" xmlns:xlink="{XLINK_NS}" '
-                f'viewBox="{x} {y} {width} {height}" width="{width}" height="{height}">'
-                f"<defs>{defs}</defs>{body}</svg>"
-            )
 
-        return render_tree(self, wrap, width, height, view=Matrix.translate(-x, -y), scale=scale,
-                           background=background)
+def render_box(element: Element, box: BBox, scale: float, background: str | None = None) -> np.ndarray:
+    """Render *element* alone onto the canvas *box* (parent coordinates) as straight RGBA."""
+    from ..io.writer import to_string
+    from ..ops.render import render_tree
+    from ..transform.matrix import Matrix
+
+    x, y, width, height = box.x, box.y, box.width, box.height
+    defs = "".join(to_string(d, xml_declaration=False, pretty=False) for d in _definitions(element))
+
+    def wrap(body: str) -> str:
+        return (
+            f'<svg xmlns="{SVG_NS}" xmlns:xlink="{XLINK_NS}" '
+            f'viewBox="{x} {y} {width} {height}" width="{width}" height="{height}">'
+            f"<defs>{defs}</defs>{body}</svg>"
+        )
+
+    return render_tree(element, wrap, width, height, view=Matrix.translate(-x, -y), scale=scale, background=background)
 
 
 def _to_image(element: Convertible, scale: float, padding: float, background: str | None) -> Image:

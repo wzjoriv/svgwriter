@@ -58,7 +58,16 @@ Element operands keep structural meanings; numbers and pairs transform a copy (i
 | `el @ degrees` | copy rotated about the anchor ("el at 30°") |
 | `M @ el` / `el @ M` | copy with matrix `M` applied in the parent / local frame |
 | `a | b`, `a & b`, `a - b`, `a ^ b` | boolean path ops (skia) on shapes, text, groups, `<use>`; result is a `<path>` |
+| `img | b`, `img & b`, `img - b`, `img ^ b`, `img * b` | Porter-Duff over / in / out / xor and the multiply blend when either side is an `<image>`; result is an `<image>` |
 | `+=`, `-=`, `*=`, `/=`, `@=` | the same, in place |
+
+Image compositing reuses the shape operators because they mean the same areas: union is *over*,
+intersection is *in*, difference is *out*, xor is *xor* (Porter-Duff, as in Cairo, Skia blend modes and
+CSS `mix-blend-mode`). Operator names are the SVG `CompositeOperator` / `BlendMode` enums, so one
+vocabulary covers filters and images. `img * other_element` is multiply; `+` keeps grouping everywhere
+rather than becoming `plus` (that is `composite(b, "arithmetic", k=(0, 1, 1, 0))`). Aligned images of
+equal size combine pixel for pixel (no resampling); anything else is rendered onto one canvas at the
+finer resolution.
 
 Also `flip_x()` / `flip_y()` (mirror about the anchor). Elements set `__array_ufunc__ = None` (numpy's
 opt-out) so `el + np.array([dx, dy])` reaches the element instead of broadcasting into an object array.

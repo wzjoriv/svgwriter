@@ -17,6 +17,7 @@ from __future__ import annotations
 
 from ._skia import Geometry, from_skia, to_skia
 from .boolean import BooleanOp, combine, difference, intersection, simplify, union, xor
+from .composite import Operator, composite_rgba, resolve_operator
 from .measure import (
     Cap,
     Join,
@@ -37,8 +38,10 @@ __all__ = [
     "FontWeight",
     "Geometry",
     "Join",
+    "Operator",
     "bounds",
     "combine",
+    "composite_rgba",
     "contains",
     "difference",
     "from_skia",
@@ -48,6 +51,7 @@ __all__ = [
     "rasterize",
     "render_png",
     "render_svg",
+    "resolve_operator",
     "simplify",
     "skia_renderer",
     "stroke_to_path",

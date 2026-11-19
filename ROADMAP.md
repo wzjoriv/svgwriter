@@ -37,6 +37,9 @@ left for later.
 17. **Housekeeping.** Web-only features out, SMIL and ffmpeg video kept, modern typing, geometry-first
     attribute order, `pathdata` sub-package (no clash with `svg.path`), `builder` reduced to composite
     shapes and effects, devkit tooling, tests mirroring the package.
+18. **Image compositing.** Porter-Duff `img | b`, `& b`, `- b`, `^ b` and `* b` (multiply), plus
+    `composite(b, operator)` with every `feComposite` operator and `feBlend` mode; any element can be
+    the other operand; `ops.composite_rgba` on raw arrays.
 
 ## Later
 

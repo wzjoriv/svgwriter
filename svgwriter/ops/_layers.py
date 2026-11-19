@@ -68,7 +68,10 @@ def drawable_order(root: Element) -> list[Element]:
             else:
                 order.append(child)
 
-    visit(root)
+    if root.tag in CONTAINERS:
+        visit(root)
+    elif root.tag not in NOT_RENDERED:
+        order.append(root)
     return order
 
 

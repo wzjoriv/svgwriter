@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import base64
 import os
-from typing import Any, Final
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, Any, Final
 
 import numpy as np
 import skia
@@ -16,6 +17,10 @@ from ...pathdata.data import BBox
 from .._mixins import GraphicsElement, XLinkAttributes
 from .._viewport import Positioned, positioned_bbox
 from ..base import Category, ContentModel
+from ._compositing import Compositing
+
+if TYPE_CHECKING:
+    from ...ops.composite import Operator
 
 __all__ = ["Image", "Pixels"]
 
@@ -271,6 +276,70 @@ class Pixels:
 
     __hash__ = None  # type: ignore[assignment]
 
+    def composite(self, backdrop: Pixels | np.ndarray, operator: Operator = "over", *, k: Sequence[float] = ()) -> Pixels:
+        """Composite these pixels onto *backdrop*, pixel for pixel.
+
+        ``a | b``, ``a & b``, ``a - b`` and ``a ^ b`` are ``over``, ``in``,
+        ``out`` and ``xor``.
+
+        Parameters
+        ----------
+        backdrop : Pixels or numpy.ndarray
+            Pixels underneath, or a straight RGBA array; it broadcasts, so
+            ``(1, 1, 4)`` is a solid color.
+        operator : CompositeOperator, BlendMode or str, optional
+            An ``feComposite`` operator or ``feBlend`` mode. Defaults to ``"over"``.
+        k : sequence of float, optional
+            ``(k1, k2, k3, k4)`` for ``"arithmetic"``. Defaults to ().
+
+        Returns
+        -------
+        Pixels
+            New pixels; both operands are left unchanged.
+
+        Raises
+        ------
+        ValueError
+            If the operator is unknown or the pixel shapes do not broadcast.
+
+        See Also
+        --------
+        Image.composite : Composite placed images, resampling as needed.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from svgwriter.elements.structure import Pixels
+        >>> glass = Pixels.from_array(np.full((2, 2, 3), 1.0), alpha=0.25)
+        >>> (glass | np.array([[[0, 0, 0, 1.0]]])).rgba()[0, 0].tolist()
+        [0.25, 0.25, 0.25, 1.0]
+        """
+        from ...ops.composite import composite_rgba
+
+        under = backdrop.rgba() if isinstance(backdrop, Pixels) else np.asarray(backdrop, dtype=np.float32)
+        try:
+            return Pixels.from_array(composite_rgba(self.rgba(), under, operator, k=k))
+        except ValueError as error:
+            if "broadcast" not in str(error):
+                raise
+            raise ValueError(f"pixel shapes {self.shape} and {under.shape[:2]} differ; "
+                             "composite the Image elements to resample them onto one canvas") from None
+
+    def _pair(self, other: object, operator: str) -> Pixels:
+        return self.composite(other, operator) if isinstance(other, (Pixels, np.ndarray)) else NotImplemented  # type: ignore[return-value]
+
+    def __or__(self, other: object) -> Pixels:
+        return self._pair(other, "over")
+
+    def __and__(self, other: object) -> Pixels:
+        return self._pair(other, "in")
+
+    def __sub__(self, other: object) -> Pixels:
+        return self._pair(other, "out")
+
+    def __xor__(self, other: object) -> Pixels:
+        return self._pair(other, "xor")
+
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
         """Serialize as a ``data:`` URI.
 
@@ -317,6 +386,7 @@ def _data_uri_bytes(uri: str) -> bytes:
 
 
 class Image(
+    Compositing,
     GraphicsElement, XLinkAttributes, Positioned, tag="image", category=Category.GRAPHICS, content=ContentModel.ELEMENTS
 ):
     """``<image>``: embedded pixels (numpy) or a linked file.
