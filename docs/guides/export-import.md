@@ -73,3 +73,13 @@ def read_lines(data, **options):
 svg.export.unregister("count")                       # plugins and tests can clean up
 svg.export.unregister("lines", importer=True)
 ```
+
+## Diagrams
+
+Graphviz (`.dot`, `.gv`) and Mermaid (`.mmd`, `.mermaid`) files load through their own command-line
+tools, so layouts match what those tools draw: `svg.load("graph.dot")` runs `dot -Tsvg`, and
+`svg.load("flow.mmd")` runs `mmdc` with SVG (not HTML) labels. The result is an ordinary document to
+edit, combine or export to any format. Install Graphviz or `@mermaid-js/mermaid-cli`, or point
+`SVGWRITER_DOT` / `SVGWRITER_MMDC` at the executables; a missing tool raises `DiagramToolError` with
+the install hint.
+
