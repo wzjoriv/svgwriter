@@ -146,7 +146,7 @@ class TestDocumentShortcuts:
     def test_container_text_shortcut_replaces_property(self) -> None:
         group = svg.Group()
         label = group.text("hello", x=1)
-        assert label.text == "hello" and label.parent is group
+        assert label.text_content == "hello" and label.parent is group
 
     def test_document_is_round_trippable(self) -> None:
         doc = svg.Document(30, 30)

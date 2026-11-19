@@ -226,10 +226,22 @@ class TestElementApi:
 
     def test_text_property(self) -> None:
         t = svg.Text("Hello ", svg.TSpan("world"))
-        assert t.text == "Hello "
-        t.text = "Bye "
-        assert t.children[0] == "Bye " and isinstance(t.children[1], svg.TSpan)
-        assert t.span("!", fill="red").text == "!"
+        assert t.text_content == "Hello world"
+        t.text_content = "Bye "
+        assert t.children == ["Bye "]
+        assert t.span("!", fill="red").text_content == "!"
+        assert t.text_content == "Bye !"
+
+    def test_text_content_resets_positions(self) -> None:
+        t = svg.Text("abc", x=[0, 5, 10], y=[1, 2, 3], dx=[1, 1], rotate=[10, 20])
+        t.text_content = "xy"
+        assert (t.get("x"), t.get("y"), t.get("dx"), t.get("rotate")) == (0, 1, None, None)
+        assert len(t) == 2
+
+    def test_container_text_is_the_factory(self) -> None:
+        g = svg.group()
+        label = g.text("hi", x=1, y=2)
+        assert label.parent is g and g.text_content == "hi"
 
     def test_copy_is_deep_and_detached(self) -> None:
         g = svg.Group(svg.Rect(1, 1, 1, 1), fill="red")
@@ -244,7 +256,7 @@ class TestElementApi:
 
     def test_unknown_element(self) -> None:
         u = UnknownElement("blink", "x", namespace="urn:x")
-        assert u.tag == "blink" and u.text == "x"
+        assert u.tag == "blink" and u.text_content == "x"
         assert Element.lookup("blink") is None
 
 
@@ -280,8 +292,8 @@ class TestStructure:
     def test_style_element_accepts_style_sheet(self) -> None:
         sheet = svg.StyleSheet().rule("rect", fill="red")
         el = svg.StyleElement(sheet)
-        assert el.text == "rect { fill:red }"
-        el.text = "circle { fill: blue }"
+        assert el.css == "rect { fill:red }"
+        el.css = "circle { fill: blue }"
         assert str(el) == '<style type="text/css">circle { fill: blue }</style>'
 
     def test_external_elements(self) -> None:

@@ -169,7 +169,7 @@ class TestRanges:
         assert t.characters == "Hello world" and isinstance(t.children[1], svg.TSpan)
         assert str(t.children[1].get("fill")) == "red" and t[6].char == "w"
         span = t[0:5].wrap(font_weight="bold")
-        assert span.text == "Hello" and t.children[0] is span
+        assert span.text_content == "Hello" and t.children[0] is span
 
     def test_wrap_errors(self) -> None:
         t = text("Hello world")

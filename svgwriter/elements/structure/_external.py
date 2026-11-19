@@ -13,7 +13,7 @@ from .._mixins import (
     XLinkAttributes,
 )
 from .._viewport import FitToViewBox
-from ..base import ContentModel, Element
+from ..base import ContentModel
 
 __all__ = ["ColorProfile", "StyleElement", "View"]
 
@@ -53,25 +53,25 @@ class StyleElement(CoreAttributes, tag="style", content=ContentModel.TEXT):
     ) -> None:
         super().__init__(**kwargs)
         self.update(type=type, media=media, title=title)
-        self.text = css  # type: ignore[assignment]
+        self.css = css  # type: ignore[assignment]
 
     @property
-    def text(self) -> str:
+    def css(self) -> str:
         """The style sheet text; assign a string or a :class:`~svgwriter.StyleSheet`.
 
         Examples
         --------
         >>> import svgwriter as svg
         >>> style = svg.StyleElement()
-        >>> style.text = "rect { fill: blue }"
-        >>> style.text
+        >>> style.css = "rect { fill: blue }"
+        >>> style.css
         'rect { fill: blue }'
         """
-        return super().text
+        return self.text_content
 
-    @text.setter
-    def text(self, value: str | StyleSheet) -> None:
-        Element.text.fset(self, value.css() if isinstance(value, StyleSheet) else value)  # type: ignore[attr-defined]
+    @css.setter
+    def css(self, value: str | StyleSheet) -> None:
+        self.text_content = value.css() if isinstance(value, StyleSheet) else value
 
 
 class View(FitToViewBox, ExternalResourcesAttribute, CoreAttributes, tag="view", content=ContentModel.EMPTY):

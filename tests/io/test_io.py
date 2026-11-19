@@ -62,7 +62,7 @@ def test_escaping_survives_round_trip() -> None:
     node = wellformed(text)
     assert node.find(f"{SVG_NS}title").text == "Sample & <test>"  # type: ignore[union-attr]
     parsed = svg.parse(text)
-    assert parsed.find(svg.Text).text == 'say "hi"\nnow'  # type: ignore[union-attr]
+    assert parsed.find(svg.Text).text_content == 'say "hi"\nnow'  # type: ignore[union-attr]
     assert parsed.to_string() == text
 
 
@@ -150,7 +150,7 @@ class TestParser:
         )
         root = svg.parse(source)
         assert root.find(svg.Text).get("xml:space") == "preserve"  # type: ignore[union-attr]
-        assert root.find(svg.Text).text == "  a  "  # type: ignore[union-attr]
+        assert root.find(svg.Text).text_content == "  a  "  # type: ignore[union-attr]
         assert root.find(svg.Use).target == "x"  # type: ignore[union-attr]
 
     def test_whitespace_dropped_between_elements(self) -> None:

@@ -140,6 +140,7 @@ coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into 
   `img.encode(fmt)`, `img.rgba()`.
 
 ### Styles and text
+- `el.text_content` is the DOM `textContent`: every character below the element; assigning replaces the children. `<text>` also resets per-character positions on assignment. Containers keep `text(...)` as the factory shortcut, so the names never clash; `<style>` has `css`.
 - **CSS and computed style** (`attributes.cascade`): style sheets are parsed (comments, groups,
   `!important`; `@` blocks skipped) and matched (type, `*`, `.class`, `#id`, attribute selectors,
   `:first-child`, descendant and child combinators) by specificity. `el.computed(name)` = inline style >

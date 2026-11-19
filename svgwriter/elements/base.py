@@ -636,25 +636,30 @@ class Element(Composable):
         self.children.clear()
 
     @property
-    def text(self) -> str:
-        """Concatenated direct text children.
+    def text_content(self) -> str:
+        """All character data below this element, in document order (the DOM ``textContent``).
 
-        Assigning replaces the existing text nodes with a single one.
+        Assigning replaces every child with the single string.
 
         Examples
         --------
         >>> import svgwriter as svg
-        >>> t = svg.text("hi")
-        >>> t.text
-        'hi'
+        >>> t = svg.text("Hello world")
+        >>> t[6:].fill = "red"
+        >>> t.text_content
+        'Hello world'
+        >>> title = svg.Title("Old")
+        >>> title.text_content = "New"
+        >>> str(title)
+        '<title>New</title>'
         """
-        return "".join(c for c in self.children if isinstance(c, str))
+        return "".join(c if isinstance(c, str) else c.text_content for c in self.children)
 
-    @text.setter
-    def text(self, value: str) -> None:
-        self.children = [c for c in self.children if not isinstance(c, str)]
+    @text_content.setter
+    def text_content(self, value: str) -> None:
+        self.clear()
         if value:
-            self.insert(0, value)
+            self.append(value)  # type: ignore[arg-type]
 
     def computed(self, name: str, default: object = None) -> object:
         """The value SVG would use for property *name* (SVG spelling or Python spelling).
