@@ -135,7 +135,7 @@ class Pixels:
         Parameters
         ----------
         data : bytes
-            PNG, JPEG, WebP, GIF or BMP file contents.
+            PNG, JPEG, WebP, GIF, BMP or PNM file contents.
 
         Returns
         -------
@@ -155,6 +155,10 @@ class Pixels:
         >>> Pixels.decode(png)
         Pixels(2x2, channels=3, opaque=True)
         """
+        from ...export._raster._encoders import decode_pnm, is_pnm
+
+        if is_pnm(data):
+            return cls.from_array(decode_pnm(data))
         encoded = skia.Data.MakeWithCopy(data)
         try:
             codec = skia.Codec.MakeFromData(encoded)
@@ -267,10 +271,10 @@ class Pixels:
 
         Parameters
         ----------
-        format : {"png", "jpeg", "webp"}, optional
+        format : {"png", "jpeg", "webp", "bmp", "gif", "ppm"}, optional
             Output format. Defaults to ``"png"``.
         quality : int, optional
-            Compression quality for lossy formats. Defaults to 90.
+            Compression quality for lossy formats; ignored by BMP, GIF and PPM. Defaults to 90.
 
         Returns
         -------
@@ -284,8 +288,12 @@ class Pixels:
         >>> Pixels.from_array(np.zeros((2, 2, 3))).encode()[1:4]
         b'PNG'
         """
+        from ...export._raster._encoders import ENCODERS, to_uint8
         from ...ops.render import encode
 
+        encoder = ENCODERS.get(format.lower())
+        if encoder is not None:
+            return encoder(to_uint8(self.rgba()))
         return encode(self.rgba(), format, quality=quality)
 
     def __eq__(self, other: object) -> bool:
@@ -630,10 +638,10 @@ class Image(
 
         Parameters
         ----------
-        format : {"png", "jpeg", "webp"}, optional
+        format : {"png", "jpeg", "webp", "bmp", "gif", "ppm"}, optional
             Output format. Defaults to ``"png"``.
         quality : int, optional
-            Compression quality for lossy formats. Defaults to 90.
+            Compression quality for lossy formats; ignored by BMP, GIF and PPM. Defaults to 90.
 
         Returns
         -------

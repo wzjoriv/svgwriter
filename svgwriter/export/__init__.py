@@ -1,7 +1,7 @@
 """Exporters and importers, discoverable by format name or file extension.
 
-Built in: SVG, SVGZ, PNG, JPEG, WebP, PDF (vector, via skia), TikZ, EPS, DXF,
-HPGL, G-code, Excalidraw, ICO and ICNS out; most of them in as well. Register more with :func:`register` and
+Built in: SVG, SVGZ, PNG, JPEG, WebP, BMP, GIF, PPM, PDF (vector, via skia), TikZ, EPS, DXF,
+HPGL, G-code, Excalidraw, ICO and ICNS out; most of them in as well (PNM in too). Register more with :func:`register` and
 :func:`register_importer`.
 
 Example

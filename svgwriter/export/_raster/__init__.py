@@ -1,5 +1,5 @@
 """
-Raster formats: PNG, JPEG and WebP out; ICO and ICNS icon families out and in; raster images in.
+Raster formats: PNG, JPEG, WebP, BMP, GIF and PPM out; ICO and ICNS icon families out and in; raster images and PNM in.
 """
 
 from __future__ import annotations
@@ -18,12 +18,15 @@ def _raster(format: str):  # type: ignore[no-untyped-def]
     def exporter(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int | None = None,
                  padding: float = 0.0, background: str | None = None, quality: int = DEFAULT_QUALITY) -> bytes:
         from ...ops.render import encode_image
+        from ._encoders import ENCODERS, to_uint8
 
         if format == "jpeg" and background is None:
             background = "white"
         if isinstance(size, int):
             size = (size, size)
         image = document.rasterize(scale=scale, size=size, padding=padding, background=background, snapshot=True)
+        if format in ENCODERS:
+            return ENCODERS[format](to_uint8(image))
         return encode_image(image, format, quality=quality)
 
     exporter.__doc__ = f"{format.upper()} raster (``scale``, ``size``, ``padding``, ``background``, ``quality``)."
@@ -33,6 +36,9 @@ def _raster(format: str):  # type: ignore[no-untyped-def]
 register("png", extensions=(".png",))(_raster("png"))
 register("jpeg", extensions=(".jpg", ".jpeg"))(_raster("jpeg"))
 register("webp", extensions=(".webp",))(_raster("webp"))
+register("bmp", extensions=(".bmp",))(_raster("bmp"))
+register("gif", extensions=(".gif",))(_raster("gif"))
+register("ppm", extensions=(".ppm", ".pgm", ".pnm"))(_raster("ppm"))
 
 
 @register("ico", extensions=(".ico",))
@@ -139,7 +145,7 @@ def read_image(data: bytes) -> Document:
     Parameters
     ----------
     data : bytes
-        PNG, JPEG, WebP, GIF or BMP file contents.
+        PNG, JPEG, WebP, GIF, BMP or PNM file contents.
 
     Returns
     -------
@@ -158,12 +164,53 @@ def read_image(data: bytes) -> Document:
     >>> doc.root.view_box.width, len(doc)
     (4, 1)
     """
-    from ...document import Document
-    from ...elements.structure import Image, Pixels
+    from ...elements.structure import Pixels
 
-    pixels = Pixels.decode(data)
+    return _image_document(Pixels.decode(data))
+
+
+@register_importer("pnm", extensions=(".ppm", ".pgm", ".pbm", ".pnm"))
+def read_pnm(data: bytes) -> Document:
+    """A PBM, PGM or PPM file as a document holding one embedded ``<image>`` at its pixel size.
+
+    Parameters
+    ----------
+    data : bytes
+        P1 to P6 file contents, ASCII or binary.
+
+    Returns
+    -------
+    Document
+        A document whose only child is the ``<image>``.
+
+    Raises
+    ------
+    ValueError
+        If the data is not a valid PNM file.
+
+    See Also
+    --------
+    read_image : Other raster formats.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> doc = svg.export.find_importer(".pgm").function(b"P2\\n2 1\\n255\\n0 255\\n")
+    >>> doc.root.view_box.width, len(doc)
+    (2, 1)
+    """
+    from ...elements.structure import Pixels
+    from ._encoders import decode_pnm
+
+    return _image_document(Pixels.from_array(decode_pnm(data)))
+
+
+def _image_document(pixels: Any) -> Document:
+    """A document sized to the pixels, holding them as one ``<image>``."""
+    from ...document import Document
+    from ...elements.structure import Image
+
     rows, columns = pixels.shape
     document = Document(columns, rows)
-    image = Image(pixels.rgba(), 0, 0, columns, rows)
-    document.add(image)
+    document.add(Image(pixels.rgba(), 0, 0, columns, rows))
     return document
