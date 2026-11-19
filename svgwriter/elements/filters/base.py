@@ -7,7 +7,7 @@ from __future__ import annotations
 import enum
 from typing import Any, TypeAlias, Union
 
-from ..._internal._typing import Units
+from ..._internal._typing import Self, Units
 from .._mixins import CoreAttributes, ExternalResourcesAttribute, PresentationAttributes, XLinkAttributes
 from .._viewport import Positioned
 from ..base import Category, Child, Element
@@ -120,7 +120,54 @@ class FilterPrimitive(Positioned, PresentationAttributes, CoreAttributes, catego
         return str(name)
 
     def _input(self, name: str, value: FilterInput | None) -> None:
+        remember_source(self, name, value)
         self.update({name: resolve_input(value)})
+
+    def sources(self) -> list[FilterPrimitive]:
+        """The primitives this one reads, directly or through merge nodes, nearest first.
+
+        Returns
+        -------
+        list of FilterPrimitive
+            Every upstream primitive given as an input object (not by name).
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> blur = svg.FeGaussianBlur(2, in_="SourceAlpha")
+        >>> shifted = svg.FeOffset(2, 2, in_=blur)
+        >>> shifted.sources() == [blur]
+        True
+        """
+        found: list[FilterPrimitive] = []
+        pending = [self]
+        while pending:
+            node = pending.pop()
+            for item in (node, *node.iter()):
+                for source in getattr(item, "_sources", {}).values():
+                    if all(source is not seen for seen in found):
+                        found.append(source)
+                        pending.append(source)
+        return found
+
+    def __rshift__(self, other: FilterPrimitive) -> FilterPrimitive:
+        """``a >> b``: *b* reads *a* (its ``in``, or the next free merge layer) and is returned for chaining."""
+        if not isinstance(other, FilterPrimitive):
+            return NotImplemented
+        other._feed(self)
+        return other
+
+    def _feed(self, source: FilterPrimitive) -> None:
+        self._input("in", source)
+
+
+def remember_source(owner: Element, name: str, value: object) -> None:
+    """Keep the primitive object behind an input so a :class:`Filter` can collect it later."""
+    sources = owner.__dict__.setdefault("_sources", {})
+    if isinstance(value, FilterPrimitive):
+        sources[name] = value
+    else:
+        sources.pop(name, None)
 
 
 class SingleInput(FilterPrimitive):
@@ -217,6 +264,59 @@ class Filter(
     ) -> None:
         super().__init__(*primitives, **kwargs)
         self.update(filter_units=filter_units, primitive_units=primitive_units, filter_res=filter_res)
+        self.collect()
+
+    def collect(self) -> Self:
+        """Insert every detached primitive the filter's primitives read, before its first reader.
+
+        ``Filter(merge)`` is then enough: the blur and offset that feed the
+        merge come along in dependency order.
+
+        Returns
+        -------
+        Filter
+            This filter, for chaining.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> blur = svg.FeGaussianBlur(3, in_="SourceAlpha")
+        >>> shadow = svg.FeOffset(2, 2, in_=blur)
+        >>> f = svg.Filter(svg.FeMerge(shadow, "SourceGraphic"))
+        >>> [p.tag for p in f.primitives]
+        ['feGaussianBlur', 'feOffset', 'feMerge']
+        """
+        index = 0
+        while index < len(self.children):
+            child = self.children[index]
+            missing = [s for s in getattr(child, "sources", list)() if s.parent is None] if isinstance(
+                child, FilterPrimitive) else []
+            if not missing:
+                index += 1
+                continue
+            self.insert(index, missing[0])
+        return self
+
+    def __rshift__(self, other: Filter) -> Filter:
+        """``f1 >> f2``: one filter applying *f1*, then *f2* to its result.
+
+        SVG 1.1 allows a single ``filter`` per element, so this is how effects
+        stack: copies of *f2*'s primitives read *f1*'s output wherever they
+        read ``SourceGraphic`` (explicitly or as the first primitive).
+        """
+        if not isinstance(other, Filter):
+            return NotImplemented
+        first = [p.clone() for p in self.primitives]
+        second = [p.clone() for p in other.primitives]
+        last = first[-1].result if first else StandardInput.SOURCE_GRAPHIC.value
+        for position, primitive in enumerate(second):
+            for node in (primitive, *primitive.iter()):
+                for name in ("in", "in2"):
+                    value = node.get(name)
+                    if value == StandardInput.SOURCE_GRAPHIC.value or (
+                            position == 0 and name == "in" and value is None and isinstance(node, SingleInput)):
+                        node.set(name, last)
+        return Filter(*first, *second)
 
     @property
     def primitives(self) -> list[FilterPrimitive]:

@@ -32,6 +32,7 @@ guides/geometry
 guides/paths
 guides/text
 guides/colors-and-images
+guides/effects
 guides/documents
 guides/rendering
 guides/export-import

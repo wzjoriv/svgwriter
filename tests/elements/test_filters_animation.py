@@ -167,3 +167,39 @@ def test_animation_round_trip() -> None:
     circle.append(svg.Animate(attribute_name="r", from_=2, to=4, dur=1, repeat_count=math.inf))
     first, second = roundtrip(svg.Svg(circle))
     assert first == second
+
+
+class TestFilterGraph:
+    def test_filter_collects_upstream_primitives_in_order(self):
+        blur = svg.FeGaussianBlur(3, in_="SourceAlpha")
+        shadow = svg.FeOffset(2, 2, in_=blur)
+        merge = svg.FeMerge(shadow, "SourceGraphic")
+        f = svg.Filter(merge)
+        assert [p.tag for p in f.primitives] == ["feGaussianBlur", "feOffset", "feMerge"]
+        assert shadow.get("in") == blur.result
+
+    def test_listing_everything_still_works_without_duplicates(self):
+        blur = svg.FeGaussianBlur(3)
+        shadow = svg.FeOffset(2, 2, in_=blur)
+        assert len(svg.Filter(blur, shadow).primitives) == 2
+
+    def test_rshift_wires_input_and_merge_layers(self):
+        blur = svg.FeGaussianBlur(2, in_="SourceAlpha")
+        offset = blur >> svg.FeOffset(3, 3)
+        assert offset.get("in") == blur.result
+        merge = offset >> svg.FeMerge("SourceGraphic")
+        assert [n.get("in") for n in merge] == ["SourceGraphic", offset.result]
+        assert len(svg.Filter(merge).primitives) == 3
+
+    def test_chaining_filters_feeds_first_output_into_second(self):
+        soft = svg.Filter(svg.FeGaussianBlur(1))
+        drop = svg.Filter(svg.FeOffset(2, 2, in_="SourceGraphic"))
+        stacked = soft >> drop
+        first, second = stacked.primitives
+        assert second.get("in") == first.result
+        assert len(soft.primitives) == 1 and drop.primitives[0].get("in") == "SourceGraphic"
+
+    def test_chained_filter_renders(self):
+        doc = svg.Document(40, 40)
+        doc.rect(10, 10, 20, 20, fill="red", filter=svg.Filter(svg.FeGaussianBlur(1)) >> svg.Filter(svg.FeOffset(2, 2)))
+        assert doc.rasterize()[..., 3].max() > 0

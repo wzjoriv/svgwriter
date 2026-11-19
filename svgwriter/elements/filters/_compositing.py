@@ -13,7 +13,7 @@ from ...color.color import Color
 from .._mixins import CoreAttributes, ExternalResourcesAttribute, XLinkAttributes
 from ..base import Child, ContentModel
 from ..container import Container
-from .base import FilterInput, FilterPrimitive, SingleInput, TwoInputs, resolve_input
+from .base import FilterInput, FilterPrimitive, SingleInput, TwoInputs, remember_source, resolve_input
 
 __all__ = [
     "BlendMode",
@@ -236,6 +236,7 @@ class FeMergeNode(CoreAttributes, tag="feMergeNode", content=ContentModel.ELEMEN
 
     def __init__(self, in_: FilterInput | None = None, **kwargs: Any) -> None:
         super().__init__(**kwargs)
+        remember_source(self, "in", in_)
         self.update(in_=resolve_input(in_))
 
 
@@ -262,3 +263,7 @@ class FeMerge(FilterPrimitive, Container[FeMergeNode], tag="feMerge"):
         super().__init__(**kwargs)
         for node in nodes:
             self.add(node if isinstance(node, FeMergeNode) else FeMergeNode(node))  # type: ignore[arg-type]
+
+    def _feed(self, source: FilterPrimitive) -> None:
+        """``a >> merge`` adds *a* as the top layer."""
+        self.add(FeMergeNode(source))

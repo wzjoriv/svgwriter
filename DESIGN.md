@@ -145,6 +145,13 @@ coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into 
   decoded on first pixel access and written back verbatim if untouched. `Image.open(path)`,
   `img.encode(fmt)`, `img.rgba()`.
 
+### Filters
+- Primitives keep their own parameters positionally (`FeGaussianBlur(3)`, `FeOffset(2, 2)`); inputs stay
+  keywords (`in_=`, `in2=`) and accept the producing primitive, as skia's `ImageFilters` take input filters.
+- `Filter(last)` collects every upstream primitive in dependency order, so a graph is named by its output.
+  `a >> b` wires `b` to read `a` (merge: adds a layer); `f1 >> f2` builds one filter applying both, since SVG
+  1.1 allows a single `filter` per element.
+
 ### Styles and text
 - `el.text_content` is the DOM `textContent`: every character below the element; assigning replaces the children. `<text>` also resets per-character positions on assignment. Containers keep `text(...)` as the factory shortcut, so the names never clash; `<style>` has `css`.
 - **CSS and computed style** (`attributes.cascade`): style sheets are parsed (comments, groups,
