@@ -42,7 +42,7 @@ from svgwriter.elements.filters import (
     TurbulenceType,
 )
 
-from .conftest import roundtrip, wellformed
+from ..conftest import roundtrip, wellformed
 
 
 def test_primitive_inputs_chain_by_result() -> None:

@@ -19,7 +19,7 @@ from svgwriter.io import (
     write_many_async,
 )
 
-from .conftest import SVG_NS, wellformed
+from ..conftest import SVG_NS, wellformed
 
 
 def sample() -> svg.Svg:

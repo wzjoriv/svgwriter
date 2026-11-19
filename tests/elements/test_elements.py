@@ -9,7 +9,7 @@ from svgwriter.elements import Category, ContentModel, Element, UnknownElement
 from svgwriter.path import BBox, PathData
 from svgwriter.transform import Transform
 
-from .conftest import SVG_NS, make, roundtrip, wellformed
+from ..conftest import SVG_NS, make, roundtrip, wellformed
 
 
 def test_every_svg11_element_is_registered() -> None:
