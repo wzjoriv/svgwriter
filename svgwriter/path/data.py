@@ -10,7 +10,7 @@ from typing import Final, NamedTuple, overload
 import numpy as np
 
 from .._internal._constants import DEFAULT_PRECISION
-from .._internal._speedups import format_number
+from .._internal._numbers import format_number
 from ..transform.matrix import Matrix, Point
 from ..transform.transform import TransformLike, as_transform
 from ._affine import transform_commands

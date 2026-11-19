@@ -13,7 +13,7 @@ from typing import Final, TypeAlias
 import numpy as np
 
 from .._internal._constants import DEFAULT_PRECISION
-from .._internal._speedups import format_number
+from .._internal._numbers import format_number
 from .._internal._typing import N, Opacity
 from ._named import NAMED_COLORS
 

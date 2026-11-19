@@ -18,7 +18,7 @@ from .._internal._constants import (
     PC_PER_INCH,
     PT_PER_INCH,
 )
-from .._internal._speedups import format_number
+from .._internal._numbers import format_number
 
 __all__ = [
     "Length",

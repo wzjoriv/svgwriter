@@ -9,7 +9,7 @@ from functools import singledispatch
 import numpy as np
 
 from .._internal._constants import DEFAULT_PRECISION
-from .._internal._speedups import format_number
+from .._internal._numbers import format_number
 from .protocols import SupportsSVG
 
 __all__ = ["format_value"]

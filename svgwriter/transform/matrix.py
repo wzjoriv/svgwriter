@@ -9,7 +9,7 @@ from typing import Final, NamedTuple, overload
 import numpy as np
 
 from .._internal._constants import DEFAULT_PRECISION
-from .._internal._speedups import format_number
+from .._internal._numbers import format_number
 from .._internal._typing import Matrix6
 
 __all__ = ["IDENTITY", "Matrix", "Point"]

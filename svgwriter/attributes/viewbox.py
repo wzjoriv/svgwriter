@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from typing import Final, NamedTuple
 
 from .._internal._constants import DEFAULT_PRECISION
-from .._internal._speedups import format_number
+from .._internal._numbers import format_number
 
 __all__ = ["Align", "MeetOrSlice", "PreserveAspectRatio", "ViewBox"]
 

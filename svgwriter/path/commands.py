@@ -7,7 +7,7 @@ from dataclasses import dataclass, field, fields, replace
 from typing import ClassVar
 
 from .._internal._constants import DEFAULT_PRECISION
-from .._internal._speedups import format_number
+from .._internal._numbers import format_number
 from .._internal._typing import Self
 from ..transform.matrix import Point
 

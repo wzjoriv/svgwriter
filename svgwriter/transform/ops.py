@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import ClassVar
 
 from .._internal._constants import DEFAULT_PRECISION
-from .._internal._speedups import format_number
+from .._internal._numbers import format_number
 from .matrix import Matrix
 
 __all__ = ["MatrixOp", "Rotate", "Scale", "SkewX", "SkewY", "TransformOp", "Translate"]

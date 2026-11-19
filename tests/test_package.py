@@ -10,7 +10,7 @@ import pytest
 
 import svgwriter as svg
 from svgwriter.__main__ import main
-from svgwriter._internal import _speedups
+from svgwriter._internal import _numbers
 from svgwriter._internal._ids import IdFactory
 from svgwriter._internal._registry import Registry, chainable
 from svgwriter._internal._sentinels import MISSING, MissingType
@@ -76,9 +76,8 @@ def test_py_typed_marker_ships() -> None:
     assert "py.typed" in (ROOT / "pyproject.toml").read_text(encoding="utf-8")
 
 
-def test_pure_python_fallback() -> None:
-    assert _speedups.HAVE_SPEEDUPS is False
-    assert _speedups.format_number(2.50) == "2.5"
+def test_format_number() -> None:
+    assert _numbers.format_number(2.50) == "2.5" and _numbers.format_number(3.0) == "3"
 
 
 class TestCli:

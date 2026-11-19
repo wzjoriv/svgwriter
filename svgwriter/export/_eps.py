@@ -5,7 +5,7 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING, Final
 
-from .._internal._speedups import format_number
+from .._internal._numbers import format_number
 from ._flatten import Item, flatten, to_cubic
 
 if TYPE_CHECKING:
