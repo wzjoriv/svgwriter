@@ -10,3 +10,4 @@ TODO.md
 *.mp4
 *.gif
 docs/_build/
+*.prof
