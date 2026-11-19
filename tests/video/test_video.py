@@ -94,13 +94,13 @@ class TestRenderers:
     def test_resolve(self) -> None:
         assert video.resolve_renderer(solid_png) is solid_png
         assert callable(video.resolve_renderer("skia"))
-        assert video.resolve_renderer("tests.test_video:gray_array") is gray_array
+        assert video.resolve_renderer("tests.video.test_video:gray_array") is gray_array
         with pytest.raises(ValueError, match="no renderer given"):
             video.resolve_renderer(None)
         with pytest.raises(ValueError, match="unknown renderer"):
             video.resolve_renderer("nope")
         with pytest.raises(TypeError, match="not callable"):
-            video.resolve_renderer("tests.test_video:WIDTH")
+            video.resolve_renderer("tests.video.test_video:WIDTH")
 
     def test_register(self) -> None:
         @video.register_renderer("test-solid")
@@ -228,13 +228,13 @@ class TestAnimateCommand:
     def test_bad_scene(self, tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
         script = tmp_path / "empty.py"
         script.write_text("x = 1\n", encoding="utf-8")
-        assert main(["animate", str(script), "--renderer", "tests.test_video:solid_png", "-o", str(tmp_path / "a.mp4")]) == 1
+        assert main(["animate", str(script), "--renderer", "tests.video.test_video:solid_png", "-o", str(tmp_path / "a.mp4")]) == 1
         assert "must define build()" in capsys.readouterr().err
 
     def test_missing_ffmpeg(self, tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
         script = tmp_path / "scene.py"
         script.write_text(SCENE, encoding="utf-8")
-        code = main(["animate", str(script), "--renderer", "tests.test_video:solid_png", "--ffmpeg", "no-such-ffmpeg-xyz"])
+        code = main(["animate", str(script), "--renderer", "tests.video.test_video:solid_png", "--ffmpeg", "no-such-ffmpeg-xyz"])
         assert code == 1 and "was not found" in capsys.readouterr().err
 
     def test_missing_renderer(self, tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
@@ -250,7 +250,7 @@ class TestAnimateCommand:
         script = tmp_path / "scene.py"
         script.write_text(SCENE, encoding="utf-8")
         target = tmp_path / "out.gif"
-        assert main(["animate", str(script), "--renderer", "tests.test_video:solid_png", "--out", str(target), "--fps", "6"]) == 0
+        assert main(["animate", str(script), "--renderer", "tests.video.test_video:solid_png", "--out", str(target), "--fps", "6"]) == 0
         assert target.stat().st_size > 0 and str(target) in capsys.readouterr().out
 
 
