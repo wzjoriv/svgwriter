@@ -12,8 +12,8 @@ from typing import Any
 
 from .._internal._registry import chainable
 from .._internal._typing import FillRule, LineCap, LineJoin, Opacity
-from ..attributes.descriptors import Attr
-from ..attributes.length import Length, LengthLike
+from ..attributes.descriptors import Attr, LengthAttr
+from ..attributes.length import LengthLike
 from ..attributes.names import PRESENTATION_ATTRIBUTES
 from ..attributes.style import Style, StyleLike
 from ..color.paint import PaintValue, parse_paint
@@ -127,7 +127,7 @@ class PresentationAttributes(StyleAttributes):
 
     fill = Attr[PaintValue](convert=parse_paint)
     stroke = Attr[PaintValue](convert=parse_paint)
-    stroke_width = Attr[Length](convert=Length.parse)
+    stroke_width = LengthAttr()
     opacity = Attr[float](convert=float)
 
     def __init__(

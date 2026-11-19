@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..attributes.descriptors import Attr
+from ..attributes.descriptors import LengthAttr
 from ..attributes.length import Length, LengthLike
 from ..attributes.viewbox import PreserveAspectRatio, ViewBox
 from ..path.data import BBox
@@ -62,10 +62,10 @@ class FitToViewBox(Element):
 class Positioned(Element):
     """``x``, ``y``, ``width`` and ``height`` keywords."""
 
-    x = Attr[Length](convert=Length.parse)
-    y = Attr[Length](convert=Length.parse)
-    width = Attr[Length](convert=Length.parse)
-    height = Attr[Length](convert=Length.parse)
+    x = LengthAttr()
+    y = LengthAttr()
+    width = LengthAttr()
+    height = LengthAttr()
 
     def __init__(
         self,

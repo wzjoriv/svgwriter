@@ -10,7 +10,7 @@ from .names import svg_name
 if TYPE_CHECKING:
     from ..elements.base import Element
 
-__all__ = ["Attr"]
+__all__ = ["Attr", "LengthAttr"]
 
 T = TypeVar("T")
 
@@ -74,3 +74,30 @@ class Attr(Generic[T]):
 
     def __repr__(self) -> str:
         return f"Attr({self.key!r})"
+
+
+class LengthAttr(Attr["float | Length"]):
+    """A length attribute: reads a ``float`` when unitless, a :class:`~svgwriter.Length` when it has a unit.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.Rect(width=5).width, svg.parse('<rect width="2mm"/>').width
+    (5.0, Length(value=2.0, unit=<Unit.MM: 'mm'>))
+    """
+
+    __slots__ = ()
+
+    def __get__(self, obj: Element | None, owner: type | None = None) -> Any:
+        if obj is None:
+            return self
+        raw = obj.attributes.get(self.key)
+        if raw is None:
+            return self.default
+        from .length import Length, Unit
+
+        try:
+            length = Length.parse(raw)
+        except (TypeError, ValueError):
+            return raw
+        return length.value if length.unit is Unit.NONE else length

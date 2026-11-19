@@ -6,8 +6,8 @@ import math
 from typing import Any, ClassVar
 
 from ..._internal._typing import Self
-from ...attributes.descriptors import Attr
-from ...attributes.length import Length, LengthLike
+from ...attributes.descriptors import LengthAttr
+from ...attributes.length import LengthLike
 from ...path.builder import PathBuilder
 from ...path.data import BBox, PathData
 from ._base import Shape, user_units
@@ -42,12 +42,12 @@ class Rect(Shape, tag="rect"):
     """
 
     geometry_attributes: ClassVar[frozenset[str]] = frozenset({"x", "y", "width", "height", "rx", "ry"})
-    x = Attr[Length](convert=Length.parse)
-    y = Attr[Length](convert=Length.parse)
-    width = Attr[Length](convert=Length.parse)
-    height = Attr[Length](convert=Length.parse)
-    rx = Attr[Length](convert=Length.parse)
-    ry = Attr[Length](convert=Length.parse)
+    x = LengthAttr()
+    y = LengthAttr()
+    width = LengthAttr()
+    height = LengthAttr()
+    rx = LengthAttr()
+    ry = LengthAttr()
 
     def __init__(
         self,
@@ -64,12 +64,40 @@ class Rect(Shape, tag="rect"):
         self.update(x=x, y=y, width=width, height=height, rx=rx, ry=ry)
 
     @classmethod
-    def square(cls, size: LengthLike, **kwargs: Any) -> Self:
+    def square(cls, size: float, *, center: tuple[float, float] | None = None, **kwargs: Any) -> Self:
+        """A square of side *size*, at the origin or centred on *center*."""
+        if center is not None:
+            return cls.from_center(center, (size, size), **kwargs)
         return cls(width=size, height=size, **kwargs)
 
     @classmethod
     def from_bbox(cls, box: BBox, **kwargs: Any) -> Self:
+        """A rectangle covering *box*."""
         return cls(box.x, box.y, box.width, box.height, **kwargs)
+
+    @classmethod
+    def from_corners(cls, first: tuple[float, float], second: tuple[float, float], **kwargs: Any) -> Self:
+        """The rectangle spanned by two opposite corners, in any order.
+
+        Examples
+        --------
+        >>> str(Rect.from_corners((30, 40), (10, 20)))
+        '<rect x="10" y="20" width="20" height="20"/>'
+        """
+        (x0, y0), (x1, y1) = first, second
+        return cls(min(x0, x1), min(y0, y1), abs(x1 - x0), abs(y1 - y0), **kwargs)
+
+    @classmethod
+    def from_center(cls, center: tuple[float, float], size: tuple[float, float], **kwargs: Any) -> Self:
+        """A rectangle of ``(width, height)`` *size* centred on *center*.
+
+        Examples
+        --------
+        >>> str(Rect.from_center((50, 50), (20, 10), rx=2))
+        '<rect x="40" y="45" width="20" height="10" rx="2"/>'
+        """
+        (cx, cy), (w, h) = center, size
+        return cls(cx - w / 2, cy - h / 2, w, h, **kwargs)
 
     @property
     def bbox(self) -> BBox:
@@ -106,9 +134,9 @@ class Circle(Shape, tag="circle"):
     """``<circle>`` centered at ``(cx, cy)`` with radius ``r``."""
 
     geometry_attributes: ClassVar[frozenset[str]] = frozenset({"cx", "cy", "r"})
-    cx = Attr[Length](convert=Length.parse)
-    cy = Attr[Length](convert=Length.parse)
-    r = Attr[Length](convert=Length.parse)
+    cx = LengthAttr()
+    cy = LengthAttr()
+    r = LengthAttr()
 
     def __init__(self, cx: LengthLike = 0, cy: LengthLike = 0, r: LengthLike = 0, **kwargs: Any) -> None:
         super().__init__(**kwargs)
@@ -138,16 +166,22 @@ class Ellipse(Shape, tag="ellipse"):
     """``<ellipse>`` centered at ``(cx, cy)`` with radii ``rx`` and ``ry``."""
 
     geometry_attributes: ClassVar[frozenset[str]] = frozenset({"cx", "cy", "rx", "ry"})
-    cx = Attr[Length](convert=Length.parse)
-    cy = Attr[Length](convert=Length.parse)
-    rx = Attr[Length](convert=Length.parse)
-    ry = Attr[Length](convert=Length.parse)
+    cx = LengthAttr()
+    cy = LengthAttr()
+    rx = LengthAttr()
+    ry = LengthAttr()
 
     def __init__(
         self, cx: LengthLike = 0, cy: LengthLike = 0, rx: LengthLike = 0, ry: LengthLike = 0, **kwargs: Any
     ) -> None:
         super().__init__(**kwargs)
         self.update(cx=cx, cy=cy, rx=rx, ry=ry)
+
+    @classmethod
+    def from_bbox(cls, box: BBox, **kwargs: Any) -> Self:
+        """The ellipse inscribed in *box*."""
+        center = box.center
+        return cls(center.x, center.y, box.width / 2.0, box.height / 2.0, **kwargs)
 
     @property
     def bbox(self) -> BBox:
@@ -162,10 +196,10 @@ class Line(Shape, tag="line"):
     """``<line>`` from ``(x1, y1)`` to ``(x2, y2)``."""
 
     geometry_attributes: ClassVar[frozenset[str]] = frozenset({"x1", "y1", "x2", "y2"})
-    x1 = Attr[Length](convert=Length.parse)
-    y1 = Attr[Length](convert=Length.parse)
-    x2 = Attr[Length](convert=Length.parse)
-    y2 = Attr[Length](convert=Length.parse)
+    x1 = LengthAttr()
+    y1 = LengthAttr()
+    x2 = LengthAttr()
+    y2 = LengthAttr()
 
     def __init__(
         self, x1: LengthLike = 0, y1: LengthLike = 0, x2: LengthLike = 0, y2: LengthLike = 0, **kwargs: Any

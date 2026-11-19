@@ -92,7 +92,7 @@ class TestBasicShapes:
         rect = svg.parse('<svg xmlns="http://www.w3.org/2000/svg"><rect x="2mm" width="5" fill="url(#g) red"/></svg>').find(svg.Rect)
         assert rect is not None
         assert rect.x == Length(2, svg.Unit.MM)
-        assert rect.width == Length(5)
+        assert rect.width == 5.0 and isinstance(rect.width, float)
         assert rect.fill == PaintRef(svg.FuncIRI("#g"), Color(1, 0, 0))
         assert rect.y is None
         del rect.x

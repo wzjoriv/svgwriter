@@ -90,6 +90,14 @@ coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into 
 - **`<use>`**: outline = the target's outline (its own `t`, not its ancestors') offset by `x`/`y`, then the
   use's `t`; `to_path()` styles with the target's presentation attributes over the use's (SVG inheritance).
 
+- **Length reads** (`LengthAttr`): `c.cx`, `r.width`, ... return a `float` when unitless (set as `50` or
+  parsed from `"50"`), and a `Length` only when a unit is present (`"2mm"`, `"50%"`), so the common case
+  has one type and units are never lost.
+- **Constructors** keep SVG's positional order (`rect(x, y, w, h)`, `circle(cx, cy, r)`) and add
+  named alternatives: `Rect.from_corners`, `Rect.from_center`, `Rect.square(size, center=)`,
+  `Rect/Circle/Ellipse.from_bbox`, `Polyline.regular`, `Path.from_points`; colors take names, tuples or
+  arrays; angles are degrees everywhere.
+
 ### Conversions and clipping
 - `Convertible` mixin on every graphics element: `to_path()` bakes `t` and the clip into one `<path>`;
   groups, `<a>`, `<switch>`, `<clipPath>` and `<use>` have outlines (union of children), so path ops and
