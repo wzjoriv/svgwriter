@@ -28,6 +28,7 @@ from .animation import (
     register_renderer,
     render_animation,
     resolve_renderer,
+    unregister_renderer,
 )
 from .frames import Frame, FrameData, RGBAArray, frame_times
 
@@ -48,4 +49,5 @@ __all__ = [
     "register_renderer",
     "render_animation",
     "resolve_renderer",
+    "unregister_renderer",
 ]

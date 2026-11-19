@@ -148,7 +148,7 @@ class TestShapeToPath:
     @pytest.mark.parametrize(
         ("shape", "expected"),
         [
-            (svg.Rect(1, 2, 3, 4), "M1 2 H4 V6 H1 V2 Z"),
+            (svg.Rect(1, 2, 3, 4), "M1 2 H4 V6 H1 Z"),
             (svg.Line(0, 0, 3, 4), "M0 0 L3 4"),
             (svg.Polyline([(0, 0), (1, 1)]), "M0 0 L1 1"),
             (svg.Polygon([(0, 0), (1, 1), (1, 0)]), "M0 0 L1 1 L1 0 Z"),

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import pytest
+
 import svgwriter as svg
 from svgwriter.pathdata import BBox
 
@@ -26,3 +28,40 @@ def test_length_reads_are_floats_unless_they_have_units() -> None:
 
 def test_lowercase_aliases_carry_constructors() -> None:
     assert svg.rect.from_center((0, 0), (2, 2)).bbox == (-1, -1, 2, 2)
+
+
+def test_detached_use_resolves_its_target() -> None:
+    dot = svg.circle(0, 0, 2)
+    use = svg.Use(dot, x=10)
+    assert use.referenced() is dot and use.bounds() == (8, -2, 4, 4)
+    assert use.to_path().exact_bbox() == (8, -2, 4, 4)
+
+
+def test_rect_outline_has_no_redundant_closing_segment() -> None:
+    assert str(svg.Rect(0, 0, 4, 3).local_outline()) == "M0 0 H4 V3 H0 Z"
+    assert "A" in str(svg.Rect(0, 0, 4, 3, rx=1).local_outline())
+
+
+def test_builder_extend_continues_from_the_current_point() -> None:
+    from svgwriter.pathdata import PathBuilder
+
+    b = PathBuilder().move_to(1, 1).extend("l2 0 L5 5").extend("M9 9 h1")
+    assert str(b.build()) == "M1 1 l2 0 L5 5 M9 9 h1"
+
+
+def test_points_after_close_restart_from_the_subpath_start() -> None:
+    from svgwriter.pathdata import PathData
+
+    pts = list(PathData("M10 10 L20 10 L20 20 Z L10 0").points())
+    assert pts[-1] == (10, 0) and pts[-2] == (20, 20)
+
+
+def test_small_fixes() -> None:
+    from svgwriter.color import PaintKeyword
+    from svgwriter.transform import Transform
+
+    assert str(PaintKeyword.NONE) == "none"
+    with pytest.raises(TypeError):
+        hash(Transform.rotate(5))
+    glow = svg.builder.glow(5)
+    assert glow.get("x") == "-20%" and glow.get("width") is not None

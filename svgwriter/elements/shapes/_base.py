@@ -66,7 +66,7 @@ class Shape(PathOperand, GraphicsElement, ABC, category=Category.SHAPE):
     --------
     >>> import svgwriter as svg
     >>> str(svg.Rect(0, 0, 10, 5).to_path())
-    '<path d="M0 0 H10 V5 H0 V0 Z"/>'
+    '<path d="M0 0 H10 V5 H0 Z"/>'
     """
 
     @property

@@ -239,8 +239,8 @@ class Rect(Shape, tag="rect"):
         builder.horizontal_to(x + rx)
         if rx and ry:
             builder.arc_to(rx, ry, 0, False, True, x, y + h - ry)
-        builder.vertical_to(y + ry)
         if rx and ry:
+            builder.vertical_to(y + ry)
             builder.arc_to(rx, ry, 0, False, True, x + rx, y)
         return builder.close().build()
 

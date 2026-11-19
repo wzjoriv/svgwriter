@@ -29,11 +29,16 @@ class PaintKeyword(str, enum.Enum):
     'currentColor'
     >>> PaintKeyword("none") is PaintKeyword.NONE
     True
+    >>> str(PaintKeyword.CURRENT_COLOR)
+    'currentColor'
     """
 
     NONE = "none"
     CURRENT_COLOR = "currentColor"
     INHERIT = "inherit"
+
+    def __str__(self) -> str:
+        return self.value
 
 
 @dataclass(frozen=True)

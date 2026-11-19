@@ -31,9 +31,9 @@ _CAPS: Final = {"butt": "kButt_Cap", "round": "kRound_Cap", "square": "kSquare_C
 _JOINS: Final = {"miter": "kMiter_Join", "round": "kRound_Join", "bevel": "kBevel_Join"}
 
 
-def _skia_path(item: Geometry, feature: str) -> tuple[Any, Any]:
+def _skia_path(item: Geometry) -> Any:
     data, evenodd = geometry_data(item)
-    return skia, to_skia(data, evenodd=evenodd)
+    return to_skia(data, evenodd=evenodd)
 
 
 def bounds(item: Geometry) -> BBox:
@@ -56,7 +56,7 @@ def bounds(item: Geometry) -> BBox:
     >>> (box.width, box.height)
     (10.0, 20.0)
     """
-    _, path = _skia_path(item, "exact bounds")
+    path = _skia_path(item)
     rect = path.computeTightBounds()
     return BBox(rect.left(), rect.top(), rect.width(), rect.height())
 
@@ -85,11 +85,11 @@ def contains(item: Geometry, x: float, y: float) -> bool:
     >>> contains(svg.Circle(50, 50, 40), 5, 5)
     False
     """
-    _, path = _skia_path(item, "hit testing")
+    path = _skia_path(item)
     return bool(path.contains(x, y))
 
 
-def _lengths(skia: Any, path: Any) -> list[float]:
+def _lengths(path: Any) -> list[float]:
     measure = skia.PathMeasure(path, False, MEASURE_PRECISION)
     lengths = []
     while True:
@@ -121,13 +121,13 @@ def total_length(item: Geometry) -> float:
     >>> total_length("M0 0 L30 40")
     50.0
     """
-    skia, path = _skia_path(item, "path length")
-    return sum(_lengths(skia, path))
+    path = _skia_path(item)
+    return sum(_lengths(path))
 
 
 def _position(item: Geometry, distance: float, feature: str) -> tuple[Point, Point]:
-    skia, path = _skia_path(item, feature)
-    lengths = _lengths(skia, path)
+    path = _skia_path(item)
+    lengths = _lengths(path)
     if not any(lengths):
         raise ValueError("the outline has zero length")
     index, offset = len(lengths) - 1, lengths[-1]
@@ -252,7 +252,7 @@ def stroke_to_path(
     >>> str(stroke_to_path("M0 0 L10 0", 2))
     'M0 -1 L10 -1 L10 1 L0 1 L0 -1 Z'
     """
-    skia, path = _skia_path(item, "stroke to path")
+    path = _skia_path(item)
     paint = skia.Paint(
         Style=skia.Paint.kStroke_Style,
         StrokeWidth=width,

@@ -272,6 +272,30 @@ class Use(PathOperand, GraphicsElement, XLinkAttributes, Positioned, tag="use", 
         """
         return cls(element, **kwargs)
 
+    def referenced(self) -> Element | None:
+        """The element this ``<use>`` renders, if it can be found.
+
+        Found through the reference itself when the target was given as an
+        element (so it works before both are in a document), otherwise by id
+        in this element's tree.
+
+        Returns
+        -------
+        Element or None
+            The target element, or None when it cannot be resolved.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> dot = svg.circle(0, 0, 2, id="dot")
+        >>> svg.Use(dot).referenced() is dot
+        True
+        """
+        target = getattr(self.attributes.get("xlink:href"), "element", None)
+        if isinstance(target, Element):
+            return target
+        return self.root().get_element_by_id(self.target) if self.target else None
+
     def local_bbox(self) -> BBox | None:
         """The bounding box of the referenced element at this position, or None if unresolved."""
         box = positioned_bbox(self)
@@ -279,7 +303,7 @@ class Use(PathOperand, GraphicsElement, XLinkAttributes, Positioned, tag="use", 
             return box
         from .._transformable import Transformable
 
-        target = self.root().get_element_by_id(self.target) if self.target else None
+        target = self.referenced()
         inner = target.bounds() if isinstance(target, Transformable) else None
         if inner is None:
             return None
@@ -314,10 +338,10 @@ class Use(PathOperand, GraphicsElement, XLinkAttributes, Positioned, tag="use", 
         >>> r = svg.Rect(0, 0, 5, 5, id="r", fill="red")
         >>> doc = svg.Svg(svg.Defs(r), svg.Use(r, x=3, stroke="blue"))
         >>> str(doc.find("use").to_path())
-        '<path d="M3 0 L8 0 L8 5 L3 5 L3 0 Z" stroke="blue" fill="red"/>'
+        '<path d="M3 0 L8 0 L8 5 L3 5 Z" stroke="blue" fill="red"/>'
         """
         path = super().to_path()
-        target = self.root().get_element_by_id(self.target) if self.target else None
+        target = self.referenced()
         if isinstance(target, PathOperand):
             path.attributes.update(
                 (k, v) for k, v in target.attributes.items()
@@ -328,7 +352,7 @@ class Use(PathOperand, GraphicsElement, XLinkAttributes, Positioned, tag="use", 
 
     def local_outline(self) -> PathData:
         """The referenced element's outline, offset by ``x``/``y``."""
-        target = self.root().get_element_by_id(self.target) if self.target else None
+        target = self.referenced()
         if not isinstance(target, PathOperand):
             raise TypeError(f"<use> refers to {'nothing' if target is None else '<' + target.tag + '>'}, which has no outline")
         return target.outline().transformed(Matrix.translate(user_units(self.get("x")), user_units(self.get("y"))))

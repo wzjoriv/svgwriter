@@ -162,7 +162,7 @@ class TestOperators:
 
     def test_to_path_bakes(self) -> None:
         p = svg.Rect(0, 0, 1, 1, fill="red").translate(2).to_path()
-        assert str(p.d) == "M2 0 L3 0 L3 1 L2 1 L2 0 Z" and not p.has("transform")
+        assert str(p.d) == "M2 0 L3 0 L3 1 L2 1 Z" and not p.has("transform")
 
 
 class TestPaintServers:

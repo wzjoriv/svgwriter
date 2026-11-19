@@ -429,7 +429,15 @@ class PathBuilder:
         >>> str(PathBuilder().move_to(0, 0).extend("M5 5 l1 1"))
         'M0 0 M5 5 l1 1'
         """
-        for command in PathData(data) if isinstance(data, str) else data:
+        if isinstance(data, str):
+            text = data.strip()
+            if text and text[0] not in "Mm":
+                text = f"M{self._current.x} {self._current.y} {text}"
+                for command in list(PathData(text))[1:]:
+                    self._push(command)
+                return self
+            data = PathData(text)
+        for command in data:
             self._push(command)
         return self
 

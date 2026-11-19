@@ -39,6 +39,13 @@ class Registry(Generic[T]):
         except KeyError:
             raise KeyError(f"unknown {self.kind} {name!r}") from None
 
+    def remove(self, name: str) -> T:
+        """Unregister *name* and return what was registered under it."""
+        try:
+            return self._items.pop(name)
+        except KeyError:
+            raise KeyError(f"unknown {self.kind} {name!r}") from None
+
     def names(self) -> list[str]:
         return list(self._items)
 

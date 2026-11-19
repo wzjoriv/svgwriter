@@ -65,7 +65,7 @@ class PathOperand(Element):
         --------
         >>> import svgwriter as svg
         >>> str(svg.rect(0, 0, 4, 3).local_outline())
-        'M0 0 H4 V3 H0 V0 Z'
+        'M0 0 H4 V3 H0 Z'
         """
         raise TypeError(f"<{self.tag}> has no outline")
 
@@ -81,7 +81,7 @@ class PathOperand(Element):
         --------
         >>> import svgwriter as svg
         >>> str(svg.rect(0, 0, 4, 3).translate(1, 1).outline())
-        'M1 1 L5 1 L5 4 L1 4 L1 1 Z'
+        'M1 1 L5 1 L5 4 L1 4 Z'
         """
         data = self.local_outline()
         clip = clip_outline(self)
@@ -166,7 +166,7 @@ class PathOperand(Element):
         --------
         >>> import svgwriter as svg
         >>> str(svg.rect(0, 0, 1, 1).transformed("translate(2 0)").d)
-        'M2 0 L3 0 L3 1 L2 1 L2 0 Z'
+        'M2 0 L3 0 L3 1 L2 1 Z'
         """
         return self._with_data(self.outline().transformed(transform))
 

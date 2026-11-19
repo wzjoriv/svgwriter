@@ -60,9 +60,13 @@ def shape_factory(name: str) -> Callable[[Callable[P, E]], Callable[P, E]]:
     --------
     >>> from svgwriter import Circle
     >>> from svgwriter.builder import shape_factory
-    >>> @shape_factory("disc")  # doctest: +SKIP
+    >>> from svgwriter.builder import SHAPES
+    >>> @shape_factory("disc")
     ... def disc(cx, cy, r, **kwargs):
     ...     return Circle(cx, cy, r, **kwargs)
+    >>> disc(0, 0, 2).tag
+    'circle'
+    >>> _ = SHAPES.remove("disc")
     """
 
     def decorate(func: Callable[P, E]) -> Callable[P, E]:

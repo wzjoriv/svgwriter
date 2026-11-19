@@ -26,6 +26,7 @@ __all__ = [
     "register_renderer",
     "render_animation",
     "resolve_renderer",
+    "unregister_renderer",
 ]
 
 Renderer: TypeAlias = "Callable[[Document, float], FrameData]"
@@ -72,14 +73,37 @@ def register_renderer(name: str) -> Callable[[Renderer], Renderer]:
 
     Examples
     --------
-    >>> from svgwriter.video import register_renderer, resolve_renderer
-    >>> @register_renderer("myraster")  # doctest: +SKIP
+    >>> from svgwriter.video import register_renderer, resolve_renderer, unregister_renderer
+    >>> @register_renderer("myraster")
     ... def render(document, seconds):
-    ...     return rasterize(document.to_string())
-    >>> resolve_renderer("myraster") is render  # doctest: +SKIP
+    ...     return document.render_png()
+    >>> resolve_renderer("myraster") is render
     True
+    >>> unregister_renderer("myraster")
     """
     return RENDERERS.register(name)  # type: ignore[return-value]
+
+
+def unregister_renderer(name: str) -> None:
+    """Remove the renderer registered under *name*.
+
+    Parameters
+    ----------
+    name : str
+        The name given to :func:`register_renderer`.
+
+    Raises
+    ------
+    KeyError
+        When no renderer has that name.
+
+    Examples
+    --------
+    >>> from svgwriter.video import register_renderer, unregister_renderer
+    >>> _ = register_renderer("tmp")(lambda document, seconds: b"")
+    >>> unregister_renderer("tmp")
+    """
+    RENDERERS.remove(name)
 
 
 def resolve_renderer(renderer: Renderer | str | None) -> Renderer:

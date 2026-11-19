@@ -485,8 +485,13 @@ class PathData(Sequence[PathCommand]):
         >>> [tuple(p) for p in PathData("M0 0 L1 1").points()]
         [(0.0, 0.0), (1.0, 1.0)]
         """
-        current = ORIGIN
+        current = start = ORIGIN
         for command in self.normalized():
+            if isinstance(command, ClosePath):
+                current = start
+                continue
+            if isinstance(command, MoveTo):
+                start = Point(command.x, command.y)
             if isinstance(command, (MoveTo, LineTo)):
                 yield Point(command.x, command.y)
             elif isinstance(command, CurveTo):
@@ -501,8 +506,7 @@ class PathData(Sequence[PathCommand]):
                 end = Point(command.x, command.y)
                 arc = endpoint_to_center(current, end, command.rx, command.ry, command.rotation, command.large_arc, command.sweep)
                 yield from (arc.sample(ARC_SAMPLES) if arc else [end])
-            if not isinstance(command, ClosePath):
-                current = Point(command.x, command.y)  # type: ignore[attr-defined]
+            current = Point(command.x, command.y)  # type: ignore[attr-defined]
 
     @cached_property
     def bbox(self) -> BBox | None:

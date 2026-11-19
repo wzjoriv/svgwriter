@@ -116,6 +116,10 @@ def glow(radius: float = DEFAULT_BLUR, **kwargs: Any) -> Filter:
     >>> [child.tag for child in glow(3).children]
     ['feGaussianBlur', 'feMerge']
     """
+    kwargs.setdefault("x", FILTER_MARGIN)
+    kwargs.setdefault("y", FILTER_MARGIN)
+    kwargs.setdefault("width", FILTER_EXTENT)
+    kwargs.setdefault("height", FILTER_EXTENT)
     blurred = FeGaussianBlur(radius, in_=StandardInput.SOURCE_GRAPHIC)
     return Filter(blurred, FeMerge(blurred, StandardInput.SOURCE_GRAPHIC), **kwargs)
 

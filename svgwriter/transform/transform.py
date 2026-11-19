@@ -344,8 +344,7 @@ class Transform:
     def __eq__(self, other: object) -> bool:
         return isinstance(other, Transform) and self._ops == other._ops
 
-    def __hash__(self) -> int:
-        return hash(tuple(self._ops))
+    __hash__ = None  # type: ignore[assignment]
 
     def __repr__(self) -> str:
         return f"Transform({self})"
