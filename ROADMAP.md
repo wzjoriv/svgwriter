@@ -1,168 +1,54 @@
 # svgwriter roadmap
 
-A critical look at svgwriter 1.0 from the point of view of someone using it
-to draw things, the plan that came out of it, what 1.1 delivered and what
-is left.
+Decisions and their reasons are in [DESIGN.md](DESIGN.md); this file lists what 2.0 delivered and what is
+left for later.
 
-## Review of 1.0
+## Done in 2.0
 
-### API ergonomics
-
-- Every element is built twice: `doc.add(svg.Circle(50, 50, 10))`. The
-  document knows where things go but offers no `doc.circle(...)`.
-- Definitions need two steps and a variable: `grad = doc.define(...)` then
-  `fill=grad`. There is no short way to say "put this in `<defs>` and give
-  me its reference".
-- `Document.group` is only a context manager. Getting a group back to fill
-  later, or nesting without `with`, means building a `Group` by hand.
-- `Transform.rotate(30)` looks right but fails: the builders are instance
-  methods, so it has to be `Transform().rotate(30)`. `Matrix @ Transform`
-  raises `AttributeError` instead of composing.
-- Path data cannot be transformed or combined at the element level.
-  `PathData + PathData` exists, `Path + Path` does not, and a transform can
-  only be attached, never baked into the coordinates.
-- `Color.mix` and `lighten` exist but colors do not compose with operators.
-- `add_shape("circle", r=3)` is a stringly-typed duplicate of the classes.
-
-### Discoverability and naming
-
-- Two parallel lowercase vocabularies: `svgwriter.builder.polyline(*points)`
-  takes points as varargs, `Polyline(points)` takes a sequence, and only the
-  classes are exported at the top level.
-- `Svg.defs()` is a method, `Document.defs` a property.
-- Geometry questions ("how long is this path", "is this point inside") have
-  no home; `bbox` silently samples curves.
-
-### Missing conveniences
-
-- No shape-to-path conversion, no boolean operations, no text outlines.
-- No way to preview or export the SMIL/procedural animation the element
-  classes can describe.
-- No `_repr_svg_`, so documents do not display in notebooks.
-- No `py.typed` marker even though the classifier claims `Typing :: Typed`.
-
-### SVG 1.1 coverage
-
-- `script`, `foreignObject`, `cursor` and the `on*` event attributes are
-  browser-scripting features. They have nothing to do with drawing, nothing
-  in the library renders or measures them, and event attributes slip in
-  through `**kwargs` unchecked. They should go.
-- `a`, `view` and `switch` are legitimate static SVG and stay.
-- Everything else in SVG 1.1 has a class; the gaps are behavioural (no
-  geometry engine, no font metrics), not structural.
-
-### Errors, docs and examples
-
-- Typos in keyword names (`strok="red"`) are written to the output silently.
-  Worth a "did you mean" check for known attribute names (see Later).
-- `parse_transform` reports arity as a tuple: `takes (1, 3) arguments`.
-- The README teaches the verbose `doc.add(svg.X(...))` style; examples never
-  show reuse via `<defs>` beyond a single gradient.
-
-### Performance
-
-Building 20 000 circles takes about 0.23 s, writing 0.17 s, parsing 0.15 s
-(1.2 MB). That is fine. `Element.iter` builds a list per node and
-`get_element_by_id` is a linear walk; both are acceptable at this size.
-
-### Packaging
-
-- No extras; the version is still 1.0.0; no `py.typed`; no Python version
-  classifiers.
-
-## Plan, in priority order
-
-1. Lowercase aliases for every element class (`path`, `circle`,
-   `linear_gradient`, ...) exported from the package.
-2. Document and container shortcuts (`doc.circle(...)`,
-   `doc.linear_gradient(...)` into `<defs>`, ...) that forward `**kwargs` to
-   the element constructor and return the element. Container shortcuts work
-   as context managers.
-3. Composition operators: `+=` / `+` for containers and groups, `%` / `%=`
-   for definitions, `+` / `*` / `@` for path data, `|` `&` `-` `^` boolean
-   operations, `@` for transforms, `+` / `*` for colors.
-4. Optional skia-python geometry (`svgwriter[ops]`): boolean operations,
-   `text_to_path`, simplify, stroke-to-path, exact bounds, hit testing,
-   length and point-at-length.
-5. Remove `script`, `foreignObject`, `cursor` and event attributes.
-6. `Document.render_animation` through a pluggable renderer and `ffmpeg`,
-   plus `python -m svgwriter animate`.
-7. Modern typing spellings (`X | Y` aliases, `collections.abc`,
-   `contextlib.AbstractContextManager`).
-8. `py.typed`, extras, version 1.1.0, notebook display, clearer errors.
-
-## Done in 1.1
-
-1. **Lowercase aliases** for all 77 element classes (`svg.circle`,
-   `svg.linear_gradient`, `svg.fe_gaussian_blur`, ...) in
-   `svgwriter.aliases`, re-exported from the package. `filter` and `set`
-   are package attributes but stay out of `__all__` so a star import does
-   not shadow the builtins.
-2. **Shortcuts** on `Document` and every drawing container through
-   `ElementFactory`: `rect`, `circle`, `ellipse`, `line`, `polyline`,
-   `polygon`, `path`, `text`, `group`, `link`, `switch`, `use`, `image`, and
-   into `<defs>`: `linear_gradient`, `radial_gradient`, `pattern`,
-   `clip_path`, `mask`, `marker`, `filter`, `symbol`. Each forwards
-   `*args, **kwargs` to the element constructor. Returned containers nest
-   with `with`, including definitions (`with doc.clip_path(): ...`).
-   `doc.group()` keeps working as before inside `with`.
-3. **Operators**: `+=` / `+` on containers and elements, `%` / `%=` for
-   definitions, `Path + Path`, `PathData + PathData`, `sum()` over path
-   data, `*` / `@` baking transforms into any shape (exact for arcs), the
-   four boolean operators with reflected and in-place forms,
-   `Transform.rotate(30) @ Transform.scale(2)` (builders work on the class),
-   `Matrix @ Transform`, `t @ (x, y)`, `Color + Color`, `color * 0.5`,
-   `0.5 * color`, `color / 2`. `@overload` types the operators that accept
-   several kinds.
-4. **skia-python geometry** in `svgwriter.ops` and on every shape and
-   `<text>`: boolean operations, `text_to_path`, `text_width`, simplify,
-   stroke-to-path, exact bounds, `contains_point`, `total_length`,
-   `point_at_length`, tangent, and `rasterize` to PNG. Optional extra
-   `svgwriter[ops]`; without it everything imports and these raise
-   `MissingDependencyError` naming the install command.
-5. **Web-only content removed**: `script`, `foreignObject`, `cursor`, the
-   `cursor` property, `contentScriptType` and every `on*` event attribute.
-   Setting them raises `ValueError`; the parser drops them (strict mode
-   raises).
-6. **Animation export**: `Document.render_animation()` and
-   `svgwriter.video` render frames through any renderer returning PNG bytes
-   or RGBA arrays and pipe them to ffmpeg (mp4, gif, webm, mov, apng).
-   Renderers are callables, registered names (`"skia"` built in) or
-   `"module:function"`. Missing ffmpeg raises `FFmpegNotFoundError` before
-   any rendering. Duration defaults to the end of the SMIL animations.
-   CLI: `animate`, plus `render` (PNG) and `outline` (text to paths).
-7. **Typing**: `X | Y` aliases with `TypeAlias`, `collections.abc`
-   everywhere, containers are `contextlib.AbstractContextManager`s.
-8. Also: `Shape.to_path()` for every shape (pure Python, honours `rx`/`ry`
-   rules and `transform`), `PathData.transformed()` and `subpaths()`,
-   `Transform.inverse()`, `_repr_svg_` for notebooks, `Document.style()`,
-   `href=doc % symbol` writes `#id`, clearer errors (transform arity, color
-   channel, point counts), `Element.iter` without per-node lists, `py.typed`,
-   version 1.1.0, extras and classifiers, `shapes` split into a
-   sub-package and the CLI into `svgwriter.cli`.
+1. **Required skia-python and numpy.** No optional code paths; geometry, text and rendering always work.
+2. **One transform model.** Geometry attributes stay as written; `t` is an affine `Matrix` written as the
+   shortest equivalent `transform`. `translate`, `rotate`, `scale`, `skew`, `flip_x`/`flip_y` in the parent
+   or local frame about an `anchor`; `place`, `position`, `bounds()`. Gradients, patterns and clip paths
+   share it (`gradientTransform`, `patternTransform`).
+3. **Operators.** `el + (dx, dy)`, `el * k`, `el / k`, `el @ degrees`, `M @ el`, `el @ M`, in-place forms;
+   `|`, `&`, `-`, `^` boolean operations on shapes, text, groups and `<use>`.
+4. **Definitions without `%`.** Referenced elements move into `<defs>` when they join a document.
+5. **Fluent paths** (`path().move_to(...).line_to(...).close()`) and `path.nodes` as a numpy array.
+6. **Conversions everywhere** with clear errors: `to_path`, `to_image`, `rasterize`, `to_group`,
+   `clone(linked=)`; clipping with `clip()` / `flatten_clip()`.
+7. **Path operations** through skia: union (n-ary with `OpBuilder`), intersection, difference, xor,
+   simplify, stroke-to-path, exact bounds, contains, length, point and tangent at length.
+8. **Attribute access** for every SVG property by Python name, with "did you mean" for typos in reads,
+   writes and constructor keywords; length reads are floats unless a unit is present.
+9. **Values.** Colors as 0-1 floats with alpha (CSS in, SVG out, automatic `*-opacity`); numpy images with
+   separate color and broadcastable alpha; numpy point and node arrays; `Matrix @ (N, 2)` arrays.
+10. **Text.** Layout across `tspan`s with computed fonts and SVG positioning lists; `text[i]` and
+    `text[a:b]` handles that move, rotate and style characters while staying text; `glyphs()` outlines.
+11. **CSS.** Style sheets parsed and matched; `el.computed(name)` with inheritance.
+12. **Documents.** Indexing by position and id, content iteration, auto-size, `fit()`, ingestion of
+    `_repr_svg_` objects and matplotlib figures, notebook SVG and PNG display.
+13. **Rendering** with skia including what skia's SVG renderer lacks: embedded and linked images, text,
+    CSS; exact sizes with padding; deterministic output.
+14. **Export/import registry** by name or extension: SVG, SVGZ, PNG, JPEG, WebP, PDF, TikZ, EPS, DXF, HPGL,
+    G-code, Excalidraw, ICO, ICNS out; SVG, SVGZ, raster images, DXF, HPGL, G-code, Excalidraw, ICO, ICNS in.
+15. **Performance**, measured (`dev.py svgwriter bench`): 100k elements build, write and parse in about
+    1.3, 1.6 and 0.6 s; raw RGBA animation frames; threads measured and not adopted.
+16. **Conformance tooling** for the W3C SVG 1.1 suite: round-trip 429/430, render 148/434.
+17. **Housekeeping.** Web-only features out, SMIL and ffmpeg video kept, modern typing, geometry-first
+    attribute order, `pathdata` sub-package (no clash with `svg.path`), `builder` reduced to composite
+    shapes and effects, devkit tooling, tests mirroring the package.
 
 ## Later
 
-- **Attribute name checking.** Warn on unknown keyword names with a "did you
-  mean" (`strok_width`); needs a per-element table of valid attributes.
-- **Geometry-first attribute order.** Presentation keywords are written
-  before the geometry (`<circle fill="red" cx=...>`); swapping is a visible
-  output change, so it waits for 2.0.
-- **`svgwriter.path` name clash.** The `path` alias replaces the
-  sub-package as an attribute of `svgwriter`, so `import svgwriter.path as
-  p` now yields the class; `from svgwriter.path import ...` is unaffected.
-  Renaming the sub-package (`svgwriter.pathdata`) would remove the clash.
-- **The `builder` module** predates the aliases and its lowercase functions
-  differ in signature (`builder.polyline(*points)` vs `svg.polyline(points)`).
-  Deprecate the duplicates and keep the composite shapes and effects.
-- **SMIL evaluation.** A renderer receives the document and the time; a
-  helper that applies SMIL values at time *t* would let static renderers
-  play `<animate>` without an `update` callback.
-- **Id index.** `get_element_by_id` walks the tree; an index kept by
-  `Element.id` would make large documents faster.
-- **Pure-Python fallbacks** for `total_length` and `point_at_length` using
-  the existing curve sampling.
+- **SMIL evaluation.** Apply `<animate>` values at time *t* so animations render without an `update`
+  callback (also lifts the conformance render score in the animate chapter).
+- **Filters and masks on images** in the renderer (images are drawn outside skia's SVG pass today).
+- **Gradients and patterns in TikZ and EPS** as native shadings instead of the first-stop fallback;
+  images in EPS (`colorimage`).
+- **EPS, PDF and TikZ import** need full interpreters; PDF via a vector-path extraction library is the
+  likely first step.
+- **`textPath` layout** and SVG fonts (`<font>`, `<glyph>`) in the text engine.
+- **Id index** kept by `Element.id` so `doc["id"]` is constant time on very large documents.
+- **Process pools** for very large rasterizing batches (threads do not help: skia holds the GIL).
 - **Logo assets.** A devkit `logo` tool will import a project's `logo(**variant)` and write SVG variants,
-  PNGs (16-1024), `.ico`, `.icns`, favicons, apple-touch and webmanifest icons and docs copies. svgwriter
-  side is done (exact sizing with padding, ICO/ICNS, deterministic bytes, `examples/logo.py`); a
-  `webmanifest` JSON helper could live in svgwriter or devkit.
+  PNGs, `.ico`, `.icns`, favicons and webmanifest icons; svgwriter's side is done (`examples/logo.py`).
