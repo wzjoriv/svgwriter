@@ -23,6 +23,7 @@ __all__ = [
     "register",
     "register_importer",
     "save",
+    "unregister",
 ]
 
 ExportFunction = Callable[..., "bytes | str"]
@@ -83,6 +84,7 @@ def register(
     ...     return str(len(document))
     >>> svg.export.export(svg.Document(), "count")
     '0'
+    >>> svg.export.unregister("count")
 
     Notes
     -----
@@ -99,6 +101,36 @@ def register(
         return function
 
     return decorate
+
+
+def unregister(name: str, *, importer: bool = False) -> None:
+    """Remove a registered exporter (or importer, with *importer*).
+
+    Parameters
+    ----------
+    name : str
+        The format name given to :func:`register` or :func:`register_importer`.
+    importer : bool, optional
+        Remove the importer instead of the exporter. Defaults to False.
+
+    Raises
+    ------
+    KeyError
+        When nothing is registered under *name*.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> _ = svg.export.register("tmp", replace=True)(lambda document, **options: b"")
+    >>> svg.export.unregister("tmp")
+    >>> "tmp" in svg.export.exporters()
+    False
+    """
+    registry = _IMPORTERS if importer else _EXPORTERS
+    try:
+        del registry[name.lower()]
+    except KeyError:
+        raise KeyError(f"no {'importer' if importer else 'exporter'} named {name!r}") from None
 
 
 def register_importer(name: str, *, extensions: tuple[str, ...] = (), replace: bool = False) -> Callable[[F], F]:

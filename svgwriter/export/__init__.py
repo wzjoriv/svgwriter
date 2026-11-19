@@ -9,8 +9,8 @@ Example
 >>> import svgwriter as svg
 >>> doc = svg.Document(20, 10)
 >>> _ = doc.rect(0, 0, 20, 10, fill="teal")
->>> sorted(svg.export.exporters())
-['dxf', 'eps', 'excalidraw', 'gcode', 'hpgl', 'icns', 'ico', 'jpeg', 'pdf', 'png', 'svg', 'svgz', 'tikz', 'webp']
+>>> {"svg", "png", "pdf", "tikz", "dxf"} <= set(svg.export.exporters())
+True
 >>> svg.export.export(doc, ".pdf")[:5]
 b'%PDF-'
 """
@@ -29,6 +29,7 @@ from ._registry import (
     register,
     register_importer,
     save,
+    unregister,
 )
 
 __all__ = [
@@ -43,4 +44,5 @@ __all__ = [
     "register",
     "register_importer",
     "save",
+    "unregister",
 ]

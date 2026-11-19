@@ -53,4 +53,7 @@ def read_lines(data, **options):
         pairs = [tuple(map(float, p.split(","))) for p in line.split()]
         out.add(svg.polyline(pairs, fill="none", stroke="black"))
     return out
+
+svg.export.unregister("count")                       # plugins and tests can clean up
+svg.export.unregister("lines", importer=True)
 ```

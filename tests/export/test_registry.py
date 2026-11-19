@@ -37,6 +37,10 @@ class TestRegistry:
         assert drawing().export("count-test") == "2" and export.find_exporter("a.cnt").description.startswith("Number")
         with pytest.raises(ValueError, match="already registered"):
             export.register("count-test")(count)
+        export.unregister("count-test")
+        assert "count-test" not in export.exporters()
+        with pytest.raises(KeyError, match="no exporter"):
+            export.unregister("count-test")
 
     def test_save_and_open_round_trip(self, tmp_path) -> None:
         doc = drawing()
