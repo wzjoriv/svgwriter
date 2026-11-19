@@ -374,7 +374,7 @@ def rasterize(
     document: Document,
     *,
     scale: float = 1.0,
-    size: tuple[int, int] | None = None,
+    size: tuple[int, int] | int | None = None,
     padding: float = 0.0,
     background: str | None = None,
     snapshot: bool = False,
@@ -387,8 +387,8 @@ def rasterize(
         What to draw; SMIL animation is not evaluated.
     scale : float, optional
         Pixels per user unit of the document's size (see :func:`document_size`). Defaults to 1.0.
-    size : (int, int), optional
-        Exact output ``(columns, rows)``; a ``viewBox`` drawing is fitted
+    size : (int, int) or int, optional
+        Exact output ``(columns, rows)``, or one int for a square; a ``viewBox`` drawing is fitted
         into it and *scale* is ignored. Without a ``viewBox`` this is the
         viewport size in user units. Defaults to None.
     padding : float, optional
@@ -432,6 +432,8 @@ def rasterize(
         padded = ViewBox(base.min_x - padding, base.min_y - padding, base.width + 2 * padding,
                          base.height + 2 * padding)
         box, width, height = padded, padded.width * unit, padded.height * unit
+    if isinstance(size, int):
+        size = (size, size)
     if size is not None:
         columns, rows = size
         if box is None:

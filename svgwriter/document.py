@@ -64,6 +64,8 @@ def _ingest(item: Any) -> Any:
     """Elements and iterables pass through; ``_repr_svg_`` objects become a ``<g>`` holding their ``<svg>``."""
     if isinstance(item, Element):
         return item
+    if isinstance(item, str):
+        raise TypeError("add() takes elements, not strings; parse markup first: doc.add(svg.parse('<rect .../>'))")
     if hasattr(item, "savefig"):
         import io
 
@@ -770,7 +772,7 @@ class Document(ElementFactory):
     def _repr_png_(self) -> bytes:
         return self.render_png()
 
-    def rasterize(self, *, scale: float = 1.0, size: tuple[int, int] | None = None, padding: float = 0.0,
+    def rasterize(self, *, scale: float = 1.0, size: tuple[int, int] | int | None = None, padding: float = 0.0,
                   background: str | None = None, snapshot: bool = False) -> np.ndarray:
         """Render into a float32 RGBA array (see :func:`svgwriter.ops.rasterize`).
 
@@ -778,8 +780,8 @@ class Document(ElementFactory):
         ----------
         scale : float, optional
             Pixels per user unit. Defaults to 1.0.
-        size : tuple of int, optional
-            Output size in pixels as ``(width, height)``. Defaults to None, which
+        size : (int, int) or int, optional
+            Output size in pixels as ``(width, height)``, or one int for a square. Defaults to None, which
             uses the document size times `scale`.
         padding : float, optional
             Margin around the content, in user units. Defaults to 0.0.

@@ -48,6 +48,7 @@ COLOR_OPACITY: Final = {
     "flood-color": "flood-opacity",
 }
 COLOR_ATTRIBUTES: Final = frozenset({*COLOR_OPACITY, "color", "lighting-color"})
+SUGGESTIONS: Final = 3
 _XML_NAME_RE: Final = re.compile(r"^[A-Za-z_][\w.\-]*$")
 
 
@@ -155,7 +156,7 @@ class Element(Composable):
             return attributes[key]
         if key in KNOWN_ATTRIBUTES:
             return None
-        raise UnknownAttributeError(type(self).__name__, name)
+        raise UnknownAttributeError(type(self).__name__, name, type(self))
 
     def __setattr__(self, name: str, value: AttrValue) -> None:
         if name in _INSTANCE_FIELDS or name.startswith("_") and not name.endswith("_") or hasattr(type(self), name):
@@ -1011,14 +1012,17 @@ class UnknownAttributeError(AttributeError):
     True
     """
 
-    def __init__(self, owner: str, name: str) -> None:
+    def __init__(self, owner: str, name: str, members: type | None = None) -> None:
         super().__init__(name)
         self.owner = owner
         self.attribute = name
+        self.members = members
 
     def __str__(self) -> str:
-        hint = difflib.get_close_matches(self.attribute, _PY_NAMES, n=1)
-        suggestion = f"; did you mean {hint[0]!r}?" if hint else ""
+        methods = [m for m in dir(self.members) if not m.startswith("_")] if self.members is not None else []
+        hint = [m for m in methods if m.startswith(self.attribute)][:SUGGESTIONS] or difflib.get_close_matches(
+            self.attribute, [*methods, *_PY_NAMES], n=1)
+        suggestion = f"; did you mean {' or '.join(map(repr, hint))}?" if hint else ""
         return (f"{self.owner} has no attribute {self.attribute!r}{suggestion} "
                 "(unlisted SVG attributes: element.set(name, value))")
 

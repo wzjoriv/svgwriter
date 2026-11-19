@@ -38,6 +38,9 @@ def _normalize(array: np.ndarray) -> np.ndarray:
         return data.astype(np.float32) / CHANNEL_MAX
     if data.dtype.kind not in "fiub":
         raise TypeError(f"pixels must be numeric, got dtype {data.dtype}")
+    if data.dtype.kind in "iu" and data.size and (data.min() < 0 or data.max() > 1):
+        raise ValueError(f"{data.dtype} pixels must be 0/1 masks, uint8 (0..255) or floats in 0..1; "
+                         "convert with array.astype(np.uint8) or scale to 0..1")
     data = data.astype(np.float32)
     if data.size and (data.min() < 0.0 or data.max() > 1.0):
         raise ValueError("float pixels must be in 0..1; pass uint8 arrays for 0..255 values")

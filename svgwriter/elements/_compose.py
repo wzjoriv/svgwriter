@@ -38,6 +38,8 @@ class Composable:
             items = flatten(other)
         except TypeError:
             return NotImplemented
+        if any(isinstance(item, str) for item in items):
+            return NotImplemented
         return Group(*(_free(item) for item in (self, *items)))
 
     def __iadd__(self: Element, other: Element | Iterable[Element]) -> Group:
@@ -49,6 +51,8 @@ class Composable:
         try:
             items = flatten(other)
         except TypeError:
+            return NotImplemented
+        if any(isinstance(item, str) for item in items):
             return NotImplemented
         group = Group()
         replace_in_parent(self, group)
@@ -63,6 +67,8 @@ class Composable:
         try:
             items = flatten(other)
         except TypeError:
+            return NotImplemented
+        if any(isinstance(item, str) for item in items):
             return NotImplemented
         return Group(*(_free(item) for item in (*items, self)))
 

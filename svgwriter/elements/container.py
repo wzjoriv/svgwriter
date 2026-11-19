@@ -190,6 +190,9 @@ class Container(Element, Generic[ChildT]):
     @overload
     def __getitem__(self, index: slice) -> list[ChildT]: ...
     def __getitem__(self, index: int | slice) -> ChildT | list[ChildT]:
+        if not isinstance(index, (int, slice)):
+            hint = "; find elements by id with root.get_element_by_id(...)" if isinstance(index, str) else ""
+            raise TypeError(f"<{self.tag}> children are indexed by position or slice, not {type(index).__name__}{hint}")
         items = list(self)
         return items[index]
 

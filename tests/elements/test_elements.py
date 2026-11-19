@@ -391,3 +391,29 @@ class TestClipping:
         assert shape.get("marker-end") == marker.url
         assert 'refX="10"' in str(marker) and 'orient="auto"' in str(marker) and 'viewBox="0 0 10 10"' in str(marker)
         assert 'clipPathUnits="objectBoundingBox"' in str(clip)
+
+
+class TestErrorMessages:
+    def test_add_string_points_to_parse(self) -> None:
+        with pytest.raises(TypeError, match=r"svg\.parse"):
+            svg.Document(5, 5).add("<rect/>")
+
+    def test_string_index_points_to_ids(self) -> None:
+        with pytest.raises(TypeError, match="get_element_by_id"):
+            svg.group(svg.rect())["x"]
+
+    def test_suggestions_include_methods(self) -> None:
+        with pytest.raises(AttributeError, match="point_at_length"):
+            svg.path().move_to(0, 0).point_at  # noqa: B018
+
+    def test_plus_with_string_is_unsupported(self) -> None:
+        with pytest.raises(TypeError, match="unsupported operand"):
+            svg.text("a") + "more"  # type: ignore[operator]
+
+
+def test_rasterize_square_size_and_wide_int_pixels() -> None:
+    import numpy as np
+
+    assert svg.Document(5, 5).rasterize(size=8).shape == (8, 8, 4)
+    with pytest.raises(ValueError, match="astype"):
+        svg.Image(np.full((2, 2), 300, dtype=np.int16))

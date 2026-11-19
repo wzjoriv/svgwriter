@@ -14,10 +14,13 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Sequence
+from typing import Final
 
 from .. import __version__
 from ._basic import add_basic_commands
 from ._media import SceneError, add_media_commands, load_scene
+
+EXIT_ERROR: Final = 2
 
 __all__ = ["SceneError", "build_parser", "load_scene", "main"]
 
@@ -62,9 +65,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     int
         The process exit status; 0 on success.
 
+    Raises
+    ------
+    SystemExit
+        With status 2 when a file cannot be read or written or its contents
+        are invalid; the message is printed as one line, without a traceback.
+
     See Also
     --------
     build_parser : The parser that interprets `argv`.
     """
-    args = build_parser().parse_args(argv)
-    return int(args.func(args))
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    try:
+        return int(args.func(args))
+    except (OSError, ValueError, TypeError) as error:
+        parser.exit(EXIT_ERROR, f"{parser.prog}: error: {error}\n")
