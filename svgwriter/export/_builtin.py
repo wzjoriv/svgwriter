@@ -31,14 +31,14 @@ def svgz(document: Document, **options: Any) -> bytes:
 def _raster(format: str):  # type: ignore[no-untyped-def]
     def exporter(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int | None = None,
                  padding: float = 0.0, background: str | None = None, quality: int = DEFAULT_QUALITY) -> bytes:
-        from ..ops.render import encode
+        from ..ops.render import encode_image
 
         if format == "jpeg" and background is None:
             background = "white"
         if isinstance(size, int):
             size = (size, size)
-        pixels = document.rasterize(scale=scale, size=size, padding=padding, background=background)
-        return encode(pixels, format, quality=quality)
+        image = document.rasterize(scale=scale, size=size, padding=padding, background=background, snapshot=True)
+        return encode_image(image, format, quality=quality)
 
     exporter.__doc__ = f"{format.upper()} raster (``scale``, ``size``, ``padding``, ``background``, ``quality``)."
     return exporter

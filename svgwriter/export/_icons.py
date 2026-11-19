@@ -24,9 +24,10 @@ BITS_PER_PIXEL: Final = 32
 
 
 def _pngs(document: Document, sizes: Iterable[int], padding: float) -> dict[int, bytes]:
-    from ..ops.render import encode
+    from ..ops.render import encode_image
 
-    return {size: encode(document.rasterize(size=(size, size), padding=padding)) for size in sorted(set(sizes))}
+    return {size: encode_image(document.rasterize(size=(size, size), padding=padding, snapshot=True))
+            for size in sorted(set(sizes))}
 
 
 def to_ico(document: Document, *, sizes: Iterable[int] = ICO_SIZES, padding: float = 0.0) -> bytes:

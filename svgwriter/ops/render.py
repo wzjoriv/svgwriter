@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import math
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Any, Final
 
 import numpy as np
 import skia
@@ -19,12 +19,24 @@ if TYPE_CHECKING:
     from ..elements.base import Element
     from ..elements.text import Text
 
-__all__ = ["DEFAULT_SIZE", "document_size", "encode", "paint_tree", "rasterize", "render_png", "render_svg", "render_tree", "skia_renderer"]
+__all__ = [
+    "DEFAULT_SIZE",
+    "document_size",
+    "encode",
+    "encode_image",
+    "paint_tree",
+    "rasterize",
+    "render_png",
+    "render_svg",
+    "render_tree",
+    "skia_renderer",
+]
 
 DEFAULT_SIZE: Final = 300.0
 DEFAULT_QUALITY: Final = 90
 CHANNEL_MAX: Final = 255
 DISPLAY: Final = "display"
+FORMATS: Final = {"png": skia.kPNG, "jpeg": skia.kJPEG, "jpg": skia.kJPEG, "webp": skia.kWEBP}
 
 
 def _dimension(value: object, fallback: float) -> float:
@@ -116,7 +128,8 @@ def render_tree(
     background: str | None = None,
     viewport: bool = False,
     view_box: ViewBox | None = None,
-) -> np.ndarray:
+    snapshot: bool = False,
+) -> Any:
     """Render the tree under *root*, drawing embedded ``<image>`` pixels in paint order.
 
     Parameters
@@ -137,6 +150,8 @@ def render_tree(
         *root* is the outermost ``<svg>``: draw it at exactly ``width x height``.
     view_box : ViewBox, optional
         Replace the root's ``viewBox`` while drawing (used for padding).
+    snapshot : bool
+        Return the ``skia.Image`` instead of an array (encoders use it directly).
 
     Returns
     -------
@@ -145,7 +160,7 @@ def render_tree(
     """
     surface = _surface(width, height, scale, background)
     paint_tree(surface.getCanvas(), root, wrap, width, height, view=view, viewport=viewport, view_box=view_box)
-    return _pixels(surface)
+    return surface.makeImageSnapshot() if snapshot else _pixels(surface)
 
 
 def paint_tree(
@@ -228,7 +243,8 @@ def rasterize(
     size: tuple[int, int] | None = None,
     padding: float = 0.0,
     background: str | None = None,
-) -> np.ndarray:
+    snapshot: bool = False,
+) -> Any:
     """Render *document* into an RGBA array, embedded images included.
 
     Parameters
@@ -246,6 +262,8 @@ def rasterize(
         *size* the padded drawing is fitted and centred.
     background : color, optional
         Painted under the drawing; transparent when omitted.
+    snapshot : bool
+        Return a ``skia.Image`` instead (no conversion; for encoding).
 
     Returns
     -------
@@ -283,7 +301,19 @@ def rasterize(
             scale = min(columns / width, rows / height)
             width, height = columns / scale, rows / scale
     return render_tree(document.root, lambda text: text, width, height, view=_view(document, width, height, box),
-                       scale=scale, background=background, viewport=True, view_box=padded)
+                       scale=scale, background=background, viewport=True, view_box=padded, snapshot=snapshot)
+
+
+def encode_image(image: Any, format: str = "png", *, quality: int = DEFAULT_QUALITY) -> bytes:
+    """Encode a ``skia.Image`` as PNG, JPEG or WebP bytes."""
+    try:
+        kind = FORMATS[format.lower()]
+    except KeyError:
+        raise ValueError(f"unknown image format {format!r}; expected one of {sorted(FORMATS)}") from None
+    data = image.encodeToData(kind, quality)
+    if data is None:
+        raise ValueError(f"skia could not encode {format}")
+    return bytes(data)
 
 
 def encode(pixels: np.ndarray, format: str = "png", *, quality: int = DEFAULT_QUALITY) -> bytes:
@@ -294,25 +324,19 @@ def encode(pixels: np.ndarray, format: str = "png", *, quality: int = DEFAULT_QU
     >>> encode(np.ones((1, 1, 4)))[:4] == bytes.fromhex("89504e47")
     True
     """
-    formats = {"png": skia.kPNG, "jpeg": skia.kJPEG, "jpg": skia.kJPEG, "webp": skia.kWEBP}
-    try:
-        kind = formats[format.lower()]
-    except KeyError:
-        raise ValueError(f"unknown image format {format!r}; expected one of {sorted(formats)}") from None
+    if format.lower() not in FORMATS:
+        raise ValueError(f"unknown image format {format!r}; expected one of {sorted(FORMATS)}")
     array = np.asarray(pixels)
     if array.dtype != np.uint8:
         array = np.clip(np.rint(array * CHANNEL_MAX), 0, CHANNEL_MAX).astype(np.uint8)
     array = np.ascontiguousarray(array)
     image = skia.Image.fromarray(array, colorType=skia.kRGBA_8888_ColorType, alphaType=skia.kUnpremul_AlphaType)
-    data = image.encodeToData(kind, quality)
-    if data is None:
-        raise ValueError(f"skia could not encode {format}")
-    return bytes(data)
+    return encode_image(image, format, quality=quality)
 
 
 def render_png(document: Document, *, scale: float = 1.0, background: str | None = None) -> bytes:
     """Render *document* to PNG bytes."""
-    return encode(rasterize(document, scale=scale, background=background))
+    return encode_image(rasterize(document, scale=scale, background=background, snapshot=True))
 
 
 def skia_renderer(document: Document, time: float) -> bytes:

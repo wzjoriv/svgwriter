@@ -69,6 +69,7 @@ class Element(Composable):
     """
 
     tag: ClassVar[str] = ""
+    namespace: ClassVar[str | None] = None
     category: ClassVar[Category] = Category.OTHER
     content: ClassVar[ContentModel] = ContentModel.ELEMENTS
     _registry: ClassVar[dict[str, type[Element]]] = {}
@@ -117,7 +118,7 @@ class Element(Composable):
             return attributes[key]
         if key in KNOWN_ATTRIBUTES:
             return None
-        raise AttributeError(_unknown_message(type(self).__name__, name))
+        raise UnknownAttributeError(type(self).__name__, name)
 
     def __setattr__(self, name: str, value: AttrValue) -> None:
         if name in _INSTANCE_FIELDS or name.startswith("_") and not name.endswith("_") or hasattr(type(self), name):
@@ -125,7 +126,7 @@ class Element(Composable):
             return
         key = svg_name(name)
         if key not in KNOWN_ATTRIBUTES and key not in self.attributes:
-            raise AttributeError(_unknown_message(type(self).__name__, name))
+            raise UnknownAttributeError(type(self).__name__, name)
         self.set(key, value)
 
     def __delattr__(self, name: str) -> None:
@@ -451,10 +452,23 @@ _INSTANCE_FIELDS: Final = frozenset({"attributes", "children", "parent"})
 _PY_NAMES: Final = sorted({py_name(n) for n in KNOWN_ATTRIBUTES})
 
 
-def _unknown_message(owner: str, name: str) -> str:
-    hint = difflib.get_close_matches(name, _PY_NAMES, n=1)
-    suggestion = f"; did you mean {hint[0]!r}?" if hint else ""
-    return f"{owner} has no attribute {name!r}{suggestion} (unlisted SVG attributes: element.set(name, value))"
+class UnknownAttributeError(AttributeError):
+    """An attribute that is neither a Python member nor a known SVG attribute.
+
+    The "did you mean" suggestion is computed only when the message is shown,
+    so ``getattr(element, name, default)`` stays cheap.
+    """
+
+    def __init__(self, owner: str, name: str) -> None:
+        super().__init__(name)
+        self.owner = owner
+        self.attribute = name
+
+    def __str__(self) -> str:
+        hint = difflib.get_close_matches(self.attribute, _PY_NAMES, n=1)
+        suggestion = f"; did you mean {hint[0]!r}?" if hint else ""
+        return (f"{self.owner} has no attribute {self.attribute!r}{suggestion} "
+                "(unlisted SVG attributes: element.set(name, value))")
 
 
 @format_value.register(Element)

@@ -338,7 +338,7 @@ class Document(ElementFactory):
         return self.render_png()
 
     def rasterize(self, *, scale: float = 1.0, size: tuple[int, int] | None = None, padding: float = 0.0,
-                  background: str | None = None) -> np.ndarray:
+                  background: str | None = None, snapshot: bool = False) -> np.ndarray:
         """Render into a float32 RGBA array (see :func:`svgwriter.ops.rasterize`).
 
         Examples
@@ -351,13 +351,14 @@ class Document(ElementFactory):
         from .ops.render import rasterize
 
         with self._sized():
-            return rasterize(self, scale=scale, size=size, padding=padding, background=background)
+            return rasterize(self, scale=scale, size=size, padding=padding, background=background,
+                             snapshot=snapshot)
 
     def render_png(self, *, scale: float = 1.0, background: str | None = None) -> bytes:
         """Render to PNG bytes."""
-        from .ops.render import encode
+        from .ops.render import encode_image
 
-        return encode(self.rasterize(scale=scale, background=background))
+        return encode_image(self.rasterize(scale=scale, background=background, snapshot=True))
 
     def save(self, target: AnyPath | TextSink, *, format: str | None = None, **options: Any) -> None:
         """Write to a path or text stream; the format follows *format* or the file extension.

@@ -189,6 +189,16 @@ coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into 
   types) exporters, both importable. All exporters are deterministic (tested), so regenerating and
   comparing bytes detects stale assets.
 
+### Performance (measured with `python scripts/dev.py svgwriter bench`)
+- 100k circles: build 13 us, transform 13 us, write 16 us, parse 6 us, bounds 6 us per element. A
+  1000x1000 figure rasterizes in ~35 ms and exports PNG in ~50 ms; 200-circle union 0.1 s.
+- Fixed hot spots: the unknown-attribute "did you mean" is computed only when shown (`getattr(el, name,
+  default)` in the writer cost 400 us/element); n-ary union uses skia's `OpBuilder` once instead of a
+  pairwise chain through Python path data (7 s to 0.1 s); raster exporters encode the skia image directly
+  instead of round-tripping through float arrays (-30 %); fonts and glyph outlines are cached.
+- Tried, not adopted: threads for batch rasterizing (1.1-1.2x on 8 threads: skia-python holds the GIL);
+  premultiplied readback with numpy unpremultiply (no gain over skia's conversion for float output).
+
 ## Open design questions
-- Where async/threads actually pay off (measure first).
+- Process pools for very large batches (threads do not help; see Performance).
 

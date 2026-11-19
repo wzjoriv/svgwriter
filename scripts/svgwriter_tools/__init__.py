@@ -2,6 +2,7 @@
 
 python scripts/dev.py svgwriter fetch-suite
 python scripts/dev.py svgwriter conformance [--filter shapes] [--report build/conformance.md]
+python scripts/dev.py svgwriter bench [--count 100000]
 """
 
 from __future__ import annotations
@@ -43,3 +44,13 @@ def conformance(
     if report is not None:
         write_report(outcomes, report)
         typer.echo(f"wrote {report}")
+
+
+@app.command()
+def bench(count: int = typer.Option(100_000, help="Elements in the large-tree benchmarks."),
+          figures: int = typer.Option(100, help="Documents in the batch benchmarks.")) -> None:
+    """Time building, writing, parsing, geometry, rendering and exporting."""
+    from ._bench import run
+
+    for timing in run(count, figures):
+        typer.echo(f"{timing.name:34} {timing.seconds * 1000:9.1f} ms {timing.per_item_us:10.2f} us/item")

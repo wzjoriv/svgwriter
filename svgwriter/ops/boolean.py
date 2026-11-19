@@ -51,10 +51,14 @@ def union(first: Geometry, *others: Geometry) -> PathData:
     """Area covered by any of the outlines."""
     if not others:
         return simplify(first)
-    result = combine(first, others[0], BooleanOp.UNION)
-    for item in others[1:]:
-        result = combine(result, item, BooleanOp.UNION)
-    return result
+    builder = skia.OpBuilder()
+    for item in (first, *others):
+        data, evenodd = geometry_data(item)
+        builder.add(to_skia(data, evenodd=evenodd), skia.PathOp.kUnion_PathOp)
+    result = builder.resolve()
+    if result is None:
+        raise ValueError("skia could not compute the union of these outlines")
+    return from_skia(result)
 
 
 def intersection(first: Geometry, second: Geometry) -> PathData:
