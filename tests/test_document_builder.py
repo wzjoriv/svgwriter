@@ -8,7 +8,7 @@ import svgwriter as svg
 from svgwriter import builder
 from svgwriter.document import ShapeKind
 
-from .conftest import roundtrip, wellformed
+from .conftest import wellformed
 
 
 class TestDocument:
@@ -89,42 +89,16 @@ class TestDocument:
         assert doc.root.get("width") == 10 and doc.root.view_box is None
 
 
-class TestFunctionalApi:
-    def test_constructors_forward_keywords(self) -> None:
-        items = [
-            builder.rect(0, 0, 1, 1, fill="red"),
-            builder.square(0, 0, 3, stroke="blue"),
-            builder.circle(1, 1, 1, opacity=0.5),
-            builder.ellipse(1, 1, 2, 1, id="e"),
-            builder.line(0, 0, 1, 1, stroke_linecap="round"),
-            builder.polyline((0, 0), (1, 1), fill="none"),
-            builder.polygon((0, 0), (1, 1), (1, 0)),
-            builder.path("M0 0 H1", stroke="black"),
-            builder.text("hi", 1, 2, font_size=12),
-        ]
-        group = builder.group(*items, class_="all")
-        assert [i.tag for i in group] == ["rect", "rect", "circle", "ellipse", "line", "polyline", "polygon", "path", "text"]
-        assert items[1].get("width") == items[1].get("height") == 3
-        assert items[8].get("font-size") == 12
-        first, second = roundtrip(svg.Svg(group))
-        assert first == second
-
-    def test_use_and_gradients(self) -> None:
-        target = svg.Circle(id="c")
-        assert builder.use(target, 5, 5).get("xlink:href") == svg.IRI("#c")
-        assert builder.linear_gradient("red", "blue", vertical=True).get("y2") == 1
-        assert len(builder.radial_gradient("red", "green", "blue")) == 3
-
+class TestPresets:
     def test_partials(self) -> None:
         assert builder.outline(0, 0, 5, 5).get("fill") == "none"
         assert builder.dashed_line(0, 0, 5, 5).get("stroke-dasharray") == (4, 2)
         assert 'stroke-dasharray="4 2"' in str(builder.dashed_line(0, 0, 1, 1))
-        assert builder.dot(3, 4).get("r") == 2
-        assert builder.dot.func is builder.circle
+        assert builder.dot(3, 4).get("r") == 2 and builder.dot.func is svg.Circle
 
-    def test_document_function(self) -> None:
-        doc = builder.document(30, 20, preserve_aspect_ratio="xMinYMin")
-        assert doc.root.get("preserveAspectRatio") == "xMinYMin"
+    def test_duplicates_of_the_aliases_are_gone(self) -> None:
+        for name in ("rect", "circle", "document", "linear_gradient"):
+            assert not hasattr(builder, name)
 
 
 class TestRegistry:
