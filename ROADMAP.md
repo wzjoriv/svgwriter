@@ -41,6 +41,17 @@ left for later.
 18. **Image compositing.** Porter-Duff `img | b`, `& b`, `- b`, `^ b` and `* b` (multiply), plus
     `composite(b, operator)` with every `feComposite` operator and `feBlend` mode; any element can be
     the other operand; `ops.composite_rgba` on raw arrays.
+19. **More formats.** BMP, GIF, PPM out and PNM in (pure numpy); PDF, EPS/PS and TikZ in (vector subset);
+    Graphviz DOT and Mermaid in through their tools; `svgwriter[office]`: PowerPoint shapes both ways,
+    Word and Excel pictures out. A round-trip test renders every readable format against the original.
+20. **Usability pass** from an independent review: operators never take elements out of a document and
+    in-place forms replace in the parent; `text_content`; colors checked on assignment; path drawing
+    needs `move_to`; clearer errors; `Character` handles by grapheme cluster; vector `Point`; typed
+    `doc.rect(...)` shortcuts; one way to do each job; readable `rotate` text about the element's anchor.
+21. **Layout and motion.** Named box points and `place(..., at=)` / `align(...)`; `svg.interpolate` for
+    numbers, colors, matrices, paths and elements (shape morphing); `doc[i] = el`.
+22. **Filters as graphs** (`Filter(last)` collects inputs, `a >> b`, `f1 >> f2`), pattern conversions
+    (`to_image`, `from_image`, `expand_pattern`) and `register_font` for font files.
 
 ## Later
 
@@ -54,5 +65,12 @@ left for later.
 - **`textPath` layout** and SVG fonts (`<font>`, `<glyph>`) in the text engine.
 - **Id index** kept by `Element.id` so `doc["id"]` is constant time on very large documents.
 - **Process pools** for very large rasterizing batches (threads do not help: skia holds the GIL).
+- **Complex text shaping** (ligatures, Arabic, Indic) once a HarfBuzz-backed shaper is reachable from
+  Python without a heavy dependency.
+- **Video in**: frames of a video as lazy `Image`s (`video[i]`) through ffmpeg, to mix footage with
+  vector animation in `update`.
+- **Batch elements**: numpy-vectorized creation and transforms for very many similar shapes.
+- **matplotlib round trip**: elements back into matplotlib artists, beyond today's figure import.
+- **Split** `elements/base.py` (tree, query, ids) and `document.py` (sizing, ingest) into private modules.
 - **Logo assets.** A devkit `logo` tool will import a project's `logo(**variant)` and write SVG variants,
   PNGs, `.ico`, `.icns`, favicons and webmanifest icons; svgwriter's side is done (`examples/logo.py`).
