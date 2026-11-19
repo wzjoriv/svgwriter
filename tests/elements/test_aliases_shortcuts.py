@@ -8,8 +8,7 @@ import pytest
 import svgwriter as svg
 from svgwriter import aliases
 from svgwriter.elements import Element, ElementFactory, GraphicsContainer
-
-from .conftest import roundtrip, wellformed
+from tests.conftest import roundtrip, wellformed
 
 SHORTCUTS_PLACED = {
     "rect": ((0, 0, 4, 4), {"rx": 1}, svg.Rect),

@@ -73,6 +73,16 @@ dot += (1, 1)                   # in place
 `*` and `@` never bake coordinates. To fold the transform into the geometry, convert:
 `el.to_path()` returns a `<path>` whose `d` already includes `t`.
 
+Things to keep in mind:
+
+- A bare number broadcasts like numpy: `el + 5` moves by `(5, 5)`, while the method `el.translate(5)`
+  follows SVG's `translate(5)` and moves by `(5, 0)`.
+- Operators never take elements out of a document: `a + b` copies operands that already have a parent.
+  The in-place forms work in place: `a -= b` puts the resulting `<path>` where `a` was, keeping its id.
+- `+` groups and `-` cuts, so `a + b - b` is not `a`: the group is cut by `b`'s outline.
+- With images, `|`, `&`, `-`, `^` and `*` composite pixels (see *Compositing images*); numbers and offsets
+  still transform, so `img * 2` scales.
+
 ## Bounds
 
 ```python
