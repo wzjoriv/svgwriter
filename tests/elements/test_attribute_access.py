@@ -72,3 +72,19 @@ class TestKeywordChecking:
     def test_shortcuts_check_too(self) -> None:
         with pytest.raises(TypeError, match="did you mean 'opacity'"):
             svg.Document(10, 10).rect(0, 0, 1, 1, opactiy=0.5)
+
+
+class TestReferences:
+    def test_url_and_iri_point_at_the_element(self) -> None:
+        g = svg.LinearGradient(id="g")
+        assert g.url.svg_value() == "url(#g)" and g.iri.svg_value() == "#g"
+        assert svg.Rect().url.svg_value().startswith("url(#rect")
+
+    def test_href_reads_an_xlink_elements_own_link(self) -> None:
+        track = svg.Path("M0 0 L1 1", id="track")
+        mpath = svg.MPath(track)
+        assert str(mpath.href) == "#track" and mpath.id is None
+        use = svg.Use()
+        use.href = track
+        assert str(use.get("xlink:href")) == "#track"
+        assert svg.Image("photo.png").href == "photo.png"

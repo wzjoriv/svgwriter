@@ -276,29 +276,39 @@ class Element(Composable):
         return ElementId(self.id or "")
 
     @property
-    def ref(self) -> FuncIRI:
-        """``url(#id)`` for this element, assigning an id if needed.
+    def url(self) -> FuncIRI:
+        """``url(#id)`` pointing at this element, assigning an id if needed.
 
-        Use it for paint and reference attributes such as ``fill`` or ``clip_path``.
+        Use it where SVG expects a functional IRI (``fill``, ``clip-path``, ``filter``); passing the
+        element itself does the same.
+
+        See Also
+        --------
+        iri : The plain ``#id`` form.
 
         Examples
         --------
         >>> import svgwriter as svg
-        >>> svg.rect(0, 0, 1, 1, id="a").ref.svg_value()
+        >>> svg.rect(0, 0, 1, 1, id="a").url.svg_value()
         'url(#a)'
         """
         return FuncIRI("#" + self.ensure_id(), self)
 
     @property
-    def href(self) -> IRI:
-        """``#id`` for this element, assigning an id if needed.
+    def iri(self) -> IRI:
+        """``#id`` pointing at this element, assigning an id if needed.
 
-        Use it for ``xlink:href`` style references.
+        Use it where SVG expects a plain IRI (``xlink:href`` of ``<use>``, ``<mpath>``, ...); passing
+        the element itself does the same. An element's own ``xlink:href`` is ``el.href``.
+
+        See Also
+        --------
+        url : The ``url(#id)`` form.
 
         Examples
         --------
         >>> import svgwriter as svg
-        >>> svg.rect(0, 0, 1, 1, id="a").href.svg_value()
+        >>> svg.rect(0, 0, 1, 1, id="a").iri.svg_value()
         '#a'
         """
         return IRI("#" + self.ensure_id(), self)
@@ -352,7 +362,7 @@ class Element(Composable):
             self.attributes[COLOR_OPACITY[key]] = value.a
             value = value.opaque
         if isinstance(value, Element):
-            value = value.href if key in HREF_ATTRIBUTES else value.ref
+            value = value.iri if key in HREF_ATTRIBUTES else value.url
         elif isinstance(value, FuncIRI) and key in HREF_ATTRIBUTES:
             value = IRI(value.target, value.element)
         self.attributes[key] = value
@@ -981,4 +991,4 @@ class UnknownKeywordError(UnknownAttributeError, TypeError):
 
 @format_value.register(Element)
 def _format_element(value: Element, precision: int = DEFAULT_PRECISION) -> str:
-    return value.ref.svg_value(precision)
+    return value.url.svg_value(precision)

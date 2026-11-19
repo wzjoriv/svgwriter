@@ -69,7 +69,10 @@ coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into 
 ## Other 2.0 decisions
 
 ### Model and API
-- **Definitions:** IRIs made from an element (`el.ref`, `el.href`, or passing the element as a value) keep a
+- **References:** `el.url` (`url(#id)`) and `el.iri` (`#id`) point *at* an element (assigning an id);
+  `el.href` on elements that have one (`<use>`, `<image>`, `<a>`, `<mpath>`, gradients) is their own
+  `xlink:href`. (`ref`/`href` were renamed: reading `use.href` used to return a link to the `<use>`.)
+- **Definitions:** IRIs made from an element (`el.url`, `el.iri`, or passing the element as a value) keep a
   pointer to it. When a subtree joins a tree rooted at `<svg>`, or an attribute is set inside one, every
   referenced element without a parent moves into the root `<defs>`; placed targets stay put.
 - **Attribute access:** `Element.__getattr__/__setattr__` map Python names to SVG names (`stroke_width`,

@@ -428,6 +428,25 @@ class XLinkAttributes(Element):
         )
 
     @property
+    def href(self) -> Any:
+        """This element's ``xlink:href``: the IRI or URL it points at, ``None`` when unset.
+
+        Assign an element, an IRI or a string to change it.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> track = svg.path("M0 0 L10 10", id="track")
+        >>> str(svg.Use(track).href)
+        '#track'
+        """
+        return self.attributes.get("xlink:href")
+
+    @href.setter
+    def href(self, value: Any) -> None:
+        self.set("xlink:href", value)
+
+    @property
     def target(self) -> str | None:
         """The referenced id for local ``#id`` links.
 

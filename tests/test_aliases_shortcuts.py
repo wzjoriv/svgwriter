@@ -111,7 +111,7 @@ class TestDocumentShortcuts:
             doc.circle(10, 10, 8)
         doc.rect(0, 0, 20, 20, clip_path=clip)
         assert clip.parent is doc.defs and clip[0].tag == "circle"
-        assert doc.root.find(svg.Rect).get("clip-path") == clip.ref  # type: ignore[union-attr]
+        assert doc.root.find(svg.Rect).get("clip-path") == clip.url  # type: ignore[union-attr]
 
     def test_with_on_detached_container_is_harmless(self) -> None:
         with svg.Group() as group:

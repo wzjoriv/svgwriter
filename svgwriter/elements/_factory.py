@@ -39,7 +39,7 @@ class ElementFactory:
     >>> from svgwriter import Document
     >>> doc = Document(100, 100)
     >>> sky = doc.linear_gradient(x2=0, y2=1)
-    >>> doc.rect(0, 0, 100, 100, fill=sky).get("fill") == sky.ref
+    >>> doc.rect(0, 0, 100, 100, fill=sky).get("fill") == sky.url
     True
     >>> sky.parent is doc.defs
     True

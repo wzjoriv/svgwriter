@@ -374,8 +374,8 @@ class TestClipping:
         mask = svg.Mask(svg.Rect(0, 0, 1, 1, fill="white"), mask_units="userSpaceOnUse", x=0, width=10)
         marker = svg.Marker(svg.Path("M0 0 L10 5 L0 10 z"), ref_x=10, ref_y=5, orient="auto", marker_width=4, view_box=(0, 0, 10, 10))
         shape = svg.Path("M0 0 L50 50", clip_path=clip, mask=mask, marker_end=marker)
-        assert shape.get("clip-path") == clip.ref
-        assert shape.get("mask") == mask.ref
-        assert shape.get("marker-end") == marker.ref
+        assert shape.get("clip-path") == clip.url
+        assert shape.get("mask") == mask.url
+        assert shape.get("marker-end") == marker.url
         assert 'refX="10"' in str(marker) and 'orient="auto"' in str(marker) and 'viewBox="0 0 10 10"' in str(marker)
         assert 'clipPathUnits="objectBoundingBox"' in str(clip)
