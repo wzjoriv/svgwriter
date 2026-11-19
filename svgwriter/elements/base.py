@@ -85,6 +85,8 @@ class Element(Composable):
     """
 
     tag: ClassVar[str] = ""
+    _auto_id: bool = False
+    _id_owner: Element | None = None
     namespace: ClassVar[str | None] = None
     category: ClassVar[Category] = Category.OTHER
     content: ClassVar[ContentModel] = ContentModel.ELEMENTS
@@ -250,6 +252,7 @@ class Element(Composable):
 
     @id.setter
     def id(self, value: str | None) -> None:
+        self._auto_id = False
         if value is None:
             self.attributes.pop("id", None)
             return
@@ -272,8 +275,25 @@ class Element(Composable):
         'a'
         """
         if self.id is None:
-            self.id = next_id(self.tag or "el")
+            root = self.root()
+            if root.tag == "svg":
+                self.id = root._auto_id_for(self.tag or "el")
+                self._id_owner = root
+            else:
+                self.id = next_id(self.tag or "el")
+                self._id_owner = None
+            self._auto_id = True
         return ElementId(self.id or "")
+
+    def _auto_id_for(self, prefix: str, owner: Element | None = None) -> str:
+        """The next free ``prefixN`` id numbered within this (root) element's document (*owner* may keep its own)."""
+        counts: dict[str, int] = self.__dict__.setdefault("_id_counts", {})
+        while True:
+            counts[prefix] = counts.get(prefix, 0) + 1
+            candidate = f"{prefix}{counts[prefix]}"
+            holder = self.get_element_by_id(candidate)
+            if holder is None or holder is owner:
+                return candidate
 
     @property
     def url(self) -> FuncIRI:
@@ -517,6 +537,9 @@ class Element(Composable):
         if root.tag != "svg":
             return
         for element in subtree.iter():
+            if element._auto_id and element._id_owner is not root:
+                object.__setattr__(element, "_id_owner", root)
+                element.attributes["id"] = root._auto_id_for(element.tag or "el", element)
             for value in list(element.attributes.values()):
                 target = getattr(value, "element", None)
                 if target is not None and target.parent is None and target is not root:
@@ -837,6 +860,7 @@ class Element(Composable):
             k: v.clone() if hasattr(v, "clone") and not isinstance(v, Element) else v
             for k, v in self.attributes.items()
         }
+        object.__setattr__(duplicate, "_id_owner", None)
         duplicate.parent = None
         duplicate.children = []
         for child in self.children:

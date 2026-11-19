@@ -81,6 +81,24 @@ class IRI:
         _, sep, fragment = self.target.partition("#")
         return fragment if sep else None
 
+    @property
+    def current(self) -> str:
+        """The target text, following the referenced element's id when it has changed since.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> dot = svg.circle(0, 0, 1, id="a")
+        >>> ref = dot.iri
+        >>> dot.id = "b"
+        >>> ref.current
+        '#b'
+        """
+        element = self.element
+        if element is not None and element.id is not None and self.target.startswith("#"):
+            return "#" + element.id
+        return self.target
+
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
         """Serialize the reference as attribute text.
 
@@ -100,7 +118,7 @@ class IRI:
         >>> IRI.local("a").svg_value()
         '#a'
         """
-        return self.target
+        return self.current
 
     def __str__(self) -> str:
         return self.svg_value()
@@ -136,7 +154,7 @@ class FuncIRI(IRI):
         str
             The IRI wrapped in ``url()``.
         """
-        return f"url({self.target})"
+        return f"url({self.current})"
 
 
 def parse_func_iri(text: str) -> FuncIRI | None:

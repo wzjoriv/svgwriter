@@ -88,3 +88,33 @@ class TestReferences:
         use.href = track
         assert str(use.get("xlink:href")) == "#track"
         assert svg.Image("photo.png").href == "photo.png"
+
+
+class TestDeterministicIds:
+    @staticmethod
+    def build() -> svg.Document:
+        doc = svg.Document(10, 10)
+        doc.rect(0, 0, 5, 5, fill=svg.LinearGradient.horizontal("red", "blue"))
+        doc.circle(5, 5, 2).clip(svg.circle(5, 5, 1))
+        return doc
+
+    def test_same_document_twice_in_one_process_is_identical(self) -> None:
+        first, second = self.build().to_string(), self.build().to_string()
+        assert first == second and 'id="linearGradient1"' in first and 'id="clipPath1"' in first
+
+    def test_references_follow_renames(self) -> None:
+        doc = self.build()
+        gradient = doc.defs[0]
+        gradient.id = "sky"
+        assert 'fill="url(#sky)"' in doc.to_string()
+
+    def test_clone_added_to_the_same_document_gets_a_new_id(self) -> None:
+        doc = self.build()
+        copy = doc.defs[0].clone()
+        doc.defs += copy
+        assert copy.id != doc.defs[0].id and len({e.id for e in doc.defs}) == len(doc.defs)
+
+    def test_explicit_ids_are_kept(self) -> None:
+        doc = svg.Document(10, 10)
+        doc.rect(0, 0, 1, 1, fill=svg.LinearGradient(id="mine"))
+        assert 'id="mine"' in doc.to_string()

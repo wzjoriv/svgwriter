@@ -80,6 +80,10 @@ coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into 
   unset; unknown names raise `AttributeError` with a "did you mean"; anything else goes through
   `el.set(name, value)`. Typed descriptors (`Attr`) win where they exist. Method names win over attribute
   names; the attribute gets a trailing underscore (`text.rotate_`, `image.color_`).
+- **Ids:** automatic ids (`linearGradient1`) are numbered per document: an element that got one while
+  detached is re-keyed when it joins a document, and clones lose document ownership so copies never
+  duplicate ids. IRIs made from an element render from its current id, so references follow renames.
+  Building the same document twice gives identical output, also within one process.
 - **Foreign-namespace attributes** round-trip in Clark notation (`el.set("{uri}name", v)`), written with
   generated `nsN` prefixes declared on the element.
 - **Fluent paths:** `Path` has the drawing methods (`move_to`, `line_to`, `curve_to`, `quad_to`,
