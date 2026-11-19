@@ -30,7 +30,8 @@ left for later.
 13. **Rendering** with skia including what skia's SVG renderer lacks: embedded and linked images, text,
     CSS; exact sizes with padding; deterministic output.
 14. **Export/import registry** by name or extension: SVG, SVGZ, PNG, JPEG, WebP, PDF, TikZ, EPS, DXF, HPGL,
-    G-code, Excalidraw, ICO, ICNS out; SVG, SVGZ, raster images, DXF, HPGL, G-code, Excalidraw, ICO, ICNS in.
+    G-code, Excalidraw, ICO, ICNS out; SVG, SVGZ, raster images, PDF, TikZ, EPS, DXF, HPGL, G-code,
+    Excalidraw, ICO, ICNS in (PDF, TikZ and EPS as their vector paths).
 15. **Performance**, measured (`dev.py svgwriter bench`): 100k elements build, write and parse in about
     1.3, 1.6 and 0.6 s; raw RGBA animation frames; threads measured and not adopted.
 16. **Conformance tooling** for the W3C SVG 1.1 suite: round-trip 429/430, render 148/434.
@@ -48,8 +49,8 @@ left for later.
 - **Filters and masks on images** in the renderer (images are drawn outside skia's SVG pass today).
 - **Gradients and patterns in TikZ and EPS** as native shadings instead of the first-stop fallback;
   images in EPS (`colorimage`).
-- **EPS, PDF and TikZ import** need full interpreters; PDF via a vector-path extraction library is the
-  likely first step.
+- **Fuller EPS, PDF and TikZ import**: text, images, shadings and clipping; PostScript control flow;
+  TikZ macros, styles and `\foreach`.
 - **`textPath` layout** and SVG fonts (`<font>`, `<glyph>`) in the text engine.
 - **Id index** kept by `Element.id` so `doc["id"]` is constant time on very large documents.
 - **Process pools** for very large rasterizing batches (threads do not help: skia holds the GIL).
