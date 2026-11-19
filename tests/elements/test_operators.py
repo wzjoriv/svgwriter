@@ -260,3 +260,52 @@ class TestColorOperators:
     def test_channel_error_names_the_channel(self) -> None:
         with pytest.raises(ValueError, match="g=300"):
             Color(0, 300, 0)  # noqa: B018
+
+
+class TestOwnership:
+    def test_in_place_boolean_replaces_shape_in_parent(self):
+        doc = svg.Document(20, 20)
+        c = doc.circle(5, 5, 5, id="dot")
+        doc.rect(0, 0, 1, 1)
+        c -= svg.rect(0, 0, 5, 5)
+        assert [(e.tag, e.id) for e in doc] == [("path", "dot"), ("rect", None)]
+        assert c in doc
+
+    def test_in_place_union_on_detached_shape_rebinds(self):
+        c = svg.circle(0, 0, 1)
+        c |= svg.rect(0, 0, 1, 1)
+        assert c.tag == "path" and c.parent is None
+
+    def test_offsets_still_move_in_place(self):
+        doc = svg.Document(20, 20)
+        r = doc.rect(0, 0, 1, 1)
+        r -= (1, 1)
+        assert r in doc and str(r.t) == "translate(-1 -1)"
+
+    def test_plus_copies_operands_that_have_a_parent(self):
+        doc = svg.Document(20, 20)
+        a = doc.rect(0, 0, 2, 2)
+        loose = svg.circle(1, 1, 1)
+        group = a + loose
+        assert len(doc) == 1 and a.parent is doc.root
+        assert group[0] is not a and group[1] is loose
+
+    def test_plus_equals_groups_in_place(self):
+        doc = svg.Document(20, 20)
+        b = doc.circle(3, 3, 1)
+        b += svg.rect(0, 0, 1, 1)
+        assert [e.tag for e in doc] == ["g"] and [e.tag for e in b] == ["circle", "rect"]
+
+    def test_container_plus_equals_appends(self):
+        doc = svg.Document(20, 20)
+        group = doc.group()
+        group += svg.rect(0, 0, 1, 1)
+        assert len(group) == 1 and [e.tag for e in doc] == ["g"]
+
+    def test_image_composite_in_place(self):
+        import numpy as np
+
+        doc = svg.Document(4, 4)
+        img = doc.add(svg.Image(np.ones((4, 4, 3))))
+        img &= svg.circle(2, 2, 2)
+        assert [e.tag for e in doc] == ["image"] and img in doc

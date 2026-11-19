@@ -30,7 +30,7 @@ class Composable:
     __slots__ = ()
 
     def __add__(self: Element, other: Element | Iterable[Element]) -> Group:
-        """``a + b``: a new ``<g>`` holding both (moved, not copied)."""
+        """``a + b``: a new ``<g>`` holding both; operands already in a tree are copied, never moved."""
         from .container import flatten
         from .structure import Group
 
@@ -38,7 +38,22 @@ class Composable:
             items = flatten(other)
         except TypeError:
             return NotImplemented
-        return Group(self, *items)
+        return Group(*(_free(item) for item in (self, *items)))
+
+    def __iadd__(self: Element, other: Element | Iterable[Element]) -> Group:
+        """``a += b``: a ``<g>`` holding *a* and *b* takes *a*'s place in its parent."""
+        from ._geometry import replace_in_parent
+        from .container import flatten
+        from .structure import Group
+
+        try:
+            items = flatten(other)
+        except TypeError:
+            return NotImplemented
+        group = Group()
+        replace_in_parent(self, group)
+        group.extend([self, *(_free(item) for item in items)])
+        return group
 
     def __radd__(self: Element, other: Iterable[Element]) -> Group:
         """``[a, b] + c``: a new ``<g>`` holding all three."""
@@ -49,4 +64,9 @@ class Composable:
             items = flatten(other)
         except TypeError:
             return NotImplemented
-        return Group(*items, self)
+        return Group(*(_free(item) for item in (*items, self)))
+
+
+def _free(element: Element) -> Element:
+    """*element* itself when detached, else a copy, so operators never take elements out of a tree."""
+    return element.clone() if element.parent is not None else element

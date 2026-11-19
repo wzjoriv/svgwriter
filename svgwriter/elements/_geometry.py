@@ -302,6 +302,29 @@ class PathOperand(Element):
     def __rxor__(self, other: Operand) -> Path:
         return self.xor(other) if _operand(other) else NotImplemented
 
+    def _take_place(self, result: Any) -> Any:
+        """Put *result* where this element is in its parent, keeping an explicit id."""
+        if result is NotImplemented:
+            return result
+        replace_in_parent(self, result)
+        return result
+
+    def __ior__(self, other: Operand) -> Any:
+        """``a |= b``: the union replaces *a* in its parent (a shape becomes a ``<path>``)."""
+        return self._take_place(self.__or__(other))
+
+    def __iand__(self, other: Operand) -> Any:
+        return self._take_place(self.__and__(other))
+
+    def __isub__(self, other: Operand) -> Any:
+        """``a -= b`` cuts *b* out in place; ``a -= (dx, dy)`` moves *a*."""
+        if not _operand(other):
+            return super().__isub__(other)  # type: ignore[misc]
+        return self._take_place(self.__sub__(other))
+
+    def __ixor__(self, other: Operand) -> Any:
+        return self._take_place(self.__xor__(other))
+
     def simplified(self) -> Path:
         """Same area without overlaps or self-intersections (skia).
 
@@ -568,6 +591,30 @@ def clip_outline(element: Element) -> PathData | None:
             return PathData()
         data = data.transformed(Matrix(box.width, 0, 0, box.height, box.x, box.y))
     return data
+
+
+def replace_in_parent(old: Element, new: Element) -> None:
+    """Swap *new* into *old*'s place in its parent; an explicit (not generated) id moves with it.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> doc = svg.Document(10, 10)
+    >>> c = doc.circle(5, 5, 5, id="dot")
+    >>> c -= svg.rect(0, 0, 5, 5)
+    >>> [(e.tag, e.id) for e in doc]
+    [('path', 'dot')]
+    """
+    parent = old.parent
+    if parent is None or new is old:
+        return
+    index = next(i for i, child in enumerate(parent) if child is old)
+    explicit = None if old._auto_id else old.get("id")
+    parent.remove(old)
+    if explicit is not None:
+        old.discard("id")
+        new.id = explicit
+    parent.insert(index, new)
 
 
 def _operand(value: object) -> bool:

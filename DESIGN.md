@@ -52,14 +52,14 @@ Element operands keep structural meanings; numbers and pairs transform a copy (i
 
 | expression | meaning |
 |---|---|
-| `a + b` | new `<g>` holding both (moved, not copied); `group += el` appends |
+| `a + b` | new `<g>` holding both; operands already in a tree are copied, so operators never change a document; `group += el` appends, `shape += el` groups in place |
 | `el + (dx, dy)`, `el - (dx, dy)` | translated copy; a bare number broadcasts to `(d, d)` like numpy |
 | `el * k`, `el / k`, `el * (sx, sy)` | copy scaled about the anchor |
 | `el @ degrees` | copy rotated about the anchor ("el at 30°") |
 | `M @ el` / `el @ M` | copy with matrix `M` applied in the parent / local frame |
 | `a | b`, `a & b`, `a - b`, `a ^ b` | boolean path ops (skia) on shapes, text, groups, `<use>`; result is a `<path>` |
 | `img | b`, `img & b`, `img - b`, `img ^ b`, `img * b` | Porter-Duff over / in / out / xor and the multiply blend when either side is an `<image>`; result is an `<image>` |
-| `+=`, `-=`, `*=`, `/=`, `@=` | the same, in place |
+| `+=`, `-=`, `*=`, `/=`, `@=`, `\|=`, `&=`, `^=` | the same, in place: a result of a different kind (a circle cut into a `<path>`, an image composite) takes the original's place in its parent and keeps its explicit id |
 
 Image compositing reuses the shape operators because they mean the same areas: union is *over*,
 intersection is *in*, difference is *out*, xor is *xor* (Porter-Duff, as in Cairo, Skia blend modes and

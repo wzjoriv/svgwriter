@@ -246,5 +246,32 @@ class Compositing:
             return composite(other, self, BlendMode.MULTIPLY)  # type: ignore[arg-type]
         return super().__rmul__(other)  # type: ignore[misc]
 
+    def _in_place(self, result: Any) -> Any:
+        from .._geometry import replace_in_parent
+
+        if result is not NotImplemented:
+            replace_in_parent(self, result)  # type: ignore[arg-type]
+        return result
+
+    def __ior__(self, other: Any) -> Any:
+        """``img |= other`` puts the composite where *img* was in its parent."""
+        return self._in_place(self.__or__(other))
+
+    def __iand__(self, other: Any) -> Any:
+        return self._in_place(self.__and__(other))
+
+    def __ixor__(self, other: Any) -> Any:
+        return self._in_place(self.__xor__(other))
+
+    def __isub__(self, other: Any) -> Any:
+        if isinstance(other, Element):
+            return self._in_place(self.__sub__(other))
+        return super().__isub__(other)  # type: ignore[misc]
+
+    def __imul__(self, other: Any) -> Any:
+        if isinstance(other, Element):
+            return self._in_place(self.__mul__(other))
+        return super().__imul__(other)  # type: ignore[misc]
+
     def __rsub__(self, other: Any) -> Any:
         return self._pair(other, CompositeOperator.OUT, reflected=True)
