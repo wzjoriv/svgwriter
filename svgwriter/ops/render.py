@@ -346,11 +346,17 @@ def render_png(document: Document, *, scale: float = 1.0, background: str | None
     return encode_image(rasterize(document, scale=scale, background=background, snapshot=True))
 
 
-def skia_renderer(document: Document, time: float) -> bytes:
-    """Frame renderer for :func:`~svgwriter.video.render_animation`.
+def skia_renderer(document: Document, time: float) -> np.ndarray:
+    """Frame renderer for :func:`~svgwriter.video.render_animation`: an opaque uint8 RGBA frame.
 
-    Draws the document as it is at each frame; use ``update=`` to change
-    it over time.
+    Draws the document as it is at each frame (use ``update=`` to change it
+    over time) on white, and returns raw pixels so ffmpeg needs no PNG
+    decoding.
     """
     del time
-    return render_png(document, background="white")
+    image = document.rasterize(background="white", snapshot=True)
+    info = skia.ImageInfo.Make(image.width(), image.height(), skia.kRGBA_8888_ColorType, skia.kPremul_AlphaType)
+    frame = np.empty((image.height(), image.width(), 4), np.uint8)
+    if not image.readPixels(info, frame, info.minRowBytes()):
+        raise ValueError("skia could not read the frame")
+    return frame

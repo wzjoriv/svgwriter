@@ -210,6 +210,8 @@ coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into 
   default)` in the writer cost 400 us/element); n-ary union uses skia's `OpBuilder` once instead of a
   pairwise chain through Python path data (7 s to 0.1 s); raster exporters encode the skia image directly
   instead of round-tripping through float arrays (-30 %); fonts and glyph outlines are cached.
+- Animation: the built-in `skia_renderer` returns raw opaque RGBA frames (premultiplied readback is exact on
+  an opaque background) piped as `rawvideo`, 3x cheaper per frame than PNG encode plus ffmpeg decode.
 - Tried, not adopted: threads for batch rasterizing (1.1-1.2x on 8 threads: skia-python holds the GIL);
   premultiplied readback with numpy unpremultiply (no gain over skia's conversion for float output).
 
