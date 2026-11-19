@@ -242,27 +242,97 @@ class Transformable(Element):
         here = self.position
         self.translate(value[0] - here.x, value[1] - here.y)
 
-    def place(self: E, x: float, y: float) -> E:
-        """Translate so the anchor lands on ``(x, y)`` in parent coordinates.
+    def place(self: E, x: float, y: float, *, at: str | None = None) -> E:
+        """Move the element so its anchor, or the named point of its bounds, lands on ``(x, y)``.
 
         Parameters
         ----------
         x, y : float
-            Target position of the anchor.
+            Target position in parent coordinates.
+        at : str, optional
+            A named point of :meth:`bounds` (``"top_left"``, ``"center"``,
+            ``"bottom"``, ...; see :meth:`BBox.point`). Defaults to None, which
+            uses the anchor.
 
         Returns
         -------
         Transformable
             This element.
 
+        Raises
+        ------
+        ValueError
+            If `at` is not a known point name.
+        TypeError
+            If `at` is given and the element's size is unknown.
+
+        See Also
+        --------
+        align : Place relative to another element.
+
         Examples
         --------
         >>> import svgwriter as svg
         >>> svg.circle(0, 0, 1).place(10, 20).position
         Point(x=10.0, y=20.0)
+        >>> svg.rect(0, 0, 4, 2).place(10, 10, at="bottom_right").bounds()
+        BBox(x=6.0, y=8.0, width=4.0, height=2.0)
         """
-        self.position = (x, y)
+        if at is None:
+            self.position = (x, y)
+            return self
+        here = self._named_point(at)
+        self.translate(x - here.x, y - here.y)
         return self
+
+    def align(self: E, target: Any, at: str = "center", *, to: str | None = None,
+              offset: PointLike = (0.0, 0.0)) -> E:
+        """Move the element so its point *at* meets the point *to* of *target*.
+
+        Parameters
+        ----------
+        target : Element, BBox or (float, float)
+            What to align with; an element's :meth:`bounds` are used.
+        at : str, optional
+            Named point of this element's bounds. Defaults to ``"center"``.
+        to : str, optional
+            Named point of the target. Defaults to `at`, so ``a.align(b, "left")``
+            lines up left edges and ``a.align(b, "top", to="bottom")`` stacks
+            *a* under *b*.
+        offset : (float, float), optional
+            Extra shift after aligning, for gaps. Defaults to ``(0, 0)``.
+
+        Returns
+        -------
+        Transformable
+            This element.
+
+        Raises
+        ------
+        TypeError
+            If either size is unknown or `target` is not an element, box or point.
+
+        See Also
+        --------
+        place : Move to a coordinate.
+        BBox.point : The point names.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> base = svg.rect(0, 0, 40, 10)
+        >>> label = svg.rect(0, 0, 10, 4).align(base, "top", to="bottom", offset=(0, 2))
+        >>> label.bounds()
+        BBox(x=15.0, y=12.0, width=10.0, height=4.0)
+        """
+        goal = _target_point(target, to or at)
+        return self.place(goal.x + float(offset[0]), goal.y + float(offset[1]), at=at)
+
+    def _named_point(self, name: str) -> Point:
+        box = self.bounds()
+        if box is None:
+            raise TypeError(f"<{self.tag}> has no known size, so it has no {name!r} point")  # type: ignore[attr-defined]
+        return box.point(name)
 
     def bounds(self) -> BBox | None:
         """Bounding box in parent coordinates (after :attr:`t`).
@@ -581,3 +651,16 @@ class Transformable(Element):
         if not isinstance(transform, (*_TRANSFORMS, str)):
             return NotImplemented
         return self.clone().apply(transform)
+
+
+def _target_point(target: Any, name: str) -> Point:
+    """The named point of an element's bounds or a box, or a plain point as given."""
+    if isinstance(target, BBox):
+        return target.point(name)
+    if isinstance(target, Transformable):
+        return target._named_point(name)
+    try:
+        x, y = target
+        return Point(float(x), float(y))
+    except (TypeError, ValueError):
+        raise TypeError(f"align() takes an element, a BBox or an (x, y) point, not {type(target).__name__}") from None

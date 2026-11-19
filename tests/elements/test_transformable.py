@@ -355,3 +355,34 @@ class TestNumpy:
         np = pytest.importorskip("numpy")
         assert np.allclose(np.asarray(svg.Color(1, 0.5, 0)), [1, 0.5, 0, 1])
         assert svg.Rect(fill=np.array([0, 0, 1.0])).get("fill").hex == "#0000ff"
+
+
+class TestNamedPoints:
+    def test_box_edges_and_points(self):
+        box = svg.BBox(10, 20, 40, 10)
+        assert (box.left, box.right, box.top, box.bottom) == (10, 50, 20, 30)
+        assert box.top_left == (10, 20) and box.bottom_right == (50, 30) and box.center == (30, 25)
+        assert box.point("left") == box.center_left == (10, 25)
+        with pytest.raises(ValueError, match="top_left"):
+            box.point("north")
+
+    def test_place_at_named_point(self):
+        r = svg.rect(0, 0, 4, 2).rotate(90)
+        r.place(0, 0, at="top_left")
+        assert r.bounds().top_left == pytest.approx((0, 0))
+
+    def test_align_edges_stack_and_offset(self):
+        a = svg.rect(0, 0, 40, 10)
+        b = svg.circle(0, 0, 5).align(a, "left")
+        assert b.bounds().left == pytest.approx(0) and b.bounds().center.y == pytest.approx(5)
+        c = svg.rect(100, 100, 10, 4).align(a, "top", to="bottom", offset=(0, 2))
+        assert c.bounds() == pytest.approx((15, 12, 10, 4))
+
+    def test_align_to_point_and_groups(self):
+        g = svg.group(svg.rect(0, 0, 2, 2), svg.rect(4, 4, 2, 2))
+        g.align((10, 10), "center")
+        assert g.bounds().center == pytest.approx((10, 10))
+
+    def test_align_rejects_unknown_targets(self):
+        with pytest.raises(TypeError, match="align"):
+            svg.rect(0, 0, 1, 1).align("x")

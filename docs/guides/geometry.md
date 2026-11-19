@@ -82,6 +82,23 @@ print(box.bounds())         # after it, in parent coordinates
 print(box.exact_bbox())     # tight box of the transformed outline
 ```
 
+## Placing and aligning
+
+Boxes have edges (`left`, `right`, `top`, `bottom`) and named points (`center`, `top_left`,
+`top_center`, `bottom_right`, ...; `box.point("top")` is the middle of the top edge). Elements use the
+same names to move by their bounds:
+
+```python
+title = svg.rect(0, 0, 80, 20)
+badge = svg.circle(0, 0, 6).align(title, "center_left", to="center_right", offset=(4, 0))
+note = svg.rect(0, 0, 30, 8).align(title, "top_left", to="bottom_left", offset=(0, 2))
+logo = svg.Polygon.regular(0, 0, 10, 5).place(100, 100, at="bottom_right")
+print(note.bounds().top, badge.bounds().left)
+```
+
+`place(x, y, at=...)` moves a named point onto a coordinate; `align(target, at, to=...)` moves it onto a
+point of another element, box or `(x, y)`, so `a.align(b, "top", to="bottom")` stacks `a` under `b`.
+
 ## Matrices and numpy
 
 ```python

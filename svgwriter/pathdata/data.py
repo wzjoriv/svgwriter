@@ -48,6 +48,16 @@ def _short_number(text: str) -> str:
     return text
 
 
+BOX_POINTS: Final[dict[str, tuple[float, float]]] = {
+    "center": (0.5, 0.5),
+    "top_left": (0.0, 0.0), "top_center": (0.5, 0.0), "top_right": (1.0, 0.0),
+    "center_left": (0.0, 0.5), "center_right": (1.0, 0.5),
+    "bottom_left": (0.0, 1.0), "bottom_center": (0.5, 1.0), "bottom_right": (1.0, 1.0),
+    "top": (0.5, 0.0), "bottom": (0.5, 1.0), "left": (0.0, 0.5), "right": (1.0, 0.5),
+}
+"""Named points of a box as fractions of its width and height, from the top-left corner."""
+
+
 class BBox(NamedTuple):
     """Axis-aligned bounding box.
 
@@ -114,6 +124,69 @@ class BBox(NamedTuple):
         Point(x=2.0, y=1.0)
         """
         return Point(self.x + self.width / 2.0, self.y + self.height / 2.0)
+
+    @property
+    def left(self) -> float:
+        """Smallest x."""
+        return self.x
+
+    @property
+    def right(self) -> float:
+        """Largest x."""
+        return self.x + self.width
+
+    @property
+    def top(self) -> float:
+        """Smallest y (SVG's y axis points down)."""
+        return self.y
+
+    @property
+    def bottom(self) -> float:
+        """Largest y."""
+        return self.y + self.height
+
+    top_left = property(lambda self: self.point("top_left"), doc="Corner at ``(left, top)``.")
+    top_center = property(lambda self: self.point("top_center"), doc="Middle of the top edge.")
+    top_right = property(lambda self: self.point("top_right"), doc="Corner at ``(right, top)``.")
+    center_left = property(lambda self: self.point("center_left"), doc="Middle of the left edge.")
+    center_right = property(lambda self: self.point("center_right"), doc="Middle of the right edge.")
+    bottom_left = property(lambda self: self.point("bottom_left"), doc="Corner at ``(left, bottom)``.")
+    bottom_center = property(lambda self: self.point("bottom_center"), doc="Middle of the bottom edge.")
+    bottom_right = property(lambda self: self.point("bottom_right"), doc="Corner at ``(right, bottom)``.")
+
+    def point(self, name: str) -> Point:
+        """A named point of the box.
+
+        Parameters
+        ----------
+        name : str
+            ``"center"``, a corner (``"top_left"``, ``"top_right"``,
+            ``"bottom_left"``, ``"bottom_right"``), an edge middle
+            (``"top_center"``, ``"center_left"``, ...), or an edge name
+            (``"top"``, ``"left"``, ...) meaning that edge's middle.
+
+        Returns
+        -------
+        Point
+            The point in the box's coordinates.
+
+        Raises
+        ------
+        ValueError
+            If the name is unknown.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import BBox
+        >>> box = BBox(0, 0, 4, 2)
+        >>> box.point("top_right"), box.point("bottom"), box.bottom_left
+        (Point(x=4.0, y=0.0), Point(x=2.0, y=2.0), Point(x=0.0, y=2.0))
+        """
+        try:
+            fx, fy = BOX_POINTS[name]
+        except KeyError:
+            raise ValueError(f"unknown box point {name!r}; choose one of {', '.join(BOX_POINTS)}") from None
+        return Point(self.x + fx * self.width, self.y + fy * self.height)
 
     def union(self, other: BBox) -> BBox:
         """Return the smallest box containing this box and another.
