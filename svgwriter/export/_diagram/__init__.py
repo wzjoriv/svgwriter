@@ -100,7 +100,7 @@ def read_dot(data: bytes, *, engine: str = DOT) -> Document:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> # doc = svg.load("graph.dot"); doc.save("graph.pdf")
+    >>> # doc = svg.Document.open("graph.dot"); doc.save("graph.pdf")
     """
     executable = _tool(DOT)
     if engine != DOT:
@@ -137,7 +137,7 @@ def read_mermaid(data: bytes, *, theme: str = "default") -> Document:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> # doc = svg.load("flow.mmd"); doc.save("flow.png")
+    >>> # doc = svg.Document.open("flow.mmd"); doc.save("flow.png")
     """
     executable = _tool(MERMAID)
     with tempfile.TemporaryDirectory() as folder:

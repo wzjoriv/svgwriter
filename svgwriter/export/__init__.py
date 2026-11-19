@@ -4,7 +4,8 @@ Built in, out: SVG, SVGZ, PNG, JPEG, WebP, BMP, GIF, PPM, PDF (vector, via skia)
 EPS, DXF, HPGL, G-code, Excalidraw, ICO and ICNS. In: SVG, SVGZ, raster images (PNG,
 JPEG, WebP, GIF, BMP, PNM), PDF, TikZ and EPS (their vector paths), DXF, HPGL, G-code,
 Excalidraw, ICO and ICNS, plus Graphviz DOT and Mermaid when their command-line
-tools are installed. Register more with :func:`register` and :func:`register_importer`.
+tools are installed; with the ``office`` extra, PPTX (editable shapes, in and out),
+DOCX and XLSX (picture, out). Register more with :func:`register` and :func:`register_importer`.
 
 Example
 -------

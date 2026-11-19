@@ -7,7 +7,8 @@ import svgwriter as svg
 
 IMPORTER = {"svgz": "svg", "png": "image", "jpeg": "image", "webp": "image", "bmp": "image", "gif": "image",
             "ppm": "pnm"}
-EXACT = {"svg": 0.001, "svgz": 0.001, "pdf": 0.01, "tikz": 0.01, "eps": 0.02, "excalidraw": 0.02}
+EXACT = {"svg": 0.001, "svgz": 0.001, "pdf": 0.01, "tikz": 0.01, "eps": 0.02, "excalidraw": 0.02, "pptx": 0.02}
+SCALED = {"pptx"}
 RASTER = {"png": 0.02, "jpeg": 0.03, "webp": 0.02, "bmp": 0.02, "gif": 0.03, "ppm": 0.02}
 SIZE = (100, 60)
 
@@ -28,9 +29,12 @@ def _render(doc: svg.Document) -> np.ndarray:
 @pytest.mark.parametrize(("fmt", "tolerance"), sorted({**EXACT, **RASTER}.items()))
 def test_round_trip_renders_like_the_original(fmt: str, tolerance: float) -> None:
     original = _sample()
+    if fmt == "pptx":
+        pytest.importorskip("pptx")
     data = svg.export.export(original, fmt)
     back = svg.export.find_importer(IMPORTER.get(fmt, fmt)).function(data.encode() if isinstance(data, str) else data)
-    back.root.set("viewBox", original.root.get("viewBox"))
+    if fmt not in SCALED:
+        back.root.set("viewBox", original.root.get("viewBox"))
     back.root.set("width", SIZE[0])
     back.root.set("height", SIZE[1])
     assert np.abs(_render(back) - _render(original)).mean() < tolerance

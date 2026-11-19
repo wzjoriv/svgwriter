@@ -77,9 +77,20 @@ svg.export.unregister("lines", importer=True)
 ## Diagrams
 
 Graphviz (`.dot`, `.gv`) and Mermaid (`.mmd`, `.mermaid`) files load through their own command-line
-tools, so layouts match what those tools draw: `svg.load("graph.dot")` runs `dot -Tsvg`, and
-`svg.load("flow.mmd")` runs `mmdc` with SVG (not HTML) labels. The result is an ordinary document to
+tools, so layouts match what those tools draw: `svg.Document.open("graph.dot")` runs `dot -Tsvg`, and
+`svg.Document.open("flow.mmd")` runs `mmdc` with SVG (not HTML) labels. The result is an ordinary document to
 edit, combine or export to any format. Install Graphviz or `@mermaid-js/mermaid-cli`, or point
 `SVGWRITER_DOT` / `SVGWRITER_MMDC` at the executables; a missing tool raises `DiagramToolError` with
 the install hint.
+
+## Office files
+
+`pip install "svgwriter[office]"` adds PowerPoint, Word and Excel:
+
+- `.pptx` out: one slide sized like the drawing, each outline an editable PowerPoint shape (curves,
+  fill, outline, transparency) and images as pictures. In: shapes, pictures and text boxes of a slide
+  (`svg.Document.open("deck.pptx", slide=2)`) as native SVG elements.
+- `.docx` and `.xlsx` out: the drawing as a picture at its natural size.
+
+Without the extra these formats raise an `ImportError` that names the install command.
 

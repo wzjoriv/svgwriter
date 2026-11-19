@@ -209,13 +209,16 @@ def _hidden(leaf: Element, root: Element) -> bool:
     return str(computed(leaf, "visibility", "visible")) in ("hidden", "collapse")
 
 
-def flatten(document: Document) -> Scene:
+def flatten(document: Document, *, handled: frozenset[str] = frozenset()) -> Scene:
     """Reduce *document* to :class:`Item` paths in its user space (``viewBox`` applied).
 
     Parameters
     ----------
     document : Document
         The document to flatten.
+    handled : frozenset of str, optional
+        Tags the caller draws itself (``{"image"}`` for formats that embed
+        pictures), left out of the warning. Defaults to an empty set.
 
     Returns
     -------
@@ -288,7 +291,8 @@ def flatten(document: Document) -> Scene:
             dashes=() if str(dashes) == NONE else tuple(
                 v * stretch for v in (float(p) for p in str(dashes).replace(",", " ").split())),
         ))
-    if skipped:
-        warnings.warn(f"not representable in this format, skipped: {', '.join(sorted(set(skipped)))}",
+    reported = [entry for entry in skipped if entry.strip("<>") not in handled]
+    if reported:
+        warnings.warn(f"not representable in this format, skipped: {', '.join(sorted(set(reported)))}",
                       stacklevel=3)
     return Scene(width, height, items, skipped)
