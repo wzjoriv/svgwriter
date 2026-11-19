@@ -211,6 +211,7 @@ def renderable_copy(root: Element) -> Element:
     copy = root.clone()
     resolve_styles(copy)
     resolve_links(copy)
+    _ellipses_as_paths(copy)
     if isinstance(copy, Text):
         return _outlined(copy)
     for text in [e for e in copy.iter() if isinstance(e, Text)]:
@@ -221,6 +222,21 @@ def renderable_copy(root: Element) -> Element:
         parent.remove(text)
         parent.insert(index, outline)
     return copy
+
+
+def _ellipses_as_paths(root: Element) -> None:
+    """Replace ``<ellipse>`` by an equal ``<path>`` (skia's SVG renderer paints gradients on ellipses black)."""
+    from ..elements.shapes import Ellipse, Path
+
+    for ellipse in [e for e in root.iter() if isinstance(e, Ellipse)]:
+        parent = ellipse.parent
+        if parent is None:
+            continue
+        path = Path(ellipse.local_outline())
+        path.attributes.update((k, v) for k, v in ellipse.attributes.items() if k not in ellipse.geometry_attributes)
+        index = parent.children.index(ellipse)
+        parent.remove(ellipse)
+        parent.insert(index, path)
 
 
 def _outlined(text: Text) -> Element:

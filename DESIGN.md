@@ -150,6 +150,9 @@ coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into 
   paths, and paints embedded images itself in paint order: vector runs between images go through
   `SVGDOM` with other leaves hidden; images are drawn on the same canvas with their transform chain,
   `preserveAspectRatio`, inherited opacity and clip. Known gap: filters/masks on image ancestors.
+- skia's SVG renderer paints gradients on `<ellipse>` black, so the render copy draws ellipses as equal
+  `<path>`s; a gradient stroke on a zero-height `<line>` also paints black in skia (SVG says such a
+  bounding-box gradient should not apply) and is left as is.
 - skia objects built from Python buffers (`MemoryStream`, `Data`) must own a copy or be kept referenced
   while used; borrowed temporaries caused flaky parses and lossy decodes.
 

@@ -206,3 +206,10 @@ class TestTextRendering:
         doc += small
         alpha = ops.rasterize(doc)[..., 3]
         assert alpha[:, :90].sum() > 4 * alpha[:, 100:].sum()
+
+
+def test_gradient_on_ellipse_renders() -> None:
+    doc = svg.Document(100, 100)
+    doc.add(svg.ellipse(50, 50, 40, 20, fill=svg.LinearGradient.horizontal("red", "blue")).rotate(10))
+    middle = ops.rasterize(doc)[50, 50]
+    assert middle[0] > 0.3 and middle[2] > 0.3 and doc[0].tag == "ellipse"
