@@ -6,7 +6,7 @@ import os
 from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import InitVar, dataclass, field
-from typing import IO, Any
+from typing import IO, Any, Final
 
 from .._internal._constants import DEFAULT_INDENT, DEFAULT_PRECISION, DOCTYPE, SVG_NS, XLINK_NS
 from .._internal._escape import escape_attribute, escape_text
@@ -24,6 +24,17 @@ DEFAULT_ENCODING = "utf-8"
 
 
 FOREIGN_PREFIX = "ns"
+LEADING_ATTRIBUTES: Final = (
+    "id", "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "width", "height", "rx", "ry", "fx", "fy",
+    "d", "points", "viewBox", "offset",
+)
+_RANK: Final = {name: index for index, name in enumerate(LEADING_ATTRIBUTES)}
+
+
+def _ordered(attributes: dict[str, Any]) -> list[tuple[str, Any]]:
+    """``id`` and geometry first (in a conventional order), then the rest as inserted."""
+    lead = sorted((item for item in attributes.items() if item[0] in _RANK), key=lambda item: _RANK[item[0]])
+    return lead + [item for item in attributes.items() if item[0] not in _RANK]
 
 
 def _default_namespaces() -> dict[str, str]:
@@ -92,7 +103,7 @@ class Writer:
     def _open_tag(self, element: Element, extra: dict[str, str]) -> str:
         attributes = dict(extra)
         prefixes: dict[str, str] = {}
-        for key, value in element.attributes.items():
+        for key, value in _ordered(element.attributes):
             if key.startswith("{"):
                 namespace, _, local = key[1:].partition("}")
                 if namespace not in prefixes:

@@ -132,7 +132,7 @@ def test_builder_regular_polygon() -> None:
 def test_builder_extend_and_to_element() -> None:
     path = PathBuilder().extend("M0 0 L1 1").to_element(stroke="red")
     assert path.tag == "path"
-    assert str(path) == '<path stroke="red" d="M0 0 L1 1"/>'
+    assert str(path) == '<path d="M0 0 L1 1" stroke="red"/>'
 
 
 def test_pathdata_sequence_protocol() -> None:

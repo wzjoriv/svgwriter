@@ -62,7 +62,7 @@ class Path(Shape, tag="path"):
     'M0 0 L10 0 A5 5 0 0 1 10 10 Z'
     >>> a = Path("M0 0 H10", stroke="red")
     >>> str(a + Path("M0 5 H10"))
-    '<path stroke="red" d="M0 0 H10 M0 5 H10"/>'
+    '<path d="M0 0 H10 M0 5 H10" stroke="red"/>'
     """
 
     geometry_attributes: ClassVar[frozenset[str]] = frozenset({"d", "pathLength"})

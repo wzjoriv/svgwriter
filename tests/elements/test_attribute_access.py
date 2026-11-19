@@ -56,3 +56,19 @@ class TestAttributeAccess:
     def test_web_only_rejected(self) -> None:
         with pytest.raises((AttributeError, ValueError)):
             svg.Rect().onclick = "x"
+
+
+class TestKeywordChecking:
+    def test_typo_in_constructor_suggests(self) -> None:
+        with pytest.raises(TypeError, match="did you mean 'stroke_width'"):
+            svg.Rect(strok_width=2)
+        with pytest.raises(AttributeError):
+            svg.circle(fil="red")
+
+    def test_custom_attributes_stay_possible(self) -> None:
+        r = svg.Rect(data_role="x", aria_label="box", attrs={"my-attr": 1})
+        assert r.get("data-role") == "x" and r.get("aria-label") == "box" and r.get("my-attr") == 1
+
+    def test_shortcuts_check_too(self) -> None:
+        with pytest.raises(TypeError, match="did you mean 'opacity'"):
+            svg.Document(10, 10).rect(0, 0, 1, 1, opactiy=0.5)

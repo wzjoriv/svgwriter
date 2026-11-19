@@ -105,6 +105,10 @@ class Element(Composable):
             self.id = id
         for name, value in (attrs or {}).items():
             self.set(name, value)
+        for name in extra:
+            key = svg_name(name)
+            if key not in KNOWN_ATTRIBUTES and key not in UNSUPPORTED_ATTRIBUTES and not key.startswith(OPEN_PREFIXES):
+                raise UnknownKeywordError(type(self).__name__, name)
         self.update(**extra)
         self.extend(children)
 
@@ -448,6 +452,7 @@ class Element(Composable):
         return f"<{type(self).__name__} {self.tag}{' ' + shown if shown else ''}>"
 
 
+OPEN_PREFIXES: Final = ("data-", "aria-")
 _INSTANCE_FIELDS: Final = frozenset({"attributes", "children", "parent"})
 _PY_NAMES: Final = sorted({py_name(n) for n in KNOWN_ATTRIBUTES})
 
@@ -469,6 +474,16 @@ class UnknownAttributeError(AttributeError):
         suggestion = f"; did you mean {hint[0]!r}?" if hint else ""
         return (f"{self.owner} has no attribute {self.attribute!r}{suggestion} "
                 "(unlisted SVG attributes: element.set(name, value))")
+
+
+class UnknownKeywordError(UnknownAttributeError, TypeError):
+    """An unknown keyword argument (likely a typo); custom attributes go in ``attrs={...}``."""
+
+    def __str__(self) -> str:
+        hint = difflib.get_close_matches(self.attribute, _PY_NAMES, n=1)
+        suggestion = f"; did you mean {hint[0]!r}?" if hint else ""
+        return (f"{self.owner}() got an unknown attribute keyword {self.attribute!r}{suggestion} "
+                "(custom attributes: attrs={...} or data_* keywords)")
 
 
 @format_value.register(Element)

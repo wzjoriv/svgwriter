@@ -16,7 +16,7 @@ Examples
 >>> svg.circle is svg.Circle
 True
 >>> str(svg.circle(5, 5, 2, fill="red"))
-'<circle fill="red" cx="5" cy="5" r="2"/>'
+'<circle cx="5" cy="5" r="2" fill="red"/>'
 """
 
 from __future__ import annotations

@@ -42,7 +42,7 @@ def test_categories() -> None:
 class TestBasicShapes:
     def test_rect_attributes(self) -> None:
         r = svg.Rect(1, 2, 30, 40, rx=5, fill="red", stroke_width=2)
-        assert str(r) == '<rect fill="red" stroke-width="2" x="1" y="2" width="30" height="40" rx="5"/>'
+        assert str(r) == '<rect x="1" y="2" width="30" height="40" rx="5" fill="red" stroke-width="2"/>'
         assert r.bbox == BBox(1, 2, 30, 40)
 
     def test_rect_factories(self) -> None:
