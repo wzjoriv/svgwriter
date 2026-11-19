@@ -86,7 +86,7 @@ from .document import Document
 from .elements import *  # noqa: F403
 from .elements import __all__ as _elements_all
 from .io.writer import SerializeOptions, to_string, write
-from .ops import text_to_path
+from .ops import interpolate, text_to_path
 from .pathdata import BBox, PathBuilder, PathData
 from .transform import Matrix, Point, Transform
 from .video import FFmpegNotFoundError, register_renderer
@@ -159,6 +159,7 @@ __all__ = [
     "em",
     "inch",
     "mm",
+    "interpolate",
     "parse",
     "parse_color",
     "parse_file",

@@ -37,3 +37,20 @@ From the command line:
 ```console
 $ python -m svgwriter animate scene.py -o out.mp4 --fps 30
 ```
+
+## Tweening and morphing
+
+`svg.interpolate(a, b, t)` returns the value a fraction `t` of the way from `a` to `b`: numbers, points,
+colors, matrices (rotation, scale and skew blended separately, turning the short way), path data and
+whole elements. Elements of the same kind blend their attributes and transform; different shapes morph
+as outlines (both become cubic paths with matching subpaths), and paint blends along the way.
+
+```python
+start = svg.Polygon.regular(50, 50, 40, 5, fill="gold")
+end = svg.circle(50, 50, 30, fill="teal")
+frames = [svg.interpolate(start, end, i / 10) for i in range(11)]
+print(frames[5].tag, frames[5].get("fill"))
+```
+
+In an `update` callback this gives morphs and tweens per frame, for instance
+`doc[0] = svg.interpolate(start, end, time / duration)`.

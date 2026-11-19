@@ -36,7 +36,7 @@ pixels = doc.rasterize(scale=2)                          # numpy float32 RGBA, s
 | Documents | `doc[0]`, `doc["logo"]`, `for el in doc`; auto-size to content; definitions land in `<defs>` when referenced; plots and anything with `_repr_svg_` or `savefig` can be added; notebook display |
 | Rendering | skia: `rasterize(size=..., padding=...)` to numpy, embedded and linked images, text, CSS `<style>`; deterministic output |
 | Export / import | Registry by name or extension. Out: SVG, SVGZ, PNG, JPEG, WebP, BMP, GIF, PPM, PDF (vector), TikZ, EPS, DXF, HPGL, G-code, Excalidraw, ICO, ICNS. In: SVG, SVGZ, PNG, JPEG, WebP, GIF, BMP, PNM, PDF, TikZ, EPS (their vector paths), DXF, HPGL, G-code, Excalidraw, ICO, ICNS. `svg.export.register(...)` for more |
-| Animation | SMIL elements, and `doc.render_animation("out.mp4", update=...)` through ffmpeg |
+| Animation | SMIL elements; `doc.render_animation("out.mp4", update=...)` through ffmpeg; `svg.interpolate(a, b, t)` tweens numbers, colors, transforms and morphs any two shapes |
 
 ## Geometry in one minute
 

@@ -498,6 +498,22 @@ class Document(ElementFactory):
             return element
         return self._content()[key]
 
+    def __setitem__(self, key: int | str, element: Element) -> None:
+        """``doc[0] = el`` or ``doc["logo"] = el``: put *el* where that element is (an explicit id moves to *el*).
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> doc = svg.Document(10, 10)
+        >>> _ = doc.rect(0, 0, 5, 5, id="logo")
+        >>> doc["logo"] = svg.circle(5, 5, 2)
+        >>> doc[0].tag, doc[0].id
+        ('circle', 'logo')
+        """
+        from .elements._geometry import replace_in_parent
+
+        replace_in_parent(self[key], _ingest(element))
+
     def __contains__(self, item: object) -> bool:
         if isinstance(item, str):
             return self.root.get_element_by_id(item) is not None

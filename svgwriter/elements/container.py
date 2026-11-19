@@ -196,6 +196,12 @@ class Container(Element, Generic[ChildT]):
         items = list(self)
         return items[index]
 
+    def __setitem__(self, index: int, element: ChildT) -> None:
+        """``group[i] = el``: put *el* where the *i*-th child element is."""
+        from ._geometry import replace_in_parent
+
+        replace_in_parent(self[index], element)  # type: ignore[arg-type]
+
 
 class GraphicsContainer(  # type: ignore[misc]
     ElementFactory,
