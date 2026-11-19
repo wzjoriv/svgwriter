@@ -25,12 +25,10 @@ class PathOperand(Element):
 
     Adds :meth:`to_path`, boolean operators and exact measurement:
 
-    ========  ==============================
-    ``a | b`` union
-    ``a & b`` intersection
-    ``a - b`` difference
-    ``a ^ b`` exclusive or
-    ========  ==============================
+    - ``a | b``: union
+    - ``a & b``: intersection
+    - ``a - b``: difference
+    - ``a ^ b``: exclusive or
 
     Every operator returns a new :class:`~svgwriter.Path` carrying the
     left operand's presentation attributes.

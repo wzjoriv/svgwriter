@@ -35,6 +35,12 @@ dev = [
     "tomli; python_version < '3.11'",
 ]
 
+docs = [
+    "sphinx>=7.0",
+    "furo>=2024.1.29",
+    "myst-parser>=2.0",
+]
+
 [project.scripts]
 svgwriter = "svgwriter.__main__:main"
 
@@ -75,9 +81,14 @@ output = "build/stubs"
 file = "svgwriter/__init__.py"
 tag = "v{version}"
 
+[tool.devkit.docs]
+source = "docs"
+out = "docs/_build/html"
+
 [tool.devkit.check]
 lint = ["svgwriter", "scripts", "tests", "examples"]
 tests = ["-q", "-p", "no:cacheprovider"]
+docs = "docs"
 
 [tool.devkit.tiers]
 default = "quick"
