@@ -87,3 +87,25 @@ def test_op_arguments_drop_defaults() -> None:
     assert str(Rotate(10, 1, 2)) == "rotate(10 1 2)"
     assert Rotate(90).to_matrix().apply(1, 0) == pytest.approx(Point(0, 1))
     assert math.isclose(SkewX(0).to_matrix().c, 0)
+
+
+class TestPointArithmetic:
+    def test_vector_ops_broadcast_like_numpy(self) -> None:
+        import numpy as np
+
+        p = Point(1, 2)
+        assert p + Point(3, 4) == (4, 6) and p - (1, 1) == (0, 1) and (5, 5) - p == (4, 3)
+        assert p * 2 == (2, 4) and 2 * p == (2, 4) and p * (2, 3) == (2, 6) and p / 2 == (0.5, 1)
+        assert p + 1 == (2, 3)
+        assert np.asarray(p).tolist() == [1.0, 2.0]
+        assert (np.array([1.0, 1.0]) + np.asarray(p)).tolist() == [2.0, 3.0]
+
+    def test_position_plus_offset(self) -> None:
+        import svgwriter as svg
+
+        r = svg.rect(0, 0, 10, 10)
+        assert r.position + (5, 0) == (10, 5)
+
+    def test_bad_operand(self) -> None:
+        with pytest.raises(TypeError, match="pair"):
+            Point(1, 2) + "ab"  # type: ignore[operator]

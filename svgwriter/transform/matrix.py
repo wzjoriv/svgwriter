@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import Final, NamedTuple, overload
+from typing import Any, Final, NamedTuple, overload
 
 import numpy as np
 
@@ -20,9 +20,11 @@ EPSILON: Final = 1e-12
 
 
 class Point(NamedTuple):
-    """A 2-D point.
+    """A 2-D point that is also a vector.
 
-    A named tuple, so it also unpacks and compares as ``(x, y)``.
+    A named tuple, so it unpacks and compares as ``(x, y)``. Arithmetic is
+    element-wise like numpy: ``+`` and ``-`` take another point or pair,
+    ``*`` and ``/`` a number or pair; ``abs(p)`` is the length.
 
     Parameters
     ----------
@@ -35,10 +37,60 @@ class Point(NamedTuple):
     >>> x, y = Point(1, 2)
     >>> Point(1, 2) == (1, 2)
     True
+    >>> Point(1, 2) + (3, 4), Point(1, 2) * 2, -Point(1, 2)
+    (Point(x=4.0, y=6.0), Point(x=2.0, y=4.0), Point(x=-1.0, y=-2.0))
+    >>> abs(Point(3, 4))
+    5.0
     """
 
     x: float
     y: float
+
+    def __add__(self, other: object) -> Point:  # type: ignore[override]
+        ox, oy = _pair(other)
+        return Point(self.x + ox, self.y + oy)
+
+    __radd__ = __add__
+
+    def __sub__(self, other: object) -> Point:
+        ox, oy = _pair(other)
+        return Point(self.x - ox, self.y - oy)
+
+    def __rsub__(self, other: object) -> Point:
+        ox, oy = _pair(other)
+        return Point(ox - self.x, oy - self.y)
+
+    def __mul__(self, other: object) -> Point:  # type: ignore[override]
+        ox, oy = _pair(other)
+        return Point(self.x * ox, self.y * oy)
+
+    __rmul__ = __mul__
+
+    def __truediv__(self, other: object) -> Point:
+        ox, oy = _pair(other)
+        return Point(self.x / ox, self.y / oy)
+
+    def __neg__(self) -> Point:
+        return Point(-float(self.x), -float(self.y))
+
+    def __abs__(self) -> float:
+        return math.hypot(self.x, self.y)
+
+    def __array__(self, dtype: object = None, copy: object = None) -> Any:
+        import numpy as np
+
+        return np.array((self.x, self.y), dtype=dtype or float)
+
+
+def _pair(value: object) -> tuple[float, float]:
+    """A number broadcast to ``(v, v)`` or any two-item sequence, as floats."""
+    if isinstance(value, (int, float)):
+        return float(value), float(value)
+    try:
+        x, y = value  # type: ignore[misc]
+        return float(x), float(y)
+    except (TypeError, ValueError):
+        raise TypeError(f"expected a number or an (x, y) pair, got {value!r}") from None
 
 
 @dataclass(frozen=True, slots=True)
