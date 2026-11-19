@@ -128,7 +128,11 @@ class Path(Shape, tag="path"):
         self.d = self.d.with_nodes(value)
 
     def _push(self, command: PathCommand) -> Self:
-        self.attributes["d"] = PathData((*self.d, command))
+        data = self.d
+        if not len(data) and not isinstance(command, MoveTo):
+            name = type(command).__name__
+            raise ValueError(f"a path starts with move_to(x, y); {name} has no current point to start from")
+        self.attributes["d"] = PathData((*data, command))
         return self
 
     def move_to(self, x: float, y: float, *, relative: bool = False) -> Self:
@@ -172,8 +176,8 @@ class Path(Shape, tag="path"):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> str(svg.Path().line_to(1, 2).d)
-        'L1 2'
+        >>> str(svg.Path().move_to(0, 0).line_to(1, 2).d)
+        'M0 0 L1 2'
         """
         return self._push(LineTo(x, y, relative=relative))
 
@@ -195,8 +199,8 @@ class Path(Shape, tag="path"):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> str(svg.Path().horizontal_to(5).d)
-        'H5'
+        >>> str(svg.Path().move_to(0, 0).horizontal_to(5).d)
+        'M0 0 H5'
         """
         return self._push(HLineTo(x, relative=relative))
 
@@ -218,8 +222,8 @@ class Path(Shape, tag="path"):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> str(svg.Path().vertical_to(6, relative=True).d)
-        'v6'
+        >>> str(svg.Path().move_to(0, 0).vertical_to(6, relative=True).d)
+        'M0 0 v6'
         """
         return self._push(VLineTo(y, relative=relative))
 
@@ -251,8 +255,8 @@ class Path(Shape, tag="path"):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> str(svg.Path().curve_to(1, 2, 3, 4, 5, 6).d)
-        'C1 2 3 4 5 6'
+        >>> str(svg.Path().move_to(0, 0).curve_to(1, 2, 3, 4, 5, 6).d)
+        'M0 0 C1 2 3 4 5 6'
         """
         return self._push(CurveTo(x1, y1, x2, y2, x, y, relative=relative))
 
@@ -280,8 +284,8 @@ class Path(Shape, tag="path"):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> str(svg.Path().curve_to(1, 2, 3, 4, 5, 6).smooth_curve_to(7, 8, 9, 10).d)
-        'C1 2 3 4 5 6 S7 8 9 10'
+        >>> str(svg.Path().move_to(0, 0).curve_to(1, 2, 3, 4, 5, 6).smooth_curve_to(7, 8, 9, 10).d)
+        'M0 0 C1 2 3 4 5 6 S7 8 9 10'
         """
         return self._push(SmoothCurveTo(x2, y2, x, y, relative=relative))
 
@@ -309,8 +313,8 @@ class Path(Shape, tag="path"):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> str(svg.Path().quad_to(1, 2, 3, 4).d)
-        'Q1 2 3 4'
+        >>> str(svg.Path().move_to(0, 0).quad_to(1, 2, 3, 4).d)
+        'M0 0 Q1 2 3 4'
         """
         return self._push(QuadTo(x1, y1, x, y, relative=relative))
 
@@ -336,8 +340,8 @@ class Path(Shape, tag="path"):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> str(svg.Path().quad_to(1, 2, 3, 4).smooth_quad_to(5, 6).d)
-        'Q1 2 3 4 T5 6'
+        >>> str(svg.Path().move_to(0, 0).quad_to(1, 2, 3, 4).smooth_quad_to(5, 6).d)
+        'M0 0 Q1 2 3 4 T5 6'
         """
         return self._push(SmoothQuadTo(x, y, relative=relative))
 
@@ -373,8 +377,8 @@ class Path(Shape, tag="path"):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> str(svg.Path().arc_to(5, 5, 10, 10, large=True).d)
-        'A5 5 0 1 1 10 10'
+        >>> str(svg.Path().move_to(0, 0).arc_to(5, 5, 10, 10, large=True).d)
+        'M0 0 A5 5 0 1 1 10 10'
         """
         return self._push(ArcTo(rx, ry, rotation, large, clockwise, x, y, relative=relative))
 

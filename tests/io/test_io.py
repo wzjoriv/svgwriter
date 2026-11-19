@@ -194,3 +194,23 @@ class TestParser:
     def test_malformed(self) -> None:
         with pytest.raises(SVGParseError):
             svg.parse("<svg><g></svg>")
+
+
+def test_parse_rejects_non_svg_root_but_accepts_fragments():
+    with pytest.raises(svg.SVGParseError, match="not an SVG element"):
+        svg.parse("<html/>")
+    assert svg.parse('<circle r="2"/>').tag == "circle"
+
+
+def test_path_must_start_with_move_to():
+    with pytest.raises(ValueError, match="move_to"):
+        svg.path().line_to(1, 1)
+    assert str(svg.path().move_to(0, 0).line_to(1, 1).d) == "M0 0 L1 1"
+
+
+def test_color_strings_are_checked_on_assignment():
+    with pytest.raises(ValueError, match="did you mean 'red'"):
+        svg.rect(fill="redd")
+    rect = svg.rect(fill="url(#g) red", stroke="currentColor")
+    assert rect.get("fill") == "url(#g) red"
+    assert svg.Animate(attribute_name="x", fill="freeze").get("fill") == "freeze"

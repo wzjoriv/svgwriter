@@ -51,6 +51,19 @@ COLOR_ATTRIBUTES: Final = frozenset({*COLOR_OPACITY, "color", "lighting-color"})
 _XML_NAME_RE: Final = re.compile(r"^[A-Za-z_][\w.\-]*$")
 
 
+def _check_paint(key: str, text: str) -> None:
+    """Raise a helpful ``ValueError`` when *text* is not a color or paint SVG understands."""
+    from ..color._named import NAMED_COLORS
+    from ..color.paint import parse_paint
+
+    try:
+        parse_paint(text)
+    except ValueError:
+        close = difflib.get_close_matches(text.strip().lower(), NAMED_COLORS, n=1)
+        hint = f"; did you mean {close[0]!r}?" if close else "; use a name, #rrggbb, rgb(...), a 0-1 tuple or url(#id)"
+        raise ValueError(f"{key}={text!r} is not a color{hint}") from None
+
+
 class Element(Composable):
     """Base class for every SVG element.
 
@@ -353,8 +366,9 @@ class Element(Composable):
         Raises
         ------
         ValueError
-            If the attribute is unsupported, or a color with alpha is given to
-            an attribute without an opacity counterpart.
+            If the attribute is unsupported, a color string is not a valid
+            color or paint, or a color with alpha is given to an attribute
+            without an opacity counterpart.
 
         See Also
         --------
@@ -376,7 +390,10 @@ class Element(Composable):
         if value is None:
             self.attributes.pop(key, None)
             return
-        if key in COLOR_ATTRIBUTES and not isinstance(value, (str, Element)) and not hasattr(value, "svg_value"):
+        if key in COLOR_ATTRIBUTES and isinstance(value, str):
+            if not (key == "fill" and self.category is Category.ANIMATION):
+                _check_paint(key, value)
+        elif key in COLOR_ATTRIBUTES and not isinstance(value, Element) and not hasattr(value, "svg_value"):
             value = as_color(value)
         if isinstance(value, Color) and value.a < 1.0 and key in COLOR_ATTRIBUTES:
             if key not in COLOR_OPACITY:

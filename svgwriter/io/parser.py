@@ -152,8 +152,8 @@ def parse(source: str | bytes, *, strictness: Strictness = Strictness.LENIENT) -
     Raises
     ------
     SVGParseError
-        If the text is not well-formed XML, or, when strict, contains unknown
-        elements or scripting attributes.
+        If the text is not well-formed XML, its root is not an SVG element, or,
+        when strict, it contains unknown elements or scripting attributes.
 
     See Also
     --------
@@ -165,12 +165,17 @@ def parse(source: str | bytes, *, strictness: Strictness = Strictness.LENIENT) -
     >>> root = parse('<svg xmlns="http://www.w3.org/2000/svg"><circle cx="1" cy="2" r="3"/></svg>')
     >>> type(root).__name__, root.children
     ('Svg', [<Circle circle cx='1' cy='2' r='3'>])
+    >>> type(parse('<circle r="2"/>')).__name__
+    'Circle'
     """
     try:
         root = ET.fromstring(source)
     except ET.ParseError as exc:
         raise SVGParseError(str(exc)) from exc
-    return _convert(root, strictness)
+    element = _convert(root, strictness)
+    if isinstance(element, UnknownElement):
+        raise SVGParseError(f"<{element.tag}> is not an SVG element; expected <svg> or an SVG fragment such as <g>")
+    return element
 
 
 def parse_file(path: AnyPath, *, strictness: Strictness = Strictness.LENIENT) -> Element:
