@@ -159,8 +159,14 @@ coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into 
 - **Round-trip** (original and svgwriter's parse→write, both rendered by skia): 429/430 in scope. The miss
   is skia ignoring XML namespaces (svgwriter's output is the correct one); 4 files skia cannot read are
   excluded.
-- **Render** vs the W3C reference PNGs: 146/434, bounded by skia (no SMIL, partial filters) and by the
-  suite's SVG fonts, which differ from installed ones.
+- **Render** vs the W3C reference PNGs: 148/434. Most misses are 1-3 % differences in the page labels, set
+  in the suite's own SVGFreeSans font (not installed here); the rest are skia limits (no SMIL animation,
+  partial filters and masks).
+- **Linked images:** the render copy embeds `<image>` links to local files (PNG/JPEG/WebP/GIF/BMP, or SVG
+  rendered at the image's size), resolved against the document's file (`Document.from_file`/`open` keep
+  it) or the working directory, honouring `xml:base`; remote URLs are never fetched; loads are cached by
+  path and modification time.
+- Exact `size=` is exact: pixel counts ignore float round-off just above an integer.
 
 ### Document
 - `doc[i]`, `doc[a:b]`, `for el in doc`, `len(doc)` cover top-level *content* (not `<defs>`, `<style>`,

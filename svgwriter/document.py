@@ -140,8 +140,11 @@ class Document(ElementFactory):
 
     @classmethod
     def from_file(cls, path: AnyPath) -> Document:
+        """Parse an SVG file; relative links (images) resolve against its location."""
         with open(path, "rb") as handle:
-            return cls.from_string(handle.read())
+            document = cls.from_string(handle.read())
+        document.root._source_path = os.fspath(path)
+        return document
 
     @classmethod
     @contextmanager

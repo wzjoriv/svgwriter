@@ -12,7 +12,7 @@ import skia
 from ..attributes.length import Length, Unit
 from ..attributes.viewbox import ViewBox
 from ..transform.matrix import IDENTITY, Matrix
-from ._layers import draw_image, hidden, layers
+from ._layers import draw_image, hidden, layers, resolve_links
 
 if TYPE_CHECKING:
     from ..document import Document
@@ -36,6 +36,7 @@ DEFAULT_SIZE: Final = 300.0
 DEFAULT_QUALITY: Final = 90
 CHANNEL_MAX: Final = 255
 DISPLAY: Final = "display"
+PIXEL_EPSILON: Final = 1e-6
 FORMATS: Final = {"png": skia.kPNG, "jpeg": skia.kJPEG, "jpg": skia.kJPEG, "webp": skia.kWEBP}
 
 
@@ -59,10 +60,15 @@ def document_size(document: Document) -> tuple[float, float]:
     return float(max(1, math.ceil(w))), float(max(1, math.ceil(h)))
 
 
+def _pixels_for(extent: float) -> int:
+    """Pixel count covering *extent*, ignoring float round-off just above an integer."""
+    return max(1, math.ceil(extent - PIXEL_EPSILON))
+
+
 def _surface(width: float, height: float, scale: float, background: str | None) -> skia.Surface:
     from ..color.color import as_color
 
-    surface = skia.Surface(max(1, math.ceil(width * scale)), max(1, math.ceil(height * scale)))
+    surface = skia.Surface(_pixels_for(width * scale), _pixels_for(height * scale))
     if background is not None:
         r, g, b, a = as_color(background).uint8
         surface.getCanvas().clear(skia.Color(r, g, b, a))
@@ -204,6 +210,7 @@ def renderable_copy(root: Element) -> Element:
 
     copy = root.clone()
     resolve_styles(copy)
+    resolve_links(copy)
     if isinstance(copy, Text):
         return _outlined(copy)
     for text in [e for e in copy.iter() if isinstance(e, Text)]:

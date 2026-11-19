@@ -58,3 +58,10 @@ class TestIcons:
             logo().export("ico", sizes=(512,))
         with pytest.raises(ValueError, match="ICNS sizes"):
             logo().export("icns", sizes=(20,))
+
+
+@pytest.mark.parametrize("size", [(480, 360), (481, 359), (17, 1000), (1000, 3)])
+def test_exact_size_has_no_round_off(size: tuple[int, int]) -> None:
+    doc = svg.Document(root=svg.Svg(view_box=(0, 0, 480, 360), width="100%", height="100%"))
+    doc.rect(0, 0, 480, 360)
+    assert doc.rasterize(size=size).shape[:2] == (size[1], size[0])

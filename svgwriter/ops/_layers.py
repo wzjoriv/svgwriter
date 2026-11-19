@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Final
+from functools import lru_cache
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Final
 
 import numpy as np
 import skia
@@ -22,6 +24,7 @@ NOT_RENDERED: Final = frozenset({"defs", "clipPath", "mask", "pattern", "marker"
                                  "font-face", "glyph", "missing-glyph"})
 CONTAINERS: Final = frozenset({"svg", "g", "a", "switch"})
 CHANNEL_MAX: Final = 255
+LINK_CACHE: Final = 64
 
 
 def drawable_order(root: Element) -> list[Element]:
@@ -39,6 +42,70 @@ def drawable_order(root: Element) -> list[Element]:
 
     visit(root)
     return order
+
+
+def _base_uri(element: Element) -> str:
+    """The URI that relative references inside *element* resolve against (``xml:base`` honoured)."""
+    import os
+    from urllib.parse import urljoin
+
+    chain = []
+    node: Element | None = element
+    while node is not None:
+        chain.append(node)
+        node = node.parent
+    source = getattr(chain[-1], "_source_path", None)
+    base = Path(source).resolve().as_uri() if source else Path(os.getcwd()).resolve().as_uri() + "/"
+    for node in reversed(chain):
+        extra = node.attributes.get("xml:base")
+        if extra:
+            base = urljoin(base, str(extra))
+    return base
+
+
+@lru_cache(maxsize=LINK_CACHE)
+def _load(path: str, mtime: float, width: float, height: float) -> Any:
+    from ..elements.structure import Pixels
+
+    if path.lower().endswith((".svg", ".svgz")):
+        from ..export import load
+
+        document = load(path)
+        columns, rows = max(1, round(width)), max(1, round(height))
+        return Pixels.from_array(document.rasterize(size=(columns, rows)))
+    return Pixels.decode(Path(path).read_bytes())
+
+
+def resolve_links(root: Element) -> None:
+    """Embed the pixels of ``<image>`` elements that link to local files (in place, on a render copy).
+
+    Remote URLs are not fetched; unreadable files are left as links and not drawn.
+    """
+    from urllib.parse import unquote, urljoin, urlparse
+    from urllib.request import url2pathname
+
+    from ..elements.structure import Image
+
+    for image in [e for e in root.iter() if isinstance(e, Image) and e.pixels is None]:
+        href = image.attributes.get("xlink:href")
+        if href is None:
+            continue
+        target = urlparse(urljoin(_base_uri(image), str(href)))
+        if target.scheme != "file":
+            continue
+        path = url2pathname(unquote(target.path))
+        try:
+            pixels = _load(path, Path(path).stat().st_mtime, _length(image.get("width")), _length(image.get("height")))
+        except (OSError, ValueError):
+            continue
+        image.attributes["xlink:href"] = pixels
+
+
+def _length(value: object) -> float:
+    try:
+        return Length.parse(value).to_user_units() if value is not None else 0.0
+    except ValueError:
+        return 0.0
 
 
 def layers(root: Element) -> list[tuple[list[Element], Image | None]]:

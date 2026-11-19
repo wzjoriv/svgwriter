@@ -179,7 +179,9 @@ def save(document: Document, path: str | os.PathLike[str], format: str | None = 
 def load(path: str | os.PathLike[str], format: str | None = None, **options: Any) -> Document:
     """Read a document from *path* with the importer chosen by *format* or the extension."""
     importer = find_importer(format or path)
-    return importer.function(Path(path).read_bytes(), **options)
+    document = importer.function(Path(path).read_bytes(), **options)
+    document.root._source_path = os.fspath(path)
+    return document
 
 
 def _load_builtins() -> None:
