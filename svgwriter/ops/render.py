@@ -16,6 +16,7 @@ from ._layers import draw_image, hidden, layers
 if TYPE_CHECKING:
     from ..document import Document
     from ..elements.base import Element
+    from ..elements.text import Text
 
 __all__ = ["DEFAULT_SIZE", "document_size", "encode", "rasterize", "render_png", "render_svg", "render_tree", "skia_renderer"]
 

@@ -66,3 +66,95 @@ opt-out) so `el + np.array([dx, dy])` reaches the element instead of broadcastin
 `@` follows matrix algebra (`M @ el` reads "apply M to el", like `M @ point`). Baking a transform into
 coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into `d`.
 
+## Other 2.0 decisions
+
+### Model and API
+- **Definitions:** IRIs made from an element (`el.ref`, `el.href`, or passing the element as a value) keep a
+  pointer to it. When a subtree joins a tree rooted at `<svg>`, or an attribute is set inside one, every
+  referenced element without a parent moves into the root `<defs>`; placed targets stay put.
+- **Attribute access:** `Element.__getattr__/__setattr__` map Python names to SVG names (`stroke_width`,
+  `view_box`, `xlink_href`, `in_`). Known SVG 1.1 names (`attributes.names.KNOWN_ATTRIBUTES`) read `None` when
+  unset; unknown names raise `AttributeError` with a "did you mean"; anything else goes through
+  `el.set(name, value)`. Typed descriptors (`Attr`) win where they exist. Method names win over attribute
+  names; the attribute gets a trailing underscore (`text.rotate_`, `image.color_`).
+- **Foreign-namespace attributes** round-trip in Clark notation (`el.set("{uri}name", v)`), written with
+  generated `nsN` prefixes declared on the element.
+- **Fluent paths:** `Path` has the drawing methods (`move_to`, `line_to`, `curve_to`, `quad_to`,
+  `arc_to(rx, ry, x, y, rotation=, large=, clockwise=)`, `close`, ...); `PathBuilder` stays for bare
+  `PathData`. Placement is therefore `place(x, y)`, not `move_to`.
+- **`PathData` transforms** use `@` only (`M @ data`); `*` is numeric scaling on elements.
+- **`path.nodes`** / `PathData.nodes()`: every end and control point as an `(N, 2)` array (absolute; `H`/`V`
+  widened to `L`); assigning rewrites `d`, so numpy broadcasting edits nodes. Polylines use `points`.
+- **`clone(linked=False)`** deep-copies (pixel arrays too); `linked=True` returns a `<use>` of the original.
+  `copy` is an alias (owner's choice), as are `copy.copy`/`copy.deepcopy`.
+- **`<use>`**: outline = the target's outline (its own `t`, not its ancestors') offset by `x`/`y`, then the
+  use's `t`; `to_path()` styles with the target's presentation attributes over the use's (SVG inheritance).
+
+### Conversions and clipping
+- `Convertible` mixin on every graphics element: `to_path()` bakes `t` and the clip into one `<path>`;
+  groups, `<a>`, `<switch>`, `<clipPath>` and `<use>` have outlines (union of children), so path ops and
+  measurement work on them. Elements without a vector outline (`<image>`) raise `TypeError` naming
+  `rasterize()`/`bounds()`. `to_group()` wraps a copy; `rasterize()` renders the element alone over its
+  stroke-inclusive bounds; `to_image()` places that raster as an `<image>` where the element was.
+- `el.clip(*shapes, units=)` builds a `<clipPath>` (or uses one given) in the element's local coordinates,
+  so the clip moves with the element; `unclip()`, `clip_region`, `flatten_clip()`. Outlines intersect with
+  the clip region, honouring `clipPathUnits="objectBoundingBox"`.
+
+### Values
+- **Colors** (`Color(r, g, b, a=1)`): floats in 0–1 like matplotlib. Tuples/arrays are always 0–1 (a value
+  above 1 raises and points to `Color.from_uint8`); strings take names, hex (3/4/6/8 digits), `rgb[a]()`,
+  `hsl[a]()`. Output is the name or `#rrggbb`; alpha below 1 on `fill`/`stroke`/`stop-color`/`flood-color`
+  becomes the matching `*-opacity` attribute (SVG 1.1 has no alpha in colors); `color`/`lighting-color`
+  have no opacity and reject alpha. `np.asarray(color)` is RGBA.
+- **numpy:** polyline/polygon `points` are read-only `(N, 2)` float arrays (in an immutable `PointList` value
+  so attribute dicts still compare); `Matrix @ (..., 2)` maps arrays in one step; `np.asarray(matrix)` is
+  the 3x3 and `Matrix.from_array` reads it back.
+- **Images:** `Image(array)` embeds `Pixels`: `color` float32 `(H, W, 1|3)` and `alpha` either the scalar
+  `1.0` (opaque, compacted automatically) or `(H, W, 1)`, so `color * alpha` always broadcasts. uint8 input
+  is divided by 255; float input must be 0–1. Written lazily as a PNG `data:` URI; a parsed data URI is
+  decoded on first pixel access and written back verbatim if untouched. `Image.open(path)`,
+  `img.encode(fmt)`, `img.rgba()`.
+
+### Styles and text
+- **CSS and computed style** (`attributes.cascade`): style sheets are parsed (comments, groups,
+  `!important`; `@` blocks skipped) and matched (type, `*`, `.class`, `#id`, attribute selectors,
+  `:first-child`, descendant and child combinators) by specificity. `el.computed(name)` = inline style >
+  CSS > presentation attribute > ancestors for inherited properties; `inherit` defers to the parent.
+- **Text engine** (`elements/_textlayout.py`): characters are collected across `<text>`/`<tspan>`/`<a>`
+  runs with their element chain, whitespace handled per `xml:space` (default: drop newlines, tabs to
+  spaces, collapse, trim); each run's font comes from its computed style; `x`/`y`/`dx`/`dy`/`rotate` take
+  the innermost element with a value at that character's local index (rotate repeats an element's last
+  value); `text-anchor` applies per text chunk. Fonts and glyph outlines are cached (`ops.text.glyph_shape`).
+- **Per-character handles:** `text[i]` (`Glyph`) and `text[a:b]` (`GlyphRange`) move (`translate` edits
+  `dx`/`dy`: +d at the start, -d after the end) and rotate (`rotate` list) while staying real text; setting
+  a presentation attribute on a range (`t[6:11].fill = "red"`) or `wrap(**attrs)` wraps it in a `<tspan>`.
+  Scale/skew of part of a text have no SVG form and raise, pointing to `text.glyphs()`, which returns
+  index-aligned outline paths styled per run in a `<g>` carrying `t`. `len(text)` and iteration are per
+  character; `children` still holds the runs.
+
+### Rendering
+- Core: `ops.render_svg(text, w, h)`, `ops.rasterize(doc, scale=, size=, background=)` and
+  `el.rasterize()` return float32 straight RGBA arrays in 0–1; `ops.encode(array, "png"|"jpeg"|"webp")`;
+  `ops.render_png(doc)`. Document size: `width`/`height`; percentages and missing values fall back to the
+  `viewBox` size, then 300.
+- skia-python's `SVGDOM` loads no images, draws no text and ignores `<style>`. `ops.render_tree` renders a
+  working copy with CSS baked into attributes and each `<text>` replaced by a `<g>` of per-run outline
+  paths, and paints embedded images itself in paint order: vector runs between images go through
+  `SVGDOM` with other leaves hidden; images are drawn on the same canvas with their transform chain,
+  `preserveAspectRatio`, inherited opacity and clip. Known gap: filters/masks on image ancestors.
+- skia objects built from Python buffers (`MemoryStream`, `Data`) must own a copy or be kept referenced
+  while used; borrowed temporaries caused flaky parses and lossy decodes.
+
+### Conformance
+- `python scripts/dev.py svgwriter fetch-suite` downloads the W3C SVG 1.1 SE suite (526 files) into
+  `build/conformance/suite`; `... conformance --report build/conformance/report.md` scores it.
+- **Round-trip** (original and svgwriter's parse→write, both rendered by skia): 429/430 in scope. The miss
+  is skia ignoring XML namespaces (svgwriter's output is the correct one); 4 files skia cannot read are
+  excluded.
+- **Render** vs the W3C reference PNGs: 146/434, bounded by skia (no SMIL, partial filters) and by the
+  suite's SVG fonts, which differ from installed ones.
+
+## Open design questions
+- Exporter registry API and which vector formats (TikZ/PGF/EPS/PDF).
+- Where async/threads actually pay off (measure first).
+
