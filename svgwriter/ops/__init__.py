@@ -29,7 +29,7 @@ from .measure import (
     tangent_at_length,
     total_length,
 )
-from .render import encode, rasterize, render_png, render_svg, skia_renderer
+from .render import encode, rasterize, render_frame, render_png, render_svg
 from .text import Anchor, FontWeight, text_outline, text_to_path, text_width
 
 __all__ = [
@@ -55,7 +55,7 @@ __all__ = [
     "render_svg",
     "resolve_operator",
     "simplify",
-    "skia_renderer",
+    "render_frame",
     "stroke_to_path",
     "tangent_at_length",
     "text_outline",

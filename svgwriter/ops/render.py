@@ -32,7 +32,7 @@ __all__ = [
     "render_png",
     "render_svg",
     "render_tree",
-    "skia_renderer",
+    "render_frame",
 ]
 
 DEFAULT_SIZE: Final = 300.0
@@ -564,7 +564,7 @@ def render_png(document: Document, *, scale: float = 1.0, background: ColorLike 
     return encode_image(rasterize(document, scale=scale, background=background, snapshot=True))
 
 
-def skia_renderer(document: Document, time: float) -> np.ndarray:
+def render_frame(document: Document, time: float) -> np.ndarray:
     """Frame renderer for :func:`~svgwriter.video.render_animation`: an opaque uint8 RGBA frame.
 
     Draws the document as it is at each frame (use ``update=`` to change it
@@ -595,8 +595,8 @@ def skia_renderer(document: Document, time: float) -> np.ndarray:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.ops import skia_renderer
-    >>> frame = skia_renderer(svg.Document(4, 2), 0.0)
+    >>> from svgwriter.ops import render_frame
+    >>> frame = render_frame(svg.Document(4, 2), 0.0)
     >>> frame.shape, frame.dtype.name
     ((2, 4, 4), 'uint8')
     """

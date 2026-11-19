@@ -45,9 +45,9 @@ RENDERERS: Final[Registry[Callable[[Document, float], FrameData]]] = Registry("r
 
 
 def _skia(document: Document, time: float) -> FrameData:
-    from ..ops.render import skia_renderer
+    from ..ops.render import render_frame
 
-    return skia_renderer(document, time)
+    return render_frame(document, time)
 
 
 RENDERERS.add("skia", _skia)

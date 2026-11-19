@@ -185,7 +185,7 @@ class TestEncoding:
         with pytest.raises(RuntimeError, match="boom"):
             video.render_animation(_doc(), tmp_path / "x.mp4", 5, 1, broken)
 
-    def test_skia_renderer(self, tmp_path: Path) -> None:
+    def test_render_frame(self, tmp_path: Path) -> None:
         target = tmp_path / "skia.gif"
         doc = _doc()
         dot = doc.root.find(svg.Circle)
