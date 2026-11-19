@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any, Final, Literal
 
 import skia
 
-from ..path.data import PathData
+from ..pathdata.data import PathData
 from ..transform.matrix import Matrix
 from ._skia import from_skia
 

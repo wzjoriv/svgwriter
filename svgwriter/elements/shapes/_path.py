@@ -9,8 +9,8 @@ import numpy as np
 
 from ..._internal._typing import Self
 from ...attributes.descriptors import Attr
-from ...path.builder import PathBuilder
-from ...path.commands import (
+from ...pathdata.builder import PathBuilder
+from ...pathdata.commands import (
     ArcTo,
     ClosePath,
     CurveTo,
@@ -23,7 +23,7 @@ from ...path.commands import (
     SmoothQuadTo,
     VLineTo,
 )
-from ...path.data import BBox, PathData, PathDataLike
+from ...pathdata.data import BBox, PathData, PathDataLike
 from .._geometry import Operand
 from .._transformable import offset
 from ..base import Element

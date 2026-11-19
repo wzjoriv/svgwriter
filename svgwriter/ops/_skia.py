@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, Any, Final, TypeAlias, Union
 
 import skia
 
-from ..path.commands import ArcTo, ClosePath, CurveTo, LineTo, MoveTo, QuadTo
-from ..path.data import PathData
+from ..pathdata.commands import ArcTo, ClosePath, CurveTo, LineTo, MoveTo, QuadTo
+from ..pathdata.data import PathData
 
 if TYPE_CHECKING:
     from ..elements._geometry import PathOperand

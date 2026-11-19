@@ -5,7 +5,7 @@ import math
 import pytest
 
 import svgwriter as svg
-from svgwriter.path import (
+from svgwriter.pathdata import (
     ArcTo,
     BBox,
     ClosePath,

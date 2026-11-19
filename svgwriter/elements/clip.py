@@ -6,7 +6,7 @@ from typing import Any, Literal, TypeAlias
 
 from .._internal._typing import Units
 from ..attributes.length import LengthLike
-from ..path.data import BBox, PathData
+from ..pathdata.data import BBox, PathData
 from ._geometry import PathOperand, union_outline
 from ._mixins import (
     ConditionalAttributes,

@@ -8,7 +8,7 @@ from typing import Any, ClassVar, TypeAlias
 from .._internal._typing import Opacity, Self, SpreadMethod, Units
 from ..attributes.length import LengthLike
 from ..color.color import Color
-from ..path.data import BBox
+from ..pathdata.data import BBox
 from ._mixins import (
     ConditionalAttributes,
     CoreAttributes,

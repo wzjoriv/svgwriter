@@ -8,8 +8,8 @@ from typing import Any, ClassVar
 from ..._internal._typing import Self
 from ...attributes.descriptors import LengthAttr
 from ...attributes.length import LengthLike
-from ...path.builder import PathBuilder
-from ...path.data import BBox, PathData
+from ...pathdata.builder import PathBuilder
+from ...pathdata.data import BBox, PathData
 from ._base import Shape, user_units
 
 __all__ = ["Circle", "Ellipse", "Line", "Rect"]

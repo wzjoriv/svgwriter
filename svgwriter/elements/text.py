@@ -25,7 +25,7 @@ from .container import Container
 
 if TYPE_CHECKING:
     from ..ops.text import GlyphBox
-    from ..path.data import BBox, PathData
+    from ..pathdata.data import BBox, PathData
     from .shapes import Path
     from .structure import Group
 
@@ -153,7 +153,7 @@ class Text(PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag="tex
 
     def local_outline(self) -> PathData:
         """Glyph outlines of the text in local coordinates."""
-        from ..path.data import PathData
+        from ..pathdata.data import PathData
 
         return sum((box.placed() for box in self.layout()), PathData())
 
@@ -211,7 +211,7 @@ class Text(PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag="tex
 
     def runs(self) -> list[Path]:
         """Outline paths in local coordinates, one per consecutive run with the same source element."""
-        from ..path.data import PathData
+        from ..pathdata.data import PathData
 
         paths: list[Path] = []
         current: Element | None = None

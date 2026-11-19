@@ -10,8 +10,8 @@ from typing import TYPE_CHECKING, Final
 from ..attributes.cascade import computed
 from ..attributes.length import Length
 from ..color.color import Color, as_color
-from ..path.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
-from ..path.data import PathData
+from ..pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
+from ..pathdata.data import PathData
 from ..transform.matrix import IDENTITY, Matrix
 
 if TYPE_CHECKING:

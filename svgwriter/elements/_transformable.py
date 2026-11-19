@@ -7,7 +7,7 @@ from typing import Any, ClassVar, TypeVar
 
 import numpy as np
 
-from ..path.data import BBox
+from ..pathdata.data import BBox
 from ..transform.matrix import IDENTITY, Matrix, Point
 from ..transform.ops import TransformOp
 from ..transform.transform import Transform, TransformLike, as_transform

@@ -16,7 +16,7 @@ from ..attributes.protocols import TextSink
 from ..attributes.values import format_value
 from ..elements.base import Category, Element
 from ..elements.unknown import UnknownElement
-from ..path.data import PathData
+from ..pathdata.data import PathData
 
 __all__ = ["SerializeOptions", "Writer", "iter_chunks", "to_string", "write"]
 

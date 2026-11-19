@@ -7,8 +7,8 @@ from collections.abc import Sequence
 from typing import Any, Literal, TypeAlias
 
 from .._internal._typing import Self
-from ..path.builder import PathBuilder
-from ..path.data import PathData
+from ..pathdata.builder import PathBuilder
+from ..pathdata.data import PathData
 from ._mixins import ConditionalAttributes, CoreAttributes, ExternalResourcesAttribute, XLinkAttributes
 from .base import Category, Child, ContentModel, Element
 

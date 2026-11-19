@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, ClassVar, Final, TypeAlias, Union
 
-from ..path.data import BBox, PathData
+from ..pathdata.data import BBox, PathData
 from ..transform.matrix import Matrix, Point
 from ..transform.transform import TransformLike, as_transform
 from .base import Element

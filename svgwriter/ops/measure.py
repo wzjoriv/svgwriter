@@ -6,7 +6,7 @@ from typing import Any, Final, Literal
 
 import skia
 
-from ..path.data import BBox, PathData
+from ..pathdata.data import BBox, PathData
 from ..transform.matrix import Point
 from ._skia import Geometry, from_skia, geometry_data, to_skia
 

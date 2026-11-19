@@ -6,9 +6,9 @@ import pytest
 
 import svgwriter as svg
 from svgwriter.color import Color
-from svgwriter.path import PathData
-from svgwriter.path._affine import transform_arc
-from svgwriter.path.commands import ArcTo
+from svgwriter.pathdata import PathData
+from svgwriter.pathdata._affine import transform_arc
+from svgwriter.pathdata.commands import ArcTo
 from svgwriter.transform import Matrix, Point, Rotate, Transform
 
 

@@ -11,7 +11,7 @@ from .._internal._registry import Registry
 from .._internal._typing import P
 from ..elements.base import Element
 from ..elements.shapes import Path, Polygon
-from ..path.builder import PathBuilder
+from ..pathdata.builder import PathBuilder
 
 __all__ = ["SHAPES", "arrow", "gear", "regular_polygon", "shape_factory", "star"]
 

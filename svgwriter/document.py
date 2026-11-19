@@ -17,7 +17,7 @@ from .elements.base import Element
 from .elements.container import attach_cursor, flatten
 from .elements.shapes import Circle, Ellipse, Line, Path, Polygon, Polyline, Rect, Shape
 from .elements.structure import Defs, Desc, Group, Svg, Title
-from .path.data import BBox
+from .pathdata.data import BBox
 from .video.animation import DEFAULT_FPS
 
 if TYPE_CHECKING:

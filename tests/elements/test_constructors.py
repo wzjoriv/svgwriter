@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import svgwriter as svg
-from svgwriter.path import BBox
+from svgwriter.pathdata import BBox
 
 
 def test_rect_from_corners_center_and_square() -> None:

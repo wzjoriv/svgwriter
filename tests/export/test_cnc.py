@@ -6,7 +6,7 @@ import pytest
 
 import svgwriter as svg
 from svgwriter.export._cnc import MM_PER_USER_UNIT, polylines
-from svgwriter.path import PathData
+from svgwriter.pathdata import PathData
 
 
 def drawing() -> svg.Document:

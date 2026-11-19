@@ -21,7 +21,7 @@ from ..elements.filters import (
     StandardInput,
 )
 from ..elements.shapes import Path
-from ..path.builder import PathBuilder
+from ..pathdata.builder import PathBuilder
 
 __all__ = ["arrow_marker", "drawing", "drop_shadow", "glow"]
 

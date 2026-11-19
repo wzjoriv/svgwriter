@@ -12,7 +12,7 @@ from .base import Element
 if TYPE_CHECKING:
     import numpy as np
 
-    from ..path.data import BBox
+    from ..pathdata.data import BBox
     from .clip import ClipPath
     from .shapes import Path
     from .structure import Group, Image

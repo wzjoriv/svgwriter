@@ -10,7 +10,7 @@ from ._textlayout import collect, number_list
 
 if TYPE_CHECKING:
     from ..ops.text import GlyphBox
-    from ..path.data import BBox
+    from ..pathdata.data import BBox
     from ..transform.matrix import Point
     from .shapes import Path
     from .text import Text, TSpan
@@ -37,7 +37,7 @@ class _Characters:
 
     def bounds(self) -> BBox | None:
         """Tight box of these characters in the text's parent coordinates."""
-        from ..path.data import PathData
+        from ..pathdata.data import PathData
 
         data = sum((b.placed() for b in self._boxes()), PathData())
         return data.transformed(self.text.t).bbox if len(data) else None
@@ -92,7 +92,7 @@ class _Characters:
 
     def to_path(self, **kwargs: Any) -> Path:
         """These characters' outlines as one ``<path>``, styled like the first one's run."""
-        from ..path.data import PathData
+        from ..pathdata.data import PathData
 
         boxes = self._boxes()
         data = sum((b.placed() for b in boxes), PathData()).transformed(self.text.t)

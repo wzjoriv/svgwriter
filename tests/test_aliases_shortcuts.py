@@ -64,7 +64,7 @@ class TestAliases:
         assert svg.path is svg.Path and svg.svg is svg.Svg and svg.a is svg.A
 
     def test_subpackage_still_importable_under_alias_name(self) -> None:
-        from svgwriter.path import PathBuilder
+        from svgwriter.pathdata import PathBuilder
 
         assert PathBuilder().move_to(0, 0).build()
 

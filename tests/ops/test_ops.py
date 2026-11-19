@@ -9,7 +9,7 @@ import pytest
 import svgwriter as svg
 from svgwriter import ops
 from svgwriter.ops import _skia
-from svgwriter.path import PathData
+from svgwriter.pathdata import PathData
 
 FONT = "Arial, DejaVu Sans, Liberation Sans, sans-serif"
 

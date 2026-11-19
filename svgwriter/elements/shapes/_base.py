@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from ...path.data import BBox
+from ...pathdata.data import BBox
 from .._geometry import PathOperand
 from .._mixins import GraphicsElement
 from .._viewport import user_units

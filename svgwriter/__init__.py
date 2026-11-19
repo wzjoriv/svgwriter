@@ -27,9 +27,9 @@ elements
 attributes
     Lengths and units, ``viewBox``, ``preserveAspectRatio``, inline styles
     and style sheets, IRI references, attribute-name mapping.
-path
-    Path commands, parsing, serialization, transforms, arc math and
-    ``PathBuilder``.
+pathdata
+    Path data: commands, parsing, serialization, transforms, arc math,
+    ``PathBuilder`` and node arrays.
 transform
     Affine matrices and transform lists.
 color
@@ -54,7 +54,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from . import export, ops, video
-from .aliases import *  # noqa: E402, F403  (after the sub-packages: ``path`` names the class)
+from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
 from .aliases import filter as filter  # noqa: A004, E402
 from .aliases import set as set
@@ -84,7 +84,7 @@ from .elements import *  # noqa: F403
 from .elements import __all__ as _elements_all
 from .io.writer import SerializeOptions, to_string, write
 from .ops import text_to_path
-from .path import BBox, PathBuilder, PathData
+from .pathdata import BBox, PathBuilder, PathData
 from .transform import Matrix, Point, Transform
 from .video import FFmpegNotFoundError, register_renderer
 

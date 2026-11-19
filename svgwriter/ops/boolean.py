@@ -6,7 +6,7 @@ import enum
 
 import skia
 
-from ..path.data import PathData
+from ..pathdata.data import PathData
 from ._skia import Geometry, from_skia, geometry_data, to_skia
 
 __all__ = ["BooleanOp", "combine", "difference", "intersection", "simplify", "union", "xor"]

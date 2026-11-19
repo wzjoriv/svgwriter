@@ -8,7 +8,7 @@ from ..._internal._constants import SVG_VERSION
 from ..._internal._typing import Self
 from ...attributes.length import LengthLike
 from ...attributes.names import PRESENTATION_ATTRIBUTES
-from ...path.data import BBox, PathData
+from ...pathdata.data import BBox, PathData
 from ...transform.matrix import Matrix
 from .._geometry import PathOperand, union_outline
 from .._mixins import (

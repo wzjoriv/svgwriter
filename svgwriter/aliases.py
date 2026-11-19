@@ -6,9 +6,9 @@ snake_case spelling, for code that reads closer to the markup.
 
 ``filter`` and ``set`` shadow builtins, so they are attributes of the
 package but left out of ``__all__``; ``from svgwriter import *`` will not
-replace the builtins. ``svgwriter.path`` names the class, not the
-``svgwriter.path`` sub-package; import from that with
-``from svgwriter.path import PathBuilder``.
+replace the builtins. ``svgwriter.pathdata`` names the class, not the
+``svgwriter.pathdata`` sub-package; import from that with
+``from svgwriter.pathdata import PathBuilder``.
 
 Examples
 --------

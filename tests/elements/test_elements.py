@@ -6,7 +6,7 @@ import svgwriter as svg
 from svgwriter.attributes import Length, Style
 from svgwriter.color import Color, PaintKeyword, PaintRef
 from svgwriter.elements import Category, ContentModel, Element, UnknownElement
-from svgwriter.path import BBox, PathData
+from svgwriter.pathdata import BBox, PathData
 from svgwriter.transform import Transform
 
 from ..conftest import SVG_NS, make, roundtrip, wellformed

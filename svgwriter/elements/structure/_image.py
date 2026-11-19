@@ -12,7 +12,7 @@ import skia
 from ..._internal._constants import DEFAULT_PRECISION
 from ...attributes.length import LengthLike
 from ...attributes.viewbox import PreserveAspectRatio
-from ...path.data import BBox
+from ...pathdata.data import BBox
 from .._mixins import GraphicsElement, XLinkAttributes
 from .._viewport import Positioned, positioned_bbox
 from ..base import Category, ContentModel

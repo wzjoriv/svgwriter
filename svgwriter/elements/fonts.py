@@ -5,8 +5,8 @@ from __future__ import annotations
 from typing import Any
 
 from .._internal._typing import Self
-from ..path.builder import PathBuilder
-from ..path.data import PathData
+from ..pathdata.builder import PathBuilder
+from ..pathdata.data import PathData
 from ._mixins import CoreAttributes, ExternalResourcesAttribute, PresentationAttributes, XLinkAttributes
 from .base import Category, Child, ContentModel, Element
 from .container import Container

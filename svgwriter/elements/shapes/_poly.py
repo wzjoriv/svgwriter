@@ -10,8 +10,8 @@ import numpy as np
 from ..._internal._constants import DEFAULT_PRECISION
 from ..._internal._numbers import format_number
 from ..._internal._typing import Self
-from ...path.builder import PathBuilder
-from ...path.data import BBox, PathData
+from ...pathdata.builder import PathBuilder
+from ...pathdata.data import BBox, PathData
 from ._base import Shape, parse_points
 
 PointsLike = np.ndarray | Sequence[Sequence[float]]
