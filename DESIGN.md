@@ -154,6 +154,17 @@ coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into 
 - **Render** vs the W3C reference PNGs: 146/434, bounded by skia (no SMIL, partial filters) and by the
   suite's SVG fonts, which differ from installed ones.
 
+### Document
+- `doc[i]`, `doc[a:b]`, `for el in doc`, `len(doc)` cover top-level *content* (not `<defs>`, `<style>`,
+  `<title>`, `<desc>`, `<metadata>`); `doc["id"]` finds any element by id (`KeyError` otherwise);
+  `"id" in doc`, `el in doc`. Whole-tree walks are `doc.root.iter()`.
+- Anything with `_repr_svg_` (plots, diagrams) can be added (`doc.add(obj)`, `doc += obj`): parsed and wrapped
+  in a `<g>` holding its `<svg>`, since a nested `<svg>` cannot take a transform in SVG 1.1.
+- **Auto-size:** a document without `width`, `height` and `viewBox` takes its size from the content's
+  stroke-inclusive bounds whenever it is written, rendered or displayed (the stored root is not changed);
+  `doc.fit(padding)` makes that size permanent. `_repr_svg_`, `_repr_png_`, `doc.rasterize()`,
+  `doc.render_png()`.
+
 ## Open design questions
 - Exporter registry API and which vector formats (TikZ/PGF/EPS/PDF).
 - Where async/threads actually pay off (measure first).

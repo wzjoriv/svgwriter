@@ -81,7 +81,7 @@ flower = petal.union(*(petal.clone().rotate(a, about=(50, 50)) for a in range(60
 
 ## Geometry with skia-python
 
-`pip install 'svgwriter[ops]'` installs the one optional dependency,
+`pip install 'svgwriter'` installs the one optional dependency,
 skia-python. Everything else works without it; the features below raise
 `svgwriter.MissingDependencyError` with the install command when it is
 missing.

@@ -6,14 +6,17 @@ import enum
 from collections.abc import Iterable, Iterator
 from contextlib import contextmanager
 from pathlib import Path as FilePath
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, Final, Protocol, TypeVar, overload
+
+import numpy as np
 
 from ._internal._typing import AnyPath, Self, Stack
 from .elements._factory import ElementFactory
 from .elements.base import Element
 from .elements.container import attach_cursor, flatten
 from .elements.shapes import Circle, Ellipse, Line, Path, Polygon, Polyline, Rect, Shape
-from .elements.structure import Defs, Desc, Svg, Title
+from .elements.structure import Defs, Desc, Group, Svg, Title
+from .path.data import BBox
 from .video.animation import DEFAULT_FPS
 
 if TYPE_CHECKING:
@@ -24,6 +27,30 @@ if TYPE_CHECKING:
     from .video.animation import Renderer, Update
 
 __all__ = ["Document", "ShapeKind"]
+
+NON_CONTENT: Final = frozenset({"defs", "style", "title", "desc", "metadata"})
+
+
+class SupportsSVG(Protocol):
+    """Anything with a ``_repr_svg_`` (the IPython display protocol)."""
+
+    def _repr_svg_(self) -> str | None: ...
+
+
+def _ingest(item: Any) -> Any:
+    """Elements and iterables pass through; ``_repr_svg_`` objects become a ``<g>`` holding their ``<svg>``."""
+    if isinstance(item, Element) or not hasattr(item, "_repr_svg_"):
+        return item
+    from .io.parser import parse
+
+    text = item._repr_svg_()
+    if not text:
+        raise TypeError(f"{type(item).__name__}._repr_svg_() returned no SVG")
+    root = parse(text)
+
+    for key in ("version", "baseProfile"):
+        root.attributes.pop(key, None)
+    return Group(root)
 
 E = TypeVar("E", bound=Element)
 
@@ -141,9 +168,18 @@ class Document(ElementFactory):
         attach_cursor(element, self._stack)
         return element
 
-    def add(self, element: E) -> E:
-        """Add *element* at the insertion point and return it."""
-        return self._place(element)
+    @overload
+    def add(self, element: E) -> E: ...
+    @overload
+    def add(self, element: SupportsSVG) -> Group: ...
+    def add(self, element: Element | SupportsSVG) -> Element:
+        """Add *element* at the insertion point and return it.
+
+        Objects from other libraries that implement ``_repr_svg_`` (plots,
+        diagrams, formulas) are parsed and added as a ``<g>`` holding their
+        ``<svg>``, so they can be moved and scaled like any group.
+        """
+        return self._place(_ingest(element))  # type: ignore[arg-type]
 
     def define(self, element: E) -> E:
         """Put *element* in ``<defs>`` (giving it an id) and return it."""
@@ -171,8 +207,8 @@ class Document(ElementFactory):
         finally:
             self._stack.pop()
 
-    def __iadd__(self, elements: Element | Iterable[Element]) -> Self:
-        for element in flatten(elements):
+    def __iadd__(self, elements: Element | SupportsSVG | Iterable[Element]) -> Self:
+        for element in flatten(_ingest(elements)):
             self._place(element)  # type: ignore[type-var]
         return self
 
@@ -196,23 +232,118 @@ class Document(ElementFactory):
             shape = classes[kind](**kwargs)
         return self.add(shape)
 
+    def _content(self) -> list[Element]:
+        return [c for c in self.root if c.tag not in NON_CONTENT]
+
     def __iter__(self) -> Iterator[Element]:
-        return self.root.iter()
+        """Top-level content elements (``<defs>``, ``<style>``, ``<title>``, ``<desc>`` skipped).
+
+        Use ``doc.root.iter()`` to walk the whole tree.
+        """
+        return iter(self._content())
+
+    def __len__(self) -> int:
+        return len(self._content())
+
+    @overload
+    def __getitem__(self, key: int) -> Element: ...
+    @overload
+    def __getitem__(self, key: slice) -> list[Element]: ...
+    @overload
+    def __getitem__(self, key: str) -> Element: ...
+    def __getitem__(self, key: int | slice | str) -> Element | list[Element]:
+        """``doc[0]`` (top-level content by position), ``doc[1:3]`` or ``doc["logo"]`` (any element by id).
+
+        Raises
+        ------
+        IndexError, KeyError
+            When nothing is at that position or has that id.
+        """
+        if isinstance(key, str):
+            element = self.root.get_element_by_id(key)
+            if element is None:
+                raise KeyError(f"no element with id {key!r}")
+            return element
+        return self._content()[key]
+
+    def __contains__(self, item: object) -> bool:
+        if isinstance(item, str):
+            return self.root.get_element_by_id(item) is not None
+        return isinstance(item, Element) and any(e is item for e in self.root.iter())
 
     def get_element_by_id(self, element_id: str) -> Element | None:
         return self.root.get_element_by_id(element_id)
 
+    @property
+    def auto_size(self) -> bool:
+        """Whether the canvas is computed from the content (no ``width``, ``height`` or ``viewBox`` set)."""
+        root = self.root
+        return root.get("width") is None and root.get("height") is None and root.view_box is None
+
+    def content_bounds(self, padding: float = 0.0) -> BBox | None:
+        """Union of the top-level content's stroke-inclusive bounds, grown by *padding*."""
+        from .elements._convert import Convertible
+
+        box: BBox | None = None
+        for element in self:
+            part = element.render_bounds() if isinstance(element, Convertible) else None
+            if part is not None:
+                box = part if box is None else box.union(part)
+        if box is None:
+            return None
+        return BBox(box.x - padding, box.y - padding, box.width + 2 * padding, box.height + 2 * padding)
+
+    def fit(self, padding: float = 0.0) -> Self:
+        """Set ``viewBox``, ``width`` and ``height`` to the content bounds (plus *padding*) and return ``self``."""
+        box = self.content_bounds(padding)
+        if box is not None:
+            self.root.view_box = (box.x, box.y, box.width, box.height)
+            self.root.update(width=box.width, height=box.height)
+        return self
+
+    @contextmanager
+    def _sized(self) -> Iterator[None]:
+        if not self.auto_size:
+            yield
+            return
+        saved = dict(self.root.attributes)
+        self.fit()
+        try:
+            yield
+        finally:
+            self.root.attributes = saved
+
     def to_string(self, **options: Any) -> str:
-        return self.root.to_string(**options)
+        """Serialize; see :class:`svgwriter.io.SerializeOptions`. Auto-sized documents get their size here."""
+        with self._sized():
+            return self.root.to_string(**options)
 
     def __str__(self) -> str:
-        return self.root.to_string(xml_declaration=False)
+        return self.to_string(xml_declaration=False)
 
     def _repr_svg_(self) -> str:
-        return self.root.to_string(xml_declaration=False)
+        return self.to_string(xml_declaration=False)
+
+    def _repr_png_(self) -> bytes:
+        return self.render_png()
+
+    def rasterize(self, *, scale: float = 1.0, size: tuple[int, int] | None = None,
+                  background: str | None = None) -> np.ndarray:
+        """Render into a float32 RGBA array (see :func:`svgwriter.ops.rasterize`)."""
+        from .ops.render import rasterize
+
+        with self._sized():
+            return rasterize(self, scale=scale, size=size, background=background)
+
+    def render_png(self, *, scale: float = 1.0, background: str | None = None) -> bytes:
+        """Render to PNG bytes."""
+        from .ops.render import encode
+
+        return encode(self.rasterize(scale=scale, background=background))
 
     def save(self, target: AnyPath | TextSink, **options: Any) -> None:
-        self.root.save(target, **options)
+        with self._sized():
+            self.root.save(target, **options)
 
     async def save_async(self, path: AnyPath, **options: Any) -> None:
         from .io._async import write_async

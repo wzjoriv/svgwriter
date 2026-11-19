@@ -45,7 +45,7 @@ class TestDocument:
         assert grad.id and grad.parent is doc.defs
         assert doc.root[0].tag == "title"
         assert doc.get_element_by_id(grad.id) is grad
-        assert len(list(doc)) == 5
+        assert len(list(doc.root.iter())) == 5 and len(doc) == 0
 
     @pytest.mark.parametrize(
         ("kind", "kwargs", "tag"),
