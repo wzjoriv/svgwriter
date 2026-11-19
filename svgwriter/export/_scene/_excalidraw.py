@@ -28,16 +28,21 @@ ASCENT: Final = 0.8
 ARROW_LENGTH: Final = 15.0
 ARROW_SPREAD: Final = 25.0
 OPACITY_SCALE: Final = 100.0
-EXPORT_TOLERANCE: Final = 0.25
+EXPORT_TOLERANCE: Final = 0.1
 SOURCE: Final = "svgwriter"
+
+
+def _paint(value: Any) -> str:
+    """An Excalidraw color as an SVG paint (``transparent`` is ``none``)."""
+    return "none" if value in (None, TRANSPARENT) else str(value)
 
 
 def _style(item: dict[str, Any]) -> dict[str, Any]:
     stroke_width = float(item.get("strokeWidth", 2))
     style: dict[str, Any] = {
-        "stroke": item.get("strokeColor", "#1e1e1e"),
+        "stroke": _paint(item.get("strokeColor", "#1e1e1e")),
         "stroke_width": stroke_width,
-        "fill": "none" if item.get("backgroundColor", TRANSPARENT) == TRANSPARENT else item["backgroundColor"],
+        "fill": _paint(item.get("backgroundColor", TRANSPARENT)),
         "stroke_linecap": "round",
         "stroke_linejoin": "round",
     }
@@ -101,7 +106,7 @@ def _element(item: dict[str, Any], files: dict[str, Any]) -> Element | None:
         for index, line in enumerate(lines):
             group.append(Text(line, x=ax, y=y + ASCENT * size + index * line_height, font_size=size,
                               font_family=FONTS.get(int(item.get("fontFamily", 1)), FONTS[1]), text_anchor=anchor,
-                              fill=item.get("strokeColor", "#1e1e1e"), xml_space="preserve",
+                              fill=_paint(item.get("strokeColor", "#1e1e1e")), xml_space="preserve",
                               opacity=style.get("opacity")))
         element = group if len(lines) > 1 else group[0].clone()
     elif kind == "image":

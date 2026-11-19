@@ -59,3 +59,14 @@ class TestExport:
         assert rect["backgroundColor"] == "#ff0000" and circle["strokeStyle"] == "dashed"
         back = svg.Document.open(tmp_path / "x.excalidraw")
         assert back[0].exact_bbox() == pytest.approx((10, 10, 30, 20), abs=0.01)
+
+
+def test_transparent_stroke_reads_as_none():
+    import json
+
+    from svgwriter.export._scene._excalidraw import read_excalidraw
+
+    scene = {"type": "excalidraw", "elements": [{"type": "rectangle", "x": 0, "y": 0, "width": 4, "height": 4,
+                                                 "strokeColor": "transparent", "backgroundColor": "#ff0000"}]}
+    rect = read_excalidraw(json.dumps(scene))[0]
+    assert rect.get("stroke") == "none" and rect.get("fill") == "#ff0000"

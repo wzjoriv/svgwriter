@@ -25,8 +25,9 @@ def _raster(format: str):  # type: ignore[no-untyped-def]
             background = "white"
         if isinstance(size, int):
             size = (size, size)
-        image = document.rasterize(scale=scale, size=size, padding=padding, background=background, snapshot=True)
-        if format in ENCODERS:
+        native = format not in ENCODERS
+        image = document.rasterize(scale=scale, size=size, padding=padding, background=background, snapshot=native)
+        if not native:
             return ENCODERS[format](to_uint8(image))
         return encode_image(image, format, quality=quality)
 
