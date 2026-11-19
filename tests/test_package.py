@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib
 import os
+import pkgutil
 import subprocess
 import sys
 from pathlib import Path
@@ -121,31 +122,15 @@ def test_examples_run(tmp_path: Path) -> None:
         wellformed(output.read_text(encoding="utf-8"))
 
 
-DOCTEST_MODULES = [
-    "svgwriter",
-    "svgwriter.aliases",
-    "svgwriter.elements._factory",
-    "svgwriter.elements.shapes._path",
-    "svgwriter.attributes.length",
-    "svgwriter.attributes.style",
-    "svgwriter.builder._effects",
-    "svgwriter.color.color",
-    "svgwriter.document",
-    "svgwriter.elements.animation",
-    "svgwriter.elements.filters._effects",
-    "svgwriter.elements.text",
-    "svgwriter.io.writer",
-    "svgwriter.pathdata.builder",
-    "svgwriter.pathdata.data",
-    "svgwriter.transform.matrix",
-    "svgwriter.transform.transform",
-]
+DOCTEST_MODULES = sorted(
+    info.name for info in pkgutil.walk_packages(svg.__path__, "svgwriter.")
+    if not info.name.startswith("svgwriter.__main__")
+)
 
 
 @pytest.mark.parametrize("module_name", DOCTEST_MODULES)
 def test_docstring_examples(module_name: str) -> None:
     import doctest
 
-    result = doctest.testmod(importlib.import_module(module_name))
-    assert result.attempted > 0
+    result = doctest.testmod(importlib.import_module(module_name), optionflags=doctest.ELLIPSIS)
     assert result.failed == 0

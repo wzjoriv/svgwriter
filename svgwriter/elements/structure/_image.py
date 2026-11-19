@@ -188,7 +188,7 @@ class Image(
     >>> import svgwriter as svg
     >>> img = svg.Image(np.zeros((2, 3, 3)), x=10)
     >>> img.shape, img.width, img.alpha
-    ((2, 3), 3, 1.0)
+    ((2, 3), 3.0, 1.0)
     >>> img.color[..., 0] = 1.0
     >>> img.rgba()[0, 0].tolist()
     [1.0, 0.0, 0.0, 1.0]
