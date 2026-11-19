@@ -162,3 +162,7 @@ Building 20 000 circles takes about 0.23 s, writing 0.17 s, parsing 0.15 s
   `Element.id` would make large documents faster.
 - **Pure-Python fallbacks** for `total_length` and `point_at_length` using
   the existing curve sampling.
+- **Logo assets.** A devkit `logo` tool will import a project's `logo(**variant)` and write SVG variants,
+  PNGs (16-1024), `.ico`, `.icns`, favicons, apple-touch and webmanifest icons and docs copies. svgwriter
+  side is done (exact sizing with padding, ICO/ICNS, deterministic bytes, `examples/logo.py`); a
+  `webmanifest` JSON helper could live in svgwriter or devkit.

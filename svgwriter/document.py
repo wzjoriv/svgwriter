@@ -337,13 +337,21 @@ class Document(ElementFactory):
     def _repr_png_(self) -> bytes:
         return self.render_png()
 
-    def rasterize(self, *, scale: float = 1.0, size: tuple[int, int] | None = None,
+    def rasterize(self, *, scale: float = 1.0, size: tuple[int, int] | None = None, padding: float = 0.0,
                   background: str | None = None) -> np.ndarray:
-        """Render into a float32 RGBA array (see :func:`svgwriter.ops.rasterize`)."""
+        """Render into a float32 RGBA array (see :func:`svgwriter.ops.rasterize`).
+
+        Examples
+        --------
+        >>> doc = Document()
+        >>> _ = doc.circle(0, 0, 10)
+        >>> doc.rasterize(size=(64, 64), padding=2).shape
+        (64, 64, 4)
+        """
         from .ops.render import rasterize
 
         with self._sized():
-            return rasterize(self, scale=scale, size=size, background=background)
+            return rasterize(self, scale=scale, size=size, padding=padding, background=background)
 
     def render_png(self, *, scale: float = 1.0, background: str | None = None) -> bytes:
         """Render to PNG bytes."""

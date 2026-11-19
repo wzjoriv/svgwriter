@@ -182,6 +182,13 @@ coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into 
 - Foreign objects: anything with `savefig` (matplotlib figures) or `_repr_svg_` is parsed and added as a
   `<g>` holding its `<svg>`; nested `<svg>` viewports count towards bounds and auto-size.
 
+### Logos and icons (devkit `logo` tool use case)
+- A project keeps `logo(**variant) -> Document` in a Python file (`examples/logo.py`); tooling generates every
+  asset from it. `rasterize(size=(w, h), padding=p)` fits the padded drawing exactly and centred; raster
+  exporters accept `size=int`. ICO (PNG entries, 16..256) and ICNS (PNG entries under standard and Retina
+  types) exporters, both importable. All exporters are deterministic (tested), so regenerating and
+  comparing bytes detects stale assets.
+
 ## Open design questions
 - Where async/threads actually pay off (measure first).
 

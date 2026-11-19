@@ -10,6 +10,7 @@ import numpy as np
 import skia
 
 from ..attributes.length import Length, Unit
+from ..attributes.viewbox import ViewBox
 from ..transform.matrix import IDENTITY, Matrix
 from ._layers import draw_image, hidden, layers
 
@@ -114,6 +115,7 @@ def render_tree(
     scale: float = 1.0,
     background: str | None = None,
     viewport: bool = False,
+    view_box: ViewBox | None = None,
 ) -> np.ndarray:
     """Render the tree under *root*, drawing embedded ``<image>`` pixels in paint order.
 
@@ -133,6 +135,8 @@ def render_tree(
         Painted under the drawing.
     viewport : bool
         *root* is the outermost ``<svg>``: draw it at exactly ``width x height``.
+    view_box : ViewBox, optional
+        Replace the root's ``viewBox`` while drawing (used for padding).
 
     Returns
     -------
@@ -140,7 +144,7 @@ def render_tree(
         ``float32`` ``(rows, columns, 4)`` straight RGBA in ``0..1``.
     """
     surface = _surface(width, height, scale, background)
-    paint_tree(surface.getCanvas(), root, wrap, width, height, view=view, viewport=viewport)
+    paint_tree(surface.getCanvas(), root, wrap, width, height, view=view, viewport=viewport, view_box=view_box)
     return _pixels(surface)
 
 
@@ -153,6 +157,7 @@ def paint_tree(
     *,
     view: Matrix = IDENTITY,
     viewport: bool = False,
+    view_box: ViewBox | None = None,
 ) -> None:
     """Paint the tree under *root* onto any skia canvas (raster, PDF, ...); see :func:`render_tree`."""
     from ..io.writer import to_string
@@ -160,6 +165,8 @@ def paint_tree(
     root = renderable_copy(root)
     if viewport:
         root.attributes["width"], root.attributes["height"] = width, height
+    if view_box is not None:
+        root.attributes["viewBox"] = view_box
     parts = layers(root)
     for run, image in parts:
         if run or len(parts) == 1:
@@ -205,8 +212,8 @@ def _outlined(text: Text) -> Element:
     return group
 
 
-def _view(document: Document, width: float, height: float) -> Matrix:
-    box = document.root.view_box
+def _view(document: Document, width: float, height: float, box: ViewBox | None = None) -> Matrix:
+    box = box or document.root.view_box
     if box is None or not box.width or not box.height:
         return IDENTITY
     s = min(width / box.width, height / box.height)
@@ -219,6 +226,7 @@ def rasterize(
     *,
     scale: float = 1.0,
     size: tuple[int, int] | None = None,
+    padding: float = 0.0,
     background: str | None = None,
 ) -> np.ndarray:
     """Render *document* into an RGBA array, embedded images included.
@@ -233,6 +241,9 @@ def rasterize(
         Exact output ``(columns, rows)``; a ``viewBox`` drawing is fitted
         into it and *scale* is ignored. Without a ``viewBox`` this is the
         viewport size in user units.
+    padding : float
+        Margin around the drawing in its own (``viewBox``) units; with
+        *size* the padded drawing is fitted and centred.
     background : color, optional
         Painted under the drawing; transparent when omitted.
 
@@ -248,17 +259,31 @@ def rasterize(
     >>> _ = doc.rect(0, 0, 4, 2, fill="red")
     >>> rasterize(doc).shape
     (2, 4, 4)
+    >>> rasterize(doc, size=(32, 32), padding=1).shape
+    (32, 32, 4)
+
+    Notes
+    -----
+    Output is deterministic: the same document gives the same pixels.
     """
     width, height = document_size(document)
+    box = document.root.view_box
+    padded = None
+    if padding:
+        base = box or ViewBox(0.0, 0.0, width, height)
+        unit = width / base.width if base.width else 1.0
+        padded = ViewBox(base.min_x - padding, base.min_y - padding, base.width + 2 * padding,
+                         base.height + 2 * padding)
+        box, width, height = padded, padded.width * unit, padded.height * unit
     if size is not None:
         columns, rows = size
-        if document.root.view_box is None:
+        if box is None:
             width, height, scale = float(columns), float(rows), 1.0
         else:
             scale = min(columns / width, rows / height)
             width, height = columns / scale, rows / scale
-    return render_tree(document.root, lambda text: text, width, height, view=_view(document, width, height),
-                       scale=scale, background=background, viewport=True)
+    return render_tree(document.root, lambda text: text, width, height, view=_view(document, width, height, box),
+                       scale=scale, background=background, viewport=True, view_box=padded)
 
 
 def encode(pixels: np.ndarray, format: str = "png", *, quality: int = DEFAULT_QUALITY) -> bytes:
