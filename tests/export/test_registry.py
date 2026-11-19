@@ -75,8 +75,8 @@ class TestFormats:
 
     def test_tikz_standalone_and_colors(self) -> None:
         text = drawing().export("tikz", standalone=True)
-        assert text.startswith("\documentclass[tikz]{standalone}")
-        assert "\definecolor{svgc0}{RGB}{255,0,0}" in text and "-- cycle" in text and ".. controls" in text
+        assert text.startswith(r"\documentclass[tikz]{standalone}")
+        assert r"\definecolor{svgc0}{RGB}{255,0,0}" in text and "-- cycle" in text and ".. controls" in text
 
     def test_eps_header_and_flip(self) -> None:
         text = drawing().export("eps").decode()

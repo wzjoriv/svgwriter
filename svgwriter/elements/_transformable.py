@@ -38,10 +38,17 @@ def _as_matrix(value: TransformLike) -> Matrix:
 
 
 def children_bbox(element: Element) -> BBox | None:
-    """Union of the children's :meth:`Transformable.bounds`."""
+    """Union of the children's :meth:`Transformable.bounds` (a nested ``<svg>`` counts its viewport)."""
+    from ._viewport import positioned_bbox
+
     result: BBox | None = None
     for child in element:
-        box = child.bounds() if isinstance(child, Transformable) else None
+        if isinstance(child, Transformable):
+            box = child.bounds()
+        elif child.tag == "svg":
+            box = positioned_bbox(child)
+        else:
+            box = None
         if box is not None:
             result = box if result is None else result.union(box)
     return result

@@ -85,6 +85,30 @@ def eps(document: Document) -> bytes:
     return to_eps(document).encode("ascii")
 
 
+@register("dxf", extensions=(".dxf",), binary=False)
+def dxf(document: Document, **options: Any) -> str:
+    """AutoCAD DXF R12 polylines in mm (``tolerance``, ``unit_mm``)."""
+    from ._cnc import to_dxf
+
+    return to_dxf(document, **options)
+
+
+@register("hpgl", extensions=(".hpgl", ".plt"), binary=False)
+def hpgl(document: Document, **options: Any) -> str:
+    """HPGL for pen plotters and vinyl cutters, one pen per colour (``tolerance``, ``unit_mm``)."""
+    from ._cnc import to_hpgl
+
+    return to_hpgl(document, **options)
+
+
+@register("gcode", extensions=(".gcode", ".nc", ".ngc"), binary=False)
+def gcode(document: Document, **options: Any) -> str:
+    """G-code toolpaths for CNC mills and lasers (``feed``, ``mode``, ``cut_z``, ``tolerance``, ...)."""
+    from ._cnc import to_gcode
+
+    return to_gcode(document, **options)
+
+
 @register_importer("svg", extensions=(".svg", ".svgz"))
 def read_svg(data: bytes, **options: Any) -> Document:
     """SVG or gzip-compressed SVG."""

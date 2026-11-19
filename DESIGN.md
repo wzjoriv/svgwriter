@@ -165,7 +165,20 @@ coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into 
   `doc.fit(padding)` makes that size permanent. `_repr_svg_`, `_repr_png_`, `doc.rasterize()`,
   `doc.render_png()`.
 
+### Export and import
+- `svgwriter.export`: `register(name, extensions=, binary=)` / `register_importer(...)` decorators; lookup by name,
+  extension or path (`find_exporter`); `export(doc, fmt)`, `save(doc, path)`, `load(path)`; `doc.save(path)`,
+  `doc.export(fmt)`, `Document.open(path)` dispatch through it (`.svg` and text streams keep the SVG writer).
+- Built in: SVG, SVGZ, PNG/JPEG/WebP (rasterize + encode), PDF (skia PDF canvas through the same
+  `paint_tree` as rasters, so vectors stay vectors), TikZ (`x=1pt, y=-1pt`, so SVG coordinates are kept), EPS,
+  DXF R12, HPGL, G-code (mill or laser). Importers: SVG/SVGZ, raster images.
+- Simple vector formats share `export._flatten`: the render copy (CSS resolved, text outlined) reduced to
+  painted paths in page coordinates with solid paints; gradients fall back to their first stop, images and
+  other unrepresentable content are skipped with a warning. Polyline formats subdivide curves with the
+  standard cubic flatness bound and use 96 user units per inch (CSS px).
+- Foreign objects: anything with `savefig` (matplotlib figures) or `_repr_svg_` is parsed and added as a
+  `<g>` holding its `<svg>`; nested `<svg>` viewports count towards bounds and auto-size.
+
 ## Open design questions
-- Exporter registry API and which vector formats (TikZ/PGF/EPS/PDF).
 - Where async/threads actually pay off (measure first).
 

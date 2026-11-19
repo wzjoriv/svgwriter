@@ -40,11 +40,20 @@ class SupportsSVG(Protocol):
 
 def _ingest(item: Any) -> Any:
     """Elements and iterables pass through; ``_repr_svg_`` objects become a ``<g>`` holding their ``<svg>``."""
-    if isinstance(item, Element) or not hasattr(item, "_repr_svg_"):
+    if isinstance(item, Element):
+        return item
+    if hasattr(item, "savefig"):
+        import io
+
+        buffer = io.BytesIO()
+        item.savefig(buffer, format="svg")
+        text = buffer.getvalue().decode("utf-8")
+    elif hasattr(item, "_repr_svg_"):
+        text = item._repr_svg_()
+    else:
         return item
     from .io.parser import parse
 
-    text = item._repr_svg_()
     if not text:
         raise TypeError(f"{type(item).__name__}._repr_svg_() returned no SVG")
     root = parse(text)
