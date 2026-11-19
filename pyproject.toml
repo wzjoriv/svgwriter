@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "svgwriter"
-version = "2.0.0.dev0"
+dynamic = ["version"]
 description = "Write, parse, compose and animate SVG 1.1 documents with an element-per-class object model."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -27,6 +27,7 @@ classifiers = [
 [project.optional-dependencies]
 test = ["pytest>=7", "ezdxf>=1.0", "matplotlib>=3.7", "pillow>=10"]
 dev = [
+    "stubpy",
     "pytest>=7.0",
     "pytest-cov",
     "ruff>=0.6",
@@ -36,6 +37,9 @@ dev = [
 
 [project.scripts]
 svgwriter = "svgwriter.__main__:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "svgwriter.__version__" }
 
 [tool.setuptools.packages.find]
 include = ["svgwriter*"]
@@ -62,6 +66,14 @@ ignore = ["E501"]
 
 [tool.devkit]
 tools = ["svgwriter_tools:app"]
+
+[tool.devkit.stub]
+targets = ["svgwriter"]
+output = "build/stubs"
+
+[tool.devkit.version]
+file = "svgwriter/__init__.py"
+tag = "v{version}"
 
 [tool.devkit.check]
 lint = ["svgwriter", "scripts", "tests", "examples"]

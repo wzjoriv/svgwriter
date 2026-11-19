@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import enum
+from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, TypeAlias, Union
 
@@ -40,7 +41,8 @@ class PaintRef:
 
 
 Paint: TypeAlias = Color | PaintKeyword | PaintRef
-PaintValue: TypeAlias = Union[Paint, str, "Element", None]
+PaintValue: TypeAlias = Union[Paint, str, "Element", Sequence[float], None]
+"""A paint: color (name, CSS text, 0-1 tuple or array), keyword, reference, element or ``None``."""
 
 
 def parse_paint(text: str) -> Paint:
