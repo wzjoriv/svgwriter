@@ -5,7 +5,7 @@ import math
 import pytest
 
 import svgwriter as svg
-from svgwriter.export._cnc import MM_PER_USER_UNIT, polylines
+from svgwriter.export._plotter._cnc import MM_PER_USER_UNIT, polylines
 from svgwriter.pathdata import PathData
 
 
@@ -103,7 +103,7 @@ class TestImport:
         assert bulge.height == pytest.approx(5, abs=0.1)
 
     def test_gcode_arcs_inches_and_laser(self) -> None:
-        from svgwriter.export._cnc_read import read_gcode
+        from svgwriter.export._plotter._cnc_read import read_gcode
 
         doc = read_gcode("G20\nM3\nG0 X0 Y0\nG1 X1 Y0\nG2 X1 Y-2 I0 J-1\nM5\nG0 X5 Y5\n", unit_mm=1.0)
         (path,) = list(doc)
@@ -111,7 +111,7 @@ class TestImport:
         assert box.width == pytest.approx(25.4 * 2, abs=0.5) and box.height == pytest.approx(50.8, abs=0.5)
 
     def test_hpgl_relative_and_pens(self) -> None:
-        from svgwriter.export._cnc_read import read_hpgl
+        from svgwriter.export._plotter._cnc_read import read_hpgl
 
         doc = read_hpgl("IN;SP2;PU0,0;PD400,0;PR0,400;PU;SP5;PA0,0;PD0,800;", unit_mm=1.0)
         assert [str(p.get("stroke")) for p in doc] == ["red", "blue"]

@@ -9,7 +9,7 @@ from collections.abc import Iterable
 from typing import TYPE_CHECKING, Final
 
 if TYPE_CHECKING:
-    from ..document import Document
+    from ...document import Document
 
 __all__ = ["ICNS_SIZES", "ICO_SIZES", "read_icon", "to_icns", "to_ico"]
 
@@ -26,7 +26,7 @@ BITS_PER_PIXEL: Final = 32
 
 
 def _pngs(document: Document, sizes: Iterable[int], padding: float) -> dict[int, bytes]:
-    from ..ops.render import encode_image
+    from ...ops.render import encode_image
 
     return {size: encode_image(document.rasterize(size=(size, size), padding=padding, snapshot=True))
             for size in sorted(set(sizes))}
@@ -61,7 +61,7 @@ def to_ico(document: Document, *, sizes: Iterable[int] = ICO_SIZES, padding: flo
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._icons import to_ico
+    >>> from svgwriter.export._raster._icons import to_ico
     >>> to_ico(svg.Document(8, 8), sizes=(16, 32))[:4] == bytes.fromhex("00000100")
     True
     """
@@ -107,7 +107,7 @@ def to_icns(document: Document, *, sizes: Iterable[int] = ICNS_SIZES, padding: f
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._icons import to_icns
+    >>> from svgwriter.export._raster._icons import to_icns
     >>> to_icns(svg.Document(8, 8), sizes=(16,))[:4]
     b'icns'
     """
@@ -166,11 +166,11 @@ def read_icon(data: bytes) -> Document:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._icons import read_icon, to_ico
+    >>> from svgwriter.export._raster._icons import read_icon, to_ico
     >>> read_icon(to_ico(svg.Document(8, 8), sizes=(16, 32))).root.view_box.width
     32
     """
-    from ._builtin import read_image
+    from . import read_image
 
     png = _largest_png(data)
     if not png:

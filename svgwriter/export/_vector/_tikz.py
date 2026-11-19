@@ -6,12 +6,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
-from .._internal._numbers import format_number
-from ._flatten import Item, flatten, to_cubic
+from ..._internal._numbers import format_number
+from .._flatten import Item, flatten, to_cubic
 
 if TYPE_CHECKING:
-    from ..color.color import Color
-    from ..document import Document
+    from ...color.color import Color
+    from ...document import Document
 
 __all__ = ["to_tikz"]
 
@@ -58,12 +58,12 @@ def to_tikz(document: Document, *, standalone: bool = False) -> str:
 
     See Also
     --------
-    svgwriter.export._eps.to_eps : Another flattened vector format.
+    svgwriter.export._vector._eps.to_eps : Another flattened vector format.
 
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._tikz import to_tikz
+    >>> from svgwriter.export._vector._tikz import to_tikz
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, fill="red")
     >>> "begin{tikzpicture}" in to_tikz(doc)

@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Final
 from ._cnc import HPGL_UNITS_PER_MM, MM_PER_USER_UNIT
 
 if TYPE_CHECKING:
-    from ..document import Document
+    from ...document import Document
 
 __all__ = ["read_dxf", "read_gcode", "read_hpgl"]
 
@@ -27,8 +27,8 @@ _GCODE_WORD_RE: Final = re.compile(r"([A-Z])\s*([-+]?\d*\.?\d+)")
 
 def _document(strokes: list[Stroke], unit_mm: float) -> Document:
     """Paths in user units with y pointing down, the document auto-sized to them."""
-    from ..document import Document
-    from ..elements.shapes import Path
+    from ...document import Document
+    from ...elements.shapes import Path
 
     doc = Document()
     for color, points, closed in strokes:
@@ -119,8 +119,8 @@ def read_dxf(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._cnc import to_dxf
-    >>> from svgwriter.export._cnc_read import read_dxf
+    >>> from svgwriter.export._plotter._cnc import to_dxf
+    >>> from svgwriter.export._plotter._cnc_read import read_dxf
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
     >>> len(read_dxf(to_dxf(doc)))
@@ -200,7 +200,7 @@ def read_hpgl(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
 
     Examples
     --------
-    >>> from svgwriter.export._cnc_read import read_hpgl
+    >>> from svgwriter.export._plotter._cnc_read import read_hpgl
     >>> len(read_hpgl("IN;SP1;PU0,0;PD400,0,400,400;PU;"))
     1
     """
@@ -271,8 +271,8 @@ def read_gcode(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._cnc import to_gcode
-    >>> from svgwriter.export._cnc_read import read_gcode
+    >>> from svgwriter.export._plotter._cnc import to_gcode
+    >>> from svgwriter.export._plotter._cnc_read import read_gcode
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
     >>> len(read_gcode(to_gcode(doc)))

@@ -7,12 +7,12 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING, Final, Literal
 
-from .._internal._numbers import format_number
-from ._flatten import Scene, flatten, to_cubic
+from ..._internal._numbers import format_number
+from .._flatten import Scene, flatten, to_cubic
 
 if TYPE_CHECKING:
-    from ..color.color import Color
-    from ..document import Document
+    from ...color.color import Color
+    from ...document import Document
 
 __all__ = ["polylines", "to_dxf", "to_gcode", "to_hpgl"]
 
@@ -44,7 +44,7 @@ def polylines(data: object, tolerance: float) -> list[tuple[list[Point], bool]]:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._cnc import polylines
+    >>> from svgwriter.export._plotter._cnc import polylines
     >>> polylines(svg.PathData("M0 0 L10 0 L10 10 Z"), 0.1)
     [([(0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 0.0)], True)]
     """
@@ -121,7 +121,7 @@ def to_dxf(document: Document, *, tolerance: float = DEFAULT_TOLERANCE, unit_mm:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._cnc import to_dxf
+    >>> from svgwriter.export._plotter._cnc import to_dxf
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
     >>> to_dxf(doc).count("POLYLINE")
@@ -165,7 +165,7 @@ def to_hpgl(document: Document, *, tolerance: float = DEFAULT_TOLERANCE, unit_mm
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._cnc import to_hpgl
+    >>> from svgwriter.export._plotter._cnc import to_hpgl
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
     >>> to_hpgl(doc).splitlines()[:2]
@@ -227,7 +227,7 @@ def to_gcode(
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._cnc import to_gcode
+    >>> from svgwriter.export._plotter._cnc import to_gcode
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
     >>> to_gcode(doc).splitlines()[:3]

@@ -10,8 +10,8 @@ import random
 from typing import TYPE_CHECKING, Any, Final
 
 if TYPE_CHECKING:
-    from ..document import Document
-    from ..elements.base import Element
+    from ...document import Document
+    from ...elements.base import Element
 
 __all__ = ["read_excalidraw", "to_excalidraw"]
 
@@ -51,7 +51,7 @@ def _style(item: dict[str, Any]) -> dict[str, Any]:
 
 
 def _arrowhead(tip: tuple[float, float], before: tuple[float, float], style: dict[str, Any]) -> Element:
-    from ..elements.shapes import Path
+    from ...elements.shapes import Path
 
     angle = math.atan2(tip[1] - before[1], tip[0] - before[0])
     spread = math.radians(ARROW_SPREAD)
@@ -61,9 +61,9 @@ def _arrowhead(tip: tuple[float, float], before: tuple[float, float], style: dic
 
 
 def _element(item: dict[str, Any], files: dict[str, Any]) -> Element | None:
-    from ..elements.shapes import Ellipse, Path, Polygon, Rect
-    from ..elements.structure import Group, Image
-    from ..elements.text import Text
+    from ...elements.shapes import Ellipse, Path, Polygon, Rect
+    from ...elements.structure import Group, Image
+    from ...elements.text import Text
 
     kind = item.get("type")
     x, y = float(item.get("x", 0)), float(item.get("y", 0))
@@ -147,14 +147,14 @@ def read_excalidraw(text: str) -> Document:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._excalidraw import read_excalidraw, to_excalidraw
+    >>> from svgwriter.export._scene._excalidraw import read_excalidraw, to_excalidraw
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
     >>> len(read_excalidraw(to_excalidraw(doc)))
     1
     """
-    from ..document import Document
-    from ..elements.structure import Group
+    from ...document import Document
+    from ...elements.structure import Group
 
     scene = json.loads(text)
     if scene.get("type") != "excalidraw":
@@ -199,14 +199,14 @@ def to_excalidraw(document: Document, *, seed: int = 0) -> str:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._excalidraw import to_excalidraw
+    >>> from svgwriter.export._scene._excalidraw import to_excalidraw
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
     >>> to_excalidraw(doc, seed=1) == to_excalidraw(doc, seed=1)
     True
     """
-    from ._cnc import polylines
-    from ._flatten import flatten
+    from .._flatten import flatten
+    from .._plotter._cnc import polylines
 
     rng = random.Random(seed)
     elements = []

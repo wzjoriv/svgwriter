@@ -7,11 +7,11 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING, Final
 
-from .._internal._numbers import format_number
-from ._flatten import Item, flatten, to_cubic
+from ..._internal._numbers import format_number
+from .._flatten import Item, flatten, to_cubic
 
 if TYPE_CHECKING:
-    from ..document import Document
+    from ...document import Document
 
 __all__ = ["to_eps"]
 
@@ -51,7 +51,7 @@ def to_eps(document: Document) -> str:
 
     See Also
     --------
-    svgwriter.export._tikz.to_tikz : Another flattened vector format.
+    svgwriter.export._vector._tikz.to_tikz : Another flattened vector format.
 
     Notes
     -----
@@ -60,7 +60,7 @@ def to_eps(document: Document) -> str:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._eps import to_eps
+    >>> from svgwriter.export._vector._eps import to_eps
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, fill="red")
     >>> to_eps(doc).splitlines()[:2]
