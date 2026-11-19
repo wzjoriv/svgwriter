@@ -115,4 +115,25 @@ class TestImport:
 
         doc = read_hpgl("IN;SP2;PU0,0;PD400,0;PR0,400;PU;SP5;PA0,0;PD0,800;", unit_mm=1.0)
         assert [str(p.get("stroke")) for p in doc] == ["red", "blue"]
-        assert doc[0].exact_bbox() == pytest.approx((0, -10, 10, 10))
+        assert doc[0].exact_bbox() == pytest.approx((0, 10, 10, 10))
+
+
+@pytest.mark.parametrize("fmt", ["dxf", "gcode"])
+def test_round_trip_keeps_position_and_page(fmt):
+    import svgwriter as svg
+
+    doc = svg.Document(100, 50)
+    doc.rect(10, 5, 20, 10, stroke="black", fill="none")
+    back = svg.export.find_importer(fmt).function(svg.export.export(doc, fmt).encode())
+    box = back[0].bounds()
+    assert (box.x, box.y, box.width, box.height) == pytest.approx((10, 5, 20, 10), abs=1e-3)
+    assert (back.root.view_box.width, back.root.view_box.height) == pytest.approx((100, 50), abs=1e-3)
+
+
+def test_hpgl_without_page_flips_about_drawing_top():
+    import svgwriter as svg
+
+    doc = svg.Document(100, 50)
+    doc.rect(10, 5, 20, 10, stroke="black", fill="none")
+    back = svg.export.find_importer("hpgl").function(svg.export.export(doc, "hpgl").encode())
+    assert back[0].bounds().y == pytest.approx(0, abs=1e-3)

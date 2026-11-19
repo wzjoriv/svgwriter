@@ -22,26 +22,56 @@ HPGL_PENS: Final = {0: "none", 1: "black", 2: "red", 3: "green", 4: "yellow", 5:
 ARC_STEP_DEGREES: Final = 5.0
 _HEX_RE: Final = re.compile(r"^[0-9A-Fa-f]{6}$")
 _HPGL_RE: Final = re.compile(r"([A-Z]{2})([^;A-Z]*)")
+DXF_VARIABLE: Final = 9
+DXF_X: Final = 10
+DXF_Y: Final = 20
+DXF_POINT_FIELDS: Final = 4
+MAX_PAGE_MM: Final = 1e7
+_GCODE_PAGE_RE: Final = re.compile(r"\(page ([\d.]+) x ([\d.]+) mm\)")
 _GCODE_WORD_RE: Final = re.compile(r"([A-Z])\s*([-+]?\d*\.?\d+)")
 
 
-def _document(strokes: list[Stroke], unit_mm: float) -> Document:
-    """Paths in user units with y pointing down, the document auto-sized to them."""
+def _document(strokes: list[Stroke], unit_mm: float, page: tuple[float, float] | None = None) -> Document:
+    """Paths in user units with y pointing down.
+
+    With the *page* size (mm) the file recorded, y flips about the page and the document
+    takes its size, so svgwriter's own output reads back in place; otherwise y flips about
+    the drawing's top and the document fits the drawing.
+    """
     from ...document import Document
     from ...elements.shapes import Path
 
-    doc = Document()
-    for color, points, closed in strokes:
-        if len(points) < 2:
-            continue
+    drawn = [(color, points, closed) for color, points, closed in strokes if len(points) >= 2]
+    top = page[1] if page else max((y for _, points, _ in drawn for _, y in points), default=0.0)
+    doc = Document(page[0] / unit_mm, page[1] / unit_mm) if page else Document()
+    for color, points, closed in drawn:
         path = Path(fill="none", stroke=color, stroke_width=0.5)
-        path.move_to(points[0][0] / unit_mm, -points[0][1] / unit_mm)
+        path.move_to(points[0][0] / unit_mm, (top - points[0][1]) / unit_mm)
         for x, y in points[1:]:
-            path.line_to(x / unit_mm, -y / unit_mm)
+            path.line_to(x / unit_mm, (top - y) / unit_mm)
         if closed:
             path.close()
         doc.add(path)
-    return doc.fit()
+    return doc if page else doc.fit()
+
+
+def _dxf_page(pairs: list[tuple[int, str]]) -> tuple[float, float] | None:
+    """The ``$EXTMAX`` corner from the header when ``$EXTMIN`` is the origin (as svgwriter writes it)."""
+    marks = {value: index for index, (code, value) in enumerate(pairs) if code == DXF_VARIABLE}
+
+    def corner(name: str) -> tuple[float, float] | None:
+        if name not in marks:
+            return None
+        fields = dict(pairs[marks[name] + 1:marks[name] + DXF_POINT_FIELDS])
+        try:
+            return float(fields[DXF_X]), float(fields[DXF_Y])
+        except (KeyError, ValueError):
+            return None
+
+    low, high = corner("$EXTMIN"), corner("$EXTMAX")
+    if low != (0.0, 0.0) or high is None or not all(0 < v < MAX_PAGE_MM for v in high):
+        return None
+    return high
 
 
 def _arc(cx: float, cy: float, r: float, start: float, end: float) -> list[Point]:
@@ -128,7 +158,8 @@ def read_dxf(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
     """
     strokes: list[Stroke] = []
     polyline: tuple[str, list[Point], bool] | None = None
-    for kind, fields in _entities(_pairs(text)):
+    pairs = _pairs(text)
+    for kind, fields in _entities(pairs):
         values: dict[int, list[str]] = {}
         for code, value in fields:
             values.setdefault(code, []).append(value)
@@ -176,7 +207,7 @@ def read_dxf(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
         elif kind == "SEQEND" and polyline is not None:
             strokes.append(polyline)
             polyline = None
-    return _document(strokes, unit_mm)
+    return _document(strokes, unit_mm, _dxf_page(pairs))
 
 
 def read_hpgl(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
@@ -343,4 +374,5 @@ def read_gcode(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
             current.append((nx, ny))
         x, y = nx, ny
     flush()
-    return _document(strokes, unit_mm)
+    found = _GCODE_PAGE_RE.search(text)
+    return _document(strokes, unit_mm, (float(found[1]), float(found[2])) if found else None)

@@ -128,7 +128,10 @@ def to_dxf(document: Document, *, tolerance: float = DEFAULT_TOLERANCE, unit_mm:
     1
     """
     scene = flatten(document)
-    lines = ["0", "SECTION", "2", "HEADER", "9", "$INSUNITS", "70", "4", "0", "ENDSEC",
+    lines = ["0", "SECTION", "2", "HEADER", "9", "$INSUNITS", "70", "4",
+             "9", "$EXTMIN", "10", "0", "20", "0", "30", "0",
+             "9", "$EXTMAX", "10", _n(scene.width * unit_mm), "20", _n(scene.height * unit_mm), "30", "0",
+             "0", "ENDSEC",
              "0", "SECTION", "2", "ENTITIES"]
     for color, points, closed in _paths(scene, tolerance / unit_mm):
         layer = color.hex[1:].upper() if color is not None else "0"
@@ -234,7 +237,8 @@ def to_gcode(
     ['G21 (millimetres)', 'G90 (absolute)', 'G17']
     """
     scene = flatten(document)
-    out = ["G21 (millimetres)", "G90 (absolute)", "G17"]
+    out = ["G21 (millimetres)", "G90 (absolute)", "G17",
+           f"(page {_n(scene.width * unit_mm)} x {_n(scene.height * unit_mm)} mm)"]
     up = ["M5"] if mode == "laser" else [f"G0 Z{_n(travel_z)}"]
     down = [f"M3 S{_n(power)}"] if mode == "laser" else [f"G1 Z{_n(cut_z)} F{_n(feed)}"]
     out += up
