@@ -4,7 +4,6 @@
 
 from __future__ import annotations
 
-import enum
 import os
 from collections.abc import Iterable, Iterator
 from contextlib import contextmanager
@@ -17,7 +16,6 @@ from ._internal._typing import AnyPath, Self, Stack
 from .elements._factory import ElementFactory
 from .elements.base import Element
 from .elements.container import attach_cursor, flatten
-from .elements.shapes import Circle, Ellipse, Line, Path, Polygon, Polyline, Rect, Shape
 from .elements.structure import Defs, Desc, Group, Svg, Title
 from .pathdata.data import BBox
 from .video.animation import DEFAULT_FPS
@@ -25,11 +23,12 @@ from .video.animation import DEFAULT_FPS
 if TYPE_CHECKING:
     from .attributes.protocols import TextSink
     from .attributes.style import StyleSheet
+    from .color.color import ColorLike
     from .elements.structure import StyleElement
     from .io.parser import Strictness
     from .video.animation import Renderer, Update
 
-__all__ = ["Document", "ShapeKind"]
+__all__ = ["Document"]
 
 NON_CONTENT: Final = frozenset({"defs", "style", "title", "desc", "metadata"})
 
@@ -89,35 +88,6 @@ def _ingest(item: Any) -> Any:
 E = TypeVar("E", bound=Element)
 
 
-class ShapeKind(str, enum.Enum):
-    """Shape names accepted by :meth:`Document.add_shape`.
-
-    Members are strings, so ``"rect"`` and ``ShapeKind.RECT`` are interchangeable.
-
-    See Also
-    --------
-    Document.add_shape : Create a shape by name.
-
-    Examples
-    --------
-    >>> ShapeKind("circle") is ShapeKind.CIRCLE
-    True
-    """
-
-    @staticmethod
-    def _generate_next_value_(name: str, start: int, count: int, last_values: list[Any]) -> str:
-        return name.lower()
-
-    RECT = enum.auto()
-    CIRCLE = enum.auto()
-    ELLIPSE = enum.auto()
-    LINE = enum.auto()
-    POLYLINE = enum.auto()
-    POLYGON = enum.auto()
-    PATH = enum.auto()
-    SQUARE = enum.auto()
-
-
 class Document(ElementFactory):
     """An SVG document under construction.
 
@@ -148,6 +118,7 @@ class Document(ElementFactory):
 
     Examples
     --------
+    >>> from svgwriter import Rect
     >>> doc = Document(100, 100)
     >>> glow = doc.radial_gradient(cx=0.5, cy=0.5, r=0.5)
     >>> with doc.group(fill="red") as g:
@@ -196,7 +167,7 @@ class Document(ElementFactory):
 
         See Also
         --------
-        from_file : Parse from a file.
+        open : Read a file in any registered format.
 
         Examples
         --------
@@ -210,46 +181,6 @@ class Document(ElementFactory):
         if not isinstance(root, Svg):
             raise ValueError(f"root element is <{root.tag}>, not <svg>")
         return cls(root=root)
-
-    @classmethod
-    def from_file(cls, path: AnyPath) -> Document:
-        """Parse an SVG file; relative links (images) resolve against its location.
-
-        Parameters
-        ----------
-        path : str or os.PathLike
-            The file to read.
-
-        Returns
-        -------
-        Document
-            A document wrapping the parsed root.
-
-        Raises
-        ------
-        SVGParseError
-            If the content is malformed.
-        FileNotFoundError
-            If `path` does not exist.
-
-        See Also
-        --------
-        from_string : Parse from text.
-        open : Read any registered input format.
-
-        Examples
-        --------
-        >>> import tempfile, pathlib
-        >>> with tempfile.TemporaryDirectory() as folder:
-        ...     path = pathlib.Path(folder) / "a.svg"
-        ...     Document(10, 10).save(path)
-        ...     print(Document.from_file(path).root.get("width"))
-        10
-        """
-        with open(path, "rb") as handle:
-            document = cls.from_string(handle.read())
-        document.root._source_path = os.fspath(path)
-        return document
 
     @classmethod
     @contextmanager
@@ -311,6 +242,7 @@ class Document(ElementFactory):
 
         Examples
         --------
+        >>> from svgwriter import Rect
         >>> doc = Document(10, 10)
         >>> doc.defs += Rect(0, 0, 1, 1, id="cell")
         >>> doc.defs.tag, len(doc.defs)
@@ -366,6 +298,7 @@ class Document(ElementFactory):
 
         Examples
         --------
+        >>> from svgwriter import Rect
         >>> doc = Document(10, 10)
         >>> rect = doc.add(Rect(0, 0, 5, 5))
         >>> rect.parent is doc.root
@@ -392,6 +325,7 @@ class Document(ElementFactory):
 
         Examples
         --------
+        >>> from svgwriter import Rect
         >>> doc = Document(10, 10)
         >>> cell = doc.define(Rect(0, 0, 1, 1))
         >>> cell.parent is doc.defs, cell.id.startswith("rect")
@@ -512,56 +446,6 @@ class Document(ElementFactory):
         for element in flatten(_ingest(elements)):
             self._place(element)  # type: ignore[type-var]
         return self
-
-    def add_shape(self, kind: ShapeKind | str, **kwargs: Any) -> Shape:
-        """Create a shape by name, forwarding keywords to its class.
-
-        Parameters
-        ----------
-        kind : ShapeKind or str
-            One of ``rect``, ``circle``, ``ellipse``, ``line``, ``polyline``,
-            ``polygon``, ``path`` or ``square``.
-        **kwargs
-            Constructor keywords of the shape's class; ``square`` takes ``size``
-            and the polygon kinds take ``points``.
-
-        Returns
-        -------
-        Shape
-            The shape, already added at the insertion point.
-
-        Raises
-        ------
-        ValueError
-            If `kind` is not a shape name.
-
-        See Also
-        --------
-        add : Add an element you built yourself.
-
-        Examples
-        --------
-        >>> doc = Document(10, 10)
-        >>> doc.add_shape("circle", cx=5, cy=5, r=2).tag
-        'circle'
-        """
-        kind = ShapeKind(kind)
-        if kind is ShapeKind.SQUARE:
-            size = kwargs.pop("size")
-            shape: Shape = Rect.square(size, **kwargs)
-        elif kind in (ShapeKind.POLYLINE, ShapeKind.POLYGON):
-            points = kwargs.pop("points", ())
-            shape = Polygon(points, **kwargs) if kind is ShapeKind.POLYGON else Polyline(points, **kwargs)
-        else:
-            classes: dict[ShapeKind, type[Shape]] = {
-                ShapeKind.RECT: Rect,
-                ShapeKind.CIRCLE: Circle,
-                ShapeKind.ELLIPSE: Ellipse,
-                ShapeKind.LINE: Line,
-                ShapeKind.PATH: Path,
-            }
-            shape = classes[kind](**kwargs)
-        return self.add(shape)
 
     def _content(self) -> list[Element]:
         return [c for c in self.root if c.tag not in NON_CONTENT]
@@ -773,7 +657,7 @@ class Document(ElementFactory):
         return self.render_png()
 
     def rasterize(self, *, scale: float = 1.0, size: tuple[int, int] | int | None = None, padding: float = 0.0,
-                  background: str | None = None, snapshot: bool = False) -> np.ndarray:
+                  background: ColorLike | None = None, snapshot: bool = False) -> np.ndarray:
         """Render into a float32 RGBA array (see :func:`svgwriter.ops.rasterize`).
 
         Parameters
@@ -812,7 +696,7 @@ class Document(ElementFactory):
             return rasterize(self, scale=scale, size=size, padding=padding, background=background,
                              snapshot=snapshot)
 
-    def render_png(self, *, scale: float = 1.0, background: str | None = None) -> bytes:
+    def render_png(self, *, scale: float = 1.0, background: ColorLike | None = None) -> bytes:
         """Render to PNG bytes.
 
         Parameters
@@ -927,7 +811,7 @@ class Document(ElementFactory):
 
         See Also
         --------
-        from_file : SVG only, with fewer dependencies.
+        from_string : Parse SVG text.
 
         Examples
         --------

@@ -183,7 +183,7 @@ coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into 
   in the suite's own SVGFreeSans font (not installed here); the rest are skia limits (no SMIL animation,
   partial filters and masks).
 - **Linked images:** the render copy embeds `<image>` links to local files (PNG/JPEG/WebP/GIF/BMP, or SVG
-  rendered at the image's size), resolved against the document's file (`Document.from_file`/`open` keep
+  rendered at the image's size), resolved against the document's file (`Document.open` keeps
   it) or the working directory, honouring `xml:base`; remote URLs are never fetched; loads are cached by
   path and modification time.
 - Exact `size=` is exact: pixel counts ignore float round-off just above an integer.

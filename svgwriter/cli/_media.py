@@ -67,7 +67,7 @@ def load_scene(path: str | Path) -> tuple[Document, Callable[[Document, float], 
     """
     source = Path(path)
     if source.suffix.lower() == ".svg":
-        return Document.from_file(source), None, {}
+        return Document.open(source), None, {}
     namespace = runpy.run_path(str(source), run_name="__scene__")
     document = None
     for name in SCENE_FACTORIES:

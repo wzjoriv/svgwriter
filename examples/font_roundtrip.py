@@ -32,7 +32,7 @@ def build() -> svg.Document:
 def main(out_dir: Path) -> tuple[Path, bool]:
     original = out_dir / "font.svg"
     build().save(original)
-    reparsed = svg.Document.from_file(original)
+    reparsed = svg.Document.open(original)
     copy = out_dir / "font_copy.svg"
     reparsed.save(copy)
     return copy, original.read_text(encoding="utf-8") == copy.read_text(encoding="utf-8")

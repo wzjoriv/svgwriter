@@ -265,6 +265,6 @@ class TestRenderAndOutlineCommands:
     def test_outline(self, tmp_path: Path) -> None:
         target = tmp_path / "hi.svg"
         assert main(["outline", "Hi", "--size", "20", "-o", str(target)]) == 0
-        doc = svg.Document.from_file(target)
+        doc = svg.Document.open(target)
         path = doc.root.find(svg.Path)
         assert path is not None and path.bounds().x >= 3.9

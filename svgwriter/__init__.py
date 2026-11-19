@@ -79,7 +79,7 @@ from .attributes import (
 )
 from .builder import SHAPES, drawing, drop_shadow, shape_factory
 from .color import Color, PaintKeyword, parse_color, parse_paint
-from .document import Document, ShapeKind
+from .document import Document
 from .elements import *  # noqa: F403
 from .elements import __all__ as _elements_all
 from .io.writer import SerializeOptions, to_string, write
@@ -142,7 +142,6 @@ __all__ = [
     "PathData",
     "PreserveAspectRatio",
     "SerializeOptions",
-    "ShapeKind",
     "Strictness",
     "Style",
     "StyleSheet",

@@ -14,6 +14,7 @@ from .base import Element
 if TYPE_CHECKING:
     import numpy as np
 
+    from ..color.color import ColorLike
     from ..pathdata.data import BBox
     from .clip import ClipPath
     from .shapes import Path
@@ -109,7 +110,7 @@ class Convertible(Transformable):
             return group
         return Group(self.clone(), **kwargs)
 
-    def to_image(self, *, scale: float = 1.0, padding: float = 0.0, background: str | None = None) -> Image:
+    def to_image(self, *, scale: float = 1.0, padding: float = 0.0, background: ColorLike | None = None) -> Image:
         """Rasterize into an ``<image>`` placed over this element's bounds.
 
         Parameters
@@ -244,7 +245,8 @@ class Convertible(Transformable):
         return type(box)(box.x - half, box.y - half, box.width + 2 * half, box.height + 2 * half)
 
     def rasterize(
-        self, *, scale: float = 1.0, padding: float = 0.0, background: str | None = None
+        self, *, scale: float = 1.0, size: tuple[int, int] | int | None = None, padding: float = 0.0,
+        background: ColorLike | None = None,
     ) -> np.ndarray:
         """Render this element alone into an RGBA array.
 
@@ -255,6 +257,9 @@ class Convertible(Transformable):
         ----------
         scale : float, optional
             Pixels per user unit. Defaults to 1.0.
+        size : (int, int) or int, optional
+            Exact output ``(columns, rows)``, or one int for a square; the
+            element is fitted and centred, and *scale* is ignored. Defaults to None.
         padding : float, optional
             Extra margin in user units. Defaults to 0.0.
         background : color, optional
@@ -281,10 +286,20 @@ class Convertible(Transformable):
         if box is None:
             raise TypeError(f"<{self.tag}> has no known size; give it width and height or rasterize the document")
         canvas = type(box)(box.x - padding, box.y - padding, box.width + 2 * padding, box.height + 2 * padding)
+        if size is not None:
+            canvas, scale = _fit(canvas, (size, size) if isinstance(size, int) else size)
         return render_box(self, canvas, scale, background)
 
 
-def render_box(element: Element, box: BBox, scale: float, background: str | None = None) -> np.ndarray:
+def _fit(box: BBox, size: tuple[int, int]) -> tuple[BBox, float]:
+    """Grow *box* about its centre to the aspect of *size*; return it with the matching scale."""
+    columns, rows = size
+    scale = min(columns / box.width, rows / box.height) if box.width and box.height else 1.0
+    width, height = columns / scale, rows / scale
+    return type(box)(box.x - (width - box.width) / 2, box.y - (height - box.height) / 2, width, height), scale
+
+
+def render_box(element: Element, box: BBox, scale: float, background: ColorLike | None = None) -> np.ndarray:
     """Render *element* alone onto the canvas *box* (parent coordinates) as straight RGBA.
 
     Parameters
@@ -331,7 +346,7 @@ def render_box(element: Element, box: BBox, scale: float, background: str | None
     return render_tree(element, wrap, width, height, view=Matrix.translate(-x, -y), scale=scale, background=background)
 
 
-def _to_image(element: Convertible, scale: float, padding: float, background: str | None) -> Image:
+def _to_image(element: Convertible, scale: float, padding: float, background: ColorLike | None) -> Image:
     from .structure import Image
 
     box = element.render_bounds()

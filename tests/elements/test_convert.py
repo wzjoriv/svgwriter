@@ -201,3 +201,12 @@ class TestUseAppearance:
 def test_copy_is_clone() -> None:
     r = svg.Rect(fill="red")
     assert svg.Rect.copy is svg.Rect.clone and r.copy() is not r and r.copy(linked=True).tag == "use"
+
+
+def test_element_rasterize_size_fits_and_centres():
+    import svgwriter as svg
+
+    pixels = svg.rect(0, 0, 8, 4, fill="red").rasterize(size=32)
+    assert pixels.shape == (32, 32, 4)
+    assert pixels[16, 16, 3] == 1.0 and pixels[2, 16, 3] == 0.0
+    assert svg.rect(0, 0, 8, 4).rasterize(size=(20, 10)).shape == (10, 20, 4)

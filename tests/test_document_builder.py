@@ -6,7 +6,6 @@ import pytest
 
 import svgwriter as svg
 from svgwriter import builder
-from svgwriter.document import ShapeKind
 
 from .conftest import wellformed
 
@@ -47,36 +46,13 @@ class TestDocument:
         assert doc.get_element_by_id(grad.id) is grad
         assert len(list(doc.root.iter())) == 5 and len(doc) == 0
 
-    @pytest.mark.parametrize(
-        ("kind", "kwargs", "tag"),
-        [
-            (ShapeKind.RECT, {"width": 5, "height": 5}, "rect"),
-            ("circle", {"r": 3}, "circle"),
-            ("ellipse", {"rx": 1, "ry": 2}, "ellipse"),
-            ("line", {"x2": 4}, "line"),
-            ("polyline", {"points": [(0, 0), (1, 1)]}, "polyline"),
-            ("polygon", {"points": [(0, 0), (1, 1), (0, 1)]}, "polygon"),
-            ("path", {"d": "M0 0 L1 1"}, "path"),
-            ("square", {"size": 4, "fill": "red"}, "rect"),
-        ],
-    )
-    def test_add_shape_dispatch(self, kind: ShapeKind | str, kwargs: dict[str, object], tag: str) -> None:
-        doc = svg.Document(10, 10)
-        shape = doc.add_shape(kind, **kwargs)
-        assert shape.tag == tag and shape.parent is doc.root
-
-    def test_shape_kind_auto_values(self) -> None:
-        assert ShapeKind.POLYLINE.value == "polyline"
-        with pytest.raises(ValueError):
-            svg.Document().add_shape("hexagon")
-
     def test_writing_context_manager(self, tmp_path: Path) -> None:
         target = tmp_path / "w.svg"
         with svg.Document.writing(target, 20, 20, options=svg.SerializeOptions(pretty=False)) as doc:
             doc.add(svg.Rect(1, 1, 2, 2))
         text = target.read_text(encoding="utf-8")
         assert text.count("\n") == 1
-        assert svg.Document.from_file(target).root.find(svg.Rect) is not None
+        assert svg.Document.open(target).root.find(svg.Rect) is not None
 
     def test_from_string_requires_svg_root(self) -> None:
         with pytest.raises(ValueError):
@@ -109,7 +85,8 @@ class TestRegistry:
         assert star.get("fill") == "gold"
         assert builder.star.__name__ == "star"
         assert builder.star.__wrapped__ is not None  # type: ignore[attr-defined]
-        assert len(builder.regular_polygon(0, 0, 5, sides=5).points) == 5
+        assert len(svg.SHAPES.get("polygon")(0, 0, 5, sides=5).points) == 5
+        assert len(svg.Polygon.regular(0, 0, 5).points) == 6
         assert len(builder.gear(0, 0, 10, teeth=8).points) == 32
         assert builder.arrow(0, 0, 10, 0).get("fill") == "none"
 

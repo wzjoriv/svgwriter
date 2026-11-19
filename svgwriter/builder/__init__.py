@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from ._effects import arrow_marker, drawing, drop_shadow, glow
 from ._functions import dashed_line, dot, outline
-from ._shapes import SHAPES, arrow, gear, regular_polygon, shape_factory, star
+from ._shapes import SHAPES, arrow, gear, shape_factory, star
 
 __all__ = [
     "SHAPES",
@@ -21,7 +21,6 @@ __all__ = [
     "gear",
     "glow",
     "outline",
-    "regular_polygon",
     "shape_factory",
     "star",
 ]

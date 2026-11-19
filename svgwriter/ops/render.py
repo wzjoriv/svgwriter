@@ -17,6 +17,7 @@ from ..transform.matrix import IDENTITY, Matrix
 from ._layers import draw_image, hidden, layers, resolve_links
 
 if TYPE_CHECKING:
+    from ..color.color import ColorLike
     from ..document import Document
     from ..elements.base import Element
     from ..elements.text import Text
@@ -84,7 +85,7 @@ def _pixels_for(extent: float) -> int:
     return max(1, math.ceil(extent - PIXEL_EPSILON))
 
 
-def _surface(width: float, height: float, scale: float, background: str | None) -> skia.Surface:
+def _surface(width: float, height: float, scale: float, background: ColorLike | None) -> skia.Surface:
     from ..color.color import as_color
 
     surface = skia.Surface(_pixels_for(width * scale), _pixels_for(height * scale))
@@ -111,7 +112,7 @@ def _pixels(surface: skia.Surface) -> np.ndarray:
 
 
 def render_svg(
-    text: str, width: float, height: float, *, scale: float = 1.0, background: str | None = None
+    text: str, width: float, height: float, *, scale: float = 1.0, background: ColorLike | None = None
 ) -> np.ndarray:
     """Render SVG *text* at ``width x height`` user units into an RGBA array.
 
@@ -172,7 +173,7 @@ def render_tree(
     *,
     view: Matrix = IDENTITY,
     scale: float = 1.0,
-    background: str | None = None,
+    background: ColorLike | None = None,
     viewport: bool = False,
     view_box: ViewBox | None = None,
     snapshot: bool = False,
@@ -376,7 +377,7 @@ def rasterize(
     scale: float = 1.0,
     size: tuple[int, int] | int | None = None,
     padding: float = 0.0,
-    background: str | None = None,
+    background: ColorLike | None = None,
     snapshot: bool = False,
 ) -> Any:
     """Render *document* into an RGBA array, embedded images included.
@@ -532,7 +533,7 @@ def encode(pixels: np.ndarray, format: str = "png", *, quality: int = DEFAULT_QU
     return encode_image(image, format, quality=quality)
 
 
-def render_png(document: Document, *, scale: float = 1.0, background: str | None = None) -> bytes:
+def render_png(document: Document, *, scale: float = 1.0, background: ColorLike | None = None) -> bytes:
     """Render *document* to PNG bytes.
 
     Parameters

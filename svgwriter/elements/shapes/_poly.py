@@ -115,6 +115,8 @@ def as_points(value: PointsLike | str) -> np.ndarray:
 
 __all__ = ["PointList", "PointsLike", "Polygon", "Polyline", "as_points"]
 
+DEFAULT_SIDES: Final = 6
+
 FULL_CIRCLE: Final = 360.0
 
 
@@ -175,7 +177,7 @@ class Polyline(Shape, tag="polyline"):
         self.attributes["points"] = PointList(as_points(value))
 
     @classmethod
-    def regular(cls, cx: float, cy: float, radius: float, sides: int, **kwargs: Any) -> Self:
+    def regular(cls, cx: float, cy: float, radius: float, sides: int = DEFAULT_SIDES, **kwargs: Any) -> Self:
         """Create the vertices of a regular polygon.
 
         The first vertex is at the top and the rest follow clockwise.
@@ -186,10 +188,10 @@ class Polyline(Shape, tag="polyline"):
             Center.
         radius : float
             Distance from the center to each vertex.
-        sides : int
-            Number of vertices.
+        sides : int, optional
+            Number of vertices. Defaults to 6.
         **kwargs
-        Presentation, core and other SVG attributes in Python spelling.
+            Presentation, core and other SVG attributes in Python spelling.
 
         Returns
         -------

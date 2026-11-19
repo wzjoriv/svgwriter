@@ -30,7 +30,7 @@ def test_xml_base_on_ancestor(tmp_path) -> None:
     (tmp_path / "assets").mkdir()
     write_png(tmp_path / "assets" / "b.png")
     (tmp_path / "doc.svg").write_text(page("b.png", xml_base="assets/"), encoding="utf-8")
-    assert svg.Document.from_file(tmp_path / "doc.svg").rasterize()[4, 4, 3] == pytest.approx(1)
+    assert svg.Document.open(tmp_path / "doc.svg").rasterize()[4, 4, 3] == pytest.approx(1)
 
 
 def test_linked_svg_renders(tmp_path) -> None:

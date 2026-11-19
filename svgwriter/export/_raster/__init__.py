@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any, Final
 from .._registry import register, register_importer
 
 if TYPE_CHECKING:
+    from ...color.color import ColorLike
     from ...document import Document
 
 DEFAULT_QUALITY: Final = 90
@@ -16,7 +17,7 @@ DEFAULT_QUALITY: Final = 90
 
 def _raster(format: str):  # type: ignore[no-untyped-def]
     def exporter(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int | None = None,
-                 padding: float = 0.0, background: str | None = None, quality: int = DEFAULT_QUALITY) -> bytes:
+                 padding: float = 0.0, background: ColorLike | None = None, quality: int = DEFAULT_QUALITY) -> bytes:
         from ...ops.render import encode_image
         from ._encoders import ENCODERS, to_uint8
 

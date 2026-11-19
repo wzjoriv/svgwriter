@@ -15,7 +15,7 @@ from ..elements.base import Element
 from ..elements.shapes import Path, Polygon
 from ..pathdata.builder import PathBuilder
 
-__all__ = ["SHAPES", "arrow", "gear", "regular_polygon", "shape_factory", "star"]
+__all__ = ["SHAPES", "arrow", "gear", "shape_factory", "star"]
 
 E = TypeVar("E", bound=Element)
 
@@ -125,7 +125,7 @@ def star(
 
     See Also
     --------
-    regular_polygon : A polygon without notches.
+    svgwriter.Polygon.regular : A polygon without notches.
 
     Examples
     --------
@@ -135,39 +135,6 @@ def star(
     """
     inner = outer * DEFAULT_INNER_RATIO if inner is None else inner
     return Polygon(_ring(cx, cy, [outer, inner] * points, -QUARTER_TURN), **kwargs)
-
-
-@shape_factory("polygon")
-def regular_polygon(cx: float, cy: float, radius: float, sides: int = 6, **kwargs: Any) -> Polygon:
-    """Build a regular polygon with one vertex pointing up.
-
-    Parameters
-    ----------
-    cx, cy : float
-        Center.
-    radius : float
-        Distance from the center to each vertex.
-    sides : int, optional
-        Number of sides. Defaults to 6.
-    **kwargs
-        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`.
-
-    Returns
-    -------
-    Polygon
-        The polygon.
-
-    See Also
-    --------
-    star : A polygon with alternating radii.
-
-    Examples
-    --------
-    >>> from svgwriter.builder import regular_polygon
-    >>> regular_polygon(0, 0, 10, sides=3).to_string(xml_declaration=False, pretty=False)
-    '<polygon points="0,-10 8.6603,5 -8.6603,5"/>'
-    """
-    return Polygon(_ring(cx, cy, [radius] * sides, -QUARTER_TURN), **kwargs)
 
 
 @shape_factory("gear")
@@ -244,3 +211,6 @@ def arrow(x1: float, y1: float, x2: float, y2: float, head: float = DEFAULT_HEAD
         builder.move_to(x2 + head * math.cos(a), y2 + head * math.sin(a)).line_to(x2, y2)
     kwargs.setdefault("fill", "none")
     return Path(builder, **kwargs)
+
+
+shape_factory("polygon")(Polygon.regular)
