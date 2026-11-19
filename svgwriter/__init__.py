@@ -38,11 +38,14 @@ io
     Serialization options, writers (string, file, stream, async) and the
     parser.
 builder
-    Functional constructors, composite shapes and effects.
+    Composite shapes (star, gear, arrow) and effects (shadow, glow).
 ops
-    Boolean operations, text outlines, measurement and rendering (skia).
+    Boolean operations, text outlines, measurement, rendering and image
+    compositing (skia).
 export
-    Exporter/importer registry: SVG, SVGZ, PNG, JPEG, WebP, PDF, TikZ, EPS.
+    Format registry by name or extension: vector (SVG, PDF, TikZ, EPS),
+    raster (PNG, JPEG, WebP, BMP, GIF, PPM, ICO, ICNS), plotter (DXF, HPGL,
+    G-code) and Excalidraw; ``svg.export.register`` adds more.
 video
     Frame rendering through a pluggable renderer and encoding with ffmpeg.
 cli

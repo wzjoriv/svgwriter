@@ -5,14 +5,18 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "svgwriter"
 dynamic = ["version"]
-description = "Write, parse, compose and animate SVG 1.1 documents with an element-per-class object model."
+description = "SVG 1.1 as Python objects: draw, transform, combine, render and convert vector graphics."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "Josue N Rivera" }]
 dependencies = ["skia-python>=87", "numpy>=1.24"]
 keywords = ["svg", "vector", "graphics", "drawing", "animation"]
 classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -27,8 +31,8 @@ classifiers = [
 [project.optional-dependencies]
 test = ["pytest>=7", "ezdxf>=1.0", "matplotlib>=3.7", "pillow>=10"]
 dev = [
+    "svgwriter[test,docs]",
     "stubpy",
-    "pytest>=7.0",
     "pytest-cov",
     "ruff>=0.6",
     "typer>=0.12",

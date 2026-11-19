@@ -8,7 +8,7 @@ structure   svg, g, defs, symbol, use, switch, a, desc, title, metadata,
 shapes      rect, circle, ellipse, line, polyline, polygon, path
 _geometry   ``PathOperand``: path conversion and geometric operators
 _factory    ``ElementFactory``: ``doc.circle(...)``-style shortcuts
-container   typed child lists, ``+=``, ``%`` and ``with`` nesting
+container   typed child lists, ``+=`` and ``with`` nesting
 text        text, tspan, tref, textPath, altGlyph, altGlyphDef, altGlyphItem, glyphRef
 fonts       font, glyph, missing-glyph, hkern, vkern, font-face and children
 paint       linearGradient, radialGradient, stop, pattern

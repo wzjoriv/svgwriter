@@ -1,16 +1,22 @@
 # svgwriter design notes
 
-Living document; the agent finishing the project updates it. Starting state = svgwriter 1.1 (see ROADMAP.md).
+Why svgwriter 2.0 is built the way it is. Each section states a decision and its reason; ideas not yet
+built are in ROADMAP.md (Later).
 
-## Current architecture (1.1)
-- `elements/`: one class per SVG 1.1 element (77 after removing web-only ones). Attributes flow through
-  cooperative mixins (`_mixins.py`: core, conditional, style, presentation, xlink, transformable), so a shape's
-  `__init__` forwards `**kwargs` through ~9 classes.
-- `elements/_factory.py`: `ElementFactory` shortcut methods (`doc.circle(...)`) on Document and containers.
-- `elements/_compose.py`, `_geometry.py`: composition operators and skia-backed geometry helpers.
-- `path/`: path data model, parser, arcs, builder. `transform/`: matrix and transform lists. `color/`: parsing.
-- `io/`: writer, parser, async helpers. `ops/`: skia path ops (currently optional). `video/`: ffmpeg export.
-- `cli/`: `python -m svgwriter` (draw, format, info, render, outline, animate).
+## Architecture
+- `elements/`: one class per SVG 1.1 element (77; web-only ones removed), grouped in `shapes/`,
+  `structure/` and `filters/`. Attributes flow through cooperative mixins (`_mixins.py`: core, conditional,
+  style, presentation, xlink), the transform model lives in `_transformable.py`, conversions in
+  `_convert.py`, operators in `_compose.py` and `_geometry.py`, per-character text handles in `_character.py`.
+- `elements/_factory.py`: the `doc.circle(...)` shortcuts, generated from one table and typed from the
+  element constructors.
+- `attributes/`: lengths, `viewBox`, styles and the CSS cascade, IRIs. `color/`: colors and paints.
+- `pathdata/`: path data model, parser, arcs, `PathBuilder`. `transform/`: `Matrix`, `Point`, transform lists.
+- `ops/`: skia-backed geometry, text outlines, rendering and image compositing.
+- `export/`: the format registry; each format family is a private sub-package that registers itself
+  (`_svg`, `_raster`, `_vector`, `_plotter`, `_scene`).
+- `io/`: writer, parser, async helpers. `video/`: SMIL frames and ffmpeg. `builder/`: composite shapes and
+  effects. `cli/`: `python -m svgwriter`.
 
 ## Decisions already made by the owner
 - skia-python and numpy are required dependencies; there is no optional-skia code path.

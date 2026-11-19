@@ -11,3 +11,6 @@ TODO.md
 *.gif
 docs/_build/
 *.prof
+PROMPT.md
+DESIGN.md
+ROADMAP.md

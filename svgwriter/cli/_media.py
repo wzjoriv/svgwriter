@@ -157,7 +157,7 @@ def add_media_commands(commands: argparse._SubParsersAction[argparse.ArgumentPar
     animate.add_argument("--ffmpeg", default=None, help="ffmpeg executable (default: found on PATH)")
     animate.set_defaults(func=_cmd_animate)
 
-    render = commands.add_parser("render", help="rasterize a scene or SVG file to PNG (needs skia-python)")
+    render = commands.add_parser("render", help="rasterize a scene or SVG file to PNG")
     render.add_argument("scene", help="scene script (.py) or SVG file")
     render.add_argument("-o", "--out", "--output", dest="output", default="out.png")
     render.add_argument("--time", type=float, default=0.0, help="seconds passed to the scene's update()")
@@ -165,7 +165,7 @@ def add_media_commands(commands: argparse._SubParsersAction[argparse.ArgumentPar
     render.add_argument("--background", default=None, help="background color (default: transparent)")
     render.set_defaults(func=_cmd_render)
 
-    outline = commands.add_parser("outline", help="write text as glyph outlines (needs skia-python)")
+    outline = commands.add_parser("outline", help="write text as glyph outlines")
     outline.add_argument("text")
     outline.add_argument("--font", default=DEFAULT_FONT)
     outline.add_argument("--size", type=float, default=DEFAULT_TEXT_SIZE)

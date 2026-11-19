@@ -71,7 +71,7 @@ svg.Document.open("sketch.excalidraw").save("sketch.svg")
 ## Development
 
 ```
-pip install -e ".[dev,test]"
+pip install -e ".[dev]"
 python scripts/dev.py test                     # test tiers
 python scripts/dev.py check                    # ruff, tests, docs
 python scripts/dev.py svgwriter conformance    # W3C SVG 1.1 suite (after: svgwriter fetch-suite)
