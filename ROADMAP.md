@@ -158,8 +158,6 @@ Building 20 000 circles takes about 0.23 s, writing 0.17 s, parsing 0.15 s
 - **SMIL evaluation.** A renderer receives the document and the time; a
   helper that applies SMIL values at time *t* would let static renderers
   play `<animate>` without an `update` callback.
-- **Text layout without skia**: font metrics for `text_width` from an AFM
-  table of the core fonts.
 - **Id index.** `get_element_by_id` walks the tree; an index kept by
   `Element.id` would make large documents faster.
 - **Pure-Python fallbacks** for `total_length` and `point_at_length` using

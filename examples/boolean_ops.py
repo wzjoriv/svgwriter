@@ -1,7 +1,6 @@
 """Boolean path operations, text outlines and baked transforms.
 
-Needs skia-python (``pip install 'svgwriter[ops]'``) for the boolean
-operators; without it the script writes the plain composition instead.
+Boolean operators run on skia path ops.
 
 Usage: python boolean_ops.py [OUTPUT_DIR]
 """

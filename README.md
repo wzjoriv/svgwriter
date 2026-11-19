@@ -79,12 +79,9 @@ petal = svg.ellipse(50, 20, 10, 20)
 flower = petal.union(*(petal.clone().rotate(a, about=(50, 50)) for a in range(60, 360, 60)))
 ```
 
-## Geometry with skia-python
+## Geometry with skia
 
-`pip install 'svgwriter'` installs the one optional dependency,
-skia-python. Everything else works without it; the features below raise
-`svgwriter.MissingDependencyError` with the install command when it is
-missing.
+skia-python and numpy are installed with svgwriter, so these always work.
 
 | Feature | API |
 | --- | --- |
@@ -192,8 +189,7 @@ svgwriter/
 ## Installing, tests and examples
 
 ```
-pip install svgwriter            # core, no dependencies
-pip install 'svgwriter[ops]'     # plus skia-python geometry
-python -m pytest -q              # skia and ffmpeg tests skip when those are missing
+pip install svgwriter            # brings skia-python and numpy
+python -m pytest -q              # ffmpeg tests skip when ffmpeg is missing
 python examples/basic_shapes.py /tmp/out
 ```
