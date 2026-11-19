@@ -171,7 +171,10 @@ coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into 
   `doc.export(fmt)`, `Document.open(path)` dispatch through it (`.svg` and text streams keep the SVG writer).
 - Built in: SVG, SVGZ, PNG/JPEG/WebP (rasterize + encode), PDF (skia PDF canvas through the same
   `paint_tree` as rasters, so vectors stay vectors), TikZ (`x=1pt, y=-1pt`, so SVG coordinates are kept), EPS,
-  DXF R12, HPGL, G-code (mill or laser). Importers: SVG/SVGZ, raster images.
+  DXF R12, HPGL, G-code (mill or laser), Excalidraw. Importers: SVG/SVGZ, raster images, DXF (lines,
+  polylines with bulges, circles, arcs, ellipses), HPGL, G-code (cutting moves, arcs, inches, laser),
+  Excalidraw (native shapes, arrows, text, images, groups; hand-drawn roughness and hachure drawn clean).
+  EPS/PDF/TikZ import would need full interpreters and is left for later.
 - Simple vector formats share `export._flatten`: the render copy (CSS resolved, text outlined) reduced to
   painted paths in page coordinates with solid paints; gradients fall back to their first stop, images and
   other unrepresentable content are skipped with a warning. Polyline formats subdivide curves with the

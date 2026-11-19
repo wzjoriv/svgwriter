@@ -143,6 +143,22 @@ def read_gcode(data: bytes, **options: Any) -> Document:
     return read(data.decode("ascii", "replace"), **options)
 
 
+@register("excalidraw", extensions=(".excalidraw",), binary=False)
+def excalidraw(document: Document, **options: Any) -> str:
+    """Excalidraw scene JSON (outlines as line elements)."""
+    from ._excalidraw import to_excalidraw
+
+    return to_excalidraw(document, **options)
+
+
+@register_importer("excalidraw", extensions=(".excalidraw", ".json"))
+def read_excalidraw(data: bytes) -> Document:
+    """Excalidraw scene JSON as native SVG shapes, text and images."""
+    from ._excalidraw import read_excalidraw as read
+
+    return read(data.decode("utf-8"))
+
+
 @register_importer("image",extensions=(".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp"))
 def read_image(data: bytes) -> Document:
     """A raster image as a document holding one embedded ``<image>`` at its pixel size."""

@@ -1,0 +1,178 @@
+"""Excalidraw scenes (``.excalidraw`` JSON) in and out."""
+
+from __future__ import annotations
+
+import json
+import math
+import random
+from typing import TYPE_CHECKING, Any, Final
+
+if TYPE_CHECKING:
+    from ..document import Document
+    from ..elements.base import Element
+
+__all__ = ["read_excalidraw", "to_excalidraw"]
+
+TRANSPARENT: Final = "transparent"
+FONTS: Final = {1: "Virgil, Segoe Print, cursive", 2: "Helvetica, Arial, sans-serif",
+                3: "Cascadia Code, Consolas, monospace", 5: "Excalifont, Segoe Print, cursive",
+                6: "Nunito, Arial, sans-serif", 7: "Lilita One, Arial, sans-serif",
+                8: "Comic Shanns, Comic Sans MS, cursive"}
+ANCHORS: Final = {"left": "start", "center": "middle", "right": "end"}
+ROUND_RADIUS: Final = 32.0
+ROUND_FRACTION: Final = 0.25
+LINE_HEIGHT: Final = 1.25
+ASCENT: Final = 0.8
+ARROW_LENGTH: Final = 15.0
+ARROW_SPREAD: Final = 25.0
+OPACITY_SCALE: Final = 100.0
+EXPORT_TOLERANCE: Final = 0.25
+SOURCE: Final = "svgwriter"
+
+
+def _style(item: dict[str, Any]) -> dict[str, Any]:
+    stroke_width = float(item.get("strokeWidth", 2))
+    style: dict[str, Any] = {
+        "stroke": item.get("strokeColor", "#1e1e1e"),
+        "stroke_width": stroke_width,
+        "fill": "none" if item.get("backgroundColor", TRANSPARENT) == TRANSPARENT else item["backgroundColor"],
+        "stroke_linecap": "round",
+        "stroke_linejoin": "round",
+    }
+    dashes = {"dashed": f"8 {8 + stroke_width:g}", "dotted": f"1.5 {6 + stroke_width:g}"}.get(item.get("strokeStyle", ""))
+    if dashes:
+        style["stroke_dasharray"] = dashes
+    opacity = float(item.get("opacity", OPACITY_SCALE)) / OPACITY_SCALE
+    if opacity < 1:
+        style["opacity"] = opacity
+    return style
+
+
+def _arrowhead(tip: tuple[float, float], before: tuple[float, float], style: dict[str, Any]) -> Element:
+    from ..elements.shapes import Path
+
+    angle = math.atan2(tip[1] - before[1], tip[0] - before[0])
+    spread = math.radians(ARROW_SPREAD)
+    left = (tip[0] - ARROW_LENGTH * math.cos(angle - spread), tip[1] - ARROW_LENGTH * math.sin(angle - spread))
+    right = (tip[0] - ARROW_LENGTH * math.cos(angle + spread), tip[1] - ARROW_LENGTH * math.sin(angle + spread))
+    return Path(**{**style, "fill": "none"}).move_to(*left).line_to(*tip).line_to(*right)
+
+
+def _element(item: dict[str, Any], files: dict[str, Any]) -> Element | None:
+    from ..elements.shapes import Ellipse, Path, Polygon, Rect
+    from ..elements.structure import Group, Image
+    from ..elements.text import Text
+
+    kind = item.get("type")
+    x, y = float(item.get("x", 0)), float(item.get("y", 0))
+    w, h = float(item.get("width", 0)), float(item.get("height", 0))
+    style = _style(item)
+    element: Element | None
+    if kind == "rectangle":
+        radius = min(ROUND_RADIUS, ROUND_FRACTION * min(w, h)) if item.get("roundness") else None
+        element = Rect(x, y, w, h, rx=radius, **style)
+    elif kind == "ellipse":
+        element = Ellipse(x + w / 2, y + h / 2, w / 2, h / 2, **style)
+    elif kind == "diamond":
+        element = Polygon([(x + w / 2, y), (x + w, y + h / 2), (x + w / 2, y + h), (x, y + h / 2)], **style)
+    elif kind in ("line", "arrow", "freedraw"):
+        points = [(x + float(px), y + float(py)) for px, py in item.get("points", [])]
+        if len(points) < 2:
+            return None
+        closed = kind == "line" and points[0] == points[-1] and style["fill"] != "none"
+        path = Path(**({**style, "fill": style["fill"] if closed else "none"})).move_to(*points[0])
+        for point in points[1:]:
+            path.line_to(*point)
+        if closed:
+            path.close()
+        heads = [(points[-1], points[-2]) if item.get("endArrowhead") else None,
+                 (points[0], points[1]) if item.get("startArrowhead") else None]
+        heads = [h for h in heads if h is not None]
+        element = Group(path, *(_arrowhead(tip, before, style) for tip, before in heads)) if heads else path
+    elif kind == "text":
+        size = float(item.get("fontSize", 20))
+        anchor = ANCHORS.get(item.get("textAlign", "left"), "start")
+        ax = {"start": x, "middle": x + w / 2, "end": x + w}[anchor]
+        line_height = float(item.get("lineHeight", LINE_HEIGHT)) * size
+        lines = str(item.get("text", "")).split("\n")
+        group = Group()
+        for index, line in enumerate(lines):
+            group.append(Text(line, x=ax, y=y + ASCENT * size + index * line_height, font_size=size,
+                              font_family=FONTS.get(int(item.get("fontFamily", 1)), FONTS[1]), text_anchor=anchor,
+                              fill=item.get("strokeColor", "#1e1e1e"), xml_space="preserve",
+                              opacity=style.get("opacity")))
+        element = group if len(lines) > 1 else group[0].clone()
+    elif kind == "image":
+        data_url = files.get(item.get("fileId", ""), {}).get("dataURL")
+        if not data_url:
+            return None
+        element = Image(None, x, y, w, h, preserve_aspect_ratio="none", opacity=style.get("opacity"))
+        element.set("xlink:href", data_url)
+    else:
+        return None
+    angle = float(item.get("angle", 0.0))
+    if angle and element is not None:
+        element.rotate(math.degrees(angle), about=(x + w / 2, y + h / 2))  # type: ignore[attr-defined]
+    return element
+
+
+def read_excalidraw(text: str) -> Document:
+    """An Excalidraw scene as a document (sloppiness and hachure fills are drawn clean and solid).
+
+    Notes
+    -----
+    Elements become native SVG: rectangles, ellipses, diamonds (polygons),
+    lines and arrows (paths with arrowheads), freedraw, text (one ``<text>``
+    per line) and embedded images; ``groupIds`` become nested ``<g>``.
+    """
+    from ..document import Document
+    from ..elements.structure import Group
+
+    scene = json.loads(text)
+    if scene.get("type") != "excalidraw":
+        raise ValueError("not an Excalidraw scene (missing type: excalidraw)")
+    files = scene.get("files", {})
+    doc = Document()
+    groups: dict[str, Group] = {}
+    for item in scene.get("elements", []):
+        if item.get("isDeleted"):
+            continue
+        element = _element(item, files)
+        if element is None:
+            continue
+        parent: Any = doc
+        for group_id in reversed(item.get("groupIds", [])):
+            if group_id not in groups:
+                groups[group_id] = parent.add(Group(id=f"group-{group_id}"))
+            parent = groups[group_id]
+        parent.add(element)
+    return doc.fit(padding=10)
+
+
+def to_excalidraw(document: Document, *, seed: int = 0) -> str:
+    """An Excalidraw scene of the flattened outlines (one ``line`` element per subpath)."""
+    from ._cnc import polylines
+    from ._flatten import flatten
+
+    rng = random.Random(seed)
+    elements = []
+    for item in flatten(document).items:
+        stroke = item.stroke.hex if item.stroke is not None else TRANSPARENT
+        fill = item.fill.hex if item.fill is not None else TRANSPARENT
+        opacity = round(OPACITY_SCALE * (item.fill_opacity if item.fill is not None else item.stroke_opacity))
+        for points, closed in polylines(item.data, EXPORT_TOLERANCE):
+            x0, y0 = points[0]
+            xs, ys = [p[0] for p in points], [p[1] for p in points]
+            elements.append({
+                "id": f"svgw{len(elements)}", "type": "line", "x": x0, "y": y0,
+                "width": max(xs) - min(xs), "height": max(ys) - min(ys), "angle": 0,
+                "strokeColor": stroke, "backgroundColor": fill if closed else TRANSPARENT,
+                "fillStyle": "solid", "strokeWidth": item.stroke_width if item.stroke is not None else 0,
+                "strokeStyle": "dashed" if item.dashes else "solid", "roughness": 0, "opacity": opacity,
+                "groupIds": [], "roundness": None, "seed": rng.randrange(2 ** 31), "version": 1,
+                "versionNonce": rng.randrange(2 ** 31), "isDeleted": False, "boundElements": None,
+                "locked": False, "points": [[px - x0, py - y0] for px, py in points],
+                "lastCommittedPoint": None, "startArrowhead": None, "endArrowhead": None,
+            })
+    return json.dumps({"type": "excalidraw", "version": 2, "source": SOURCE, "elements": elements,
+                       "appState": {"viewBackgroundColor": "#ffffff"}, "files": {}}, indent=1)
