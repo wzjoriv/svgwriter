@@ -1,5 +1,5 @@
 """
-``Glyph`` and ``GlyphRange``: live handles on characters of a ``<text>``.
+``Character`` and ``CharacterRange``: live handles on characters of a ``<text>``.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from .shapes import Path
     from .text import Text, TSpan
 
-__all__ = ["Glyph", "GlyphRange"]
+__all__ = ["Character", "CharacterRange"]
 
 
 class _Characters:
@@ -90,7 +90,7 @@ class _Characters:
 
         Returns
         -------
-        Glyph or GlyphRange
+        Character or CharacterRange
             This handle, for chaining.
 
         Examples
@@ -121,7 +121,7 @@ class _Characters:
 
         Returns
         -------
-        Glyph or GlyphRange
+        Character or CharacterRange
             This handle, for chaining.
 
         Examples
@@ -161,7 +161,7 @@ class _Characters:
 
         See Also
         --------
-        Glyph.to_path : One outline path for these characters.
+        Character.to_path : One outline path for these characters.
         """
         self._unsupported("scale")
 
@@ -175,7 +175,7 @@ class _Characters:
 
         See Also
         --------
-        Glyph.to_path : One outline path for these characters.
+        Character.to_path : One outline path for these characters.
         """
         self._unsupported("skew")
 
@@ -267,7 +267,7 @@ class _Characters:
         raise AttributeError(f"{type(self).__name__} has no attribute {name!r}")
 
 
-class Glyph(_Characters):
+class Character(_Characters):
     """A live handle on character *index* of a ``<text>`` (``text[i]``).
 
     Parameters
@@ -289,7 +289,7 @@ class Glyph(_Characters):
     >>> import svgwriter as svg
     >>> t = svg.text("abc", x=0, y=10)
     >>> t[1].translate(0, -4).rotate(20)
-    Glyph('b', 1)
+    Character('b', 1)
     >>> t.dy, t.rotate_
     ((0.0, -4.0, 4.0), (0.0, 20.0, 0.0))
     """
@@ -356,10 +356,10 @@ class Glyph(_Characters):
         return self._boxes()[0].angle
 
     def __repr__(self) -> str:
-        return f"Glyph({self.char!r}, {self.start})"
+        return f"Character({self.char!r}, {self.start})"
 
 
-class GlyphRange(_Characters):
+class CharacterRange(_Characters):
     """A live handle on characters ``[start, stop)`` of a ``<text>`` (``text[a:b]``).
 
     Setting a presentation attribute on the range wraps it in a styled ``<tspan>``.
@@ -387,8 +387,8 @@ class GlyphRange(_Characters):
     def __len__(self) -> int:
         return self.stop - self.start
 
-    def __iter__(self) -> Iterator[Glyph]:
-        return (Glyph(self.text, i) for i in range(self.start, self.stop))
+    def __iter__(self) -> Iterator[Character]:
+        return (Character(self.text, i) for i in range(self.start, self.stop))
 
     def __repr__(self) -> str:
-        return f"GlyphRange({self.chars!r}, {self.start}, {self.stop})"
+        return f"CharacterRange({self.chars!r}, {self.start}, {self.stop})"

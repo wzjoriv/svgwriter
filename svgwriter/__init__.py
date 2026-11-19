@@ -104,6 +104,9 @@ _LAZY = {
 }
 
 
+_TYPING_NAMES = frozenset({"Any", "TYPE_CHECKING", "annotations"})
+
+
 def __getattr__(name: str) -> Any:
     """Import the parser and async helpers on first use."""
     if name in _LAZY:
@@ -117,7 +120,7 @@ def __getattr__(name: str) -> Any:
 
 
 def __dir__() -> list[str]:
-    return sorted({*globals(), *_LAZY})
+    return sorted(name for name in {*globals(), *_LAZY} if not name.startswith("_") and name not in _TYPING_NAMES)
 
 
 __all__ = [

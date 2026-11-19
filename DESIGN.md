@@ -150,7 +150,7 @@ coordinates is explicit: `el.to_path()` returns a `<path>` with `t` folded into 
   spaces, collapse, trim); each run's font comes from its computed style; `x`/`y`/`dx`/`dy`/`rotate` take
   the innermost element with a value at that character's local index (rotate repeats an element's last
   value); `text-anchor` applies per text chunk. Fonts and glyph outlines are cached (`ops.text.glyph_shape`).
-- **Per-character handles:** `text[i]` (`Glyph`) and `text[a:b]` (`GlyphRange`) move (`translate` edits
+- **Per-character handles:** `text[i]` (`Character`) and `text[a:b]` (`CharacterRange`) move (`translate` edits
   `dx`/`dy`: +d at the start, -d after the end) and rotate (`rotate` list) while staying real text; setting
   a presentation attribute on a range (`t[6:11].fill = "red"`) or `wrap(**attrs)` wraps it in a `<tspan>`.
   Scale/skew of part of a text have no SVG form and raise, pointing to `text.glyphs()`, which returns

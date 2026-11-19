@@ -38,10 +38,10 @@ Element classes. Every class also has a lowercase alias (`svgwriter.circle` is `
 .. automodule:: svgwriter.elements.text
    :members:
 
-.. autoclass:: svgwriter.elements._glyph.Glyph
+.. autoclass:: svgwriter.elements._character.Character
    :members:
 
-.. autoclass:: svgwriter.elements._glyph.GlyphRange
+.. autoclass:: svgwriter.elements._character.CharacterRange
    :members:
 ```
 

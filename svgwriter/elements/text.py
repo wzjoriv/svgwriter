@@ -12,8 +12,8 @@ from .._internal._constants import DEFAULT_PRECISION
 from .._internal._typing import LengthAdjust
 from ..attributes.length import LengthLike
 from ..attributes.names import PRESENTATION_ATTRIBUTES
+from ._character import Character, CharacterRange
 from ._geometry import PathOperand
-from ._glyph import Glyph, GlyphRange
 from ._mixins import (
     ConditionalAttributes,
     CoreAttributes,
@@ -200,7 +200,7 @@ class Text(PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag="tex
     -----
     Text takes part in boolean operations through its glyph outlines
     (``Rect(0, 0, 100, 40) - Text("Hi", ...)``). ``text[i]`` is a live
-    :class:`Glyph` for character *i* (``len(text)`` counts characters);
+    :class:`Character` for character *i* (``len(text)`` counts characters);
     :meth:`glyphs` returns one outline path per character. The method
     ``rotate()`` rotates the whole element; the per-character SVG
     ``rotate`` list is ``text.rotate_``.
@@ -289,11 +289,11 @@ class Text(PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag="tex
         return len(self.characters)
 
     @overload
-    def __getitem__(self, index: int) -> Glyph: ...
+    def __getitem__(self, index: int) -> Character: ...
     @overload
-    def __getitem__(self, index: slice) -> GlyphRange: ...
-    def __getitem__(self, index: int | slice) -> Glyph | GlyphRange:
-        """A live :class:`Glyph` (``text[i]``) or :class:`GlyphRange` (``text[a:b]``).
+    def __getitem__(self, index: slice) -> CharacterRange: ...
+    def __getitem__(self, index: int | slice) -> Character | CharacterRange:
+        """A live :class:`Character` (``text[i]``) or :class:`CharacterRange` (``text[a:b]``).
 
         Examples
         --------
@@ -306,14 +306,14 @@ class Text(PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag="tex
             start, stop, step = index.indices(count)
             if step != 1:
                 raise ValueError("text ranges must be contiguous (step 1)")
-            return GlyphRange(self, start, max(start, stop))
+            return CharacterRange(self, start, max(start, stop))
         if not -count <= index < count:
             raise IndexError(f"text has {count} characters, index {index} is out of range")
-        return Glyph(self, index % count)
+        return Character(self, index % count)
 
-    def __iter__(self) -> Iterator[Glyph]:  # type: ignore[override]
-        """The characters as :class:`Glyph` handles; ``children`` holds the runs and spans."""
-        return (Glyph(self, i) for i in range(len(self.characters)))
+    def __iter__(self) -> Iterator[Character]:  # type: ignore[override]
+        """The characters as :class:`Character` handles; ``children`` holds the runs and spans."""
+        return (Character(self, i) for i in range(len(self.characters)))
 
     def run_style(self, source: Element) -> dict[str, object]:
         """Presentation attributes that apply to glyphs coming from *source*.

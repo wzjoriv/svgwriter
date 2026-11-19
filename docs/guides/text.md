@@ -17,7 +17,7 @@ ancestors, and CSS from `<style>` elements all apply, as in a browser. Whitespac
 
 ## Characters as handles
 
-`text[i]` is a live {class}`~svgwriter.elements.text.Glyph` and `text[a:b]` a `GlyphRange`. Moving and
+`text[i]` is a live {class}`~svgwriter.elements.text.Character` and `text[a:b]` a `CharacterRange`. Moving and
 rotating them edits SVG's per-character `dx`/`dy`/`rotate` lists, so the result is still real,
 selectable text:
 
