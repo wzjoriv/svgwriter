@@ -141,6 +141,54 @@ class PathOperand(Element):
         """
         return self.to_path()
 
+    def expand_pattern(self) -> Element:
+        """Replace a pattern fill by copies of its tile, clipped to this outline (plain vector graphics).
+
+        Useful for targets without pattern support (plotters, cutters, some
+        editors). The stroke, if any, is kept on top.
+
+        Returns
+        -------
+        Group
+            A ``<g>`` with this element's transform holding the clipped tiles
+            and an unfilled copy for the stroke.
+
+        Raises
+        ------
+        ValueError
+            If ``fill`` is not a ``<pattern>``.
+
+        See Also
+        --------
+        svgwriter.Pattern.tiles : The tiles on their own.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> dots = svg.Pattern(svg.circle(2, 2, 1), width=4, height=4, pattern_units="userSpaceOnUse")
+        >>> expanded = svg.rect(0, 0, 8, 8, fill=dots, stroke="black").expand_pattern()
+        >>> [e.tag for e in expanded], len(expanded[0][0])
+        (['g', 'rect'], 4)
+        """
+        from .paint import Pattern
+        from .shapes import Path
+        from .structure import Group
+
+        pattern = getattr(self.attributes.get("fill"), "element", None)
+        if not isinstance(pattern, Pattern):
+            raise ValueError(f"<{self.tag}> is not filled with a <pattern>")
+        box = self.local_bbox()
+        if box is None:
+            raise TypeError(f"<{self.tag}> has no known size")
+        tiles = Group(pattern.tiles(box, target=box)).clip(Path(self.local_outline()))
+        outline = self.clone()
+        outline.set("fill", "none")
+        outline.discard("transform")
+        result = Group(tiles, transform=self.t)
+        if outline.get("stroke") not in (None, "none"):
+            result.add(outline)
+        return result
+
     def _with_data(self, data: PathData) -> Path:
         path = self.to_path()
         path.d = data

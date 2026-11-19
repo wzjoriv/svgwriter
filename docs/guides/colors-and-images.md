@@ -48,6 +48,21 @@ links to it instead (linked local files are drawn when rendering). Images are wr
 Any element can become an image: `el.to_image(scale=2)` rasterizes it and places the result where the
 element was.
 
+## Patterns
+
+A `<pattern>` repeats a tile. It converts both ways:
+
+```python
+dots = svg.Pattern(svg.circle(5, 5, 3, fill="crimson"), width=10, height=10, pattern_units="userSpaceOnUse")
+tile = dots.to_image(scale=4)                 # one tile as pixels
+again = svg.Pattern.from_image(tile)          # pixels as a pattern
+badge = svg.circle(30, 30, 25, fill=dots, stroke="black")
+plain = badge.expand_pattern()                # tiles clipped to the circle: plain vector graphics
+```
+
+`expand_pattern()` is for targets without pattern support (plotters, cutters, some editors);
+`pattern.tiles(area)` gives the tile copies on their own.
+
 ## Compositing images
 
 The boolean operators that combine shape areas combine image coverage too, using the Porter-Duff
