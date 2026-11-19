@@ -1,4 +1,6 @@
-"""Paint servers: gradients, stops and patterns."""
+"""
+Paint servers: gradients, stops and patterns.
+"""
 
 from __future__ import annotations
 
@@ -79,9 +81,9 @@ class Gradient(
     *stops : Stop
         Color stops.
     gradient_units : {"objectBoundingBox", "userSpaceOnUse"}, optional
-        Coordinate system of the gradient vector.
+        Coordinate system of the gradient vector. Defaults to None.
     spread_method : {"pad", "reflect", "repeat"}, optional
-        What happens beyond the ends of the vector.
+        What happens beyond the ends of the vector. Defaults to None.
     **kwargs
         Presentation, core and other SVG attributes in Python spelling.
 
@@ -89,6 +91,13 @@ class Gradient(
     --------
     LinearGradient : Gradient along a line.
     RadialGradient : Gradient around a center.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> grad = svg.LinearGradient(svg.Stop(0, "red"), svg.Stop(1, "blue"))
+    >>> isinstance(grad, svg.Gradient), len(grad)
+    (True, 2)
     """
 
     def __init__(

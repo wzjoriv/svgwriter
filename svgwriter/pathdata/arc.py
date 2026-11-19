@@ -1,4 +1,6 @@
-"""Endpoint-to-center conversion for elliptical arcs (SVG 1.1, F.6.5)."""
+"""
+Endpoint-to-center conversion for elliptical arcs (SVG 1.1, F.6.5).
+"""
 
 from __future__ import annotations
 

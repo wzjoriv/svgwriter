@@ -1,4 +1,6 @@
-"""``<path>`` and its composition operators."""
+"""
+``<path>`` and its composition operators.
+"""
 
 from __future__ import annotations
 
@@ -467,7 +469,6 @@ class Path(Shape, tag="path"):
         return self.d.bbox or BBox(0.0, 0.0, 0.0, 0.0)
 
     def local_outline(self) -> PathData:
-        """The path data itself."""
         return self.d
 
     def _replace(self, data: PathData) -> Self:

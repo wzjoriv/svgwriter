@@ -1,4 +1,6 @@
-"""Baking an affine matrix into path commands."""
+"""
+Baking an affine matrix into path commands.
+"""
 
 from __future__ import annotations
 

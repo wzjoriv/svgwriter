@@ -1,4 +1,5 @@
-"""Lowercase aliases for every element class.
+"""
+Lowercase aliases for every element class.
 
 ``svg.circle`` is ``svg.Circle``, ``svg.linear_gradient`` is
 ``svg.LinearGradient`` and so on: the same class under the SVG-flavoured

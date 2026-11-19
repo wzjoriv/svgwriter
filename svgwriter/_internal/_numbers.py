@@ -1,4 +1,6 @@
-"""Number formatting for attribute values."""
+"""
+Number formatting for attribute values.
+"""
 
 from __future__ import annotations
 

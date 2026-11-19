@@ -1,4 +1,6 @@
-"""Automatic element id generation."""
+"""
+Automatic element id generation.
+"""
 
 from __future__ import annotations
 

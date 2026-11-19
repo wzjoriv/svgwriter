@@ -1,4 +1,6 @@
-"""Namespaces, defaults and unit conversion factors."""
+"""
+Namespaces, defaults and unit conversion factors.
+"""
 
 from __future__ import annotations
 

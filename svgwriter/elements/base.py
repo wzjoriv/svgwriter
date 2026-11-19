@@ -1,4 +1,6 @@
-"""The ``Element`` base class and the element registry."""
+"""
+The ``Element`` base class and the element registry.
+"""
 
 from __future__ import annotations
 
@@ -660,6 +662,19 @@ class Element(Composable):
         Looks at the inline ``style``, matching ``<style>`` rules, the
         presentation attribute, then ancestors for inherited properties.
 
+        Parameters
+        ----------
+        name : str
+            Property name, in SVG (``font-size``) or Python (``font_size``) spelling.
+        default : object, optional
+            Returned when the property is not set anywhere. Defaults to None.
+
+        Returns
+        -------
+        object
+            The property's value, written as SVG text when it is not a plain number,
+            or *default*.
+
         Examples
         --------
         >>> import svgwriter as svg
@@ -836,19 +851,19 @@ class Element(Composable):
         Element
             A copy of the same class, or a :class:`~svgwriter.Use`.
 
-        Examples
-        --------
-        >>> import svgwriter as svg
-        >>> star = svg.circle(0, 0, 5, id="dot")
-        >>> star.clone().id, star.clone(linked=True).tag
-        ('dot', 'use')
-
         Notes
         -----
         A linked clone needs the original in the same document: placed
         anywhere, or unplaced, in which case it moves into ``<defs>`` when
         the ``<use>`` joins the document. ``copy.copy`` and ``copy.deepcopy``
         both behave like ``clone()``.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> star = svg.circle(0, 0, 5, id="dot")
+        >>> star.clone().id, star.clone(linked=True).tag
+        ('dot', 'use')
         """
         if linked:
             from .structure import Use

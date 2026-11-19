@@ -1,4 +1,6 @@
-"""The ``Shape`` base class and shared helpers."""
+"""
+The ``Shape`` base class and shared helpers.
+"""
 
 from __future__ import annotations
 
@@ -82,5 +84,4 @@ class Shape(PathOperand, GraphicsElement, ABC, category=Category.SHAPE):
         """
 
     def local_bbox(self) -> BBox:
-        """The geometric :attr:`bbox`."""
         return self.bbox

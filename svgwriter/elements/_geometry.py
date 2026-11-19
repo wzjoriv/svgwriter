@@ -1,4 +1,6 @@
-"""``PathOperand``: outlines, path conversion and geometric operators."""
+"""
+``PathOperand``: outlines, path conversion and geometric operators.
+"""
 
 from __future__ import annotations
 

@@ -1,4 +1,6 @@
-"""Porter-Duff operators for images: ``a | b``, ``a & b``, ``a - b``, ``a ^ b`` and ``composite``."""
+"""
+Porter-Duff operators for images: ``a | b``, ``a & b``, ``a - b``, ``a ^ b`` and ``composite``.
+"""
 
 from __future__ import annotations
 
@@ -60,7 +62,48 @@ def composite(
     source: Element, backdrop: Element, operator: Operator = CompositeOperator.OVER,
     *, k: Sequence[float] = (), scale: float | None = None,
 ) -> Image:
-    """Composite two elements into a new ``<image>`` (see :meth:`Compositing.composite`)."""
+    """Composite two elements into a new ``<image>`` (see :meth:`Compositing.composite`).
+
+    Parameters
+    ----------
+    source : Element
+        The element drawn on top: an image or any drawable element.
+    backdrop : Element
+        What lies underneath.
+    operator : CompositeOperator, BlendMode or str, optional
+        An ``feComposite`` operator or ``feBlend`` mode. Defaults to ``CompositeOperator.OVER``.
+    k : sequence of float, optional
+        ``(k1, k2, k3, k4)`` for ``"arithmetic"``. Defaults to ().
+    scale : float, optional
+        Pixels per user unit of the result. Defaults to None, which uses the
+        finer resolution of the images involved (1 for other elements).
+
+    Returns
+    -------
+    Image
+        A new image; both operands are left unchanged.
+
+    Raises
+    ------
+    ValueError
+        If the operator is unknown.
+    TypeError
+        If an operand has no known size.
+
+    See Also
+    --------
+    Compositing.composite : The same as a method.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import svgwriter as svg
+    >>> from svgwriter.elements.structure._compositing import composite
+    >>> red = svg.Image(np.array([[[1.0, 0, 0]]]), alpha=0.5)
+    >>> blue = svg.Image(np.array([[[0, 0, 1.0]]]))
+    >>> composite(red, blue).rgba().round(2).tolist()
+    [[[0.5, 0.0, 0.5, 1.0]]]
+    """
     from ...ops.composite import composite_rgba, resolve_operator
     from .._convert import render_box
     from ._image import Image
@@ -87,6 +130,22 @@ class Compositing:
     which is rasterized at the image's resolution. With numbers and
     offsets the operators keep their transform meaning (``img * 2``,
     ``img - (dx, dy)``), and ``a + b`` still groups.
+
+    See Also
+    --------
+    Compositing.composite : The same operators with an explicit operator, mode and scale.
+    svgwriter.elements.structure.Pixels.composite : Composite raw pixel arrays.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import svgwriter as svg
+    >>> red = svg.Image(np.array([[[1.0, 0, 0]]]), alpha=0.5)
+    >>> blue = svg.Image(np.array([[[0, 0, 1.0]]]))
+    >>> (red | blue).rgba().round(2).tolist()
+    [[[0.5, 0.0, 0.5, 1.0]]]
+    >>> (red - blue).alpha.round(2).tolist()
+    [[[0.0]]]
     """
 
     def composite(

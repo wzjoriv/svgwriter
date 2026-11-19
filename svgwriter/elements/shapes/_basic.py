@@ -1,4 +1,6 @@
-"""``rect``, ``circle``, ``ellipse`` and ``line``."""
+"""
+``rect``, ``circle``, ``ellipse`` and ``line``.
+"""
 
 from __future__ import annotations
 
@@ -227,7 +229,6 @@ class Rect(Shape, tag="rect"):
         return min(rx or 0.0, box.width / 2), min(ry or 0.0, box.height / 2)
 
     def local_outline(self) -> PathData:
-        """The outline as path data, with arcs at rounded corners."""
         x, y, w, h = self.bbox
         rx, ry = self.corner_radii()
         builder = PathBuilder().move_to(x + rx, y).horizontal_to(x + w - rx)
@@ -328,7 +329,6 @@ class Circle(Shape, tag="circle"):
         return BBox(cx - r, cy - r, 2 * r, 2 * r)
 
     def local_outline(self) -> PathData:
-        """The outline as path data, two half-circle arcs."""
         r = user_units(self.r)
         return _ellipse_outline(user_units(self.cx), user_units(self.cy), r, r)
 
@@ -407,7 +407,6 @@ class Ellipse(Shape, tag="ellipse"):
         return BBox(cx - rx, cy - ry, 2 * rx, 2 * ry)
 
     def local_outline(self) -> PathData:
-        """The outline as path data, two half-ellipse arcs."""
         return _ellipse_outline(*(user_units(v) for v in (self.cx, self.cy, self.rx, self.ry)))
 
 
@@ -471,5 +470,4 @@ class Line(Shape, tag="line"):
         return BBox.from_points([(user_units(self.x1), user_units(self.y1)), (user_units(self.x2), user_units(self.y2))])
 
     def local_outline(self) -> PathData:
-        """The outline as path data, a single segment."""
         return PathBuilder().move_to(user_units(self.x1), user_units(self.y1)).line_to(user_units(self.x2), user_units(self.y2)).build()

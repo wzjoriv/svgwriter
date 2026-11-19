@@ -1,4 +1,6 @@
-"""Typed child lists, composition operators and nestable containers."""
+"""
+Typed child lists, composition operators and nestable containers.
+"""
 
 from __future__ import annotations
 
@@ -34,6 +36,20 @@ def attach_cursor(element: Element, stack: Stack[Element] | None) -> None:
         The element used in a ``with`` statement.
     stack : Stack of Element or None
         The insertion stack to move; None does nothing.
+
+    See Also
+    --------
+    cursor_of : Look up the stack attached to an element.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter._internal._stack import Stack
+    >>> from svgwriter.elements.container import attach_cursor, cursor_of
+    >>> group, stack = svg.group(), Stack()
+    >>> attach_cursor(group, stack)
+    >>> cursor_of(group) is stack
+    True
     """
     if stack is not None:
         _CURSORS[element] = stack
@@ -51,6 +67,17 @@ def cursor_of(element: Element) -> Stack[Element] | None:
     -------
     Stack of Element or None
         The stack set by :func:`attach_cursor`, or None.
+
+    See Also
+    --------
+    attach_cursor : Attach an insertion stack to an element.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.elements.container import cursor_of
+    >>> cursor_of(svg.group()) is None
+    True
     """
     return _CURSORS.get(element)
 

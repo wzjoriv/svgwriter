@@ -1,4 +1,6 @@
-"""``desc``, ``title`` and ``metadata``."""
+"""
+``desc``, ``title`` and ``metadata``.
+"""
 
 from __future__ import annotations
 

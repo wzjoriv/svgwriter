@@ -1,4 +1,6 @@
-"""Structural protocols used by attribute serialization."""
+"""
+Structural protocols used by attribute serialization.
+"""
 
 from __future__ import annotations
 
@@ -25,7 +27,19 @@ class SupportsSVG(Protocol):
     """
 
     def svg_value(self, precision: int = ...) -> str:
-        """Return the text to write into the SVG attribute."""
+        """Return the text to write into the SVG attribute.
+
+        Parameters
+        ----------
+        precision : int, optional
+            Maximum number of decimal places for numbers. Implementations
+            default to the library default precision.
+
+        Returns
+        -------
+        str
+            The attribute value as SVG text.
+        """
 
 
 @runtime_checkable
@@ -44,4 +58,15 @@ class TextSink(Protocol):
     """
 
     def write(self, text: str, /) -> object:
-        """Write text to the stream."""
+        """Write text to the stream.
+
+        Parameters
+        ----------
+        text : str
+            The text to write.
+
+        Returns
+        -------
+        object
+            Ignored; streams usually return the number of characters written.
+        """

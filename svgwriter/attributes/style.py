@@ -1,4 +1,6 @@
-"""Inline CSS declarations and small style sheets."""
+"""
+Inline CSS declarations and small style sheets.
+"""
 
 from __future__ import annotations
 

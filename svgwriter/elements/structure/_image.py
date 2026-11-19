@@ -1,4 +1,6 @@
-"""``<image>`` backed by numpy pixels: color channels plus a broadcastable alpha."""
+"""
+``<image>`` backed by numpy pixels: color channels plus a broadcastable alpha.
+"""
 
 from __future__ import annotations
 
@@ -175,14 +177,33 @@ class Pixels:
 
     @property
     def color(self) -> np.ndarray:
-        """Color channels, ``float32`` ``(H, W, 1|3)`` in ``0..1``; editable in place."""
+        """Color channels, ``float32`` ``(H, W, 1|3)`` in ``0..1``; editable in place.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from svgwriter.elements.structure import Pixels
+        >>> pixels = Pixels.from_array(np.zeros((2, 3, 3)))
+        >>> pixels.color.shape
+        (2, 3, 3)
+        """
         self._load()
         assert self._color is not None
         return self._color
 
     @property
     def alpha(self) -> np.ndarray | float:
-        """Alpha: ``1.0`` when opaque, else ``float32`` ``(H, W, 1)``."""
+        """Alpha: ``1.0`` when opaque, else ``float32`` ``(H, W, 1)``.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from svgwriter.elements.structure import Pixels
+        >>> Pixels.from_array(np.zeros((2, 3, 3))).alpha
+        1.0
+        >>> Pixels.from_array(np.zeros((2, 3, 3)), alpha=0.5).alpha.shape
+        (2, 3, 1)
+        """
         self._load()
         return self._alpha
 
@@ -634,5 +655,19 @@ class Image(
         return self._require().encode(format, quality=quality)
 
     def local_bbox(self) -> BBox | None:
-        """The ``x``/``y``/``width``/``height`` box, or None if unsized."""
+        """Box from the ``x``, ``y``, ``width`` and ``height`` attributes.
+
+        Returns
+        -------
+        BBox or None
+            The image rectangle, or None when it has no size.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Image(width=4, height=3).local_bbox()
+        BBox(x=0.0, y=0.0, width=4.0, height=3.0)
+        >>> svg.Image().local_bbox() is None
+        True
+        """
         return positioned_bbox(self)

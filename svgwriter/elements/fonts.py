@@ -1,4 +1,6 @@
-"""SVG fonts: ``font``, glyphs, kerning and ``font-face``."""
+"""
+SVG fonts: ``font``, glyphs, kerning and ``font-face``.
+"""
 
 from __future__ import annotations
 

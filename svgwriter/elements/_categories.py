@@ -1,4 +1,6 @@
-"""Element categories and content models."""
+"""
+Element categories and content models.
+"""
 
 from __future__ import annotations
 

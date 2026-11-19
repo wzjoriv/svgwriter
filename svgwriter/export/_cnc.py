@@ -1,4 +1,6 @@
-"""Polyline formats for CAD, plotters and CNC machines: DXF (R12), HPGL and G-code."""
+"""
+Polyline formats for CAD, plotters and CNC machines: DXF (R12), HPGL and G-code.
+"""
 
 from __future__ import annotations
 

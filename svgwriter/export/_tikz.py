@@ -1,4 +1,6 @@
-"""TikZ output from a flattened scene."""
+"""
+TikZ output from a flattened scene.
+"""
 
 from __future__ import annotations
 

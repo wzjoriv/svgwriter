@@ -1,4 +1,6 @@
-"""Rasterizing with skia: SVG text, documents and element trees into RGBA arrays."""
+"""
+Rasterizing with skia: SVG text, documents and element trees into RGBA arrays.
+"""
 
 from __future__ import annotations
 

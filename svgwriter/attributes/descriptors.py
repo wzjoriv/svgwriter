@@ -1,4 +1,6 @@
-"""``Attr``: a data descriptor that stores values in ``element.attributes``."""
+"""
+``Attr``: a data descriptor that stores values in ``element.attributes``.
+"""
 
 from __future__ import annotations
 

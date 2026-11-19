@@ -1,4 +1,6 @@
-"""XML escaping for text and attribute values."""
+"""
+XML escaping for text and attribute values.
+"""
 
 from __future__ import annotations
 

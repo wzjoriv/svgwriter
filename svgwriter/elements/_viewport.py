@@ -1,4 +1,6 @@
-"""The ``viewBox``/``preserveAspectRatio`` attribute group and positioning."""
+"""
+The ``viewBox``/``preserveAspectRatio`` attribute group and positioning.
+"""
 
 from __future__ import annotations
 

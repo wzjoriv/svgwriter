@@ -1,4 +1,6 @@
-"""Immutable path data with normalization and bounding boxes."""
+"""
+Immutable path data with normalization and bounding boxes.
+"""
 
 from __future__ import annotations
 
@@ -513,6 +515,11 @@ class PathData(Sequence[PathCommand]):
         """Approximate bounding box, or ``None`` for empty data.
 
         Computed from sampled outline points, so curves are approximate.
+
+        Returns
+        -------
+        BBox or None
+            The box around the sampled points, or ``None`` when there are none.
 
         Examples
         --------

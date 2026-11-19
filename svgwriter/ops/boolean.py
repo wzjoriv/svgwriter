@@ -1,4 +1,6 @@
-"""Boolean path operations (union, intersection, difference, xor)."""
+"""
+Boolean path operations (union, intersection, difference, xor).
+"""
 
 from __future__ import annotations
 

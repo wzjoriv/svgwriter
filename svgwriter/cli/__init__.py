@@ -33,6 +33,13 @@ def build_parser() -> argparse.ArgumentParser:
     See Also
     --------
     main : Parse arguments and run a command.
+
+    Examples
+    --------
+    >>> from svgwriter.cli import build_parser
+    >>> args = build_parser().parse_args(["draw", "star", "--size", "50"])
+    >>> args.command, args.shape, args.size
+    ('draw', 'star', 50.0)
     """
     parser = argparse.ArgumentParser(prog="svgwriter", description="Write, reformat, inspect and animate SVG 1.1 files.")
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")

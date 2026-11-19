@@ -1,4 +1,6 @@
-"""Flatten a document into filled and stroked paths in page coordinates for simple vector formats."""
+"""
+Flatten a document into filled and stroked paths in page coordinates for simple vector formats.
+"""
 
 from __future__ import annotations
 

@@ -1,4 +1,6 @@
-"""``<filter>`` and the shared filter-primitive base classes."""
+"""
+``<filter>`` and the shared filter-primitive base classes.
+"""
 
 from __future__ import annotations
 

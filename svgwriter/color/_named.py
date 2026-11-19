@@ -1,4 +1,6 @@
-"""The 147 SVG 1.1 color keywords."""
+"""
+The 147 SVG 1.1 color keywords.
+"""
 
 from __future__ import annotations
 

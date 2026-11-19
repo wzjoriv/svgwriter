@@ -1,4 +1,6 @@
-"""Elements without a dedicated class."""
+"""
+Elements without a dedicated class.
+"""
 
 from __future__ import annotations
 

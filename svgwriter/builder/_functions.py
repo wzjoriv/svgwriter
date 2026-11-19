@@ -1,4 +1,6 @@
-"""Small conveniences: styled presets of the basic shapes."""
+"""
+Small conveniences: styled presets of the basic shapes.
+"""
 
 from __future__ import annotations
 

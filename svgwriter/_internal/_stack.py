@@ -1,4 +1,6 @@
-"""A tiny typed LIFO stack (pre-3.12 spelling)."""
+"""
+A tiny typed LIFO stack (pre-3.12 spelling).
+"""
 
 from __future__ import annotations
 

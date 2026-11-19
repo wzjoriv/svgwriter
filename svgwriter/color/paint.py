@@ -1,4 +1,6 @@
-"""The ``<paint>`` type used by ``fill`` and ``stroke``."""
+"""
+The ``<paint>`` type used by ``fill`` and ``stroke``.
+"""
 
 from __future__ import annotations
 

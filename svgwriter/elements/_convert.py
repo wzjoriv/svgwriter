@@ -1,4 +1,6 @@
-"""``Convertible``: conversions and clipping shared by every graphics element."""
+"""
+``Convertible``: conversions and clipping shared by every graphics element.
+"""
 
 from __future__ import annotations
 
@@ -33,6 +35,15 @@ class Convertible(Transformable):
     See Also
     --------
     svgwriter.elements._transformable.Transformable : Transforms and anchors.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> box = svg.rect(0, 0, 10, 5, fill="red")
+    >>> type(box.to_path()).__name__
+    'Path'
+    >>> box.rasterize().shape
+    (5, 10, 4)
     """
 
     def to_path(self, **kwargs: Any) -> Path:
@@ -152,17 +163,17 @@ class Convertible(Transformable):
         --------
         unclip : Remove the clip.
 
+        Notes
+        -----
+        :meth:`to_path` (or :meth:`flatten_clip`) bakes the clip into one
+        path with a boolean intersection.
+
         Examples
         --------
         >>> import svgwriter as svg
         >>> art = svg.rect(0, 0, 100, 100, fill="teal").clip(svg.circle(50, 50, 40))
         >>> art.clip_region.tag
         'clipPath'
-
-        Notes
-        -----
-        :meth:`to_path` (or :meth:`flatten_clip`) bakes the clip into one
-        path with a boolean intersection.
         """
         from .clip import ClipPath
 
@@ -274,7 +285,35 @@ class Convertible(Transformable):
 
 
 def render_box(element: Element, box: BBox, scale: float, background: str | None = None) -> np.ndarray:
-    """Render *element* alone onto the canvas *box* (parent coordinates) as straight RGBA."""
+    """Render *element* alone onto the canvas *box* (parent coordinates) as straight RGBA.
+
+    Parameters
+    ----------
+    element : Element
+        The element to draw; any definitions it references are carried along.
+    box : BBox
+        The canvas rectangle in the element's parent coordinates.
+    scale : float
+        Pixels per user unit.
+    background : str, optional
+        Color painted under the element. Defaults to None (transparent).
+
+    Returns
+    -------
+    numpy.ndarray
+        ``float32`` array, shape ``(rows, columns, 4)``, straight RGBA in ``0..1``.
+
+    See Also
+    --------
+    Convertible.rasterize : Render an element on its own bounds.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.elements._convert import render_box
+    >>> render_box(svg.rect(0, 0, 4, 4, fill="red"), svg.BBox(0, 0, 8, 4), 1.0).shape
+    (4, 8, 4)
+    """
     from ..io.writer import to_string
     from ..ops.render import render_tree
     from ..transform.matrix import Matrix

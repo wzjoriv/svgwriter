@@ -1,4 +1,6 @@
-"""Transform lists: parsing, building and composition."""
+"""
+Transform lists: parsing, building and composition.
+"""
 
 from __future__ import annotations
 

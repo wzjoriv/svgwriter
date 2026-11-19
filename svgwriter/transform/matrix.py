@@ -1,4 +1,6 @@
-"""2-D affine matrices in SVG's ``[a b c d e f]`` layout."""
+"""
+2-D affine matrices in SVG's ``[a b c d e f]`` layout.
+"""
 
 from __future__ import annotations
 
@@ -430,6 +432,11 @@ class Matrix:
 
     def as_tuple(self) -> Matrix6:
         """Return the entries as ``(a, b, c, d, e, f)``.
+
+        Returns
+        -------
+        tuple of float
+            The six matrix entries in SVG ``matrix()`` order.
 
         Examples
         --------

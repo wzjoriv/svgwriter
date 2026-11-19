@@ -1,4 +1,6 @@
-"""``viewBox`` and ``preserveAspectRatio``."""
+"""
+``viewBox`` and ``preserveAspectRatio``.
+"""
 
 from __future__ import annotations
 

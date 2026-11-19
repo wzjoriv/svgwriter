@@ -1,4 +1,6 @@
-"""Mapping between Python keyword names and SVG attribute names."""
+"""
+Mapping between Python keyword names and SVG attribute names.
+"""
 
 from __future__ import annotations
 

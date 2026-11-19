@@ -1,4 +1,6 @@
-"""The six SVG transform functions as value objects."""
+"""
+The six SVG transform functions as value objects.
+"""
 
 from __future__ import annotations
 

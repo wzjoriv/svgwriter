@@ -1,4 +1,6 @@
-"""Tokenizer and parser for path data (the ``d`` attribute)."""
+"""
+Tokenizer and parser for path data (the ``d`` attribute).
+"""
 
 from __future__ import annotations
 

@@ -1,4 +1,6 @@
-"""Converting paths to and from skia."""
+"""
+Converting paths to and from skia.
+"""
 
 from __future__ import annotations
 

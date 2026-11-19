@@ -1,4 +1,6 @@
-"""``animate``, ``render`` and ``outline``: commands needing ffmpeg or skia."""
+"""
+``animate``, ``render`` and ``outline``: commands needing ffmpeg or skia.
+"""
 
 from __future__ import annotations
 

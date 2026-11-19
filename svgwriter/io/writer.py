@@ -1,4 +1,6 @@
-"""Serialization of element trees to SVG text."""
+"""
+Serialization of element trees to SVG text.
+"""
 
 from __future__ import annotations
 

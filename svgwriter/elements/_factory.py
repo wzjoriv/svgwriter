@@ -1,4 +1,5 @@
-"""``ElementFactory``: ``doc.circle(...)``-style shortcuts.
+"""
+``ElementFactory``: ``doc.circle(...)``-style shortcuts.
 
 Each shortcut builds one element from its arguments, adds it and returns
 it. Shapes and text go to the insertion point; paint servers, clip paths,

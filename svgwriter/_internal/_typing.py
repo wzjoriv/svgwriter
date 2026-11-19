@@ -1,4 +1,6 @@
-"""Shared type aliases, type variables and version shims."""
+"""
+Shared type aliases, type variables and version shims.
+"""
 
 from __future__ import annotations
 

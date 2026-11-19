@@ -1,4 +1,6 @@
-"""``style``, ``view`` and ``color-profile``."""
+"""
+``style``, ``view`` and ``color-profile``.
+"""
 
 from __future__ import annotations
 

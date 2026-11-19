@@ -1,4 +1,6 @@
-"""Fluent construction of path data."""
+"""
+Fluent construction of path data.
+"""
 
 from __future__ import annotations
 

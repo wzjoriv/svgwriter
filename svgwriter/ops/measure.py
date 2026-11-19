@@ -1,4 +1,6 @@
-"""Exact measurement, hit testing and stroking of outlines."""
+"""
+Exact measurement, hit testing and stroking of outlines.
+"""
 
 from __future__ import annotations
 

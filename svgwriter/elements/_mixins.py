@@ -1,4 +1,5 @@
-"""Attribute groups shared by many elements (SVG 1.1, appendix M).
+"""
+Attribute groups shared by many elements (SVG 1.1, appendix M).
 
 Each group is a cooperative base: it takes its own keywords and forwards
 the rest with ``super().__init__(*args, **kwargs)``.

@@ -1,4 +1,6 @@
-"""IRI references: ``#id`` and ``url(#id)``."""
+"""
+IRI references: ``#id`` and ``url(#id)``.
+"""
 
 from __future__ import annotations
 
@@ -153,6 +155,12 @@ class FuncIRI(IRI):
         -------
         str
             The IRI wrapped in ``url()``.
+
+        Examples
+        --------
+        >>> from svgwriter.attributes import FuncIRI
+        >>> FuncIRI("#grad").svg_value()
+        'url(#grad)'
         """
         return f"url({self.current})"
 

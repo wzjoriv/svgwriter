@@ -1,4 +1,6 @@
-"""Rendering a document over time and encoding the frames."""
+"""
+Rendering a document over time and encoding the frames.
+"""
 
 from __future__ import annotations
 

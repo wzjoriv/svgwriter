@@ -1,4 +1,6 @@
-"""Frame data returned by renderers: PNG bytes or RGBA arrays."""
+"""
+Frame data returned by renderers: PNG bytes or RGBA arrays.
+"""
 
 from __future__ import annotations
 
@@ -65,6 +67,13 @@ class Frame:
     See Also
     --------
     to_frame : Build a frame from renderer output.
+
+    Examples
+    --------
+    >>> from svgwriter.video import Frame
+    >>> frame = Frame(0, 0.0, 2, 1, bytes(8), png=False)
+    >>> frame.width * frame.height * 4 == len(frame.data)
+    True
     """
 
     index: int

@@ -1,4 +1,6 @@
-"""``polyline`` and ``polygon``."""
+"""
+``polyline`` and ``polygon``.
+"""
 
 from __future__ import annotations
 
@@ -230,7 +232,6 @@ class Polyline(Shape, tag="polyline"):
         return builder
 
     def local_outline(self) -> PathData:
-        """The outline as path data, open."""
         return self._builder().build()
 
 
@@ -271,6 +272,5 @@ class Polygon(Polyline, tag="polygon"):
         return float(abs(np.dot(x, np.roll(y, -1)) - np.dot(y, np.roll(x, -1))) / 2.0)
 
     def local_outline(self) -> PathData:
-        """The outline as path data, closed."""
         builder = self._builder()
         return builder.close().build() if len(builder) else builder.build()

@@ -1,4 +1,6 @@
-"""``Composable``: ``a + b`` builds a group."""
+"""
+``Composable``: ``a + b`` builds a group.
+"""
 
 from __future__ import annotations
 

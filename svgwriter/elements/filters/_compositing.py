@@ -1,4 +1,6 @@
-"""Compositing primitives: blend, composite, merge, offset, flood, tile, image."""
+"""
+Compositing primitives: blend, composite, merge, offset, flood, tile, image.
+"""
 
 from __future__ import annotations
 

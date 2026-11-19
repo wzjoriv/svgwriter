@@ -1,4 +1,6 @@
-"""Asynchronous wrappers around the writer."""
+"""
+Asynchronous wrappers around the writer.
+"""
 
 from __future__ import annotations
 

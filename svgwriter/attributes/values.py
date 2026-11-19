@@ -1,4 +1,6 @@
-"""Attribute value serialization via ``functools.singledispatch``."""
+"""
+Attribute value serialization via ``functools.singledispatch``.
+"""
 
 from __future__ import annotations
 

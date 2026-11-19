@@ -1,4 +1,6 @@
-"""``Glyph`` and ``GlyphRange``: live handles on characters of a ``<text>``."""
+"""
+``Glyph`` and ``GlyphRange``: live handles on characters of a ``<text>``.
+"""
 
 from __future__ import annotations
 

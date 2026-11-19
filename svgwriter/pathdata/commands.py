@@ -1,4 +1,6 @@
-"""Path segment commands (M, L, H, V, C, S, Q, T, A, Z)."""
+"""
+Path segment commands (M, L, H, V, C, S, Q, T, A, Z).
+"""
 
 from __future__ import annotations
 
@@ -203,6 +205,7 @@ class MoveTo(_XYCommand):
     >>> str(MoveTo(1, 2))
     'M1 2'
     """
+
     code: ClassVar[str] = "M"
     coordinates: ClassVar[tuple[str, ...]] = ("x", "y")
     x: float
@@ -233,6 +236,7 @@ class LineTo(_XYCommand):
     >>> str(LineTo(1, 2, relative=True))
     'l1 2'
     """
+
     code: ClassVar[str] = "L"
     coordinates: ClassVar[tuple[str, ...]] = ("x", "y")
     x: float
@@ -263,6 +267,7 @@ class HLineTo(PathCommand):
     >>> str(HLineTo(5))
     'H5'
     """
+
     code: ClassVar[str] = "H"
     coordinates: ClassVar[tuple[str, ...]] = ("x",)
     x: float
@@ -299,6 +304,7 @@ class VLineTo(PathCommand):
     >>> str(VLineTo(5, relative=True))
     'v5'
     """
+
     code: ClassVar[str] = "V"
     coordinates: ClassVar[tuple[str, ...]] = ("y",)
     y: float
@@ -407,6 +413,7 @@ class QuadTo(_XYCommand):
     >>> str(QuadTo(1, 2, 3, 4))
     'Q1 2 3 4'
     """
+
     code: ClassVar[str] = "Q"
     coordinates: ClassVar[tuple[str, ...]] = ("x1", "y1", "x", "y")
     x1: float
@@ -439,6 +446,7 @@ class SmoothQuadTo(_XYCommand):
     >>> str(SmoothQuadTo(3, 4))
     'T3 4'
     """
+
     code: ClassVar[str] = "T"
     coordinates: ClassVar[tuple[str, ...]] = ("x", "y")
     x: float

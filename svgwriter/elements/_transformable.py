@@ -1,4 +1,6 @@
-"""``Transformable``: the ``t`` transform, the anchor and the move/rotate/scale/skew methods."""
+"""
+``Transformable``: the ``t`` transform, the anchor and the move/rotate/scale/skew methods.
+"""
 
 from __future__ import annotations
 
@@ -107,6 +109,12 @@ class Transformable(Element):
     --------
     svgwriter.elements._convert.Convertible : Conversions and clipping on top of this class.
 
+    Notes
+    -----
+    ``t`` is one affine matrix. Every method multiplies into it (before it
+    in the parent frame, after it with ``local=True``) instead of
+    appending to a list; output is the shortest equivalent ``transform``.
+
     Examples
     --------
     >>> import svgwriter as svg
@@ -115,12 +123,6 @@ class Transformable(Element):
     'rotate(90 55 55)'
     >>> c.position
     Point(x=60.0, y=50.0)
-
-    Notes
-    -----
-    ``t`` is one affine matrix. Every method multiplies into it (before it
-    in the parent frame, after it with ``local=True``) instead of
-    appending to a list; output is the shortest equivalent ``transform``.
     """
 
     transform_attribute: ClassVar[str] = "transform"

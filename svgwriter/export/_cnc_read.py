@@ -1,4 +1,6 @@
-"""Reading DXF, HPGL and G-code back into documents of paths."""
+"""
+Reading DXF, HPGL and G-code back into documents of paths.
+"""
 
 from __future__ import annotations
 

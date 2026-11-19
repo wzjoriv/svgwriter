@@ -1,4 +1,6 @@
-"""Clipping, masking and markers."""
+"""
+Clipping, masking and markers.
+"""
 
 from __future__ import annotations
 

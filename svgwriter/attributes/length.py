@@ -1,4 +1,6 @@
-"""Lengths with units (``10``, ``2.5mm``, ``50%``)."""
+"""
+Lengths with units (``10``, ``2.5mm``, ``50%``).
+"""
 
 from __future__ import annotations
 

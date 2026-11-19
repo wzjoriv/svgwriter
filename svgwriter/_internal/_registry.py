@@ -1,4 +1,6 @@
-"""Name registries and method decorators."""
+"""
+Name registries and method decorators.
+"""
 
 from __future__ import annotations
 

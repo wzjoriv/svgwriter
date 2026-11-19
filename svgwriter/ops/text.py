@@ -1,4 +1,6 @@
-"""Text outlines and measurement from installed fonts."""
+"""
+Text outlines and measurement from installed fonts.
+"""
 
 from __future__ import annotations
 

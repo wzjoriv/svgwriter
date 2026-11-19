@@ -1,4 +1,6 @@
-"""RGBA colors with channels in ``0..1`` and the SVG/CSS color syntaxes."""
+"""
+RGBA colors with channels in ``0..1`` and the SVG/CSS color syntaxes.
+"""
 
 from __future__ import annotations
 
@@ -89,6 +91,14 @@ class Color:
     as_color : Coerce names, tuples and colors into a `Color`.
     parse_color : Parse CSS color text.
 
+    Notes
+    -----
+    Everything that takes a color also takes a :data:`ColorLike`: a name or
+    CSS string, a ``Color``, or a 3/4-tuple of floats in ``0..1`` (as in
+    matplotlib). Use :meth:`from_uint8` for ``0..255`` values. SVG 1.1 has
+    no alpha in colors, so a translucent ``fill``/``stroke``/``stop-color``/
+    ``flood-color`` also writes the matching ``*-opacity`` attribute.
+
     Examples
     --------
     >>> from svgwriter.color import Color
@@ -102,14 +112,6 @@ class Color:
     '#800080'
     >>> Color.parse("rgba(0, 0, 255, 0.25)").a
     0.25
-
-    Notes
-    -----
-    Everything that takes a color also takes a :data:`ColorLike`: a name or
-    CSS string, a ``Color``, or a 3/4-tuple of floats in ``0..1`` (as in
-    matplotlib). Use :meth:`from_uint8` for ``0..255`` values. SVG 1.1 has
-    no alpha in colors, so a translucent ``fill``/``stroke``/``stop-color``/
-    ``flood-color`` also writes the matching ``*-opacity`` attribute.
     """
 
     r: float

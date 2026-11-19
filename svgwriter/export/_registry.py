@@ -1,4 +1,6 @@
-"""The exporter and importer registries, discoverable by format name or file extension."""
+"""
+The exporter and importer registries, discoverable by format name or file extension.
+"""
 
 from __future__ import annotations
 

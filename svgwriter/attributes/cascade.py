@@ -1,4 +1,6 @@
-"""CSS style sheets and computed values: parsing, selector matching and inheritance."""
+"""
+CSS style sheets and computed values: parsing, selector matching and inheritance.
+"""
 
 from __future__ import annotations
 

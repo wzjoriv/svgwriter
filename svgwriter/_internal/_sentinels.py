@@ -1,4 +1,6 @@
-"""The ``MISSING`` sentinel for "argument not supplied"."""
+"""
+The ``MISSING`` sentinel for "argument not supplied".
+"""
 
 from __future__ import annotations
 

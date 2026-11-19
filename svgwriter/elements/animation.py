@@ -1,4 +1,6 @@
-"""SMIL animation elements."""
+"""
+SMIL animation elements.
+"""
 
 from __future__ import annotations
 

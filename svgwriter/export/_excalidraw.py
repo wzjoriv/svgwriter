@@ -1,4 +1,6 @@
-"""Excalidraw scenes (``.excalidraw`` JSON) in and out."""
+"""
+Excalidraw scenes (``.excalidraw`` JSON) in and out.
+"""
 
 from __future__ import annotations
 

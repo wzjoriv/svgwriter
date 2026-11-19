@@ -1,4 +1,6 @@
-"""Text layout across ``<text>`` and nested ``<tspan>`` runs, following SVG 1.1's text rules."""
+"""
+Text layout across ``<text>`` and nested ``<tspan>`` runs, following SVG 1.1's text rules.
+"""
 
 from __future__ import annotations
 
@@ -46,6 +48,14 @@ class Char:
     See Also
     --------
     collect : Produce the characters of a text.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.elements._textlayout import collect
+    >>> first = collect(svg.text("ab", x=0, y=0))[0]
+    >>> first.char, first.offset, first.chain[-1].tag
+    ('a', 0, 'text')
     """
 
     char: str

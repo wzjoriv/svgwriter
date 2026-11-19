@@ -1,4 +1,6 @@
-"""Icon containers: Windows ``.ico`` and macOS ``.icns``, both holding PNG images."""
+"""
+Icon containers: Windows ``.ico`` and macOS ``.icns``, both holding PNG images.
+"""
 
 from __future__ import annotations
 

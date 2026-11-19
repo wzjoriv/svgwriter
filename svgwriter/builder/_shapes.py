@@ -1,4 +1,6 @@
-"""Composite shapes registered by name for the CLI and plugins."""
+"""
+Composite shapes registered by name for the CLI and plugins.
+"""
 
 from __future__ import annotations
 

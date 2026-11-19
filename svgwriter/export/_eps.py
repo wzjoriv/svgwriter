@@ -1,4 +1,6 @@
-"""Encapsulated PostScript output from a flattened scene."""
+"""
+Encapsulated PostScript output from a flattened scene.
+"""
 
 from __future__ import annotations
 

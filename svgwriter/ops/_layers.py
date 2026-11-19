@@ -1,4 +1,6 @@
-"""Draw ``<image>`` pixels in z-order around skia's SVG renderer, which cannot load images."""
+"""
+Draw ``<image>`` pixels in z-order around skia's SVG renderer, which cannot load images.
+"""
 
 from __future__ import annotations
 

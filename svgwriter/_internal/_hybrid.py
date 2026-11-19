@@ -1,4 +1,6 @@
-"""``hybridmethod``: a chainable method that also works on the class."""
+"""
+``hybridmethod``: a chainable method that also works on the class.
+"""
 
 from __future__ import annotations
 

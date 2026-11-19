@@ -1,4 +1,6 @@
-"""Text content elements."""
+"""
+Text content elements.
+"""
 
 from __future__ import annotations
 

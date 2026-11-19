@@ -1,4 +1,6 @@
-"""Ready-made filters and markers, and the ``drawing`` decorator."""
+"""
+Ready-made filters and markers, and the ``drawing`` decorator.
+"""
 
 from __future__ import annotations
 

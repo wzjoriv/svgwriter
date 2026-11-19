@@ -1,4 +1,6 @@
-"""``Document``: a root ``<svg>`` plus a cursor for nested building."""
+"""
+``Document``: a root ``<svg>`` plus a cursor for nested building.
+"""
 
 from __future__ import annotations
 
@@ -41,6 +43,18 @@ class SupportsSVG(Protocol):
     See Also
     --------
     Document.add : Accepts these objects.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> class Dot:
+    ...     def _repr_svg_(self):
+    ...         return '<svg xmlns="http://www.w3.org/2000/svg"><circle r="1"/></svg>'
+    >>> doc = svg.Document(10, 10)
+    >>> doc.add(Dot()) is not None
+    True
+    >>> "<circle" in str(doc)
+    True
     """
 
     def _repr_svg_(self) -> str | None: ...

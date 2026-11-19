@@ -1,4 +1,6 @@
-"""Command line interface: ``python -m svgwriter``."""
+"""
+Command line interface: ``python -m svgwriter``.
+"""
 
 from __future__ import annotations
 

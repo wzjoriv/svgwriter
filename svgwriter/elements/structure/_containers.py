@@ -1,4 +1,6 @@
-"""``svg``, ``g``, ``defs``, ``symbol``, ``use``, ``switch`` and ``a``."""
+"""
+``svg``, ``g``, ``defs``, ``symbol``, ``use``, ``switch`` and ``a``.
+"""
 
 from __future__ import annotations
 
@@ -158,11 +160,35 @@ class Group(PathOperand, GraphicsElement, GraphicsContainer, tag="g", category=C
     """
 
     def local_bbox(self) -> BBox | None:
-        """The union of the children's bounding boxes, or None when empty."""
+        """Box around the group's children.
+
+        Returns
+        -------
+        BBox or None
+            The union of the children's bounding boxes, or None when empty.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Group(svg.rect(0, 0, 5, 5), svg.rect(10, 10, 5, 5)).local_bbox()
+        BBox(x=0.0, y=0.0, width=15.0, height=15.0)
+        """
         return children_bbox(self)
 
     def local_outline(self) -> PathData:
-        """Union of the children's outlines."""
+        """Union of the group's children's outlines.
+
+        Returns
+        -------
+        PathData
+            The combined outline of every child.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Group(svg.rect(0, 0, 5, 5), svg.rect(10, 10, 5, 5)).local_outline().bbox
+        BBox(x=0.0, y=0.0, width=15.0, height=15.0)
+        """
         return union_outline(self)
 
 
@@ -297,7 +323,20 @@ class Use(PathOperand, GraphicsElement, XLinkAttributes, Positioned, tag="use", 
         return self.root().get_element_by_id(self.target) if self.target else None
 
     def local_bbox(self) -> BBox | None:
-        """The bounding box of the referenced element at this position, or None if unresolved."""
+        """Box of the referenced element, moved by ``x``/``y``.
+
+        Returns
+        -------
+        BBox or None
+            The box of the target at this position, or None when the target
+            cannot be resolved or has no extent.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Use(svg.circle(0, 0, 2), x=10, y=20).local_bbox()
+        BBox(x=8.0, y=18.0, width=4.0, height=4.0)
+        """
         box = positioned_bbox(self)
         if box is not None:
             return box
@@ -351,7 +390,24 @@ class Use(PathOperand, GraphicsElement, XLinkAttributes, Positioned, tag="use", 
         return path
 
     def local_outline(self) -> PathData:
-        """The referenced element's outline, offset by ``x``/``y``."""
+        """Outline of the referenced element, moved by ``x``/``y``.
+
+        Returns
+        -------
+        PathData
+            The target's outline translated to this position.
+
+        Raises
+        ------
+        TypeError
+            If the target cannot be resolved or has no outline.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Use(svg.circle(0, 0, 2), x=10, y=20).local_outline().bbox
+        BBox(x=8.0, y=18.0, width=4.0, height=4.0)
+        """
         target = self.referenced()
         if not isinstance(target, PathOperand):
             raise TypeError(f"<use> refers to {'nothing' if target is None else '<' + target.tag + '>'}, which has no outline")
@@ -376,11 +432,35 @@ class Switch(PathOperand, GraphicsElement, GraphicsContainer, tag="switch", cate
     """
 
     def local_bbox(self) -> BBox | None:
-        """The union of the children's bounding boxes, or None when empty."""
+        """Box around the switch's children.
+
+        Returns
+        -------
+        BBox or None
+            The union of the children's bounding boxes, or None when empty.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Switch(svg.rect(0, 0, 5, 5)).local_bbox()
+        BBox(x=0.0, y=0.0, width=5.0, height=5.0)
+        """
         return children_bbox(self)
 
     def local_outline(self) -> PathData:
-        """Union of the children's outlines."""
+        """Union of the switch's children's outlines.
+
+        Returns
+        -------
+        PathData
+            The combined outline of every child.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Switch(svg.rect(0, 0, 5, 5)).local_outline().bbox
+        BBox(x=0.0, y=0.0, width=5.0, height=5.0)
+        """
         return union_outline(self)
 
 
@@ -410,9 +490,33 @@ class A(PathOperand, GraphicsElement, XLinkAttributes, GraphicsContainer, tag="a
         self.update(target=target)
 
     def local_bbox(self) -> BBox | None:
-        """The union of the children's bounding boxes, or None when empty."""
+        """Box around the link's children.
+
+        Returns
+        -------
+        BBox or None
+            The union of the children's bounding boxes, or None when empty.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.A(svg.rect(0, 0, 5, 5), href="#x").local_bbox()
+        BBox(x=0.0, y=0.0, width=5.0, height=5.0)
+        """
         return children_bbox(self)
 
     def local_outline(self) -> PathData:
-        """Union of the children's outlines."""
+        """Union of the link's children's outlines.
+
+        Returns
+        -------
+        PathData
+            The combined outline of every child.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.A(svg.rect(0, 0, 5, 5), href="#x").local_outline().bbox
+        BBox(x=0.0, y=0.0, width=5.0, height=5.0)
+        """
         return union_outline(self)

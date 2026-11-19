@@ -1,4 +1,6 @@
-"""``feComponentTransfer`` and its ``feFuncR/G/B/A`` children."""
+"""
+``feComponentTransfer`` and its ``feFuncR/G/B/A`` children.
+"""
 
 from __future__ import annotations
 

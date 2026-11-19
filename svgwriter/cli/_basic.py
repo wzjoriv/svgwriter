@@ -1,4 +1,6 @@
-"""``shapes``, ``elements``, ``draw``, ``format`` and ``info``."""
+"""
+``shapes``, ``elements``, ``draw``, ``format`` and ``info``.
+"""
 
 from __future__ import annotations
 
@@ -92,6 +94,16 @@ def output_options(sub: argparse.ArgumentParser) -> None:
     See Also
     --------
     emit : Consumes the parsed values.
+
+    Examples
+    --------
+    >>> import argparse
+    >>> from svgwriter.cli._basic import output_options
+    >>> parser = argparse.ArgumentParser()
+    >>> output_options(parser)
+    >>> args = parser.parse_args(["-o", "out.svg", "--compact"])
+    >>> args.output, args.compact
+    ('out.svg', True)
     """
     sub.add_argument("-o", "--output", help="write here instead of stdout")
     sub.add_argument("--compact", action="store_true", help="single-line output, shortest path data")

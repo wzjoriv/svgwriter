@@ -1,4 +1,6 @@
-"""Piping frames into an ``ffmpeg`` subprocess."""
+"""
+Piping frames into an ``ffmpeg`` subprocess.
+"""
 
 from __future__ import annotations
 

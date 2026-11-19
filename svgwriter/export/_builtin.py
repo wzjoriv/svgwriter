@@ -1,4 +1,6 @@
-"""Built-in formats: SVG, SVGZ, PNG, JPEG, WebP, PDF, TikZ and EPS out; SVG, SVGZ and raster images in."""
+"""
+Built-in formats: SVG, SVGZ, PNG, JPEG, WebP, PDF, TikZ and EPS out; SVG, SVGZ and raster images in.
+"""
 
 from __future__ import annotations
 

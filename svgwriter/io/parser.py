@@ -1,4 +1,6 @@
-"""Read SVG text back into the element model using ``xml.etree``."""
+"""
+Read SVG text back into the element model using ``xml.etree``.
+"""
 
 from __future__ import annotations
 

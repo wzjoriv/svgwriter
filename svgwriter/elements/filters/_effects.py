@@ -1,5 +1,6 @@
-"""Pixel-effect primitives: color matrix, convolution, blur, morphology,
-displacement and turbulence."""
+"""
+Pixel-effect primitives: color matrix, convolution, blur, morphology, displacement and turbulence.
+"""
 
 from __future__ import annotations
 

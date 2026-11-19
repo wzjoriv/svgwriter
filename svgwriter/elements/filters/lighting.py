@@ -1,4 +1,6 @@
-"""Lighting primitives and light sources."""
+"""
+Lighting primitives and light sources.
+"""
 
 from __future__ import annotations
 
@@ -112,11 +114,33 @@ class FeDistantLight(LightSource, tag="feDistantLight"):
 
     @property
     def directional(self) -> bool:
-        """Always ``True``: the direction is the same everywhere."""
+        """Always ``True``: the direction is the same everywhere.
+
+        Returns
+        -------
+        bool
+            ``True``.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.FeDistantLight(45, 60).directional
+        True
+        """
         return True
 
     def light_vector(self, x: float, y: float, z: float) -> Vector3:
         """The constant unit vector towards the light, independent of the point.
+
+        Parameters
+        ----------
+        x, y, z : float
+            The surface point; ignored, since the light is infinitely far away.
+
+        Returns
+        -------
+        tuple of float
+            Unit vector ``(x, y, z)`` pointing at the light.
 
         Examples
         --------
@@ -156,11 +180,40 @@ class FePointLight(LightSource, tag="fePointLight"):
 
     @property
     def directional(self) -> bool:
-        """Always ``False``: the direction depends on the surface point."""
+        """Always ``False``: the direction depends on the surface point.
+
+        Returns
+        -------
+        bool
+            ``False``.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.FePointLight(1, 2, 3).directional
+        False
+        """
         return False
 
     def light_vector(self, x: float, y: float, z: float) -> Vector3:
-        """The unit vector from the point towards the light position."""
+        """The unit vector from the point towards the light position.
+
+        Parameters
+        ----------
+        x, y, z : float
+            The surface point.
+
+        Returns
+        -------
+        tuple of float
+            Unit vector ``(x, y, z)`` pointing at the light.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.FePointLight(0, 10, 0).light_vector(0, 0, 0)
+        (0.0, 1.0, 0.0)
+        """
         return _normalize(_num(self, "x") - x, _num(self, "y") - y, _num(self, "z") - z)
 
 
