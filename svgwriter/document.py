@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import enum
+import os
 from collections.abc import Iterable, Iterator
 from contextlib import contextmanager
 from pathlib import Path as FilePath
@@ -341,9 +342,41 @@ class Document(ElementFactory):
 
         return encode(self.rasterize(scale=scale, background=background))
 
-    def save(self, target: AnyPath | TextSink, **options: Any) -> None:
-        with self._sized():
-            self.root.save(target, **options)
+    def save(self, target: AnyPath | TextSink, *, format: str | None = None, **options: Any) -> None:
+        """Write to a path or text stream; the format follows *format* or the file extension.
+
+        ``.svg`` (and text streams) write SVG text with :class:`~svgwriter.io.SerializeOptions`;
+        other extensions use :mod:`svgwriter.export` (``.png``, ``.pdf``, ``.tikz``, ...).
+
+        Examples
+        --------
+        >>> doc = Document(10, 10)
+        >>> doc.save("figure.pdf")  # doctest: +SKIP
+        """
+        if format is None and (not isinstance(target, (str, os.PathLike))
+                               or str(target).lower().endswith(".svg")):
+            with self._sized():
+                self.root.save(target, **options)
+            return
+        from .export import save
+
+        save(self, target, format, **options)  # type: ignore[arg-type]
+
+    def export(self, format: str, **options: Any) -> bytes | str:
+        """This document in *format* (``"png"``, ``"pdf"``, ``"tikz"``, ... or an extension).
+
+        See :func:`svgwriter.export.exporters` for the registered formats.
+        """
+        from .export import export
+
+        return export(self, format, **options)
+
+    @classmethod
+    def open(cls, path: AnyPath, *, format: str | None = None, **options: Any) -> Document:
+        """Read any registered input format (SVG, SVGZ, PNG, JPEG, ...), chosen by extension."""
+        from .export import load
+
+        return load(path, format, **options)
 
     async def save_async(self, path: AnyPath, **options: Any) -> None:
         from .io._async import write_async

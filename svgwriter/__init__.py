@@ -40,7 +40,9 @@ io
 builder
     Functional constructors, composite shapes and effects.
 ops
-    Boolean operations, text outlines and exact measurement (skia).
+    Boolean operations, text outlines, measurement and rendering (skia).
+export
+    Exporter/importer registry: SVG, SVGZ, PNG, JPEG, WebP, PDF, TikZ, EPS.
 video
     Frame rendering through a pluggable renderer and encoding with ffmpeg.
 cli
@@ -51,7 +53,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from . import ops, video
+from . import export, ops, video
 from .aliases import *  # noqa: E402, F403  (after the sub-packages: ``path`` names the class)
 from .aliases import __all__ as _aliases_all  # noqa: E402
 from .aliases import filter as filter  # noqa: A004, E402
@@ -156,6 +158,7 @@ __all__ = [
     "parse_color",
     "parse_file",
     "parse_paint",
+    "export",
     "ops",
     "percent",
     "pt",

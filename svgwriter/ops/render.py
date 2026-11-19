@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from ..elements.base import Element
     from ..elements.text import Text
 
-__all__ = ["DEFAULT_SIZE", "document_size", "encode", "rasterize", "render_png", "render_svg", "render_tree", "skia_renderer"]
+__all__ = ["DEFAULT_SIZE", "document_size", "encode", "paint_tree", "rasterize", "render_png", "render_svg", "render_tree", "skia_renderer"]
 
 DEFAULT_SIZE: Final = 300.0
 DEFAULT_QUALITY: Final = 90
@@ -139,10 +139,24 @@ def render_tree(
     numpy.ndarray
         ``float32`` ``(rows, columns, 4)`` straight RGBA in ``0..1``.
     """
+    surface = _surface(width, height, scale, background)
+    paint_tree(surface.getCanvas(), root, wrap, width, height, view=view, viewport=viewport)
+    return _pixels(surface)
+
+
+def paint_tree(
+    canvas: skia.Canvas,
+    root: Element,
+    wrap: Callable[[str], str],
+    width: float,
+    height: float,
+    *,
+    view: Matrix = IDENTITY,
+    viewport: bool = False,
+) -> None:
+    """Paint the tree under *root* onto any skia canvas (raster, PDF, ...); see :func:`render_tree`."""
     from ..io.writer import to_string
 
-    surface = _surface(width, height, scale, background)
-    canvas = surface.getCanvas()
     root = renderable_copy(root)
     if viewport:
         root.attributes["width"], root.attributes["height"] = width, height
@@ -156,7 +170,6 @@ def render_tree(
                 leaf.attributes.pop(DISPLAY, None)
         if image is not None:
             draw_image(canvas, image, root, view)
-    return _pixels(surface)
 
 
 def renderable_copy(root: Element) -> Element:
