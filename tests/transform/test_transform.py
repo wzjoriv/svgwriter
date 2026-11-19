@@ -109,3 +109,24 @@ class TestPointArithmetic:
     def test_bad_operand(self) -> None:
         with pytest.raises(TypeError, match="pair"):
             Point(1, 2) + "ab"  # type: ignore[operator]
+
+
+class TestReadableTransformText:
+    def test_rotation_pivot_outside_element_uses_its_anchor(self) -> None:
+        import svgwriter as svg
+
+        circle = svg.circle(50, 50, 10).translate(20, 0).rotate(45)
+        assert 'transform="translate(20) rotate(45 50 50)"' in str(circle)
+
+    def test_rotation_inside_element_stays_short(self) -> None:
+        import svgwriter as svg
+
+        assert 'transform="rotate(30 5 5)"' in str(svg.rect(0, 0, 10, 10).rotate(30))
+
+    def test_text_round_trips_to_same_matrix(self) -> None:
+        import svgwriter as svg
+
+        circle = svg.circle(50, 50, 10).translate(20, 0).rotate(45)
+        again = svg.parse(f'<svg xmlns="http://www.w3.org/2000/svg">{circle}</svg>')[0]
+        assert svg.Transform.parse(again.get("transform")).to_matrix().as_tuple() == pytest.approx(
+            circle.t.as_tuple(), abs=1e-3)

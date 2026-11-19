@@ -19,6 +19,7 @@ from ..attributes.values import format_value
 from ..elements.base import Category, Element
 from ..elements.unknown import UnknownElement
 from ..pathdata.data import PathData
+from ..transform.matrix import Matrix
 
 __all__ = ["SerializeOptions", "Writer", "iter_chunks", "to_string", "write"]
 
@@ -139,6 +140,13 @@ class Writer:
             return value.svg_value(self.options.precision, compact=True)
         return format_value(value, self.options.precision)
 
+    def _transform(self, element: Element, value: Any) -> str:
+        """A matrix written relative to the element's own anchor when that reads better."""
+        if not isinstance(value, Matrix) or not hasattr(element, "anchor"):
+            return self._value("transform", value)
+        return value.svg_value(self.options.precision, pivot=element.anchor,
+                               box=element.local_bbox())  # type: ignore[attr-defined]
+
     def _open_tag(self, element: Element, extra: dict[str, str]) -> str:
         attributes = dict(extra)
         prefixes: dict[str, str] = {}
@@ -149,7 +157,7 @@ class Writer:
                     prefixes[namespace] = f"{FOREIGN_PREFIX}{len(prefixes)}"
                     attributes[f"xmlns:{prefixes[namespace]}"] = namespace
                 key = f"{prefixes[namespace]}:{local}"
-            attributes[key] = self._value(key, value)
+            attributes[key] = self._transform(element, value) if key == "transform" else self._value(key, value)
         parts = [element.tag] + [f'{k}="{escape_attribute(v)}"' for k, v in attributes.items()]
         return "<" + " ".join(parts)
 
