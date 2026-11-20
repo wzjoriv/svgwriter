@@ -4,9 +4,10 @@ Text layout across ``<text>`` and nested ``<tspan>`` runs, following SVG 1.1's t
 
 from __future__ import annotations
 
+import math
 import unicodedata
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Any, Final
 
 from ..attributes.cascade import Rule, computed, rules_of
 from ..attributes.length import Length, Unit
@@ -114,7 +115,7 @@ def _raw(element: Element, chain: tuple[Element, ...], out: list[tuple[str, tupl
         if isinstance(child, str):
             for offset, char in enumerate(child):
                 out.append((char, chain, position, offset))
-        elif isinstance(child, _Element) and child.tag in ("tspan", "a", "altGlyph"):
+        elif isinstance(child, _Element) and child.tag in ("tspan", "a", "altGlyph", "textPath"):
             _raw(child, (child, *chain), out)
 
 
@@ -273,7 +274,54 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
         shift = ANCHOR_SHIFT.get(anchor, 0.0) * (boxes[stop - 1].x + boxes[stop - 1].advance - boxes[start].x)
         for box in boxes[start:stop]:
             box.x -= shift
+    _along_paths(chars, boxes)
     return boxes
+
+
+def _guide(holder: Element) -> Any:
+    """The outline a ``<textPath>`` follows, in the text's user space, or None."""
+    href = holder.get("xlink:href") or holder.get("href")
+    target = getattr(href, "element", None)
+    if target is None and href is not None:
+        target = holder.root().get_element_by_id(str(href).lstrip("#"))
+    outline = getattr(target, "outline", None)
+    return outline() if outline is not None else None
+
+
+def _start_offset(holder: Element, length: float) -> float:
+    value = str(holder.get("startOffset", 0)).strip()
+    return float(value[:-1]) / PERCENT * length if value.endswith("%") else float(value or 0)
+
+
+def _along_paths(chars: list[Char], boxes: list[Any]) -> None:
+    """Move the glyphs of each ``<textPath>`` onto its path: middles at their advance, turned with the tangent."""
+    from ..ops.measure import point_at_length, tangent_at_length, total_length
+    from ..pathdata.data import PathData
+
+    runs: dict[int, tuple[Element, list[int]]] = {}
+    for index, char in enumerate(chars):
+        holder = next((element for element in char.chain if element.tag == "textPath"), None)
+        if holder is not None:
+            runs.setdefault(id(holder), (holder, []))[1].append(index)
+    for holder, indices in runs.values():
+        guide = _guide(holder)
+        if guide is None or not len(guide):
+            continue
+        length = total_length(guide)
+        offset = _start_offset(holder, length)
+        origin, baseline = boxes[indices[0]].x, boxes[indices[0]].y
+        for index in indices:
+            box = boxes[index]
+            middle = offset + box.x - origin + box.advance / 2
+            if not 0 <= middle <= length:
+                box.outline = PathData()
+                continue
+            point, tangent = point_at_length(guide, middle), tangent_at_length(guide, middle)
+            angle = math.atan2(tangent.y, tangent.x)
+            cos, sin, rise = math.cos(angle), math.sin(angle), box.y - baseline
+            box.x = point.x - cos * box.advance / 2 - sin * rise
+            box.y = point.y - sin * box.advance / 2 + cos * rise
+            box.angle += math.degrees(angle)
 
 
 ZWJ: Final = "‍"

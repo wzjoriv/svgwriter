@@ -209,3 +209,27 @@ class TestGraphemeClusters:
         t = svg.text("éx", x=0, y=10)
         t[1].translate(5, 0)
         assert t.get("dx") is not None and len(t) == 2
+
+
+class TestTextPath:
+    def _text(self, offset=0):
+        doc = svg.Document(220, 120)
+        line = doc.define(svg.path(id="line").move_to(0, 50).line_to(200, 50))
+        text = doc.text(font_size=10)
+        text.append(svg.TextPath("abc", href=line, start_offset=offset))
+        return text
+
+    def test_glyphs_sit_on_the_path(self) -> None:
+        boxes = self._text().layout()
+        assert len(boxes) == 3 and all(box.y == pytest.approx(50) for box in boxes)
+
+    def test_vertical_path_turns_glyphs(self) -> None:
+        doc = svg.Document(100, 300)
+        down = doc.define(svg.path(id="down").move_to(50, 0).line_to(50, 300))
+        text = doc.text(font_size=10)
+        text.append(svg.TextPath("ab", href=down))
+        assert text.layout()[0].angle == pytest.approx(90)
+
+    def test_start_offset_percent_and_overflow_hidden(self) -> None:
+        assert self._text("50%").layout()[0].x == pytest.approx(100, abs=1)
+        assert not len(self._text(199).layout()[-1].outline)
