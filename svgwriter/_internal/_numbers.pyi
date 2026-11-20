@@ -1,3 +1,0 @@
-__all__ = ["format_number"]
-
-def format_number(value: float, precision: int = 4) -> str: ...

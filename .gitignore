@@ -47,3 +47,6 @@ env/
 # ---- Type checkers / static analysis ----
 .mypy_cache/
 .ruff_cache/
+
+# ---- Generated stubs (stubpy; built by release.yml before packaging) ----
+*.pyi
