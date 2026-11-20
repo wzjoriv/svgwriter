@@ -23,7 +23,7 @@ print(sorted(svg.export.exporters()))
 | SVG | `.svg` | yes | yes | links, `<a>` and ids preserved; `pretty`, `precision` options |
 | SVGZ | `.svgz` | yes | yes | gzip-compressed SVG |
 | PNG, JPEG, WebP | `.png .jpg .jpeg .webp` | yes | yes | `scale`, `size`, `padding`, `background`, `quality`; imports become an `<image>` |
-| PDF | `.pdf` | yes | yes | vector, via skia; selectable text; `title`, `author`, `text`; reads paths, images, clips, text and shadings, `page=` |
+| PDF | `.pdf` | yes | yes | vector, via skia; selectable text; a list of documents gives one page each; `title`, `author`, `text`; reads paths, images, clips, text and shadings, `page=` |
 | TikZ | `.tikz .tex` | yes | yes | `standalone=True` for a compilable document; text as `\node`; SVG coordinates kept (`x=1pt, y=-1pt`) |
 | EPS | `.eps .ps` | yes | yes | text in the standard fonts; PostScript has no transparency |
 | DXF | `.dxf` | yes | yes | R12 polylines in mm, layer per colour; reads lines, polylines with bulges, circles, arcs, ellipses |
@@ -78,6 +78,26 @@ page = svg.export.load("figure.pdf", page=0)
 picture = svg.Document.open("figure.tex")
 ```
 
+## Pages and slides
+
+PDF and PowerPoint hold several drawings. Pass a list to `export` or `save` to write one page or
+slide per document, and use `Document.open_all` to read them all back as a list:
+
+```python
+cover = svg.Document(160, 90)
+cover.text("Results", x=80, y=50, font_size=20, text_anchor="middle")
+svg.export.save([cover, doc], "report.pdf")             # two pages, each its own size
+svg.export.save([cover, doc], "deck.pptx")              # two slides
+pages = svg.Document.open_all("report.pdf")             # [Document, Document]
+second = svg.Document.open("deck.pptx", slide=1)        # one slide, as before
+```
+
+A PDF page takes the size of its document. A PowerPoint deck has one slide size, so it fits the
+widest and the tallest drawing, and smaller drawings are centred on their slides. Other formats
+hold one drawing and raise `ValueError` for a list. The low-level `load` returns the list too when
+the page option is `None` (`page=None` for PDF, `slide=None` for PowerPoint); `Document.open` reads
+one page and `Document.open_all` reads every page, or wraps a single-page file in a list of one.
+
 ## Your own formats
 
 ```python
@@ -121,7 +141,7 @@ mathtext; `engine="tex"`, `"ziamath"` or `"mathtext"` picks one.
 
 `pip install "pysvgwriter[office]"` adds PowerPoint, Word and Excel:
 
-- `.pptx` out: one slide sized like the drawing, each outline an editable PowerPoint shape (curves,
+- `.pptx` out: one slide per drawing (a list gives a deck), each outline an editable PowerPoint shape (curves,
   fill, outline, transparency), text as editable text boxes and images as pictures. In: shapes, pictures and text boxes of a slide
   (`svg.Document.open("deck.pptx", slide=2)`) as native SVG elements.
 - `.docx` and `.xlsx` out: the drawing as a picture at its natural size.

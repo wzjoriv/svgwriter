@@ -4,7 +4,7 @@ Reading the vector paths of a PDF page back into a document.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from ...transform.matrix import Matrix
 from ._constants import ENCRYPT_RE, HEADER_WINDOW, PDF_HEADER
@@ -15,7 +15,7 @@ from ._reading import to_document
 if TYPE_CHECKING:
     from ...document import Document
 
-__all__ = ["read_pdf"]
+__all__ = ["page_count", "read_pdf"]
 
 
 def read_pdf(data: bytes, *, page: int = 0) -> Document:
@@ -72,14 +72,7 @@ def read_pdf(data: bytes, *, page: int = 0) -> Document:
     >>> back.root.get("width"), back[0].get("fill")
     (20.0, '#ff0000')
     """
-    if PDF_HEADER not in data[:HEADER_WINDOW]:
-        raise ValueError("not a PDF file: no '%PDF-' header")
-    if ENCRYPT_RE.search(data):
-        raise ValueError("encrypted PDF files are not supported")
-    objects = _objects(data)
-    pages = _pages(objects)
-    if not pages:
-        raise ValueError("no pages found in the PDF file")
+    objects, pages = _document_pages(data)
     if not 0 <= page < len(pages):
         raise ValueError(f"page {page} out of range: the PDF file has {len(pages)} page(s)")
     leaf = pages[page]
@@ -90,3 +83,48 @@ def read_pdf(data: bytes, *, page: int = 0) -> Document:
     resources = _inherited(objects, leaf, "Resources")
     painter.run(_content(objects, leaf), resources if isinstance(resources, dict) else {})
     return to_document(painter.shapes, (0.0, 0.0, x1 - x0, y1 - y0))
+
+
+def page_count(data: bytes) -> int:
+    """The number of pages in a PDF file.
+
+    Parameters
+    ----------
+    data : bytes
+        The PDF file.
+
+    Returns
+    -------
+    int
+        How many pages the page tree holds.
+
+    Raises
+    ------
+    ValueError
+        If *data* is not a readable PDF or has no pages.
+
+    See Also
+    --------
+    read_pdf : Read one page.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.export._vector._pdf_read import page_count
+    >>> page_count(svg.export.export([svg.Document(5, 5)] * 3, "pdf"))
+    3
+    """
+    return len(_document_pages(data)[1])
+
+
+def _document_pages(data: bytes) -> tuple[dict[int, Any], list[dict[str, Any]]]:
+    """The objects of a PDF file and its page leaves, checking that it can be read."""
+    if PDF_HEADER not in data[:HEADER_WINDOW]:
+        raise ValueError("not a PDF file: no '%PDF-' header")
+    if ENCRYPT_RE.search(data):
+        raise ValueError("encrypted PDF files are not supported")
+    objects = _objects(data)
+    pages = _pages(objects)
+    if not pages:
+        raise ValueError("no pages found in the PDF file")
+    return objects, pages

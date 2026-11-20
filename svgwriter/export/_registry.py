@@ -46,6 +46,8 @@ class Exporter:
         Whether the function returns ``bytes``.
     description : str
         First docstring line of the function.
+    multipage : bool
+        Whether the function also takes a list of documents, one page or slide each.
 
     See Also
     --------
@@ -63,6 +65,7 @@ class Exporter:
     extensions: tuple[str, ...] = ()
     binary: bool = True
     description: str = ""
+    multipage: bool = False
 
 
 @dataclass(frozen=True)
@@ -79,6 +82,9 @@ class Importer:
         File extensions, lower-case with a leading dot.
     description : str
         First docstring line of the function.
+    page_option : str or None
+        The option that picks one page or slide (``"page"``, ``"slide"``); passing
+        None for it reads every page as a list. None for single-page formats.
 
     See Also
     --------
@@ -95,6 +101,7 @@ class Importer:
     function: ImportFunction
     extensions: tuple[str, ...] = ()
     description: str = field(default="")
+    page_option: str | None = None
 
 
 _EXPORTERS: dict[str, Exporter] = {}
@@ -106,7 +113,8 @@ def _extensions(values: tuple[str, ...]) -> tuple[str, ...]:
 
 
 def register(
-    name: str, *, extensions: tuple[str, ...] = (), binary: bool = True, replace: bool = False
+    name: str, *, extensions: tuple[str, ...] = (), binary: bool = True, multipage: bool = False,
+    replace: bool = False
 ) -> Callable[[F], F]:
     """Decorator registering an exporter ``function(document, **options) -> bytes | str``.
 
@@ -118,6 +126,9 @@ def register(
         File extensions (``".pdf"``) that select this format in :func:`save`. Defaults to ().
     binary : bool, optional
         Whether the function returns ``bytes`` (otherwise ``str``). Defaults to True.
+    multipage : bool, optional
+        Whether the function also accepts a list of documents and writes one
+        page or slide per document. Defaults to False.
     replace : bool, optional
         Allow replacing an existing registration of *name*. Defaults to False.
 
@@ -157,7 +168,7 @@ def register(
         if key in _EXPORTERS and not replace:
             raise ValueError(f"exporter {name!r} is already registered; pass replace=True to override")
         doc = (function.__doc__ or "").strip().splitlines()
-        _EXPORTERS[key] = Exporter(key, function, _extensions(extensions), binary, doc[0] if doc else "")
+        _EXPORTERS[key] = Exporter(key, function, _extensions(extensions), binary, doc[0] if doc else "", multipage)
         return function
 
     return decorate
@@ -196,7 +207,8 @@ def unregister(name: str, *, importer: bool = False) -> None:
         raise KeyError(f"no {'importer' if importer else 'exporter'} named {name!r}") from None
 
 
-def register_importer(name: str, *, extensions: tuple[str, ...] = (), replace: bool = False) -> Callable[[F], F]:
+def register_importer(name: str, *, extensions: tuple[str, ...] = (), page_option: str | None = None,
+                      replace: bool = False) -> Callable[[F], F]:
     """Decorator registering an importer ``function(data: bytes, **options) -> Document``.
 
     Parameters
@@ -205,6 +217,10 @@ def register_importer(name: str, *, extensions: tuple[str, ...] = (), replace: b
         Format name used by :func:`load`.
     extensions : tuple of str, optional
         File extensions (``".svg"``) that select this format. Defaults to ().
+    page_option : str, optional
+        Name of the function's option that picks one page; the function must
+        return a list of documents, one per page, when that option is None.
+        Defaults to None, for single-page formats.
     replace : bool, optional
         Allow replacing an existing registration of *name*. Defaults to False.
 
@@ -239,7 +255,7 @@ def register_importer(name: str, *, extensions: tuple[str, ...] = (), replace: b
         if key in _IMPORTERS and not replace:
             raise ValueError(f"importer {name!r} is already registered; pass replace=True to override")
         doc = (function.__doc__ or "").strip().splitlines()
-        _IMPORTERS[key] = Importer(key, function, _extensions(extensions), doc[0] if doc else "")
+        _IMPORTERS[key] = Importer(key, function, _extensions(extensions), doc[0] if doc else "", page_option)
         return function
 
     return decorate

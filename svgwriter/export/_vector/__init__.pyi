@@ -1,8 +1,9 @@
+from collections.abc import Sequence
 from ...document import Document as Document
 from .._registry import register as register, register_importer as register_importer
 
 def pdf(
-    document: Document,
+    document: Document | Sequence[Document],
     *,
     title: str | None = None,
     author: str | None = None,
@@ -25,8 +26,8 @@ def eps(
 def read_pdf(
     data: bytes,
     *,
-    page: int = 0,
-) -> Document: ...
+    page: int | None = 0,
+) -> Document | list[Document]: ...
 
 def read_tikz(data: bytes) -> Document: ...
 

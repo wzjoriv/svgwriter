@@ -27,6 +27,7 @@ class Exporter:
     extensions: tuple[str, ...] = ()
     binary: bool = True
     description: str = ''
+    multipage: bool = False
 
     def __init__(
         self,
@@ -35,6 +36,7 @@ class Exporter:
         extensions: tuple[str, ...] = (),
         binary: bool = True,
         description: str = '',
+        multipage: bool = False,
     ) -> None: ...
 
 @dataclass(frozen=True)
@@ -43,6 +45,7 @@ class Importer:
     function: ImportFunction
     extensions: tuple[str, ...] = ()
     description: str = ''
+    page_option: str | None = None
 
     def __init__(
         self,
@@ -50,6 +53,7 @@ class Importer:
         function: ImportFunction,
         extensions: tuple[str, ...] = (),
         description: str = '',
+        page_option: str | None = None,
     ) -> None: ...
 
 def register(
@@ -57,6 +61,7 @@ def register(
     *,
     extensions: tuple[str, ...] = (),
     binary: bool = True,
+    multipage: bool = False,
     replace: bool = False,
 ) -> Callable[[F], F]: ...
 
@@ -70,6 +75,7 @@ def register_importer(
     name: str,
     *,
     extensions: tuple[str, ...] = (),
+    page_option: str | None = None,
     replace: bool = False,
 ) -> Callable[[F], F]: ...
 

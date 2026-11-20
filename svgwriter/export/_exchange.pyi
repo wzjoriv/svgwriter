@@ -1,4 +1,5 @@
 import os
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 from ..document import Document
@@ -6,7 +7,7 @@ from ..document import Document
 __all__ = ["export", "load", "save"]
 
 def export(
-    document: Document,
+    document: Document | Sequence[Document],
     format: str,
     *,
     time: float | None = None,
@@ -14,7 +15,7 @@ def export(
 ) -> bytes | str: ...
 
 def save(
-    document: Document,
+    document: Document | Sequence[Document],
     path: str | os.PathLike[str],
     format: str | None = None,
     *,
@@ -26,4 +27,4 @@ def load(
     path: str | os.PathLike[str],
     format: str | None = None,
     **options: Any,
-) -> Document: ...
+) -> Document | list[Document]: ...

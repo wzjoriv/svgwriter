@@ -53,6 +53,14 @@ class Output:
         format: str | None = None,
         **options: Any,
     ) -> Document: ...
+    @classmethod
+    def open_all(
+        cls,
+        path: AnyPath,
+        *,
+        format: str | None = None,
+        **options: Any,
+    ) -> list[Document]: ...
     async def save_async(self, path: str | PathLike[str], **options: Any) -> None: ...
     def render_animation(
         self,

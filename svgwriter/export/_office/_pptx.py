@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import io
 import math
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 from . import require
@@ -47,31 +48,46 @@ def _emu_scale(width: float, height: float) -> float:
     return scale
 
 
-def write_pptx(document: Document) -> bytes:
-    """Write the deck; see :func:`svgwriter.export._office.pptx`."""
+@dataclass(frozen=True)
+class _Place:
+    """Maps page user units onto a slide: EMU per unit and the offset that centres the page."""
+
+    scale: float
+    dx: float = 0.0
+    dy: float = 0.0
+
+    def emu(self, x: float, y: float, width: float, height: float) -> tuple[int, int, int, int]:
+        return (round((x + self.dx) * self.scale), round((y + self.dy) * self.scale),
+                round(width * self.scale), round(height * self.scale))
+
+
+def write_pptx(documents: list[Document]) -> bytes:
+    """Write the deck, one slide per document; see :func:`svgwriter.export._office.pptx`."""
     presentation_module = require("pptx")
     from ..._internal._flatten import flatten
 
-    scene = flatten(document, handled=frozenset({"image"}), text=True)
-    scale = _emu_scale(scene.width, scene.height)
+    scenes = [flatten(document, handled=frozenset({"image"}), text=True) for document in documents]
+    width, height = max(scene.width for scene in scenes), max(scene.height for scene in scenes)
+    scale = _emu_scale(width, height)
     deck = presentation_module.Presentation()
-    deck.slide_width, deck.slide_height = round(scene.width * scale), round(scene.height * scale)
-    slide = deck.slides.add_slide(deck.slide_layouts[BLANK_LAYOUT])
-    for image in _images(document):
-        box = image.bounds()
-        if box is not None and image.pixels is not None:
-            slide.shapes.add_picture(io.BytesIO(image.encode("png")), round(box.x * scale), round(box.y * scale),
-                                     round(box.width * scale), round(box.height * scale))
-    for item in scene.items:
-        _freeform(slide, item, scale)
-    for run in scene.texts:
-        _textbox(slide, run, scale)
+    deck.slide_width, deck.slide_height = round(width * scale), round(height * scale)
+    for document, scene in zip(documents, scenes, strict=True):
+        slide = deck.slides.add_slide(deck.slide_layouts[BLANK_LAYOUT])
+        place = _Place(scale, (width - scene.width) / 2, (height - scene.height) / 2)
+        for image in _images(document):
+            box = image.bounds()
+            if box is not None and image.pixels is not None:
+                slide.shapes.add_picture(io.BytesIO(image.encode("png")), *place.emu(*box))
+        for item in scene.items:
+            _freeform(slide, item, place)
+        for run in scene.texts:
+            _textbox(slide, run, place)
     buffer = io.BytesIO()
     deck.save(buffer)
     return buffer.getvalue()
 
 
-def _textbox(slide: Any, run: Any, scale: float) -> None:
+def _textbox(slide: Any, run: Any, place: _Place) -> None:
     """One text run as an editable, unwrapped text box whose first baseline sits on the run's baseline."""
     from pptx.dml.color import RGBColor
     from pptx.enum.text import MSO_AUTO_SIZE
@@ -87,8 +103,7 @@ def _textbox(slide: Any, run: Any, scale: float) -> None:
     top = -size * ASCENT
     centre_x = matrix.e + math.cos(turn) * width / 2 - math.sin(turn) * (top + height / 2)
     centre_y = matrix.f + math.sin(turn) * width / 2 + math.cos(turn) * (top + height / 2)
-    box = slide.shapes.add_textbox(round((centre_x - width / 2) * scale), round((centre_y - height / 2) * scale),
-                                   round(width * scale), round(height * scale))
+    box = slide.shapes.add_textbox(*place.emu(centre_x - width / 2, centre_y - height / 2, width, height))
     box.rotation = angle
     frame = box.text_frame
     frame.margin_left = frame.margin_right = frame.margin_top = frame.margin_bottom = 0
@@ -97,7 +112,7 @@ def _textbox(slide: Any, run: Any, scale: float) -> None:
     text_run = frame.paragraphs[0].add_run()
     text_run.text = run.text
     font = text_run.font
-    font.size = Pt(size * scale / EMU_PER_POINT)
+    font.size = Pt(size * place.scale / EMU_PER_POINT)
     font.name = _office_family(run.family)
     font.bold, font.italic = run.bold, run.italic
     if run.fill is not None:
@@ -120,7 +135,7 @@ def _images(document: Document) -> list[Any]:
     return [element for element in document.root.iter() if isinstance(element, Image)]
 
 
-def _freeform(slide: Any, item: Item, scale: float) -> None:
+def _freeform(slide: Any, item: Item, place: _Place) -> None:
     """One flattened item as a custom-geometry shape with its paints."""
     shapes_module = require("pptx.enum.shapes")
     oxml = require("pptx.oxml")
@@ -130,10 +145,10 @@ def _freeform(slide: Any, item: Item, scale: float) -> None:
     box = data.bbox
     if box is None:
         return
-    left, top = box.x * scale, box.y * scale
+    scale = place.scale
+    left, top, _, _ = place.emu(box.x, box.y, 0, 0)
     width, height = max(box.width * scale, 1.0), max(box.height * scale, 1.0)
-    shape = slide.shapes.add_shape(shapes_module.MSO_SHAPE.RECTANGLE, round(left), round(top), round(width),
-                                   round(height))
+    shape = slide.shapes.add_shape(shapes_module.MSO_SHAPE.RECTANGLE, left, top, round(width), round(height))
     element = shape._element
     style = element.find("{http://schemas.openxmlformats.org/presentationml/2006/main}style")
     if style is not None:
@@ -192,19 +207,22 @@ def _paint(fill: Any, color: Color | None, opacity: float) -> None:
             target.append(alpha)
 
 
-def read_pptx(data: bytes, index: int) -> Document:
-    """Read one slide; see :func:`svgwriter.export._office.read_pptx`."""
+def read_pptx(data: bytes, index: int | None) -> Document | list[Document]:
+    """Read one slide, or every slide when *index* is None; see :func:`svgwriter.export._office.read_pptx`."""
     presentation_module = require("pptx")
     from ...document import Document
 
     deck = presentation_module.Presentation(io.BytesIO(data))
     slides = list(deck.slides)
-    if not -len(slides) <= index < len(slides):
+    if index is not None and not -len(slides) <= index < len(slides):
         raise IndexError(f"the deck has {len(slides)} slides, not slide {index}")
-    doc = Document(deck.slide_width / EMU_PER_UNIT, deck.slide_height / EMU_PER_UNIT)
-    for shape in slides[index].shapes:
-        _read_shape(doc, shape)
-    return doc
+    docs = []
+    for slide in slides if index is None else [slides[index]]:
+        doc = Document(deck.slide_width / EMU_PER_UNIT, deck.slide_height / EMU_PER_UNIT)
+        for shape in slide.shapes:
+            _read_shape(doc, shape)
+        docs.append(doc)
+    return docs if index is None else docs[0]
 
 
 def _read_shape(parent: Any, shape: Any) -> None:

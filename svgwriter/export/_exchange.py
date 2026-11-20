@@ -5,10 +5,11 @@ Exporting, saving and loading documents through the registered formats.
 from __future__ import annotations
 
 import os
+from collections.abc import Sequence
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from ._registry import find_exporter, find_importer
+from ._registry import Exporter, find_exporter, find_importer
 
 if TYPE_CHECKING:
     from ..document import Document
@@ -16,13 +17,15 @@ if TYPE_CHECKING:
 __all__ = ["export", "load", "save"]
 
 
-def export(document: Document, format: str, *, time: float | None = None, **options: Any) -> bytes | str:
+def export(document: Document | Sequence[Document], format: str, *, time: float | None = None,
+           **options: Any) -> bytes | str:
     """Convert *document* to *format* (a name or extension); returns ``bytes`` or ``str``.
 
     Parameters
     ----------
-    document : Document
-        The document to convert.
+    document : Document or sequence of Document
+        The document to convert, or several documents for a multi-page format
+        (``"pdf"``: one page each; ``"pptx"``: one slide each).
     format : str
         A registered format name or an extension such as ``".pdf"``.
     time : float, optional
@@ -40,7 +43,8 @@ def export(document: Document, format: str, *, time: float | None = None, **opti
     Raises
     ------
     ValueError
-        If no exporter matches *format*.
+        If no exporter matches *format*, the sequence is empty, or several
+        documents are given to a single-page format.
 
     See Also
     --------
@@ -52,19 +56,35 @@ def export(document: Document, format: str, *, time: float | None = None, **opti
     >>> doc = svg.Document(4, 4)
     >>> svg.export.export(doc, "png")[:4] == bytes.fromhex("89504e47")
     True
+    >>> deck = svg.export.export([doc, svg.Document(8, 2)], "pdf")
+    >>> len(svg.export.find_importer("pdf").function(deck, page=None))
+    2
     """
     exporter = find_exporter(format)
-    return exporter.function(document.at(time) if time is not None else document, **options)
+    return exporter.function(_frames(exporter, document, time), **options)
 
 
-def save(document: Document, path: str | os.PathLike[str], format: str | None = None, *, time: float | None = None,
-    **options: Any) -> Path:
+def _frames(exporter: Exporter, document: Document | Sequence[Document], time: float | None) -> Any:
+    """The document (or list of documents) to hand to *exporter*, at *time* when given."""
+    if isinstance(document, Sequence):
+        if not document:
+            raise ValueError("no documents to export")
+        if not exporter.multipage:
+            raise ValueError(f"the {exporter.name} format holds one document; "
+                             f"export several to a multi-page format such as pdf or pptx")
+        return [page.at(time) if time is not None else page for page in document]
+    return document.at(time) if time is not None else document
+
+
+def save(document: Document | Sequence[Document], path: str | os.PathLike[str], format: str | None = None, *,
+         time: float | None = None, **options: Any) -> Path:
     """Write *document* to *path*, choosing the format from *format* or the file extension.
 
     Parameters
     ----------
-    document : Document
-        The document to write.
+    document : Document or sequence of Document
+        The document to write, or several for a multi-page format (one PDF
+        page or PowerPoint slide each).
     path : str or path-like
         Destination file.
     format : str, optional
@@ -83,7 +103,8 @@ def save(document: Document, path: str | os.PathLike[str], format: str | None = 
     Raises
     ------
     ValueError
-        If no exporter matches.
+        If no exporter matches, or several documents are given to a
+        single-page format.
 
     See Also
     --------
@@ -101,7 +122,7 @@ def save(document: Document, path: str | os.PathLike[str], format: str | None = 
     True
     """
     exporter = find_exporter(format or path)
-    data = exporter.function(document.at(time) if time is not None else document, **options)
+    data = exporter.function(_frames(exporter, document, time), **options)
     target = Path(path)
     if isinstance(data, bytes):
         target.write_bytes(data)
@@ -110,7 +131,7 @@ def save(document: Document, path: str | os.PathLike[str], format: str | None = 
     return target
 
 
-def load(path: str | os.PathLike[str], format: str | None = None, **options: Any) -> Document:
+def load(path: str | os.PathLike[str], format: str | None = None, **options: Any) -> Document | list[Document]:
     """Read a document from *path* with the importer chosen by *format* or the extension.
 
     Parameters
@@ -124,8 +145,11 @@ def load(path: str | os.PathLike[str], format: str | None = None, **options: Any
 
     Returns
     -------
-    Document
-        The parsed document; relative image links inside it resolve against *path*.
+    Document or list of Document
+        The parsed document; relative image links inside it resolve against
+        *path*. Multi-page formats return a list, one document per page, when
+        their page option is None (``page=None`` for PDF, ``slide=None`` for
+        PowerPoint).
 
     Raises
     ------
@@ -135,6 +159,7 @@ def load(path: str | os.PathLike[str], format: str | None = None, **options: Any
     See Also
     --------
     save : Write a document.
+    Document.open_all : Every page of a file as a list.
 
     Examples
     --------
@@ -147,6 +172,7 @@ def load(path: str | os.PathLike[str], format: str | None = None, **options: Any
     'svg'
     """
     importer = find_importer(format or path)
-    document = importer.function(Path(path).read_bytes(), **options)
-    document.root._source_path = os.fspath(path)
-    return document
+    result = importer.function(Path(path).read_bytes(), **options)
+    for document in result if isinstance(result, list) else [result]:
+        document.root._source_path = os.fspath(path)
+    return result
