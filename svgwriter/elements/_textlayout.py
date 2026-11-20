@@ -20,6 +20,7 @@ __all__ = ["Char", "collect", "layout", "number_list"]
 
 POSITIONING: Final = ("x", "y", "dx", "dy", "rotate")
 PERCENT: Final = 100.0
+POSITION_NAMES: Final = ("x", "y", "dx", "dy", "rotate")
 DEFAULT_FONT_FAMILY: Final = "sans-serif"
 DEFAULT_FONT_SIZE: Final = 16.0
 FONT_WEIGHTS: Final = {"normal": 400, "bold": 700, "bolder": 700, "lighter": 300}
@@ -240,20 +241,14 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
         rules = rules_of(root) if root is not text else []
     chars = collect(text)
     lists = _Lists(*_viewport(text))
-    fonts: dict[int, tuple[str, float, int, bool]] = {}
+    fonts: dict[int, tuple[Any, ...]] = {}
     boxes: list[GlyphBox] = []
     chunks: list[int] = [0]
     pen_x = pen_y = 0.0
+    shaped = _shaped_runs(chars, lists, fonts, rules)
     for index, char in enumerate(chars):
         source = char.chain[0]
-        if id(source) not in fonts:
-            fonts[id(source)] = (
-                str(computed(source, "font-family", DEFAULT_FONT_FAMILY, rules)),
-                _font_size(computed(source, "font-size", DEFAULT_FONT_SIZE, rules)),
-                _font_weight(computed(source, "font-weight", "normal", rules)),
-                str(computed(source, "font-style", "", rules)) in ("italic", "oblique"),
-            )
-        family, size, weight, italic = fonts[id(source)]
+        family, size, weight, italic, language = _font_key(source, fonts, rules)
         x, y = lists.value(char, "x"), lists.value(char, "y")
         if x is not None:
             pen_x = x
@@ -263,7 +258,8 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
             pen_y = y
         pen_x += lists.value(char, "dx") or 0.0
         pen_y += lists.value(char, "dy") or 0.0
-        outline, advance = glyph_shape(char.char, family, size, weight, italic)
+        outline, advance = shaped[index] if index in shaped else glyph_shape(
+            char.char, family, size, weight, italic, language)
         boxes.append(GlyphBox(char.char, outline, pen_x, pen_y, lists.value(char, "rotate") or 0.0, advance, source))
         pen_x += advance
     chunks.append(len(boxes))
@@ -276,6 +272,50 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
             box.x -= shift
     _along_paths(chars, boxes)
     return boxes
+
+
+def _font_key(source: Element, fonts: dict[int, tuple[Any, ...]], rules: list[Rule]) -> tuple[Any, ...]:
+    if id(source) not in fonts:
+        fonts[id(source)] = (
+            str(computed(source, "font-family", DEFAULT_FONT_FAMILY, rules)),
+            _font_size(computed(source, "font-size", DEFAULT_FONT_SIZE, rules)),
+            _font_weight(computed(source, "font-weight", "normal", rules)),
+            str(computed(source, "font-style", "", rules)) in ("italic", "oblique"),
+            _language(source),
+        )
+    return fonts[id(source)]
+
+
+def _language(element: Element) -> str | None:
+    """The nearest ``xml:lang`` (or ``lang``) of *element* or its ancestors."""
+    node: Element | None = element
+    while node is not None:
+        value = node.get("xml:lang") or node.get("lang")
+        if value:
+            return str(value)
+        node = node.parent
+    return None
+
+
+def _shaped_runs(chars: list[Char], lists: Any, fonts: dict[int, tuple[Any, ...]],
+                 rules: list[Rule]) -> dict[int, tuple[Any, float]]:
+    """Shaped ``(outline, advance)`` by character index, for runs in one font that need a shaper."""
+    from ..ops.text import needs_shaping, shape_run
+
+    result: dict[int, tuple[Any, float]] = {}
+    start = 0
+    while start < len(chars):
+        key = _font_key(chars[start].chain[0], fonts, rules)
+        stop = start + 1
+        while stop < len(chars) and _font_key(chars[stop].chain[0], fonts, rules) == key and not any(
+                lists.value(chars[stop], name) is not None for name in POSITION_NAMES):
+            stop += 1
+        run = "".join(char.char for char in chars[start:stop])
+        if needs_shaping(run):
+            for offset, item in enumerate(shape_run(run, *key)):
+                result[start + offset] = item
+        start = stop
+    return result
 
 
 def _guide(holder: Element) -> Any:

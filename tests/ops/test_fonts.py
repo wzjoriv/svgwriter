@@ -44,3 +44,32 @@ def test_family_override_and_bad_data():
     assert svg.register_font(_box_font("Ignored"), family="My Boxes") == "My Boxes"
     with pytest.raises(ValueError, match="font"):
         svg.register_font(b"not a font")
+
+
+def _covered(char):
+    font = svg.ops.text.font_for(char, "sans-serif", 20)
+    return font.unicharToGlyph(ord(char)) != 0
+
+
+def test_complex_scripts_are_shaped_when_harfbuzz_is_installed():
+    pytest.importorskip("uharfbuzz")
+    conjunct = "क्ष"
+    if not _covered(conjunct[0]):
+        pytest.skip("no Devanagari font installed")
+    boxes = svg.text(conjunct, x=0, y=40, font_size=32).layout()
+    assert len(boxes) == 3
+    assert sum(1 for box in boxes if len(box.outline)) < 3
+    assert boxes[-1].advance > 0 and not svg.ops.text.needs_shaping("plain latin")
+
+
+@pytest.mark.parametrize("char", ["你", "こ", "আ", "न"])
+def test_missing_glyphs_fall_back_to_a_system_font(char):
+    if not _covered(char):
+        pytest.skip("no font for this script installed")
+    outline, advance = svg.ops.text.glyph_shape(char, "serif", 20)
+    assert len(outline) and advance > 0
+
+
+def test_language_hint_is_used_for_fallback():
+    text = svg.text("你", x=0, y=20, xml_lang="zh")
+    assert text.layout()[0].advance > 0

@@ -20,9 +20,9 @@ ancestors, and CSS from `<style>` elements all apply, as in a browser. Whitespac
 `text[i]` is a live {class}`~svgwriter.elements.text.Character` and `text[a:b]` a `CharacterRange`. Moving and
 rotating them edits SVG's per-character `dx`/`dy`/`rotate` lists, so the result is still real,
 selectable text: Indexes count user-perceived characters (grapheme clusters): `"é"` written as `e` plus a combining
-accent, a ZWJ emoji family, a flag or a keycap is one character. Text is laid out glyph by glyph without
-a shaping engine, so ligatures and complex scripts (Arabic joining, Indic reordering) are not shaped;
-convert such text to outlines from a renderer that shapes it, or embed the outlines.
+accent, a ZWJ emoji family, a flag or a keycap is one character. With the `svgwriter[shaping]` extra (HarfBuzz), runs in complex scripts (Arabic joining, Hebrew,
+Indic conjuncts, Thai, ...) are shaped; Latin text keeps glyph-by-glyph layout. In a shaped run the first
+character of each cluster carries its glyphs.
 
 ```python
 t = doc.text("wavy text", x=10, y=40, font_size=24)
@@ -60,6 +60,13 @@ print(svg.ops.text_width("Outline", "sans-serif", 36))
 
 Text takes part in boolean operations (`rect - text`) and clipping (`art.clip(text)`) through its
 outlines.
+
+## Fonts and scripts
+
+`font_family` names are looked up among the installed system fonts. When the chosen font has no glyph
+for a character, layout falls back per character to a system font that has one, as browsers do, so
+Hindi, Bengali, Urdu, Chinese, Japanese and other scripts render with any family; `xml:lang` (for
+example `"zh"` or `"ja"`) steers that choice for shared CJK characters.
 
 ## Font files
 

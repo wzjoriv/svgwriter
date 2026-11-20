@@ -91,6 +91,7 @@ def register_font(source: str | os.PathLike[str] | bytes, family: str | None = N
     name = family or typeface.getFamilyName()
     _REGISTERED.setdefault(name.lower(), []).append(typeface)
     _font.cache_clear()
+    font_for.cache_clear()
     glyph_shape.cache_clear()
     return name
 
@@ -126,9 +127,166 @@ def _font(font_family: str, size: float, weight: FontWeight, italic: bool) -> An
     return skia.Font(typeface, size)
 
 
+COMPLEX_SCRIPT_START: Final = 0x0590
+_HB_FONTS: dict[int, Any] = {}
+
+
+def needs_shaping(text: str) -> bool:
+    """Whether *text* has characters from scripts that need a shaper (Hebrew, Arabic, Indic, Thai, ...).
+
+    Always False without ``uharfbuzz``, so text then lays out glyph by glyph.
+    """
+    complex_script = any(COMPLEX_SCRIPT_START <= ord(char) < LATIN_EXTENDED_ADDITIONAL
+                         or CJK_START <= ord(char) < EMOJI_START for char in text)
+    return complex_script and _harfbuzz() is not None
+
+
+LATIN_EXTENDED_ADDITIONAL: Final = 0x1E00
+CJK_START: Final = 0xA800
+EMOJI_START: Final = 0x1F000
+
+
+def _harfbuzz() -> Any:
+    try:
+        import uharfbuzz
+    except ImportError:
+        return None
+    return uharfbuzz
+
+
+def _hb_font(typeface: Any) -> Any:
+    """A HarfBuzz font reading *typeface*'s tables through skia (cached; table bytes kept alive)."""
+    key = typeface.uniqueID()
+    if key not in _HB_FONTS:
+        hb = _harfbuzz()
+        tables: dict[str, bytes] = {}
+
+        def table(face: Any, tag: str, data: Any) -> bytes:
+            raw = typeface.copyTableData(int.from_bytes(tag.encode("latin-1"), "big"))
+            tables[tag] = bytes(raw) if raw is not None else b""
+            return tables[tag]
+
+        face = hb.Face.create_for_tables(table, None)
+        _HB_FONTS[key] = (hb.Font(face), face.upem, tables, table)
+    return _HB_FONTS[key]
+
+
+def shape_run(text: str, font_family: str, size: float, weight: FontWeight = "normal",
+              italic: bool = False, language: str | None = None) -> list[tuple[PathData, float]]:
+    """Shape *text* with HarfBuzz into one ``(outline, advance)`` per character.
+
+    The first character of each cluster carries its glyphs, already placed
+    relative to the run's start; the last character carries the run's whole
+    advance, so per-character layout code places the run as one piece.
+
+    Parameters
+    ----------
+    text : str
+        One run in a single font.
+    font_family : str
+        CSS font family list.
+    size : float
+        Font size in user units.
+    weight : {"normal", "bold"} or int, optional
+        Font weight. Defaults to "normal".
+    italic : bool, optional
+        Use the italic face. Defaults to False.
+
+    Returns
+    -------
+    list of (PathData, float)
+        Outline and advance for each character of *text*.
+
+    Raises
+    ------
+    ImportError
+        If ``uharfbuzz`` (the ``svgwriter[shaping]`` extra) is not installed.
+
+    Examples
+    --------
+    >>> from svgwriter.ops.text import needs_shaping
+    >>> needs_shaping("plain latin")
+    False
+    """
+    hb = _harfbuzz()
+    if hb is None:
+        raise ImportError("text shaping needs uharfbuzz; pip install 'svgwriter[shaping]'")
+    first = next((char for char in text if not char.isspace()), text[:1])
+    font = font_for(first, font_family, size, weight, italic, language)
+    shaper, units, _, _ = _hb_font(font.getTypeface())
+    buffer = hb.Buffer()
+    buffer.add_str(text)
+    buffer.guess_segment_properties()
+    hb.shape(shaper, buffer, {})
+    scale = size / units
+    outlines: dict[int, list[PathData]] = {}
+    pen = 0.0
+    for info, position in zip(buffer.glyph_infos, buffer.glyph_positions, strict=True):
+        glyph = font.getPath(info.codepoint)
+        if glyph is not None:
+            placed = from_skia(glyph).transformed(
+                Matrix.translate(pen + position.x_offset * scale, -position.y_offset * scale))
+            outlines.setdefault(info.cluster, []).append(placed)
+        pen += position.x_advance * scale
+    result = []
+    for index in range(len(text)):
+        parts = outlines.get(index, [])
+        shape = sum(parts[1:], parts[0]) if parts else PathData()
+        result.append((shape, pen if index == len(text) - 1 else 0.0))
+    return result
+
+
+@lru_cache(maxsize=GLYPH_CACHE)
+def font_for(char: str, font_family: str, size: float, weight: FontWeight = "normal", italic: bool = False,
+             language: str | None = None) -> Any:
+    """The font for *char*: the requested family when it has the glyph, else a system font that does.
+
+    Like a browser, layout falls back per character, so Devanagari, Bengali,
+    CJK and other scripts render even when the chosen family lacks them.
+
+    Parameters
+    ----------
+    char : str
+        The character (first code point is used).
+    font_family : str
+        CSS font family list.
+    size : float
+        Font size in user units.
+    weight : {"normal", "bold"} or int, optional
+        Font weight. Defaults to "normal".
+    italic : bool, optional
+        Prefer an italic face. Defaults to False.
+    language : str, optional
+        BCP 47 language hint (``"zh"``, ``"ja"``, ...) for choosing among fonts
+        that cover the character. Defaults to None.
+
+    Returns
+    -------
+    skia.Font
+        A font that can draw *char*, or the requested one when nothing can.
+
+    Examples
+    --------
+    >>> from svgwriter.ops.text import font_for
+    >>> font_for("A", "sans-serif", 16).getSize()
+    16.0
+    """
+    font = _font(font_family, size, weight, italic)
+    if not char or font.unicharToGlyph(ord(char[0])):
+        return font
+    slant = skia.FontStyle.kItalic_Slant if italic else skia.FontStyle.kUpright_Slant
+    style = skia.FontStyle(_weight(weight), NORMAL_WIDTH, slant)
+    family = font.getTypeface().getFamilyName()
+    hints = [language] if language else []
+    fallback = skia.FontMgr().matchFamilyStyleCharacter(family, style, hints, ord(char[0]))
+    if fallback is None:
+        return font
+    return skia.Font(skia.Typeface(fallback.getFamilyName(), style), size)
+
+
 @lru_cache(maxsize=GLYPH_CACHE)
 def glyph_shape(char: str, font_family: str, size: float, weight: FontWeight = "normal",
-                italic: bool = False) -> tuple[PathData, float]:
+                italic: bool = False, language: str | None = None) -> tuple[PathData, float]:
     """Outline (origin on the baseline) and advance width of one character; cached.
 
     Parameters
@@ -160,7 +318,7 @@ def glyph_shape(char: str, font_family: str, size: float, weight: FontWeight = "
     >>> advance > 0
     True
     """
-    font = _font(font_family, size, weight, italic)
+    font = font_for(char, font_family, size, weight, italic, language)
     glyphs = font.textToGlyphs(char)
     if not len(glyphs):
         return PathData(), 0.0
