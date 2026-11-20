@@ -25,6 +25,8 @@ NEIGHBOURHOOD = 1
 SUITE_SIZE = (480, 360)
 BACKGROUND = "white"
 CHANNEL_MAX = 255
+REVISION_ID = "revision"
+REVISION_MARGIN = 40
 
 
 @dataclass
@@ -64,6 +66,20 @@ def _rgb(pixels: np.ndarray) -> np.ndarray:
     rgba = pixels.astype(np.float32) * (CHANNEL_MAX if pixels.dtype != np.uint8 else 1)
     alpha = rgba[..., 3:4] / CHANNEL_MAX
     return rgba[..., :3] * alpha + CHANNEL_MAX * (1 - alpha)
+
+
+def _revision_box(doc: svg.Document, shape: tuple[int, ...]) -> tuple[slice, slice] | None:
+    """Pixels of the ``$Revision$`` label, which names the file version and differs between a test and its PNG."""
+    label = doc.get_element_by_id(REVISION_ID)
+    try:
+        box = label.exact_bbox() if label is not None else None
+    except (TypeError, ValueError):
+        box = None
+    if box is None:
+        return None
+    rows = slice(max(int(box.y) - REVISION_MARGIN // 4, 0), min(int(box.y + box.height) + REVISION_MARGIN // 4, shape[0]))
+    columns = slice(0, min(int(box.x + box.width) + REVISION_MARGIN, shape[1]))
+    return rows, columns
 
 
 def _scope(name: str, data: bytes) -> str | None:
@@ -114,8 +130,12 @@ def run_test(path: Path, reference: Path) -> Outcome:
         try:
             if reference.exists():
                 expected = Pixels.decode(reference.read_bytes()).rgba()
-                drawn = svg.ops.rasterize(doc, size=(expected.shape[1], expected.shape[0]), background=BACKGROUND)
-                outcome.results["render"] = _grade(mismatch(_rgb(drawn), _rgb(expected)))
+                drawn = _rgb(svg.ops.rasterize(doc, size=(expected.shape[1], expected.shape[0]), background=BACKGROUND))
+                expected = _rgb(expected)
+                label = _revision_box(doc, expected.shape)
+                if label is not None:
+                    drawn[label] = expected[label]
+                outcome.results["render"] = _grade(mismatch(drawn, expected))
         except Exception as exc:  # noqa: BLE001
             outcome.results["render"] = ("error", 1.0, f"{type(exc).__name__}: {exc}")
     outcome.seconds = time.perf_counter() - start
@@ -146,7 +166,9 @@ def write_report(outcomes: list[Outcome], path: Path) -> None:
              "must match. This is the writer's fidelity score.",
              "- **render**: `svgwriter.ops.rasterize` against the W3C reference PNG; bounded by skia's SVG support.",
              f"- A test passes when at most {PASS_MISMATCH:.0%} of pixels differ by more than "
-             f"{CHANNEL_TOLERANCE}/255 after a 3x3 blur, within {NEIGHBOURHOOD} px.", ""]
+             f"{CHANNEL_TOLERANCE}/255 after a 3x3 blur, within {NEIGHBOURHOOD} px. "
+             "The `$Revision$` label (the file's version, which the reference PNGs often predate) is not compared.",
+             ""]
     for kind in ("roundtrip", "render"):
         scored = [o for o in outcomes if o.status(kind) != "skipped"]
         ok = sum(o.status(kind) == "pass" for o in scored)
