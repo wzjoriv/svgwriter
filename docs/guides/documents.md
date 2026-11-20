@@ -98,3 +98,29 @@ sheet.add(icon).place(50, 50)        # a copy; later edits to icon do not change
 
 Explicit ids keep their values, so give embedded drawings distinct ids if they are referenced.
 
+## Drawing your own objects
+
+Give any class a `__svgwriter__(self)` method that returns an element, a document or anything else
+`add` accepts, and `doc.add(obj)` and `group.add(obj)` draw it. A neural network, a graph or a circuit
+can describe its own picture this way:
+
+```python
+class Network:
+    def __init__(self, layers):
+        self.layers = layers
+
+    def __svgwriter__(self):
+        picture = svg.group()
+        for column, size in enumerate(self.layers):
+            for row in range(size):
+                picture.circle(20 + 60 * column, 20 + 25 * row, 8, fill="teal")
+        return picture
+
+doc = svg.Document(200, 150)
+doc.add(Network([3, 5, 2]))
+```
+
+`add` also takes objects from other libraries: matplotlib figures (`savefig`), anything with
+`_repr_svg_` (parsed into elements), anything with only `_repr_png_` or `_repr_jpeg_` (an `<image>`),
+and numpy pixel arrays.
+

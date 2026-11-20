@@ -120,3 +120,56 @@ def test_id_lookup_stays_correct_after_edits():
     assert doc["b"] is c
     copy = doc.root.clone()
     assert copy.get_element_by_id("b") is not c and copy.get_element_by_id("b").parent is copy
+
+
+class TestDrawableObjects:
+    def test_svgwriter_protocol_draws_any_object(self):
+        import svgwriter as svg
+
+        class Network:
+            def __svgwriter__(self):
+                layer = svg.group()
+                for row in range(3):
+                    layer.circle(10, 10 + row * 20, 5)
+                return layer
+
+        doc = svg.Document(100, 100)
+        assert doc.add(Network()).tag == "g" and len(doc[0]) == 3
+        group = svg.group()
+        assert group.add(Network()).tag == "g"
+
+    def test_protocol_may_return_a_document_or_another_drawable(self):
+        import svgwriter as svg
+
+        class Wrapped:
+            def __svgwriter__(self):
+                inner = svg.Document(10, 10)
+                inner.rect(0, 0, 10, 10)
+                return inner
+
+        assert svg.Document(20, 20).add(Wrapped())[0].tag == "svg"
+
+    def test_raster_reprs_and_arrays_become_images(self):
+        import numpy as np
+
+        import svgwriter as svg
+
+        class Picture:
+            def _repr_png_(self):
+                return svg.Image(np.zeros((4, 6, 3))).encode()
+
+        doc = svg.Document(20, 20)
+        assert doc.add(Picture()).shape == (4, 6)
+        assert doc.add(np.ones((3, 5))).shape == (3, 5)
+
+    def test_bad_protocol_result_is_reported(self):
+        import pytest
+
+        import svgwriter as svg
+
+        class Broken:
+            def __svgwriter__(self):
+                return None
+
+        with pytest.raises(TypeError, match="__svgwriter__"):
+            svg.Document(5, 5).add(Broken())

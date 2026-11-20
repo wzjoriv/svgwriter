@@ -154,6 +154,10 @@ class Container(Element, Generic[ChildT]):
         >>> svg.group().add(svg.circle(0, 0, 1)).tag
         'circle'
         """
+        if not isinstance(child, (Element, str)):
+            from .._document.ingest import _ingest
+
+            child = _ingest(child)
         return self.append(child)
 
     def add_all(self, children: Iterable[ChildT]) -> list[ChildT]:
