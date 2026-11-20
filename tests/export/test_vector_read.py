@@ -242,7 +242,8 @@ TIKZ = r"""
 class TestTikz:
     def test_hand_written(self) -> None:
         cm = 72.27 / 2.54
-        triangle, circle, square, curve, dot = find_importer("tikz").function(TIKZ.encode())
+        triangle, circle, square, label, curve, dot = find_importer("tikz").function(TIKZ.encode())
+        assert label.text_content == "label"
         assert triangle.get("stroke") == "#ff0000" and triangle.get("stroke-width") == 0.8 and triangle.get("fill") == "none"
         assert triangle.bounds() == pytest.approx((0, -cm, 2 * cm, cm))
         assert (circle.get("fill"), circle.get("stroke"), circle.get("opacity")) == ("#ff8000", "#336699", 0.5)
@@ -290,3 +291,86 @@ def test_tikz_nodes_become_text():
     box = next(e for e in doc if e.tag == "path").bounds()
     assert text.text_content == "Hello world" and text.get("fill") == "#0000ff"
     assert text.get("x") == pytest.approx(box.x + box.width / 2)
+
+
+POINTS = r"\begin{tikzpicture}[x=1pt,y=1pt]"
+
+
+def tikz_doc(body: str) -> svg.Document:
+    from svgwriter.export._vector._tikz_read import read_tikz
+
+    return read_tikz(POINTS + body + r"\end{tikzpicture}")
+
+
+def kinds(doc: svg.Document, tag: str) -> list:
+    return [e for e in doc if e.tag == tag]
+
+
+def test_tikz_nodes_inside_paths():
+    doc = tikz_doc(r"\draw (0,0) -- (10,0) node[midway, red] {m} -- (10,10) node[right] {r};"
+                   r"\draw (0,0) node {A} -- (20,0) node {B};")
+    mid, right, a, b = kinds(doc, "text")
+    assert (mid.text_content, mid.get("fill")) == ("m", "#ff0000")
+    assert mid.get("x") == pytest.approx(5.0) and mid.get("y") == pytest.approx(3.5)
+    assert right.get("x") > 10.0 and right.get("y") == pytest.approx(-10.0 + 3.5)
+    assert (a.get("x"), b.get("x")) == (pytest.approx(0.0), pytest.approx(20.0))
+    assert len(kinds(doc, "path")) == 2
+
+
+def test_tikz_coordinate_names_in_paths():
+    doc = tikz_doc(r"\path (3,4) coordinate (p); \coordinate (q) at (6,0); \draw (0,0) -- (p) -- (q);")
+    box = kinds(doc, "path")[0].bounds()
+    assert (box.width, box.height) == (pytest.approx(6.0), pytest.approx(4.0))
+
+
+def test_tikz_node_shapes_and_anchors():
+    from svgwriter.ops.text import text_width
+
+    doc = tikz_doc(r"\node[draw, circle, fill=yellow, minimum size=20pt] (a) at (10,10) {};"
+                   r"\draw (a.east) -- (40,10);"
+                   r"\node[draw, inner sep=2pt] (b) at (50,0) {Hi};"
+                   r"\draw (b.north) -- (50,30);")
+    circle, line, box, up = kinds(doc, "path")
+    assert circle.get("fill") == "#ffff00" and circle.bounds().width == pytest.approx(20.0)
+    assert line.bounds().x == pytest.approx(20.0)
+    width = text_width("Hi", size=10.0) + 4.0
+    assert box.bounds().width == pytest.approx(width)
+    assert up.bounds().y == pytest.approx(-30.0) and up.bounds().height == pytest.approx(30.0 - box.bounds().height / 2)
+
+
+def test_tikz_styles_expand_in_options():
+    doc = tikz_doc(r"\tikzset{box/.style={draw=blue, thick}, every node/.style={red}, every path/.style={dashed}}"
+                   r"\tikzstyle{wide}=[line width=2pt]"
+                   r"\draw[box] (0,0) -- (5,0); \draw[wide, box] (0,1) -- (5,1) node {n};")
+    first, second = kinds(doc, "path")
+    assert (first.get("stroke"), first.get("stroke-width")) == ("#0000ff", 0.8)
+    assert second.get("stroke-width") == 0.8 and first.get("stroke-dasharray") is not None
+    assert kinds(doc, "text")[0].get("fill") == "#ff0000"
+    wide = tikz_doc(r"\tikzstyle{wide}=[line width=2pt]\draw[wide] (0,0) -- (5,0);")
+    assert kinds(wide, "path")[0].get("stroke-width") == 2.0
+
+
+def test_tikz_scopes_nest():
+    doc = tikz_doc(r"\begin{scope}[shift={(10,0)}, red]"
+                   r"\begin{scope}[xshift=5pt, thick, scale=2]\draw (0,0) -- (1,0);\end{scope}"
+                   r"\draw (0,0) -- (1,0);\end{scope}"
+                   r"\begin{scope}[rotate=90]\draw (0,0) -- (3,0);\end{scope}\draw (0,0) -- (1,0);")
+    inner, outer, rotated, plain = (p.bounds() for p in kinds(doc, "path"))
+    assert (inner.x, inner.width) == (pytest.approx(15.0), pytest.approx(2.0))
+    assert (outer.x, outer.width) == (pytest.approx(10.0), pytest.approx(1.0))
+    assert (rotated.width, rotated.height) == (pytest.approx(0.0), pytest.approx(3.0)) and rotated.y < 0
+    assert plain.x == pytest.approx(0.0)
+    paths = kinds(doc, "path")
+    assert paths[0].get("stroke") == paths[1].get("stroke") == "#ff0000" and paths[0].get("stroke-width") == 0.8
+    assert paths[3].get("stroke") == "#000000"
+
+
+def test_tikz_foreach_unrolls():
+    doc = tikz_doc(r"\foreach \x in {1,2,3} \draw (\x,0) -- (\x,1);"
+                   r"\foreach \i in {0,...,4} { \draw (\i,5) -- (\i,6); }"
+                   r"\foreach \x/\y in {1/a,2/b} \node at (\x,9) {\y};"
+                   r"\foreach \x in {1,3,...,7} \foreach \y in {0,1} \fill (\x,\y) circle (0.5);")
+    paths = kinds(doc, "path")
+    assert len(paths) == 3 + 5 + 8
+    assert [p.bounds().x for p in paths[:3]] == pytest.approx([1.0, 2.0, 3.0])
+    assert [t.text_content for t in kinds(doc, "text")] == ["a", "b"]
