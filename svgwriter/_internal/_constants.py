@@ -153,6 +153,9 @@ __all__ = [
     "TIMEOUT_SECONDS",
     "TIME_SCALE",
     "UINT16_MAX",
+    "USE_GEOMETRY",
+    "USE_NESTING",
+    "VISIBLE_OVERFLOW",
     "WHITE",
     "WRITE_LAG",
     "XLINK_NS",
@@ -362,3 +365,6 @@ MPL_LINETO: Final = 2
 MPL_CURVE3: Final = 3
 MPL_CURVE4: Final = 4
 MPL_CLOSE: Final = 79
+USE_GEOMETRY: Final = frozenset({"x", "y", "width", "height", "xlink:href", "href", "transform", "id"})
+USE_NESTING: Final = 16
+VISIBLE_OVERFLOW: Final = frozenset({"visible", "auto"})

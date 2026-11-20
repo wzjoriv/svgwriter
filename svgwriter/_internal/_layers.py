@@ -87,6 +87,9 @@ def _base_uri(element: Element) -> str:
     return base
 
 
+_LOADING: set[str] = set()
+
+
 @lru_cache(maxsize=LINK_CACHE)
 def _load(path: str, mtime: float, width: float, height: float) -> Any:
     from ..elements.structure import Pixels
@@ -94,9 +97,15 @@ def _load(path: str, mtime: float, width: float, height: float) -> Any:
     if path.lower().endswith((".svg", ".svgz")):
         from ..export import load
 
-        document = load(path)
-        columns, rows = max(1, round(width)), max(1, round(height))
-        return Pixels.from_array(document.rasterize(size=(columns, rows)))
+        if path in _LOADING:
+            raise ValueError(f"{path} links back to itself")
+        _LOADING.add(path)
+        try:
+            document = load(path)
+            columns, rows = max(1, round(width)), max(1, round(height))
+            return Pixels.from_array(document.rasterize(size=(columns, rows)))
+        finally:
+            _LOADING.discard(path)
     return Pixels.decode(Path(path).read_bytes())
 
 

@@ -8,6 +8,7 @@ import math
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
+from ._instances import expand_uses
 from ._layers import ancestry, drawable_order, resolve_links
 from ._markers import expand_markers
 from ._tree import replace_in_parent
@@ -100,6 +101,7 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
 
     copy = root.clone()
     resolve_styles(copy)
+    expand_uses(copy)
     resolve_links(copy)
     ellipses_as_paths(copy)
     expand_image_patterns(copy)
