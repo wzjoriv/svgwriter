@@ -339,7 +339,8 @@ displayed; <code class="docutils literal notranslate"><span class="pre">fit()</s
 <section id="other-libraries">
 <h2>Other libraries<a class="headerlink" href="#other-libraries" title="Link to this heading">¶</a></h2>
 <p>Anything with <code class="docutils literal notranslate"><span class="pre">_repr_svg_</span></code> (diagrams, formulas) or a matplotlib-style <code class="docutils literal notranslate"><span class="pre">savefig</span></code> can be added; it becomes
-a <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span></code> holding its <code class="docutils literal notranslate"><span class="pre">&lt;svg&gt;</span></code>, so it can be moved and scaled:</p>
+a <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span></code> holding its <code class="docutils literal notranslate"><span class="pre">&lt;svg&gt;</span></code>, so it can be moved and scaled. Objects with only <code class="docutils literal notranslate"><span class="pre">_repr_png_</span></code> or <code class="docutils literal notranslate"><span class="pre">_repr_jpeg_</span></code>
+(the IPython display protocol) become an <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Badge</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_repr_svg_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">'&lt;svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"&gt;&lt;circle cx="10" cy="10" r="9"/&gt;&lt;/svg&gt;'</span>
