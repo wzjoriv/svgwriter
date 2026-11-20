@@ -1,10 +1,8 @@
-from typing import Final, Literal, TypeAlias
+from typing import Literal, TypeAlias
 from ...document import Document
 
 __all__ = ["polylines", "to_dxf", "to_gcode", "to_hpgl"]
 
-MM_PER_USER_UNIT: Final = ...
-HPGL_UNITS_PER_MM: Final = ...
 Point: TypeAlias = tuple[float, float]
 
 def polylines(data: object, tolerance: float) -> list[tuple[list[Point], bool]]: ...

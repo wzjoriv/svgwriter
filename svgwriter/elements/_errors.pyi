@@ -1,7 +1,3 @@
-from typing import Final
-
-SUGGESTIONS: Final = ...
-
 class UnknownAttributeError(AttributeError):
     owner: str
     attribute: str

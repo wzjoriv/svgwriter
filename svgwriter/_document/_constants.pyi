@@ -1,0 +1,6 @@
+from typing import Final
+
+__all__ = ["INLINE_STYLE", "RASTER_REPRS"]
+
+RASTER_REPRS: Final = ...
+INLINE_STYLE: Final = ...

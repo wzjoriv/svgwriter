@@ -1,6 +1,6 @@
 from collections.abc import Mapping, Sequence
 from typing import Any
-from .._internal._typing import FillRule, LineCap, LineJoin, Opacity, Self
+from .._internal._typing import FillRule, LineCap, LineJoin, Opacity
 from ..attributes.length import LengthLike
 from ..attributes.style import StyleLike
 from ..color.paint import PaintValue
@@ -10,11 +10,13 @@ from ..elements.base import AttrValue, Element
 from ..elements.shapes import Path
 from ..transform.matrix import Point
 from ..transform.transform import TransformLike
+from ._builder_curves import CurveCommands
+from ._builder_shapes import ShapeCommands
 from .data import PathData
 
 __all__ = ["PathBuilder"]
 
-class PathBuilder:
+class PathBuilder(CurveCommands, ShapeCommands):
     def __init__(self, start: tuple[float, float] | None = None) -> None: ...
     @property
     def current_point(self) -> Point: ...
@@ -44,70 +46,7 @@ class PathBuilder:
         *,
         relative: bool = False,
     ) -> None: ...
-    def curve_to(
-        self,
-        x1: float,
-        y1: float,
-        x2: float,
-        y2: float,
-        x: float,
-        y: float,
-        *,
-        relative: bool = False,
-    ) -> None: ...
-    def smooth_curve_to(
-        self,
-        x2: float,
-        y2: float,
-        x: float,
-        y: float,
-        *,
-        relative: bool = False,
-    ) -> None: ...
-    def quad_to(
-        self,
-        x1: float,
-        y1: float,
-        x: float,
-        y: float,
-        *,
-        relative: bool = False,
-    ) -> None: ...
-    def smooth_quad_to(
-        self,
-        x: float,
-        y: float,
-        *,
-        relative: bool = False,
-    ) -> None: ...
-    def arc_to(
-        self,
-        rx: float,
-        ry: float,
-        rotation: float,
-        large_arc: bool,
-        sweep: bool,
-        x: float,
-        y: float,
-        *,
-        relative: bool = False,
-    ) -> None: ...
     def close(self) -> None: ...
-    def extend(self, data: PathData | str) -> Self: ...
-    def circle(
-        self,
-        cx: float,
-        cy: float,
-        r: float,
-    ) -> Self: ...
-    def regular_polygon(
-        self,
-        cx: float,
-        cy: float,
-        radius: float,
-        sides: int,
-        rotation: float = -90.0,
-    ) -> Self: ...
     def build(self) -> PathData: ...
     def to_element(
         self,

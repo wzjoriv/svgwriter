@@ -1,23 +1,18 @@
-import os
 from collections.abc import Callable
 from dataclasses import dataclass
 from os import PathLike
-from pathlib import Path
 from typing import Any, TypeAlias, TypeVar
 from ..document import Document
 
 __all__ = [
     "Exporter",
     "Importer",
-    "export",
     "exporters",
     "find_exporter",
     "find_importer",
     "importers",
-    "load",
     "register",
     "register_importer",
-    "save",
     "unregister",
 ]
 
@@ -85,26 +80,3 @@ def importers() -> dict[str, Importer]: ...
 def find_exporter(key: str | PathLike[str]) -> Exporter: ...
 
 def find_importer(key: str | PathLike[str]) -> Importer: ...
-
-def export(
-    document: Document,
-    format: str,
-    *,
-    time: float | None = None,
-    **options: Any,
-) -> bytes | str: ...
-
-def save(
-    document: Document,
-    path: str | os.PathLike[str],
-    format: str | None = None,
-    *,
-    time: float | None = None,
-    **options: Any,
-) -> Path: ...
-
-def load(
-    path: str | os.PathLike[str],
-    format: str | None = None,
-    **options: Any,
-) -> Document: ...

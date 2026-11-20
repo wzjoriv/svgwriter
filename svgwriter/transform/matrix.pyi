@@ -1,9 +1,11 @@
 import numpy as np
 from dataclasses import dataclass
-from typing import Any, Final, NamedTuple, overload
+from typing import Final, NamedTuple, overload
 from numpy import ndarray
 from .._internal._drawable import Drawable
 from .._internal._typing import Matrix6
+from ._matrix_constructors import MatrixConstructors
+from ._matrix_text import MatrixText
 
 __all__ = ["IDENTITY", "Matrix", "Point"]
 
@@ -22,7 +24,7 @@ class Point(NamedTuple):
     def __abs__(self) -> float: ...
 
 @dataclass(frozen=True, slots=True)
-class Matrix(Drawable):
+class Matrix(MatrixConstructors, MatrixText, Drawable):
     a: float = 1.0
     b: float = 0.0
     c: float = 0.0
@@ -39,25 +41,6 @@ class Matrix(Drawable):
         e: float = 0.0,
         f: float = 0.0,
     ) -> None: ...
-    @classmethod
-    def translate(cls, tx: float, ty: float = 0.0) -> Matrix: ...
-    @classmethod
-    def scale(cls, sx: float, sy: float | None = None) -> Matrix: ...
-    @classmethod
-    def rotate(
-        cls,
-        angle: float,
-        cx: float = 0.0,
-        cy: float = 0.0,
-    ) -> Matrix: ...
-    @classmethod
-    def flip_x(cls, x: float = 0.0) -> Matrix: ...
-    @classmethod
-    def flip_y(cls, y: float = 0.0) -> Matrix: ...
-    @classmethod
-    def skew_x(cls, angle: float) -> Matrix: ...
-    @classmethod
-    def skew_y(cls, angle: float) -> Matrix: ...
     @overload
     def __matmul__(self, other: Matrix) -> Matrix: ...
     @overload
@@ -76,13 +59,6 @@ class Matrix(Drawable):
     def as_tuple(self) -> Matrix6: ...
     def isclose(self, other: Matrix | object, tolerance: float = 1e-09) -> bool: ...
     def decompose(self) -> tuple[float, float, float, float, float, float]: ...
-    def svg_value(
-        self,
-        precision: int = 4,
-        *,
-        pivot: tuple[float, float] | None = None,
-        box: Any = None,
-    ) -> str: ...
     def __str__(self) -> str: ...
 
 IDENTITY: Final = ...

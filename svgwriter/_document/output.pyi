@@ -1,7 +1,7 @@
 import numpy as np
 from os import PathLike
 from pathlib import Path as FilePath
-from typing import Any, Final, TypeVar
+from typing import Any, TypeVar
 from .._internal._typing import AnyPath
 from ..attributes.protocols import TextSink
 from ..color.color import ColorLike
@@ -9,8 +9,6 @@ from ..document import Document
 from ..elements.base import Element
 from ..video.animation import Renderer, Update
 
-NON_CONTENT: Final = ...
-INLINE_STYLE: Final = ...
 E = TypeVar('E', bound=Element)
 
 class Output:

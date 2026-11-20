@@ -1,10 +1,7 @@
 from typing import Any, Final
-from ._pdf_read import _Painter
+from ._pdf_painter import _Painter
 
 __all__ = ["CONTENT_HANDLERS", "draw_image"]
-
-DEFAULT_TEXT_SIZE: Final = ...
-_STYLE_RE: Final = ...
 
 def draw_image(painter: _Painter, stream: Any) -> None: ...
 

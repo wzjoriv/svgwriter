@@ -1,10 +1,11 @@
-from collections.abc import Iterable, Iterator, Mapping, Sequence
+from collections.abc import Iterator, Mapping, Sequence
 from contextlib import contextmanager
 from typing import Any, TypeVar, overload
+from ._document.access import Access
 from ._document.ingest import SupportsSVG
 from ._document.output import Output
 from ._document.sizing import Sizing
-from ._internal._typing import AnyPath, FillRule, LineCap, LineJoin, Opacity, Self
+from ._internal._typing import AnyPath, FillRule, LineCap, LineJoin, Opacity
 from .attributes.length import LengthLike
 from .attributes.style import StyleLike, StyleSheet
 from .attributes.viewbox import PreserveAspectRatio
@@ -20,7 +21,7 @@ __all__ = ["Document"]
 
 E = TypeVar('E', bound=Element)
 
-class Document(Sizing, Output, ElementFactory):
+class Document(Sizing, Output, Access, ElementFactory):
     root: Svg | None
 
     def __init__(
@@ -161,15 +162,3 @@ class Document(Sizing, Output, ElementFactory):
     ) -> StyleElement: ...
     @contextmanager
     def nest(self, element: E) -> Iterator[E]: ...
-    def __iadd__(self, elements: Element | SupportsSVG | Iterable[Element]) -> Self: ...
-    def __iter__(self) -> Iterator[Element]: ...
-    def __len__(self) -> int: ...
-    @overload
-    def __getitem__(self, key: int) -> Element: ...
-    @overload
-    def __getitem__(self, key: slice) -> list[Element]: ...
-    @overload
-    def __getitem__(self, key: str) -> Element: ...
-    def __setitem__(self, key: int | str, element: Element) -> None: ...
-    def __contains__(self, item: object) -> bool: ...
-    def get_element_by_id(self, element_id: str) -> Element | None: ...

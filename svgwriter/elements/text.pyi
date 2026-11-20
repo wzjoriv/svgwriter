@@ -1,13 +1,10 @@
-from collections.abc import Iterator, Mapping, Sequence
+from collections.abc import Mapping, Sequence
 from enum import Flag
-from typing import Any, ClassVar, TypeAlias, overload
+from typing import Any, ClassVar
 from .._internal._typing import FillRule, LengthAdjust, LineCap, LineJoin, Opacity
 from ..attributes.length import LengthLike
 from ..attributes.style import StyleLike
 from ..color.paint import PaintValue
-from ..ops.text import GlyphBox
-from ..pathdata.data import BBox, PathData
-from ._character import Character, CharacterRange
 from ._geometry import PathOperand
 from ._mixins import (
     ConditionalAttributes,
@@ -17,10 +14,10 @@ from ._mixins import (
     XLinkAttributes,
     XmlSpace,
 )
+from ._textaccess import TextAccess
+from ._textbase import Coordinates, _TextLength, _TextPositioning
 from .base import AttrValue, Category, Child, ContentModel, Element
 from .container import Container
-from .shapes import Path
-from .structure import Group
 
 __all__ = [
     "AltGlyph",
@@ -34,8 +31,6 @@ __all__ = [
     "TextPath",
 ]
 
-Coordinates: TypeAlias = LengthLike | Sequence[LengthLike]
-
 class TextDecoration(Flag):
     NONE = 0
     UNDERLINE = 1
@@ -45,85 +40,8 @@ class TextDecoration(Flag):
 
     def svg_value(self, precision: int = 4) -> str: ...
 
-class _TextPositioning(Element):
-    def __init__(
-        self,
-        *args: Child,
-        x: Coordinates | None = None,
-        y: Coordinates | None = None,
-        dx: Coordinates | None = None,
-        dy: Coordinates | None = None,
-        rotate: float | Sequence[float] | None = None,
-        decoration=None,
-        id: str | None = None,
-        attrs: Mapping[str, AttrValue] | None = None,
-        **kwargs: Any,
-    ) -> None: ...
-    @property
-    def text_content(self) -> str: ...
-    @text_content.setter
-    def text_content(self, value: str) -> None: ...
-
-class _TextLength(Element):
-    def __init__(
-        self,
-        *args: Child,
-        text_length: LengthLike | None = None,
-        length_adjust: LengthAdjust | None = None,
-        id: str | None = None,
-        attrs: Mapping[str, AttrValue] | None = None,
-        **kwargs: Any,
-    ) -> None: ...
-
-class Text(PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag='text', category=Category.TEXT_CONTENT, content=ContentModel.MIXED):
+class Text(TextAccess, PathOperand, GraphicsElement, _TextLength, _TextPositioning, tag='text', category=Category.TEXT_CONTENT, content=ContentModel.MIXED):
     geometry_attributes: ClassVar[frozenset[str]]
-
-    @property
-    def characters(self) -> str: ...
-    def layout(self) -> list[GlyphBox]: ...
-    def local_bbox(self) -> BBox | None: ...
-    def local_outline(self) -> PathData: ...
-    def __len__(self) -> int: ...
-    @overload
-    def __getitem__(self, index: int) -> Character: ...
-    @overload
-    def __getitem__(self, index: slice) -> CharacterRange: ...
-    def __iter__(self) -> Iterator[Character]: ...
-    def run_style(self, source: Element) -> dict[str, object]: ...
-    def runs(self) -> list[Path]: ...
-    def glyphs(self, *, skip_blank: bool = False) -> Group: ...
-    def span(
-        self,
-        text: str,
-        *,
-        fill: PaintValue = None,
-        fill_opacity: Opacity | None = None,
-        fill_rule: FillRule | None = None,
-        stroke: PaintValue = None,
-        stroke_width: LengthLike | None = None,
-        stroke_opacity: Opacity | None = None,
-        stroke_linecap: LineCap | None = None,
-        stroke_linejoin: LineJoin | None = None,
-        stroke_miterlimit: float | None = None,
-        stroke_dasharray: Sequence[float] | str | None = None,
-        stroke_dashoffset: LengthLike | None = None,
-        opacity: Opacity | None = None,
-        display: str | None = None,
-        visibility: str | None = None,
-        color: str | None = None,
-        clip_path: str | Element | None = None,
-        mask: str | Element | None = None,
-        filter: str | Element | None = None,
-        font_family: str | None = None,
-        font_size: LengthLike | None = None,
-        font_weight: str | int | None = None,
-        text_anchor: str | None = None,
-        class_: str | Sequence[str] | None = None,
-        style: StyleLike | None = None,
-        id: str | None = None,
-        attrs: Mapping[str, AttrValue] | None = None,
-        **kwargs: Any,
-    ) -> TSpan: ...
 
 class TSpan(PresentationAttributes, ConditionalAttributes, CoreAttributes, _TextLength, _TextPositioning, tag='tspan', category=Category.TEXT_CONTENT, content=ContentModel.MIXED):
     ...

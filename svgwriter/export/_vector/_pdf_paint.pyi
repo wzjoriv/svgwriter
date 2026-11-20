@@ -1,6 +1,6 @@
 from typing import Any
 from ...elements.base import Element
-from ._pdf_read import _Painter
+from ._pdf_painter import _Painter
 
 __all__ = ["fill_with_pattern", "paint_shading", "pattern_paint"]
 

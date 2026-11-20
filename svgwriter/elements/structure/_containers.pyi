@@ -21,7 +21,7 @@ from .._transformable import PointLike
 from .._viewport import FitToViewBox, Positioned, ViewBoxLike
 from ..base import AttrValue, Category, Child, Element
 from ..container import GraphicsContainer
-from ..shapes import Path
+from ._use import UseGeometry
 
 __all__ = ["A", "Defs", "Group", "Svg", "Switch", "Symbol", "Use"]
 
@@ -135,7 +135,7 @@ class Defs(GraphicsElement, GraphicsContainer, tag='defs', category=Category.CON
 class Symbol(FitToViewBox, ExternalResourcesAttribute, PresentationAttributes, CoreAttributes, GraphicsContainer, tag='symbol', category=Category.STRUCTURAL):
     ...
 
-class Use(PathOperand, GraphicsElement, XLinkAttributes, Positioned, tag='use', category=Category.STRUCTURAL):
+class Use(UseGeometry, PathOperand, GraphicsElement, XLinkAttributes, Positioned, tag='use', category=Category.STRUCTURAL):
     geometry_attributes: ClassVar[frozenset[str]]
 
     def __init__(
@@ -189,62 +189,6 @@ class Use(PathOperand, GraphicsElement, XLinkAttributes, Positioned, tag='use', 
         attrs: Mapping[str, AttrValue] | None = None,
         **kwargs: Any,
     ) -> None: ...
-    @classmethod
-    def of(
-        cls,
-        element: Element,
-        *,
-        x: LengthLike | None = None,
-        y: LengthLike | None = None,
-        t: TransformLike | None = None,
-        transform: TransformLike | None = None,
-        anchor: PointLike | None = None,
-        external_resources_required: bool | None = None,
-        fill: PaintValue = None,
-        fill_opacity: Opacity | None = None,
-        fill_rule: FillRule | None = None,
-        stroke: PaintValue = None,
-        stroke_width: LengthLike | None = None,
-        stroke_opacity: Opacity | None = None,
-        stroke_linecap: LineCap | None = None,
-        stroke_linejoin: LineJoin | None = None,
-        stroke_miterlimit: float | None = None,
-        stroke_dasharray: Sequence[float] | str | None = None,
-        stroke_dashoffset: LengthLike | None = None,
-        opacity: Opacity | None = None,
-        display: str | None = None,
-        visibility: str | None = None,
-        color: str | None = None,
-        clip_path: str | Element | None = None,
-        mask: str | Element | None = None,
-        filter: str | Element | None = None,
-        font_family: str | None = None,
-        font_size: LengthLike | None = None,
-        font_weight: str | int | None = None,
-        text_anchor: str | None = None,
-        class_: str | Sequence[str] | None = None,
-        style: StyleLike | None = None,
-        required_features: str | Sequence[str] | None = None,
-        required_extensions: str | Sequence[str] | None = None,
-        system_language: str | Sequence[str] | None = None,
-        xml_base: str | None = None,
-        xml_lang: str | None = None,
-        xml_space: XmlSpace | None = None,
-        xlink_title: str | None = None,
-        xlink_show: str | None = None,
-        xlink_actuate: str | None = None,
-        xlink_role: str | None = None,
-        xlink_arcrole: str | None = None,
-        width: LengthLike | None = None,
-        height: LengthLike | None = None,
-        id: str | None = None,
-        attrs: Mapping[str, AttrValue] | None = None,
-        **kwargs: Any,
-    ) -> Self: ...
-    def referenced(self) -> Element | None: ...
-    def local_bbox(self) -> BBox | None: ...
-    def to_path(self, **kwargs: Any) -> Path: ...
-    def local_outline(self) -> PathData: ...
 
 class Switch(PathOperand, GraphicsElement, GraphicsContainer, tag='switch', category=Category.CONTAINER):
     def local_bbox(self) -> BBox | None: ...

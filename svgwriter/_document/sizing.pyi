@@ -1,9 +1,8 @@
-from typing import Final, TypeVar
+from typing import TypeVar
 from .._internal._typing import Self
 from ..elements.base import Element
 from ..pathdata.data import BBox
 
-NON_CONTENT: Final = ...
 E = TypeVar('E', bound=Element)
 
 class Sizing:

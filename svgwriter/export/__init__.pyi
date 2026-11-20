@@ -1,15 +1,13 @@
+from ._exchange import export as export, load as load, save as save
 from ._registry import (
     Exporter as Exporter,
     Importer as Importer,
-    export as export,
     exporters as exporters,
     find_exporter as find_exporter,
     find_importer as find_importer,
     importers as importers,
-    load as load,
     register as register,
     register_importer as register_importer,
-    save as save,
     unregister as unregister,
 )
 

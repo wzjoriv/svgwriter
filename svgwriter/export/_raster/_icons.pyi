@@ -1,11 +1,8 @@
 from collections.abc import Iterable
-from typing import Final
 from ...document import Document
+from ._constants import ICNS_SIZES as ICNS_SIZES, ICO_SIZES as ICO_SIZES
 
 __all__ = ["ICNS_SIZES", "ICO_SIZES", "read_icon", "to_icns", "to_ico"]
-
-ICO_SIZES: Final = ...
-ICNS_SIZES: Final = ...
 
 def to_ico(
     document: Document,

@@ -6,6 +6,7 @@ from ..attributes.length import LengthLike
 from ..attributes.style import Style, StyleLike
 from ..color.paint import PaintValue
 from ._convert import Convertible
+from ._styling import PresentationMethods, StyleMethods
 from ._transformable import Transformable as Transformable
 from .base import AttrValue, Child, Element
 
@@ -49,7 +50,9 @@ class ConditionalAttributes(Element):
         **kwargs: Any,
     ) -> None: ...
 
-class StyleAttributes(Element):
+class StyleAttributes(StyleMethods, Element):
+    style: Style
+
     def __init__(
         self,
         *args: Child,
@@ -59,15 +62,8 @@ class StyleAttributes(Element):
         attrs: Mapping[str, AttrValue] | None = None,
         **kwargs: Any,
     ) -> None: ...
-    @property
-    def classes(self) -> list[str]: ...
-    def add_class(self, *names: str) -> None: ...
-    @property
-    def style(self) -> Style: ...
-    @style.setter
-    def style(self, value: StyleLike | None) -> None: ...
 
-class PresentationAttributes(StyleAttributes):
+class PresentationAttributes(PresentationMethods, StyleAttributes):
     fill: PaintValue | None
     stroke: PaintValue | None
     stroke_width: Any
@@ -104,9 +100,6 @@ class PresentationAttributes(StyleAttributes):
         attrs: Mapping[str, AttrValue] | None = None,
         **kwargs: Any,
     ) -> None: ...
-    def presentation(self) -> dict[str, Any]: ...
-    def to_css(self) -> None: ...
-    def from_css(self) -> None: ...
 
 class XLinkAttributes(Element):
     def __init__(

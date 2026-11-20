@@ -1,4 +1,4 @@
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Mapping, Sequence
 from typing import Any, ClassVar, TypeAlias
 from .._internal._typing import FillRule, LineCap, LineJoin, Opacity, Self, SpreadMethod, Units
 from ..attributes.length import LengthLike
@@ -17,11 +17,12 @@ from ._mixins import (
     XLinkAttributes,
     XmlSpace,
 )
+from ._stops import GradientStops
+from ._tiling import PatternTiling
 from ._transformable import PointLike
 from ._viewport import FitToViewBox, Positioned, ViewBoxLike
 from .base import AttrValue, Category, Child, Element
 from .container import Container, GraphicsContainer
-from .structure import Group, Image
 
 __all__ = ["Gradient", "LinearGradient", "Pattern", "RadialGradient", "Stop", "StopSpec"]
 
@@ -66,7 +67,7 @@ class Stop(PresentationAttributes, CoreAttributes, tag='stop', category=Category
         **kwargs: Any,
     ) -> None: ...
 
-class Gradient(Transformable, XLinkAttributes, ExternalResourcesAttribute, PresentationAttributes, CoreAttributes, Container[Stop], category=Category.GRADIENT):
+class Gradient(GradientStops, Transformable, XLinkAttributes, ExternalResourcesAttribute, PresentationAttributes, CoreAttributes, Container[Stop], category=Category.GRADIENT):
     transform_attribute: ClassVar[str]
 
     def __init__(
@@ -115,137 +116,6 @@ class Gradient(Transformable, XLinkAttributes, ExternalResourcesAttribute, Prese
         attrs: Mapping[str, AttrValue] | None = None,
         **kwargs: Any,
     ) -> None: ...
-    def add_stop(
-        self,
-        offset: float,
-        color: Color | str,
-        opacity: Opacity | None = None,
-        *,
-        fill: PaintValue = None,
-        fill_opacity: Opacity | None = None,
-        fill_rule: FillRule | None = None,
-        stroke: PaintValue = None,
-        stroke_width: LengthLike | None = None,
-        stroke_opacity: Opacity | None = None,
-        stroke_linecap: LineCap | None = None,
-        stroke_linejoin: LineJoin | None = None,
-        stroke_miterlimit: float | None = None,
-        stroke_dasharray: Sequence[float] | str | None = None,
-        stroke_dashoffset: LengthLike | None = None,
-        display: str | None = None,
-        visibility: str | None = None,
-        clip_path: str | Element | None = None,
-        mask: str | Element | None = None,
-        filter: str | Element | None = None,
-        font_family: str | None = None,
-        font_size: LengthLike | None = None,
-        font_weight: str | int | None = None,
-        text_anchor: str | None = None,
-        class_: str | Sequence[str] | None = None,
-        style: StyleLike | None = None,
-        xml_base: str | None = None,
-        xml_lang: str | None = None,
-        xml_space: XmlSpace | None = None,
-        id: str | None = None,
-        attrs: Mapping[str, AttrValue] | None = None,
-        **kwargs: Any,
-    ) -> Stop: ...
-    @classmethod
-    def from_colors(
-        cls,
-        colors: Sequence[Color | str],
-        *,
-        gradient_units: Units | None = None,
-        spread_method: SpreadMethod | None = None,
-        t: TransformLike | None = None,
-        transform: TransformLike | None = None,
-        anchor: PointLike | None = None,
-        href: str | Element | None = None,
-        xlink_title: str | None = None,
-        xlink_show: str | None = None,
-        xlink_actuate: str | None = None,
-        xlink_role: str | None = None,
-        xlink_arcrole: str | None = None,
-        external_resources_required: bool | None = None,
-        fill: PaintValue = None,
-        fill_opacity: Opacity | None = None,
-        fill_rule: FillRule | None = None,
-        stroke: PaintValue = None,
-        stroke_width: LengthLike | None = None,
-        stroke_opacity: Opacity | None = None,
-        stroke_linecap: LineCap | None = None,
-        stroke_linejoin: LineJoin | None = None,
-        stroke_miterlimit: float | None = None,
-        stroke_dasharray: Sequence[float] | str | None = None,
-        stroke_dashoffset: LengthLike | None = None,
-        opacity: Opacity | None = None,
-        display: str | None = None,
-        visibility: str | None = None,
-        color: str | None = None,
-        clip_path: str | Element | None = None,
-        mask: str | Element | None = None,
-        filter: str | Element | None = None,
-        font_family: str | None = None,
-        font_size: LengthLike | None = None,
-        font_weight: str | int | None = None,
-        text_anchor: str | None = None,
-        class_: str | Sequence[str] | None = None,
-        style: StyleLike | None = None,
-        xml_base: str | None = None,
-        xml_lang: str | None = None,
-        xml_space: XmlSpace | None = None,
-        id: str | None = None,
-        attrs: Mapping[str, AttrValue] | None = None,
-        **kwargs: Any,
-    ) -> Self: ...
-    @classmethod
-    def from_stops(
-        cls,
-        stops: Iterable[StopSpec],
-        *,
-        gradient_units: Units | None = None,
-        spread_method: SpreadMethod | None = None,
-        t: TransformLike | None = None,
-        transform: TransformLike | None = None,
-        anchor: PointLike | None = None,
-        href: str | Element | None = None,
-        xlink_title: str | None = None,
-        xlink_show: str | None = None,
-        xlink_actuate: str | None = None,
-        xlink_role: str | None = None,
-        xlink_arcrole: str | None = None,
-        external_resources_required: bool | None = None,
-        fill: PaintValue = None,
-        fill_opacity: Opacity | None = None,
-        fill_rule: FillRule | None = None,
-        stroke: PaintValue = None,
-        stroke_width: LengthLike | None = None,
-        stroke_opacity: Opacity | None = None,
-        stroke_linecap: LineCap | None = None,
-        stroke_linejoin: LineJoin | None = None,
-        stroke_miterlimit: float | None = None,
-        stroke_dasharray: Sequence[float] | str | None = None,
-        stroke_dashoffset: LengthLike | None = None,
-        opacity: Opacity | None = None,
-        display: str | None = None,
-        visibility: str | None = None,
-        color: str | None = None,
-        clip_path: str | Element | None = None,
-        mask: str | Element | None = None,
-        filter: str | Element | None = None,
-        font_family: str | None = None,
-        font_size: LengthLike | None = None,
-        font_weight: str | int | None = None,
-        text_anchor: str | None = None,
-        class_: str | Sequence[str] | None = None,
-        style: StyleLike | None = None,
-        xml_base: str | None = None,
-        xml_lang: str | None = None,
-        xml_space: XmlSpace | None = None,
-        id: str | None = None,
-        attrs: Mapping[str, AttrValue] | None = None,
-        **kwargs: Any,
-    ) -> Self: ...
 
 class LinearGradient(Gradient, tag='linearGradient'):
     def __init__(
@@ -300,99 +170,9 @@ class LinearGradient(Gradient, tag='linearGradient'):
     ) -> None: ...
     def local_bbox(self) -> BBox | None: ...
     @classmethod
-    def horizontal(
-        cls,
-        *colors: Color | str,
-        gradient_units: Units | None = None,
-        spread_method: SpreadMethod | None = None,
-        t: TransformLike | None = None,
-        transform: TransformLike | None = None,
-        anchor: PointLike | None = None,
-        href: str | Element | None = None,
-        xlink_title: str | None = None,
-        xlink_show: str | None = None,
-        xlink_actuate: str | None = None,
-        xlink_role: str | None = None,
-        xlink_arcrole: str | None = None,
-        external_resources_required: bool | None = None,
-        fill: PaintValue = None,
-        fill_opacity: Opacity | None = None,
-        fill_rule: FillRule | None = None,
-        stroke: PaintValue = None,
-        stroke_width: LengthLike | None = None,
-        stroke_opacity: Opacity | None = None,
-        stroke_linecap: LineCap | None = None,
-        stroke_linejoin: LineJoin | None = None,
-        stroke_miterlimit: float | None = None,
-        stroke_dasharray: Sequence[float] | str | None = None,
-        stroke_dashoffset: LengthLike | None = None,
-        opacity: Opacity | None = None,
-        display: str | None = None,
-        visibility: str | None = None,
-        color: str | None = None,
-        clip_path: str | Element | None = None,
-        mask: str | Element | None = None,
-        filter: str | Element | None = None,
-        font_family: str | None = None,
-        font_size: LengthLike | None = None,
-        font_weight: str | int | None = None,
-        text_anchor: str | None = None,
-        class_: str | Sequence[str] | None = None,
-        style: StyleLike | None = None,
-        xml_base: str | None = None,
-        xml_lang: str | None = None,
-        xml_space: XmlSpace | None = None,
-        id: str | None = None,
-        attrs: Mapping[str, AttrValue] | None = None,
-        **kwargs: Any,
-    ) -> Self: ...
+    def horizontal(cls, *colors: Color | str, **kwargs: Any) -> Self: ...
     @classmethod
-    def vertical(
-        cls,
-        *colors: Color | str,
-        gradient_units: Units | None = None,
-        spread_method: SpreadMethod | None = None,
-        t: TransformLike | None = None,
-        transform: TransformLike | None = None,
-        anchor: PointLike | None = None,
-        href: str | Element | None = None,
-        xlink_title: str | None = None,
-        xlink_show: str | None = None,
-        xlink_actuate: str | None = None,
-        xlink_role: str | None = None,
-        xlink_arcrole: str | None = None,
-        external_resources_required: bool | None = None,
-        fill: PaintValue = None,
-        fill_opacity: Opacity | None = None,
-        fill_rule: FillRule | None = None,
-        stroke: PaintValue = None,
-        stroke_width: LengthLike | None = None,
-        stroke_opacity: Opacity | None = None,
-        stroke_linecap: LineCap | None = None,
-        stroke_linejoin: LineJoin | None = None,
-        stroke_miterlimit: float | None = None,
-        stroke_dasharray: Sequence[float] | str | None = None,
-        stroke_dashoffset: LengthLike | None = None,
-        opacity: Opacity | None = None,
-        display: str | None = None,
-        visibility: str | None = None,
-        color: str | None = None,
-        clip_path: str | Element | None = None,
-        mask: str | Element | None = None,
-        filter: str | Element | None = None,
-        font_family: str | None = None,
-        font_size: LengthLike | None = None,
-        font_weight: str | int | None = None,
-        text_anchor: str | None = None,
-        class_: str | Sequence[str] | None = None,
-        style: StyleLike | None = None,
-        xml_base: str | None = None,
-        xml_lang: str | None = None,
-        xml_space: XmlSpace | None = None,
-        id: str | None = None,
-        attrs: Mapping[str, AttrValue] | None = None,
-        **kwargs: Any,
-    ) -> Self: ...
+    def vertical(cls, *colors: Color | str, **kwargs: Any) -> Self: ...
 
 class RadialGradient(Gradient, tag='radialGradient'):
     def __init__(
@@ -448,7 +228,7 @@ class RadialGradient(Gradient, tag='radialGradient'):
     ) -> None: ...
     def local_bbox(self) -> BBox | None: ...
 
-class Pattern(Transformable, Positioned, FitToViewBox, XLinkAttributes, ExternalResourcesAttribute, PresentationAttributes, ConditionalAttributes, CoreAttributes, GraphicsContainer, tag='pattern', category=Category.PAINT_SERVER):
+class Pattern(PatternTiling, Transformable, Positioned, FitToViewBox, XLinkAttributes, ExternalResourcesAttribute, PresentationAttributes, ConditionalAttributes, CoreAttributes, GraphicsContainer, tag='pattern', category=Category.PAINT_SERVER):
     transform_attribute: ClassVar[str]
 
     def __init__(
@@ -507,69 +287,3 @@ class Pattern(Transformable, Positioned, FitToViewBox, XLinkAttributes, External
         **kwargs: Any,
     ) -> None: ...
     def local_bbox(self) -> BBox | None: ...
-    def tile(self, target: BBox | None = None) -> BBox: ...
-    def to_image(
-        self,
-        *,
-        scale: float = 1.0,
-        target: BBox | None = None,
-    ) -> Image: ...
-    @classmethod
-    def from_image(
-        cls,
-        image: Image,
-        *,
-        pattern_units: Units | None = None,
-        pattern_content_units: Units | None = None,
-        t: TransformLike | None = None,
-        transform: TransformLike | None = None,
-        anchor: PointLike | None = None,
-        view_box: ViewBoxLike | None = None,
-        preserve_aspect_ratio: PreserveAspectRatio | str | None = None,
-        href: str | Element | None = None,
-        xlink_title: str | None = None,
-        xlink_show: str | None = None,
-        xlink_actuate: str | None = None,
-        xlink_role: str | None = None,
-        xlink_arcrole: str | None = None,
-        external_resources_required: bool | None = None,
-        fill: PaintValue = None,
-        fill_opacity: Opacity | None = None,
-        fill_rule: FillRule | None = None,
-        stroke: PaintValue = None,
-        stroke_width: LengthLike | None = None,
-        stroke_opacity: Opacity | None = None,
-        stroke_linecap: LineCap | None = None,
-        stroke_linejoin: LineJoin | None = None,
-        stroke_miterlimit: float | None = None,
-        stroke_dasharray: Sequence[float] | str | None = None,
-        stroke_dashoffset: LengthLike | None = None,
-        opacity: Opacity | None = None,
-        display: str | None = None,
-        visibility: str | None = None,
-        color: str | None = None,
-        clip_path: str | Element | None = None,
-        mask: str | Element | None = None,
-        filter: str | Element | None = None,
-        font_family: str | None = None,
-        font_size: LengthLike | None = None,
-        font_weight: str | int | None = None,
-        text_anchor: str | None = None,
-        class_: str | Sequence[str] | None = None,
-        style: StyleLike | None = None,
-        required_features: str | Sequence[str] | None = None,
-        required_extensions: str | Sequence[str] | None = None,
-        system_language: str | Sequence[str] | None = None,
-        xml_base: str | None = None,
-        xml_lang: str | None = None,
-        xml_space: XmlSpace | None = None,
-        id: str | None = None,
-        attrs: Mapping[str, AttrValue] | None = None,
-        **kwargs: Any,
-    ) -> Pattern: ...
-    def tiles(
-        self,
-        area: BBox,
-        *,
-        target: BBox | None = None,
-    ) -> Group: ...

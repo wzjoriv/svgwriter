@@ -1,15 +1,12 @@
-import numpy as np
 from collections.abc import Mapping, Sequence
 from os import PathLike
-from typing import Any, ClassVar
+from typing import Any
 from numpy import ndarray
-from ..._internal._drawable import Drawable
 from ..._internal._typing import FillRule, LineCap, LineJoin, Opacity
 from ...attributes.length import LengthLike
 from ...attributes.style import StyleLike
 from ...attributes.viewbox import PreserveAspectRatio
 from ...color.paint import PaintValue
-from ...ops.composite import Operator
 from ...pathdata.data import BBox
 from ...transform.transform import TransformLike
 from .._mixins import GraphicsElement, XLinkAttributes, XmlSpace
@@ -17,50 +14,9 @@ from .._transformable import PointLike
 from .._viewport import Positioned
 from ..base import AttrValue, Category, ContentModel, Element
 from ._compositing import Compositing
+from ._pixels import Pixels
 
-__all__ = ["Image", "Pixels"]
-
-class Pixels(Drawable):
-    __hash__: ClassVar[None]
-
-    def __init__(
-        self,
-        color: ndarray | None,
-        alpha: ndarray | float = 1.0,
-        source: str | None = None,
-    ) -> None: ...
-    @classmethod
-    def from_array(cls, array: object, alpha: object = None) -> Pixels: ...
-    @classmethod
-    def decode(cls, data: bytes) -> Pixels: ...
-    @property
-    def color(self) -> ndarray: ...
-    @property
-    def alpha(self) -> ndarray | float: ...
-    @property
-    def shape(self) -> tuple[int, int]: ...
-    def rgba(self) -> ndarray: ...
-    def clone(self) -> Pixels: ...
-    def encode(
-        self,
-        format: str = 'png',
-        *,
-        quality: int = 90,
-    ) -> bytes: ...
-    def __eq__(self, other: object) -> bool: ...
-    def composite(
-        self,
-        backdrop: Pixels | np.ndarray,
-        operator: Operator = 'over',
-        *,
-        k: Sequence[float] = (),
-    ) -> Pixels: ...
-    def __or__(self, other: object) -> Pixels: ...
-    def __and__(self, other: object) -> Pixels: ...
-    def __sub__(self, other: object) -> Pixels: ...
-    def __xor__(self, other: object) -> Pixels: ...
-    def svg_value(self, precision: int = 4) -> str: ...
-    def __repr__(self) -> str: ...
+__all__ = ["Image"]
 
 class Image(Compositing, GraphicsElement, XLinkAttributes, Positioned, tag='image', category=Category.GRAPHICS, content=ContentModel.ELEMENTS):
     def __init__(

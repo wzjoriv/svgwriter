@@ -1,12 +1,9 @@
 from collections.abc import Iterable
-from typing import Final
 from ..._internal._constants import DEFAULT_DPI as DEFAULT_DPI
 from ...color.color import ColorLike as ColorLike
 from ...document import Document as Document
 from .._registry import register as register, register_importer as register_importer
-
-DEFAULT_QUALITY: Final = ...
-DEFAULT_GIF_FPS: Final = ...
+from ._constants import DEFAULT_GIF_FPS as DEFAULT_GIF_FPS, DEFAULT_QUALITY as DEFAULT_QUALITY
 
 def gif(
     document: Document,

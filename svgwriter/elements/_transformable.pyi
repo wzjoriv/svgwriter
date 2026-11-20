@@ -3,6 +3,8 @@ from typing import Any, ClassVar, TypeAlias, TypeVar
 from ..pathdata.data import BBox
 from ..transform.matrix import Matrix, Point
 from ..transform.transform import TransformLike
+from ._moves import TransformMethods
+from ._placement import Placement
 from .base import AttrValue, Child, Element
 
 __all__ = ["PointLike", "Transformable", "children_bbox", "offset"]
@@ -14,8 +16,9 @@ def offset(value: object) -> tuple[float, float] | None: ...
 
 def children_bbox(element: Element) -> BBox | None: ...
 
-class Transformable(Element):
+class Transformable(Placement, TransformMethods, Element):
     transform_attribute: ClassVar[str]
+    anchor: PointLike | None
 
     def __init__(
         self,
@@ -36,89 +39,3 @@ class Transformable(Element):
     @transform.setter
     def transform(self, value: TransformLike | None) -> None: ...
     def local_bbox(self) -> BBox | None: ...
-    @property
-    def anchor(self) -> Point: ...
-    @anchor.setter
-    def anchor(self, value: PointLike | None) -> None: ...
-    @property
-    def position(self) -> Point: ...
-    @position.setter
-    def position(self, value: PointLike) -> None: ...
-    def place(
-        self: E,
-        x: float,
-        y: float,
-        *,
-        at: str | None = None,
-    ) -> E: ...
-    def align(
-        self: E,
-        target: Any,
-        at: str = 'center',
-        *,
-        to: str | None = None,
-        offset: PointLike = (0.0, 0.0),
-    ) -> E: ...
-    def bounds(self) -> BBox | None: ...
-    def translate(
-        self: E,
-        dx: float,
-        dy: float = 0.0,
-        *,
-        local: bool = False,
-    ) -> E: ...
-    def rotate(
-        self: E,
-        degrees: float,
-        *,
-        about: PointLike | None = None,
-        local: bool = False,
-    ) -> E: ...
-    def scale(
-        self: E,
-        sx: float,
-        sy: float | None = None,
-        *,
-        about: PointLike | None = None,
-        local: bool = False,
-    ) -> E: ...
-    def skew(
-        self: E,
-        x_degrees: float = 0.0,
-        y_degrees: float = 0.0,
-        *,
-        about: PointLike | None = None,
-        local: bool = False,
-    ) -> E: ...
-    def flip_x(
-        self: E,
-        *,
-        about: PointLike | None = None,
-        local: bool = False,
-    ) -> E: ...
-    def flip_y(
-        self: E,
-        *,
-        about: PointLike | None = None,
-        local: bool = False,
-    ) -> E: ...
-    def apply(
-        self: E,
-        transform: TransformLike,
-        *,
-        local: bool = False,
-    ) -> E: ...
-    def reset(self: E) -> E: ...
-    def __add__(self, other: Any) -> Any: ...
-    def __radd__(self, other: Any) -> Any: ...
-    def __iadd__(self, other: Any) -> Any: ...
-    def __sub__(self, other: Any) -> Any: ...
-    def __isub__(self, other: Any) -> Any: ...
-    def __mul__(self: E, factor: float | tuple[float, float]) -> E: ...
-    def __rmul__(self: E, factor: float) -> E: ...
-    def __imul__(self: E, factor: float | tuple[float, float]) -> E: ...
-    def __truediv__(self: E, divisor: float | tuple[float, float]) -> E: ...
-    def __itruediv__(self: E, divisor: float | tuple[float, float]) -> E: ...
-    def __matmul__(self: E, operand: TransformLike | float) -> E: ...
-    def __imatmul__(self: E, operand: TransformLike | float) -> E: ...
-    def __rmatmul__(self: E, transform: TransformLike) -> E: ...

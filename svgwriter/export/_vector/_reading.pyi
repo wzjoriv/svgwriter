@@ -1,14 +1,12 @@
 from dataclasses import dataclass
-from typing import Any, Final, TypeAlias
+from typing import Any, TypeAlias
 from ...document import Document
 from ...transform.matrix import Matrix
 
-__all__ = ["BLACK", "HAIRLINE", "Outline", "Shape", "cmyk_to_rgb", "string_end", "to_document"]
+__all__ = ["Outline", "Shape", "cmyk_to_rgb", "string_end", "to_document"]
 
 Op: TypeAlias = tuple[str, tuple[float, ...]]
 RGB: TypeAlias = tuple[float, float, float]
-BLACK: Final = ...
-HAIRLINE: Final = ...
 
 @dataclass
 class Shape:

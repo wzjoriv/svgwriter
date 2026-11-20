@@ -3,7 +3,7 @@ from typing import Any
 from ..color.color import Color
 from ..document import Document
 from ..pathdata.data import PathData
-from ..transform.matrix import Matrix
+from ._paints import Shading
 
 __all__ = ["Item", "Scene", "flatten", "to_cubic"]
 
@@ -56,21 +56,6 @@ class Scene:
     ) -> None: ...
 
 def to_cubic(data: PathData) -> list[tuple[str, tuple[float, ...]]]: ...
-
-@dataclass
-class Shading:
-    kind: str
-    coords: tuple[float, ...]
-    stops: list[tuple[float, Color]]
-    matrix: Matrix
-
-    def __init__(
-        self,
-        kind: str,
-        coords: tuple[float, ...],
-        stops: list[tuple[float, Color]],
-        matrix: Matrix,
-    ) -> None: ...
 
 def flatten(
     document: Document,

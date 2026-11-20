@@ -1,6 +1,7 @@
 from typing import Final
 
 __all__ = [
+    "ATTRIBUTE_TABLE",
     "BASE_PROFILE",
     "CM_PER_INCH",
     "DEFAULT_DPI",
@@ -9,12 +10,20 @@ __all__ = [
     "DEFAULT_PRECISION",
     "DOCTYPE",
     "EX_PER_EM",
+    "GHOST",
+    "GRID",
+    "GRID_STEP",
     "INDEFINITE",
     "MM_PER_INCH",
+    "NON_CONTENT",
+    "OUTLINE",
     "PC_PER_INCH",
     "PT_PER_INCH",
+    "STROKE",
     "SVG_NS",
     "SVG_VERSION",
+    "SWATCH",
+    "TEXT_TABLE",
     "XLINK_NS",
     "XML_NS",
 ]
@@ -35,3 +44,12 @@ PT_PER_INCH: Final = ...
 PC_PER_INCH: Final = ...
 MM_PER_INCH: Final = ...
 CM_PER_INCH: Final = ...
+SWATCH: Final = ...
+GRID: Final = ...
+GRID_STEP: Final = ...
+OUTLINE: Final = ...
+GHOST: Final = ...
+STROKE: Final = ...
+TEXT_TABLE: dict
+ATTRIBUTE_TABLE: dict
+NON_CONTENT: Final = ...

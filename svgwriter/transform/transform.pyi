@@ -1,11 +1,12 @@
 from collections.abc import Iterable, Iterator
 from typing import ClassVar, TypeAlias, overload
+from ._transform_builders import TransformBuilders
 from .matrix import Matrix, Point
 from .ops import TransformOp
 
 __all__ = ["Transform", "TransformLike", "as_transform", "parse_transform"]
 
-class Transform:
+class Transform(TransformBuilders):
     __hash__: ClassVar[None]
 
     def __init__(self, ops: Iterable[TransformOp] = ()) -> None: ...
