@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Geometry operations and rendering - svgwriter 1.0.0</title>
+        <title>Geometry operations and rendering - svgwriter 1.1.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 1.0.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 1.1.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.0.0</span>
+  <span class="sidebar-brand-text">svgwriter 1.1.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.0.0</span>
+  <span class="sidebar-versions-label">1.1.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -424,7 +424,7 @@ against each other, so a <code class="docutils literal notranslate"><span class=
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="elements.html#svgwriter.elements.structure.Pixels.composite" title="svgwriter.elements.structure.Pixels.composite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.elements.structure.Pixels.composite</span></code></a></dt><dd><p>Composite the pixels of images.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.elements.structure.Pixels.composite</span></code></dt><dd><p>Composite the pixels of images.</p>
 </dd>
 </dl>
 </div>
@@ -582,10 +582,12 @@ fills correctly without a <code class="docutils literal notranslate"><span class
 RGBA), <a class="reference internal" href="geometry.html#svgwriter.transform.Matrix" title="svgwriter.transform.Matrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">Matrix</span></code></a> (translation, rotation, skew
 and scale separately, so turns stay turns), <code class="xref py py-class docutils literal notranslate"><span class="pre">PathData</span></code>
 and elements. Two elements of the same kind and shape interpolate their
-attributes; anything else is morphed as outlines: both become cubic
-paths with matching subpaths and segment counts. Values that cannot be
-blended (keywords, different strings) switch at <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">0.5</span></code>, as SMIL’s
-discrete mode does.</p>
+attributes; anything else is morphed as outlines: outlines pair with
+outlines and holes with holes (a contour without a partner grows from or
+shrinks to its centre), each pair is resampled to one point count and
+started where the points move least, so in-between shapes do not twist.
+Values that cannot be blended (keywords, different strings) switch at
+<code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">0.5</span></code>, as SMIL’s discrete mode does.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1185,8 +1187,8 @@ the first installed family wins.</p>
 <dd><p>Draw an element or document onto matplotlib axes as <code class="docutils literal notranslate"><span class="pre">PathPatch</span></code> artists.</p>
 <p>Outlines keep their curves, solid fill and stroke colors, opacity and
 stroke width; each artist stays editable in matplotlib (<code class="docutils literal notranslate"><span class="pre">set_facecolor</span></code>
-and so on). Gradients and patterns become their first color, as in the
-other vector exports.</p>
+and so on). Gradients become their average color and patterns their
+tiles, as in the other vector exports.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1452,7 +1454,7 @@ converts.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=4ebf8126"></script>
+</div><script src="../_static/documentation_options.js?v=2a705162"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

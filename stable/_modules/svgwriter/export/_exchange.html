@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.export._exchange - svgwriter 1.0.0</title>
+        <title>svgwriter.export._exchange - svgwriter 1.1.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">svgwriter 1.0.0</div></a>
+      <a href="../../../index.html"><div class="brand">svgwriter 1.1.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.0.0</span>
+  <span class="sidebar-brand-text">svgwriter 1.1.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.0.0</span>
+  <span class="sidebar-versions-label">1.1.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -280,10 +280,11 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">._registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_exporter</span><span class="p">,</span> <span class="n">find_importer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Exporter</span><span class="p">,</span> <span class="n">find_exporter</span><span class="p">,</span> <span class="n">find_importer</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..document</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span>
@@ -293,13 +294,15 @@
 
 <div class="viewcode-block" id="export">
 <a class="viewcode-back" href="../../../reference/export.html#svgwriter.export.export">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+           <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Convert *document* to *format* (a name or extension); returns ``bytes`` or ``str``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    document : Document</span>
-<span class="sd">        The document to convert.</span>
+<span class="sd">    document : Document or sequence of Document</span>
+<span class="sd">        The document to convert, or several documents for a multi-page format</span>
+<span class="sd">        (``"pdf"``: one page each; ``"pptx"``: one slide each).</span>
 <span class="sd">    format : str</span>
 <span class="sd">        A registered format name or an extension such as ``".pdf"``.</span>
 <span class="sd">    time : float, optional</span>
@@ -317,7 +320,8 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If no exporter matches *format*.</span>
+<span class="sd">        If no exporter matches *format*, the sequence is empty, or several</span>
+<span class="sd">        documents are given to a single-page format.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -329,22 +333,38 @@
 <span class="sd">    &gt;&gt;&gt; doc = svg.Document(4, 4)</span>
 <span class="sd">    &gt;&gt;&gt; svg.export.export(doc, "png")[:4] == bytes.fromhex("89504e47")</span>
 <span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; deck = svg.export.export([doc, svg.Document(8, 2)], "pdf")</span>
+<span class="sd">    &gt;&gt;&gt; len(svg.export.find_importer("pdf").function(deck, page=None))</span>
+<span class="sd">    2</span>
 <span class="sd">    """</span>
     <span class="n">exporter</span> <span class="o">=</span> <span class="n">find_exporter</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">exporter</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">document</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">exporter</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">time</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">:</span> <span class="n">Exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The document (or list of documents) to hand to *exporter*, at *time* when given."""</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">document</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"no documents to export"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">exporter</span><span class="o">.</span><span class="n">multipage</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"the </span><span class="si">{</span><span class="n">exporter</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> format holds one document; "</span>
+                             <span class="sa">f</span><span class="s2">"export several to a multi-page format such as pdf or pptx"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">page</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">page</span> <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">document</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">document</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">document</span>
 
 
 <div class="viewcode-block" id="save">
 <a class="viewcode-back" href="../../../reference/export.html#svgwriter.export.save">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+         <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Write *document* to *path*, choosing the format from *format* or the file extension.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    document : Document</span>
-<span class="sd">        The document to write.</span>
+<span class="sd">    document : Document or sequence of Document</span>
+<span class="sd">        The document to write, or several for a multi-page format (one PDF</span>
+<span class="sd">        page or PowerPoint slide each).</span>
 <span class="sd">    path : str or path-like</span>
 <span class="sd">        Destination file.</span>
 <span class="sd">    format : str, optional</span>
@@ -363,7 +383,8 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If no exporter matches.</span>
+<span class="sd">        If no exporter matches, or several documents are given to a</span>
+<span class="sd">        single-page format.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -381,7 +402,7 @@
 <span class="sd">    True</span>
 <span class="sd">    """</span>
     <span class="n">exporter</span> <span class="o">=</span> <span class="n">find_exporter</span><span class="p">(</span><span class="nb">format</span> <span class="ow">or</span> <span class="n">path</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">exporter</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">document</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">exporter</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">time</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
     <span class="n">target</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
         <span class="n">target</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -393,7 +414,7 @@
 
 <div class="viewcode-block" id="load">
 <a class="viewcode-back" href="../../../reference/export.html#svgwriter.export.load">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Document</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Document</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Document</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Read a document from *path* with the importer chosen by *format* or the extension.</span>
 
 <span class="sd">    Parameters</span>
@@ -407,8 +428,11 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    Document</span>
-<span class="sd">        The parsed document; relative image links inside it resolve against *path*.</span>
+<span class="sd">    Document or list of Document</span>
+<span class="sd">        The parsed document; relative image links inside it resolve against</span>
+<span class="sd">        *path*. Multi-page formats return a list, one document per page, when</span>
+<span class="sd">        their page option is None (``page=None`` for PDF, ``slide=None`` for</span>
+<span class="sd">        PowerPoint).</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
@@ -418,6 +442,7 @@
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    save : Write a document.</span>
+<span class="sd">    Document.open_all : Every page of a file as a list.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -430,9 +455,10 @@
 <span class="sd">    'svg'</span>
 <span class="sd">    """</span>
     <span class="n">importer</span> <span class="o">=</span> <span class="n">find_importer</span><span class="p">(</span><span class="nb">format</span> <span class="ow">or</span> <span class="n">path</span><span class="p">)</span>
-    <span class="n">document</span> <span class="o">=</span> <span class="n">importer</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">(),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
-    <span class="n">document</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">_source_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fspath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">document</span></div>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">importer</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">(),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">result</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">result</span><span class="p">]:</span>
+        <span class="n">document</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">_source_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fspath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
 
 </pre></div>
         </article>
@@ -466,7 +492,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=4ebf8126"></script>
+</div><script src="../../../_static/documentation_options.js?v=2a705162"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

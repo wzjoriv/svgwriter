@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Document - svgwriter 1.0.0</title>
+        <title>Document - svgwriter 1.1.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 1.0.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 1.1.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.0.0</span>
+  <span class="sidebar-brand-text">svgwriter 1.1.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.0.0</span>
+  <span class="sidebar-versions-label">1.1.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -334,14 +334,19 @@ explicitly.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.Document.from_string">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><span class="pre">bytes</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">strictness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Strictness</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.Document" title="svgwriter.Document"><span class="pre">Document</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/document.html#Document.from_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document.from_string" title="Link to this definition">¶</a></dt>
-<dd><p>Parse SVG text into a document.</p>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><span class="pre">bytes</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'svg'</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">strictness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Strictness</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.Document" title="svgwriter.Document"><span class="pre">Document</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/document.html#Document.from_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document.from_string" title="Link to this definition">¶</a></dt>
+<dd><p>Parse text in any registered format into a document: SVG by default, or Mermaid, DOT, TikZ, …</p>
+<p>Text formats that are usually files (<code class="docutils literal notranslate"><span class="pre">&quot;mermaid&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;dot&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;tikz&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;markdown&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;txt&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;eps&quot;</span></code>, …) are read from the string itself, with the same importer as
+<a class="reference internal" href="#svgwriter.Document.open" title="svgwriter.Document.open"><code class="xref py py-meth docutils literal notranslate"><span class="pre">open()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><em>bytes</em></a>) – The SVG source.</p></li>
-<li><p><strong>strictness</strong> (<em>Strictness</em><em>, </em><em>optional</em>) – How to treat unknown elements and unsupported attributes. Defaults to
-<code class="docutils literal notranslate"><span class="pre">Strictness.LENIENT</span></code>.</p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><em>bytes</em></a>) – The source; <code class="docutils literal notranslate"><span class="pre">str</span></code> is encoded as UTF-8 for formats read as bytes.</p></li>
+<li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – A registered importer name (see <code class="docutils literal notranslate"><span class="pre">svg.export.importers()</span></code>). Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;svg&quot;</span></code>.</p></li>
+<li><p><strong>strictness</strong> (<em>Strictness</em><em>, </em><em>optional</em>) – How SVG treats unknown elements and unsupported attributes. Defaults to
+<code class="docutils literal notranslate"><span class="pre">Strictness.LENIENT</span></code>. SVG only.</p></li>
+<li><p><strong>**options</strong> (<em>Any</em>) – Options of the importer (for example <code class="docutils literal notranslate"><span class="pre">theme=</span></code> for Mermaid).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -350,7 +355,8 @@ explicitly.</p>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>SVGParseError</strong> – If the text is malformed or, when strict, unsupported.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the root element is not <code class="docutils literal notranslate"><span class="pre">&lt;svg&gt;</span></code>.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the root element is not <code class="docutils literal notranslate"><span class="pre">&lt;svg&gt;</span></code>, or <em>format</em> is not a registered importer.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If <em>strictness</em> is given for a format other than SVG.</p></li>
 </ul>
 </dd>
 </dl>
@@ -365,6 +371,9 @@ explicitly.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="s1">'&lt;svg xmlns="http://www.w3.org/2000/svg"&gt;&lt;rect width="4" height="4"/&gt;&lt;/svg&gt;'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">element</span><span class="o">.</span><span class="n">tag</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">]</span>
 <span class="go">['rect']</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chart</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="s2">"flowchart LR</span><span class="se">\n</span><span class="s2">  A --&gt; B"</span><span class="p">,</span> <span class="s2">"mermaid"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">chart</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="go">True</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -786,11 +795,16 @@ extension of <cite>path</cite>.</p></li>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>Document</em> – The loaded document.</p>
 </dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the options ask for every page (<code class="docutils literal notranslate"><span class="pre">page=None</span></code>); use <a class="reference internal" href="#svgwriter.Document.open_all" title="svgwriter.Document.open_all"><code class="xref py py-meth docutils literal notranslate"><span class="pre">open_all()</span></code></a>.</p>
+</dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
 <dt><a class="reference internal" href="#svgwriter.Document.from_string" title="svgwriter.Document.from_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_string</span></code></a></dt><dd><p>Parse SVG text.</p>
+</dd>
+<dt><a class="reference internal" href="#svgwriter.Document.open_all" title="svgwriter.Document.open_all"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open_all</span></code></a></dt><dd><p>Every page or slide of a file.</p>
 </dd>
 </dl>
 </div>
@@ -802,6 +816,43 @@ extension of <cite>path</cite>.</p></li>
 <span class="gp">... </span>    <span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Document</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">)))</span>
 <span class="go">0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.Document.open_all">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">open_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnyPath</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.Document" title="svgwriter.Document"><span class="pre">Document</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#svgwriter.Document.open_all" title="Link to this definition">¶</a></dt>
+<dd><p>Read every page of a PDF, every slide of a PowerPoint deck, or the one drawing of other formats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.15)"><em>os.PathLike</em></a>) – The file to read.</p></li>
+<li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Format name or extension. Defaults to None, which follows the
+extension of <cite>path</cite>.</p></li>
+<li><p><strong>**options</strong> – Loader options other than the page choice.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>list of Document</em> – One document per page or slide; a single-page format gives a list of one.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.Document.open" title="svgwriter.Document.open"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open</span></code></a></dt><dd><p>Read one page.</p>
+</dd>
+<dt><a class="reference internal" href="export.html#svgwriter.export.save" title="svgwriter.export.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.export.save</span></code></a></dt><dd><p>Writes a list of documents as pages or slides.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span><span class="o">,</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">folder</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">path</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">export</span><span class="o">.</span><span class="n">save</span><span class="p">([</span><span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">)],</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"a.pdf"</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="n">page</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"width"</span><span class="p">)</span> <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="o">.</span><span class="n">open_all</span><span class="p">(</span><span class="n">path</span><span class="p">)]</span>
+<span class="go">[10.0, 20.0]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1142,6 +1193,7 @@ extension of <cite>target</cite>, or SVG for streams.</p></li>
 <li><a class="reference internal" href="#svgwriter.Document.fit"><code class="docutils literal notranslate"><span class="pre">Document.fit()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.get_element_by_id"><code class="docutils literal notranslate"><span class="pre">Document.get_element_by_id()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.open"><code class="docutils literal notranslate"><span class="pre">Document.open()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.Document.open_all"><code class="docutils literal notranslate"><span class="pre">Document.open_all()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.rasterize"><code class="docutils literal notranslate"><span class="pre">Document.rasterize()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.render_animation"><code class="docutils literal notranslate"><span class="pre">Document.render_animation()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.render_png"><code class="docutils literal notranslate"><span class="pre">Document.render_png()</span></code></a></li>
@@ -1163,7 +1215,7 @@ extension of <cite>target</cite>, or SVG for streams.</p></li>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=4ebf8126"></script>
+</div><script src="../_static/documentation_options.js?v=2a705162"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

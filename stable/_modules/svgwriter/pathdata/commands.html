@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.pathdata.commands - svgwriter 1.0.0</title>
+        <title>svgwriter.pathdata.commands - svgwriter 1.1.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">svgwriter 1.0.0</div></a>
+      <a href="../../../index.html"><div class="brand">svgwriter 1.1.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.0.0</span>
+  <span class="sidebar-brand-text">svgwriter 1.1.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.0.0</span>
+  <span class="sidebar-versions-label">1.1.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -279,12 +279,11 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..transform.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._command_forms</span><span class="w"> </span><span class="kn">import</span> <span class="n">CommandForms</span><span class="p">,</span> <span class="n">XYEnd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._command_forms</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathCommand</span><span class="p">,</span> <span class="n">XYEnd</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">"ArcTo"</span><span class="p">,</span>
@@ -299,81 +298,6 @@
     <span class="s2">"SmoothQuadTo"</span><span class="p">,</span>
     <span class="s2">"VLineTo"</span><span class="p">,</span>
 <span class="p">]</span>
-
-
-<div class="viewcode-block" id="PathCommand">
-<a class="viewcode-back" href="../../../reference/geometry.html#svgwriter.pathdata.PathCommand">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">PathCommand</span><span class="p">(</span><span class="n">CommandForms</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""One segment of path data.</span>
-
-<span class="sd">    Base class of the ten SVG path commands. Each command knows its letter, its</span>
-<span class="sd">    numeric arguments and where it leaves the pen, and can be converted from</span>
-<span class="sd">    relative to absolute form.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    code : str</span>
-<span class="sd">        The uppercase command letter.</span>
-<span class="sd">    coordinates : tuple of str</span>
-<span class="sd">        Names of the fields that are coordinates (shifted by the current point</span>
-<span class="sd">        when relative).</span>
-<span class="sd">    relative : bool</span>
-<span class="sd">        Whether the command is in its lowercase (relative) form.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    PathData : A sequence of commands.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.pathdata import LineTo</span>
-<span class="sd">    &gt;&gt;&gt; isinstance(LineTo(1, 2), PathCommand)</span>
-<span class="sd">    True</span>
-<span class="sd">    """</span>
-
-    <span class="n">code</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">coordinates</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="p">()</span>
-    <span class="n">relative</span><span class="p">:</span> <span class="nb">bool</span>
-
-    <span class="nd">@property</span>
-    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Numbers written after the command letter, in order.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; from svgwriter.pathdata import LineTo</span>
-<span class="sd">        &gt;&gt;&gt; LineTo(1, 2).arguments</span>
-<span class="sd">        (1.0, 2.0)</span>
-<span class="sd">        """</span>
-
-<div class="viewcode-block" id="PathCommand.end_point">
-<a class="viewcode-back" href="../../../reference/geometry.html#svgwriter.pathdata.PathCommand.end_point">[docs]</a>
-    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">end_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current</span><span class="p">:</span> <span class="n">Point</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">Point</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Point</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Return the absolute pen position after this segment.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        current : Point</span>
-<span class="sd">            Pen position before the command.</span>
-<span class="sd">        start : Point</span>
-<span class="sd">            Start of the current subpath, where ``Z`` returns to.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Point</span>
-<span class="sd">            The pen position once the command has been drawn.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; from svgwriter.pathdata import LineTo</span>
-<span class="sd">        &gt;&gt;&gt; from svgwriter.transform import Point</span>
-<span class="sd">        &gt;&gt;&gt; LineTo(1, 2, relative=True).end_point(Point(10, 10), Point(0, 0))</span>
-<span class="sd">        Point(x=11, y=12)</span>
-<span class="sd">        """</span></div>
-</div>
-
 
 
 <div class="viewcode-block" id="MoveTo">
@@ -794,7 +718,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=4ebf8126"></script>
+</div><script src="../../../_static/documentation_options.js?v=2a705162"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.elements.structure._pixels - svgwriter 1.0.0</title>
+        <title>svgwriter.elements.structure._pixels - svgwriter 1.1.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">svgwriter 1.0.0</div></a>
+      <a href="../../../../index.html"><div class="brand">svgwriter 1.1.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.0.0</span>
+  <span class="sidebar-brand-text">svgwriter 1.1.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.0.0</span>
+  <span class="sidebar-versions-label">1.1.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
@@ -280,18 +280,18 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">skia</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_PRECISION</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._drawable</span><span class="w"> </span><span class="kn">import</span> <span class="n">pixels_picture</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._drawable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drawable</span><span class="p">,</span> <span class="n">pixels_picture</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">CHANNEL_MAX</span><span class="p">,</span> <span class="n">DATA_URI_PREFIX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._pixel_compositing</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixelCompositing</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">...ops.composite</span><span class="w"> </span><span class="kn">import</span> <span class="n">Operator</span>
+    <span class="k">pass</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Pixels"</span><span class="p">]</span>
 
@@ -313,7 +313,7 @@
 
 <div class="viewcode-block" id="Pixels">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.structure.Pixels">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Pixels</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Pixels</span><span class="p">(</span><span class="n">PixelCompositing</span><span class="p">,</span> <span class="n">Drawable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Image data: color channels plus a broadcastable alpha.</span>
 
 <span class="sd">    ``color`` is ``(H, W, C)`` with ``C`` in {1, 3} and ``alpha`` broadcasts</span>
@@ -429,7 +429,7 @@
 <span class="sd">        &gt;&gt;&gt; Pixels.decode(png)</span>
 <span class="sd">        Pixels(2x2, channels=3, opaque=True)</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">...export._raster._pnm</span><span class="w"> </span><span class="kn">import</span> <span class="n">decode_pnm</span><span class="p">,</span> <span class="n">is_pnm</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._pnm</span><span class="w"> </span><span class="kn">import</span> <span class="n">decode_pnm</span><span class="p">,</span> <span class="n">is_pnm</span>
 
         <span class="k">if</span> <span class="n">is_pnm</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">decode_pnm</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
@@ -571,8 +571,8 @@
 <span class="sd">        &gt;&gt;&gt; Pixels.from_array(np.zeros((2, 2, 3))).encode()[1:4]</span>
 <span class="sd">        b'PNG'</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">...export._raster._encoders</span><span class="w"> </span><span class="kn">import</span> <span class="n">ENCODERS</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">...export._raster._pixels</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_uint8</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._encoders</span><span class="w"> </span><span class="kn">import</span> <span class="n">ENCODERS</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._rgba</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_uint8</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">...ops.render</span><span class="w"> </span><span class="kn">import</span> <span class="n">encode</span>
 
         <span class="n">encoder</span> <span class="o">=</span> <span class="n">ENCODERS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">format</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
@@ -590,134 +590,6 @@
 
     <span class="fm">__hash__</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore[assignment]</span>
 
-<div class="viewcode-block" id="Pixels.composite">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.structure.Pixels.composite">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">composite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backdrop</span><span class="p">:</span> <span class="n">Pixels</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">operator</span><span class="p">:</span> <span class="n">Operator</span> <span class="o">=</span> <span class="s2">"over"</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="n">Pixels</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Composite these pixels onto *backdrop*, pixel for pixel.</span>
-
-<span class="sd">        ``a | b``, ``a &amp; b``, ``a - b`` and ``a ^ b`` are ``over``, ``in``,</span>
-<span class="sd">        ``out`` and ``xor``; ``a * b`` is the ``multiply`` blend. To combine</span>
-<span class="sd">        images, composite their pixels: ``image.pixels | other.pixels``.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        backdrop : Pixels or numpy.ndarray</span>
-<span class="sd">            Pixels underneath, or a straight RGBA array; it broadcasts, so</span>
-<span class="sd">            ``(1, 1, 4)`` is a solid color.</span>
-<span class="sd">        operator : CompositeOperator, BlendMode or str, optional</span>
-<span class="sd">            An ``feComposite`` operator or ``feBlend`` mode. Defaults to ``"over"``.</span>
-<span class="sd">        k : sequence of float, optional</span>
-<span class="sd">            ``(k1, k2, k3, k4)`` for ``"arithmetic"``. Defaults to ().</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Pixels</span>
-<span class="sd">            New pixels; both operands are left unchanged.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        ValueError</span>
-<span class="sd">            If the operator is unknown or the pixel shapes do not broadcast.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        svgwriter.ops.composite_rgba : The same on raw RGBA arrays.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
-<span class="sd">        &gt;&gt;&gt; from svgwriter.elements.structure import Pixels</span>
-<span class="sd">        &gt;&gt;&gt; glass = Pixels.from_array(np.full((2, 2, 3), 1.0), alpha=0.25)</span>
-<span class="sd">        &gt;&gt;&gt; (glass | np.array([[[0, 0, 0, 1.0]]])).rgba()[0, 0].tolist()</span>
-<span class="sd">        [0.25, 0.25, 0.25, 1.0]</span>
-<span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">...ops.composite</span><span class="w"> </span><span class="kn">import</span> <span class="n">composite_rgba</span>
-
-        <span class="n">under</span> <span class="o">=</span> <span class="n">backdrop</span><span class="o">.</span><span class="n">rgba</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backdrop</span><span class="p">,</span> <span class="n">Pixels</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">backdrop</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Pixels</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">composite_rgba</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rgba</span><span class="p">(),</span> <span class="n">under</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">"broadcast"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
-                <span class="k">raise</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"pixel shapes </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">under</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2"> differ; "</span>
-                             <span class="s2">"rasterize the elements onto one canvas first"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span></div>
-
-
-<div class="viewcode-block" id="Pixels.on_grid">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.structure.Pixels.on_grid">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">on_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pixels</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Render *element* onto a transparent canvas the size of these pixels.</span>
-
-<span class="sd">        The element's user units are pixels of this grid, so ``circle(10, 10, 5)``</span>
-<span class="sd">        lands around pixel ``(10, 10)``. This is how ``pixels | element`` and the</span>
-<span class="sd">        other operators composite shapes, text and whole documents with an image.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        element : Element or Document</span>
-<span class="sd">            What to draw; it is copied, never moved.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Pixels</span>
-<span class="sd">            The rendering, with the same shape as these pixels.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        TypeError</span>
-<span class="sd">            If *element* is neither an element nor a document.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        composite : Combine two equal-sized grids.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
-<span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">        &gt;&gt;&gt; from svgwriter.elements.structure import Pixels</span>
-<span class="sd">        &gt;&gt;&gt; grid = Pixels.from_array(np.zeros((8, 8, 3)))</span>
-<span class="sd">        &gt;&gt;&gt; grid.on_grid(svg.rect(0, 0, 4, 8, fill="red")).rgba()[4, 1].tolist()</span>
-<span class="sd">        [1.0, 0.0, 0.0, 1.0]</span>
-<span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">...document</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
-
-        <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
-            <span class="n">source</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
-            <span class="n">source</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"cannot draw </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">element</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> onto pixels; pass an element or a document"</span><span class="p">)</span>
-        <span class="n">canvas</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">rows</span><span class="p">)</span>
-        <span class="n">canvas</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Pixels</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">canvas</span><span class="o">.</span><span class="n">rasterize</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">rows</span><span class="p">)))</span></div>
-
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_pair</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">operator</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pixels</span><span class="p">:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">...document</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="n">Element</span><span class="p">,</span> <span class="n">Document</span><span class="p">)):</span>
-            <span class="n">other</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_grid</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">composite</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="n">Pixels</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="k">else</span> <span class="bp">NotImplemented</span>  <span class="c1"># type: ignore[return-value]</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pixels</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pair</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"over"</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pixels</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pair</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"in"</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pixels</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pair</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"out"</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pixels</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pair</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"xor"</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pixels</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pair</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"multiply"</span><span class="p">)</span>
-
     <span class="k">def</span><span class="w"> </span><span class="nf">__svgwriter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the pixels as an ``&lt;image&gt;`` for ``doc.add(pixels)`` and notebook display.</span>
 
@@ -734,12 +606,6 @@
 <span class="sd">        'image'</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="n">pixels_picture</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_repr_svg_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__svgwriter__</span><span class="p">()</span><span class="o">.</span><span class="n">_repr_svg_</span><span class="p">()</span>  <span class="c1"># type: ignore[no-any-return]</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_repr_png_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__svgwriter__</span><span class="p">()</span><span class="o">.</span><span class="n">_repr_png_</span><span class="p">()</span>  <span class="c1"># type: ignore[no-any-return]</span>
 
 <div class="viewcode-block" id="Pixels.svg_value">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.structure.Pixels.svg_value">[docs]</a>
@@ -820,7 +686,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=4ebf8126"></script>
+</div><script src="../../../../_static/documentation_options.js?v=2a705162"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

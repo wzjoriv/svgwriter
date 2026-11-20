@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Documents - svgwriter 1.0.0</title>
+        <title>Documents - svgwriter 1.1.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 1.0.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 1.1.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.0.0</span>
+  <span class="sidebar-brand-text">svgwriter 1.1.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.0.0</span>
+  <span class="sidebar-versions-label">1.1.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -335,7 +335,8 @@ displayed; <code class="docutils literal notranslate"><span class="pre">fit()</s
 <section id="other-libraries">
 <h2>Other libraries<a class="headerlink" href="#other-libraries" title="Link to this heading">¶</a></h2>
 <p>Anything with <code class="docutils literal notranslate"><span class="pre">_repr_svg_</span></code> (diagrams, formulas) or a matplotlib-style <code class="docutils literal notranslate"><span class="pre">savefig</span></code> can be added; it becomes
-a <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span></code> holding its <code class="docutils literal notranslate"><span class="pre">&lt;svg&gt;</span></code>, so it can be moved and scaled:</p>
+a <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span></code> holding its <code class="docutils literal notranslate"><span class="pre">&lt;svg&gt;</span></code>, so it can be moved and scaled. Objects with only <code class="docutils literal notranslate"><span class="pre">_repr_png_</span></code> or <code class="docutils literal notranslate"><span class="pre">_repr_jpeg_</span></code>
+(the IPython display protocol) become an <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Badge</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_repr_svg_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">'&lt;svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"&gt;&lt;circle cx="10" cy="10" r="9"/&gt;&lt;/svg&gt;'</span>
@@ -494,7 +495,7 @@ single items. Any networkx layout, a positions mapping or a layout function plac
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=4ebf8126"></script>
+</div><script src="../_static/documentation_options.js?v=2a705162"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

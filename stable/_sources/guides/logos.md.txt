@@ -21,5 +21,5 @@ light.save("logo.icns")
 logo("dark").save("logo-dark.svg")
 ```
 
-`examples/logo.py` in the repository is a complete version with light, dark and mono variants and the full
+`examples/12_logo.py` in the repository is a complete version with light, dark and mono variants and the full
 asset set.

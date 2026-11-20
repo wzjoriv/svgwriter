@@ -52,7 +52,8 @@ sketch.fit(padding=10)
 ## Other libraries
 
 Anything with `_repr_svg_` (diagrams, formulas) or a matplotlib-style `savefig` can be added; it becomes
-a `<g>` holding its `<svg>`, so it can be moved and scaled:
+a `<g>` holding its `<svg>`, so it can be moved and scaled. Objects with only `_repr_png_` or `_repr_jpeg_`
+(the IPython display protocol) become an `<image>`:
 
 ```python
 class Badge:

@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.ops._skia - svgwriter 1.0.0</title>
+        <title>svgwriter.ops._skia - svgwriter 1.1.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">svgwriter 1.0.0</div></a>
+      <a href="../../../index.html"><div class="brand">svgwriter 1.1.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.0.0</span>
+  <span class="sidebar-brand-text">svgwriter 1.1.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.0.0</span>
+  <span class="sidebar-versions-label">1.1.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -288,7 +288,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONIC_SUBDIVISION</span><span class="p">,</span> <span class="n">EVENODD</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..elements._behavior._geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathOperand</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..elements</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathOperand</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">"Geometry"</span><span class="p">,</span>
@@ -327,7 +327,7 @@
 <span class="sd">    &gt;&gt;&gt; evenodd</span>
 <span class="sd">    False</span>
 <span class="sd">    """</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..elements._behavior._geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathOperand</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..elements</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathOperand</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">PathOperand</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">item</span><span class="o">.</span><span class="n">outline</span><span class="p">(),</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fill-rule"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span> <span class="o">==</span> <span class="n">EVENODD</span>
@@ -479,7 +479,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=4ebf8126"></script>
+</div><script src="../../../_static/documentation_options.js?v=2a705162"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

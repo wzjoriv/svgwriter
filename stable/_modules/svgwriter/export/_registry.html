@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.export._registry - svgwriter 1.0.0</title>
+        <title>svgwriter.export._registry - svgwriter 1.1.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">svgwriter 1.0.0</div></a>
+      <a href="../../../index.html"><div class="brand">svgwriter 1.1.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.0.0</span>
+  <span class="sidebar-brand-text">svgwriter 1.1.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.0.0</span>
+  <span class="sidebar-versions-label">1.1.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -323,6 +323,8 @@
 <span class="sd">        Whether the function returns ``bytes``.</span>
 <span class="sd">    description : str</span>
 <span class="sd">        First docstring line of the function.</span>
+<span class="sd">    multipage : bool</span>
+<span class="sd">        Whether the function also takes a list of documents, one page or slide each.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -339,7 +341,8 @@
     <span class="n">function</span><span class="p">:</span> <span class="n">ExportFunction</span>
     <span class="n">extensions</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
     <span class="n">binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span></div>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="n">multipage</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
 
@@ -359,6 +362,9 @@
 <span class="sd">        File extensions, lower-case with a leading dot.</span>
 <span class="sd">    description : str</span>
 <span class="sd">        First docstring line of the function.</span>
+<span class="sd">    page_option : str or None</span>
+<span class="sd">        The option that picks one page or slide (``"page"``, ``"slide"``); passing</span>
+<span class="sd">        None for it reads every page as a list. None for single-page formats.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -374,7 +380,8 @@
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">function</span><span class="p">:</span> <span class="n">ImportFunction</span>
     <span class="n">extensions</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
-    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">)</span></div>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">)</span>
+    <span class="n">page_option</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 
@@ -389,7 +396,8 @@
 <div class="viewcode-block" id="register">
 <a class="viewcode-back" href="../../../reference/export.html#svgwriter.export.register">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">extensions</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span> <span class="n">binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">extensions</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span> <span class="n">binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">multipage</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">F</span><span class="p">],</span> <span class="n">F</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Decorator registering an exporter ``function(document, **options) -&gt; bytes | str``.</span>
 
@@ -401,6 +409,9 @@
 <span class="sd">        File extensions (``".pdf"``) that select this format in :func:`save`. Defaults to ().</span>
 <span class="sd">    binary : bool, optional</span>
 <span class="sd">        Whether the function returns ``bytes`` (otherwise ``str``). Defaults to True.</span>
+<span class="sd">    multipage : bool, optional</span>
+<span class="sd">        Whether the function also accepts a list of documents and writes one</span>
+<span class="sd">        page or slide per document. Defaults to False.</span>
 <span class="sd">    replace : bool, optional</span>
 <span class="sd">        Allow replacing an existing registration of *name*. Defaults to False.</span>
 
@@ -440,7 +451,7 @@
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_EXPORTERS</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">replace</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"exporter </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> is already registered; pass replace=True to override"</span><span class="p">)</span>
         <span class="n">doc</span> <span class="o">=</span> <span class="p">(</span><span class="n">function</span><span class="o">.</span><span class="vm">__doc__</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-        <span class="n">_EXPORTERS</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Exporter</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">_extensions</span><span class="p">(</span><span class="n">extensions</span><span class="p">),</span> <span class="n">binary</span><span class="p">,</span> <span class="n">doc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">doc</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
+        <span class="n">_EXPORTERS</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Exporter</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">_extensions</span><span class="p">(</span><span class="n">extensions</span><span class="p">),</span> <span class="n">binary</span><span class="p">,</span> <span class="n">doc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">doc</span> <span class="k">else</span> <span class="s2">""</span><span class="p">,</span> <span class="n">multipage</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">function</span>
 
     <span class="k">return</span> <span class="n">decorate</span></div>
@@ -485,7 +496,8 @@
 
 <div class="viewcode-block" id="register_importer">
 <a class="viewcode-back" href="../../../reference/export.html#svgwriter.export.register_importer">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">register_importer</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">extensions</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">F</span><span class="p">],</span> <span class="n">F</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">register_importer</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">extensions</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span> <span class="n">page_option</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">F</span><span class="p">],</span> <span class="n">F</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Decorator registering an importer ``function(data: bytes, **options) -&gt; Document``.</span>
 
 <span class="sd">    Parameters</span>
@@ -494,6 +506,10 @@
 <span class="sd">        Format name used by :func:`load`.</span>
 <span class="sd">    extensions : tuple of str, optional</span>
 <span class="sd">        File extensions (``".svg"``) that select this format. Defaults to ().</span>
+<span class="sd">    page_option : str, optional</span>
+<span class="sd">        Name of the function's option that picks one page; the function must</span>
+<span class="sd">        return a list of documents, one per page, when that option is None.</span>
+<span class="sd">        Defaults to None, for single-page formats.</span>
 <span class="sd">    replace : bool, optional</span>
 <span class="sd">        Allow replacing an existing registration of *name*. Defaults to False.</span>
 
@@ -528,7 +544,7 @@
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_IMPORTERS</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">replace</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"importer </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> is already registered; pass replace=True to override"</span><span class="p">)</span>
         <span class="n">doc</span> <span class="o">=</span> <span class="p">(</span><span class="n">function</span><span class="o">.</span><span class="vm">__doc__</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-        <span class="n">_IMPORTERS</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Importer</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">_extensions</span><span class="p">(</span><span class="n">extensions</span><span class="p">),</span> <span class="n">doc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">doc</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
+        <span class="n">_IMPORTERS</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Importer</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">_extensions</span><span class="p">(</span><span class="n">extensions</span><span class="p">),</span> <span class="n">doc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">doc</span> <span class="k">else</span> <span class="s2">""</span><span class="p">,</span> <span class="n">page_option</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">function</span>
 
     <span class="k">return</span> <span class="n">decorate</span></div>
@@ -591,7 +607,7 @@
     <span class="n">lowered</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">lowered</span> <span class="ow">in</span> <span class="n">registry</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">registry</span><span class="p">[</span><span class="n">lowered</span><span class="p">]</span>
-    <span class="n">suffix</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">lowered</span><span class="p">)</span><span class="o">.</span><span class="n">suffixes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">lowered</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span> <span class="k">else</span> <span class="n">lowered</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">lowered</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">or</span> <span class="n">lowered</span>
     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">registry</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">extensions</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">item</span>
@@ -701,7 +717,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=4ebf8126"></script>
+</div><script src="../../../_static/documentation_options.js?v=2a705162"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

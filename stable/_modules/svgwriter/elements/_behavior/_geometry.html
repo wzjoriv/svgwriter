@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.elements._behavior._geometry - svgwriter 1.0.0</title>
+        <title>svgwriter.elements._behavior._geometry - svgwriter 1.1.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">svgwriter 1.0.0</div></a>
+      <a href="../../../../index.html"><div class="brand">svgwriter 1.1.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.0.0</span>
+  <span class="sidebar-brand-text">svgwriter 1.1.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.0.0</span>
+  <span class="sidebar-versions-label">1.1.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
@@ -281,10 +281,10 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">TypeAlias</span><span class="p">,</span> <span class="n">Union</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">clip_outline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathData</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">...transform.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...transform.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransformLike</span><span class="p">,</span> <span class="n">as_transform</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..core._element</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._boolean</span><span class="w"> </span><span class="kn">import</span> <span class="n">BooleanOps</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">NOT_COPIED</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._measure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Measurement</span>
@@ -461,7 +461,7 @@
 <span class="sd">        &gt;&gt;&gt; [e.tag for e in expanded], len(expanded[0][0])</span>
 <span class="sd">        (['g', 'rect'], 4)</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">..paint._servers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pattern</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..paint</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pattern</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">..shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">..structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Group</span>
 
@@ -555,103 +555,6 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">parts</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">PathData</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">outline</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="n">parts</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">resolve</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""The element an attribute value refers to, if it can be found.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    element : Element</span>
-<span class="sd">        The element holding the value; its root is searched for ids.</span>
-<span class="sd">    value : object</span>
-<span class="sd">        A reference, ``#id``, ``url(#id)`` text, or None.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    Element or None</span>
-<span class="sd">        The referenced element, or None.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.elements._behavior._geometry import resolve</span>
-<span class="sd">    &gt;&gt;&gt; g = svg.group(svg.circle(0, 0, 1, id="dot"))</span>
-<span class="sd">    &gt;&gt;&gt; resolve(g, "url(#dot)").tag</span>
-<span class="sd">    'circle'</span>
-<span class="sd">    """</span>
-    <span class="n">target</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"element"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">target</span>
-    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-    <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">svg_value</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"svg_value"</span><span class="p">)</span> <span class="k">else</span> <span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"url("</span><span class="p">)</span> <span class="ow">and</span> <span class="n">text</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">")"</span><span class="p">):</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"'</span><span class="se">\"</span><span class="s2"> "</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">element</span><span class="o">.</span><span class="n">root</span><span class="p">()</span><span class="o">.</span><span class="n">get_element_by_id</span><span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#"</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">clip_outline</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PathData</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""The clip region of *element* in its local coordinates, or ``None``.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    element : Element</span>
-<span class="sd">        The clipped element.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    PathData or None</span>
-<span class="sd">        The clip outline, or None when the element is not clipped.</span>
-
-<span class="sd">    Raises</span>
-<span class="sd">    ------</span>
-<span class="sd">    TypeError</span>
-<span class="sd">        If ``clip-path`` refers to something other than a ``&lt;clipPath&gt;``.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.elements._behavior._geometry import clip_outline</span>
-<span class="sd">    &gt;&gt;&gt; clip_outline(svg.rect(0, 0, 9, 9)) is None</span>
-<span class="sd">    True</span>
-<span class="sd">    """</span>
-    <span class="n">clip</span> <span class="o">=</span> <span class="n">resolve</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">element</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"clip-path"</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">clip</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clip</span><span class="p">,</span> <span class="n">PathOperand</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"clip-path refers to &lt;</span><span class="si">{</span><span class="n">clip</span><span class="o">.</span><span class="n">tag</span><span class="si">}</span><span class="s2">&gt;, not a &lt;clipPath&gt;"</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">outline</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">clip</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"clipPathUnits"</span><span class="p">,</span> <span class="s2">"userSpaceOnUse"</span><span class="p">))</span> <span class="o">==</span> <span class="s2">"objectBoundingBox"</span><span class="p">:</span>
-        <span class="n">box</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">local_outline</span><span class="p">()</span><span class="o">.</span><span class="n">bbox</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">PathOperand</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">PathData</span><span class="p">()</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">Matrix</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">data</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">replace_in_parent</span><span class="p">(</span><span class="n">old</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Swap *new* into *old*'s place in its parent; an explicit (not generated) id moves with it.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; doc = svg.Document(10, 10)</span>
-<span class="sd">    &gt;&gt;&gt; c = doc.circle(5, 5, 5, id="dot")</span>
-<span class="sd">    &gt;&gt;&gt; c -= svg.rect(0, 0, 5, 5)</span>
-<span class="sd">    &gt;&gt;&gt; [(e.tag, e.id) for e in doc]</span>
-<span class="sd">    [('path', 'dot')]</span>
-<span class="sd">    """</span>
-    <span class="n">parent</span> <span class="o">=</span> <span class="n">old</span><span class="o">.</span><span class="n">parent</span>
-    <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">new</span> <span class="ow">is</span> <span class="n">old</span><span class="p">:</span>
-        <span class="k">return</span>
-    <span class="n">index</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">child</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span> <span class="k">if</span> <span class="n">child</span> <span class="ow">is</span> <span class="n">old</span><span class="p">)</span>
-    <span class="n">explicit</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">old</span><span class="o">.</span><span class="n">_auto_id</span> <span class="k">else</span> <span class="n">old</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span>
-    <span class="n">parent</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">explicit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">old</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span>
-        <span class="n">new</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">explicit</span>
-    <span class="n">parent</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
 </pre></div>
         </article>
       </div>
@@ -684,7 +587,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=4ebf8126"></script>
+</div><script src="../../../../_static/documentation_options.js?v=2a705162"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

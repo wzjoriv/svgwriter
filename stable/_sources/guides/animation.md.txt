@@ -25,23 +25,71 @@ logo.animate.fade_in(0.5).spin(2, begin=0.5)
 
 | Group | Presets |
 |---|---|
-| Appear / disappear | `fade_in`, `fade_out`, `draw` (stroke draws on), `wipe(side)`, `typewriter` (text) |
+| Appear / disappear | `show(at=)`, `hide(at=)` (at once), `fade_in`, `fade_out`, `draw` (stroke draws on), `wipe(side)`, `typewriter` (text) |
+| Create | `create` (outline draws on, then the fill fades in), `uncreate` (the reverse), `write` (text character by character, a group child by child) |
 | Motion | `slide_in(side)`, `move_to(x, y)`, `follow(path)`, `bounce`, `shake` |
 | Scale and turn | `grow`, `shrink`, `pulse`, `spin(turns=)` (about the element's centre) |
 | Color and any attribute | `blink`, `color_cycle(colors)`, `tween(attribute, start, end)` |
-| Shape | `morph(target)` (a `<path>` turning into any shape, segments matched by `interpolate`) |
+| Shape | `morph(target)` (a `<path>` turning into any shape, contours matched by `interpolate`) |
 | Groups | `stagger(preset, step=)` (each child starts `step` seconds after the last) |
 
 Every preset takes `dur` and `begin` in seconds, `repeat` (a count or `"indefinite"`) and keeps its end
 state unless `freeze=False`. They are plain SMIL, so they play in browsers and in `doc.at(t)`, video,
 animated GIF, APNG and WebP.
 
+`create`, `uncreate` and `write` animate `stroke-dasharray`/`stroke-dashoffset` and `fill-opacity`.
+A shape without a stroke is drawn with its fill color, every contour of a shape draws at once, and
+`write` starts each character a little before the previous one finishes:
+
+```python
+title = svg.text("Hello", x=10, y=60, font_size=48, fill="tomato")
+title.animate.write(1.5)
+badge = svg.circle(50, 50, 30, fill="teal")
+badge.animate.create(1).uncreate(1, begin=3)
+```
+
+## Easing
+
+Every preset with a duration (all but `show` and `hide`), and `Animate`, `AnimateTransform`, `AnimateColor` and `AnimateMotion`, takes `ease=`: a
+timing curve for the whole animation. The named curves are the standard cubic béziers:
+
+| `ease=` | Control points `(x1, y1, x2, y2)` | Feel |
+|---|---|---|
+| `"linear"` (default) | `(0, 0, 1, 1)` | constant speed |
+| `"ease"` | `(0.25, 0.1, 0.25, 1)` | quick start, long gentle stop |
+| `"ease-in"` | `(0.42, 0, 1, 1)` | starts slowly |
+| `"ease-out"` | `(0, 0, 0.58, 1)` | stops slowly |
+| `"ease-in-out"` | `(0.42, 0, 0.58, 1)` | slow at both ends |
+| `"step-start"`, `"step-end"`, `("steps", n)` | | jumps instead of gliding |
+
+```python
+box = doc.rect(10, 10, 20, 20, fill="teal")
+box.animate.move_to(180, 20, dur=1, ease="ease-in-out")
+box.animate.fade_in(0.5, ease=(0.2, 0.9, 0.3, 1.0))         # a custom bézier
+```
+
+Any Python function from time to progress works too, overshoot included:
+
+```python
+def back_out(t):
+    return 1 + 2.7 * (t - 1) ** 3 + 1.7 * (t - 1) ** 2
+
+box.animate.slide_in("left", ease=back_out)
+```
+
+The curve covers the whole timeline, so a preset with several `values` (`bounce`, `shake`, `pulse`,
+`color_cycle`) moves through all of them along the one curve. Béziers are written as SMIL
+`calcMode="spline"` with exact `keySplines` (one piece of the curve per value interval), steps as
+`calcMode="discrete"`, and a function is sampled into 24 to 60 `values` at even times (more where it
+bends more) played linearly; `svg.Ease(curve)(t)` evaluates any of them.
+
 ## Playing SMIL
 
 `doc.at(seconds)` returns a static copy with every animation applied at that moment, so SMIL can be
 inspected, rasterized or exported frame by frame, and `render_animation` plays it without an `update`
 callback. It covers `animate`, `set`, `animateColor`, `animateTransform` and `animateMotion` with clock
-timing, repeats, `fill="freeze"`, `values`/`keyTimes`, discrete mode and `additive="sum"`.
+timing, repeats, `fill="freeze"`, `values`/`keyTimes`, every `calcMode` (discrete, linear, paced and
+spline with `keySplines`), `keyPoints` and `additive="sum"`, so frames match what browsers play.
 
 ```python
 frame = doc.at(1.0)          # the ball halfway along
@@ -81,7 +129,10 @@ $ python -m svgwriter animate scene.py -o out.mp4 --fps 30
 `svg.interpolate(a, b, t)` returns the value a fraction `t` of the way from `a` to `b`: numbers, points,
 colors, matrices (rotation, scale and skew blended separately, turning the short way), path data and
 whole elements. Elements of the same kind blend their attributes and transform; different shapes morph
-as outlines (both become cubic paths with matching subpaths), and paint blends along the way.
+as outlines, and paint blends along the way. Outlines pair with outlines and holes with holes, nearest
+first; a contour without a partner grows from (or shrinks to) its centre, so a `B` with two holes can
+become a ring with one. Each pair is resampled to the same number of points, keeping sharp corners, and
+started where the points have least distance to travel, so the in-between shapes do not twist.
 
 ```python
 start = svg.Polygon.regular(50, 50, 40, 5, fill="gold")
