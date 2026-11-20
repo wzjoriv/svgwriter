@@ -33,3 +33,10 @@ def test_an_eps_image_is_painted_in_document_order():
     text = svg.export.export(doc, "eps").decode()
     white, image, red = text.index("1 1 1 setrgbcolor"), text.index("colorimage"), text.index("1 0 0 setrgbcolor")
     assert white < image < red
+
+
+def test_a_standalone_tikz_document_sets_fonts_that_match_the_measured_text():
+    doc = svg.Document(100, 40)
+    doc.text("Hello", x=10, y=30, font_size=12, font_family="Helvetica")
+    text = svg.export.export(doc, "tikz", standalone=True)
+    assert r"\usepackage{times}" in text.split(r"\begin{document}")[0]
