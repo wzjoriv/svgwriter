@@ -1,4 +1,6 @@
-"""Step 1: shapes, gradients, text and nested groups with document shortcuts.
+"""# Basic shapes
+
+Shapes, gradients, text and nested groups, created with document shortcuts.
 
 Run it as ``python 01_basic_shapes.py`` or open ``01_basic_shapes.ipynb`` to see each step.
 """

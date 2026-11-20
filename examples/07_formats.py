@@ -1,7 +1,9 @@
-"""Step 7: one drawing exported to many formats and read back.
+"""# Formats
 
-``doc.save(path)`` picks the exporter from the extension and ``Document.open(path)`` the importer, so the
-same drawing travels through vector, raster, document, TeX and CAD files.
+One drawing exported to many formats and read back. `doc.save(path)` picks the exporter from the extension
+and `Document.open(path)` the importer, so the same drawing travels through vector, raster, document, TeX
+and CAD files.
+
 Run it as ``python 07_formats.py`` or open ``07_formats.ipynb`` to see each step.
 """
 
@@ -45,6 +47,8 @@ doc.save(formats / "drawing.png", scale=2)
 print("svg and png:", ", ".join(sorted(path.name for path in formats.iterdir())))
 
 # %% [markdown]
+# ## Text-keeping formats
+#
 # PDF, EPS and TikZ keep text as text, so it stays selectable in a viewer or searchable in the source.
 # The TikZ file is a `tikzpicture` of `\draw` and `\node` commands; `standalone=True` makes it compilable.
 
@@ -67,6 +71,8 @@ doc.save(formats / "drawing.dxf")
 print(", ".join(sorted(path.name for path in formats.iterdir())))
 
 # %% [markdown]
+# ## Reading back
+#
 # `Document.open` reads files back (TikZ is shown above as source). Text-keeping formats return `<text>`
 # elements again, DXF returns polylines only and PNG a single `<image>`. Counting elements of each kind
 # shows what every format preserved.

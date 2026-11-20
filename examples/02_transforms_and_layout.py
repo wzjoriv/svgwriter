@@ -1,7 +1,8 @@
-"""Step 2: transforms and layout: rotate, flip and place, then named points and ``align``.
+"""# Transforms and layout
 
-A ring of petals is built from one shape by rotating copies about a shared pivot, then cut and clipped.
-A second drawing lays shapes out with named points of their bounds.
+Every shape carries one transform. Copies of a petal are rotated about a shared pivot, flipped and placed,
+then a second drawing lays shapes out with the named points of their bounds and `align`.
+
 Run it as ``python 02_transforms_and_layout.py`` or open ``02_transforms_and_layout.ipynb`` to see each step.
 """
 
@@ -12,6 +13,8 @@ from pathlib import Path
 import svgwriter as svg
 
 # %% [markdown]
+# ## Transforms
+#
 # Every shape carries one transform. `rotate(angle, about=pivot)` edits it, so copies of a petal
 # turned about the centre make a ring.
 
@@ -65,6 +68,8 @@ doc += window
 doc
 
 # %% [markdown]
+# ## Named points and align
+#
 # Every element knows its `bounds()`, a box with named points: `center`, the corners (`top_left`,
 # `bottom_right`, ...) and the edge middles (`top`, `left`, ...). Dots mark them on a card.
 

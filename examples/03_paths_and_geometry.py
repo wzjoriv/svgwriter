@@ -1,7 +1,8 @@
-"""Step 3: paths, markers, boolean operations and measurement.
+"""# Paths and geometry
 
-Path data is built with commands, combined with boolean operators and measured (length, bounds, points
-along the outline, hit tests).
+Path data built from commands and markers, combined with boolean operations and measured: length, tight
+bounds, points along an outline and hit tests.
+
 Run it as ``python 03_paths_and_geometry.py`` or open ``03_paths_and_geometry.ipynb`` to see each step.
 """
 
@@ -54,6 +55,8 @@ with doc.group(stroke="navy", fill="none") as outlines:
 doc
 
 # %% [markdown]
+# ## Measuring
+#
 # Measure outlines: `total_length()` is the length along the curve, `exact_bbox()` the tight box
 # and `point_at_length(d)` the point `d` units along it. Dots every fifth of the wave show it, drawn
 # on a copy of the drawing (`root.clone()`) so the drawing above stays as it is.
@@ -82,6 +85,8 @@ for (x, y), hit in zip(points, inside, strict=True):
 probe
 
 # %% [markdown]
+# ## Boolean operations
+#
 # Boolean operations work on the outlines. `union` merges shapes into one path: six rotated ellipses
 # become a flower, and `-=` punches a hole in it.
 

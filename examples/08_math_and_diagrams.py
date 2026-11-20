@@ -1,4 +1,6 @@
-"""Step 8: LaTeX formulas and a Mermaid flowchart, both drawn without any tool beyond Python.
+"""# Math and diagrams
+
+LaTeX formulas and a Mermaid flowchart, both drawn without any tool beyond Python.
 
 Run it as ``python 08_math_and_diagrams.py`` or open ``08_math_and_diagrams.ipynb`` to see each step.
 """

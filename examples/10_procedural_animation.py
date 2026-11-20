@@ -1,7 +1,7 @@
-"""Step 10: procedural animation, a scene for ``python -m svgwriter animate``.
+"""# Procedural animation
 
-The script defines a drawing (``doc``) and an ``update(doc, seconds)`` function that moves it; the
-animate command renders one frame per time step.
+A scene for ``python -m svgwriter animate``. The script defines a drawing (``doc``) and an
+``update(doc, seconds)`` function that moves it; the animate command renders one frame per time step.
 
     python -m svgwriter animate examples/10_procedural_animation.py -o orbit.gif --renderer skia
     python 10_procedural_animation.py                  writes the first frame as SVG

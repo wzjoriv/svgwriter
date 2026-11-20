@@ -1,8 +1,9 @@
-"""Step 12: an app logo defined in Python, with variants, and every asset generated from it.
+"""# Logo
 
-A project keeps a module like this one; tooling imports ``logo`` and writes
-SVG variants, PNGs at any size, ``.ico``/``.icns`` and favicons. Output is
-deterministic, so stale assets can be detected by regenerating and comparing.
+An app logo defined in Python, with variants, and every asset generated from it. A project keeps a module
+like this one; tooling imports ``logo`` and writes SVG variants, PNGs at any size, ``.ico``/``.icns`` and
+favicons. Output is deterministic, so stale assets can be detected by regenerating and comparing.
+
 Run it as ``python 12_logo.py`` or open ``12_logo.ipynb`` to see each variant.
 """
 

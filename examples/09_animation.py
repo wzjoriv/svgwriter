@@ -1,5 +1,7 @@
-"""Step 9: animation: presets (draw-on, morph, stagger, spin, typewriter), the animation elements
-underneath them and async writing, saved as SVG and an animated GIF.
+"""# Animation
+
+Presets (draw-on, morph, stagger, spin, typewriter), the animation elements underneath them and async
+writing, saved as SVG and an animated GIF.
 
 Run it as ``python 09_animation.py`` or open ``09_animation.ipynb``; the SVG animates in the notebook.
 """
@@ -64,6 +66,8 @@ doc
 doc.at(3.0)
 
 # %% [markdown]
+# ## Animation elements
+#
 # Presets build on animation elements, which are children of the shape they animate:
 # `AnimateTransform.spin` turns a blade, `AnimateMotion` moves a dot along a path, `Animate` pulses its
 # radius and `Set` hides it after a delay. The function takes the spin period, so several variants can be made.
@@ -90,6 +94,8 @@ def spinner(speed: float) -> svg.Svg:
 spinner(1.0)
 
 # %% [markdown]
+# ## Async writing
+#
 # `write_many_async` writes several documents concurrently. A script starts an event loop with
 # `asyncio.run`, but Jupyter already runs one, so `run` falls back to a helper thread with its own loop.
 

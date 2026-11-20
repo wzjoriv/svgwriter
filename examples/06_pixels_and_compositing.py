@@ -1,4 +1,6 @@
-"""Step 6: numpy pixels next to vectors, and Porter-Duff compositing of pixels with shapes.
+"""# Pixels and compositing
+
+numpy pixels sit next to vectors, and Porter-Duff operators combine pixels with shapes, text and other images.
 
 Run it as ``python 06_pixels_and_compositing.py`` or open ``06_pixels_and_compositing.ipynb`` to see each step.
 """
@@ -48,6 +50,8 @@ doc += snapshot.place(240, 155) * 0.35
 doc
 
 # %% [markdown]
+# ## Compositing
+#
 # `image.pixels` holds the data, and pixels combine with the Porter-Duff operators of `feComposite`:
 # `a | b` is *a* over *b*, `a & b` keeps *a* where *b* is opaque, `a - b` keeps it where *b* is not,
 # `a ^ b` keeps what is not shared and `a * b` is the multiply blend. The other side may be a shape,

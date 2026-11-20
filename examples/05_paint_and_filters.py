@@ -1,4 +1,7 @@
-"""Step 5: paint and filters: gradients, patterns, clip paths, masks, then filter primitives.
+"""# Paint and filters
+
+Gradients, patterns, clip paths and masks give shapes their paint; filter primitives add shadows, noise,
+lighting and color changes.
 
 Run it as ``python 05_paint_and_filters.py`` or open ``05_paint_and_filters.ipynb`` to see each step.
 """
@@ -11,6 +14,8 @@ import svgwriter as svg
 from svgwriter.elements import filters as fe
 
 # %% [markdown]
+# ## Paint
+#
 # Paint servers are values you pass as `fill` or `stroke`. A gradient takes `Stop`s along its axis;
 # a `Pattern` repeats a tile of graphics.
 
@@ -48,6 +53,8 @@ paint.add(svg.Circle(175, 145, 40, fill="#34d399", mask=veil))
 paint
 
 # %% [markdown]
+# ## Filters
+#
 # Filters are defined once with `doc.define(...)` and referenced by shapes through `filter=`.
 # Primitives chain: turbulence noise, desaturated by a color matrix, makes a paper texture.
 

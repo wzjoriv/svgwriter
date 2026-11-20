@@ -1,8 +1,9 @@
-"""Step 11: interop: adding figures, graphs and other objects to a drawing with ``doc.add``.
+"""# Interop
 
-``Document.add`` accepts more than elements: a matplotlib figure, a networkx graph, an object with
-``__svgwriter__``, ``_repr_svg_`` or ``_repr_png_``. Each becomes native elements you can place, scale and
+`Document.add` accepts more than elements: a matplotlib figure, a networkx graph, and objects with
+`__svgwriter__`, `_repr_svg_` or `_repr_png_`. Each becomes native elements you can place, scale and
 restyle. Matplotlib and networkx are optional; their cells are skipped when they are not installed.
+
 Run it as ``python 11_interop.py`` or open ``11_interop.ipynb`` to see each step.
 """
 

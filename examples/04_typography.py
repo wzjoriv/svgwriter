@@ -1,4 +1,7 @@
-"""Step 4: typography: styled ranges, per-glyph moves and rotations, outlines, cut-outs and world scripts.
+"""# Typography
+
+Text stays live characters: styled ranges, per-glyph moves and rotations, outlines and cut-outs, and lines
+in Hindi, Bengali, Urdu, Japanese and Chinese.
 
 Run it as ``python 04_typography.py`` or open ``04_typography.ipynb`` to see each step.
 """
@@ -57,6 +60,8 @@ doc += outlines
 doc
 
 # %% [markdown]
+# ## World scripts
+#
 # Scripts that need shaping (Devanagari, Bengali, Arabic) and CJK text work with any `font_family`: where the
 # font has no glyph, layout falls back per character to an installed font that has one. `xml_lang` steers
 # the choice for shared CJK characters, and `direction="rtl"` with `text_anchor="end"` sets Urdu from the right.
