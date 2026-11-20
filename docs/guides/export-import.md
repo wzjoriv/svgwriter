@@ -18,19 +18,39 @@ again = svg.Document.open("figure.svg")
 print(sorted(svg.export.exporters()))
 ```
 
-| format | extensions | out | in | notes |
-| --- | --- | --- | --- | --- |
-| SVG | `.svg` | yes | yes | links, `<a>` and ids preserved; `pretty`, `precision` options |
-| SVGZ | `.svgz` | yes | yes | gzip-compressed SVG |
-| PNG, JPEG, WebP | `.png .jpg .jpeg .webp` | yes | yes | `scale`, `size`, `padding`, `background`, `quality`; imports become an `<image>` |
-| PDF | `.pdf` | yes | yes | vector, via skia; selectable text; `title`, `author`, `text`; reads paths, images, clips, text and shadings, `page=` |
-| TikZ | `.tikz .tex` | yes | yes | `standalone=True` for a compilable document; text as `\node`; SVG coordinates kept (`x=1pt, y=-1pt`) |
-| EPS | `.eps .ps` | yes | yes | text in the standard fonts; PostScript has no transparency |
-| DXF | `.dxf` | yes | yes | R12 polylines in mm, layer per colour; reads lines, polylines with bulges, circles, arcs, ellipses |
-| HPGL | `.hpgl .plt` | yes | yes | pen plotters and cutters, one pen per colour |
-| G-code | `.gcode .nc .ngc` | yes | yes | `mode="mill"` or `"laser"`, `feed`, `cut_z`, `tolerance` |
-| Excalidraw | `.excalidraw` | yes | yes | imports native shapes, arrows, text, images and groups |
-| ICO, ICNS | `.ico .icns` | yes | yes | PNG entries at `sizes=`, `padding=` |
+| Format | Extension(s) | Export | Import | Notes |
+|---|---|:---:|:---:|---|
+| SVG | `.svg` | ✓ | ✓ | the native format; ids, links, `<style>` and animation kept; `pretty`, `precision`, `compact_paths` |
+| SVGZ | `.svgz` | ✓ | ✓ | gzip-compressed SVG |
+| PNG | `.png` | ✓ | ✓ | `scale`, `size`, `padding`, `background`; text becomes pixels; import is an `<image>` |
+| JPEG | `.jpg` `.jpeg` | ✓ | ✓ | `quality`; import is an `<image>` |
+| WebP | `.webp` | ✓ | ✓ | `quality`; import is an `<image>` |
+| BMP | `.bmp` | ✓ | ✓ | import is an `<image>` |
+| GIF (incl. animated) | `.gif` | ✓ | ✓ | animated automatically when the drawing has SMIL animation (`fps`, `duration`, `loop`; no ffmpeg); import is the first frame as an `<image>` |
+| APNG | `.png` | ✓ | ✓ | `animate=True` plays the SMIL animation; import is the first frame |
+| Animated WebP | `.webp` | ✓ | ✓ | `animate=True`; import is the first frame |
+| PPM / PGM / PNM | `.ppm` `.pgm` `.pnm` | ✓ | ✓ | import also reads `.pbm` |
+| ICO | `.ico` | ✓ | ✓ | PNG entries at `sizes=`, `padding=`; import takes the largest image |
+| ICNS | `.icns` | ✓ | ✓ | standard and Retina sizes; import takes the largest image |
+| PDF | `.pdf` | ✓ | ✓ | vector (skia); text kept as text, in an embedded font subset; import reads paths, images, clips, text and shadings, `page=` |
+| EPS / PostScript | `.eps` `.ps` | ✓ | ✓ | text kept as text (ASCII in standard fonts); no transparency; import is a small PostScript interpreter |
+| TikZ | `.tikz` `.tex` | ✓ | ✓ | `standalone=True` for a compilable document; text kept as `\node`; import reads `\draw`, `\fill`, nodes, `\foreach` |
+| DXF | `.dxf` | ✓ | ✓ | CAD polylines in mm, one layer per colour; import reads lines, polylines, circles, arcs, ellipses |
+| HPGL | `.hpgl` `.plt` | ✓ | ✓ | pen plotters and cutters, one pen per colour |
+| G-code | `.gcode` `.nc` `.ngc` | ✓ | ✓ | `mode="mill"` or `"laser"`, `feed`, `cut_z`, `tolerance` |
+| Excalidraw | `.excalidraw` | ✓ | ✓ | import reads shapes, arrows, text, images and groups (also `.json`) |
+| HTML | `.html` `.htm` | ✓ | ✓ | standalone page with the SVG inline (text kept as text), `css=`, `handlers=`; import reads the first inline `<svg>` |
+| PowerPoint | `.pptx` | ✓ | ✓ | needs `pysvgwriter[office]`; editable shapes and text boxes both ways, `slide=` on import; text kept as text |
+| Word | `.docx` | ✓ | ✓ | needs `pysvgwriter[office]`; export is a picture, import reads pictures and drawn shapes (no text) |
+| Excel | `.xlsx` | ✓ | — | needs `pysvgwriter[office]`; the drawing as a picture |
+| Markdown | `.md` `.markdown` | — | ✓ | headings, lists, code and bold become `<text>` |
+| Plain text | `.txt` `.text` | — | ✓ | one `<text>` per line |
+| Graphviz DOT | `.dot` `.gv` | — | ✓ | laid out by Graphviz (`dot`, or `SVGWRITER_DOT`) |
+| Mermaid | `.mmd` `.mermaid` | — | ✓ | flowcharts need no tool (built-in parser and layout); other diagrams use `mmdc` (`SVGWRITER_MMDC`) |
+| PlantUML | `.puml` `.plantuml` | — | ✓ | drawn by `plantuml` |
+| D2 | `.d2` | — | ✓ | drawn by `d2` |
+| LaTeX math | `svg.latex(...)` | — | ✓ | formulas as glyph outlines: TeX (`latex` + `dvisvgm`), else Ziamath (`pysvgwriter[math]`), else matplotlib mathtext |
+| Video frames | `.mp4` `.webm` `.mov` | ✓ | ✓ | needs ffmpeg: `render_animation` writes frames, `svgwriter.video.Video` reads them |
 
 TikZ, EPS and the polyline formats work from a flattened copy of the drawing. TikZ writes gradients
 as shadings and EPS as `shfill`; the polyline formats take their first colour. EPS embeds images,
