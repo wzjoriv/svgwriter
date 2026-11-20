@@ -17,6 +17,7 @@ PREVIEW_PADDING: Final = 2.0
 PREVIEW_SCALE: Final = 1.0
 PREVIEW_MIN_PIXELS: Final = 200.0
 REPR_WIDTH: Final = 120
+INLINE_STYLE: Final = "display:inline-block;max-width:100%;overflow:auto;line-height:0"
 
 
 class Displayable:
@@ -100,6 +101,11 @@ class Displayable:
         if not self._draws_something():
             return None  # type: ignore[return-value]
         return self._preview().to_string(xml_declaration=False)
+
+    def _repr_html_(self) -> str | None:
+        """Jupyter display as inline SVG in the page, so text stays selectable and copyable."""
+        markup = self._repr_svg_()
+        return f'<div style="{INLINE_STYLE}">{markup}</div>' if markup else None
 
     def _draws_something(self) -> bool:
         """Whether the element has any visible extent (a zero-radius circle has none)."""

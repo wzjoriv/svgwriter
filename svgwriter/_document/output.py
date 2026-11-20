@@ -22,6 +22,7 @@ if TYPE_CHECKING:
 
 
 NON_CONTENT: Final = frozenset({"defs", "style", "title", "desc", "metadata"})
+INLINE_STYLE: Final = "display:inline-block;max-width:100%;overflow:auto;line-height:0"
 E = TypeVar("E", bound=Element)
 
 
@@ -62,6 +63,10 @@ class Output:
 
     def _repr_svg_(self) -> str:
         return self.to_string(xml_declaration=False)
+
+    def _repr_html_(self) -> str:
+        """Jupyter display as inline SVG, so text in the drawing stays selectable and copyable."""
+        return f'<div style="{INLINE_STYLE}">{self._repr_svg_()}</div>'
 
     def at(self, time: float) -> Document:
         """A static copy with every SMIL animation applied at *time* seconds (and removed).

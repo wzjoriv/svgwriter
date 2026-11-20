@@ -432,3 +432,12 @@ def test_notebook_shows_text_for_elements_that_draw_nothing() -> None:
     empty = svg.circle(30, 30, 0, fill="red")
     assert empty._repr_svg_() is None and empty._repr_png_() is None
     assert "r='0'" in repr(empty)
+
+
+def test_notebook_html_keeps_text_selectable() -> None:
+    html = svg.text("Copy me", x=0, y=20)._repr_html_()
+    assert html.startswith("<div") and "<text" in html and "Copy me" in html
+    assert svg.circle(1, 1, 0)._repr_html_() is None
+    doc = svg.Document(40, 20)
+    doc.text("hi", x=0, y=15)
+    assert "<text" in doc._repr_html_()
