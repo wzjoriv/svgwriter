@@ -5,26 +5,27 @@ Animation presets: fades, draw-on, wipes, typewriter, slides, spins, pulses, col
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from ..elements.animation import Animate, AnimateMotion, AnimateTransform, Set
+from ._constants import (
+    BLINK_VALUES,
+    BOUNCE_HEIGHT,
+    BOUNCE_TIMES,
+    BOUNCE_VALUES,
+    DEFAULT_DURATION,
+    FOREVER,
+    FULL_TURN,
+    PULSE_SCALE,
+    SHAKE_DISTANCE,
+    SHAKE_STEPS,
+    SIDES,
+)
 
 if TYPE_CHECKING:
     from ..elements.base import Element
 
 __all__ = ["Motion"]
-
-DEFAULT_DURATION: Final = 1.0
-FOREVER: Final = "indefinite"
-FULL_TURN: Final = 360.0
-PULSE_SCALE: Final = 1.1
-SHAKE_DISTANCE: Final = 4.0
-SHAKE_STEPS: Final = 6
-BOUNCE_HEIGHT: Final = 20.0
-BOUNCE_VALUES: Final = (0.0, 1.0, 0.0, 0.45, 0.0, 0.15, 0.0)
-BOUNCE_TIMES: Final = (0.0, 0.25, 0.5, 0.65, 0.8, 0.9, 1.0)
-BLINK_VALUES: Final = "1;0;1"
-SIDES: Final = {"left": (-1.0, 0.0), "right": (1.0, 0.0), "top": (0.0, -1.0), "bottom": (0.0, 1.0)}
 
 
 def _timing(dur: float, begin: float, repeat: float | str | None, freeze: bool) -> dict[str, Any]:

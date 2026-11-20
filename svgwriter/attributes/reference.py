@@ -4,18 +4,16 @@ IRI references: ``#id`` and ``url(#id)``.
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from .._internal._constants import DEFAULT_PRECISION
+from ._constants import FUNC_IRI_RE
 
 if TYPE_CHECKING:
     from ..elements.base import Element
 
 __all__ = ["IRI", "FuncIRI", "parse_func_iri"]
-
-_FUNC_IRI_RE: Final = re.compile(r"""^\s*url\(\s*(['"]?)(.*?)\1\s*\)\s*$""")
 
 
 @dataclass(frozen=True)
@@ -186,5 +184,5 @@ def parse_func_iri(text: str) -> FuncIRI | None:
     >>> parse_func_iri("red") is None
     True
     """
-    match = _FUNC_IRI_RE.match(text)
+    match = FUNC_IRI_RE.match(text)
     return FuncIRI(match.group(2)) if match else None

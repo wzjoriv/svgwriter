@@ -4,16 +4,11 @@ Pictures for svgwriter's own value objects (colors, path data, boxes, matrices, 
 
 from __future__ import annotations
 
-from typing import Any, Final
+from typing import Any
+
+from ._constants import GHOST, GRID, GRID_STEP, OUTLINE, STROKE, SWATCH
 
 __all__ = ["Drawable"]
-
-SWATCH: Final = 40.0
-GRID: Final = 4
-GRID_STEP: Final = 10.0
-OUTLINE: Final = "#1e1e1e"
-GHOST: Final = "#bbbbbb"
-STROKE: Final = 1.0
 
 
 class Drawable:

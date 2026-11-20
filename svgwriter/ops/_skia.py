@@ -4,12 +4,13 @@ Converting paths to and from skia.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Final, TypeAlias, Union
+from typing import TYPE_CHECKING, Any, TypeAlias, Union
 
 import skia
 
 from ..pathdata.commands import ArcTo, ClosePath, CurveTo, LineTo, MoveTo, QuadTo
 from ..pathdata.data import PathData
+from ._constants import CONIC_SUBDIVISION, EVENODD
 
 if TYPE_CHECKING:
     from ..elements._geometry import PathOperand
@@ -20,9 +21,6 @@ __all__ = [
     "geometry_data",
     "to_skia",
 ]
-
-CONIC_SUBDIVISION: Final = 3
-EVENODD: Final = "evenodd"
 
 Geometry: TypeAlias = Union["PathOperand", PathData, str]
 """Anything with an outline: a shape, text, path data or ``d`` text."""

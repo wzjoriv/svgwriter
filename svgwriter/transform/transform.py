@@ -4,30 +4,19 @@ Transform lists: parsing, building and composition.
 
 from __future__ import annotations
 
-import re
 from collections.abc import Iterable, Iterator
-from typing import Final, overload
+from typing import overload
 
 from .._internal._constants import DEFAULT_PRECISION
-from .._internal._hybrid import hybridmethod
+from ._constants import ARITY, FUNCTION_RE, NUMBER_RE
+from ._transform_builders import TransformBuilders
 from .matrix import Matrix, Point
 from .ops import MatrixOp, Rotate, Scale, SkewX, SkewY, TransformOp, Translate
 
 __all__ = ["Transform", "TransformLike", "as_transform", "parse_transform"]
 
-_FUNCTION_RE: Final = re.compile(r"(matrix|translate|scale|rotate|skewX|skewY)\s*\(([^)]*)\)")
-_NUMBER_RE: Final = re.compile(r"[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?")
-_ARITY: Final = {
-    "matrix": (6,),
-    "translate": (1, 2),
-    "scale": (1, 2),
-    "rotate": (1, 3),
-    "skewX": (1,),
-    "skewY": (1,),
-}
 
-
-class Transform:
+class Transform(TransformBuilders):
     """An ordered list of transform operations.
 
     Builder methods append and return ``self``; called on the class they
@@ -90,144 +79,6 @@ class Transform:
         'translate(5) scale(2)'
         """
         return parse_transform(text)
-
-    @hybridmethod
-    def translate(self, tx: float, ty: float = 0.0) -> None:
-        """Append a translation.
-
-        Parameters
-        ----------
-        tx : float
-            Offset along x.
-        ty : float, optional
-            Offset along y. Defaults to 0.
-
-        Returns
-        -------
-        Transform
-            This list (or a new one when called on the class), for chaining.
-
-        Examples
-        --------
-        >>> from svgwriter.transform import Transform
-        >>> str(Transform.translate(10, 5))
-        'translate(10 5)'
-        """
-        self._ops.append(Translate(tx, ty))
-
-    @hybridmethod
-    def scale(self, sx: float, sy: float | None = None) -> None:
-        """Append a scaling.
-
-        Parameters
-        ----------
-        sx : float
-            Factor along x.
-        sy : float, optional
-            Factor along y. Defaults to `sx`.
-
-        Returns
-        -------
-        Transform
-            This list (or a new one when called on the class), for chaining.
-
-        Examples
-        --------
-        >>> from svgwriter.transform import Transform
-        >>> str(Transform().scale(2, 3))
-        'scale(2 3)'
-        """
-        self._ops.append(Scale(sx, sy))
-
-    @hybridmethod
-    def rotate(self, angle: float, cx: float = 0.0, cy: float = 0.0) -> None:
-        """Append a rotation.
-
-        Parameters
-        ----------
-        angle : float
-            Angle in degrees; positive is clockwise.
-        cx, cy : float, optional
-            Centre of rotation. Default to the origin.
-
-        Returns
-        -------
-        Transform
-            This list (or a new one when called on the class), for chaining.
-
-        Examples
-        --------
-        >>> from svgwriter.transform import Transform
-        >>> str(Transform.rotate(45, 5, 5))
-        'rotate(45 5 5)'
-        """
-        self._ops.append(Rotate(angle, cx, cy))
-
-    @hybridmethod
-    def skew_x(self, angle: float) -> None:
-        """Append a horizontal skew.
-
-        Parameters
-        ----------
-        angle : float
-            Skew angle in degrees.
-
-        Returns
-        -------
-        Transform
-            This list (or a new one when called on the class), for chaining.
-
-        Examples
-        --------
-        >>> from svgwriter.transform import Transform
-        >>> str(Transform.skew_x(30))
-        'skewX(30)'
-        """
-        self._ops.append(SkewX(angle))
-
-    @hybridmethod
-    def skew_y(self, angle: float) -> None:
-        """Append a vertical skew.
-
-        Parameters
-        ----------
-        angle : float
-            Skew angle in degrees.
-
-        Returns
-        -------
-        Transform
-            This list (or a new one when called on the class), for chaining.
-
-        Examples
-        --------
-        >>> from svgwriter.transform import Transform
-        >>> str(Transform.skew_y(30))
-        'skewY(30)'
-        """
-        self._ops.append(SkewY(angle))
-
-    @hybridmethod
-    def matrix(self, a: float, b: float, c: float, d: float, e: float, f: float) -> None:
-        """Append a literal matrix.
-
-        Parameters
-        ----------
-        a, b, c, d, e, f : float
-            The six SVG matrix entries.
-
-        Returns
-        -------
-        Transform
-            This list (or a new one when called on the class), for chaining.
-
-        Examples
-        --------
-        >>> from svgwriter.transform import Transform
-        >>> str(Transform.matrix(1, 0, 0, 1, 5, 6))
-        'matrix(1 0 0 1 5 6)'
-        """
-        self._ops.append(MatrixOp(Matrix(a, b, c, d, e, f)))
 
     def to_matrix(self) -> Matrix:
         """Collapse the list into a single matrix.
@@ -422,14 +273,14 @@ def parse_transform(text: str) -> Transform:
     """
     ops = []
     position = 0
-    for match in _FUNCTION_RE.finditer(text):
+    for match in FUNCTION_RE.finditer(text):
         if text[position:match.start()].strip(" \t\r\n,"):
             raise ValueError(f"invalid transform: {text!r}")
         position = match.end()
         name, body = match.groups()
-        args = [float(n) for n in _NUMBER_RE.findall(body)]
-        if len(args) not in _ARITY[name]:
-            expected = " or ".join(str(n) for n in _ARITY[name])
+        args = [float(n) for n in NUMBER_RE.findall(body)]
+        if len(args) not in ARITY[name]:
+            expected = " or ".join(str(n) for n in ARITY[name])
             raise ValueError(f"{name}() takes {expected} arguments, got {len(args)}: {text!r}")
         ops.append(_make_op(name, args))
     if text[position:].strip(" \t\r\n,"):

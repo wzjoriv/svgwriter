@@ -13,6 +13,7 @@ from ..color.color import Color, as_color
 from ..pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
 from ..pathdata.data import PathData
 from ..transform.matrix import Matrix, Point
+from ._constants import DISCRETE_SWITCH, FULL_TURN, GEOMETRY_SKIP, HALF_TURN
 
 if TYPE_CHECKING:
     from ..elements.base import Element
@@ -20,10 +21,6 @@ if TYPE_CHECKING:
 __all__ = ["interpolate"]
 
 T = TypeVar("T")
-HALF_TURN: Final = 180.0
-FULL_TURN: Final = 360.0
-DISCRETE_SWITCH: Final = 0.5
-GEOMETRY_SKIP: Final = frozenset({"id", "transform", "d", "points"})
 
 
 def interpolate(a: T, b: T, t: float) -> T:

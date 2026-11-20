@@ -4,10 +4,11 @@ CSS style sheets and computed values: parsing, selector matching and inheritance
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from ._constants import AT_BLOCK_RE, COMMENT_RE, IMPORTANT, RULE_RE
+from ._selectors import matches_compound, specificity
 from .names import PRESENTATION_ATTRIBUTES
 
 if TYPE_CHECKING:
@@ -25,12 +26,6 @@ INHERITED: Final = frozenset({
     "stroke-width", "text-anchor", "text-rendering", "visibility", "word-spacing", "writing-mode",
 })
 """Properties that inherit by default (SVG 1.1, appendix N)."""
-
-_COMMENT_RE: Final = re.compile(r"/\*.*?\*/", re.S)
-_RULE_RE: Final = re.compile(r"([^{}@]+)\{([^}]*)\}")
-_AT_BLOCK_RE: Final = re.compile(r"@[^{;]+(\{(?:[^{}]|\{[^{}]*\})*\}|;)")
-_COMPOUND_RE: Final = re.compile(r"(\*|[A-Za-z][\w-]*)|#([\w-]+)|\.([\w-]+)|\[([\w:-]+)(?:([~|]?=)\"?([^\"\]]*)\"?)?\]|(:[\w-]+(?:\([^)]*\))?)")
-IMPORTANT: Final = "!important"
 
 
 @dataclass(frozen=True)
@@ -66,13 +61,6 @@ class Rule:
     declarations: tuple[tuple[str, str, bool], ...]
 
 
-def _specificity(selector: str) -> tuple[int, int, int]:
-    ids = len(re.findall(r"#[\w-]+", selector))
-    classes = len(re.findall(r"\.[\w-]+|\[[^\]]*\]|:[\w-]+", selector))
-    types = len(re.findall(r"(?:^|[\s>+~])([A-Za-z][\w-]*)", selector))
-    return (ids, classes, types)
-
-
 def parse_css(text: str, start: int = 0) -> list[Rule]:
     """Parse a style sheet into rules; ``@`` blocks are skipped.
 
@@ -101,9 +89,9 @@ def parse_css(text: str, start: int = 0) -> list[Rule]:
     >>> [r.selector for r in parse_css("rect, .a { fill: red } /* x */ #b{stroke:blue}")]
     ['rect', '.a', '#b']
     """
-    text = _AT_BLOCK_RE.sub("", _COMMENT_RE.sub("", text))
+    text = AT_BLOCK_RE.sub("", COMMENT_RE.sub("", text))
     rules: list[Rule] = []
-    for selectors, body in _RULE_RE.findall(text):
+    for selectors, body in RULE_RE.findall(text):
         declarations = []
         for item in body.split(";"):
             name, sep, value = item.partition(":")
@@ -117,43 +105,8 @@ def parse_css(text: str, start: int = 0) -> list[Rule]:
         for selector in selectors.split(","):
             selector = " ".join(selector.split())
             if selector:
-                rules.append(Rule(selector, _specificity(selector), start + len(rules), tuple(declarations)))
+                rules.append(Rule(selector, specificity(selector), start + len(rules), tuple(declarations)))
     return rules
-
-
-def _matches_compound(element: Element, compound: str) -> bool:
-    position = 0
-    for match in _COMPOUND_RE.finditer(compound):
-        if match.start() != position:
-            return False
-        position = match.end()
-        tag, ident, cls, attr, op, value, pseudo = match.groups()
-        if tag is not None and tag != "*" and element.tag != tag:
-            return False
-        if ident is not None and element.id != ident:
-            return False
-        if cls is not None and cls not in str(element.attributes.get("class", "")).split():
-            return False
-        if attr is not None:
-            present = element.attributes.get(attr)
-            if present is None:
-                return False
-            if op == "=" and str(present) != value:
-                return False
-            if op == "~=" and value not in str(present).split():
-                return False
-            if op == "|=" and not (str(present) == value or str(present).startswith(value + "-")):
-                return False
-        if pseudo is not None and not _pseudo(element, pseudo):
-            return False
-    return position == len(compound)
-
-
-def _pseudo(element: Element, pseudo: str) -> bool:
-    if pseudo == ":first-child":
-        parent = element.parent
-        return parent is not None and next(iter(parent), None) is element
-    return False
 
 
 def matches(element: Element, selector: str) -> bool:
@@ -186,7 +139,7 @@ def matches(element: Element, selector: str) -> bool:
     False
     """
     parts = selector.replace(">", " > ").split()
-    if not parts or not _matches_compound(element, parts[-1]):
+    if not parts or not matches_compound(element, parts[-1]):
         return False
     node: Element | None = element
     index = len(parts) - 2
@@ -199,10 +152,10 @@ def matches(element: Element, selector: str) -> bool:
         compound = parts[index]
         node = node.parent if node is not None else None
         if combinator == ">":
-            if node is None or not _matches_compound(node, compound):
+            if node is None or not matches_compound(node, compound):
                 return False
         else:
-            while node is not None and not _matches_compound(node, compound):
+            while node is not None and not matches_compound(node, compound):
                 node = node.parent
             if node is None:
                 return False

@@ -13,14 +13,13 @@ from typing import Final
 import numpy as np
 
 from ..elements.filters import BlendMode, CompositeOperator
+from ._constants import ARITHMETIC_TERMS
 
 __all__ = ["Operator", "composite_rgba", "resolve_operator"]
 
 Operator = CompositeOperator | BlendMode | str
 Planes = tuple[np.ndarray, np.ndarray]
 Rule = Callable[[np.ndarray, np.ndarray, np.ndarray, np.ndarray, Sequence[float]], Planes]
-
-ARITHMETIC_TERMS: Final = 4
 
 
 def _porter_duff(fa: Callable[[np.ndarray, np.ndarray], np.ndarray],

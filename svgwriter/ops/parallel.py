@@ -7,17 +7,16 @@ from __future__ import annotations
 import os
 from collections.abc import Iterable
 from concurrent.futures import ProcessPoolExecutor
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
+
+from ._constants import CHANNEL_SCALE, SERIAL_LIMIT
 
 if TYPE_CHECKING:
     from ..document import Document
 
 __all__ = ["rasterize_many"]
-
-SERIAL_LIMIT: Final = 2
-CHANNEL_MAX: Final = 255.0
 
 
 def _render(job: tuple[str, str | None, dict[str, Any], bool]) -> np.ndarray:
@@ -29,7 +28,7 @@ def _render(job: tuple[str, str | None, dict[str, Any], bool]) -> np.ndarray:
     if source is not None:
         document.root.__dict__["_source_path"] = source
     pixels = document.rasterize(**options)
-    return np.clip(np.rint(pixels * CHANNEL_MAX), 0, CHANNEL_MAX).astype(np.uint8) if small else pixels
+    return np.clip(np.rint(pixels * CHANNEL_SCALE), 0, CHANNEL_SCALE).astype(np.uint8) if small else pixels
 
 
 def rasterize_many(documents: Iterable[Document], *, processes: int | None = None, dtype: Any = np.float32,

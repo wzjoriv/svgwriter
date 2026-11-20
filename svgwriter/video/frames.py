@@ -7,14 +7,11 @@ from __future__ import annotations
 import math
 import struct
 from dataclasses import dataclass
-from typing import Final, Protocol, TypeAlias, runtime_checkable
+from typing import Protocol, TypeAlias, runtime_checkable
+
+from ._constants import PNG_SIGNATURE, PNG_SIZE_OFFSET, RGBA_CHANNELS, RGBA_DTYPE
 
 __all__ = ["Frame", "FrameData", "RGBAArray", "frame_times", "to_frame"]
-
-PNG_SIGNATURE: Final = b"\x89PNG\r\n\x1a\n"
-PNG_SIZE_OFFSET: Final = 16
-RGBA_CHANNELS: Final = 4
-RGBA_DTYPE: Final = "uint8"
 
 
 @runtime_checkable

@@ -4,10 +4,10 @@ Tokenizer and parser for path data (the ``d`` attribute).
 
 from __future__ import annotations
 
-import re
 from collections.abc import Iterator
 from typing import Final
 
+from ._constants import ARC_FLAG_POSITIONS, ARITY, NUMBER_RE, SEPARATORS
 from .commands import (
     ArcTo,
     ClosePath,
@@ -24,8 +24,6 @@ from .commands import (
 
 __all__ = ["PathSyntaxError", "iter_commands", "parse_path"]
 
-_NUMBER_RE: Final = re.compile(r"[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?")
-_SEPARATORS: Final = " \t\r\n,"
 _COMMANDS: Final[dict[str, type[PathCommand]]] = {
     "M": MoveTo,
     "L": LineTo,
@@ -38,8 +36,6 @@ _COMMANDS: Final[dict[str, type[PathCommand]]] = {
     "A": ArcTo,
     "Z": ClosePath,
 }
-_ARITY: Final = {"M": 2, "L": 2, "H": 1, "V": 1, "C": 6, "S": 4, "Q": 4, "T": 2, "A": 7, "Z": 0}
-_ARC_FLAG_POSITIONS: Final = (3, 4)
 
 
 class PathSyntaxError(ValueError):
@@ -81,7 +77,7 @@ class _Scanner:
         self.pos = 0
 
     def skip(self) -> None:
-        while self.pos < len(self.text) and self.text[self.pos] in _SEPARATORS:
+        while self.pos < len(self.text) and self.text[self.pos] in SEPARATORS:
             self.pos += 1
 
     def at_end(self) -> bool:
@@ -96,7 +92,7 @@ class _Scanner:
 
     def number(self) -> float:
         self.skip()
-        match = _NUMBER_RE.match(self.text, self.pos)
+        match = NUMBER_RE.match(self.text, self.pos)
         if match is None:
             raise PathSyntaxError("expected a number", self.pos)
         self.pos = match.end()
@@ -112,8 +108,8 @@ class _Scanner:
 
 def _arguments(scanner: _Scanner, code: str) -> list[float]:
     args: list[float] = []
-    for index in range(_ARITY[code]):
-        if code == "A" and index in _ARC_FLAG_POSITIONS:
+    for index in range(ARITY[code]):
+        if code == "A" and index in ARC_FLAG_POSITIONS:
             args.append(float(scanner.flag()))
         else:
             args.append(scanner.number())

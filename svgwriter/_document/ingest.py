@@ -4,18 +4,18 @@ Turning figures, ``_repr_svg_`` objects and other documents into elements for ``
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Final, Protocol, TypeVar
+from typing import TYPE_CHECKING, Any, Protocol, TypeVar
 
 import numpy as np
 
 from ..elements.base import Element
 from ..elements.structure import Group
+from ._constants import RASTER_REPRS
 
 if TYPE_CHECKING:
     pass
 
 
-NON_CONTENT: Final = frozenset({"defs", "style", "title", "desc", "metadata"})
 E = TypeVar("E", bound=Element)
 
 
@@ -43,9 +43,6 @@ class SupportsSVG(Protocol):
     """
 
     def _repr_svg_(self) -> str | None: ...
-
-
-RASTER_REPRS: Final = ("_repr_png_", "_repr_jpeg_")
 
 
 def _ingest(item: Any) -> Any:

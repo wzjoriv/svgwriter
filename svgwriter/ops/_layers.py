@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import skia
@@ -14,19 +14,13 @@ import skia
 from ..attributes.length import Length
 from ..attributes.viewbox import Align, MeetOrSlice, PreserveAspectRatio
 from ..transform.matrix import IDENTITY, Matrix
+from ._constants import CHANNEL_MAX, CONTAINERS, LINK_CACHE, NOT_RENDERED
 
 if TYPE_CHECKING:
     from ..elements.base import Element
     from ..elements.structure import Image
 
 __all__ = ["draw_image", "drawable_order", "hidden", "image_matrix", "layers"]
-
-NOT_RENDERED: Final = frozenset({"defs", "clipPath", "mask", "pattern", "marker", "symbol", "linearGradient",
-                                 "radialGradient", "filter", "title", "desc", "metadata", "style", "font",
-                                 "font-face", "glyph", "missing-glyph"})
-CONTAINERS: Final = frozenset({"svg", "g", "a", "switch"})
-CHANNEL_MAX: Final = 255
-LINK_CACHE: Final = 64
 
 
 def drawable_order(root: Element) -> list[Element]:
@@ -377,8 +371,8 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
     canvas.drawImage(picture, 0, 0, skia.SamplingOptions(skia.FilterMode.kLinear), paint)
     canvas.restore()
     if mask is not None:
-        from .render import _paint_svg
+        from ._canvas import paint_svg
 
-        paint_mask(canvas, mask, _paint_svg)
+        paint_mask(canvas, mask, paint_svg)
     canvas.restore()
     canvas.restore()

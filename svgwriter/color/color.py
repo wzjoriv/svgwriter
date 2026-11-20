@@ -5,36 +5,31 @@ RGBA colors with channels in ``0..1`` and the SVG/CSS color syntaxes.
 from __future__ import annotations
 
 import colorsys
-import re
 from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field, replace
 from functools import lru_cache
-from numbers import Real
-from typing import Any, Final, TypeAlias
+from typing import Any, TypeAlias
 
 import numpy as np
 
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._drawable import Drawable, color_swatch
 from .._internal._numbers import format_number
-from .._internal._typing import N, Opacity
+from .._internal._typing import N
+from ._blending import ColorBlending
+from ._channels import ColorChannels
+from ._constants import (
+    CHANNEL_MAX,
+    DEGREES,
+    FUNCTION_RE,
+    HEX_LONG,
+    HEX_SHORT,
+    ICC_RE,
+)
 from ._named import COLOR_ALIASES, NAMED_COLORS
+from ._parsing import color_function
 
 __all__ = ["Color", "ColorLike", "as_color", "clamp", "parse_color"]
-
-CHANNEL_MAX: Final = 255
-PERCENT_MAX: Final = 100.0
-HEX_SHORT: Final = frozenset({3, 4})
-HEX_LONG: Final = frozenset({6, 8})
-DEGREES: Final = 360.0
-SRGB_THRESHOLD: Final = 0.03928
-SRGB_LINEAR_SLOPE: Final = 12.92
-SRGB_OFFSET: Final = 0.055
-SRGB_GAMMA: Final = 2.4
-LUMA_WEIGHTS: Final = (0.2126, 0.7152, 0.0722)
-
-_FUNCTION_RE: Final = re.compile(r"^(rgba?|hsla?)\(\s*(.*?)\s*\)$")
-_ICC_RE: Final = re.compile(r"\s+(icc-color\([^)]*\))\s*$")
 
 
 def clamp(value: N, low: N, high: N) -> N:
@@ -64,7 +59,7 @@ def clamp(value: N, low: N, high: N) -> N:
 
 
 @dataclass(frozen=True)
-class Color(Drawable):
+class Color(ColorChannels, ColorBlending, Drawable):
     """An sRGB color with straight alpha; every channel is a float in ``0..1``.
 
     Colors are immutable, support ``+`` (even mix), ``*`` and ``/`` (scaling),
@@ -210,258 +205,6 @@ class Color(Drawable):
         r, g, b = colorsys.hls_to_rgb((hue % DEGREES) / DEGREES, lightness, saturation)
         return cls(r, g, b, alpha)
 
-    @property
-    def rgb(self) -> tuple[float, float, float]:
-        """The red, green and blue channels as floats in ``0..1``.
-
-        Examples
-        --------
-        >>> from svgwriter.color import Color
-        >>> Color(1, 0.5, 0).rgb
-        (1, 0.5, 0)
-        """
-        return (self.r, self.g, self.b)
-
-    @property
-    def rgba(self) -> tuple[float, float, float, float]:
-        """The red, green, blue and alpha channels as floats in ``0..1``.
-
-        Examples
-        --------
-        >>> from svgwriter.color import Color
-        >>> Color(1, 0.5, 0).rgba
-        (1, 0.5, 0, 1.0)
-        """
-        return (self.r, self.g, self.b, self.a)
-
-    @property
-    def uint8(self) -> tuple[int, int, int, int]:
-        """RGBA as ``0..255`` integers.
-
-        Examples
-        --------
-        >>> from svgwriter.color import Color
-        >>> Color(1, 0.5, 0).uint8
-        (255, 128, 0, 255)
-        """
-        return tuple(round(c * CHANNEL_MAX) for c in self.rgba)  # type: ignore[return-value]
-
-    @property
-    def hex(self) -> str:
-        """The hex form: ``#rrggbb``, or ``#rrggbbaa`` when translucent.
-
-        Examples
-        --------
-        >>> from svgwriter.color import Color
-        >>> Color(1, 0.5, 0).hex
-        '#ff8000'
-        >>> Color(1, 0, 0, 0.5).hex
-        '#ff000080'
-        """
-        r, g, b, a = self.uint8
-        return f"#{r:02x}{g:02x}{b:02x}" + (f"{a:02x}" if a < CHANNEL_MAX else "")
-
-    @property
-    def hsl(self) -> tuple[float, float, float]:
-        """Hue in degrees, saturation and lightness in ``0..1``.
-
-        Examples
-        --------
-        >>> from svgwriter.color import Color
-        >>> Color.parse("blue").hsl
-        (240.0, 1.0, 0.5)
-        """
-        h, light, s = colorsys.rgb_to_hls(*self.rgb)
-        return (h * DEGREES, s, light)
-
-    @property
-    def opaque(self) -> Color:
-        """This color with alpha 1.
-
-        Examples
-        --------
-        >>> from svgwriter.color import Color
-        >>> Color(1, 0, 0, 0.5).opaque.a
-        1.0
-        """
-        return self if self.a == 1.0 else replace(self, a=1.0, name=None)
-
-    @property
-    def luminance(self) -> float:
-        """Relative luminance per WCAG, from 0 (black) to 1 (white).
-
-        Examples
-        --------
-        >>> from svgwriter.color import Color
-        >>> Color.parse("black").luminance
-        0.0
-        >>> round(Color.parse("white").luminance, 6)
-        1.0
-        """
-
-        def linear(v: float) -> float:
-            if v <= SRGB_THRESHOLD:
-                return v / SRGB_LINEAR_SLOPE
-            return ((v + SRGB_OFFSET) / (1 + SRGB_OFFSET)) ** SRGB_GAMMA
-
-        return sum(w * linear(c) for w, c in zip(LUMA_WEIGHTS, self.rgb, strict=True))
-
-    def with_alpha(self, alpha: Opacity) -> Color:
-        """Return the same color with a different alpha.
-
-        Parameters
-        ----------
-        alpha : float
-            New opacity in ``0..1``.
-
-        Returns
-        -------
-        Color
-            A copy with the given alpha.
-
-        Raises
-        ------
-        ValueError
-            If `alpha` is outside ``0..1``.
-
-        Examples
-        --------
-        >>> from svgwriter.color import Color
-        >>> Color.parse("red").with_alpha(0.5).a
-        0.5
-        """
-        return replace(self, a=float(alpha), name=None if alpha != 1 else self.name)
-
-    def lighten(self, amount: Opacity) -> Color:
-        """Raise HSL lightness by an amount.
-
-        Parameters
-        ----------
-        amount : float
-            Change in lightness on a ``0..1`` scale; negative darkens. The result is clamped.
-
-        Returns
-        -------
-        Color
-            The adjusted color.
-
-        See Also
-        --------
-        darken : Lower lightness instead.
-
-        Examples
-        --------
-        >>> from svgwriter.color import Color
-        >>> Color(0.5, 0.5, 0.5).lighten(0.2).hex
-        '#b2b2b2'
-        """
-        h, s, light = self.hsl
-        return Color.from_hsl(h, s, clamp(light + amount, 0.0, 1.0), self.a)
-
-    def darken(self, amount: Opacity) -> Color:
-        """Lower HSL lightness by an amount.
-
-        Parameters
-        ----------
-        amount : float
-            Decrease in lightness on a ``0..1`` scale.
-
-        Returns
-        -------
-        Color
-            The adjusted color.
-
-        See Also
-        --------
-        lighten : Raise lightness instead.
-
-        Examples
-        --------
-        >>> from svgwriter.color import Color
-        >>> Color(0.5, 0.5, 0.5).darken(0.2).hex
-        '#4c4c4c'
-        """
-        return self.lighten(-amount)
-
-    def mix(self, other: ColorLike, weight: Opacity = 0.5) -> Color:
-        """Blend linearly with another color.
-
-        Parameters
-        ----------
-        other : Color or str or sequence of float
-            The color to mix in.
-        weight : float, optional
-            Share of `other` in the result, from 0 to 1. Defaults to 0.5.
-
-        Returns
-        -------
-        Color
-            The blended color; alpha is blended too.
-
-        Raises
-        ------
-        ValueError
-            If `other` is not a valid color.
-
-        Examples
-        --------
-        >>> from svgwriter.color import Color
-        >>> Color.parse("red").mix("blue", 0.25).hex
-        '#bf0040'
-        """
-        other = as_color(other)
-        return Color(*(a + (b - a) * weight for a, b in zip(self.rgba, other.rgba, strict=True)))
-
-    def scale(self, factor: float) -> Color:
-        """Multiply the color channels by a factor.
-
-        Alpha is unchanged and channels are clamped to ``0..1``.
-
-        Parameters
-        ----------
-        factor : float
-            Multiplier; above 1 brightens, below 1 darkens.
-
-        Returns
-        -------
-        Color
-            The scaled color.
-
-        Examples
-        --------
-        >>> from svgwriter.color import Color
-        >>> Color(0.5, 0.2, 0.1).scale(2).hex
-        '#ff6633'
-        """
-        return Color(*(clamp(c * factor, 0.0, 1.0) for c in self.rgb), self.a)
-
-    def __add__(self, other: ColorLike) -> Color:
-        """Mix evenly with another color (``color + other``)."""
-        try:
-            return self.mix(other)
-        except (TypeError, ValueError):
-            return NotImplemented
-
-    def __radd__(self, other: ColorLike) -> Color:
-        try:
-            return as_color(other).mix(self)
-        except (TypeError, ValueError):
-            return NotImplemented
-
-    def __mul__(self, factor: float | Color) -> Color:
-        """Scale by a number, or multiply channel-wise by another color."""
-        if isinstance(factor, Color):
-            return Color(*(a * b for a, b in zip(self.rgba, factor.rgba, strict=True)))
-        if isinstance(factor, Real):
-            return self.scale(float(factor))
-        return NotImplemented
-
-    def __rmul__(self, factor: float) -> Color:
-        return self.scale(float(factor)) if isinstance(factor, Real) else NotImplemented
-
-    def __truediv__(self, divisor: float) -> Color:
-        return self.scale(1.0 / divisor) if isinstance(divisor, Real) else NotImplemented
-
     def __iter__(self) -> Iterator[float]:
         return iter(self.rgba)
 
@@ -593,34 +336,6 @@ def as_color(value: ColorLike) -> Color:
     return Color(*channels)
 
 
-def _channel(token: str) -> float:
-    if token.endswith("%"):
-        return clamp(float(token[:-1]) / PERCENT_MAX, 0.0, 1.0)
-    return clamp(float(token) / CHANNEL_MAX, 0.0, 1.0)
-
-
-def _alpha(token: str) -> float:
-    value = float(token[:-1]) / PERCENT_MAX if token.endswith("%") else float(token)
-    return clamp(value, 0.0, 1.0)
-
-
-def _function(kind: str, body: str, text: str) -> Color:
-    if "/" in body:
-        main, _, alpha_text = body.partition("/")
-        tokens = main.replace(",", " ").split() + [alpha_text.strip()]
-    else:
-        tokens = body.replace(",", " ").split()
-    if len(tokens) not in (3, 4):
-        raise ValueError(f"invalid color: {text!r}")
-    alpha = _alpha(tokens[3]) if len(tokens) == 4 else 1.0
-    if kind.startswith("hsl"):
-        hue = float(tokens[0].removesuffix("deg"))
-        return Color.from_hsl(hue, _alpha(tokens[1]), _alpha(tokens[2]), alpha)
-    if len({t.endswith("%") for t in tokens[:3]}) != 1:
-        raise ValueError(f"mixed number and percent channels: {text!r}")
-    return Color(*(_channel(t) for t in tokens[:3]), alpha)
-
-
 @lru_cache(maxsize=256)
 def parse_color(text: str) -> Color:
     """Parse a color keyword, hex, ``rgb[a](...)`` or ``hsl[a](...)``.
@@ -656,7 +371,7 @@ def parse_color(text: str) -> Color:
     """
     source = text.strip()
     icc = None
-    match = _ICC_RE.search(source)
+    match = ICC_RE.search(source)
     if match:
         icc = match.group(1)
         source = source[: match.start()]
@@ -672,7 +387,7 @@ def parse_color(text: str) -> Color:
             raise ValueError(f"invalid hex color: {text!r}")
         channels = [int(digits[i:i + 2], 16) for i in range(0, len(digits), 2)]
         return replace(Color.from_uint8(*channels), icc=icc)
-    function = _FUNCTION_RE.match(lowered)
+    function = FUNCTION_RE.match(lowered)
     if function:
-        return replace(_function(function.group(1), function.group(2), text), icc=icc)
+        return replace(color_function(function.group(1), function.group(2), text), icc=icc)
     raise ValueError(f"unknown color: {text!r}")

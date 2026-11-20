@@ -47,7 +47,7 @@ def test_family_override_and_bad_data():
 
 
 def _covered(char):
-    font = svg.ops.text.font_for(char, "sans-serif", 20)
+    font = svg.ops._fonts.font_for(char, "sans-serif", 20)
     return font.unicharToGlyph(ord(char)) != 0
 
 
@@ -59,7 +59,7 @@ def test_complex_scripts_are_shaped_when_harfbuzz_is_installed():
     boxes = svg.text(conjunct, x=0, y=40, font_size=32).layout()
     assert len(boxes) == 3
     assert sum(1 for box in boxes if len(box.outline)) < 3
-    assert boxes[-1].advance > 0 and not svg.ops.text.needs_shaping("plain latin")
+    assert boxes[-1].advance > 0 and not svg.ops._shaping.needs_shaping("plain latin")
 
 
 @pytest.mark.parametrize("char", ["你", "こ", "আ", "न"])

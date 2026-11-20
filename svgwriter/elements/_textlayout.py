@@ -232,7 +232,8 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
     >>> len(layout(svg.text("abc", x=0, y=20)))
     3
     """
-    from ..ops.text import ANCHOR_SHIFT, GlyphBox, glyph_shape
+    from ..ops._constants import ANCHOR_SHIFT
+    from ..ops.text import GlyphBox, glyph_shape
 
     if rules is None:
         root = text.root()
@@ -298,7 +299,7 @@ def _language(element: Element) -> str | None:
 def _shaped_runs(chars: list[Char], lists: Any, fonts: dict[int, tuple[Any, ...]],
                  rules: list[Rule]) -> dict[int, tuple[Any, float]]:
     """Shaped ``(outline, advance)`` by character index, for runs in one font that need a shaper."""
-    from ..ops.text import needs_shaping, shape_run
+    from ..ops._shaping import needs_shaping, shape_run
 
     result: dict[int, tuple[Any, float]] = {}
     start = 0
@@ -324,7 +325,7 @@ def _font_segments(chars: list[Char], start: int, stop: int, key: tuple[Any, ...
     """
     import unicodedata
 
-    from ..ops.text import font_for
+    from ..ops._fonts import font_for
 
     segments: list[tuple[int, int]] = []
     current, begin = None, start

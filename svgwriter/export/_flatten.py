@@ -224,7 +224,8 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
     from ..attributes.cascade import rules_of
     from ..elements._geometry import PathOperand
     from ..ops._layers import drawable_order
-    from ..ops.render import _view, document_size, renderable_copy
+    from ..ops._renderable import renderable_copy
+    from ..ops.render import _view, document_size
 
     with document._sized():
         width, height = document_size(document)

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Final, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 from .._internal._typing import Self
 from ..elements.base import Element
@@ -16,7 +16,6 @@ if TYPE_CHECKING:
     pass
 
 
-NON_CONTENT: Final = frozenset({"defs", "style", "title", "desc", "metadata"})
 E = TypeVar("E", bound=Element)
 
 

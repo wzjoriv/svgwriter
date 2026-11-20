@@ -5,16 +5,22 @@ Text outlines and measurement from installed fonts.
 from __future__ import annotations
 
 import os
-import warnings
 from collections.abc import Sequence
 from dataclasses import dataclass, replace
 from functools import lru_cache
-from typing import TYPE_CHECKING, Any, Final, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 import skia
 
 from ..pathdata.data import PathData
 from ..transform.matrix import Matrix
+from ._constants import (
+    ANCHOR_SHIFT,
+    DEFAULT_FAMILY,
+    DEFAULT_FONT_SIZE,
+    GLYPH_CACHE,
+)
+from ._fonts import font_for, registered_typefaces, resolve_font
 from ._skia import from_skia
 
 if TYPE_CHECKING:
@@ -27,35 +33,6 @@ __all__ = [
 
 Anchor = Literal["start", "middle", "end"]
 FontWeight = int | Literal["normal", "bold"]
-
-DEFAULT_FAMILY: Final = "sans-serif"
-DEFAULT_SIZE: Final = 16.0
-NORMAL_WEIGHT: Final = 400
-BOLD_WEIGHT: Final = 700
-NORMAL_WIDTH: Final = 5
-GENERIC_FAMILIES: Final = frozenset({"serif", "sans-serif", "monospace", "cursive", "fantasy"})
-GENERIC_CANDIDATES: Final = {
-    "serif": ("Times New Roman", "Georgia", "Times", "Liberation Serif", "DejaVu Serif", "Noto Serif"),
-    "monospace": ("Consolas", "Courier New", "Menlo", "Monaco", "Liberation Mono", "DejaVu Sans Mono",
-                  "Noto Sans Mono", "Courier"),
-    "cursive": ("Comic Sans MS", "Segoe Script", "Apple Chancery", "URW Chancery L"),
-    "fantasy": ("Impact", "Papyrus", "Luminari"),
-}
-_ANCHOR_SHIFT: Final = {"start": 0.0, "middle": 0.5, "end": 1.0}
-ANCHOR_SHIFT: Final = _ANCHOR_SHIFT
-FONT_CACHE: Final = 64
-GLYPH_CACHE: Final = 8192
-
-
-def _weight(value: FontWeight) -> int:
-    if value == "normal":
-        return NORMAL_WEIGHT
-    if value == "bold":
-        return BOLD_WEIGHT
-    return int(value)
-
-
-_REGISTERED: dict[str, list[Any]] = {}
 
 
 def register_font(source: str | os.PathLike[str] | bytes, family: str | None = None) -> str:
@@ -96,203 +73,11 @@ def register_font(source: str | os.PathLike[str] | bytes, family: str | None = N
     if typeface is None:
         raise ValueError(f"cannot read a font from {source if not isinstance(source, bytes) else 'the data'!r}")
     name = family or typeface.getFamilyName()
-    _REGISTERED.setdefault(name.lower(), []).append(typeface)
-    _font.cache_clear()
+    registered_typefaces.setdefault(name.lower(), []).append(typeface)
+    resolve_font.cache_clear()
     font_for.cache_clear()
     glyph_shape.cache_clear()
     return name
-
-
-def _registered(family: str, weight: int, slant: Any) -> Any:
-    """The registered typeface of *family* closest to the requested weight and slant, if any."""
-    faces = _REGISTERED.get(family.lower())
-    if not faces:
-        return None
-    return min(faces, key=lambda face: (face.fontStyle().slant() != slant, abs(face.fontStyle().weight() - weight)))
-
-
-@lru_cache(maxsize=FONT_CACHE)
-def _font(font_family: str, size: float, weight: FontWeight, italic: bool) -> Any:
-    slant = skia.FontStyle.kItalic_Slant if italic else skia.FontStyle.kUpright_Slant
-    families = [name.strip().strip("'\"") for name in font_family.split(",") if name.strip()]
-    for family in families:
-        face = _registered(family, _weight(weight), slant)
-        if face is not None:
-            return skia.Font(face, size)
-    typeface = None
-    for family in families or [DEFAULT_FAMILY]:
-        for concrete in GENERIC_CANDIDATES.get(family.lower(), ()):
-            match = skia.Typeface(concrete, skia.FontStyle(_weight(weight), NORMAL_WIDTH, slant))
-            if match.getFamilyName().lower() == concrete.lower():
-                return skia.Font(match, size)
-        candidate = skia.Typeface(family, skia.FontStyle(_weight(weight), NORMAL_WIDTH, slant))
-        if family.lower() in GENERIC_FAMILIES or candidate.getFamilyName().lower() == family.lower():
-            typeface = candidate
-            break
-    if typeface is None:
-        typeface = skia.Typeface(families[-1], skia.FontStyle(_weight(weight), NORMAL_WIDTH, slant))
-        warnings.warn(
-            f"font {font_family!r} not found; using {typeface.getFamilyName()!r}",
-            stacklevel=3,
-        )
-    return skia.Font(typeface, size)
-
-
-COMPLEX_SCRIPT_START: Final = 0x0590
-_HB_FONTS: dict[int, Any] = {}
-
-
-def needs_shaping(text: str) -> bool:
-    """Whether *text* has characters from scripts that need a shaper (Hebrew, Arabic, Indic, Thai, ...).
-
-    Always False without ``uharfbuzz``, so text then lays out glyph by glyph.
-    """
-    complex_script = any(COMPLEX_SCRIPT_START <= ord(char) < LATIN_EXTENDED_ADDITIONAL
-                         or CJK_START <= ord(char) < EMOJI_START for char in text)
-    return complex_script and _harfbuzz() is not None
-
-
-LATIN_EXTENDED_ADDITIONAL: Final = 0x1E00
-CJK_START: Final = 0xA800
-EMOJI_START: Final = 0x1F000
-
-
-def _harfbuzz() -> Any:
-    try:
-        import uharfbuzz
-    except ImportError:
-        return None
-    return uharfbuzz
-
-
-def _hb_font(typeface: Any) -> Any:
-    """A HarfBuzz font reading *typeface*'s tables through skia (cached; table bytes kept alive)."""
-    key = typeface.uniqueID()
-    if key not in _HB_FONTS:
-        hb = _harfbuzz()
-        tables: dict[str, bytes] = {}
-
-        def table(face: Any, tag: str, data: Any) -> bytes:
-            raw = typeface.copyTableData(int.from_bytes(tag.encode("latin-1"), "big"))
-            tables[tag] = bytes(raw) if raw is not None else b""
-            return tables[tag]
-
-        face = hb.Face.create_for_tables(table, None)
-        _HB_FONTS[key] = (hb.Font(face), face.upem, tables, table)
-    return _HB_FONTS[key]
-
-
-def shape_run(text: str, font_family: str, size: float, weight: FontWeight = "normal",
-              italic: bool = False, language: str | None = None) -> list[tuple[PathData, float]]:
-    """Shape *text* with HarfBuzz into one ``(outline, advance)`` per character.
-
-    The first character of each cluster carries its glyphs, already placed
-    relative to the run's start; the last character carries the run's whole
-    advance, so per-character layout code places the run as one piece.
-
-    Parameters
-    ----------
-    text : str
-        One run in a single font.
-    font_family : str
-        CSS font family list.
-    size : float
-        Font size in user units.
-    weight : {"normal", "bold"} or int, optional
-        Font weight. Defaults to "normal".
-    italic : bool, optional
-        Use the italic face. Defaults to False.
-
-    Returns
-    -------
-    list of (PathData, float)
-        Outline and advance for each character of *text*.
-
-    Raises
-    ------
-    ImportError
-        If ``uharfbuzz`` (a dependency of svgwriter) is missing from the environment.
-
-    Examples
-    --------
-    >>> from svgwriter.ops.text import needs_shaping
-    >>> needs_shaping("plain latin")
-    False
-    """
-    hb = _harfbuzz()
-    if hb is None:
-        raise ImportError("text shaping needs uharfbuzz; pip install uharfbuzz")
-    first = next((char for char in text if not char.isspace()), text[:1])
-    font = font_for(first, font_family, size, weight, italic, language)
-    shaper, units, _, _ = _hb_font(font.getTypeface())
-    buffer = hb.Buffer()
-    buffer.add_str(text)
-    buffer.guess_segment_properties()
-    hb.shape(shaper, buffer, {})
-    scale = size / units
-    outlines: dict[int, list[PathData]] = {}
-    pen = 0.0
-    for info, position in zip(buffer.glyph_infos, buffer.glyph_positions, strict=True):
-        glyph = font.getPath(info.codepoint)
-        if glyph is not None:
-            placed = from_skia(glyph).transformed(
-                Matrix.translate(pen + position.x_offset * scale, -position.y_offset * scale))
-            outlines.setdefault(info.cluster, []).append(placed)
-        pen += position.x_advance * scale
-    result = []
-    for index in range(len(text)):
-        parts = outlines.get(index, [])
-        shape = sum(parts[1:], parts[0]) if parts else PathData()
-        result.append((shape, pen if index == len(text) - 1 else 0.0))
-    return result
-
-
-@lru_cache(maxsize=GLYPH_CACHE)
-def font_for(char: str, font_family: str, size: float, weight: FontWeight = "normal", italic: bool = False,
-             language: str | None = None) -> Any:
-    """The font for *char*: the requested family when it has the glyph, else a system font that does.
-
-    Like a browser, layout falls back per character, so Devanagari, Bengali,
-    CJK and other scripts render even when the chosen family lacks them.
-
-    Parameters
-    ----------
-    char : str
-        The character (first code point is used).
-    font_family : str
-        CSS font family list.
-    size : float
-        Font size in user units.
-    weight : {"normal", "bold"} or int, optional
-        Font weight. Defaults to "normal".
-    italic : bool, optional
-        Prefer an italic face. Defaults to False.
-    language : str, optional
-        BCP 47 language hint (``"zh"``, ``"ja"``, ...) for choosing among fonts
-        that cover the character. Defaults to None.
-
-    Returns
-    -------
-    skia.Font
-        A font that can draw *char*, or the requested one when nothing can.
-
-    Examples
-    --------
-    >>> from svgwriter.ops.text import font_for
-    >>> font_for("A", "sans-serif", 16).getSize()
-    16.0
-    """
-    font = _font(font_family, size, weight, italic)
-    if not char or font.unicharToGlyph(ord(char[0])):
-        return font
-    slant = skia.FontStyle.kItalic_Slant if italic else skia.FontStyle.kUpright_Slant
-    style = skia.FontStyle(_weight(weight), NORMAL_WIDTH, slant)
-    family = font.getTypeface().getFamilyName()
-    hints = [language] if language else []
-    fallback = skia.FontMgr().matchFamilyStyleCharacter(family, style, hints, ord(char[0]))
-    if fallback is None:
-        return font
-    return skia.Font(skia.Typeface(fallback.getFamilyName(), style), size)
 
 
 @lru_cache(maxsize=GLYPH_CACHE)
@@ -340,7 +125,7 @@ def glyph_shape(char: str, font_family: str, size: float, weight: FontWeight = "
 def text_width(
     text: str,
     font_family: str = DEFAULT_FAMILY,
-    size: float = DEFAULT_SIZE,
+    size: float = DEFAULT_FONT_SIZE,
     *,
     weight: FontWeight = "normal",
     italic: bool = False,
@@ -376,7 +161,7 @@ def text_width(
     True
     """
     if text.isascii():
-        return float(_font(font_family, size, weight, italic).measureText(text))
+        return float(resolve_font(font_family, size, weight, italic).measureText(text))
     boxes = _laid_out(text, font_family, size, weight, italic)
     return float(boxes[-1].x + boxes[-1].advance - boxes[0].x) if boxes else 0.0
 
@@ -393,7 +178,7 @@ def _laid_out(text: str, font_family: str, size: float, weight: FontWeight, ital
 def text_outline(
     text: str,
     font_family: str = DEFAULT_FAMILY,
-    size: float = DEFAULT_SIZE,
+    size: float = DEFAULT_FONT_SIZE,
     *,
     x: float = 0.0,
     y: float = 0.0,
@@ -442,7 +227,7 @@ def text_outline(
     if not boxes:
         return PathData()
     width = boxes[-1].x + boxes[-1].advance - boxes[0].x
-    shift = Matrix.translate(x - _ANCHOR_SHIFT[anchor] * width, y)
+    shift = Matrix.translate(x - ANCHOR_SHIFT[anchor] * width, y)
     return sum((box.placed() for box in boxes), PathData()).transformed(shift)
 
 
@@ -509,7 +294,7 @@ def _pick(values: Sequence[float], index: int) -> float | None:
 def layout_glyphs(
     text: str,
     font_family: str = DEFAULT_FAMILY,
-    size: float = DEFAULT_SIZE,
+    size: float = DEFAULT_FONT_SIZE,
     *,
     x: Sequence[float] = (0.0,),
     y: Sequence[float] = (0.0,),
@@ -559,7 +344,7 @@ def layout_glyphs(
     >>> [(b.char, b.angle) for b in boxes]
     [('a', 90.0), ('b', 90.0)]
     """
-    font = _font(font_family, size, weight, italic)
+    font = resolve_font(font_family, size, weight, italic)
     glyphs = font.textToGlyphs(text)
     advances = font.getWidths(glyphs)
     pen_x, pen_y = (x[0] if x else 0.0), (y[0] if y else 0.0)
@@ -577,7 +362,7 @@ def layout_glyphs(
         boxes.append(GlyphBox(char, data, pen_x, pen_y, angle, float(advance)))
         pen_x += advance
     if boxes and anchor != "start" and len(x) <= 1:
-        shift = _ANCHOR_SHIFT[anchor] * (boxes[-1].x + boxes[-1].advance - boxes[0].x)
+        shift = ANCHOR_SHIFT[anchor] * (boxes[-1].x + boxes[-1].advance - boxes[0].x)
         boxes = [replace(b, x=b.x - shift) for b in boxes]
     return boxes
 
@@ -585,7 +370,7 @@ def layout_glyphs(
 def text_to_path(
     text: str,
     font_family: str = DEFAULT_FAMILY,
-    size: float = DEFAULT_SIZE,
+    size: float = DEFAULT_FONT_SIZE,
     *,
     x: float = 0.0,
     y: float = 0.0,

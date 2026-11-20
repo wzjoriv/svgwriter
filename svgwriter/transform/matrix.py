@@ -10,14 +10,13 @@ from typing import Any, Final, NamedTuple, overload
 
 import numpy as np
 
-from .._internal._constants import DEFAULT_PRECISION
 from .._internal._drawable import Drawable, matrix_picture
-from .._internal._numbers import format_number
 from .._internal._typing import Matrix6
+from ._constants import EPSILON
+from ._matrix_constructors import MatrixConstructors
+from ._matrix_text import MatrixText
 
 __all__ = ["IDENTITY", "Matrix", "Point"]
-
-EPSILON: Final = 1e-12
 
 
 class Point(NamedTuple):
@@ -95,7 +94,7 @@ def _pair(value: object) -> tuple[float, float]:
 
 
 @dataclass(frozen=True, slots=True)
-class Matrix(Drawable):
+class Matrix(MatrixConstructors, MatrixText, Drawable):
     """An affine transform ``[a c e; b d f; 0 0 1]``.
 
     Matrices compose with ``@`` in SVG order: ``m1 @ m2`` applies ``m2``
@@ -126,188 +125,6 @@ class Matrix(Drawable):
     d: float = 1.0
     e: float = 0.0
     f: float = 0.0
-
-    @classmethod
-    def translate(cls, tx: float, ty: float = 0.0) -> Matrix:
-        """Return a translation.
-
-        Parameters
-        ----------
-        tx : float
-            Offset along x.
-        ty : float, optional
-            Offset along y. Defaults to 0.
-
-        Returns
-        -------
-        Matrix
-            The translation matrix.
-
-        Examples
-        --------
-        >>> from svgwriter.transform import Matrix
-        >>> Matrix.translate(3, 4).apply(1, 1)
-        Point(x=4.0, y=5.0)
-        """
-        return cls(1.0, 0.0, 0.0, 1.0, tx, ty)
-
-    @classmethod
-    def scale(cls, sx: float, sy: float | None = None) -> Matrix:
-        """Return a scaling about the origin.
-
-        Parameters
-        ----------
-        sx : float
-            Factor along x.
-        sy : float, optional
-            Factor along y. Defaults to `sx` (uniform scaling).
-
-        Returns
-        -------
-        Matrix
-            The scaling matrix.
-
-        Examples
-        --------
-        >>> from svgwriter.transform import Matrix
-        >>> Matrix.scale(2, 3).apply(1, 1)
-        Point(x=2.0, y=3.0)
-        """
-        return cls(sx, 0.0, 0.0, sx if sy is None else sy, 0.0, 0.0)
-
-    @classmethod
-    def rotate(cls, angle: float, cx: float = 0.0, cy: float = 0.0) -> Matrix:
-        """Return a rotation, optionally about a centre.
-
-        Parameters
-        ----------
-        angle : float
-            Angle in degrees; positive is clockwise in SVG's y-down coordinates.
-        cx, cy : float, optional
-            Centre of rotation. Default to the origin.
-
-        Returns
-        -------
-        Matrix
-            The rotation matrix.
-
-        Examples
-        --------
-        >>> from svgwriter.transform import Matrix
-        >>> p = Matrix.rotate(90, 5, 5).apply(10, 5)
-        >>> round(p.x, 6), round(p.y, 6)
-        (5.0, 10.0)
-        """
-        rad = math.radians(angle)
-        cos, sin = math.cos(rad), math.sin(rad)
-        rotation = cls(cos, sin, -sin, cos, 0.0, 0.0)
-        if cx or cy:
-            return cls.translate(cx, cy) @ rotation @ cls.translate(-cx, -cy)
-        return rotation
-
-    @classmethod
-    def flip_x(cls, x: float = 0.0) -> Matrix:
-        """Return a mirror across a vertical line.
-
-        Parameters
-        ----------
-        x : float, optional
-            The x coordinate of the mirror line. Defaults to 0.
-
-        Returns
-        -------
-        Matrix
-            The reflection matrix.
-
-        See Also
-        --------
-        flip_y : Mirror across a horizontal line.
-
-        Examples
-        --------
-        >>> from svgwriter.transform import Matrix
-        >>> Matrix.flip_x(5).apply(1, 1)
-        Point(x=9.0, y=1.0)
-        """
-        return cls(-1.0, 0.0, 0.0, 1.0, 2.0 * x, 0.0)
-
-    @classmethod
-    def flip_y(cls, y: float = 0.0) -> Matrix:
-        """Return a mirror across a horizontal line.
-
-        Parameters
-        ----------
-        y : float, optional
-            The y coordinate of the mirror line. Defaults to 0.
-
-        Returns
-        -------
-        Matrix
-            The reflection matrix.
-
-        See Also
-        --------
-        flip_x : Mirror across a vertical line.
-
-        Examples
-        --------
-        >>> from svgwriter.transform import Matrix
-        >>> Matrix.flip_y(5).apply(1, 1)
-        Point(x=1.0, y=9.0)
-        """
-        return cls(1.0, 0.0, 0.0, -1.0, 0.0, 2.0 * y)
-
-    @classmethod
-    def skew_x(cls, angle: float) -> Matrix:
-        """Return a horizontal skew.
-
-        Parameters
-        ----------
-        angle : float
-            Skew angle in degrees along the x axis.
-
-        Returns
-        -------
-        Matrix
-            The skew matrix.
-
-        See Also
-        --------
-        skew_y : Vertical skew.
-
-        Examples
-        --------
-        >>> from svgwriter.transform import Matrix
-        >>> str(Matrix.skew_x(30))
-        'skewX(30)'
-        """
-        return cls(1.0, 0.0, math.tan(math.radians(angle)), 1.0, 0.0, 0.0)
-
-    @classmethod
-    def skew_y(cls, angle: float) -> Matrix:
-        """Return a vertical skew.
-
-        Parameters
-        ----------
-        angle : float
-            Skew angle in degrees along the y axis.
-
-        Returns
-        -------
-        Matrix
-            The skew matrix.
-
-        See Also
-        --------
-        skew_x : Horizontal skew.
-
-        Examples
-        --------
-        >>> from svgwriter.transform import Matrix
-        >>> Matrix.skew_y(45).isclose(Matrix(1, 1, 0, 1, 0, 0))
-        True
-        """
-        return cls(1.0, math.tan(math.radians(angle)), 0.0, 1.0, 0.0, 0.0)
 
     @overload
     def __matmul__(self, other: Matrix) -> Matrix: ...
@@ -554,82 +371,8 @@ class Matrix(Drawable):
         """A unit grid before and after this transform (``doc.add(matrix)``, notebook display)."""
         return matrix_picture(self)
 
-    def svg_value(self, precision: int = DEFAULT_PRECISION, *, pivot: tuple[float, float] | None = None,
-                  box: Any = None) -> str:
-        """The shortest ``transform`` text for this matrix.
-
-        Rigid motions become ``rotate(a cx cy)``; otherwise the parts of
-        ``translate rotate skewX scale`` that are not identity, falling back
-        to ``matrix(...)`` when that is shorter.
-
-        Parameters
-        ----------
-        precision : int, optional
-            Maximum number of decimal places. Defaults to the library default precision.
-        pivot : (float, float), optional
-            The element's own pivot (its anchor). When a pure rotation's
-            centre would fall outside *box*, the text becomes
-            ``translate(dx dy) rotate(a px py)`` about this point instead,
-            which is what a person would write. Defaults to None.
-        box : BBox, optional
-            The element's local bounding box, used with *pivot*. Defaults to None.
-
-        Returns
-        -------
-        str
-            Text suitable for a ``transform`` attribute; empty for the identity.
-
-        Examples
-        --------
-        >>> from svgwriter.transform import Matrix
-        >>> Matrix.rotate(90, 5, 5).svg_value()
-        'rotate(90 5 5)'
-        >>> (Matrix.translate(10, 5) @ Matrix.scale(2, 3)).svg_value()
-        'matrix(2 0 0 3 10 5)'
-        >>> Matrix.skew_x(30).svg_value()
-        'skewX(30)'
-        """
-        def num(value: float) -> str:
-            return format_number(value, precision)
-
-        def zero(value: float) -> bool:
-            return num(value) in ("0", "-0")
-
-        tx, ty, angle, skew, sx, sy = self.decompose()
-        if zero(sx - 1) and zero(sy - 1) and zero(skew) and not zero(angle):
-            rotation = Matrix.rotate(angle)
-            denominator = (1 - rotation.a) ** 2 + rotation.b ** 2
-            cx = ((1 - rotation.a) * tx - rotation.b * ty) / denominator
-            cy = (rotation.b * tx + (1 - rotation.a) * ty) / denominator
-            if pivot is not None and box is not None and not _inside(box, cx, cy):
-                px, py = float(pivot[0]), float(pivot[1])
-                moved = self.apply(px, py)
-                dx, dy = moved.x - px, moved.y - py
-                shift = "" if zero(dx) and zero(dy) else (
-                    f"translate({num(dx)}) " if zero(dy) else f"translate({num(dx)} {num(dy)}) ")
-                return f"{shift}rotate({num(angle)} {num(px)} {num(py)})"
-            centre = "" if zero(cx) and zero(cy) else f" {num(cx)} {num(cy)}"
-            return f"rotate({num(angle)}{centre})"
-        parts = []
-        if not (zero(tx) and zero(ty)):
-            parts.append(f"translate({num(tx)})" if zero(ty) else f"translate({num(tx)} {num(ty)})")
-        if not zero(angle):
-            parts.append(f"rotate({num(angle)})")
-        if not zero(skew):
-            parts.append(f"skewX({num(skew)})")
-        if not (zero(sx - 1) and zero(sy - 1)):
-            parts.append(f"scale({num(sx)})" if zero(sx - sy) else f"scale({num(sx)} {num(sy)})")
-        text = " ".join(parts)
-        full = "matrix({})".format(" ".join(num(v) for v in self.as_tuple()))
-        return text if len(text) <= len(full) else full
-
     def __str__(self) -> str:
         return self.svg_value()
-
-
-def _inside(box: Any, x: float, y: float) -> bool:
-    """Whether ``(x, y)`` lies within the box (edges included)."""
-    return box.x <= x <= box.x + box.width and box.y <= y <= box.y + box.height
 
 
 IDENTITY: Final = Matrix()

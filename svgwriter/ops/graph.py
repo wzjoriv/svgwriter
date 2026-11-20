@@ -6,25 +6,27 @@ from __future__ import annotations
 
 import math
 from collections.abc import Callable, Mapping
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
+
+from ._constants import (
+    ARROW_LENGTH,
+    ARROW_SPREAD,
+    EDGE_STROKE,
+    EDGE_WIDTH,
+    EXTRA_HINT,
+    GRAPH_SIZE,
+    LABEL_SIZE,
+    LAYOUTS,
+    MARGIN,
+    NODE_FILL,
+    NODE_RADIUS,
+    NODE_STROKE,
+)
 
 if TYPE_CHECKING:
     from ..elements.structure import Group
 
 __all__ = ["draw_graph", "is_graph"]
-
-EXTRA_HINT: Final = "pip install 'svgwriter[graph]'"
-DEFAULT_SIZE: Final = 400.0
-MARGIN: Final = 30.0
-NODE_RADIUS: Final = 12.0
-NODE_FILL: Final = "#4c9be8"
-NODE_STROKE: Final = "#1e1e1e"
-EDGE_STROKE: Final = "#555555"
-EDGE_WIDTH: Final = 1.5
-LABEL_SIZE: Final = 11.0
-ARROW_LENGTH: Final = 9.0
-ARROW_SPREAD: Final = 25.0
-LAYOUTS: Final = ("spring", "kamada_kawai", "circular", "shell", "spectral", "planar", "random", "spiral")
 
 
 def is_graph(value: object) -> bool:
@@ -61,7 +63,7 @@ def _attribute(data: Mapping[str, Any], key: str, default: Any) -> Any:
     return default if value is None else value
 
 
-def draw_graph(graph: Any, *, layout: str | Mapping[Any, Any] | Callable[..., Any] = "spring", size: float = DEFAULT_SIZE,
+def draw_graph(graph: Any, *, layout: str | Mapping[Any, Any] | Callable[..., Any] = "spring", size: float = GRAPH_SIZE,
                labels: bool = True, node_radius: float = NODE_RADIUS, node_fill: Any = NODE_FILL,
                edge_stroke: Any = EDGE_STROKE, edge_width: float = EDGE_WIDTH, seed: int = 0) -> Group:
     """Draw a networkx graph as SVG elements you can restyle afterwards.

@@ -10,25 +10,12 @@ import shutil
 import subprocess
 import tempfile
 from collections.abc import Iterable, Iterator
-from typing import Final
 
 from .._internal._typing import AnyPath
+from ._constants import FFMPEG, OUTPUTS, STDERR_TAIL
 from .frames import Frame
 
 __all__ = ["FFmpegError", "FFmpegNotFoundError", "encode", "find_ffmpeg", "input_args", "output_args"]
-
-FFMPEG: Final = "ffmpeg"
-STDERR_TAIL: Final = 2000
-EVEN_PAD: Final = "pad=ceil(iw/2)*2:ceil(ih/2)*2"
-GIF_FILTER: Final = "split[a][b];[a]palettegen=reserve_transparent=1[p];[b][p]paletteuse"
-_OUTPUTS: Final = {
-    ".mp4": ["-c:v", "libx264", "-pix_fmt", "yuv420p", "-vf", EVEN_PAD, "-movflags", "+faststart"],
-    ".m4v": ["-c:v", "libx264", "-pix_fmt", "yuv420p", "-vf", EVEN_PAD],
-    ".mov": ["-c:v", "libx264", "-pix_fmt", "yuv420p", "-vf", EVEN_PAD],
-    ".webm": ["-c:v", "libvpx-vp9", "-pix_fmt", "yuva420p"],
-    ".gif": ["-filter_complex", GIF_FILTER, "-loop", "0"],
-    ".apng": ["-plays", "0", "-f", "apng"],
-}
 
 
 class FFmpegNotFoundError(RuntimeError):
@@ -117,7 +104,7 @@ def output_args(path: AnyPath) -> list[str]:
     >>> output_args("clip.xyz")
     []
     """
-    return list(_OUTPUTS.get(os.path.splitext(os.fspath(path))[1].lower(), []))
+    return list(OUTPUTS.get(os.path.splitext(os.fspath(path))[1].lower(), []))
 
 
 def input_args(first: Frame, fps: float) -> list[str]:

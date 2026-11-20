@@ -5,13 +5,13 @@ Rendering a document over time and encoding the frames.
 from __future__ import annotations
 
 import importlib
-import re
 from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import TYPE_CHECKING, Final, TypeAlias
 
 from .._internal._registry import Registry
 from .._internal._typing import AnyPath
+from ._constants import TIME_SCALE, TIMECOUNT_RE
 from ._ffmpeg import encode, find_ffmpeg
 from .frames import Frame, FrameData, frame_times, to_frame
 
@@ -38,8 +38,6 @@ Update: TypeAlias = "Callable[[Document, float], object]"
 """``update(document, seconds)`` changing the document before each frame."""
 
 DEFAULT_FPS: Final = 30.0
-_CLOCK_RE: Final = re.compile(r"^\s*([+-]?\d*\.?\d+)\s*(ms|s|min|h)?\s*$")
-_CLOCK_SCALE: Final = {"ms": 0.001, "s": 1.0, "min": 60.0, "h": 3600.0, None: 1.0}
 
 RENDERERS: Final[Registry[Callable[[Document, float], FrameData]]] = Registry("renderer")
 
@@ -163,10 +161,10 @@ def resolve_renderer(renderer: Renderer | str | None) -> Renderer:
 
 
 def _seconds(value: object) -> float | None:
-    match = _CLOCK_RE.match(str(value))
+    match = TIMECOUNT_RE.match(str(value))
     if match is None:
         return None
-    return float(match.group(1)) * _CLOCK_SCALE[match.group(2)]
+    return float(match.group(1)) * TIME_SCALE[match.group(2)]
 
 
 def animation_duration(document: Document) -> float | None:
