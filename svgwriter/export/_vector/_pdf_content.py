@@ -153,7 +153,7 @@ def _show(painter: _Painter, text: str) -> None:
     if painter.state.clip:
         _clip(run, painter.state.clip)
     painter.shapes.append(run)
-    width = text_width(text, family, size, "bold" if bold else "normal")
+    width = text_width(text, family, size, weight="bold" if bold else "normal", italic=italic)
     painter.text_matrix = painter.text_matrix @ Matrix.translate(width, 0)
 
 
