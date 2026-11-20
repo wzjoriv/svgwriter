@@ -78,4 +78,4 @@ python scripts/dev.py svgwriter conformance    # W3C SVG 1.1 suite (after: svgwr
 python scripts/dev.py svgwriter bench          # timing of the hot paths
 ```
 
-Design decisions live in [DESIGN.md](DESIGN.md), plans in [ROADMAP.md](ROADMAP.md). MIT licensed.
+MIT licensed.
