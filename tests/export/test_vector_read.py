@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import zlib
 
+import numpy as np
 import pytest
 
 import svgwriter as svg
@@ -65,18 +66,22 @@ def test_load_and_save_through_registry(tmp_path) -> None:
         assert len(svg.export.load(target)) == 4
 
 
-def pdf_file(pages: list[bytes], extra: list[bytes] = ()) -> bytes:
+def pdf_file(pages: list[bytes], extra: list[bytes] = (), fonts: dict[str, str] | None = None) -> bytes:
     """A PDF with one Flate-compressed content stream per page and a deliberately broken xref table."""
     objects = [b"<< /Type /Catalog /Pages 2 0 R >>"]
     kids = " ".join(f"{3 + 2 * i} 0 R" for i in range(len(pages))).encode()
     objects.append(b"<< /Type /Pages /Kids [" + kids + b"] /Count %d /MediaBox [0 0 100 50] >>" % len(pages))
     xobject = 3 + 2 * len(pages)
+    font_start = 3 + 2 * len(pages) + len(extra)
+    font_names = list((fonts or {}).items())
+    font_table = b" ".join(b"/%s %d 0 R" % (name.encode(), font_start + i) for i, (name, _) in enumerate(font_names))
     for i, content in enumerate(pages):
         packed = zlib.compress(content)
         objects.append(b"<< /Type /Page /Parent 2 0 R /Contents %d 0 R /Resources << /ExtGState << /Half << /ca 0.5 >> >>"
-                       b" /XObject << /F1 %d 0 R >> >> >>" % (4 + 2 * i, xobject))
+                       b" /XObject << /F1 %d 0 R >> /Font << %s >> >> >>" % (4 + 2 * i, xobject, font_table))
         objects.append(b"<< /Length %d /Filter /FlateDecode >>\nstream\n" % len(packed) + packed + b"\nendstream")
     objects += extra
+    objects += [b"<< /Type /Font /Subtype /Type1 /BaseFont /%s >>" % base.encode() for _, base in font_names]
     body = b"".join(b"%d 0 obj\n" % (n + 1) + obj + b"\nendobj\n" for n, obj in enumerate(objects))
     return b"%PDF-1.4\n" + body + b"xref\n0 1\ngarbage\ntrailer << /Root 1 0 R >>\nstartxref\n12345\n%%EOF\n"
 
@@ -98,7 +103,9 @@ class TestPdf:
     def test_flate_form_state_and_colors(self) -> None:
         doc = find_importer("pdf").function(pdf_file([PAGE_ONE, b"0 g 0 0 5 5 re f"], [FORM]))
         assert (doc.root.get("width"), doc.root.get("height")) == (100, 50)
-        line, square, curve, form = doc
+        line, square, curve, text, form = doc
+        assert text.tag == "text" and text.text_content == "ignored text with re f" and text.get("font-size") == 12
+        assert form.get("clip-path") is not None
         assert line.get("stroke") == "#ff0000" and line.get("stroke-width") == 4 and line.get("stroke-dasharray") == "2 1"
         assert line.bounds().y == pytest.approx(10)
         assert square.get("fill") == "#00ff00" and square.get("opacity") == 0.5
@@ -212,3 +219,23 @@ class TestTikz:
     def test_bad_input(self) -> None:
         with pytest.raises(ValueError, match="not TikZ"):
             find_importer("tikz").function(b"just some text")
+
+
+class TestPdfContent:
+    def test_images_and_clips_round_trip(self) -> None:
+        doc = svg.Document(100, 60)
+        doc.add(svg.Image(np.ones((4, 6, 3)) * [1, 0, 0], 10, 10, 30, 20))
+        doc.circle(70, 30, 20, fill="teal").clip(svg.rect(60, 20, 30, 30))
+        back = find_importer("pdf").function(svg.export.export(doc, "pdf"))
+        tags = [e.tag for e in back.root.iter()]
+        assert "image" in tags and "clipPath" in tags
+        image = next(e for e in back.root.iter() if e.tag == "image")
+        assert image.bounds() == pytest.approx((10, 10, 30, 20), abs=0.5)
+        assert image.rgba()[0, 0].tolist() == pytest.approx([1, 0, 0, 1], abs=0.02)
+
+    def test_text_position_and_font(self) -> None:
+        page = b"BT /F2 20 Tf 1 0 0 1 10 30 Tm (Hi) Tj ET"
+        data = pdf_file([page], [], fonts={"F2": "ABCDEF+Helvetica-Bold"})
+        text = next(e for e in find_importer("pdf").function(data).root.iter() if e.tag == "text")
+        assert text.text_content == "Hi" and text.get("font-size") == 20 and text.get("font-weight") == "bold"
+        assert text.get("font-family") == "Helvetica"

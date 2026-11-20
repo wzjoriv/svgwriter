@@ -16,7 +16,7 @@ from ._reading import BLACK, HAIRLINE, Outline, Shape, cmyk_to_rgb, string_end, 
 
 if TYPE_CHECKING:
     from ...document import Document
-    from ._reading import RGB
+    from ._reading import RGB, Op
 
 __all__ = ["read_pdf"]
 
@@ -296,6 +296,7 @@ class _State:
     join: int = 0
     miter: float = 4.0
     dashes: tuple[float, ...] = ()
+    clip: list[Op] | None = None
 
 
 class _Painter:
@@ -306,8 +307,11 @@ class _Painter:
         self.state = _State(ctm)
         self.saved: list[_State] = []
         self.outline = Outline()
-        self.shapes: list[Shape] = []
+        self.shapes: list[Any] = []
         self.depth = 0
+        self.pending_clip: bool | None = None
+        self.text_matrix = self.line_matrix = Matrix()
+        self.leading = 0.0
 
     def run(self, content: bytes, resources: dict[str, Any]) -> None:
         """Execute *content* with *resources*; malformed operations are skipped."""
@@ -325,19 +329,30 @@ class _Painter:
         table = _resolve(self.objects, resources.get(category)) or {}
         return _resolve(self.objects, table.get(name)) if isinstance(table, dict) else None
 
+    def take(self) -> list[Op]:
+        """The current path, ending it; a pending ``W``/``W*`` makes it (part of) the clip first."""
+        ops = self.outline.take()
+        if self.pending_clip is not None and ops:
+            self.state.clip = _intersect(self.state.clip, ops)
+        self.pending_clip = None
+        return ops
+
     def paint(self, fill: bool, stroke: bool, evenodd: bool) -> None:
         """Paint the current path and start a new one."""
-        state, ops = self.state, self.outline.take()
+        state, ops = self.state, self.take()
         scale = math.sqrt(abs(state.ctm.determinant))
         self.shapes.append(Shape(
             ops, fill=state.fill if fill else None, stroke=state.stroke if stroke else None,
             fill_opacity=state.fill_alpha * state.group_alpha, stroke_opacity=state.stroke_alpha * state.group_alpha,
             evenodd=evenodd, stroke_width=state.line_width * scale if state.line_width > 0 else HAIRLINE,
             linecap=CAPS[state.cap % len(CAPS)], linejoin=JOINS[state.join % len(JOINS)],
-            miter_limit=state.miter, dashes=tuple(d * scale for d in state.dashes)))
+            miter_limit=state.miter, dashes=tuple(d * scale for d in state.dashes), clip=state.clip))
 
     def form(self, xobject: Any, resources: dict[str, Any]) -> None:
         """Draw a Form XObject; a transparency group takes the current fill alpha as its opacity."""
+        if isinstance(xobject, Stream) and xobject.info.get("Subtype") == "Image":
+            draw_image(self, xobject)
+            return
         if not (isinstance(xobject, Stream) and xobject.info.get("Subtype") == "Form") or self.depth >= MAX_DEPTH:
             return
         saved = self.state
@@ -421,6 +436,8 @@ def _setter(attribute: str, convert: Callable[[float], Any]) -> Callable[[_Paint
     return handler
 
 
+from ._pdf_content import CONTENT_HANDLERS, draw_image  # noqa: E402
+
 _HANDLERS: Final[dict[str, Callable[[_Painter, list[Any], dict[str, Any]], None]]] = {
     "m": lambda p, o, _: p.outline.move(p.state.ctm, *_numbers(o, 2)),
     "l": lambda p, o, _: p.outline.line(p.state.ctm, *_numbers(o, 2)),
@@ -429,7 +446,7 @@ _HANDLERS: Final[dict[str, Callable[[_Painter, list[Any], dict[str, Any]], None]
     "y": lambda p, o, _: p.outline.curve(p.state.ctm, *_numbers(o, 4), *_numbers(o, 2)),
     "h": lambda p, o, _: p.outline.close(),
     "re": lambda p, o, _: p.outline.rect(p.state.ctm, *_numbers(o, 4)),
-    "n": lambda p, o, _: p.outline.take(),
+    "n": lambda p, o, _: p.take(),
     **{op: _paint(op) for op in PAINTS},
     "q": lambda p, o, _: p.saved.append(replace(p.state)),
     "Q": lambda p, o, _: _restore(p),
@@ -449,6 +466,46 @@ _HANDLERS: Final[dict[str, Callable[[_Painter, list[Any], dict[str, Any]], None]
     "CS": lambda p, o, _: setattr(p.state, "stroke", BLACK),
     "Do": lambda p, o, r: p.form(p.resource(r, "XObject", o[-1]), r),
 }
+
+
+_HANDLERS.update(CONTENT_HANDLERS)
+
+
+def _intersect(current: list[Op] | None, ops: list[Op]) -> list[Op]:
+    """The clip after intersecting *current* with the outline *ops* (both page-space operations)."""
+    if current is None:
+        return ops
+    from ...ops.boolean import intersection
+    from ._reading import _path
+
+    return _operations_of(intersection(_path(Shape(current)).d, _path(Shape(ops)).d))
+
+
+def _operations_of(data: Any) -> list[Op]:
+    """Path data as ``M``/``L``/``C``/``Z`` operations."""
+    from ...ops._skia import from_skia, to_skia
+    from ...pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
+
+    ops: list[Op] = []
+    here = (0.0, 0.0)
+    for command in from_skia(to_skia(data)):
+        if isinstance(command, MoveTo):
+            here = (command.x, command.y)
+            ops.append(("M", here))
+        elif isinstance(command, LineTo):
+            here = (command.x, command.y)
+            ops.append(("L", here))
+        elif isinstance(command, QuadTo):
+            q, end = (command.x1, command.y1), (command.x, command.y)
+            ops.append(("C", (here[0] + 2 / 3 * (q[0] - here[0]), here[1] + 2 / 3 * (q[1] - here[1]),
+                              end[0] + 2 / 3 * (q[0] - end[0]), end[1] + 2 / 3 * (q[1] - end[1]), *end)))
+            here = end
+        elif isinstance(command, CurveTo):
+            here = (command.x, command.y)
+            ops.append(("C", (command.x1, command.y1, command.x2, command.y2, *here)))
+        elif isinstance(command, ClosePath):
+            ops.append(("Z", ()))
+    return ops
 
 
 def _content(objects: dict[int, Any], page: dict[str, Any]) -> bytes:
@@ -503,9 +560,13 @@ def read_pdf(data: bytes, *, page: int = 0) -> Document:
     ``S s f F f* B B* b b* n``, the state operators ``q Q cm w J j M d`` and
     ``gs`` (``CA``, ``ca``, ``LW``, ``LC``, ``LJ``, ``ML``, ``D``), and the
     colour operators ``rg RG g G k K`` plus ``cs``/``sc``/``scn`` read by
-    operand count as gray, RGB or CMYK. Text (``BT``..``ET``), images,
-    shadings, patterns, clipping (``W``, ``W*``), blend modes and ``/Rotate``
-    are ignored.
+    operand count as gray, RGB or CMYK. Images (JPEG, or Flate-compressed
+    gray/RGB/CMYK samples with soft masks) become ``<image>`` elements,
+    clipping paths (``W``, ``W*``) become ``clip-path``, and text
+    (``BT``..``ET`` with ``Tf``, ``Td``, ``TD``, ``Tm``, ``T*``, ``Tj``,
+    ``TJ``, ``'``, ``"``) becomes ``<text>`` in the font family named by the
+    font, decoded as single-byte text. Shadings, tiling patterns, blend
+    modes and ``/Rotate`` are ignored.
 
     Examples
     --------

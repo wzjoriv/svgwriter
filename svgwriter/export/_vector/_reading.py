@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Any, Final
 
 from ...color.color import Color
 
@@ -72,6 +72,7 @@ class Shape:
     linejoin: str = "miter"
     miter_limit: float = DEFAULT_MITER
     dashes: tuple[float, ...] = field(default=())
+    clip: list[Op] | None = None
 
     @property
     def visible(self) -> bool:
@@ -242,15 +243,21 @@ def _path(shape: Shape) -> Path:
     return path
 
 
-def _merged(shapes: list[Shape]) -> list[Shape]:
-    """Visible shapes, a stroke-only shape folded into the fill-only shape just before it with the same outline."""
-    out: list[Shape] = []
+def _merged(shapes: list[Any]) -> list[Any]:
+    """Visible shapes, a stroke-only shape folded into the fill-only shape just before it with the same outline.
+
+    Ready-made elements (images, text) pass through in paint order.
+    """
+    out: list[Any] = []
     for shape in shapes:
+        if not isinstance(shape, Shape):
+            out.append(shape)
+            continue
         if not shape.visible:
             continue
         previous = out[-1] if out else None
-        if (previous is not None and previous.stroke is None and shape.fill is None
-                and previous.ops == shape.ops):
+        if (isinstance(previous, Shape) and previous.stroke is None and shape.fill is None
+                and previous.ops == shape.ops and previous.clip == shape.clip):
             shape.fill, shape.fill_opacity, shape.evenodd = previous.fill, previous.fill_opacity, previous.evenodd
             out[-1] = shape
             continue
@@ -258,13 +265,13 @@ def _merged(shapes: list[Shape]) -> list[Shape]:
     return out
 
 
-def to_document(shapes: list[Shape], view: tuple[float, float, float, float] | None = None) -> Document:
+def to_document(shapes: list[Any], view: tuple[float, float, float, float] | None = None) -> Document:
     """A document of ``<path>`` elements, sized to *view* or, without one, fitted to the content.
 
     Parameters
     ----------
-    shapes : list of Shape
-        The outlines in paint order.
+    shapes : list of Shape or Element
+        The outlines in paint order; elements (images, text) are added as they are.
     view : tuple of float, optional
         ``(min_x, min_y, width, height)`` of the page in user units. Defaults to None.
 
@@ -298,6 +305,12 @@ def to_document(shapes: list[Shape], view: tuple[float, float, float, float] | N
     else:
         doc = Document(view[2], view[3], view_box=view)
     for shape in _merged(shapes):
-        doc.add(_path(shape))
+        if not isinstance(shape, Shape):
+            doc.add(shape)
+            continue
+        path = _path(shape)
+        if shape.clip:
+            path.clip(_path(Shape(shape.clip)))
+        doc.add(path)
     return doc.fit() if view is None else doc
 

@@ -23,7 +23,7 @@ print(sorted(svg.export.exporters()))
 | SVG | `.svg` | yes | yes | links, `<a>` and ids preserved; `pretty`, `precision` options |
 | SVGZ | `.svgz` | yes | yes | gzip-compressed SVG |
 | PNG, JPEG, WebP | `.png .jpg .jpeg .webp` | yes | yes | `scale`, `size`, `padding`, `background`, `quality`; imports become an `<image>` |
-| PDF | `.pdf` | yes | yes | vector, via skia; `title`, `author`; reads vector paths, `page=` |
+| PDF | `.pdf` | yes | yes | vector, via skia; `title`, `author`; reads paths, images, clips and text, `page=` |
 | TikZ | `.tikz .tex` | yes | yes | `standalone=True` for a compilable document; SVG coordinates kept (`x=1pt, y=-1pt`) |
 | EPS | `.eps .ps` | yes | yes | PostScript has no transparency |
 | DXF | `.dxf` | yes | yes | R12 polylines in mm, layer per colour; reads lines, polylines with bulges, circles, arcs, ellipses |
@@ -38,7 +38,8 @@ first colour and images are skipped with a warning.
 PDF, EPS and TikZ read back as filled and stroked `<path>` elements with solid colours, stroke width,
 dashes, caps, joins and opacity, in points with y pointing down. The PDF reader scans for objects (a
 broken xref table does not matter), inflates `/FlateDecode` streams, follows Form XObjects and `gs`
-alpha, and reads page 1 unless you pass `page=`; text, images, shadings and clipping are skipped. The
+alpha, and reads page 1 unless you pass `page=`; images, clipping paths and text come in as `<image>`,
+`clip-path` and `<text>` (single-byte fonts), while shadings and tiling patterns are skipped. The
 EPS reader is a small PostScript interpreter: paths, `arc`, painting, colours, line styles,
 `gsave`/`grestore`, transforms, and procedures and dictionaries with `def`, honouring
 `%%BoundingBox`; it ignores operators it does not know. The TikZ reader takes `\draw`, `\fill`,
