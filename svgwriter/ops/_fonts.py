@@ -140,7 +140,7 @@ def _scanned_family(code: int, weight: int, italic: bool) -> str | None:
     style = skia.FontStyle(weight, NORMAL_WIDTH, slant)
     installed = [manager.getFamilyName(index) for index in range(manager.countFamilies())]
     for name in dict.fromkeys([*MAC_FALLBACK_FAMILIES, *installed]):
-        typeface = manager.matchFamilyStyle(name, style)
-        if typeface is not None and skia.Font(typeface).unicharToGlyph(code):
-            return typeface.getFamilyName()
+        typeface = skia.Typeface(name, style)
+        if typeface.getFamilyName().lower() == name.lower() and skia.Font(typeface).unicharToGlyph(code):
+            return name
     return None
