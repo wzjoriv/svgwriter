@@ -13,6 +13,7 @@ from ...attributes.length import LengthLike
 from ...pathdata.builder import PathBuilder
 from ...pathdata.data import BBox, PathData
 from ._base import Shape, user_units
+from ._rectbuild import RectConstructors
 
 __all__ = ["Circle", "Ellipse", "Line", "Rect"]
 
@@ -28,7 +29,7 @@ def _ellipse_outline(cx: float, cy: float, rx: float, ry: float) -> PathData:
     )
 
 
-class Rect(Shape, tag="rect"):
+class Rect(RectConstructors, Shape, tag="rect"):
     """``<rect>``: an axis-aligned rectangle with optional rounded corners.
 
     Giving only one of `rx` and `ry` uses it for both, and radii are clamped
@@ -78,119 +79,6 @@ class Rect(Shape, tag="rect"):
     ) -> None:
         super().__init__(**kwargs)
         self.update(x=x, y=y, width=width, height=height, rx=rx, ry=ry)
-
-    @classmethod
-    def square(cls, size: float, *, center: tuple[float, float] | None = None, **kwargs: Any) -> Self:
-        """Create a square of a given side.
-
-        The square sits at the origin unless `center` is given.
-
-        Parameters
-        ----------
-        size : float
-            Side length.
-        center : tuple of float, optional
-            Center ``(x, y)`` of the square. Defaults to None, placing the
-            top-left corner at the origin.
-        **kwargs
-        Presentation, core and other SVG attributes in Python spelling.
-
-        Returns
-        -------
-        Rect
-            The new rectangle.
-
-        See Also
-        --------
-        from_center : Rectangles that are not square.
-
-        Examples
-        --------
-        >>> import svgwriter as svg
-        >>> str(svg.Rect.square(10, center=(10, 10)))
-        '<rect x="5" y="5" width="10" height="10"/>'
-        """
-        if center is not None:
-            return cls.from_center(center, (size, size), **kwargs)
-        return cls(width=size, height=size, **kwargs)
-
-    @classmethod
-    def from_bbox(cls, box: BBox, **kwargs: Any) -> Self:
-        """Create a rectangle covering a bounding box.
-
-        Parameters
-        ----------
-        box : BBox
-            The area to cover.
-        **kwargs
-        Presentation, core and other SVG attributes in Python spelling.
-
-        Returns
-        -------
-        Rect
-            The new rectangle.
-
-        Examples
-        --------
-        >>> import svgwriter as svg
-        >>> str(svg.Rect.from_bbox(svg.BBox(1, 2, 3, 4)))
-        '<rect x="1" y="2" width="3" height="4"/>'
-        """
-        return cls(box.x, box.y, box.width, box.height, **kwargs)
-
-    @classmethod
-    def from_corners(cls, first: tuple[float, float], second: tuple[float, float], **kwargs: Any) -> Self:
-        """Create the rectangle spanned by two opposite corners.
-
-        The corners may be given in any order.
-
-        Parameters
-        ----------
-        first, second : tuple of float
-            Opposite corners ``(x, y)``.
-        **kwargs
-        Presentation, core and other SVG attributes in Python spelling.
-
-        Returns
-        -------
-        Rect
-            The new rectangle.
-
-        Examples
-        --------
-        >>> import svgwriter as svg
-        >>> str(svg.Rect.from_corners((30, 40), (10, 20)))
-        '<rect x="10" y="20" width="20" height="20"/>'
-        """
-        (x0, y0), (x1, y1) = first, second
-        return cls(min(x0, x1), min(y0, y1), abs(x1 - x0), abs(y1 - y0), **kwargs)
-
-    @classmethod
-    def from_center(cls, center: tuple[float, float], size: tuple[float, float], **kwargs: Any) -> Self:
-        """Create a rectangle of a given size around a center point.
-
-        Parameters
-        ----------
-        center : tuple of float
-            Center ``(x, y)``.
-        size : tuple of float
-            ``(width, height)``.
-        **kwargs
-        Presentation, core and other SVG attributes in Python spelling.
-
-        Returns
-        -------
-        Rect
-            The new rectangle.
-
-        Examples
-        --------
-        >>> import svgwriter as svg
-        >>> str(svg.Rect.from_center((50, 50), (20, 10), rx=2))
-        '<rect x="40" y="45" width="20" height="10" rx="2"/>'
-        """
-        (cx, cy), (w, h) = center, size
-        return cls(cx - w / 2, cy - h / 2, w, h, **kwargs)
 
     @property
     def bbox(self) -> BBox:

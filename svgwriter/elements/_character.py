@@ -8,7 +8,8 @@ from collections.abc import Iterator
 from typing import TYPE_CHECKING, Any, NoReturn
 
 from ..attributes.names import PRESENTATION_ATTRIBUTES, svg_name
-from ._textlayout import cluster_bounds, collect, number_list
+from ._clusters import cluster_bounds
+from ._textlayout import collect, number_list
 
 if TYPE_CHECKING:
     from ..ops.text import GlyphBox

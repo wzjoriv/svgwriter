@@ -9,7 +9,8 @@ from typing import TYPE_CHECKING, Any, overload
 
 from ..attributes.names import PRESENTATION_ATTRIBUTES
 from ._character import Character, CharacterRange
-from ._textlayout import cluster_bounds, collect, layout
+from ._clusters import cluster_bounds
+from ._textlayout import collect, layout
 from .base import Element
 
 if TYPE_CHECKING:
