@@ -3,10 +3,10 @@
 A project keeps a module like this one; tooling imports ``logo`` and writes
 SVG variants, PNGs at any size, ``.ico``/``.icns`` and favicons. Output is
 deterministic, so stale assets can be detected by regenerating and comparing.
-Run it as ``python logo.py [OUTPUT_DIR]`` or open ``logo.ipynb`` to see each variant.
+Run it as ``python logo.py`` or open ``logo.ipynb`` to see each variant.
 """
 
-import sys
+import os
 import tempfile
 from pathlib import Path
 from typing import Literal
@@ -76,14 +76,13 @@ logo(mono=True)
 
 # %% [markdown]
 # Every asset a project usually needs comes from that one definition: SVG variants, PNGs at any size,
-# a multi-size `.ico`, an `.icns` and an apple-touch icon. Pass a folder as the first argument to choose
-# where they go. This cell only runs when the file is executed, not when it is imported
+# a multi-size `.ico`, an `.icns` and an apple-touch icon. Set `SVGWRITER_EXAMPLES_OUT` to choose
+# the folder. This cell only runs when the file is executed, not when it is imported
 # (the devkit `logo` tool imports `logo` from here).
 
 # %%
 if __name__ == "__main__":
-    args = sys.argv[1:2]
-    out = Path(args[0]) if args and not args[0].startswith("-") else Path(tempfile.mkdtemp(prefix="svgwriter-"))
+    out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
     out.mkdir(parents=True, exist_ok=True)
     for theme in THEMES:
         logo(theme).save(out / f"logo-{theme}.svg")

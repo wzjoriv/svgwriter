@@ -1,9 +1,9 @@
 """Filter primitives: shadows, noise, lighting and color matrices.
 
-Run it as ``python filter_effects.py [OUTPUT_DIR]`` or open ``filter_effects.ipynb`` to see each step.
+Run it as ``python filter_effects.py`` or open ``filter_effects.ipynb`` to see each step.
 """
 
-import sys
+import os
 import tempfile
 from pathlib import Path
 
@@ -61,10 +61,10 @@ doc.add(svg.Text("grey", x=100, y=300, font_size=64, fill="purple", filter=grey)
 doc
 
 # %% [markdown]
-# Save it with an XML doctype. Pass a folder as the first argument to choose where the file goes.
+# Save it with an XML doctype. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
 
 # %%
-args = sys.argv[1:2]
-out = Path(args[0]) if args and not args[0].startswith("-") else Path(tempfile.mkdtemp(prefix="svgwriter-"))
+out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
+out.mkdir(parents=True, exist_ok=True)
 doc.save(out / "filter_effects.svg", doctype=True)
 print("saved filter_effects.svg")
