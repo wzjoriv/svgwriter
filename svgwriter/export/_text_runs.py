@@ -1,0 +1,133 @@
+"""
+Text kept as text for vector exports: laid-out runs with their font, colour and page placement.
+"""
+
+from __future__ import annotations
+
+import math
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Any, Final
+
+from ..transform.matrix import Matrix
+
+if TYPE_CHECKING:
+    from ..color.color import Color
+    from ..document import Document
+    from ..elements.base import Element
+
+__all__ = ["TextRun", "text_runs"]
+
+JOIN_TOLERANCE: Final = 0.01
+DEFAULT_SIZE: Final = 16.0
+
+
+@dataclass
+class TextRun:
+    """One run of characters sharing an element, baseline and rotation.
+
+    Attributes
+    ----------
+    text : str
+        The characters.
+    matrix : Matrix
+        Maps the run's frame (origin at the start of the baseline, x along it, y down) to the page.
+    size : float
+        Font size in the run's frame.
+    family : str
+        CSS font family list.
+    bold, italic : bool
+        Weight and style.
+    fill : Color or None
+        Text color; None for unfilled text.
+    opacity : float
+        Fill opacity with group opacity included.
+    width : float
+        Advance width of the run.
+    """
+
+    text: str
+    matrix: Matrix
+    size: float
+    family: str
+    bold: bool
+    italic: bool
+    fill: Color | None
+    opacity: float
+    width: float
+
+
+def _font(source: Element, rules: list[Any]) -> tuple[str, float, bool, bool]:
+    from ..attributes.cascade import computed
+    from ..elements._textlayout import _font_size, _font_weight
+
+    family = str(computed(source, "font-family", "sans-serif", rules))
+    size = _font_size(computed(source, "font-size", DEFAULT_SIZE, rules))
+    weight = _font_weight(computed(source, "font-weight", "normal", rules))
+    italic = str(computed(source, "font-style", "", rules)) in ("italic", "oblique")
+    return family, size, weight >= 600, italic
+
+
+def text_runs(document: Document) -> list[TextRun]:
+    """Every ``<text>`` of *document* as page-placed runs, in paint order.
+
+    Parameters
+    ----------
+    document : Document
+        The document.
+
+    Returns
+    -------
+    list of TextRun
+        The runs; characters with their own rotation or position start a new run.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> doc = svg.Document(100, 40)
+    >>> _ = doc.text("Hello", x=10, y=30, font_size=20)
+    >>> [(run.text, run.size, round(run.matrix.e, 1)) for run in text_runs(doc)]
+    [('Hello', 20.0, 10.0)]
+    """
+    from ..attributes.cascade import rules_of
+    from ..elements.text import Text
+    from ..ops._layers import _ancestry
+    from ..ops.render import _view, document_size
+    from ._flatten import _number, _paint
+
+    runs: list[TextRun] = []
+    with document._sized():
+        width, height = document_size(document)
+        view = _view(document, width, height)
+        root = document.root
+        rules = rules_of(root)
+        for text in [e for e in root.iter() if isinstance(e, Text)]:
+            if str(text.get("display", "")) == "none":
+                continue
+            ancestry, opacity = _ancestry(text, root)
+            page = view @ ancestry
+            current: list[Any] = []
+            for box in text.layout():
+                if current and not _continues(current[-1], box):
+                    runs.append(_run(current, page, opacity, rules, _font, _paint, _number))
+                    current = []
+                if box.char.strip() or current:
+                    current.append(box)
+            if current:
+                runs.append(_run(current, page, opacity, rules, _font, _paint, _number))
+    return [run for run in runs if run.text.strip()]
+
+
+def _continues(previous: Any, box: Any) -> bool:
+    return (box.source is previous.source and box.angle == previous.angle == 0
+            and abs(box.y - previous.y) < JOIN_TOLERANCE
+            and abs(box.x - (previous.x + previous.advance)) < JOIN_TOLERANCE)
+
+
+def _run(boxes: list[Any], page: Matrix, opacity: float, rules: list[Any], font: Any, paint: Any, number: Any) -> TextRun:
+    first, last = boxes[0], boxes[-1]
+    family, size, bold, italic = font(first.source, rules)
+    frame = page @ Matrix.translate(first.x, first.y) @ Matrix.rotate(first.angle)
+    fill = paint(first.source, "fill", "black", rules)
+    alpha = opacity * number(first.source, "fill-opacity", 1.0, rules) * number(first.source, "opacity", 1.0, rules)
+    width = last.x + last.advance - first.x if first.angle == 0 else math.fsum(b.advance for b in boxes)
+    return TextRun("".join(b.char for b in boxes).rstrip(), frame, size, family, bold, italic, fill, alpha, width)

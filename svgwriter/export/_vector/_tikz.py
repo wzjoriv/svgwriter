@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import math
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Any, Final
 
 from ..._internal._numbers import format_number
 from .._flatten import Item, Shading, flatten, to_cubic
@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 __all__ = ["to_tikz"]
 
 PRECISION: Final = 3
+ANGLE_EPSILON: Final = 1e-6
 CAPS: Final = {"butt": "butt", "round": "round", "square": "rect"}
 JOINS: Final = {"miter": "miter", "round": "round", "bevel": "bevel"}
 
@@ -41,6 +42,48 @@ def _path(item: Item) -> str:
     return " ".join(parts)
 
 
+LATEX_SPECIALS: Final = {
+    "\\": r"\textbackslash{}", "{": r"\{", "}": r"\}", "#": r"\#", "$": r"\$", "%": r"\%", "&": r"\&",
+    "_": r"\_", "^": r"\textasciicircum{}", "~": r"\textasciitilde{}",
+}
+LINE_SPREAD: Final = 1.2
+MONOSPACE_WORDS: Final = ("mono", "courier", "consolas", "menlo")
+SERIF_WORDS: Final = ("times", "georgia", "garamond")
+
+
+def _escape(text: str) -> str:
+    return "".join(LATEX_SPECIALS.get(char, char) for char in text)
+
+
+def _family(family: str) -> str:
+    """The LaTeX family switch for a CSS family list: monospace, serif, else sans-serif."""
+    names = family.lower()
+    if any(word in names for word in MONOSPACE_WORDS):
+        return r"\ttfamily"
+    if any(word in names for word in SERIF_WORDS) or ("serif" in names and "sans" not in names):
+        return r"\rmfamily"
+    return r"\sffamily"
+
+
+def _node(run: Any, color: Callable[[Color], str]) -> str:
+    """A text run as a ``\\node`` anchored at its baseline start, sized, coloured and turned like the SVG."""
+    matrix = run.matrix
+    size = run.size * math.sqrt(abs(matrix.determinant))
+    angle = math.degrees(math.atan2(matrix.b, matrix.a))
+    font = f"\\fontsize{{{_n(size)}}}{{{_n(size * LINE_SPREAD)}}}\\selectfont"
+    font += _family(run.family)
+    font += "\\bfseries" if run.bold else ""
+    font += "\\itshape" if run.italic else ""
+    options = ["anchor=base west", "inner sep=0pt", "outer sep=0pt", f"font={font}"]
+    if run.fill is not None:
+        options.append(f"text={color(run.fill)}")
+    if run.opacity < 1:
+        options.append(f"text opacity={_n(run.opacity)}")
+    if abs(angle) > ANGLE_EPSILON:
+        options.append(f"rotate={_n(-angle)}")
+    return f"  \\node[{', '.join(options)}] at ({_n(matrix.e)},{_n(matrix.f)}) {{{_escape(run.text)}}};"
+
+
 def _shading_options(shading: Shading, color: Callable[[Color], str]) -> list[str]:
     """TikZ shading keys for a gradient: axis shading at the gradient's angle, or radial; stretched over the shape."""
     first, last = shading.stops[0][1], shading.stops[-1][1]
@@ -56,10 +99,11 @@ def _shading_options(shading: Shading, color: Callable[[Color], str]) -> list[st
     return [*keys, f"shading angle={_n(angle)}"]
 
 
-def to_tikz(document: Document, *, standalone: bool = False) -> str:
+def to_tikz(document: Document, *, standalone: bool = False, text: bool = True) -> str:
     """A ``tikzpicture`` in the document's user units (1 unit = 1 pt, y down as in SVG).
 
-    The document is flattened first, so gradients become solid colours and images are skipped.
+    The document is flattened first: gradients become TikZ shadings and images are skipped. Text is
+    written as ``\\node`` commands typeset by LaTeX (``text=False`` writes glyph outlines instead).
 
     Parameters
     ----------
@@ -67,6 +111,8 @@ def to_tikz(document: Document, *, standalone: bool = False) -> str:
         The drawing.
     standalone : bool, optional
         Wrap in a compilable ``standalone`` LaTeX document. Defaults to False.
+    text : bool, optional
+        Keep text as LaTeX text; False draws the exact glyph outlines. Defaults to True.
 
     Returns
     -------
@@ -86,7 +132,7 @@ def to_tikz(document: Document, *, standalone: bool = False) -> str:
     >>> "begin{tikzpicture}" in to_tikz(doc)
     True
     """
-    scene = flatten(document)
+    scene = flatten(document, text=text)
     colors: dict[tuple[int, int, int], str] = {}
 
     def color(value: Color) -> str:
@@ -122,6 +168,7 @@ def to_tikz(document: Document, *, standalone: bool = False) -> str:
         if not options:
             continue
         body.append(f"  \\path[{', '.join(options)}] {_path(item)};")
+    body += [_node(run, color) for run in scene.texts]
     definitions = [f"\\definecolor{{{name}}}{{RGB}}{{{r},{g},{b}}}" for (r, g, b), name in colors.items()]
     picture = "\n".join([
         *definitions,

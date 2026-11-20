@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import math
 import warnings
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Final
 
 from ..attributes.cascade import computed
@@ -89,6 +89,8 @@ class Scene:
         Page size in user units.
     items : list of Item
         Painted paths, first painted first.
+    texts : list of TextRun
+        Text runs when flattening with ``text=True``; empty otherwise.
     skipped : list of str
         Descriptions of elements that could not be represented.
 
@@ -109,6 +111,7 @@ class Scene:
     height: float
     items: list[Item]
     skipped: list[str]
+    texts: list[Any] = field(default_factory=list)
 
 
 def to_cubic(data: PathData) -> list[tuple[str, tuple[float, ...]]]:
@@ -273,13 +276,16 @@ def _hidden(leaf: Element, root: Element) -> bool:
     return str(computed(leaf, "visibility", "visible")) in ("hidden", "collapse")
 
 
-def flatten(document: Document, *, handled: frozenset[str] = frozenset()) -> Scene:
+def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: bool = False) -> Scene:
     """Reduce *document* to :class:`Item` paths in its user space (``viewBox`` applied).
 
     Parameters
     ----------
     document : Document
         The document to flatten.
+    text : bool, optional
+        Leave ``<text>`` out of the outlines and return it as :attr:`Scene.texts`
+        runs, for formats that write real text. Defaults to False.
     handled : frozenset of str, optional
         Tags the caller draws itself (``{"image"}`` for formats that embed
         pictures), left out of the warning. Defaults to an empty set.
@@ -321,7 +327,13 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset()) -> Sce
     with document._sized():
         width, height = document_size(document)
         view = _view(document, width, height)
-        root = renderable_copy(document.root)
+        source = document.root
+        if text:
+            source = source.clone()
+            for element in [e for e in source.iter() if e.tag == "text"]:
+                if element.parent is not None:
+                    element.parent.remove(element)
+        root = renderable_copy(source)
         _expand_patterns(root)
     rules = rules_of(root)
     items: list[Item] = []
@@ -361,7 +373,12 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset()) -> Sce
     if reported:
         warnings.warn(f"not representable in this format, skipped: {', '.join(sorted(set(reported)))}",
                       stacklevel=3)
-    return Scene(width, height, items, skipped)
+    texts = []
+    if text:
+        from ._text_runs import text_runs
+
+        texts = text_runs(document)
+    return Scene(width, height, items, skipped, texts)
 
 
 def _expand_patterns(root: Element) -> None:
