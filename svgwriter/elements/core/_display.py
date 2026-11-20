@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from ..._internal._drawable import ascii_markup
 from ..._internal._typing import AnyPath
 from ...attributes.protocols import TextSink
 from ...attributes.values import format_value
@@ -92,10 +93,10 @@ class Displayable:
     def _repr_svg_(self) -> str | None:
         """Jupyter display: the element alone in a fitted ``<svg>``; None (text repr) when nothing is drawn."""
         if self.tag == "svg":
-            return self.to_string(xml_declaration=False)
+            return ascii_markup(self.to_string(xml_declaration=False))
         if not self._draws_something():
             return None  # type: ignore[return-value]
-        return self._preview().to_string(xml_declaration=False)
+        return ascii_markup(self._preview().to_string(xml_declaration=False))
 
     def _repr_html_(self) -> str | None:
         """Jupyter display as inline SVG in the page, so text stays selectable and copyable."""

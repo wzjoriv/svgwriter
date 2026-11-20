@@ -215,7 +215,7 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
     >>> len(layout(svg.text("abc", x=0, y=20)))
     3
     """
-    from ..._internal._constants import ANCHOR_SHIFT
+    from ..._internal._constants import ANCHOR_SHIFT, RTL_ANCHORS
     from ...ops.text import GlyphBox, glyph_shape
 
     if rules is None:
@@ -250,6 +250,8 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
         if start == stop:
             continue
         anchor = str(computed(boxes[start].source, "text-anchor", "start", rules))
+        if str(computed(boxes[start].source, "direction", "ltr", rules)) == "rtl":
+            anchor = RTL_ANCHORS.get(anchor, anchor)
         shift = ANCHOR_SHIFT.get(anchor, 0.0) * (boxes[stop - 1].x + boxes[stop - 1].advance - boxes[start].x)
         for box in boxes[start:stop]:
             box.x -= shift
