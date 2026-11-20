@@ -52,6 +52,20 @@ COLOR_ATTRIBUTES: Final = frozenset({*COLOR_OPACITY, "color", "lighting-color"})
 _XML_NAME_RE: Final = re.compile(r"^[A-Za-z_][\w.\-]*$")
 
 
+def _color_column(value: Any) -> list[Color]:
+    """One color, a list of colors, or an ``(n, 3|4)`` array of 0-1 floats, as a list of colors."""
+    import numpy as np
+
+    if isinstance(value, Color):
+        return [value]
+    if isinstance(value, np.ndarray) and value.ndim == 2:
+        return [as_color(tuple(float(v) for v in row)) for row in value]
+    items = list(value)
+    if items and all(isinstance(v, (int, float, np.floating)) for v in items):
+        return [as_color(tuple(float(v) for v in items))]
+    return [as_color(item) for item in items]
+
+
 def _check_paint(key: str, text: str) -> None:
     """Raise a helpful ``ValueError`` when *text* is not a color or paint SVG understands."""
     from ..color._named import NAMED_COLORS
@@ -244,6 +258,68 @@ class Element(Queryable, Displayable, Composable):
         Element.__init__(obj)
         obj.attributes.update(attributes)
         return obj
+
+    @classmethod
+    def many(cls: type[E], **columns: Any) -> list[E]:
+        """Build many elements at once from columns that broadcast like numpy.
+
+        Each keyword is an attribute in Python spelling; a scalar applies to
+        every element and an array gives one value per element. Colors may be
+        one color, a list of colors or an ``(n, 3|4)`` array of 0-1 floats.
+
+        Parameters
+        ----------
+        **columns
+            Attribute name to scalar or sequence.
+
+        Returns
+        -------
+        list of Element
+            The new elements, ready for ``doc.group(*elements)`` or ``doc.add_all``.
+
+        Raises
+        ------
+        ValueError
+            If the columns do not broadcast to one length.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> import svgwriter as svg
+        >>> dots = svg.Circle.many(cx=np.arange(3) * 10, cy=5, r=2, fill=["red", "green", "blue"])
+        >>> [str(d) for d in dots][1]
+        '<circle cx="10" cy="5" r="2" fill="green"/>'
+        """
+        import numpy as np
+
+        prepared: dict[str, Any] = {}
+        for name, value in columns.items():
+            key = svg_name(name)
+            if key in COLOR_ATTRIBUTES and isinstance(value, (list, tuple)) and all(isinstance(v, str) for v in value):
+                for text in value:
+                    _check_paint(key, text)
+                prepared[key] = list(value)
+                continue
+            if key in COLOR_ATTRIBUTES and not isinstance(value, str):
+                colors = _color_column(value)
+                prepared[key] = [color.opaque.hex for color in colors] if len(colors) > 1 else colors[0].opaque.hex
+                if key in COLOR_OPACITY and any(color.a < 1 for color in colors):
+                    alphas = [color.a for color in colors]
+                    prepared[COLOR_OPACITY[key]] = alphas if len(alphas) > 1 else alphas[0]
+                continue
+            prepared[key] = value
+        lengths = {len(v) for v in prepared.values() if isinstance(v, (list, tuple, np.ndarray))}
+        if len(lengths) > 1:
+            raise ValueError(f"columns have different lengths {sorted(lengths)}; scalars broadcast, arrays must match")
+        count = lengths.pop() if lengths else 1
+        rows = []
+        for index in range(count):
+            row = {}
+            for key, value in prepared.items():
+                item = value[index] if isinstance(value, (list, tuple, np.ndarray)) else value
+                row[key] = item.item() if isinstance(item, np.generic) else item
+            rows.append(cls.from_attributes(row))
+        return rows
 
     @property
     def id(self) -> str | None:

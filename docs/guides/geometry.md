@@ -126,6 +126,19 @@ A length times a length is an area and raises; `em`, `ex` and `%` only combine w
 converting them needs a font size or a reference length. `dpi=` on raster exports sets pixels per inch
 (96 is `scale=1`).
 
+## Many elements from arrays
+
+`Class.many(**columns)` builds many elements in one call; scalars apply to all and arrays give one
+value each, like numpy broadcasting. Colors can be names, one color, or an `(n, 3|4)` array:
+
+```python
+import numpy as np
+
+xs = np.linspace(0, 100, 50)
+dots = svg.Circle.many(cx=xs, cy=50 + 20 * np.sin(xs / 10), r=2, fill=np.random.rand(50, 3))
+cloud = svg.group(*dots)
+```
+
 ## Matrices and numpy
 
 ```python
