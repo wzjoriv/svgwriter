@@ -39,11 +39,13 @@ office = [
     "openpyxl>=3.1",
     "pillow>=10",
 ]
+plot = [
+    "matplotlib>=3.7",
+]
 test = [
-    "svgwriter[office]",
+    "svgwriter[office,plot]",
     "pytest>=7",
     "ezdxf>=1.0",
-    "matplotlib>=3.7",
     "pillow>=10",
     "fonttools>=4.40",
 ]

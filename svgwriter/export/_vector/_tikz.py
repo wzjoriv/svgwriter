@@ -4,10 +4,12 @@ TikZ output from a flattened scene.
 
 from __future__ import annotations
 
+import math
+from collections.abc import Callable
 from typing import TYPE_CHECKING, Final
 
 from ..._internal._numbers import format_number
-from .._flatten import Item, flatten, to_cubic
+from .._flatten import Item, Shading, flatten, to_cubic
 
 if TYPE_CHECKING:
     from ...color.color import Color
@@ -37,6 +39,21 @@ def _path(item: Item) -> str:
         else:
             parts.append("-- cycle")
     return " ".join(parts)
+
+
+def _shading_options(shading: Shading, color: Callable[[Color], str]) -> list[str]:
+    """TikZ shading keys for a gradient: axis shading at the gradient's angle, or radial; stretched over the shape."""
+    first, last = shading.stops[0][1], shading.stops[-1][1]
+    if shading.kind == "radial":
+        return ["shading=radial", f"inner color={color(first)}", f"outer color={color(last)}"]
+    x1, y1, x2, y2 = shading.coords
+    start, end = shading.matrix.apply(x1, y1), shading.matrix.apply(x2, y2)
+    dx, dy = end.x - start.x, -(end.y - start.y)
+    angle = math.degrees(math.atan2(dx, -dy))
+    keys = ["shading=axis", f"top color={color(first)}", f"bottom color={color(last)}"]
+    if len(shading.stops) > 2:
+        keys.append(f"middle color={color(shading.stops[len(shading.stops) // 2][1])}")
+    return [*keys, f"shading angle={_n(angle)}"]
 
 
 def to_tikz(document: Document, *, standalone: bool = False) -> str:
@@ -83,7 +100,11 @@ def to_tikz(document: Document, *, standalone: bool = False) -> str:
         if not len(item.data):
             continue
         options = []
-        if item.fill is not None:
+        if item.shading is not None:
+            options += _shading_options(item.shading, color)
+            if item.fill_opacity < 1:
+                options.append(f"fill opacity={_n(item.fill_opacity)}")
+        elif item.fill is not None:
             options.append(f"fill={color(item.fill)}")
             if item.fill_opacity < 1:
                 options.append(f"fill opacity={_n(item.fill_opacity)}")

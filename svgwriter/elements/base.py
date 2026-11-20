@@ -66,6 +66,13 @@ def _color_column(value: Any) -> list[Color]:
     return [as_color(item) for item in items]
 
 
+def _standard_name(text: str) -> str:
+    """An svgwriter color alias (``"masooma"``) as the SVG keyword it stands for; other text unchanged."""
+    from ..color._named import COLOR_ALIASES
+
+    return COLOR_ALIASES.get(text.strip().lower(), text)
+
+
 def _check_paint(key: str, text: str) -> None:
     """Raise a helpful ``ValueError`` when *text* is not a color or paint SVG understands."""
     from ..color._named import NAMED_COLORS
@@ -470,6 +477,7 @@ class Element(Queryable, Displayable, Composable):
         if key in COLOR_ATTRIBUTES and isinstance(value, str):
             if not (key == "fill" and self.category is Category.ANIMATION):
                 _check_paint(key, value)
+                value = _standard_name(value)
         elif key in COLOR_ATTRIBUTES and not isinstance(value, Element) and not hasattr(value, "svg_value"):
             value = as_color(value)
         if isinstance(value, Color) and value.a < 1.0 and key in COLOR_ATTRIBUTES:

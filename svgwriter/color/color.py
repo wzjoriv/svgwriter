@@ -18,7 +18,7 @@ from .._internal._constants import DEFAULT_PRECISION
 from .._internal._drawable import Drawable, color_swatch
 from .._internal._numbers import format_number
 from .._internal._typing import N, Opacity
-from ._named import NAMED_COLORS
+from ._named import COLOR_ALIASES, NAMED_COLORS
 
 __all__ = ["Color", "ColorLike", "as_color", "clamp", "parse_color"]
 
@@ -660,7 +660,7 @@ def parse_color(text: str) -> Color:
     if match:
         icc = match.group(1)
         source = source[: match.start()]
-    lowered = source.lower()
+    lowered = COLOR_ALIASES.get(source.lower(), source.lower())
     if lowered in NAMED_COLORS:
         r, g, b = NAMED_COLORS[lowered]
         return replace(Color.from_uint8(r, g, b), icc=icc, name=lowered)

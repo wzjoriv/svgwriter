@@ -22,6 +22,7 @@ if TYPE_CHECKING:
 
 __all__ = ["Item", "Scene", "flatten", "to_cubic"]
 
+PERCENT: Final = 100.0
 NONE: Final = "none"
 DEFAULT_MITER: Final = 4.0
 
@@ -75,6 +76,7 @@ class Item:
     linejoin: str
     miter_limit: float
     dashes: tuple[float, ...]
+    shading: Shading | None = None
 
 
 @dataclass
@@ -177,6 +179,68 @@ def _paint(element: Element, name: str, default: str, rules: list) -> Color | No
         return as_color(value if isinstance(value, Color) else text)
     except (TypeError, ValueError):
         return None
+
+
+@dataclass
+class Shading:
+    """A gradient fill in gradient space plus the matrix that maps it to the page.
+
+    Attributes
+    ----------
+    kind : {"axial", "radial"}
+        Linear or radial gradient.
+    coords : tuple of float
+        ``(x1, y1, x2, y2)`` for axial, ``(fx, fy, 0, cx, cy, r)`` for radial, in gradient space.
+    stops : list of (float, Color)
+        Offsets in ``0..1`` with their colors (stop opacity folded into nothing; PostScript has none).
+    matrix : Matrix
+        Gradient space to page coordinates (bounding-box units, ``gradientTransform`` and the element's
+        transforms included).
+    """
+
+    kind: str
+    coords: tuple[float, ...]
+    stops: list[tuple[float, Color]]
+    matrix: Matrix
+
+
+def _shading(element: Element, to_page: Matrix, rules: list) -> Shading | None:
+    """The gradient behind ``fill``, when it is a linear or radial gradient with stops."""
+    from ..elements._geometry import resolve
+
+    value = computed(element, "fill", "black", rules)
+    if not str(getattr(value, "svg_value", lambda: value)()).startswith("url("):
+        return None
+    server = resolve(element, value)
+    if server is None or server.tag not in ("linearGradient", "radialGradient"):
+        return None
+    stops = [(min(max(float(Length.parse(stop.get("offset", 0)).value) / (PERCENT if "%" in str(stop.get("offset", ""))
+              else 1.0), 0.0), 1.0), as_color(str(computed(stop, "stop-color", "black", rules))))
+             for stop in server.iter("stop")]
+    if not stops:
+        return None
+    matrix = to_page
+    if str(server.get("gradientUnits", "objectBoundingBox")) != "userSpaceOnUse":
+        box = element.local_bbox()  # type: ignore[attr-defined]
+        if box is None or not box.width or not box.height:
+            return None
+        matrix = matrix @ Matrix(box.width, 0, 0, box.height, box.x, box.y)
+    transform = getattr(server, "t", None)
+    if transform is not None:
+        matrix = matrix @ transform
+
+    def number(name: str, default: float) -> float:
+        raw = server.get(name)
+        if raw is None:
+            return default
+        length = Length.parse(raw)
+        return length.value / PERCENT if length.unit.value == "%" else length.value
+
+    if server.tag == "linearGradient":
+        coords: tuple[float, ...] = (number("x1", 0.0), number("y1", 0.0), number("x2", 1.0), number("y2", 0.0))
+        return Shading("axial", coords, stops, matrix)
+    cx, cy, r = number("cx", 0.5), number("cy", 0.5), number("r", 0.5)
+    return Shading("radial", (number("fx", cx), number("fy", cy), 0.0, cx, cy, r), stops, matrix)
 
 
 def _number(element: Element, name: str, default: float, rules: list) -> float:
@@ -290,6 +354,7 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset()) -> Sce
             miter_limit=_number(leaf, "stroke-miterlimit", DEFAULT_MITER, rules),
             dashes=() if str(dashes) == NONE else tuple(
                 v * stretch for v in (float(p) for p in str(dashes).replace(",", " ").split())),
+            shading=_shading(leaf, matrix @ leaf.t, rules),
         ))
     reported = [entry for entry in skipped if entry.strip("<>") not in handled]
     if reported:

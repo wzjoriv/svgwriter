@@ -6,7 +6,10 @@ from __future__ import annotations
 
 from typing import Final
 
-__all__ = ["NAMED_COLORS"]
+__all__ = ["COLOR_ALIASES", "NAMED_COLORS"]
+
+COLOR_ALIASES: Final = {"masooma": "green"}
+"""Extra names svgwriter accepts; they are written as the standard SVG keyword they stand for."""
 
 _TABLE: Final = """
 aliceblue f0f8ff antiquewhite faebd7 aqua 00ffff aquamarine 7fffd4

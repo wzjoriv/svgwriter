@@ -8,9 +8,11 @@ import math
 from typing import TYPE_CHECKING, Final
 
 from ..._internal._numbers import format_number
-from .._flatten import Item, flatten, to_cubic
+from ...transform.matrix import Matrix
+from .._flatten import Item, Shading, flatten, to_cubic
 
 if TYPE_CHECKING:
+    from ...color.color import Color
     from ...document import Document
 
 __all__ = ["to_eps"]
@@ -24,6 +26,13 @@ def _n(value: float) -> str:
     return format_number(value, PRECISION)
 
 
+BASE_LEVEL: Final = 2
+LEVEL_LINE: Final = 4
+SHADING_LEVEL: Final = 3
+AXIAL: Final = 2
+RADIAL: Final = 3
+
+
 def _path(item: Item, height: float) -> str:
     parts = ["newpath"]
     for op, args in to_cubic(item.data):
@@ -32,6 +41,37 @@ def _path(item: Item, height: float) -> str:
         parts.append({"M": f"{coords} moveto", "L": f"{coords} lineto", "C": f"{coords} curveto",
                       "Z": "closepath"}[op])
     return "\n".join(parts)
+
+
+def _rgb(color: Color) -> str:
+    return " ".join(_n(v) for v in color.rgb)
+
+
+def _function(stops: list[tuple[float, Color]]) -> str:
+    """A PostScript color function through the stops (exponential pieces stitched together)."""
+    points = list(stops)
+    if points[0][0] > 0:
+        points.insert(0, (0.0, points[0][1]))
+    if points[-1][0] < 1:
+        points.append((1.0, points[-1][1]))
+    pieces = [f"<< /FunctionType 2 /Domain [0 1] /C0 [{_rgb(a)}] /C1 [{_rgb(b)}] /N 1 >>"
+              for (_, a), (_, b) in zip(points, points[1:], strict=False)]
+    if len(pieces) == 1:
+        return pieces[0]
+    bounds = " ".join(_n(offset) for offset, _ in points[1:-1])
+    encode = " ".join("0 1" for _ in pieces)
+    return (f"<< /FunctionType 3 /Domain [0 1] /Functions [{' '.join(pieces)}] /Bounds [{bounds}] "
+            f"/Encode [{encode}] >>")
+
+
+def _shfill(shading: Shading, height: float) -> str:
+    """``concat`` into gradient space, then an axial or radial ``shfill`` (PostScript level 3)."""
+    flip = Matrix(1, 0, 0, -1, 0, height) @ shading.matrix
+    kind = AXIAL if shading.kind == "axial" else RADIAL
+    coords = " ".join(_n(v) for v in shading.coords)
+    return (f"[{' '.join(_n(v) for v in flip.as_tuple())}] concat\n"
+            f"<< /ShadingType {kind} /ColorSpace /DeviceRGB /Coords [{coords}] /Extend [true true] "
+            f"/Function {_function(shading.stops)} >> shfill")
 
 
 def to_eps(document: Document) -> str:
@@ -67,12 +107,13 @@ def to_eps(document: Document) -> str:
     ['%!PS-Adobe-3.0 EPSF-3.0', '%%BoundingBox: 0 0 10 10']
     """
     scene = flatten(document)
+    level = BASE_LEVEL
     lines = [
         "%!PS-Adobe-3.0 EPSF-3.0",
         f"%%BoundingBox: 0 0 {math.ceil(scene.width)} {math.ceil(scene.height)}",
         f"%%HiResBoundingBox: 0 0 {_n(scene.width)} {_n(scene.height)}",
         "%%Creator: svgwriter",
-        "%%LanguageLevel: 2",
+        "%%LanguageLevel: {level}",
         "%%EndComments",
         "gsave",
     ]
@@ -80,7 +121,11 @@ def to_eps(document: Document) -> str:
         if not len(item.data):
             continue
         path = _path(item, scene.height)
-        if item.fill is not None:
+        if item.shading is not None:
+            level = SHADING_LEVEL
+            lines += ["gsave", path, "eoclip" if item.evenodd else "clip", _shfill(item.shading, scene.height),
+                      "grestore"]
+        elif item.fill is not None:
             r, g, b = item.fill.rgb
             lines += [path, f"{_n(r)} {_n(g)} {_n(b)} setrgbcolor", "eofill" if item.evenodd else "fill"]
         if item.stroke is not None and item.stroke_width > 0:
@@ -90,4 +135,5 @@ def to_eps(document: Document) -> str:
                       f"{CAPS.get(item.linecap, 0)} setlinecap {JOINS.get(item.linejoin, 0)} setlinejoin",
                       f"{_n(item.miter_limit)} setmiterlimit [{dashes}] 0 setdash", "stroke"]
     lines += ["grestore", "showpage", "%%EOF"]
+    lines[LEVEL_LINE] = f"%%LanguageLevel: {level}"
     return "\n".join(lines) + "\n"

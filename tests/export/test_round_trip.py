@@ -38,3 +38,19 @@ def test_round_trip_renders_like_the_original(fmt: str, tolerance: float) -> Non
     back.root.set("width", SIZE[0])
     back.root.set("height", SIZE[1])
     assert np.abs(_render(back) - _render(original)).mean() < tolerance
+
+
+def _gradients():
+    doc = svg.Document(*SIZE)
+    linear = svg.LinearGradient(svg.Stop(0, "red"), svg.Stop(0.5, "gold"), svg.Stop(1, "blue"))
+    doc.rect(5, 5, 50, 50, fill=linear).rotate(15)
+    doc.circle(80, 30, 18, fill=svg.RadialGradient(svg.Stop(0, "white"), svg.Stop(1, "navy")))
+    doc.rect(0, 0, 1, 1, fill="masooma")
+    return doc
+
+
+def test_gradients_become_native_shadings():
+    eps = svg.export.export(_gradients(), "eps")
+    assert eps.count(b"shfill") == 2 and b"%%LanguageLevel: 3" in eps and b"0 0.502 0 setrgbcolor" in eps
+    tikz = svg.export.export(_gradients(), "tikz")
+    assert "shading=axis" in tikz and "shading=radial" in tikz and "middle color" in tikz
