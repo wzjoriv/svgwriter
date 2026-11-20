@@ -61,3 +61,16 @@ def test_eps_draws_images_in_place():
     doc.add(svg.Image(np.ones((2, 2, 3)) * [1, 0, 0], 10, 10, 20, 20)).rotate(30)
     eps = svg.export.export(doc, "eps")
     assert eps.count(b"colorimage") == 1 and b"ff0000ff0000" in eps
+
+
+@pytest.mark.parametrize("fmt", ["eps", "tikz"])
+def test_patterns_survive_vector_export(fmt):
+    dots = svg.Pattern(svg.circle(5, 5, 3, fill="crimson"), width=10, height=10, pattern_units="userSpaceOnUse")
+    doc = svg.Document(*SIZE)
+    doc.circle(30, 30, 25, fill=dots, stroke="black")
+    data = svg.export.export(doc, fmt)
+    back = svg.export.find_importer(fmt).function(data.encode() if isinstance(data, str) else data)
+    back.root.set("viewBox", doc.root.get("viewBox"))
+    back.root.set("width", SIZE[0])
+    back.root.set("height", SIZE[1])
+    assert np.abs(_render(back) - _render(doc)).mean() < 0.05
