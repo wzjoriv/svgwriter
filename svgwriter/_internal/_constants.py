@@ -48,6 +48,12 @@ __all__ = [
     "DOCTYPE",
     "DOT",
     "DVISVGM",
+    "EASE_BEND_SAMPLES",
+    "EASE_BISECTIONS",
+    "EASE_CURVES",
+    "EASE_GRID",
+    "EASE_NEWTON_STEPS",
+    "EASE_SAMPLES",
     "EMOJI_CELL_LEVELS",
     "EMOJI_END",
     "EMOJI_JOINERS",
@@ -304,6 +310,15 @@ WRITE_LAG: Final = 0.35
 SIDES: Final = {"left": (-1.0, 0.0), "right": (1.0, 0.0), "top": (0.0, -1.0), "bottom": (0.0, 1.0)}
 
 FULL_TURN: Final = 360.0
+
+EASE_CURVES: Final = {"linear": (0.0, 0.0, 1.0, 1.0), "ease": (0.25, 0.1, 0.25, 1.0),
+                      "ease-in": (0.42, 0.0, 1.0, 1.0), "ease-out": (0.0, 0.0, 0.58, 1.0),
+                      "ease-in-out": (0.42, 0.0, 0.58, 1.0)}
+EASE_NEWTON_STEPS: Final = 8
+EASE_BISECTIONS: Final = 48
+EASE_GRID: Final = 256
+EASE_SAMPLES: Final = (24, 60)
+EASE_BEND_SAMPLES: Final = 6.0
 
 MAX_SEGMENTS: Final = 512
 

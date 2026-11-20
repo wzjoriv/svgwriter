@@ -12,6 +12,7 @@ from ...pathdata.builder import PathBuilder
 from ...pathdata.data import PathData
 from .._behavior import ConditionalAttributes, CoreAttributes, ExternalResourcesAttribute, XLinkAttributes
 from ..core import Category, Child, ContentModel, Element
+from ._easing import EaseLike, apply_ease
 from ._smil import FadeShortcut, SpinShortcut, _AttributeTarget, _clock, _list, _ValueAnimation
 
 __all__ = [
@@ -239,6 +240,10 @@ class Animate(FadeShortcut, AnimationElement, _ValueAnimation, _AttributeTarget,
         Combination with the underlying value.
     accumulate : Accumulate, optional
         Whether repeats accumulate.
+    ease : str, tuple, callable or Ease, optional
+        Timing curve over the whole timeline (see :class:`Ease`); sets
+        ``calcMode``, ``keyTimes`` and ``keySplines`` (or samples ``values``),
+        so leave ``calc_mode`` unset or ``"linear"``/``"discrete"``.
     **kwargs
         Timing (``begin``, ``dur``, ``repeat_count`` and so on, see
         :class:`AnimationElement`), core and other SVG attributes.
@@ -252,6 +257,8 @@ class Animate(FadeShortcut, AnimationElement, _ValueAnimation, _AttributeTarget,
     --------
     >>> str(Animate.fade(1, 0, dur=2))
     '<animate attributeName="opacity" from="1" to="0" dur="2s"/>'
+    >>> str(Animate(attribute_name="x", from_=0, to=90, dur=1, ease="ease-in-out"))
+    '<animate attributeName="x" from="0" to="90" calcMode="spline" keyTimes="0;1" keySplines="0.42 0 0.58 1" dur="1s"/>'
     """
 
 
@@ -366,6 +373,9 @@ class AnimateMotion(AnimationElement, _ValueAnimation, tag="animateMotion", cont
         Orientation along the path.
     origin : str, optional
         The motion origin.
+    ease : str, tuple, callable or Ease, optional
+        Timing curve along the path (or through ``values``); see
+        :class:`Ease`. Along a path it is written with ``keyPoints``.
     **kwargs
         Timing (see :class:`AnimationElement`), values attributes, core and
         other SVG attributes.
@@ -387,6 +397,7 @@ class AnimateMotion(AnimationElement, _ValueAnimation, tag="animateMotion", cont
         key_points: Sequence[float] | str | None = None,
         rotate: float | Literal["auto", "auto-reverse"] | None = None,
         origin: str | None = None,
+        ease: EaseLike | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(*children, **kwargs)
@@ -395,3 +406,6 @@ class AnimateMotion(AnimationElement, _ValueAnimation, tag="animateMotion", cont
         elif isinstance(path, str):
             path = PathData(path)
         self.update(path=path, key_points=_list(key_points), rotate=rotate, origin=origin)
+        if ease is not None:
+            listed = any(self.get(name) is not None for name in ("values", "from", "to", "by"))
+            apply_ease(self, ease, "values" if listed else "keyPoints")
