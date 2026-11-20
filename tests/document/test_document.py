@@ -173,3 +173,18 @@ class TestDrawableObjects:
 
         with pytest.raises(TypeError, match="__svgwriter__"):
             svg.Document(5, 5).add(Broken())
+
+
+def test_value_objects_draw_themselves():
+    import numpy as np
+
+    import svgwriter as svg
+    from svgwriter.elements.structure import Pixels
+
+    objects = [svg.Color.parse("teal"), svg.PathData("M0 0 L10 10"), svg.BBox(0, 0, 10, 5),
+               svg.Matrix.rotate(30), Pixels.from_array(np.zeros((2, 3)))]
+    doc = svg.Document(100, 100)
+    for value in objects:
+        assert value._repr_svg_().startswith("<svg")
+        doc.add(value)
+    assert len(doc) == len(objects)

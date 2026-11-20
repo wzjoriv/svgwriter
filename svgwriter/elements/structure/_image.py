@@ -13,6 +13,7 @@ import numpy as np
 import skia
 
 from ..._internal._constants import DEFAULT_PRECISION
+from ..._internal._drawable import Drawable, pixels_picture
 from ...attributes.length import LengthLike
 from ...attributes.viewbox import PreserveAspectRatio
 from ...pathdata.data import BBox
@@ -47,7 +48,7 @@ def _normalize(array: np.ndarray) -> np.ndarray:
     return data
 
 
-class Pixels:
+class Pixels(Drawable):
     """Image data: color channels plus a broadcastable alpha.
 
     ``color`` is ``(H, W, C)`` with ``C`` in {1, 3} and ``alpha`` broadcasts
@@ -371,6 +372,10 @@ class Pixels:
 
     def __xor__(self, other: object) -> Pixels:
         return self._pair(other, "xor")
+
+    def __svgwriter__(self) -> Any:
+        """The pixels as an ``<image>`` (``doc.add(pixels)``, notebook display)."""
+        return pixels_picture(self)
 
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
         """Serialize as a ``data:`` URI.

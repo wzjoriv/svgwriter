@@ -10,11 +10,12 @@ from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field, replace
 from functools import lru_cache
 from numbers import Real
-from typing import Final, TypeAlias
+from typing import Any, Final, TypeAlias
 
 import numpy as np
 
 from .._internal._constants import DEFAULT_PRECISION
+from .._internal._drawable import Drawable, color_swatch
 from .._internal._numbers import format_number
 from .._internal._typing import N, Opacity
 from ._named import NAMED_COLORS
@@ -63,7 +64,7 @@ def clamp(value: N, low: N, high: N) -> N:
 
 
 @dataclass(frozen=True)
-class Color:
+class Color(Drawable):
     """An sRGB color with straight alpha; every channel is a float in ``0..1``.
 
     Colors are immutable, support ``+`` (even mix), ``*`` and ``/`` (scaling),
@@ -509,6 +510,10 @@ class Color:
             return self.name or self.hex
         r, g, b, _ = self.uint8
         return f"rgba({r}, {g}, {b}, {format_number(self.a, DEFAULT_PRECISION)})"
+
+    def __svgwriter__(self) -> Any:
+        """A swatch of this color over a checkerboard (``doc.add(color)``, notebook display)."""
+        return color_swatch(self)
 
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
         """Return SVG 1.1 color text.

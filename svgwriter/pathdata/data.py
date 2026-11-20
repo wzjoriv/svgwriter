@@ -7,11 +7,12 @@ from __future__ import annotations
 from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import replace
 from functools import cached_property
-from typing import Final, NamedTuple, overload
+from typing import Any, Final, NamedTuple, overload
 
 import numpy as np
 
 from .._internal._constants import DEFAULT_PRECISION
+from .._internal._drawable import Drawable, box_picture, path_picture
 from .._internal._numbers import format_number
 from ..transform.matrix import Matrix, Point
 from ..transform.transform import TransformLike, as_transform
@@ -188,6 +189,13 @@ class BBox(NamedTuple):
             raise ValueError(f"unknown box point {name!r}; choose one of {', '.join(BOX_POINTS)}") from None
         return Point(self.x + fx * self.width, self.y + fy * self.height)
 
+    def __svgwriter__(self) -> Any:
+        """The box as a dashed rectangle (``doc.add(box)``, notebook display)."""
+        return box_picture(self)
+
+    def _repr_svg_(self) -> str | None:
+        return box_picture(self)._repr_svg_()  # type: ignore[no-any-return]
+
     def union(self, other: BBox) -> BBox:
         """Return the smallest box containing this box and another.
 
@@ -238,7 +246,7 @@ def _reflect(control: Point, about: Point) -> Point:
     return Point(2 * about.x - control.x, 2 * about.y - control.y)
 
 
-class PathData(Sequence[PathCommand]):
+class PathData(Drawable, Sequence[PathCommand]):
     """A parsed, immutable sequence of path commands.
 
     Supports indexing, slicing, iteration, concatenation with ``+`` and
@@ -604,6 +612,10 @@ class PathData(Sequence[PathCommand]):
         """
         points = list(self.points())
         return BBox.from_points(points) if points else None
+
+    def __svgwriter__(self) -> Any:
+        """The outline as a thin unfilled ``<path>`` (``doc.add(data)``, notebook display)."""
+        return path_picture(self)
 
     def svg_value(self, precision: int = DEFAULT_PRECISION, *, compact: bool = False) -> str:
         """Serialize the path as text for the ``d`` attribute.

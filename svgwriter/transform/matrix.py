@@ -11,6 +11,7 @@ from typing import Any, Final, NamedTuple, overload
 import numpy as np
 
 from .._internal._constants import DEFAULT_PRECISION
+from .._internal._drawable import Drawable, matrix_picture
 from .._internal._numbers import format_number
 from .._internal._typing import Matrix6
 
@@ -94,7 +95,7 @@ def _pair(value: object) -> tuple[float, float]:
 
 
 @dataclass(frozen=True, slots=True)
-class Matrix:
+class Matrix(Drawable):
     """An affine transform ``[a c e; b d f; 0 0 1]``.
 
     Matrices compose with ``@`` in SVG order: ``m1 @ m2`` applies ``m2``
@@ -548,6 +549,10 @@ class Matrix:
         sy = -sin * self.c + cos * self.d
         skew = math.degrees(math.atan(shear / sy)) if sy else 0.0
         return (self.e, self.f, math.degrees(angle), skew, sx, sy)
+
+    def __svgwriter__(self) -> Any:
+        """A unit grid before and after this transform (``doc.add(matrix)``, notebook display)."""
+        return matrix_picture(self)
 
     def svg_value(self, precision: int = DEFAULT_PRECISION, *, pivot: tuple[float, float] | None = None,
                   box: Any = None) -> str:
