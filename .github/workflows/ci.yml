@@ -1,0 +1,112 @@
+name: Tests
+
+# quick: every pull request / push (lint, stubs current, the suite on one Python).
+# full: every supported CPython on Linux plus the oldest and newest on Windows / macOS, and coverage;
+# runs on pushes to main, when a maintainer adds the `full-tests` label to a pull request,
+# or when the workflow is started by hand. skia-python ships no wheels for PyPy, free-threaded
+# builds or Pyodide, so those are not tested.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quick:
+    if: github.event.action != 'labeled'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[test,dev]"
+      - name: Lint
+        run: ruff check --output-format github
+      - name: Stubs are current
+        run: python scripts/dev.py stub check
+      - name: Quick tests
+        run: pytest -q -p no:cacheprovider --durations=15
+
+  full:
+    if: >-
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'full-tests'))
+    name: full (${{ matrix.python }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        include:
+          - { os: windows-latest, python: "3.10" }
+          - { os: windows-latest, python: "3.14" }
+          - { os: macos-latest, python: "3.10" }
+          - { os: macos-latest, python: "3.14" }
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+          allow-prereleases: true
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install
+        run: pip install -e ".[test]"
+      - name: Full tests
+        run: pytest -q -p no:cacheprovider
+
+  core:
+    if: github.event.action != 'labeled'
+    name: core install (no extras)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install
+        run: pip install -e . "pytest>=7.0"
+      - name: Import and render without extras
+        run: python -c "import svgwriter as svg; d = svg.Document(10, 10); d.rect(0, 0, 10, 10, fill='red'); assert d.rasterize().shape == (10, 10, 4)"
+
+  coverage:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install
+        run: pip install -e ".[test]" pytest-cov
+      - name: Tests with coverage
+        run: pytest -q -p no:cacheprovider --cov=svgwriter --cov-report=term-missing

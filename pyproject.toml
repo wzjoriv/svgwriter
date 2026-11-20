@@ -32,6 +32,12 @@ classifiers = [
     "Typing :: Typed",
 ]
 
+[project.urls]
+Homepage      = "https://github.com/wzjoriv/svgwriter"
+Repository    = "https://github.com/wzjoriv/svgwriter"
+Documentation = "https://wzjoriv.github.io/svgwriter"
+"Bug Tracker" = "https://github.com/wzjoriv/svgwriter/issues"
+
 [project.optional-dependencies]
 office = [
     "python-pptx>=1.0",
