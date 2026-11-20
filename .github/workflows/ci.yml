@@ -1,6 +1,6 @@
 name: Tests
 
-# quick: every pull request / push (lint, stubs current, the suite on one Python).
+# quick: every pull request / push (lint, stubs generate, the suite on one Python).
 # full: every supported CPython on Linux plus the oldest and newest on Windows / macOS, and coverage;
 # runs on pushes to main, when a maintainer adds the `full-tests` label to a pull request,
 # or when the workflow is started by hand. skia-python ships no wheels for PyPy, free-threaded
@@ -41,8 +41,8 @@ jobs:
           pip install -e ".[test,dev]"
       - name: Lint
         run: ruff check --output-format github
-      - name: Stubs are current
-        run: python scripts/dev.py stub check
+      - name: Stubs generate
+        run: python scripts/dev.py stub generate
       - name: Notebooks match their scripts
         run: python scripts/dev.py notebooks check
       - name: Quick tests

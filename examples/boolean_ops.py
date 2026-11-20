@@ -1,10 +1,10 @@
 """Boolean path operations, text outlines and baked transforms.
 
 Boolean operators run on skia path ops.
-Run it as ``python boolean_ops.py [OUTPUT_DIR]`` or open ``boolean_ops.ipynb`` to see each step.
+Run it as ``python boolean_ops.py`` or open ``boolean_ops.ipynb`` to see each step.
 """
 
-import sys
+import os
 import tempfile
 from pathlib import Path
 
@@ -48,10 +48,10 @@ doc += ring
 doc
 
 # %% [markdown]
-# Save it. Pass a folder as the first argument to choose where the file goes.
+# Save it. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
 
 # %%
-args = sys.argv[1:2]
-out = Path(args[0]) if args and not args[0].startswith("-") else Path(tempfile.mkdtemp(prefix="svgwriter-"))
+out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
+out.mkdir(parents=True, exist_ok=True)
 doc.save(out / "boolean_ops.svg")
 print("saved boolean_ops.svg")

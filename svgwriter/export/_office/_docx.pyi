@@ -1,3 +1,0 @@
-from ...document import Document
-
-def read_docx(data: bytes) -> Document: ...

@@ -1,8 +1,9 @@
 """An embedded SVG font, then a parse/re-serialize round trip.
 
-Run it as ``python font_roundtrip.py [OUTPUT_DIR]`` or open ``font_roundtrip.ipynb`` to see each step.
+Run it as ``python font_roundtrip.py`` or open ``font_roundtrip.ipynb`` to see each step.
 """
 
+import os
 import sys
 import tempfile
 import warnings
@@ -40,11 +41,11 @@ doc
 
 # %% [markdown]
 # Save it, parse the file back and save the copy: the two files must be identical.
-# Pass a folder as the first argument to choose where they go.
+# Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
 
 # %%
-args = sys.argv[1:2]
-out = Path(args[0]) if args and not args[0].startswith("-") else Path(tempfile.mkdtemp(prefix="svgwriter-"))
+out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
+out.mkdir(parents=True, exist_ok=True)
 original = out / "font.svg"
 doc.save(original)
 copy = out / "font_copy.svg"

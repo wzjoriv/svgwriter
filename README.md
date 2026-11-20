@@ -41,9 +41,9 @@ pixels = doc.rasterize(scale=2)                          # numpy float32 RGBA, s
 | Clipping | `art.clip(svg.circle(50, 50, 40))` on any element; `flatten_clip()` |
 | Text | `text[i]` / `text[a:b]` move, rotate or style characters while staying real text; `tspan` layout, CSS and inherited fonts; `text.glyphs()` for free-form outlines |
 | Colors and images | `Color` in 0-1 floats with alpha (auto `*-opacity`); `Image(numpy_array)` with color channels and broadcastable alpha; `Image.open("photo.png")`; Porter-Duff compositing `a \| b` (over), `a & b` (in), `a - b` (out), `a ^ b`, `a * b` (multiply), `a.composite(b, "screen")` |
-| Documents | `doc[0]`, `doc["logo"]`, `for el in doc`; auto-size to content; definitions land in `<defs>` when referenced; plots and anything with `_repr_svg_` or `savefig` can be added; notebook display |
+| Documents | `doc[0]`, `doc["logo"]`, `for el in doc`; auto-size to content; definitions land in `<defs>` when referenced; `doc.add(x)` takes elements, documents, matplotlib figures and anything with `__svgwriter__`, `_repr_svg_`, `_repr_png_` or `_repr_jpeg_` (see [Adding other objects](#adding-other-objects)); notebook display |
 | Rendering | skia: `rasterize(size=..., padding=...)` to numpy, embedded and linked images, text, CSS `<style>`; deterministic output |
-| Export / import | Registry by name or extension. Out: SVG, SVGZ, PNG, JPEG, WebP, BMP, GIF, PPM, PDF (vector), TikZ, EPS, DXF, HPGL, G-code, Excalidraw, ICO, ICNS. In: SVG, SVGZ, PNG, JPEG, WebP, GIF, BMP, PNM, PDF, TikZ, EPS (their vector paths), DXF, HPGL, G-code, Excalidraw, ICO, ICNS, Graphviz DOT and Mermaid diagrams through their tools, and with `pysvgwriter[office]` PowerPoint (editable shapes, both ways) plus Word and Excel (picture). `svg.export.register(...)` for more |
+| Export / import | A registry by name or extension: more than 30 formats from SVG and PNG to PDF, TikZ, DXF, G-code, PowerPoint, Graphviz and Mermaid (see [Export and import](#export-and-import)); `svg.export.register(...)` adds more |
 | Animation | SMIL elements; `doc.render_animation("out.mp4", update=...)` through ffmpeg; `svg.interpolate(a, b, t)` tweens numbers, colors, transforms and morphs any two shapes |
 
 ## Geometry in one minute
@@ -66,7 +66,63 @@ print(round(ring.total_length(), 1), ring.contains_point(0, 0))
 `*` and `@` never bake coordinates: `el * 2` is a scaled copy, `el @ 30` a rotated copy and `M @ el` a
 copy with matrix `M` applied. Baking is explicit: `el.to_path()` folds the transform into `d`.
 
+## Adding other objects
+
+`doc.add(x)` (and `group.add(x)`) turns whatever it is given into elements, trying in this order: an
+element; any object with an `__svgwriter__()` method, which returns an element, a document or anything
+else `add` takes; a `Document` (a copy of its `<svg>` in a `<g>`); a networkx graph (with
+`pysvgwriter[graph]`); a numpy array (an `<image>`); a matplotlib figure or anything with `savefig`, and
+anything with `_repr_svg_` (the IPython display protocol), parsed into editable SVG elements; and
+anything with only `_repr_png_` or `_repr_jpeg_`, embedded as an `<image>`.
+
+```python
+class Badge:
+    def _repr_svg_(self):
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="9"/></svg>'
+
+doc.add(Badge()).translate(150, 10).scale(0.5)          # also: doc.add(fig) for a matplotlib figure
+```
+
 ## Export and import
+
+Formats are found by name or file extension: `doc.save("figure.pdf")`, `svg.Document.open("figure.pdf")`,
+`doc.export("eps")` for bytes. `svg.export.exporters()` and `svg.export.importers()` list the registry.
+
+| Format | Extension(s) | Export | Import | Notes |
+|---|---|:---:|:---:|---|
+| SVG | `.svg` | ✓ | ✓ | the native format; ids, links, `<style>` and animation kept; `pretty`, `precision`, `compact_paths` |
+| SVGZ | `.svgz` | ✓ | ✓ | gzip-compressed SVG |
+| PNG | `.png` | ✓ | ✓ | `scale`, `size`, `padding`, `background`; text becomes pixels; import is an `<image>` |
+| JPEG | `.jpg` `.jpeg` | ✓ | ✓ | `quality`; import is an `<image>` |
+| WebP | `.webp` | ✓ | ✓ | `quality`; import is an `<image>` |
+| BMP | `.bmp` | ✓ | ✓ | import is an `<image>` |
+| GIF (incl. animated) | `.gif` | ✓ | ✓ | animated automatically when the drawing has SMIL animation (`fps`, `duration`, `loop`; no ffmpeg); import is the first frame as an `<image>` |
+| APNG | `.png` | ✓ | ✓ | `animate=True` plays the SMIL animation; import is the first frame |
+| Animated WebP | `.webp` | ✓ | ✓ | `animate=True`; import is the first frame |
+| PPM / PGM / PNM | `.ppm` `.pgm` `.pnm` | ✓ | ✓ | import also reads `.pbm` |
+| ICO | `.ico` | ✓ | ✓ | PNG entries at `sizes=`, `padding=`; import takes the largest image |
+| ICNS | `.icns` | ✓ | ✓ | standard and Retina sizes; import takes the largest image |
+| PDF | `.pdf` | ✓ | ✓ | vector (skia); text kept as text, in an embedded font subset; import reads paths, images, clips, text and shadings, `page=` |
+| EPS / PostScript | `.eps` `.ps` | ✓ | ✓ | text kept as text (ASCII in standard fonts); no transparency; import is a small PostScript interpreter |
+| TikZ | `.tikz` `.tex` | ✓ | ✓ | `standalone=True` for a compilable document; text kept as `\node`; import reads `\draw`, `\fill`, nodes, `\foreach` |
+| DXF | `.dxf` | ✓ | ✓ | CAD polylines in mm, one layer per colour; import reads lines, polylines, circles, arcs, ellipses |
+| HPGL | `.hpgl` `.plt` | ✓ | ✓ | pen plotters and cutters, one pen per colour |
+| G-code | `.gcode` `.nc` `.ngc` | ✓ | ✓ | `mode="mill"` or `"laser"`, `feed`, `cut_z`, `tolerance` |
+| Excalidraw | `.excalidraw` | ✓ | ✓ | import reads shapes, arrows, text, images and groups (also `.json`) |
+| HTML | `.html` `.htm` | ✓ | ✓ | standalone page with the SVG inline (text kept as text), `css=`, `handlers=`; import reads the first inline `<svg>` |
+| PowerPoint | `.pptx` | ✓ | ✓ | needs `pysvgwriter[office]`; editable shapes and text boxes both ways, `slide=` on import; text kept as text |
+| Word | `.docx` | ✓ | ✓ | needs `pysvgwriter[office]`; export is a picture, import reads pictures and drawn shapes (no text) |
+| Excel | `.xlsx` | ✓ | — | needs `pysvgwriter[office]`; the drawing as a picture |
+| Markdown | `.md` `.markdown` | — | ✓ | headings, lists, code and bold become `<text>` |
+| Plain text | `.txt` `.text` | — | ✓ | one `<text>` per line |
+| Graphviz DOT | `.dot` `.gv` | — | ✓ | laid out by Graphviz (`dot`, or `SVGWRITER_DOT`) |
+| Mermaid | `.mmd` `.mermaid` | — | ✓ | flowcharts need no tool (built-in parser and layout); other diagrams use `mmdc` (`SVGWRITER_MMDC`) |
+| PlantUML | `.puml` `.plantuml` | — | ✓ | drawn by `plantuml` |
+| D2 | `.d2` | — | ✓ | drawn by `d2` |
+| LaTeX math | `svg.latex(...)` | — | ✓ | formulas as glyph outlines: TeX (`latex` + `dvisvgm`), else Ziamath (`pysvgwriter[math]`), else matplotlib mathtext |
+| Video frames | `.mp4` `.webm` `.mov` | ✓ | ✓ | needs ffmpeg: `render_animation` writes frames, `svgwriter.video.Video` reads them |
+
+`svg.export.register(...)` and `register_importer(...)` add formats of your own.
 
 ```python
 doc.save("figure.pdf")                         # vector PDF
@@ -78,14 +134,15 @@ svg.Document.open("sketch.excalidraw").save("sketch.svg")
 
 ## Examples
 
-[`examples/`](https://github.com/wzjoriv/svgwriter/tree/main/examples) has runnable scripts for shapes, transforms, typography, boolean operations, filters, markers, pixels and animation; each has a Jupyter notebook next to it that shows the results as pictures. All pictures below are rendered by svgwriter.
+[`examples/`](https://github.com/wzjoriv/svgwriter/tree/main/examples) has runnable scripts for shapes, transforms, typography, boolean operations, filters, markers, pixels, animation, math and diagrams; each has a Jupyter notebook next to it that shows the results as pictures. All pictures below are rendered by svgwriter.
 
 | | | |
 |:---:|:---:|:---:|
 | [![Shapes, gradients and text](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/basic_shapes.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/basic_shapes.ipynb)<br>[Shapes, gradients, text](https://github.com/wzjoriv/svgwriter/blob/main/examples/basic_shapes.ipynb) | [![Transforms](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/transforms.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/transforms.ipynb)<br>[Transforms](https://github.com/wzjoriv/svgwriter/blob/main/examples/transforms.ipynb) | [![Boolean operations](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/boolean_ops.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/boolean_ops.ipynb)<br>[Boolean operations](https://github.com/wzjoriv/svgwriter/blob/main/examples/boolean_ops.ipynb) |
 | [![Typography](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/typography.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/typography.ipynb)<br>[Typography](https://github.com/wzjoriv/svgwriter/blob/main/examples/typography.ipynb) | [![Filter effects](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/filter_effects.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/filter_effects.ipynb)<br>[Filter effects](https://github.com/wzjoriv/svgwriter/blob/main/examples/filter_effects.ipynb) | [![Paths and markers](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/paths_and_markers.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/paths_and_markers.ipynb)<br>[Paths and markers](https://github.com/wzjoriv/svgwriter/blob/main/examples/paths_and_markers.ipynb) |
+| [![Animation presets](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/animation.gif)](https://github.com/wzjoriv/svgwriter/blob/main/examples/animation.ipynb)<br>[Animation presets](https://github.com/wzjoriv/svgwriter/blob/main/examples/animation.ipynb) | [![LaTeX math](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/math.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/math_and_diagrams.ipynb)<br>[LaTeX math](https://github.com/wzjoriv/svgwriter/blob/main/examples/math_and_diagrams.ipynb) | [![Mermaid flowchart](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/flowchart.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/math_and_diagrams.ipynb)<br>[Mermaid flowchart](https://github.com/wzjoriv/svgwriter/blob/main/examples/math_and_diagrams.ipynb) |
 
-Regenerate the pictures with `python scripts/dev.py svgwriter gallery`.
+Regenerate the pictures (PNG, and the animation as GIF) with `python scripts/dev.py svgwriter gallery`.
 
 ## Development
 
@@ -93,7 +150,7 @@ Regenerate the pictures with `python scripts/dev.py svgwriter gallery`.
 pip install -e ".[dev]"
 python scripts/dev.py test                     # test tiers
 python scripts/dev.py check                    # ruff, tests, docs
-python scripts/dev.py stub generate            # refresh the shipped .pyi stubs after API changes (stub check verifies)
+python scripts/dev.py stub generate            # build the .pyi stubs locally (git-ignored; the release workflow builds the shipped ones)
 python scripts/dev.py svgwriter conformance    # W3C SVG 1.1 suite (after: svgwriter fetch-suite)
 python scripts/dev.py svgwriter bench          # timing of the hot paths
 ```
