@@ -110,6 +110,9 @@ def _convert(node: ET.Element, strictness: Strictness) -> Element:
             attributes[f"{_PREFIXES[key_ns]}:{key_local}"] = value
         else:
             attributes[key] = value
+    if "href" in attributes:
+        plain = attributes.pop("href")
+        attributes.setdefault("xlink:href", plain)
 
     cls = Element.lookup(local) if namespace in (SVG_NS, None) else None
     element: Element

@@ -86,7 +86,8 @@ the install hint.
 
 PlantUML (`.puml`) and D2 (`.d2`) load the same way through `plantuml` and `d2`. Math comes from LaTeX
 itself: `svg.latex(r"\int_0^1 x^2\,dx = \frac{1}{3}", display=True)` returns the typeset formula as
-outlines (needs `latex` and `dvisvgm`, both in TeX Live and MiKTeX).
+outlines. Without TeX it falls back to Ziamath (pure Python, `svgwriter[math]`) and then to matplotlib's
+mathtext; `engine="tex"`, `"ziamath"` or `"mathtext"` picks one.
 
 ## Office files
 

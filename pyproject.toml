@@ -45,8 +45,11 @@ plot = [
 graph = [
     "networkx>=3.0",
 ]
+math = [
+    "ziamath>=0.11",
+]
 test = [
-    "svgwriter[office,plot,graph]",
+    "svgwriter[office,plot,graph,math]",
     "pytest>=7",
     "ezdxf>=1.0",
     "pillow>=10",

@@ -80,7 +80,7 @@ def test_latex_reports_missing_tools_without_any_fallback(monkeypatch):
 
     monkeypatch.setenv("PATH", "")
     monkeypatch.delenv("SVGWRITER_LATEX", raising=False)
-    for name in ("matplotlib", "matplotlib.font_manager", "matplotlib.textpath"):
+    for name in ("matplotlib", "matplotlib.font_manager", "matplotlib.textpath", "ziamath"):
         monkeypatch.setitem(sys.modules, name, None)
     with pytest.raises(DiagramToolError, match="TeX"):
         svg.latex("x")
@@ -95,3 +95,23 @@ def test_plantuml_and_d2_use_their_tools(monkeypatch, tmp_path):
     body = f"import sys, pathlib; pathlib.Path(sys.argv[2]).write_bytes({SVG_OUT!r})"
     monkeypatch.setenv("SVGWRITER_D2", _fake_tool(tmp_path, "d2", body))
     assert len(read_d2(b"a -> b")) == 1
+
+
+@pytest.mark.parametrize("engine", ["ziamath", "mathtext"])
+def test_python_math_engines(engine):
+    pytest.importorskip("ziamath" if engine == "ziamath" else "matplotlib")
+    formula = svg.latex(r"\frac{a}{b}", display=True, engine=engine)
+    box = formula.bounds()
+    assert formula.tag == "g" and box is not None and box.height > box.width * 0.5
+
+
+def test_unknown_engine():
+    with pytest.raises(ValueError, match="engine"):
+        svg.latex("x", engine="mathjax")
+
+
+def test_svg2_href_and_symbols_resolve():
+    markup = ('<svg xmlns="http://www.w3.org/2000/svg"><symbol id="s" viewBox="0 0 10 10">'
+              '<rect width="10" height="10"/></symbol><use href="#s" x="5" width="20" height="20"/></svg>')
+    use = next(svg.parse(markup).iter("use"))
+    assert use.get("xlink:href") is not None and use.to_path().bounds() == pytest.approx((5, 0, 20, 20))

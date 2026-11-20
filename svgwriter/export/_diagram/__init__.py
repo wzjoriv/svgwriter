@@ -10,7 +10,7 @@ import shutil
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Any, Final
 
 from .._registry import register_importer
 
@@ -160,8 +160,12 @@ INSTALL_HINT["plantuml"] = "install PlantUML so that `plantuml` is on PATH"
 INSTALL_HINT["d2"] = "install D2 (https://d2lang.com) so that `d2` is on PATH"
 
 
-def latex(source: str, *, display: bool = False, preamble: str = "") -> Group:
-    r"""A LaTeX formula or snippet as vector outlines, typeset by LaTeX itself.
+def latex(source: str, *, display: bool = False, preamble: str = "", engine: str = "auto") -> Group:
+    r"""A LaTeX formula or snippet as vector outlines.
+
+    With ``engine="auto"`` the first available engine typesets it: real TeX
+    (``latex`` + ``dvisvgm``, exact and with every package), then Ziamath
+    (pure Python, the ``svgwriter[math]`` extra), then matplotlib's mathtext.
 
     Parameters
     ----------
@@ -171,7 +175,9 @@ def latex(source: str, *, display: bool = False, preamble: str = "") -> Group:
     display : bool, optional
         Typeset math in display style. Defaults to False.
     preamble : str, optional
-        Extra preamble lines (``\usepackage{...}``). Defaults to "".
+        Extra preamble lines (``\usepackage{...}``), TeX only. Defaults to "".
+    engine : {"auto", "tex", "ziamath", "mathtext"}, optional
+        Which typesetter to use. Defaults to "auto".
 
     Returns
     -------
@@ -191,11 +197,19 @@ def latex(source: str, *, display: bool = False, preamble: str = "") -> Group:
     """
     from ...elements.structure import Group
 
-    if not (os.environ.get("SVGWRITER_LATEX") or shutil.which(LATEX)) or not (
-            os.environ.get("SVGWRITER_DVISVGM") or shutil.which(DVISVGM)):
-        fallback = _mathtext(source, display)
-        if fallback is not None:
-            return fallback
+    if engine not in ENGINES:
+        raise ValueError(f"unknown engine {engine!r}; use one of {', '.join(ENGINES)}")
+    has_tex = bool((os.environ.get("SVGWRITER_LATEX") or shutil.which(LATEX))
+                   and (os.environ.get("SVGWRITER_DVISVGM") or shutil.which(DVISVGM)))
+    if engine in ("ziamath", "mathtext") or (engine == "auto" and not has_tex):
+        for name, typeset in (("ziamath", _ziamath), ("mathtext", _mathtext)):
+            if engine in (name, "auto"):
+                result = typeset(source, display)
+                if result is not None:
+                    return result
+        if engine != "auto":
+            raise DiagramToolError(f"the {engine} engine is not installed; pip install "
+                                   f"{'ziamath' if engine == 'ziamath' else 'matplotlib'}")
     body = source if ("$" in source or r"\begin" in source) else (
         rf"$\displaystyle {source}$" if display else f"${source}$")
     latex_tool, svg_tool = _tool(LATEX), _tool(DVISVGM)
@@ -214,6 +228,45 @@ def latex(source: str, *, display: bool = False, preamble: str = "") -> Group:
             drawing.root.remove(element)
             group.add(element)
     return group
+
+
+ENGINES: Final = ("auto", "tex", "ziamath", "mathtext")
+ZIAMATH_SIZE: Final = 10.0
+
+
+def _ziamath(source: str, display: bool) -> Group | None:
+    """The formula through Ziamath (pure Python, STIX math font) as outlines, or None without Ziamath."""
+    try:
+        import ziamath
+    except ImportError:
+        return None
+    from ...elements.structure import Group
+    from ...io.parser import parse
+
+    if "$" in source:
+        rendered = ziamath.Latex(source, size=ZIAMATH_SIZE).svg()
+    else:
+        rendered = ziamath.Math.fromlatex(source, size=ZIAMATH_SIZE,
+                                          mathstyle="display" if display else "text").svg()
+    root = parse(rendered)
+    group = Group()
+    for element in list(root.iter()):
+        if element.tag == "use":
+            path = element.to_path()
+            path.set("fill", element.get("fill") or "black")
+            group.add(path)
+        elif element.tag in ("rect", "path", "line", "polygon") and not any(
+                ancestor.tag == "symbol" for ancestor in _ancestors(element)):
+            group.add(element.clone())
+    return group
+
+
+def _ancestors(element: Any) -> list[Any]:
+    chain, node = [], element.parent
+    while node is not None:
+        chain.append(node)
+        node = node.parent
+    return chain
 
 
 MATHTEXT_SIZE: Final = 10.0

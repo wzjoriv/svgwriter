@@ -23,6 +23,7 @@ def latex(
     *,
     display: bool = False,
     preamble: str = '',
+    engine: str = 'auto',
 ) -> Group: ...
 
 def read_plantuml(data: bytes) -> Document: ...

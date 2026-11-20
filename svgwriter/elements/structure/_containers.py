@@ -416,9 +416,32 @@ class Use(PathOperand, GraphicsElement, XLinkAttributes, Positioned, tag="use", 
         BBox(x=8.0, y=18.0, width=4.0, height=4.0)
         """
         target = self.referenced()
+        offset = Matrix.translate(user_units(self.get("x")), user_units(self.get("y")))
+        if target is not None and target.tag == "symbol":
+            return _symbol_outline(target, self).transformed(offset)
         if not isinstance(target, PathOperand):
             raise TypeError(f"<use> refers to {'nothing' if target is None else '<' + target.tag + '>'}, which has no outline")
-        return target.outline().transformed(Matrix.translate(user_units(self.get("x")), user_units(self.get("y"))))
+        return target.outline().transformed(offset)
+
+
+def _symbol_outline(symbol: Element, use: Element) -> PathData:
+    """A ``<symbol>``'s children as one outline, its ``viewBox`` fitted into the ``<use>``'s width and height."""
+    from ...attributes.viewbox import PreserveAspectRatio, ViewBox
+    from ...ops._layers import _fit
+    from .._geometry import union_outline
+
+    data = union_outline(symbol)
+    box = symbol.get("viewBox")
+    if box is None:
+        return data
+    view = box if isinstance(box, ViewBox) else ViewBox.parse(str(box))
+    width = user_units(use.get("width")) or view.width
+    height = user_units(use.get("height")) or view.height
+    ratio_text = symbol.get("preserveAspectRatio")
+    ratio = ratio_text if isinstance(ratio_text, PreserveAspectRatio) else (
+        PreserveAspectRatio.parse(str(ratio_text)) if ratio_text is not None else PreserveAspectRatio())
+    fit = _fit(width, height, view.width, view.height, ratio)
+    return data.transformed(fit @ Matrix.translate(-view.min_x, -view.min_y))
 
 
 class Switch(PathOperand, GraphicsElement, GraphicsContainer, tag="switch", category=Category.CONTAINER):
