@@ -5,7 +5,6 @@ Text outlines and measurement from installed fonts.
 from __future__ import annotations
 
 import os
-import warnings
 from collections.abc import Sequence
 from dataclasses import dataclass, replace
 from functools import lru_cache
@@ -17,20 +16,17 @@ from ..pathdata.data import PathData
 from ..transform.matrix import Matrix
 from ._constants import (
     ANCHOR_SHIFT,
-    BOLD_WEIGHT,
     CJK_START,
     COMPLEX_SCRIPT_START,
     DEFAULT_FAMILY,
     DEFAULT_FONT_SIZE,
     EMOJI_START,
-    FONT_CACHE,
-    GENERIC_CANDIDATES,
-    GENERIC_FAMILIES,
     GLYPH_CACHE,
     LATIN_EXTENDED_ADDITIONAL,
-    NORMAL_WEIGHT,
     NORMAL_WIDTH,
 )
+from ._fonts import registered_typefaces, resolve_font, weight_value
+from ._shaping import harfbuzz, hb_font
 from ._skia import from_skia
 
 if TYPE_CHECKING:
@@ -43,17 +39,6 @@ __all__ = [
 
 Anchor = Literal["start", "middle", "end"]
 FontWeight = int | Literal["normal", "bold"]
-
-
-def _weight(value: FontWeight) -> int:
-    if value == "normal":
-        return NORMAL_WEIGHT
-    if value == "bold":
-        return BOLD_WEIGHT
-    return int(value)
-
-
-_REGISTERED: dict[str, list[Any]] = {}
 
 
 def register_font(source: str | os.PathLike[str] | bytes, family: str | None = None) -> str:
@@ -94,49 +79,11 @@ def register_font(source: str | os.PathLike[str] | bytes, family: str | None = N
     if typeface is None:
         raise ValueError(f"cannot read a font from {source if not isinstance(source, bytes) else 'the data'!r}")
     name = family or typeface.getFamilyName()
-    _REGISTERED.setdefault(name.lower(), []).append(typeface)
-    _font.cache_clear()
+    registered_typefaces.setdefault(name.lower(), []).append(typeface)
+    resolve_font.cache_clear()
     font_for.cache_clear()
     glyph_shape.cache_clear()
     return name
-
-
-def _registered(family: str, weight: int, slant: Any) -> Any:
-    """The registered typeface of *family* closest to the requested weight and slant, if any."""
-    faces = _REGISTERED.get(family.lower())
-    if not faces:
-        return None
-    return min(faces, key=lambda face: (face.fontStyle().slant() != slant, abs(face.fontStyle().weight() - weight)))
-
-
-@lru_cache(maxsize=FONT_CACHE)
-def _font(font_family: str, size: float, weight: FontWeight, italic: bool) -> Any:
-    slant = skia.FontStyle.kItalic_Slant if italic else skia.FontStyle.kUpright_Slant
-    families = [name.strip().strip("'\"") for name in font_family.split(",") if name.strip()]
-    for family in families:
-        face = _registered(family, _weight(weight), slant)
-        if face is not None:
-            return skia.Font(face, size)
-    typeface = None
-    for family in families or [DEFAULT_FAMILY]:
-        for concrete in GENERIC_CANDIDATES.get(family.lower(), ()):
-            match = skia.Typeface(concrete, skia.FontStyle(_weight(weight), NORMAL_WIDTH, slant))
-            if match.getFamilyName().lower() == concrete.lower():
-                return skia.Font(match, size)
-        candidate = skia.Typeface(family, skia.FontStyle(_weight(weight), NORMAL_WIDTH, slant))
-        if family.lower() in GENERIC_FAMILIES or candidate.getFamilyName().lower() == family.lower():
-            typeface = candidate
-            break
-    if typeface is None:
-        typeface = skia.Typeface(families[-1], skia.FontStyle(_weight(weight), NORMAL_WIDTH, slant))
-        warnings.warn(
-            f"font {font_family!r} not found; using {typeface.getFamilyName()!r}",
-            stacklevel=3,
-        )
-    return skia.Font(typeface, size)
-
-
-_HB_FONTS: dict[int, Any] = {}
 
 
 def needs_shaping(text: str) -> bool:
@@ -146,32 +93,7 @@ def needs_shaping(text: str) -> bool:
     """
     complex_script = any(COMPLEX_SCRIPT_START <= ord(char) < LATIN_EXTENDED_ADDITIONAL
                          or CJK_START <= ord(char) < EMOJI_START for char in text)
-    return complex_script and _harfbuzz() is not None
-
-
-def _harfbuzz() -> Any:
-    try:
-        import uharfbuzz
-    except ImportError:
-        return None
-    return uharfbuzz
-
-
-def _hb_font(typeface: Any) -> Any:
-    """A HarfBuzz font reading *typeface*'s tables through skia (cached; table bytes kept alive)."""
-    key = typeface.uniqueID()
-    if key not in _HB_FONTS:
-        hb = _harfbuzz()
-        tables: dict[str, bytes] = {}
-
-        def table(face: Any, tag: str, data: Any) -> bytes:
-            raw = typeface.copyTableData(int.from_bytes(tag.encode("latin-1"), "big"))
-            tables[tag] = bytes(raw) if raw is not None else b""
-            return tables[tag]
-
-        face = hb.Face.create_for_tables(table, None)
-        _HB_FONTS[key] = (hb.Font(face), face.upem, tables, table)
-    return _HB_FONTS[key]
+    return complex_script and harfbuzz() is not None
 
 
 def shape_run(text: str, font_family: str, size: float, weight: FontWeight = "normal",
@@ -211,12 +133,12 @@ def shape_run(text: str, font_family: str, size: float, weight: FontWeight = "no
     >>> needs_shaping("plain latin")
     False
     """
-    hb = _harfbuzz()
+    hb = harfbuzz()
     if hb is None:
         raise ImportError("text shaping needs uharfbuzz; pip install uharfbuzz")
     first = next((char for char in text if not char.isspace()), text[:1])
     font = font_for(first, font_family, size, weight, italic, language)
-    shaper, units, _, _ = _hb_font(font.getTypeface())
+    shaper, units, _, _ = hb_font(font.getTypeface())
     buffer = hb.Buffer()
     buffer.add_str(text)
     buffer.guess_segment_properties()
@@ -274,11 +196,11 @@ def font_for(char: str, font_family: str, size: float, weight: FontWeight = "nor
     >>> font_for("A", "sans-serif", 16).getSize()
     16.0
     """
-    font = _font(font_family, size, weight, italic)
+    font = resolve_font(font_family, size, weight, italic)
     if not char or font.unicharToGlyph(ord(char[0])):
         return font
     slant = skia.FontStyle.kItalic_Slant if italic else skia.FontStyle.kUpright_Slant
-    style = skia.FontStyle(_weight(weight), NORMAL_WIDTH, slant)
+    style = skia.FontStyle(weight_value(weight), NORMAL_WIDTH, slant)
     family = font.getTypeface().getFamilyName()
     hints = [language] if language else []
     fallback = skia.FontMgr().matchFamilyStyleCharacter(family, style, hints, ord(char[0]))
@@ -368,7 +290,7 @@ def text_width(
     True
     """
     if text.isascii():
-        return float(_font(font_family, size, weight, italic).measureText(text))
+        return float(resolve_font(font_family, size, weight, italic).measureText(text))
     boxes = _laid_out(text, font_family, size, weight, italic)
     return float(boxes[-1].x + boxes[-1].advance - boxes[0].x) if boxes else 0.0
 
@@ -551,7 +473,7 @@ def layout_glyphs(
     >>> [(b.char, b.angle) for b in boxes]
     [('a', 90.0), ('b', 90.0)]
     """
-    font = _font(font_family, size, weight, italic)
+    font = resolve_font(font_family, size, weight, italic)
     glyphs = font.textToGlyphs(text)
     advances = font.getWidths(glyphs)
     pen_x, pen_y = (x[0] if x else 0.0), (y[0] if y else 0.0)
