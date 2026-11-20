@@ -77,7 +77,7 @@ version = { attr = "svgwriter.__version__" }
 include = ["svgwriter*"]
 
 [tool.setuptools.package-data]
-svgwriter = ["py.typed"]
+svgwriter = ["py.typed", "*.pyi", "**/*.pyi"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -101,7 +101,7 @@ tools = ["svgwriter_tools:app"]
 
 [tool.devkit.stub]
 targets = ["svgwriter"]
-output = "build/stubs"
+output = "."
 
 [tool.devkit.version]
 file = "svgwriter/__init__.py"

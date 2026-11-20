@@ -1,0 +1,13 @@
+from typing import Final, TypeVar
+from .._internal._typing import Self
+from ..elements.base import Element
+from ..pathdata.data import BBox
+
+NON_CONTENT: Final = ...
+E = TypeVar('E', bound=Element)
+
+class Sizing:
+    @property
+    def auto_size(self) -> bool: ...
+    def content_bounds(self, padding: float = 0.0) -> BBox | None: ...
+    def fit(self, padding: float = 0.0) -> Self: ...
