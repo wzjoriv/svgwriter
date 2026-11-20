@@ -1,10 +1,11 @@
 from typing import ClassVar
 from numpy import ndarray
+from ..._internal._drawable import Drawable
 from ._pixel_compositing import PixelCompositing
 
 __all__ = ["Pixels"]
 
-class Pixels(PixelCompositing):
+class Pixels(PixelCompositing, Drawable):
     __hash__: ClassVar[None]
 
     def __init__(

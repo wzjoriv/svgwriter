@@ -3,11 +3,8 @@
 A project keeps a module like this one; tooling imports ``logo`` and writes
 SVG variants, PNGs at any size, ``.ico``/``.icns`` and favicons. Output is
 deterministic, so stale assets can be detected by regenerating and comparing.
-
-Usage: python logo.py [OUTPUT_DIR]
+Run it as ``python logo.py [OUTPUT_DIR]`` or open ``logo.ipynb`` to see each variant.
 """
-
-from __future__ import annotations
 
 import sys
 import tempfile
@@ -16,15 +13,17 @@ from typing import Literal
 
 import svgwriter as svg
 
+# %% [markdown]
+# The logo is one function. `theme` picks a palette and `mono` draws it in a single color,
+# with the mark cut out of the ground by boolean subtraction.
+
+# %%
 SIZE = 100.0
 PADDING = 4.0
 THEMES = {
     "light": {"ground": "#0f766e", "mark": "#ffffff", "accent": "#fbbf24"},
     "dark": {"ground": "#99f6e4", "mark": "#042f2e", "accent": "#b45309"},
 }
-PNG_SIZES = (16, 32, 48, 64, 128, 256, 512, 1024)
-FAVICON_SIZES = (16, 32, 48)
-APPLE_TOUCH_SIZE = 180
 
 
 def logo(theme: Literal["light", "dark"] = "light", *, mono: bool = False) -> svg.Document:
@@ -57,39 +56,42 @@ def logo(theme: Literal["light", "dark"] = "light", *, mono: bool = False) -> sv
     return doc
 
 
-def write_assets(out_dir: Path) -> list[Path]:
-    """Every asset a project usually needs, from the one definition above."""
-    out_dir.mkdir(parents=True, exist_ok=True)
-    written = []
-    for theme in THEMES:
-        target = out_dir / f"logo-{theme}.svg"
-        logo(theme).save(target)
-        written.append(target)
-    target = out_dir / "logo-mono.svg"
-    logo(mono=True).save(target)
-    written.append(target)
-    light = logo()
-    for size in PNG_SIZES:
-        target = out_dir / f"logo-{size}.png"
-        light.save(target, size=size, padding=PADDING)
-        written.append(target)
-    for name, options in {
-        "favicon.ico": {"sizes": FAVICON_SIZES},
-        "logo.icns": {},
-        "apple-touch-icon.png": {"size": APPLE_TOUCH_SIZE, "background": THEMES["light"]["ground"]},
-    }.items():
-        target = out_dir / name
-        light.save(target, padding=PADDING, **options)
-        written.append(target)
-    return written
+# %% [markdown]
+# The default light variant.
 
+# %%
+logo()
 
-def main(out_dir: Path) -> Path:
-    write_assets(out_dir)
-    return out_dir
+# %% [markdown]
+# The dark variant.
 
+# %%
+logo("dark")
 
+# %% [markdown]
+# The mono variant, a single path.
+
+# %%
+logo(mono=True)
+
+# %% [markdown]
+# Every asset a project usually needs comes from that one definition: SVG variants, PNGs at any size,
+# a multi-size `.ico`, an `.icns` and an apple-touch icon. Pass a folder as the first argument to choose
+# where they go. This cell only runs when the file is executed, not when it is imported
+# (the devkit `logo` tool imports `logo` from here).
+
+# %%
 if __name__ == "__main__":
-    folder = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(tempfile.mkdtemp(prefix="svgwriter-"))
-    for path in write_assets(folder):
-        print(path)
+    args = sys.argv[1:2]
+    out = Path(args[0]) if args and not args[0].startswith("-") else Path(tempfile.mkdtemp(prefix="svgwriter-"))
+    out.mkdir(parents=True, exist_ok=True)
+    for theme in THEMES:
+        logo(theme).save(out / f"logo-{theme}.svg")
+    logo(mono=True).save(out / "logo-mono.svg")
+    light = logo()
+    for size in (16, 32, 48, 64, 128, 256, 512, 1024):
+        light.save(out / f"logo-{size}.png", size=size, padding=PADDING)
+    light.save(out / "favicon.ico", padding=PADDING, sizes=(16, 32, 48))
+    light.save(out / "logo.icns", padding=PADDING)
+    light.save(out / "apple-touch-icon.png", padding=PADDING, size=180, background=THEMES["light"]["ground"])
+    print(f"saved {len(list(out.iterdir()))} files")
