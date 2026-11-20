@@ -43,6 +43,7 @@ __all__ = [
     "FORMATS",
     "FULL_TURN",
     "GENERIC_CANDIDATES",
+    "MAC_FALLBACK_FAMILIES",
     "GENERIC_FAMILIES",
     "GEOMETRY_SKIP",
     "GLYPH_CACHE",
@@ -161,3 +162,7 @@ COMPLEX_SCRIPT_START: Final = 0x0590
 LATIN_EXTENDED_ADDITIONAL: Final = 0x1E00
 CJK_START: Final = 0xA800
 EMOJI_START: Final = 0x1F000
+MAC_FALLBACK_FAMILIES: Final = (
+    "Helvetica Neue", "Arial Unicode MS", "PingFang SC", "Hiragino Sans", "Apple SD Gothic Neo",
+    "Kohinoor Devanagari", "Kohinoor Bangla", "Geeza Pro", "Noto Nastaliq Urdu", "Thonburi", "Apple Color Emoji",
+)

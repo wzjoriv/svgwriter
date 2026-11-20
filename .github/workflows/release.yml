@@ -27,6 +27,8 @@ jobs:
         run: pipx run build
       - name: Check metadata
         run: pipx run twine check --strict dist/*
+      - name: System libraries for skia
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libegl1 libgl1 libfontconfig1 fonts-dejavu-core
       - name: Wheel installs and imports
         run: |
           python -m pip install dist/*.whl

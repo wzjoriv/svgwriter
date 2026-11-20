@@ -42,6 +42,8 @@ jobs:
           path: docs/_build/doctrees
           key: doctrees-${{ env.SVGWRITER_DOCS_CHANNEL }}-${{ hashFiles('docs/**', 'svgwriter/**') }}
           restore-keys: doctrees-${{ env.SVGWRITER_DOCS_CHANNEL }}-
+      - name: System libraries for skia
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libegl1 libgl1 libfontconfig1 fonts-dejavu-core
       - name: Install
         run: pip install -e ".[docs]"
       - name: Build HTML
