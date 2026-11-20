@@ -5,20 +5,11 @@ SMIL evaluation: a static copy of a document with every animation applied at one
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from ._constants import (
-    CLOCK_RE,
-    EPSILON,
-    INDEFINITE,
-    NUMBER_RE,
-    SECONDS_PER_HOUR,
-    SECONDS_PER_MINUTE,
-    TIME_SCALE,
-    TIMECOUNT_RE,
-)
+from ._constants import ANIMATED_DEFAULTS, EPSILON, NUMBER_RE
 from ._easing import spline_progress
+from ._timing import timing
 
 if TYPE_CHECKING:
     from ..document import Document
@@ -26,60 +17,6 @@ if TYPE_CHECKING:
     from ..transform.matrix import Matrix
 
 __all__ = ["add_values", "blend", "snapshot"]
-
-
-def clock(value: object) -> float | None:
-    """Seconds of a SMIL clock value (``2s``, ``150ms``, ``1:30``, ``0:01:30.5``), or None."""
-    text = str(value)
-    match = TIMECOUNT_RE.match(text)
-    if match:
-        return float(match.group(1)) * TIME_SCALE[match.group(2)]
-    match = CLOCK_RE.match(text)
-    if match:
-        hours = float(match.group(1) or 0)
-        return hours * SECONDS_PER_HOUR + float(match.group(2)) * SECONDS_PER_MINUTE + float(match.group(3))
-    return None
-
-
-@dataclass(frozen=True)
-class _Timing:
-    begin: float
-    dur: float | None
-    active: float
-    freeze: bool
-
-    def progress(self, time: float) -> float | None:
-        """Simple-time fraction in ``0..1`` at *time*, or None when the animation has no effect."""
-        if time < self.begin:
-            return None
-        elapsed = time - self.begin
-        if elapsed >= self.active:
-            if not self.freeze:
-                return None
-            if self.dur is None or math.isinf(self.active):
-                return 1.0
-            remainder = (self.active / self.dur) % 1.0
-            return remainder if remainder > EPSILON else 1.0
-        if self.dur is None:
-            return 1.0
-        return (elapsed % self.dur) / self.dur
-
-
-def _timing(animation: Element) -> _Timing:
-    begin = clock(animation.get("begin", 0)) or 0.0
-    dur = clock(animation.get("dur", "")) if str(animation.get("dur", "")) != INDEFINITE else None
-    count, repeat_dur = animation.get("repeatCount"), animation.get("repeatDur")
-    active = math.inf if dur is None else dur
-    if count is not None:
-        active = math.inf if str(count) == INDEFINITE else (dur or 0.0) * float(count)
-    if repeat_dur is not None:
-        limit = math.inf if str(repeat_dur) == INDEFINITE else clock(repeat_dur) or math.inf
-        active = limit if count is None else min(active, limit)
-    end = clock(animation.get("end", "")) if animation.get("end") is not None else None
-    if end is not None:
-        active = min(active, max(end - begin, 0.0))
-    freeze = str(animation.get("fill", "remove")) == "freeze"
-    return _Timing(begin, dur if dur else None, active, freeze)
 
 
 def _values(animation: Element, base: Any) -> list[str]:
@@ -224,6 +161,10 @@ def _apply(animation: Element, target: Element, p: float, base_t: dict[int, Matr
         target.t = (target.t @ moved) if sum_mode else moved  # type: ignore[attr-defined]
         return
     base = target.get(name)
+    if base is None:
+        from ..attributes.cascade import computed
+
+        base = computed(target, name, ANIMATED_DEFAULTS.get(name))
     if tag == "set":
         target.set(name, str(animation.get("to", base)))
         return
@@ -286,7 +227,8 @@ def snapshot(document: Document, time: float) -> Document:
     ``fill="freeze"``, ``values``/``from``/``to``/``by``, ``keyTimes``,
     every ``calcMode`` (``discrete``, ``linear``, ``paced`` with distances
     between numbers or colors, ``spline`` with ``keySplines``), ``keyPoints``
-    and ``additive="sum"``. Event-based begins are treated as clock-based.
+    and ``additive="sum"``. ``begin`` and ``end`` lists may hold sync bases (``other.end + 1s``);
+    event-based and ``indefinite`` times never occur, so animations waiting only on them stay idle.
     """
     from ..document import Document
     from ..elements.animation import AnimationElement
@@ -298,7 +240,7 @@ def snapshot(document: Document, time: float) -> Document:
     base_t: dict[int, Matrix] = {}
     for animation in animations:
         target = _target(animation, root)
-        progress = _timing(animation).progress(time)
+        progress = timing(animation, time).progress(time)
         if target is not None and progress is not None:
             _apply(animation, target, progress, base_t)
     for animation in animations:

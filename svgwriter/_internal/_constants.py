@@ -11,6 +11,7 @@ import numpy as np
 
 __all__ = [
     "ANCHOR_SHIFT",
+    "ANIMATED_DEFAULTS",
     "ATTRIBUTE_TABLE",
     "BASE_PROFILE",
     "BLINK_VALUES",
@@ -145,6 +146,8 @@ __all__ = [
     "SIDES",
     "STROKE",
     "SVG_NS",
+    "SYNCBASE_RE",
+    "SYNC_DEPTH",
     "SVG_VERSION",
     "SWATCH",
     "TEXT_TABLE",
@@ -368,3 +371,11 @@ MPL_CLOSE: Final = 79
 USE_GEOMETRY: Final = frozenset({"x", "y", "width", "height", "xlink:href", "href", "transform", "id"})
 USE_NESTING: Final = 16
 VISIBLE_OVERFLOW: Final = frozenset({"visible", "auto"})
+SYNCBASE_RE: Final = re.compile(r"^\s*([^\s.;+-][^;]*?)\.(begin|end)\s*(?:([+-])\s*(\S.*?))?\s*$")
+SYNC_DEPTH: Final = 32
+ANIMATED_DEFAULTS: Final = {
+    "fill": "black", "stroke": "none", "color": "black", "opacity": "1", "fill-opacity": "1", "stroke-opacity": "1",
+    "stroke-width": "1", "stop-color": "black", "stop-opacity": "1", "flood-color": "black", "flood-opacity": "1",
+    "lighting-color": "white", "x": "0", "y": "0", "cx": "0", "cy": "0", "dx": "0", "dy": "0", "x1": "0",
+    "y1": "0", "x2": "0", "y2": "0", "stroke-dashoffset": "0", "font-size": "16",
+}
