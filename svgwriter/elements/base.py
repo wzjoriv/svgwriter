@@ -6,23 +6,24 @@ from __future__ import annotations
 
 import difflib
 import re
-from collections.abc import Iterable, Iterator, Mapping
+from collections.abc import Iterable, Mapping
 from typing import TYPE_CHECKING, Any, ClassVar, Final, Literal, TypeAlias, TypeVar, Union, overload
 
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._ids import next_id
 from .._internal._registry import chainable
 from .._internal._typing import ElementId
-from ..attributes.names import KNOWN_ATTRIBUTES, UNSUPPORTED_ATTRIBUTES, py_name, svg_name
+from ..attributes.names import KNOWN_ATTRIBUTES, UNSUPPORTED_ATTRIBUTES, svg_name
 from ..attributes.reference import IRI, FuncIRI
 from ..attributes.values import format_value
 from ..color.color import Color, as_color
 from ._categories import Category, ContentModel
 from ._compose import Composable
+from ._display import Displayable
+from ._errors import UnknownAttributeError, UnknownKeywordError
+from ._query import Queryable
 
 if TYPE_CHECKING:
-    from .._internal._typing import AnyPath
-    from ..attributes.protocols import TextSink
     from .structure import Use
 
 __all__ = [
@@ -48,11 +49,6 @@ COLOR_OPACITY: Final = {
     "flood-color": "flood-opacity",
 }
 COLOR_ATTRIBUTES: Final = frozenset({*COLOR_OPACITY, "color", "lighting-color"})
-SUGGESTIONS: Final = 3
-PREVIEW_PADDING: Final = 2.0
-REPR_WIDTH: Final = 120
-PREVIEW_SCALE: Final = 1.0
-PREVIEW_MIN_PIXELS: Final = 200.0
 _XML_NAME_RE: Final = re.compile(r"^[A-Za-z_][\w.\-]*$")
 
 
@@ -69,7 +65,7 @@ def _check_paint(key: str, text: str) -> None:
         raise ValueError(f"{key}={text!r} is not a color{hint}") from None
 
 
-class Element(Composable):
+class Element(Queryable, Displayable, Composable):
     """Base class for every SVG element.
 
     Attributes are kept in ``attributes`` under their SVG names; keyword
@@ -715,159 +711,6 @@ class Element(Composable):
         value = computed(self, svg_name(name), default)
         return value.svg_value() if hasattr(value, "svg_value") and not isinstance(value, (int, float)) else value
 
-    def __len__(self) -> int:
-        return len(self.children)
-
-    def __iter__(self) -> Iterator[Element]:
-        return (c for c in self.children if isinstance(c, Element))
-
-    def __bool__(self) -> bool:
-        return True
-
-    def iter(self, tag: str | None = None, *, max_depth: float = float("inf")) -> Iterator[Element]:
-        """Depth-first walk over this element and its descendants.
-
-        Parameters
-        ----------
-        tag : str, optional
-            Yield only elements with this tag. Defaults to None (all).
-        max_depth : float, optional
-            Deepest level to descend to; ``0`` is this element only.
-            Defaults to infinity.
-
-        Yields
-        ------
-        Element
-            Elements in document order, starting with this one.
-
-        Examples
-        --------
-        >>> import svgwriter as svg
-        >>> g = svg.group(svg.circle(0, 0, 1), svg.rect(0, 0, 1, 1))
-        >>> [e.tag for e in g.iter()]
-        ['g', 'circle', 'rect']
-        """
-        stack: list[tuple[Element, int]] = [(self, 0)]
-        while stack:
-            element, depth = stack.pop()
-            if tag is None or element.tag == tag:
-                yield element
-            if depth < max_depth:
-                stack.extend(
-                    (child, depth + 1) for child in reversed(element.children) if isinstance(child, Element)
-                )
-
-    @overload
-    def find(self, match: type[E]) -> E | None: ...
-    @overload
-    def find(self, match: str) -> Element | None: ...
-    def find(self, match: type[Element] | str) -> Element | None:
-        """First descendant (or self) matching a tag or class.
-
-        Parameters
-        ----------
-        match : str or type
-            A tag name or an element class.
-
-        Returns
-        -------
-        Element or None
-            The first match in document order, or None.
-
-        See Also
-        --------
-        find_all : Every match.
-
-        Examples
-        --------
-        >>> import svgwriter as svg
-        >>> g = svg.group(svg.circle(0, 0, 1))
-        >>> g.find("circle").tag, g.find("rect")
-        ('circle', None)
-        """
-        return next(iter(self.find_all(match)), None)
-
-    @overload
-    def find_all(self, match: type[E]) -> list[E]: ...
-    @overload
-    def find_all(self, match: str) -> list[Element]: ...
-    def find_all(self, match: type[Element] | str) -> list[Element]:
-        """Every descendant (and self) matching a tag or class.
-
-        Parameters
-        ----------
-        match : str or type
-            A tag name or an element class.
-
-        Returns
-        -------
-        list of Element
-            The matches in document order.
-
-        Examples
-        --------
-        >>> import svgwriter as svg
-        >>> g = svg.group(svg.circle(0, 0, 1), svg.circle(1, 1, 1))
-        >>> len(g.find_all("circle"))
-        2
-        """
-        if isinstance(match, str):
-            return list(self.iter(match))
-        return [e for e in self.iter() if isinstance(e, match)]
-
-    def get_element_by_id(self, element_id: str) -> Element | None:
-        """Find the element with the given id in this subtree.
-
-        Parameters
-        ----------
-        element_id : str
-            The id to look for.
-
-        Returns
-        -------
-        Element or None
-            The matching element, or None.
-
-        Examples
-        --------
-        >>> import svgwriter as svg
-        >>> g = svg.group(svg.circle(0, 0, 1, id="dot"))
-        >>> g.get_element_by_id("dot").tag
-        'circle'
-        """
-        index = self.__dict__.get("_id_index")
-        found = index.get(element_id) if index is not None else None
-        if found is not None and found.get("id") == element_id and _within(found, self):
-            return found
-        index = {}
-        for element in self.iter():
-            key = element.get("id")
-            if key is not None:
-                index.setdefault(str(key), element)
-        self.__dict__["_id_index"] = index
-        return index.get(element_id)
-
-    def root(self) -> Element:
-        """Return the topmost ancestor, or this element if it has no parent.
-
-        Returns
-        -------
-        Element
-            The root of the tree this element belongs to.
-
-        Examples
-        --------
-        >>> import svgwriter as svg
-        >>> c = svg.circle(0, 0, 1)
-        >>> g = svg.group(c)
-        >>> c.root() is g
-        True
-        """
-        node = self
-        while node.parent is not None:
-            node = node.parent
-        return node
-
     @overload
     def clone(self: E, linked: Literal[False] = False) -> E: ...
     @overload
@@ -933,185 +776,9 @@ class Element(Composable):
     def __deepcopy__(self: E, memo: dict[int, object]) -> E:
         return self.clone()
 
-    def to_string(self, **options: Any) -> str:
-        """Serialize to an SVG string; see :class:`svgwriter.io.SerializeOptions`.
-
-        Parameters
-        ----------
-        **options
-            Serialization options such as ``pretty`` or ``xml_declaration``.
-
-        Returns
-        -------
-        str
-            The SVG markup.
-
-        See Also
-        --------
-        save : Write to a file or stream.
-
-        Examples
-        --------
-        >>> import svgwriter as svg
-        >>> svg.circle(0, 0, 1).to_string(xml_declaration=False, pretty=False)
-        '<circle cx="0" cy="0" r="1"/>'
-        """
-        from ..io.writer import to_string
-
-        return to_string(self, **options)
-
-    def save(self, target: AnyPath | TextSink, **options: Any) -> None:
-        """Write to a path or text stream.
-
-        Parameters
-        ----------
-        target : path or text stream
-            Where to write the SVG markup.
-        **options
-            Serialization options, as for :meth:`to_string`.
-
-        See Also
-        --------
-        to_string : Serialize to a string.
-
-        Examples
-        --------
-        >>> import io
-        >>> import svgwriter as svg
-        >>> buffer = io.StringIO()
-        >>> svg.circle(0, 0, 1).save(buffer, xml_declaration=False, pretty=False)
-        >>> buffer.getvalue()
-        '<circle cx="0" cy="0" r="1"/>'
-        """
-        from ..io.writer import write
-
-        write(self, target, **options)
-
-    def _preview(self) -> Any:
-        """A copy of this element alone in a fitted document, enlarged to at least 200 px on its longer side."""
-        from ..document import Document
-
-        doc = Document()
-        doc.add(self.clone())
-        doc.fit(padding=PREVIEW_PADDING)
-        box = doc.root.view_box
-        longest = max(box.width, box.height) if box is not None else 0.0
-        if 0 < longest < PREVIEW_MIN_PIXELS:
-            zoom = PREVIEW_MIN_PIXELS / longest
-            doc.root.set("width", box.width * zoom)
-            doc.root.set("height", box.height * zoom)
-        return doc
-
-    def _repr_svg_(self) -> str | None:
-        """Jupyter display: the element alone in a fitted ``<svg>``; None (text repr) when nothing is drawn."""
-        if self.tag == "svg":
-            return self.to_string(xml_declaration=False)
-        if not self._draws_something():
-            return None  # type: ignore[return-value]
-        return self._preview().to_string(xml_declaration=False)
-
-    def _draws_something(self) -> bool:
-        """Whether the element has any visible extent (a zero-radius circle has none)."""
-        box = getattr(self, "render_bounds", lambda: None)()
-        return box is not None and (box.width > 0 or box.height > 0)
-
-    def _repr_png_(self) -> bytes | None:
-        """Jupyter display as PNG, for front ends that do not show SVG; None when there is nothing to draw."""
-        if not self._draws_something():
-            return None
-        try:
-            return self._preview().render_png(scale=PREVIEW_SCALE)
-        except (TypeError, ValueError):
-            return None
-
-    def __str__(self) -> str:
-        return self.to_string(xml_declaration=False, pretty=False)
-
-    def __repr__(self) -> str:
-        shown = " ".join(f"{k}={format_value(v)!r}" for k, v in self.attributes.items())
-        if len(shown) > REPR_WIDTH:
-            shown = shown[:REPR_WIDTH].rsplit(" ", 1)[0] + " ..."
-        return f"<{type(self).__name__} {self.tag}{' ' + shown if shown else ''}>"
-
 
 OPEN_PREFIXES: Final = ("data-", "aria-")
 _INSTANCE_FIELDS: Final = frozenset({"attributes", "children", "parent"})
-_PY_NAMES: Final = sorted({py_name(n) for n in KNOWN_ATTRIBUTES})
-
-
-def _within(element: Element, ancestor: Element) -> bool:
-    """Whether *element* is *ancestor* or lies below it."""
-    node: Element | None = element
-    while node is not None:
-        if node is ancestor:
-            return True
-        node = node.parent
-    return False
-
-
-class UnknownAttributeError(AttributeError):
-    """An attribute that is neither a Python member nor a known SVG attribute.
-
-    The "did you mean" suggestion is computed only when the message is shown,
-    so ``getattr(element, name, default)`` stays cheap.
-
-    Parameters
-    ----------
-    owner : str
-        The class name of the element.
-    name : str
-        The attribute that was requested.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> try:
-    ...     svg.rect(0, 0, 1, 1).widht
-    ... except AttributeError as error:
-    ...     print("did you mean 'width'?" in str(error))
-    True
-    """
-
-    def __init__(self, owner: str, name: str, members: type | None = None) -> None:
-        super().__init__(name)
-        self.owner = owner
-        self.attribute = name
-        self.members = members
-
-    def __str__(self) -> str:
-        methods = [m for m in dir(self.members) if not m.startswith("_")] if self.members is not None else []
-        hint = [m for m in methods if m.startswith(self.attribute)][:SUGGESTIONS] or difflib.get_close_matches(
-            self.attribute, [*methods, *_PY_NAMES], n=1)
-        suggestion = f"; did you mean {' or '.join(map(repr, hint))}?" if hint else ""
-        return (f"{self.owner} has no attribute {self.attribute!r}{suggestion} "
-                "(unlisted SVG attributes: element.set(name, value))")
-
-
-class UnknownKeywordError(UnknownAttributeError, TypeError):
-    """An unknown keyword argument (likely a typo); custom attributes go in ``attrs={...}``.
-
-    Parameters
-    ----------
-    owner : str
-        The class name of the element.
-    name : str
-        The keyword that was given.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> try:
-    ...     svg.rect(0, 0, 1, 1, widht=3)
-    ... except TypeError as error:
-    ...     print(type(error).__name__)
-    UnknownKeywordError
-    """
-
-    def __str__(self) -> str:
-        hint = difflib.get_close_matches(self.attribute, _PY_NAMES, n=1)
-        suggestion = f"; did you mean {hint[0]!r}?" if hint else ""
-        return (f"{self.owner}() got an unknown attribute keyword {self.attribute!r}{suggestion} "
-                "(custom attributes: attrs={...} or data_* keywords)")
 
 
 @format_value.register(Element)
