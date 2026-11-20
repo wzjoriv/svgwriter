@@ -180,6 +180,46 @@ class TestEps:
         with pytest.raises(ValueError, match="not PostScript"):
             find_importer("eps").function(b"\x00\x01garbage")
 
+    @pytest.mark.parametrize("angle", [0, 30, 90])
+    def test_exported_image_round_trip(self, angle: int) -> None:
+        pixels = np.zeros((4, 6, 3))
+        pixels[0, 0], pixels[3, 5] = (1, 0, 0), (0, 0, 1)
+        doc = svg.Document(100, 80)
+        original = doc.add(svg.Image(pixels, 20, 10, 36, 24, preserve_aspect_ratio="none"))
+        original.t = svg.Matrix.rotate(angle, 38, 22)
+        back = find_importer("eps").function(svg.export.export(doc, "eps"))
+        image = next(e for e in back.root.iter() if e.tag == "image")
+        assert image.bounds() == pytest.approx(original.bounds(), abs=0.5)
+        assert image.rgba()[0, 0].tolist() == pytest.approx([1, 0, 0, 1], abs=0.02)
+        assert image.rgba()[3, 5].tolist() == pytest.approx([0, 0, 1, 1], abs=0.02)
+
+    def test_image_from_procedure(self) -> None:
+        program = b"%!PS\n%%BoundingBox: 0 0 20 10\n20 10 scale 2 1 8 [2 0 0 1 0 0] {<ff00>} image"
+        image = next(e for e in find_importer("eps").function(program).root.iter() if e.tag == "image")
+        assert image.rgba()[0, :, 0].tolist() == pytest.approx([1, 0])
+
+    def test_text_font_and_position(self) -> None:
+        program = b"%!PS\n%%BoundingBox: 0 0 100 50\n/Helvetica-Bold findfont 12 scalefont setfont 10 10 moveto (Hi) show"
+        text = next(e for e in find_importer("eps").function(program).root.iter() if e.tag == "text")
+        assert text.text_content == "Hi" and text.get("font-size") == 12
+        assert text.get("font-family") == "Helvetica" and text.get("font-weight") == "bold"
+        assert text.t.apply(0, 0) == pytest.approx((10, 40))
+
+    def test_text_advances_current_point(self) -> None:
+        program = b"%!PS\n%%BoundingBox: 0 0 100 50\n/Times-Roman 10 selectfont 5 5 moveto (AB) show (C) show"
+        first, second = (e for e in find_importer("eps").function(program).root.iter() if e.tag == "text")
+        assert second.t.apply(0, 0)[0] > first.t.apply(0, 0)[0] + 5
+
+    def test_clip_intersects_and_restores(self) -> None:
+        program = b"""%!PS
+%%BoundingBox: 0 0 100 100
+gsave 10 10 moveto 60 10 lineto 60 60 lineto 10 60 lineto closepath clip
+newpath 30 30 moveto 90 30 lineto 90 90 lineto 30 90 lineto closepath clip
+newpath 0 0 100 100 rectfill grestore 1 0 0 setrgbcolor 0 0 5 5 rectfill"""
+        clipped, plain = find_importer("eps").function(program)
+        assert clipped.get("clip-path") is not None and plain.get("clip-path") is None
+        assert "M30 40 L60 40 L60 70 L30 70 Z" in find_importer("eps").function(program).export("svg")
+
 
 TIKZ = r"""
 \documentclass{standalone}
