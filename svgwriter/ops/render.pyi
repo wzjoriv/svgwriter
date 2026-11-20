@@ -59,6 +59,7 @@ def paint_tree(
     view: Matrix = ...,
     viewport: bool = False,
     view_box: ViewBox | None = None,
+    native_text: bool = False,
 ) -> None: ...
 
 def rasterize(

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 from ..color.color import Color
 from ..document import Document
 from ..pathdata.data import PathData
@@ -43,6 +44,7 @@ class Scene:
     height: float
     items: list[Item]
     skipped: list[str]
+    texts: list[Any] = ...
 
     def __init__(
         self,
@@ -50,6 +52,7 @@ class Scene:
         height: float,
         items: list[Item],
         skipped: list[str],
+        texts: list[Any] = ...,
     ) -> None: ...
 
 def to_cubic(data: PathData) -> list[tuple[str, tuple[float, ...]]]: ...
@@ -73,4 +76,5 @@ def flatten(
     document: Document,
     *,
     handled: frozenset[str] = ...,
+    text: bool = False,
 ) -> Scene: ...

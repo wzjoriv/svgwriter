@@ -6,6 +6,7 @@ def pdf(
     *,
     title: str | None = None,
     author: str | None = None,
+    text: bool = True,
 ) -> bytes: ...
 
 def tikz(
@@ -14,7 +15,11 @@ def tikz(
     standalone: bool = False,
 ) -> str: ...
 
-def eps(document: Document) -> bytes: ...
+def eps(
+    document: Document,
+    *,
+    text: bool = True,
+) -> bytes: ...
 
 def read_pdf(
     data: bytes,

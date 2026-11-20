@@ -6,4 +6,5 @@ def to_tikz(
     document: Document,
     *,
     standalone: bool = False,
+    text: bool = True,
 ) -> str: ...
