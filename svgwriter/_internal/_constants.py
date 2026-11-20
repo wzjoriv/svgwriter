@@ -66,6 +66,7 @@ __all__ = [
     "ENGINES",
     "EPSILON",
     "EX_PER_EM",
+    "FEATURE_PREFIX",
     "FONT_CACHE",
     "FONT_SIZE_KEYWORDS",
     "FONT_WEIGHTS",
@@ -137,6 +138,7 @@ __all__ = [
     "PNM_WHITESPACE",
     "PT_PER_INCH",
     "PULSE_SCALE",
+    "RENDER_LANGUAGE",
     "RGBA_CHANNELS",
     "RTL_ANCHORS",
     "SECONDS_PER_HOUR",
@@ -379,3 +381,5 @@ ANIMATED_DEFAULTS: Final = {
     "lighting-color": "white", "x": "0", "y": "0", "cx": "0", "cy": "0", "dx": "0", "dy": "0", "x1": "0",
     "y1": "0", "x2": "0", "y2": "0", "stroke-dashoffset": "0", "font-size": "16",
 }
+RENDER_LANGUAGE: Final = "en"
+FEATURE_PREFIX: Final = "http://www.w3.org/TR/SVG11/feature#"
