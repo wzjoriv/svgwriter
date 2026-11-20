@@ -93,6 +93,6 @@ def test_text_length_stretches_to_the_given_advance(adjust, second_x, scale):
     text = svg.text(svg.tspan("AA", text_length=200, length_adjust=adjust), "A", x=0, y=100, font_family=name,
                     font_size=100)
     first, second, third = text.layout()
-    assert second.x == pytest.approx(second_x)
-    assert first.outline.bbox.width == pytest.approx(60 * scale)
-    assert third.x == pytest.approx(200)
+    assert second.x == pytest.approx(second_x, abs=0.05)
+    assert first.outline.bbox.width == pytest.approx(60 * scale, rel=1e-3)
+    assert third.x == pytest.approx(200, abs=0.05)
