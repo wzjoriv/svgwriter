@@ -371,8 +371,8 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
     canvas.drawImage(picture, 0, 0, skia.SamplingOptions(skia.FilterMode.kLinear), paint)
     canvas.restore()
     if mask is not None:
-        from .render import _paint_svg
+        from ._canvas import paint_svg
 
-        paint_mask(canvas, mask, _paint_svg)
+        paint_mask(canvas, mask, paint_svg)
     canvas.restore()
     canvas.restore()

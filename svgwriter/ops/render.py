@@ -14,8 +14,10 @@ import skia
 from ..attributes.length import Length, Unit
 from ..attributes.viewbox import ViewBox
 from ..transform.matrix import IDENTITY, Matrix
-from ._constants import CHANNEL_MAX, DEFAULT_QUALITY, DISPLAY, FORMATS, PIXEL_EPSILON
+from ._canvas import make_surface, paint_svg, read_pixels
+from ._constants import CHANNEL_MAX, DEFAULT_QUALITY, DISPLAY, FORMATS
 from ._layers import draw_image, hidden, layers, resolve_links
+from ._renderable import ellipses_as_paths, expand_image_patterns, outlined
 
 if TYPE_CHECKING:
     from ..color.color import ColorLike
@@ -76,37 +78,6 @@ def document_size(document: Document) -> tuple[float, float]:
     return float(max(1, math.ceil(w))), float(max(1, math.ceil(h)))
 
 
-def _pixels_for(extent: float) -> int:
-    """Pixel count covering *extent*, ignoring float round-off just above an integer."""
-    return max(1, math.ceil(extent - PIXEL_EPSILON))
-
-
-def _surface(width: float, height: float, scale: float, background: ColorLike | None) -> skia.Surface:
-    from ..color.color import as_color
-
-    surface = skia.Surface(_pixels_for(width * scale), _pixels_for(height * scale))
-    if background is not None:
-        r, g, b, a = as_color(background).uint8
-        surface.getCanvas().clear(skia.Color(r, g, b, a))
-    surface.getCanvas().scale(scale, scale)
-    return surface
-
-
-def _paint_svg(canvas: skia.Canvas, text: str, width: float, height: float) -> None:
-    data = text.encode("utf-8")
-    dom = skia.SVGDOM.MakeFromStream(skia.MemoryStream(data, True))
-    if dom is None:
-        raise ValueError("skia could not parse the document")
-    dom.setContainerSize(skia.Size(width, height))
-    dom.render(canvas)
-
-
-def _pixels(surface: skia.Surface) -> np.ndarray:
-    image = surface.makeImageSnapshot()
-    pixels = image.toarray(colorType=skia.kRGBA_8888_ColorType, alphaType=skia.kUnpremul_AlphaType)
-    return pixels.astype(np.float32) / CHANNEL_MAX
-
-
 def render_svg(
     text: str, width: float, height: float, *, scale: float = 1.0, background: ColorLike | None = None
 ) -> np.ndarray:
@@ -156,9 +127,9 @@ def render_svg(
     >>> pixels[0, 0].tolist()
     [1.0, 0.0, 0.0, 1.0]
     """
-    surface = _surface(width, height, scale, background)
-    _paint_svg(surface.getCanvas(), text, width, height)
-    return _pixels(surface)
+    surface = make_surface(width, height, scale, background)
+    paint_svg(surface.getCanvas(), text, width, height)
+    return read_pixels(surface)
 
 
 def render_tree(
@@ -217,9 +188,9 @@ def render_tree(
     >>> render_tree(doc.root, lambda text: text, 4, 2, viewport=True).shape
     (2, 4, 4)
     """
-    surface = _surface(width, height, scale, background)
+    surface = make_surface(width, height, scale, background)
     paint_tree(surface.getCanvas(), root, wrap, width, height, view=view, viewport=viewport, view_box=view_box)
-    return surface.makeImageSnapshot() if snapshot else _pixels(surface)
+    return surface.makeImageSnapshot() if snapshot else read_pixels(surface)
 
 
 def paint_tree(
@@ -288,7 +259,7 @@ def paint_tree(
         if run or len(parts) == 1:
             for leaf in hidden(root, run) if len(parts) > 1 else ():
                 leaf.attributes[DISPLAY] = "none"
-            _paint_svg(canvas, wrap(to_string(root, xml_declaration=False, pretty=False)), width, height)
+            paint_svg(canvas, wrap(to_string(root, xml_declaration=False, pretty=False)), width, height)
             for leaf in hidden(root, run) if len(parts) > 1 else ():
                 leaf.attributes.pop(DISPLAY, None)
         if isinstance(item, Text):
@@ -331,61 +302,20 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     copy = root.clone()
     resolve_styles(copy)
     resolve_links(copy)
-    _ellipses_as_paths(copy)
-    _expand_image_patterns(copy)
+    ellipses_as_paths(copy)
+    expand_image_patterns(copy)
     if isinstance(copy, Text):
-        return copy if keep_text is not None and keep_text(copy) else _outlined(copy)
+        return copy if keep_text is not None and keep_text(copy) else outlined(copy)
     for text in [e for e in copy.iter() if isinstance(e, Text)]:
         if keep_text is not None and keep_text(text):
             continue
         parent = text.parent
         assert parent is not None
-        outline = _outlined(text)
+        outline = outlined(text)
         index = parent.children.index(text)
         parent.remove(text)
         parent.insert(index, outline)
     return copy
-
-
-def _expand_image_patterns(root: Element) -> None:
-    """Shapes filled with a pattern that holds images become clipped tiles, so the images get drawn."""
-    from ..elements._geometry import PathOperand, replace_in_parent
-    from ..elements.paint import Pattern
-
-    for leaf in list(root.iter()):
-        pattern = getattr(leaf.attributes.get("fill"), "element", None)
-        if (isinstance(pattern, Pattern) and isinstance(leaf, PathOperand) and leaf.parent is not None
-                and any(e.tag == "image" for e in pattern.iter())):
-            try:
-                replace_in_parent(leaf, leaf.expand_pattern())
-            except (TypeError, ValueError):
-                continue
-
-
-def _ellipses_as_paths(root: Element) -> None:
-    """Replace ``<ellipse>`` by an equal ``<path>`` (skia's SVG renderer paints gradients on ellipses black)."""
-    from ..elements.shapes import Ellipse, Path
-
-    for ellipse in [e for e in root.iter() if isinstance(e, Ellipse)]:
-        parent = ellipse.parent
-        if parent is None:
-            continue
-        path = Path(ellipse.local_outline())
-        path.attributes.update((k, v) for k, v in ellipse.attributes.items() if k not in ellipse.geometry_attributes)
-        index = parent.children.index(ellipse)
-        parent.remove(ellipse)
-        parent.insert(index, path)
-
-
-def _outlined(text: Text) -> Element:
-    """*text* as a ``<g>`` of per-run outline paths (keeps its transform, clip and opacity)."""
-    from ..elements.structure import Group
-
-    group = Group(*text.runs(), id=text.id, t=text.t)
-    for name in ("clip-path", "mask", "filter", "opacity", "display", "visibility"):
-        if text.has(name):
-            group.attributes[name] = text.attributes[name]
-    return group
 
 
 def _view(document: Document, width: float, height: float, box: ViewBox | None = None) -> Matrix:
