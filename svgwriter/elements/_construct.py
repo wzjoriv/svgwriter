@@ -89,6 +89,7 @@ class Construction:
         {'width': '5'}
         """
         from .base import Element
+
         obj = cls.__new__(cls)
         Element.__init__(obj)
         obj.attributes.update(attributes)

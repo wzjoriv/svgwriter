@@ -51,6 +51,7 @@ class TreeEditing:
         'circle'
         """
         from .base import Element
+
         if isinstance(child, str):
             if ContentModel.TEXT not in self.content:
                 raise TypeError(f"<{self.tag}> cannot contain text")
@@ -150,6 +151,7 @@ class TreeEditing:
         0
         """
         from .base import Element
+
         self.children.remove(child)
         if isinstance(child, Element):
             child.parent = None
@@ -166,6 +168,7 @@ class TreeEditing:
         0
         """
         from .base import Element
+
         for child in self.children:
             if isinstance(child, Element):
                 child.parent = None

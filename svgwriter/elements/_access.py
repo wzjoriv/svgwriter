@@ -199,6 +199,7 @@ class AttributeAccess:
         3
         """
         from .base import Element
+
         key = name if name.startswith("{") else svg_name(name)
         if key in UNSUPPORTED_ATTRIBUTES:
             raise ValueError(
