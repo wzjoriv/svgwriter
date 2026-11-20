@@ -94,3 +94,15 @@ the install hint.
 
 Without the extra these formats raise an `ImportError` that names the install command.
 
+## HTML pages
+
+`doc.save("page.html")` writes a standalone page with the drawing inline. The SVG stays static;
+interaction is attached by the page, by element id:
+
+```python
+# doc.save("page.html", title="Demo", css="#logo:hover { opacity: 0.7 }",
+#          handlers={"logo": {"click": "this.style.fill = 'red'"}})
+```
+
+Opening an HTML file reads its first inline `<svg>`.
+
