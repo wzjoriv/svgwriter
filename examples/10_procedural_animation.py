@@ -1,10 +1,10 @@
-"""A procedural animation scene for ``python -m svgwriter animate``.
+"""# Procedural animation
 
-The script defines a drawing (``doc``) and an ``update(doc, seconds)`` function that moves it; the
-animate command renders one frame per time step.
+A scene for ``python -m svgwriter animate``. The script defines a drawing (``doc``) and an
+``update(doc, seconds)`` function that moves it; the animate command renders one frame per time step.
 
-    python -m svgwriter animate examples/orbit_scene.py -o orbit.gif --renderer skia
-    python orbit_scene.py                   writes the first frame as SVG
+    python -m svgwriter animate examples/10_procedural_animation.py -o orbit.gif --renderer skia
+    python 10_procedural_animation.py                  writes the first frame as SVG
 """
 
 import math
@@ -57,5 +57,5 @@ if __name__ == "__main__":
     update(doc, 0)
     out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
     out.mkdir(parents=True, exist_ok=True)
-    doc.save(out / "orbit_frame0.svg")
-    print("saved orbit_frame0.svg")
+    doc.save(out / "10_orbit_frame0.svg")
+    print("saved 10_orbit_frame0.svg")
