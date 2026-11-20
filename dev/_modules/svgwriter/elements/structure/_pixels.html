@@ -291,7 +291,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">skia</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_PRECISION</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._drawable</span><span class="w"> </span><span class="kn">import</span> <span class="n">pixels_picture</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._drawable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drawable</span><span class="p">,</span> <span class="n">pixels_picture</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">CHANNEL_MAX</span><span class="p">,</span> <span class="n">DATA_URI_PREFIX</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -317,7 +317,7 @@
 
 <div class="viewcode-block" id="Pixels">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.structure.Pixels">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Pixels</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Pixels</span><span class="p">(</span><span class="n">Drawable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Image data: color channels plus a broadcastable alpha.</span>
 
 <span class="sd">    ``color`` is ``(H, W, C)`` with ``C`` in {1, 3} and ``alpha`` broadcasts</span>
@@ -738,12 +738,6 @@
 <span class="sd">        'image'</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="n">pixels_picture</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_repr_svg_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__svgwriter__</span><span class="p">()</span><span class="o">.</span><span class="n">_repr_svg_</span><span class="p">()</span>  <span class="c1"># type: ignore[no-any-return]</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_repr_png_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__svgwriter__</span><span class="p">()</span><span class="o">.</span><span class="n">_repr_png_</span><span class="p">()</span>  <span class="c1"># type: ignore[no-any-return]</span>
 
 <div class="viewcode-block" id="Pixels.svg_value">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.structure.Pixels.svg_value">[docs]</a>
