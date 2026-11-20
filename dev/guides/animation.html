@@ -354,12 +354,71 @@ A shape without a stroke is drawn with its fill color, every contour of a shape 
 </pre></div>
 </div>
 </section>
+<section id="easing">
+<h2>Easing<a class="headerlink" href="#easing" title="Link to this heading">¶</a></h2>
+<p>Every preset with a duration (all but <code class="docutils literal notranslate"><span class="pre">show</span></code> and <code class="docutils literal notranslate"><span class="pre">hide</span></code>), and <code class="docutils literal notranslate"><span class="pre">Animate</span></code>, <code class="docutils literal notranslate"><span class="pre">AnimateTransform</span></code>, <code class="docutils literal notranslate"><span class="pre">AnimateColor</span></code> and <code class="docutils literal notranslate"><span class="pre">AnimateMotion</span></code>, takes <code class="docutils literal notranslate"><span class="pre">ease=</span></code>: a
+timing curve for the whole animation. The named curves are the standard cubic béziers:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">ease=</span></code></p></th>
+<th class="head"><p>Control points <code class="docutils literal notranslate"><span class="pre">(x1,</span> <span class="pre">y1,</span> <span class="pre">x2,</span> <span class="pre">y2)</span></code></p></th>
+<th class="head"><p>Feel</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;linear&quot;</span></code> (default)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">1,</span> <span class="pre">1)</span></code></p></td>
+<td><p>constant speed</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;ease&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(0.25,</span> <span class="pre">0.1,</span> <span class="pre">0.25,</span> <span class="pre">1)</span></code></p></td>
+<td><p>quick start, long gentle stop</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;ease-in&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(0.42,</span> <span class="pre">0,</span> <span class="pre">1,</span> <span class="pre">1)</span></code></p></td>
+<td><p>starts slowly</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;ease-out&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0.58,</span> <span class="pre">1)</span></code></p></td>
+<td><p>stops slowly</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;ease-in-out&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(0.42,</span> <span class="pre">0,</span> <span class="pre">0.58,</span> <span class="pre">1)</span></code></p></td>
+<td><p>slow at both ends</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;step-start&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;step-end&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">(&quot;steps&quot;,</span> <span class="pre">n)</span></code></p></td>
+<td><p></p></td>
+<td><p>jumps instead of gliding</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">box</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">)</span>
+<span class="n">box</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ease</span><span class="o">=</span><span class="s2">"ease-in-out"</span><span class="p">)</span>
+<span class="n">box</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">fade_in</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ease</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>         <span class="c1"># a custom bézier</span>
+</pre></div>
+</div>
+<p>Any Python function from time to progress works too, overshoot included:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">back_out</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="mf">2.7</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">+</span> <span class="mf">1.7</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+
+<span class="n">box</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">slide_in</span><span class="p">(</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">ease</span><span class="o">=</span><span class="n">back_out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The curve covers the whole timeline, so a preset with several <code class="docutils literal notranslate"><span class="pre">values</span></code> (<code class="docutils literal notranslate"><span class="pre">bounce</span></code>, <code class="docutils literal notranslate"><span class="pre">shake</span></code>, <code class="docutils literal notranslate"><span class="pre">pulse</span></code>,
+<code class="docutils literal notranslate"><span class="pre">color_cycle</span></code>) moves through all of them along the one curve. Béziers are written as SMIL
+<code class="docutils literal notranslate"><span class="pre">calcMode=&quot;spline&quot;</span></code> with exact <code class="docutils literal notranslate"><span class="pre">keySplines</span></code> (one piece of the curve per value interval), steps as
+<code class="docutils literal notranslate"><span class="pre">calcMode=&quot;discrete&quot;</span></code>, and a function is sampled into 24 to 60 <code class="docutils literal notranslate"><span class="pre">values</span></code> at even times (more where it
+bends more) played linearly; <code class="docutils literal notranslate"><span class="pre">svg.Ease(curve)(t)</span></code> evaluates any of them.</p>
+</section>
 <section id="playing-smil">
 <h2>Playing SMIL<a class="headerlink" href="#playing-smil" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">doc.at(seconds)</span></code> returns a static copy with every animation applied at that moment, so SMIL can be
 inspected, rasterized or exported frame by frame, and <code class="docutils literal notranslate"><span class="pre">render_animation</span></code> plays it without an <code class="docutils literal notranslate"><span class="pre">update</span></code>
 callback. It covers <code class="docutils literal notranslate"><span class="pre">animate</span></code>, <code class="docutils literal notranslate"><span class="pre">set</span></code>, <code class="docutils literal notranslate"><span class="pre">animateColor</span></code>, <code class="docutils literal notranslate"><span class="pre">animateTransform</span></code> and <code class="docutils literal notranslate"><span class="pre">animateMotion</span></code> with clock
-timing, repeats, <code class="docutils literal notranslate"><span class="pre">fill=&quot;freeze&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">values</span></code>/<code class="docutils literal notranslate"><span class="pre">keyTimes</span></code>, discrete mode and <code class="docutils literal notranslate"><span class="pre">additive=&quot;sum&quot;</span></code>.</p>
+timing, repeats, <code class="docutils literal notranslate"><span class="pre">fill=&quot;freeze&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">values</span></code>/<code class="docutils literal notranslate"><span class="pre">keyTimes</span></code>, every <code class="docutils literal notranslate"><span class="pre">calcMode</span></code> (discrete, linear, paced and
+spline with <code class="docutils literal notranslate"><span class="pre">keySplines</span></code>), <code class="docutils literal notranslate"><span class="pre">keyPoints</span></code> and <code class="docutils literal notranslate"><span class="pre">additive=&quot;sum&quot;</span></code>, so frames match what browsers play.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">frame</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>          <span class="c1"># the ball halfway along</span>
 </pre></div>
 </div>
@@ -480,6 +539,7 @@ numpy array. Mix footage with vector animation in <code class="docutils literal 
 <li><a class="reference internal" href="#">Animation</a><ul>
 <li><a class="reference internal" href="#smil-in-the-document">SMIL in the document</a></li>
 <li><a class="reference internal" href="#presets">Presets</a></li>
+<li><a class="reference internal" href="#easing">Easing</a></li>
 <li><a class="reference internal" href="#playing-smil">Playing SMIL</a></li>
 <li><a class="reference internal" href="#video-through-ffmpeg">Video through ffmpeg</a></li>
 <li><a class="reference internal" href="#tweening-and-morphing">Tweening and morphing</a></li>

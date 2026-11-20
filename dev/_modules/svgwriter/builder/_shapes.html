@@ -300,11 +300,13 @@
     <span class="n">DEFAULT_STAR_POINTS</span><span class="p">,</span>
     <span class="n">DEFAULT_TEETH</span><span class="p">,</span>
     <span class="n">FULL_TURN</span><span class="p">,</span>
+    <span class="n">MIN_SIDES</span><span class="p">,</span>
     <span class="n">QUARTER_TURN</span><span class="p">,</span>
     <span class="n">TOOTH_DEPTH_RATIO</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._rounded</span><span class="w"> </span><span class="kn">import</span> <span class="n">rounded_outline</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"SHAPES"</span><span class="p">,</span> <span class="s2">"arrow"</span><span class="p">,</span> <span class="s2">"gear"</span><span class="p">,</span> <span class="s2">"shape_factory"</span><span class="p">,</span> <span class="s2">"star"</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"SHAPES"</span><span class="p">,</span> <span class="s2">"arrow"</span><span class="p">,</span> <span class="s2">"gear"</span><span class="p">,</span> <span class="s2">"regular_polygon"</span><span class="p">,</span> <span class="s2">"shape_factory"</span><span class="p">,</span> <span class="s2">"star"</span><span class="p">]</span>
 
 <span class="n">E</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">"E"</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Element</span><span class="p">)</span>
 
@@ -387,9 +389,11 @@
     <span class="n">outer</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">inner</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_STAR_POINTS</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">corner_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Polygon</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Build a star polygon with *points* tips, pointing up.</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Polygon</span> <span class="o">|</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Build a star with *points* tips, pointing up.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -401,26 +405,35 @@
 <span class="sd">        Radius of the notches. Defaults to half of `outer`.</span>
 <span class="sd">    points : int, optional</span>
 <span class="sd">        Number of tips. Defaults to 5.</span>
+<span class="sd">    corner_radius : float, optional</span>
+<span class="sd">        Radius of the circular fillet at every tip and notch; it shrinks where the star is too small</span>
+<span class="sd">        for it. Defaults to 0 (sharp).</span>
 <span class="sd">    **kwargs</span>
-<span class="sd">        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`.</span>
+<span class="sd">        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`</span>
+<span class="sd">        (:class:`~svgwriter.elements.Path` when rounded).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    Polygon</span>
-<span class="sd">        The star.</span>
+<span class="sd">    Polygon or Path</span>
+<span class="sd">        The star, a polygon unless `corner_radius` rounds it into a path.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    svgwriter.Polygon.regular : A polygon without notches.</span>
+<span class="sd">    regular_polygon : A polygon without notches.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; from svgwriter.builder import star</span>
 <span class="sd">    &gt;&gt;&gt; len(star(50, 50, 40).points)</span>
 <span class="sd">    10</span>
+<span class="sd">    &gt;&gt;&gt; round(star(50, 50, 40, corner_radius=4).bbox.height, 1)</span>
+<span class="sd">    64.0</span>
 <span class="sd">    """</span>
     <span class="n">inner</span> <span class="o">=</span> <span class="n">outer</span> <span class="o">*</span> <span class="n">DEFAULT_INNER_RATIO</span> <span class="k">if</span> <span class="n">inner</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">inner</span>
-    <span class="k">return</span> <span class="n">Polygon</span><span class="p">(</span><span class="n">_ring</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="p">[</span><span class="n">outer</span><span class="p">,</span> <span class="n">inner</span><span class="p">]</span> <span class="o">*</span> <span class="n">points</span><span class="p">,</span> <span class="o">-</span><span class="n">QUARTER_TURN</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">_ring</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="p">[</span><span class="n">outer</span><span class="p">,</span> <span class="n">inner</span><span class="p">]</span> <span class="o">*</span> <span class="n">points</span><span class="p">,</span> <span class="o">-</span><span class="n">QUARTER_TURN</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">corner_radius</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">rounded_outline</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="p">[</span><span class="n">corner_radius</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Polygon</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 
@@ -503,6 +516,68 @@
         <span class="n">builder</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">x2</span> <span class="o">+</span> <span class="n">head</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">y2</span> <span class="o">+</span> <span class="n">head</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">))</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
     <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"fill"</span><span class="p">,</span> <span class="s2">"none"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="regular_polygon">
+<a class="viewcode-back" href="../../../reference/builder.html#svgwriter.builder.regular_polygon">[docs]</a>
+<span class="nd">@shape_factory</span><span class="p">(</span><span class="s2">"regular_polygon"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">regular_polygon</span><span class="p">(</span>
+    <span class="n">cx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">cy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">r</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">rotation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">corner_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Polygon</span> <span class="o">|</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Build a regular polygon with optionally rounded corners.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cx, cy : float</span>
+<span class="sd">        Center.</span>
+<span class="sd">    r : float</span>
+<span class="sd">        Distance from the center to each corner before rounding.</span>
+<span class="sd">    sides : int</span>
+<span class="sd">        Number of sides, at least 3.</span>
+<span class="sd">    rotation : float, optional</span>
+<span class="sd">        Clockwise rotation in degrees; the first corner is at the top when 0. Defaults to 0.</span>
+<span class="sd">    corner_radius : float, optional</span>
+<span class="sd">        Radius of the circular fillet at every corner. Defaults to 0 (sharp).</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`</span>
+<span class="sd">        (:class:`~svgwriter.elements.Path` when rounded).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Polygon or Path</span>
+<span class="sd">        The polygon, a path when `corner_radius` rounds it.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If `sides` is below 3.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    star : A polygon with notches.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from svgwriter.builder import regular_polygon</span>
+<span class="sd">    &gt;&gt;&gt; len(regular_polygon(0, 0, 10, 6).points)</span>
+<span class="sd">    6</span>
+<span class="sd">    &gt;&gt;&gt; regular_polygon(0, 0, 10, 5, corner_radius=2).tag</span>
+<span class="sd">    'path'</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">sides</span> <span class="o">&lt;</span> <span class="n">MIN_SIDES</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"a polygon needs at least </span><span class="si">{</span><span class="n">MIN_SIDES</span><span class="si">}</span><span class="s2"> sides, got </span><span class="si">{</span><span class="n">sides</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">_ring</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">*</span> <span class="n">sides</span><span class="p">,</span> <span class="n">rotation</span> <span class="o">-</span> <span class="n">QUARTER_TURN</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">corner_radius</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">rounded_outline</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="p">[</span><span class="n">corner_radius</span><span class="p">]</span> <span class="o">*</span> <span class="n">sides</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Polygon</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 

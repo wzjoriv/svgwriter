@@ -77,7 +77,7 @@ shadow = svg.Image(np.zeros((64, 64)), alpha=0.4)
 card = photo.pixels | shadow.pixels                         # over, pixel for pixel
 glow = photo.pixels.composite(shadow.pixels, "screen")
 badge = photo.pixels & svg.circle(32, 32, 32)               # masked by a shape
-title = photo.pixels | svg.text("hi", x=4, y=20, fill="white")
+title = photo.pixels.on_grid(svg.text("hi", x=4, y=20, fill="white")) | photo.pixels   # text over the photo
 print(card.shape, svg.Image(badge.rgba()).shape)
 ```
 
