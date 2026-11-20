@@ -15,6 +15,8 @@ from ..base import Category
 __all__ = ["Shape", "parse_points", "user_units"]
 
 
+
+
 def parse_points(text: str) -> list[tuple[float, float]]:
     """Parse the text of a ``points`` attribute into coordinate pairs.
 
