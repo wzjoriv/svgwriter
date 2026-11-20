@@ -31,7 +31,8 @@ classifiers = [
 [project.optional-dependencies]
 shaping = ["uharfbuzz>=0.40"]
 office = ["python-pptx>=1.0", "python-docx>=1.1", "openpyxl>=3.1", "pillow>=10"]
-test = ["svgwriter[office,shaping]", "pytest>=7", "ezdxf>=1.0", "matplotlib>=3.7", "pillow>=10", "fonttools>=4.40"]
+test = [
+    "svgwriter[office,shaping]", "pytest>=7", "ezdxf>=1.0", "matplotlib>=3.7", "pillow>=10", "fonttools>=4.40"]
 dev = [
     "svgwriter[test,docs]",
     "stubpy",

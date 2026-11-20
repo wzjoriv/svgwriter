@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Final
 
+from ..._internal._constants import DEFAULT_DPI
 from .._registry import register, register_importer
 
 if TYPE_CHECKING:
@@ -17,7 +18,8 @@ DEFAULT_QUALITY: Final = 90
 
 def _raster(format: str):  # type: ignore[no-untyped-def]
     def exporter(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int | None = None,
-                 padding: float = 0.0, background: ColorLike | None = None, quality: int = DEFAULT_QUALITY) -> bytes:
+                 padding: float = 0.0, background: ColorLike | None = None, quality: int = DEFAULT_QUALITY,
+                 dpi: float | None = None) -> bytes:
         from ...ops.render import encode_image
         from ._encoders import ENCODERS, to_uint8
 
@@ -25,13 +27,16 @@ def _raster(format: str):  # type: ignore[no-untyped-def]
             background = "white"
         if isinstance(size, int):
             size = (size, size)
+        if dpi is not None:
+            scale = dpi / DEFAULT_DPI
         native = format not in ENCODERS
         image = document.rasterize(scale=scale, size=size, padding=padding, background=background, snapshot=native)
         if not native:
             return ENCODERS[format](to_uint8(image))
         return encode_image(image, format, quality=quality)
 
-    exporter.__doc__ = f"{format.upper()} raster (``scale``, ``size``, ``padding``, ``background``, ``quality``)."
+    exporter.__doc__ = (f"{format.upper()} raster (``scale`` or ``dpi``, ``size``, ``padding``, ``background``, "
+                        "``quality``).")
     return exporter
 
 
@@ -45,7 +50,8 @@ DEFAULT_GIF_FPS: Final = 12.0
 @register("gif", extensions=(".gif",))
 def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int | None = None, padding: float = 0.0,
         background: ColorLike | None = None, animate: bool | None = None, fps: float = DEFAULT_GIF_FPS,
-        duration: float | None = None, loop: int = 0, quality: int = DEFAULT_QUALITY) -> bytes:
+        duration: float | None = None, loop: int = 0, quality: int = DEFAULT_QUALITY,
+        dpi: float | None = None) -> bytes:
     """GIF: a still image, or an animated GIF of the document's SMIL animation.
 
     Parameters
@@ -65,6 +71,8 @@ def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int |
         Repeats; 0 loops forever. Defaults to 0.
     quality : int, optional
         Accepted like the other raster formats; GIF is lossless. Defaults to 90.
+    dpi : float, optional
+        Pixels per inch instead of `scale` (96 is scale 1). Defaults to None.
 
     Returns
     -------
@@ -85,6 +93,8 @@ def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int |
     from ._encoders import encode_gif, encode_gif_animation, to_uint8
 
     del quality
+    if dpi is not None:
+        scale = dpi / DEFAULT_DPI
     if isinstance(size, int):
         size = (size, size)
     options = {"scale": scale, "size": size, "padding": padding, "background": background}

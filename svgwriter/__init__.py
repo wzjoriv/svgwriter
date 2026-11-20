@@ -64,6 +64,7 @@ from .aliases import set as set
 from .attributes import (
     IRI,
     Align,
+    Angle,
     FuncIRI,
     Length,
     MeetOrSlice,
@@ -73,12 +74,16 @@ from .attributes import (
     Unit,
     ViewBox,
     cm,
+    deg,
     em,
+    grad,
     inch,
     mm,
     percent,
     pt,
     px,
+    rad,
+    turn,
 )
 from .builder import SHAPES, drawing, drop_shadow, shape_factory
 from .color import Color, PaintKeyword, parse_color, parse_paint
@@ -158,6 +163,11 @@ __all__ = [
     "drop_shadow",
     "em",
     "inch",
+    "Angle",
+    "deg",
+    "grad",
+    "rad",
+    "turn",
     "mm",
     "interpolate",
     "parse",

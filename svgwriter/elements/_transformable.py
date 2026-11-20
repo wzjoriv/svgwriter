@@ -577,7 +577,9 @@ class Transformable(Element):
         """Apply an arithmetic operator; ``NotImplemented`` when *operand* does not fit."""
         target = self if in_place else self.clone()
         if operator == "@":
-            if isinstance(operand, Real):
+            from ..attributes.angle import Angle
+
+            if isinstance(operand, (Real, Angle)):
                 return target.rotate(float(operand))
             if isinstance(operand, (*_TRANSFORMS, str)):
                 return target.apply(operand, local=True)  # type: ignore[arg-type]

@@ -7,8 +7,8 @@ from __future__ import annotations
 import enum
 import re
 from dataclasses import dataclass
-from functools import lru_cache, partial
-from typing import Final, TypeAlias, overload
+from functools import lru_cache
+from typing import Any, Final, TypeAlias, overload
 
 from .._internal._constants import (
     CM_PER_INCH,
@@ -25,6 +25,7 @@ from .._internal._numbers import format_number
 __all__ = [
     "Length",
     "LengthLike",
+    "LengthUnit",
     "Unit",
     "cm",
     "em",
@@ -235,20 +236,100 @@ class Length:
     def __float__(self) -> float:
         return self.to_user_units()
 
-    def __add__(self, other: Length | float) -> Length:
-        """Add a length or number; the units must match unless one is unitless."""
-        other = Length.parse(other)
-        if other.unit is not self.unit and other.unit is not Unit.NONE:
-            raise ValueError(f"cannot add {self.unit!s} and {other.unit!s}")
-        return Length(self.value + other.value, self.unit)
+    @property
+    def absolute(self) -> bool:
+        """Whether the unit converts to user units without context (not ``em``, ``ex`` or ``%``)."""
+        return self.unit is Unit.NONE or self.unit is Unit.PX or self.unit in _ABSOLUTE_PER_INCH
+
+    def to(self, unit: Unit | str) -> Length:
+        """The same length in another absolute unit.
+
+        Parameters
+        ----------
+        unit : Unit or str
+            Target unit (``"mm"``, ``"in"``, ``"px"``, ``""`` for user units, ...).
+
+        Returns
+        -------
+        Length
+            The converted length, at 96 user units per inch as SVG defines.
+
+        Raises
+        ------
+        ValueError
+            If either unit is relative (``em``, ``ex``, ``%``).
+
+        Examples
+        --------
+        >>> from svgwriter.attributes.length import inch
+        >>> inch(1).to("mm")
+        Length(value=25.4, unit=<Unit.MM: 'mm'>)
+        """
+        target = Unit(unit)
+        if target is self.unit:
+            return self
+        if not (self.absolute and Length(0, target).absolute):
+            raise ValueError(f"cannot convert {self.unit.value or 'user units'} to {target.value or 'user units'}: "
+                             "relative units need a font size or reference length")
+        pixels = self.to_user_units()
+        per_inch = _ABSOLUTE_PER_INCH.get(target)
+        return Length(pixels if per_inch is None else pixels / DEFAULT_DPI * per_inch, target)
+
+    def _other(self, other: object, operation: str) -> Length:
+        """*other* as a length in this length's unit, for addition and comparison."""
+        if not isinstance(other, (Length, int, float, str)) or isinstance(other, bool):
+            raise TypeError(f"cannot {operation} {type(other).__name__} and a length")
+        value = Length.parse(other) if not isinstance(other, (int, float)) else Length(float(other), Unit.NONE)
+        if value.unit is self.unit:
+            return value
+        if self.absolute and value.absolute:
+            return value.to(self.unit)
+        raise ValueError(f"cannot {operation} {self.unit.value or 'user units'} and "
+                         f"{value.unit.value or 'user units'}: relative units only combine with themselves")
+
+    def __add__(self, other: Length | float | str) -> Length:
+        """``5mm + 1in`` or ``5mm + 3`` (plain numbers are user units); the result keeps this unit."""
+        return Length(self.value + self._other(other, "add").value, self.unit)
+
+    def __radd__(self, other: float) -> Length:
+        return self + other
+
+    def __sub__(self, other: Length | float | str) -> Length:
+        return Length(self.value - self._other(other, "subtract").value, self.unit)
+
+    def __rsub__(self, other: float) -> Length:
+        return -self + other
 
     def __mul__(self, factor: float) -> Length:
+        if isinstance(factor, Length):
+            raise TypeError("a length times a length is an area, not a length; multiply by a number")
         return Length(self.value * factor, self.unit)
 
     __rmul__ = __mul__
 
+    def __truediv__(self, other: float | Length) -> Any:
+        """``length / number`` is a length; ``length / length`` is their plain ratio."""
+        if isinstance(other, (Length, str)):
+            return self.value / self._other(other, "divide").value
+        return Length(self.value / other, self.unit)
+
     def __neg__(self) -> Length:
         return Length(-self.value, self.unit)
+
+    def __abs__(self) -> Length:
+        return Length(abs(self.value), self.unit)
+
+    def __lt__(self, other: Length | float) -> bool:
+        return self.value < self._other(other, "compare").value
+
+    def __le__(self, other: Length | float) -> bool:
+        return self.value <= self._other(other, "compare").value
+
+    def __gt__(self, other: Length | float) -> bool:
+        return self.value > self._other(other, "compare").value
+
+    def __ge__(self, other: Length | float) -> bool:
+        return self.value >= self._other(other, "compare").value
 
 
 LengthLike: TypeAlias = Length | float | int | str
@@ -263,21 +344,51 @@ def _parse_cached(text: str) -> Length:
     return Length(float(number), Unit(unit or ""))
 
 
-px = partial(Length, unit=Unit.PX)
-"""Build a `Length` in pixels, as in ``px(5)``."""
-pt = partial(Length, unit=Unit.PT)
-"""Build a `Length` in points, as in ``pt(5)``."""
-pc = partial(Length, unit=Unit.PC)
-"""Build a `Length` in picas, as in ``pc(5)``."""
-mm = partial(Length, unit=Unit.MM)
-"""Build a `Length` in millimetres, as in ``mm(5)``."""
-cm = partial(Length, unit=Unit.CM)
-"""Build a `Length` in centimetres, as in ``cm(5)``."""
-inch = partial(Length, unit=Unit.IN)
-"""Build a `Length` in inches, as in ``inch(5)``."""
-em = partial(Length, unit=Unit.EM)
-"""Build a `Length` in font-size multiples, as in ``em(5)``."""
-ex = partial(Length, unit=Unit.EX)
-"""Build a `Length` in x-height multiples, as in ``ex(5)``."""
-percent = partial(Length, unit=Unit.PERCENT)
-"""Build a `Length` in percentages, as in ``percent(5)``."""
+class LengthUnit:
+    """A unit you can call or multiply: ``mm(5)`` and ``5 * mm`` are both ``Length(5, Unit.MM)``.
+
+    Parameters
+    ----------
+    unit : Unit
+        The unit this factory produces.
+
+    Examples
+    --------
+    >>> from svgwriter.attributes.length import inch, mm
+    >>> str(5 * mm), str(inch(2) - 10 * mm)
+    ('5mm', '1.6063in')
+    """
+
+    __slots__ = ("unit",)
+
+    def __init__(self, unit: Unit) -> None:
+        self.unit = unit
+
+    def __call__(self, value: float) -> Length:
+        return Length(float(value), self.unit)
+
+    def __rmul__(self, value: float) -> Length:
+        return Length(float(value), self.unit)
+
+    def __repr__(self) -> str:
+        return f"LengthUnit({self.unit.value!r})"
+
+
+px = LengthUnit(Unit.PX)
+"""Pixels (user units): ``px(5)`` or ``5 * px``."""
+pt = LengthUnit(Unit.PT)
+"""Points, 72 per inch: ``pt(5)`` or ``5 * pt``."""
+pc = LengthUnit(Unit.PC)
+"""Picas, 6 per inch: ``pc(5)`` or ``5 * pc``."""
+mm = LengthUnit(Unit.MM)
+"""Millimetres: ``mm(5)`` or ``5 * mm``."""
+cm = LengthUnit(Unit.CM)
+"""Centimetres: ``cm(5)`` or ``5 * cm``."""
+inch = LengthUnit(Unit.IN)
+"""Inches: ``inch(5)`` or ``5 * inch``."""
+em = LengthUnit(Unit.EM)
+"""Font-size multiples: ``em(5)`` or ``5 * em``."""
+ex = LengthUnit(Unit.EX)
+"""x-height multiples: ``ex(5)`` or ``5 * ex``."""
+percent = LengthUnit(Unit.PERCENT)
+"""Percentages: ``percent(5)`` or ``5 * percent``."""

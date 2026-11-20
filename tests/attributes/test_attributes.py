@@ -97,11 +97,12 @@ class TestLength:
 
     def test_arithmetic(self) -> None:
         assert mm(2) + mm(3) == mm(5)
-        assert mm(2) + 1 == mm(3)
+        assert (mm(2) + 96).to("in").value == pytest.approx(2 / 25.4 + 1)
         assert 2 * px(3) == px(6)
         assert -px(1) == px(-1)
+        assert (mm(1) + px(1)).unit is mm(1).unit
         with pytest.raises(ValueError):
-            _ = mm(1) + px(1)
+            _ = mm(1) + percent(1)
 
     def test_enum_aliases(self) -> None:
         assert Unit.USER is Unit.NONE

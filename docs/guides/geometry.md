@@ -109,6 +109,23 @@ print(note.bounds().top, badge.bounds().left)
 `place(x, y, at=...)` moves a named point onto a coordinate; `align(target, at, to=...)` moves it onto a
 point of another element, box or `(x, y)`, so `a.align(b, "top", to="bottom")` stacks `a` under `b`.
 
+## Units and angles
+
+Plain numbers are user units (CSS pixels, 96 per inch). Lengths carry units and combine across them;
+the result keeps the left side's unit:
+
+```python
+width = 5 * svg.inch - 7 * svg.mm            # 4.7244in
+print(width.to("mm"), svg.inch(1) / svg.mm(25.4))
+page = svg.Document(210 * svg.mm, 297 * svg.mm)   # A4; coordinates inside are millimetres
+# page.save("print.png", dpi=300)
+spin = svg.rect(0, 0, 4, 2) @ svg.turn(0.25)  # angles: deg, rad, grad, turn
+```
+
+A length times a length is an area and raises; `em`, `ex` and `%` only combine with themselves, because
+converting them needs a font size or a reference length. `dpi=` on raster exports sets pixels per inch
+(96 is `scale=1`).
+
 ## Matrices and numpy
 
 ```python

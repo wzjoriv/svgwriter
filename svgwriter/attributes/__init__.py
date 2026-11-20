@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from .angle import Angle, AngleUnit, deg, grad, rad, turn
 from .descriptors import Attr
 from .length import Length, LengthLike, Unit, cm, em, ex, inch, mm, pc, percent, pt, px
 from .names import CAMEL_CASE_ATTRIBUTES, PRESENTATION_ATTRIBUTES, py_name, svg_name
@@ -12,6 +13,12 @@ from .values import format_value
 from .viewbox import Align, MeetOrSlice, PreserveAspectRatio, ViewBox
 
 __all__ = [
+    "Angle",
+    "AngleUnit",
+    "deg",
+    "grad",
+    "rad",
+    "turn",
     "CAMEL_CASE_ATTRIBUTES",
     "IRI",
     "PRESENTATION_ATTRIBUTES",

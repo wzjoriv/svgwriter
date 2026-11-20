@@ -110,7 +110,14 @@ class Svg(
         >>> str(svg.Svg.with_size(100, 50))
         '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="50" viewBox="0 0 100 50" version="1.1"/>'
         """
-        kwargs.setdefault("view_box", (0, 0, width, height))
+        from ...attributes.length import Length
+
+        if isinstance(width, Length) or isinstance(height, Length):
+            first = width if isinstance(width, Length) else Length(float(width))
+            second = Length.parse(height).to(first.unit) if first.absolute else Length.parse(height)
+            kwargs.setdefault("view_box", (0, 0, first.value, second.value))
+        else:
+            kwargs.setdefault("view_box", (0, 0, width, height))
         return cls(width=width, height=height, **kwargs)
 
     def defs(self) -> Defs:
