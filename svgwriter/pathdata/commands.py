@@ -5,13 +5,11 @@ Path segment commands (M, L, H, V, C, S, Q, T, A, Z).
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field, fields, replace
+from dataclasses import dataclass, field
 from typing import ClassVar
 
-from .._internal._constants import DEFAULT_PRECISION
-from .._internal._numbers import format_number
-from .._internal._typing import Self
 from ..transform.matrix import Point
+from ._command_forms import CommandForms, XYEnd
 
 __all__ = [
     "ArcTo",
@@ -28,7 +26,7 @@ __all__ = [
 ]
 
 
-class PathCommand(ABC):
+class PathCommand(CommandForms, ABC):
     """One segment of path data.
 
     Base class of the ten SVG path commands. Each command knows its letter, its
@@ -59,18 +57,6 @@ class PathCommand(ABC):
     code: ClassVar[str]
     coordinates: ClassVar[tuple[str, ...]] = ()
     relative: bool
-
-    @property
-    def letter(self) -> str:
-        """The command letter as written: uppercase, or lowercase when relative.
-
-        Examples
-        --------
-        >>> from svgwriter.pathdata import MoveTo
-        >>> MoveTo(1, 2, relative=True).letter
-        'm'
-        """
-        return self.code.lower() if self.relative else self.code
 
     @property
     @abstractmethod
@@ -108,82 +94,9 @@ class PathCommand(ABC):
         Point(x=11, y=12)
         """
 
-    def to_absolute(self, current: Point) -> Self:
-        """Return an absolute equivalent of the command.
-
-        Parameters
-        ----------
-        current : Point
-            Pen position before the command; relative coordinates are offsets from it.
-
-        Returns
-        -------
-        PathCommand
-            The command itself if already absolute, otherwise a new one.
-
-        Examples
-        --------
-        >>> from svgwriter.pathdata import LineTo
-        >>> from svgwriter.transform import Point
-        >>> LineTo(1, 2, relative=True).to_absolute(Point(10, 10))
-        LineTo(x=11, y=12, relative=False)
-        """
-        if not self.relative:
-            return self
-        offsets = {
-            name: getattr(self, name) + (current.x if name.startswith("x") else current.y)
-            for name in self.coordinates
-        }
-        return replace(self, relative=False, **offsets)  # type: ignore[type-var]
-
-    def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
-        """Serialize the command as path data text.
-
-        Parameters
-        ----------
-        precision : int, optional
-            Maximum number of decimal places. Defaults to the library default precision.
-
-        Returns
-        -------
-        str
-            The command letter followed by its arguments.
-
-        Examples
-        --------
-        >>> from svgwriter.pathdata import LineTo
-        >>> LineTo(1.23456, 2).svg_value(2)
-        'L1.23 2'
-        """
-        args = " ".join(format_number(a, precision) for a in self.arguments)
-        return f"{self.letter}{args}" if args else self.letter
-
-    def __str__(self) -> str:
-        return self.svg_value()
-
-
-def _values(command: PathCommand) -> tuple[float, ...]:
-    return tuple(
-        float(getattr(command, f.name)) for f in fields(command)  # type: ignore[arg-type]
-        if f.name != "relative"
-    )
-
 
 @dataclass(frozen=True)
-class _XYCommand(PathCommand):
-    """Shared behaviour for commands that end at ``(x, y)``."""
-
-    def end_point(self, current: Point, start: Point) -> Point:
-        x, y = self.x, self.y
-        return Point(current.x + x, current.y + y) if self.relative else Point(x, y)
-
-    @property
-    def arguments(self) -> tuple[float, ...]:
-        return _values(self)
-
-
-@dataclass(frozen=True)
-class MoveTo(_XYCommand):
+class MoveTo(XYEnd, PathCommand):
     """Move the pen without drawing (``M``/``m``).
 
     Starts a new subpath at the given point.
@@ -214,7 +127,7 @@ class MoveTo(_XYCommand):
 
 
 @dataclass(frozen=True)
-class LineTo(_XYCommand):
+class LineTo(XYEnd, PathCommand):
     """Draw a straight line (``L``/``l``).
 
     Draws from the current point to the given point.
@@ -319,7 +232,7 @@ class VLineTo(PathCommand):
 
 
 @dataclass(frozen=True)
-class CurveTo(_XYCommand):
+class CurveTo(XYEnd, PathCommand):
     """Cubic Bezier with two explicit control points (``C``/``c``).
 
     Parameters
@@ -356,7 +269,7 @@ class CurveTo(_XYCommand):
 
 
 @dataclass(frozen=True)
-class SmoothCurveTo(_XYCommand):
+class SmoothCurveTo(XYEnd, PathCommand):
     """Cubic Bezier whose first control point is reflected (``S``/``s``).
 
     Parameters
@@ -389,7 +302,7 @@ class SmoothCurveTo(_XYCommand):
 
 
 @dataclass(frozen=True)
-class QuadTo(_XYCommand):
+class QuadTo(XYEnd, PathCommand):
     """Quadratic Bezier curve (``Q``/``q``).
 
     A curve with a single explicit control point.
@@ -424,7 +337,7 @@ class QuadTo(_XYCommand):
 
 
 @dataclass(frozen=True)
-class SmoothQuadTo(_XYCommand):
+class SmoothQuadTo(XYEnd, PathCommand):
     """Quadratic Bezier with a reflected control point (``T``/``t``).
 
     The control point is the reflection of the previous quadratic curve's control point.
@@ -455,7 +368,7 @@ class SmoothQuadTo(_XYCommand):
 
 
 @dataclass(frozen=True)
-class ArcTo(_XYCommand):
+class ArcTo(XYEnd, PathCommand):
     """Elliptical arc (``A``/``a``).
 
     The two flags select one of the four candidate arcs through the endpoints.
