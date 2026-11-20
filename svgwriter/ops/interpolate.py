@@ -10,10 +10,10 @@ from typing import TYPE_CHECKING, Any, Final, TypeVar
 import numpy as np
 
 from ..color.color import Color, as_color
-from ..pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
 from ..pathdata.data import PathData
 from ..transform.matrix import Matrix, Point
 from ._constants import DISCRETE_SWITCH, FULL_TURN, GEOMETRY_SKIP, HALF_TURN
+from ._morph import blend_outlines
 
 if TYPE_CHECKING:
     from ..elements.core import Element
@@ -30,10 +30,12 @@ def interpolate(a: T, b: T, t: float) -> T:
     RGBA), :class:`~svgwriter.transform.Matrix` (translation, rotation, skew
     and scale separately, so turns stay turns), :class:`~svgwriter.PathData`
     and elements. Two elements of the same kind and shape interpolate their
-    attributes; anything else is morphed as outlines: both become cubic
-    paths with matching subpaths and segment counts. Values that cannot be
-    blended (keywords, different strings) switch at ``t = 0.5``, as SMIL's
-    discrete mode does.
+    attributes; anything else is morphed as outlines: outlines pair with
+    outlines and holes with holes (a contour without a partner grows from or
+    shrinks to its centre), each pair is resampled to one point count and
+    started where the points move least, so in-between shapes do not twist.
+    Values that cannot be blended (keywords, different strings) switch at
+    ``t = 0.5``, as SMIL's discrete mode does.
 
     Parameters
     ----------
@@ -138,109 +140,12 @@ def _is_element(value: object) -> bool:
 _RULES: Final[list[tuple[Callable[[object], bool], Callable[[Any, Any, float], Any]]]] = [
     (_is_number, _number),
     (lambda v: isinstance(v, Matrix), _matrix),
-    (lambda v: isinstance(v, PathData), lambda a, b, t: _paths(a, b, t)),
+    (lambda v: isinstance(v, PathData), blend_outlines),
     (_is_array, _array),
     (_is_element, lambda a, b, t: _elements(a, b, t)),
     (_is_sequence, _sequence),
     (_is_color, _color),
 ]
-
-
-def _cubics(data: PathData) -> list[tuple[np.ndarray, bool]]:
-    """Subpaths as ``(n, 4, 2)`` cubic segments (start, control, control, end) and a closed flag."""
-    from ._skia import from_skia, to_skia
-
-    result: list[tuple[np.ndarray, bool]] = []
-    segments: list[list[tuple[float, float]]] = []
-    start = here = (0.0, 0.0)
-    closed = False
-
-    def flush() -> None:
-        if segments:
-            result.append((np.array(segments, dtype=float), closed))
-
-    for command in from_skia(to_skia(data)):
-        if isinstance(command, MoveTo):
-            flush()
-            segments, closed = [], False
-            start = here = (command.x, command.y)
-            continue
-        if isinstance(command, ClosePath):
-            if here != start:
-                segments.append([here, *_line(here, start)])
-            closed, here = True, start
-            continue
-        end = (command.x, command.y)
-        if isinstance(command, LineTo):
-            controls = _line(here, end)[:2]
-        elif isinstance(command, QuadTo):
-            q = (command.x1, command.y1)
-            controls = [_mix(here, q, 2 / 3), _mix(end, q, 2 / 3)]
-        else:
-            assert isinstance(command, CurveTo)
-            controls = [(command.x1, command.y1), (command.x2, command.y2)]
-        segments.append([here, *controls, end])
-        here = end
-    flush()
-    return result
-
-
-def _mix(p: tuple[float, float], q: tuple[float, float], t: float) -> tuple[float, float]:
-    return (p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t)
-
-
-def _line(p: tuple[float, float], q: tuple[float, float]) -> list[tuple[float, float]]:
-    return [_mix(p, q, 1 / 3), _mix(p, q, 2 / 3), q]
-
-
-def _split(segment: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """De Casteljau split of one cubic at its middle."""
-    p0, p1, p2, p3 = segment
-    a, b, c = (p0 + p1) / 2, (p1 + p2) / 2, (p2 + p3) / 2
-    d, e = (a + b) / 2, (b + c) / 2
-    m = (d + e) / 2
-    return np.array([p0, a, d, m]), np.array([m, e, c, p3])
-
-
-def _grow(segments: np.ndarray, count: int) -> np.ndarray:
-    """Split the longest segments until there are *count* of them."""
-    items = list(segments)
-    while len(items) < count:
-        longest = max(range(len(items)), key=lambda i: float(np.linalg.norm(items[i][3] - items[i][0])))
-        items[longest:longest + 1] = _split(items[longest])
-    return np.array(items)
-
-
-def _rotate_to_match(a: np.ndarray, b: np.ndarray) -> np.ndarray:
-    """For closed rings, start *b* at the segment whose start is nearest *a*'s, so the morph does not twist."""
-    starts_a, starts_b = a[:, 0], b[:, 0]
-    best = min(range(len(b)), key=lambda k: float(np.sum((np.roll(starts_b, -k, axis=0) - starts_a) ** 2)))
-    return np.roll(b, -best, axis=0)
-
-
-def _point_ring(center: np.ndarray, count: int) -> np.ndarray:
-    return np.repeat(center[None, None, :], count, axis=0).repeat(4, axis=1)
-
-
-def _paths(a: PathData, b: PathData, t: float) -> PathData:
-    first, second = _cubics(a), _cubics(b)
-    for mine, other in ((first, second), (second, first)):
-        while len(mine) < len(other):
-            ring, closed = other[len(mine)]
-            center = (ring[:, 0].min(axis=0) + ring[:, 0].max(axis=0)) / 2
-            mine.append((_point_ring(center, len(ring)), closed))
-    commands: list[Any] = []
-    for (ra, ca), (rb, cb) in zip(first, second, strict=True):
-        count = max(len(ra), len(rb))
-        ra, rb = _grow(ra, count), _grow(rb, count)
-        if ca and cb:
-            rb = _rotate_to_match(ra, rb)
-        mixed = ra + (rb - ra) * t
-        commands.append(MoveTo(*mixed[0, 0]))
-        commands += [CurveTo(*s[1], *s[2], *s[3]) for s in mixed]
-        if ca or cb:
-            commands.append(ClosePath())
-    return PathData(commands)
 
 
 def _same_shape(a: Element, b: Element) -> bool:
@@ -282,7 +187,7 @@ def _morph(a: Element, b: Element, t: float) -> Element:
     """Both as local outlines, blended; paint and other attributes blend or switch."""
     from ..elements.shapes import Path
 
-    data = _paths(a.local_outline(), b.local_outline(), t)  # type: ignore[attr-defined]
+    data = blend_outlines(a.local_outline(), b.local_outline(), t)  # type: ignore[attr-defined]
     path = Path(data)
     geometry = GEOMETRY_SKIP | _geometry(a) | _geometry(b)
     for key in (set(a.attributes) | set(b.attributes)) - geometry:

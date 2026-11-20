@@ -5,6 +5,7 @@ Skia's SVG renderer draws no text, so rasters use glyph outlines. A PDF canvas c
 with an embedded font subset, so text whose paint and effects the PDF can reproduce exactly is kept
 as a ``<text>`` leaf and drawn here in z-order, like an image. Characters that need a shaper
 (Devanagari, Arabic, ...) or have no glyph in any font are drawn as outlines inside the same text.
+Colour glyphs (emoji) have no outlines, so every canvas, rasters included, draws them here.
 """
 
 from __future__ import annotations
@@ -14,7 +15,14 @@ from typing import TYPE_CHECKING, Any
 import skia
 
 from ..transform.matrix import Matrix
-from ._constants import DEFAULT_FONT_SIZE, EFFECTS, MISSING_GLYPH, NO_DECORATION, POSITION_TOLERANCE
+from ._constants import (
+    DEFAULT_FONT_SIZE,
+    EFFECTS,
+    MISSING_GLYPH,
+    NO_DECORATION,
+    POSITION_TOLERANCE,
+    SEARCHABLE_ALPHA,
+)
 
 if TYPE_CHECKING:
     from ..color.color import Color
@@ -66,7 +74,8 @@ def native_text(text: Text) -> bool:
     return True
 
 
-def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix) -> None:
+def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix, *, only_color: bool = False,
+              searchable: bool = False) -> None:
     """Paint *text* as glyph runs with its transforms, clips, opacity, fill and stroke.
 
     Parameters
@@ -74,15 +83,30 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix) -> N
     canvas : skia.Canvas
         Destination canvas.
     text : Text
-        A ``<text>`` element accepted by :func:`native_text`.
+        A ``<text>`` element accepted by :func:`native_text`, or any text with *only_color*.
     root : Element
         The tree being rendered; ancestors up to *root* contribute transforms, clips and opacity.
     view : Matrix
         Maps *root*'s parent coordinates to canvas user units.
+    only_color : bool, optional
+        Draw only the colour glyphs (emoji); the rest of the text is drawn as outlines elsewhere.
+        Defaults to False.
+    searchable : bool, optional
+        Under each emoji made of several code points, write its characters invisibly, so a PDF
+        copies them (the single shaped glyph maps to no text). Defaults to False.
 
     See Also
     --------
     native_text : Which texts can be drawn this way.
+
+    Examples
+    --------
+    >>> import skia
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops._native_text import draw_text
+    >>> surface = skia.Surface(40, 20)
+    >>> text = svg.Text("hi", x=0, y=15)
+    >>> draw_text(surface.getCanvas(), text, text, svg.Matrix())
     """
     from .._internal._layers import ancestry
     from .._internal._tree import clip_outline
@@ -101,7 +125,11 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix) -> N
             canvas.clipPath(to_skia(clip), doAntiAlias=True)
     pending: list[tuple[Any, Any, skia.RSXform]] = []
     for box in text.layout():
-        if not box.char.strip():
+        if box.color is not None:
+            _flush(canvas, pending, opacity)
+            _draw_color(canvas, box, opacity, searchable)
+            continue
+        if only_color or not box.char.strip():
             continue
         glyph_font = _glyph_font(box)
         if glyph_font is None:
@@ -118,6 +146,43 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix) -> N
         pending.append((box, glyph_font, skia.RSXform(turn.a, turn.b, box.x, box.y)))
     _flush(canvas, pending, opacity)
     canvas.restore()
+
+
+def _draw_color(canvas: skia.Canvas, box: Any, opacity: float, searchable: bool) -> None:
+    """Draw the colour glyphs of *box* at its place and angle; only the fill's opacity applies to them."""
+    from .._internal._emoji import draw_glyphs
+    from .._internal._flatten import _number
+    from .._internal._paints import _paint
+
+    if _paint(box.source, "fill", "black", []) is None:
+        return
+    group = opacity * _number(box.source, "opacity", 1.0, []) if box.source.tag != "text" else opacity
+    paint = _solid_alpha(group * _number(box.source, "fill-opacity", 1.0, []))
+    place = Matrix.translate(box.x, box.y) @ Matrix.rotate(box.angle)
+    color = box.color
+    if searchable and not set(color.glyphs) <= set(color.font.textToGlyphs(color.text)):
+        _hidden_text(canvas, color, place, paint.getAlphaf() * SEARCHABLE_ALPHA)
+    draw_glyphs(canvas, color.font, color.glyphs, color.offsets, place, paint)
+
+
+def _hidden_text(canvas: skia.Canvas, color: Any, place: Matrix, alpha: float) -> None:
+    """The characters of an emoji, shrunk side by side into its width at almost no opacity, for text extraction.
+
+    The single shaped glyph of a skin-tone, keycap or ZWJ emoji maps to no characters in the PDF.
+    """
+    from .._internal._emoji import draw_glyphs
+
+    glyphs = list(color.font.textToGlyphs(color.text))
+    small = color.font.makeWithSize(color.font.getSize() / len(glyphs))
+    step = sum(color.font.getWidths(list(color.glyphs))) / len(glyphs)
+    dx, dy = color.offsets[0]
+    draw_glyphs(canvas, small, glyphs, [(dx + step * i, dy) for i in range(len(glyphs))], place, _solid_alpha(alpha))
+
+
+def _solid_alpha(alpha: float) -> skia.Paint:
+    paint = skia.Paint(AntiAlias=True)
+    paint.setColor4f(skia.Color4f(0.0, 0.0, 0.0, alpha))
+    return paint
 
 
 def _glyph_font(box: Any) -> Any:

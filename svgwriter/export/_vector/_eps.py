@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
+from ..._internal._emoji import color_glyph_images
 from ..._internal._flatten import Item, flatten, to_cubic
 from ..._internal._numbers import format_number
 from ..._internal._paints import Shading
@@ -23,6 +24,7 @@ from ._constants import (
     EPS_PRECISION,
     HEX_LINE,
     LEVEL_LINE,
+    MASK_THRESHOLD,
     MONOSPACE_WORDS,
     POSTSCRIPT_FONTS,
     PS_ESCAPES,
@@ -64,6 +66,28 @@ def _image(image: Any, matrix: Matrix, height: float) -> str:
         "gsave", f"[{' '.join(_n(v) for v in flip.as_tuple())}] concat",
         f"{columns} {rows} 8 [1 0 0 1 0 0] currentfile /ASCIIHexDecode filter false 3 colorimage",
         *lines, ">", "grestore",
+    ])
+
+
+def _masked_image(image: Any, matrix: Matrix, height: float) -> str:
+    """Pixels with transparency (an emoji) as a level 3 masked ``image``: alpha below one half is left unpainted."""
+    rgba = image.rgba()
+    rows, columns = rgba.shape[:2]
+    color = np.clip(np.rint(rgba[..., :3] * EPS_CHANNEL_MAX), 0, EPS_CHANNEL_MAX).astype(np.uint8).tobytes().hex()
+    mask = np.packbits(rgba[..., 3] >= MASK_THRESHOLD, axis=1).tobytes().hex()
+    flip = Matrix(1, 0, 0, -1, 0, height) @ matrix
+
+    def source(data: str) -> str:
+        return "<" + "\n".join(data[i:i + HEX_LINE] for i in range(0, len(data), HEX_LINE)) + ">"
+
+    grid = f"/Width {columns} /Height {rows} /ImageMatrix [1 0 0 1 0 0]"
+    return "\n".join([
+        "gsave", f"[{' '.join(_n(v) for v in flip.as_tuple())}] concat", "/DeviceRGB setcolorspace",
+        "<< /ImageType 3 /InterleaveType 3",
+        f"/DataDict << /ImageType 1 {grid} /BitsPerComponent 8 /Decode [0 1 0 1 0 1] /DataSource",
+        source(color), ">>",
+        f"/MaskDict << /ImageType 1 {grid} /BitsPerComponent 1 /Decode [1 0] /DataSource", source(mask), ">>",
+        ">> image", "grestore",
     ])
 
 
@@ -129,7 +153,8 @@ def _text(run: Any, height: float) -> str:
 def to_eps(document: Document, *, text: bool = True) -> str:
     """EPS (PostScript level 2) in points, one user unit per point.
 
-    The document is flattened first, so gradients become solid colours and images are skipped.
+    The document is flattened first, so gradients become solid colours. Images are embedded, and
+    emoji are drawn as masked images (PostScript level 3) since PostScript has no colour fonts.
 
     Parameters
     ----------
@@ -158,7 +183,7 @@ def to_eps(document: Document, *, text: bool = True) -> str:
     >>> to_eps(doc).splitlines()[:2]
     ['%!PS-Adobe-3.0 EPSF-3.0', '%%BoundingBox: 0 0 10 10']
     """
-    scene = flatten(document, handled=frozenset({"image"}), text=text)
+    scene = flatten(document, handled=frozenset({"image"}), text=text, color_glyphs=False)
     level = BASE_LEVEL
     lines = [
         "%!PS-Adobe-3.0 EPSF-3.0",
@@ -189,6 +214,9 @@ def to_eps(document: Document, *, text: bool = True) -> str:
                       f"{EPS_CAPS.get(item.linecap, 0)} setlinecap {EPS_JOINS.get(item.linejoin, 0)} setlinejoin",
                       f"{_n(item.miter_limit)} setmiterlimit [{dashes}] 0 setdash", "stroke"]
     lines += [_text(run, scene.height) for run in scene.texts]
+    for image, matrix in color_glyph_images(document):
+        level = SHADING_LEVEL
+        lines.append(_masked_image(image, matrix, scene.height))
     lines += ["grestore", "showpage", "%%EOF"]
     lines[LEVEL_LINE] = f"%%LanguageLevel: {level}"
     return "\n".join(lines) + "\n"

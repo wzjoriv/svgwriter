@@ -99,7 +99,8 @@ def paint_tree(
     """Paint the tree under *root* onto any skia canvas (raster, PDF, ...).
 
     Text becomes outlines (or real glyphs with *native_text*) and embedded images are drawn in
-    paint order; the other arguments match :func:`render_tree`.
+    paint order; colour glyphs (emoji), which have no outlines, are always drawn as real glyphs.
+    The other arguments match :func:`render_tree`.
 
     Parameters
     ----------
@@ -140,7 +141,7 @@ def paint_tree(
     from ._native_text import draw_text
     from ._native_text import native_text as drawable
 
-    root = renderable_copy(root, keep_text=drawable if native_text else None)
+    root = renderable_copy(root, keep_text=drawable if native_text else None, color_glyphs=True)
     if viewport:
         root.attributes["width"], root.attributes["height"] = width, height
     if view_box is not None:
@@ -154,6 +155,7 @@ def paint_tree(
             for leaf in hidden(root, run) if len(parts) > 1 else ():
                 leaf.attributes.pop(DISPLAY, None)
         if isinstance(item, Text):
-            draw_text(canvas, item, root, view)
+            draw_text(canvas, item, root, view, only_color=not (native_text and drawable(item)),
+                      searchable=native_text)
         elif item is not None:
             draw_image(canvas, item, root, view)

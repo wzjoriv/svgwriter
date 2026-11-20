@@ -31,8 +31,10 @@ __all__ = [
     "CLOCK_RE",
     "CM_PER_INCH",
     "COLOR_ALIASES",
+    "COLOR_GLYPH_TABLES",
     "COMPLEX_SCRIPT_START",
     "CONTAINERS",
+    "CREATE_DRAW_SHARE",
     "DEFAULT_DPI",
     "DEFAULT_DURATION",
     "DEFAULT_FAMILY",
@@ -46,6 +48,12 @@ __all__ = [
     "DOCTYPE",
     "DOT",
     "DVISVGM",
+    "EMOJI_CELL_LEVELS",
+    "EMOJI_END",
+    "EMOJI_JOINERS",
+    "EMOJI_MODIFIERS",
+    "EMOJI_PIXELS_PER_EM",
+    "EMOJI_PROBE",
     "EMOJI_START",
     "ENGINES",
     "EPSILON",
@@ -133,6 +141,7 @@ __all__ = [
     "TIME_SCALE",
     "UINT16_MAX",
     "WHITE",
+    "WRITE_LAG",
     "XLINK_NS",
     "XML_NS",
     "ZIAMATH_SIZE",
@@ -204,6 +213,13 @@ NORMAL_WIDTH: Final = 5
 CJK_START: Final = 0xA800
 COMPLEX_SCRIPT_START: Final = 0x0590
 EMOJI_START: Final = 0x1F000
+EMOJI_END: Final = 0x1FBFF
+EMOJI_JOINERS: Final = frozenset({chr(0x200D), chr(0xFE0F), chr(0x20E3)})
+EMOJI_MODIFIERS: Final = (0x1F3FB, 0x1F3FF)
+EMOJI_PROBE: Final = "\U0001f600"
+EMOJI_PIXELS_PER_EM: Final = 72
+EMOJI_CELL_LEVELS: Final = 16
+COLOR_GLYPH_TABLES: Final = ("COLR", "sbix", "CBDT", "SVG ")
 LATIN_EXTENDED_ADDITIONAL: Final = 0x1E00
 DEFAULT_MITER_LIMIT: Final = 4.0
 ANCHOR_SHIFT: Final = {"start": 0.0, "middle": 0.5, "end": 1.0}
@@ -278,11 +294,13 @@ BLINK_VALUES: Final = "1;0;1"
 BOUNCE_HEIGHT: Final = 20.0
 BOUNCE_TIMES: Final = (0.0, 0.25, 0.5, 0.65, 0.8, 0.9, 1.0)
 BOUNCE_VALUES: Final = (0.0, 1.0, 0.0, 0.45, 0.0, 0.15, 0.0)
+CREATE_DRAW_SHARE: Final = 0.6
 DEFAULT_DURATION: Final = 1.0
 FOREVER: Final = "indefinite"
 PULSE_SCALE: Final = 1.1
 SHAKE_DISTANCE: Final = 4.0
 SHAKE_STEPS: Final = 6
+WRITE_LAG: Final = 0.35
 SIDES: Final = {"left": (-1.0, 0.0), "right": (1.0, 0.0), "top": (0.0, -1.0), "bottom": (0.0, 1.0)}
 
 FULL_TURN: Final = 360.0
