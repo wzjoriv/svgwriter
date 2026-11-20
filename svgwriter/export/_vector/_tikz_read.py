@@ -8,7 +8,7 @@ import math
 import re
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Any, Final
 
 from ...color.color import as_color
 from ...transform.matrix import IDENTITY
@@ -46,6 +46,11 @@ RGB_SCALE: Final = 255.0
 PERCENT: Final = 100.0
 FULL_TURN: Final = 2 * math.pi
 _COMMENT_RE: Final = re.compile(r"(?<!\\)%[^\n]*")
+NODE_FONT_SIZE: Final = 10.0
+NODE_BASELINE: Final = 0.35
+_NODE_RE: Final = re.compile(r"\\node\s*(?:\[(?P<options>[^\]]*)\])?\s*(?:\([^)]*\))?\s*at\s*\((?P<at>[^)]*)\)\s*\{")
+_MARKUP_RE: Final = re.compile(r"\\[A-Za-z]+\*?\{([^{}]*)\}")
+_SPACE_RE: Final = re.compile(r"\s+")
 _COMMAND_RE: Final = re.compile(r"\\(filldraw|draw|fill|path|useasboundingbox)(?![A-Za-z])")
 _DEFINECOLOR_RE: Final = re.compile(r"\\definecolor\s*\{([^}]*)\}\s*\{([^}]*)\}\s*\{([^}]*)\}")
 _COLORLET_RE: Final = re.compile(r"\\colorlet\s*\{([^}]*)\}\s*\{([^}]*)\}")
@@ -521,7 +526,8 @@ def read_tikz(text: str) -> Document:
     ``miter limit`` and ``even odd rule``; colours come from
     ``\\definecolor`` (``RGB``, ``rgb``, ``HTML``, ``gray``, ``cmyk``) and
     ``\\colorlet``. Macros, ``\\foreach``, scopes, styles, ``to``/``arc``/
-    ``grid`` operations, node text and shading are not interpreted; a
+    ``grid`` operations, nodes inside paths and shading are not interpreted (standalone
+    ``\node ... at (x,y) {text}`` becomes centred ``<text>``); a
     command that cannot be read is skipped.
 
     Examples
@@ -546,4 +552,42 @@ def read_tikz(text: str) -> Document:
             view = _bounds(ops) or view
         else:
             shapes.append(_style(command, options, colors).shape(ops))
+    shapes += _nodes(text, frame, colors)
     return to_document(shapes, view)
+
+
+def _plain(latex: str) -> str:
+    r"""Node text without simple LaTeX markup: ``\textbf{x}`` keeps ``x``; ``\`` line breaks become spaces."""
+    text = latex.replace("\\\\", " ")
+    previous = None
+    while previous != text:
+        previous, text = text, _MARKUP_RE.sub(r"\1", text)
+    return _SPACE_RE.sub(" ", text.replace("{", "").replace("}", "")).strip()
+
+
+def _nodes(text: str, frame: _Frame, colors: dict[str, RGB]) -> list[Any]:
+    """Standalone ``\node[options] (name) at (x,y) {text};`` as centred ``<text>`` elements."""
+    from ...elements.text import Text
+    from ._reading import _hex
+
+    out = []
+    for match in _NODE_RE.finditer(text):
+        try:
+            content, _ = _balanced(text, match.end() - 1)
+            position = frame.vector(match.group("at"))
+        except (ValueError, IndexError):
+            continue
+        label = _plain(content)
+        if not label:
+            continue
+        fill = BLACK
+        for key, value in _options(match.group("options") or ""):
+            name = value if key in ("color", "text") and value else key if value is None else None
+            if name:
+                try:
+                    fill = _named(name, colors)
+                except (KeyError, ValueError):
+                    pass
+        out.append(Text(label, x=position[0], y=position[1] + NODE_FONT_SIZE * NODE_BASELINE,
+                        font_size=NODE_FONT_SIZE, text_anchor="middle", fill=_hex(fill)))
+    return out

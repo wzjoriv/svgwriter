@@ -239,3 +239,14 @@ class TestPdfContent:
         text = next(e for e in find_importer("pdf").function(data).root.iter() if e.tag == "text")
         assert text.text_content == "Hi" and text.get("font-size") == 20 and text.get("font-weight") == "bold"
         assert text.get("font-family") == "Helvetica"
+
+
+def test_tikz_nodes_become_text():
+    from svgwriter.export._vector._tikz_read import read_tikz
+
+    doc = read_tikz(r"\begin{tikzpicture}\draw (0,0) rectangle (2,1);"
+                    r"\node[blue] (a) at (1,0.5) {\textbf{Hello} \\ world};\end{tikzpicture}")
+    text = next(e for e in doc if e.tag == "text")
+    box = next(e for e in doc if e.tag == "path").bounds()
+    assert text.text_content == "Hello world" and text.get("fill") == "#0000ff"
+    assert text.get("x") == pytest.approx(box.x + box.width / 2)
