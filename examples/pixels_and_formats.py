@@ -1,9 +1,7 @@
 """numpy pixels next to vectors, then one drawing exported to every registered format.
 
-Usage: python pixels_and_formats.py [OUTPUT_DIR]
+Run it as ``python pixels_and_formats.py [OUTPUT_DIR]`` or open ``pixels_and_formats.ipynb`` to see each step.
 """
-
-from __future__ import annotations
 
 import sys
 import tempfile
@@ -14,47 +12,55 @@ import numpy as np
 
 import svgwriter as svg
 
+# %% [markdown]
+# An `Image` takes a numpy array (float 0-1, rows x columns x channels). This one is a generated
+# plasma pattern, rotated slightly.
+
+# %%
 SIZE = 128
+y, x = np.mgrid[0:SIZE, 0:SIZE] / SIZE
+value = np.sin(10 * x) + np.sin(10 * y + 2) + np.sin(10 * np.hypot(x - 0.5, y - 0.5))
+phase = (value - value.min()) / np.ptp(value)
+pixels = np.dstack([phase, 1 - phase, 0.5 + 0.5 * np.sin(6 * phase)])
 
+doc = svg.Document(320, 180)
+doc.rect(0, 0, 320, 180, fill="#111827")
+picture = svg.Image(pixels, 20, 20, 140, 140)
+doc += picture.rotate(-6)
+doc
 
-def plasma(size: int) -> np.ndarray:
-    y, x = np.mgrid[0:size, 0:size] / size
-    value = np.sin(10 * x) + np.sin(10 * y + 2) + np.sin(10 * np.hypot(x - 0.5, y - 0.5))
-    phase = (value - value.min()) / np.ptp(value)
-    return np.dstack([phase, 1 - phase, 0.5 + 0.5 * np.sin(6 * phase)])
+# %% [markdown]
+# `picture.alpha` is a second array for transparency: here a soft round fade.
 
+# %%
+picture.alpha = np.clip(1.6 - 2.4 * np.hypot(x - 0.5, y - 0.5), 0, 1)
+doc
 
-def build() -> svg.Document:
-    doc = svg.Document(320, 180)
-    doc.rect(0, 0, 320, 180, fill="#111827")
+# %% [markdown]
+# Vectors sit beside the pixels, and any element can be rasterized back into an `Image` with
+# `to_image`, then placed and scaled like one.
 
-    picture = svg.Image(plasma(SIZE), 20, 20, 140, 140)
-    y, x = np.mgrid[0:SIZE, 0:SIZE] / SIZE
-    picture.alpha = np.clip(1.6 - 2.4 * np.hypot(x - 0.5, y - 0.5), 0, 1)
-    doc += picture.rotate(-6)
+# %%
+vector = doc.group(stroke="#f9fafb", stroke_width=3, fill="none")
+vector.add(svg.circle(240, 90, 50))
+vector.add(svg.builder.gear(240, 90, 32, teeth=12, fill="#f59e0b", stroke="none"))
+snapshot = vector.to_image(scale=0.5)
+doc += snapshot.place(240, 155) * 0.35
+doc
 
-    vector = doc.group(stroke="#f9fafb", stroke_width=3, fill="none")
-    vector.add(svg.circle(240, 90, 50))
-    vector.add(svg.builder.gear(240, 90, 32, teeth=12, fill="#f59e0b", stroke="none"))
-    snapshot = vector.to_image(scale=0.5)
-    doc += snapshot.place(240, 155) * 0.35
-    return doc
+# %% [markdown]
+# Save the SVG, then export the same drawing to every registered format.
+# Pass a folder as the first argument to choose where the files go.
 
-
-def main(out_dir: Path) -> Path:
-    doc = build()
-    target = out_dir / "pixels_and_formats.svg"
-    doc.save(target)
-    formats = out_dir / "formats"
-    formats.mkdir(exist_ok=True)
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        for name, exporter in svg.export.exporters().items():
-            extension = exporter.extensions[0] if exporter.extensions else f".{name}"
-            doc.save(formats / f"drawing{extension}", format=name)
-    return target
-
-
-if __name__ == "__main__":
-    folder = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(tempfile.mkdtemp(prefix="svgwriter-"))
-    print(main(folder))
+# %%
+args = sys.argv[1:2]
+out = Path(args[0]) if args and not args[0].startswith("-") else Path(tempfile.mkdtemp(prefix="svgwriter-"))
+doc.save(out / "pixels_and_formats.svg")
+formats = out / "formats"
+formats.mkdir(exist_ok=True)
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    for name, exporter in svg.export.exporters().items():
+        extension = exporter.extensions[0] if exporter.extensions else f".{name}"
+        doc.save(formats / f"drawing{extension}", format=name)
+print("exported:", ", ".join(sorted(path.suffix for path in formats.iterdir())))

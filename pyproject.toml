@@ -68,6 +68,9 @@ dev = [
     "ruff>=0.6",
     "typer>=0.12",
     "tomli; python_version < '3.11'",
+    "nbformat",
+    "nbclient",
+    "ipykernel",
 ]
 
 docs = [
@@ -103,6 +106,7 @@ ignore = ["E501"]
 
 [tool.ruff.lint.per-file-ignores]
 "scripts/**/*.py" = ["B008", "ANN"]
+"examples/**/*.py" = ["B018"]  # a bare `doc` ends a notebook cell and shows the picture
 "tests/**/*.py" = ["ANN", "UP006", "UP007", "UP035", "UP037", "UP045", "E701", "E702", "E741"]
 
 [tool.devkit]
@@ -136,6 +140,10 @@ args = ["tests", "-q", "-p", "no:cacheprovider"]
 [tool.devkit.tiers.cov]
 help = "The whole suite with a coverage report."
 args = ["tests", "-q", "--cov=svgwriter", "--cov-report=term-missing"]
+
+[tool.devkit.notebooks]
+source = "examples"
+drop = ["image/png", "text/html"]
 
 [tool.devkit.logo]
 source = "examples.logo:logo"
