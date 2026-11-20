@@ -348,7 +348,61 @@ class Pixels:
             raise ValueError(f"pixel shapes {self.shape} and {under.shape[:2]} differ; "
                              "rasterize the elements onto one canvas first") from None
 
+    def on_grid(self, element: object) -> Pixels:
+        """Render *element* onto a transparent canvas the size of these pixels.
+
+        The element's user units are pixels of this grid, so ``circle(10, 10, 5)``
+        lands around pixel ``(10, 10)``. This is how ``pixels | element`` and the
+        other operators composite shapes, text and whole documents with an image.
+
+        Parameters
+        ----------
+        element : Element or Document
+            What to draw; it is copied, never moved.
+
+        Returns
+        -------
+        Pixels
+            The rendering, with the same shape as these pixels.
+
+        Raises
+        ------
+        TypeError
+            If *element* is neither an element nor a document.
+
+        See Also
+        --------
+        composite : Combine two equal-sized grids.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> import svgwriter as svg
+        >>> from svgwriter.elements.structure import Pixels
+        >>> grid = Pixels.from_array(np.zeros((8, 8, 3)))
+        >>> grid.on_grid(svg.rect(0, 0, 4, 8, fill="red")).rgba()[4, 1].tolist()
+        [1.0, 0.0, 0.0, 1.0]
+        """
+        from ...document import Document
+        from ..core import Element
+
+        rows, columns = self.shape
+        if isinstance(element, Document):
+            source = element.root.clone()
+        elif isinstance(element, Element):
+            source = element.clone()
+        else:
+            raise TypeError(f"cannot draw {type(element).__name__} onto pixels; pass an element or a document")
+        canvas = Document(columns, rows)
+        canvas.add(source)
+        return Pixels.from_array(canvas.rasterize(size=(columns, rows)))
+
     def _pair(self, other: object, operator: str) -> Pixels:
+        from ...document import Document
+        from ..core import Element
+
+        if isinstance(other, (Element, Document)):
+            other = self.on_grid(other)
         return self.composite(other, operator) if isinstance(other, (Pixels, np.ndarray)) else NotImplemented  # type: ignore[return-value]
 
     def __or__(self, other: object) -> Pixels:

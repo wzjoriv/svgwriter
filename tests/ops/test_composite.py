@@ -106,3 +106,23 @@ def test_lone_image_rasterizes():
     image = svg.Image(np.ones((3, 3, 3)))
     assert image.rasterize()[..., 3].mean() == pytest.approx(1)
     assert image.to_image().alpha == 1.0
+
+
+def test_pixels_composite_with_elements_and_documents() -> None:
+    import numpy as np
+
+    import svgwriter as svg
+    from svgwriter.elements.structure import Pixels
+
+    photo = Pixels.from_array(np.full((10, 10, 3), 0.5))
+    spot = svg.circle(5, 5, 3, fill="red")
+    kept = photo & spot
+    assert kept.shape == (10, 10)
+    assert kept.rgba()[5, 5, 3] > 0.9 and kept.rgba()[0, 0, 3] == 0
+    stamped = photo.on_grid(spot)
+    assert stamped.rgba()[5, 5].tolist() == [1.0, 0.0, 0.0, 1.0]
+    doc = svg.Document(10, 10)
+    doc.rect(0, 0, 5, 10, fill="blue")
+    assert ((photo - doc).rgba()[:, :5, 3] == 0).all()
+    with pytest.raises(TypeError):
+        photo.on_grid("not an element")

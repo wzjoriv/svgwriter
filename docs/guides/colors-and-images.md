@@ -76,12 +76,15 @@ photo = svg.Image(np.dstack([x, y, 1 - x]))                 # 64 x 64
 shadow = svg.Image(np.zeros((64, 64)), alpha=0.4)
 card = photo.pixels | shadow.pixels                         # over, pixel for pixel
 glow = photo.pixels.composite(shadow.pixels, "screen")
-badge = photo.pixels & svg.circle(32, 32, 32).rasterize()   # masked by a shape
+badge = photo.pixels & svg.circle(32, 32, 32)               # masked by a shape
+title = photo.pixels | svg.text("hi", x=4, y=20, fill="white")
 print(card.shape, svg.Image(badge.rgba()).shape)
 ```
 
-The operands combine pixel for pixel, so their shapes must broadcast; `element.rasterize()` turns any
-element into an RGBA array to composite with, and `svg.Image(pixels.rgba())` places a result. On
+Two pixel grids combine pixel for pixel, so their shapes must broadcast. An element or a whole document
+on the other side is first drawn onto the pixels' own grid (one user unit per pixel, origin at the
+top-left pixel); `pixels.on_grid(element)` gives that rendering by itself. `svg.Image(pixels.rgba())`
+places a result. On
 elements the operators keep their other meanings: `img * 2` scales and `img - (dx, dy)` moves.
 `svgwriter.ops.composite_rgba` works on raw RGBA arrays that broadcast, so a `(1, 1, 4)` color
 composites onto a whole image.
