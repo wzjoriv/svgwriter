@@ -1,8 +1,9 @@
+from abc import ABC, abstractmethod
 from typing import Any, ClassVar
 from .._internal._typing import Self
 from ..transform.matrix import Point
 
-__all__ = ["CommandForms", "XYEnd"]
+__all__ = ["CommandForms", "PathCommand", "XYEnd"]
 
 class CommandForms:
     code: ClassVar[str]
@@ -24,3 +25,14 @@ class XYEnd:
     def end_point(self, current: Point, start: Point) -> Point: ...
     @property
     def arguments(self) -> tuple[float, ...]: ...
+
+class PathCommand(CommandForms, ABC):
+    code: ClassVar[str]
+    coordinates: ClassVar[tuple[str, ...]]
+    relative: bool
+
+    @property
+    @abstractmethod
+    def arguments(self) -> tuple[float, ...]: ...
+    @abstractmethod
+    def end_point(self, current: Point, start: Point) -> Point: ...
