@@ -137,6 +137,7 @@ __all__ = [
     "PT_PER_INCH",
     "PULSE_SCALE",
     "RGBA_CHANNELS",
+    "RTL_ANCHORS",
     "SECONDS_PER_HOUR",
     "SECONDS_PER_MINUTE",
     "SHAKE_DISTANCE",
@@ -147,6 +148,7 @@ __all__ = [
     "SVG_VERSION",
     "SWATCH",
     "TEXT_TABLE",
+    "TEX_SIZE",
     "TIMECOUNT_RE",
     "TIMEOUT_SECONDS",
     "TIME_SCALE",
@@ -155,7 +157,6 @@ __all__ = [
     "WRITE_LAG",
     "XLINK_NS",
     "XML_NS",
-    "TEX_SIZE",
     "ZIAMATH_SIZE",
 ]
 
@@ -235,6 +236,7 @@ COLOR_GLYPH_TABLES: Final = ("COLR", "sbix", "CBDT", "SVG ")
 LATIN_EXTENDED_ADDITIONAL: Final = 0x1E00
 DEFAULT_MITER_LIMIT: Final = 4.0
 ANCHOR_SHIFT: Final = {"start": 0.0, "middle": 0.5, "end": 1.0}
+RTL_ANCHORS: Final = {"start": "end", "end": "start"}
 CONTAINERS: Final = frozenset({"svg", "g", "a", "switch"})
 NOT_RENDERED: Final = frozenset({"defs", "clipPath", "mask", "pattern", "marker", "symbol", "linearGradient",
                                  "radialGradient", "filter", "title", "desc", "metadata", "style", "font",
