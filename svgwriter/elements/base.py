@@ -329,6 +329,24 @@ class Element(Queryable, Displayable, Composable):
         return rows
 
     @property
+    def animate(self) -> Any:
+        """Animation presets for this element: ``el.animate.fade_in(1).spin(2, begin=1)``.
+
+        Returns
+        -------
+        Motion
+            Chainable presets that add SMIL animation children.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> _ = svg.rect(0, 0, 10, 10).animate.fade_in()
+        """
+        from ..builder._motion import Motion
+
+        return Motion(self)
+
+    @property
     def id(self) -> str | None:
         """The element id, or None.
 

@@ -1,0 +1,244 @@
+"""
+Animation presets: fades, draw-on, wipes, typewriter, slides, spins, pulses, color changes, morphs and staggers.
+"""
+
+from __future__ import annotations
+
+import math
+from typing import TYPE_CHECKING, Any, Final
+
+from ..elements.animation import Animate, AnimateMotion, AnimateTransform, Set
+
+if TYPE_CHECKING:
+    from ..elements.base import Element
+
+__all__ = ["Motion"]
+
+DEFAULT_DURATION: Final = 1.0
+FOREVER: Final = "indefinite"
+FULL_TURN: Final = 360.0
+PULSE_SCALE: Final = 1.1
+SHAKE_DISTANCE: Final = 4.0
+SHAKE_STEPS: Final = 6
+BOUNCE_HEIGHT: Final = 20.0
+BOUNCE_VALUES: Final = (0.0, 1.0, 0.0, 0.45, 0.0, 0.15, 0.0)
+BOUNCE_TIMES: Final = (0.0, 0.25, 0.5, 0.65, 0.8, 0.9, 1.0)
+BLINK_VALUES: Final = "1;0;1"
+SIDES: Final = {"left": (-1.0, 0.0), "right": (1.0, 0.0), "top": (0.0, -1.0), "bottom": (0.0, 1.0)}
+
+
+def _timing(dur: float, begin: float, repeat: float | str | None, freeze: bool) -> dict[str, Any]:
+    timing: dict[str, Any] = {"dur": dur, "begin": begin, "fill": "freeze" if freeze else None}
+    if repeat is not None:
+        timing["repeat_count"] = FOREVER if repeat in (math.inf, FOREVER) else repeat
+    return timing
+
+
+class Motion:
+    """Animation presets for one element; every method adds SMIL children and returns ``self`` to chain.
+
+    Reach it as ``element.animate``. The SMIL plays in browsers, and
+    :meth:`svgwriter.Document.at`, video export and animated GIF/APNG/WebP
+    play it too. Each preset takes ``dur`` (seconds), ``begin`` (seconds),
+    ``repeat`` (a count, or ``"indefinite"``) and ``freeze`` (keep the end
+    state; default True).
+
+    Parameters
+    ----------
+    element : Element
+        What to animate.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> dot = svg.circle(10, 10, 5, fill="red")
+    >>> _ = dot.animate.fade_in(0.5).spin(2, begin=0.5)
+    >>> [child.tag for child in dot.children]
+    ['animate', 'animateTransform']
+    """
+
+    __slots__ = ("element",)
+
+    def __init__(self, element: Element) -> None:
+        self.element = element
+
+    def _add(self, animation: Element) -> Motion:
+        self.element.append(animation)
+        return self
+
+    def _centre(self) -> tuple[float, float]:
+        box = self.element.local_bbox() if hasattr(self.element, "local_bbox") else None
+        return (box.x + box.width / 2, box.y + box.height / 2) if box is not None else (0.0, 0.0)
+
+    def tween(self, attribute: str, start: Any, end: Any, dur: float = DEFAULT_DURATION, *, begin: float = 0.0,
+              repeat: float | str | None = None, freeze: bool = True) -> Motion:
+        """Change any attribute from *start* to *end* (numbers, lengths, colors, lists)."""
+        return self._add(Animate(attribute_name=attribute, from_=start, to=end,
+                                 **_timing(dur, begin, repeat, freeze)))
+
+    def fade_in(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, repeat: float | str | None = None,
+                freeze: bool = True) -> Motion:
+        """Opacity from 0 to 1."""
+        if begin > 0:
+            self.element.set("opacity", 0)
+        return self.tween("opacity", 0, 1, dur, begin=begin, repeat=repeat, freeze=freeze)
+
+    def fade_out(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, repeat: float | str | None = None,
+                 freeze: bool = True) -> Motion:
+        """Opacity from 1 to 0."""
+        return self.tween("opacity", 1, 0, dur, begin=begin, repeat=repeat, freeze=freeze)
+
+    def draw(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, repeat: float | str | None = None,
+             freeze: bool = True) -> Motion:
+        """Draw the stroke on from its start, as if by a pen (dash offset from full length to 0)."""
+        from ..ops.measure import total_length
+
+        length = total_length(self.element.local_outline())  # type: ignore[attr-defined]
+        self.element.update(stroke_dasharray=f"{length:.4g} {length:.4g}", stroke_dashoffset=f"{length:.4g}")
+        return self.tween("stroke-dashoffset", f"{length:.4g}", 0, dur, begin=begin, repeat=repeat, freeze=freeze)
+
+    def wipe(self, side: str = "left", dur: float = DEFAULT_DURATION, *, begin: float = 0.0,
+             repeat: float | str | None = None, freeze: bool = True) -> Motion:
+        """Reveal the element from one side (``left``, ``right``, ``top``, ``bottom``) with a growing clip."""
+        from ..elements.shapes import Rect
+
+        box = self.element.local_bbox()  # type: ignore[attr-defined]
+        if box is None:
+            raise TypeError(f"<{self.element.tag}> has no size to wipe")
+        horizontal = side in ("left", "right")
+        window = Rect(box.x, box.y, 0 if horizontal else box.width, box.height if horizontal else 0)
+        size_name, full = ("width", box.width) if horizontal else ("height", box.height)
+        window.append(Animate(attribute_name=size_name, from_=0, to=full, **_timing(dur, begin, repeat, freeze)))
+        if side in ("right", "bottom"):
+            position, start = ("x", box.x + box.width) if horizontal else ("y", box.y + box.height)
+            window.set(position, start)
+            window.append(Animate(attribute_name=position, from_=start, to=box.x if horizontal else box.y,
+                                  **_timing(dur, begin, repeat, freeze)))
+        self.element.clip(window)  # type: ignore[attr-defined]
+        return self
+
+    def typewriter(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0) -> Motion:
+        """Show a ``<text>`` one character at a time over *dur* seconds."""
+        from ..elements.text import TSpan
+
+        text = self.element.text_content
+        if not text:
+            return self
+        step = dur / len(text)
+        self.element.text_content = ""
+        for index, char in enumerate(text):
+            span = TSpan(char, visibility="hidden")
+            span.append(Set(attribute_name="visibility", to="visible", begin=begin + index * step, fill="freeze"))
+            self.element.append(span)
+        return self
+
+    def _transform(self, kind: str, start: str, end: str, dur: float, begin: float, repeat: Any, freeze: bool,
+                   **extra: Any) -> Motion:
+        return self._add(AnimateTransform(kind, attribute_name="transform", from_=start, to=end, additive="sum",
+                                          **_timing(dur, begin, repeat, freeze), **extra))
+
+    def _about_centre(self, kind: str, values: str, dur: float, begin: float, repeat: Any, freeze: bool,
+                      **extra: Any) -> Motion:
+        """A scale about the element's centre: translate to it, scale, translate back (all additive)."""
+        cx, cy = self._centre()
+        timing = _timing(dur, begin, repeat, freeze)
+        for step in (f"{cx:.4g} {cy:.4g}", None, f"{-cx:.4g} {-cy:.4g}"):
+            if step is None:
+                self._add(AnimateTransform(kind, attribute_name="transform", values=values, additive="sum",
+                                           **timing, **extra))
+            else:
+                self._add(AnimateTransform("translate", attribute_name="transform", values=f"{step};{step}",
+                                           additive="sum", **timing))
+        return self
+
+    def grow(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, repeat: float | str | None = None,
+             freeze: bool = True) -> Motion:
+        """Scale up from nothing to full size about the element's centre."""
+        return self._about_centre("scale", "0;1", dur, begin, repeat, freeze)
+
+    def shrink(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, repeat: float | str | None = None,
+               freeze: bool = True) -> Motion:
+        """Scale down from full size to nothing about the element's centre."""
+        return self._about_centre("scale", "1;0", dur, begin, repeat, freeze)
+
+    def pulse(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, repeat: float | str | None = FOREVER,
+              scale: float = PULSE_SCALE) -> Motion:
+        """Swell slightly and back, by default forever."""
+        return self._about_centre("scale", f"1;{scale:g};1", dur, begin, repeat, False)
+
+    def spin(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, repeat: float | str | None = None,
+             turns: float = 1.0, freeze: bool = True) -> Motion:
+        """Rotate by *turns* full turns about the element's centre."""
+        cx, cy = self._centre()
+        return self._transform("rotate", f"0 {cx:.4g} {cy:.4g}", f"{FULL_TURN * turns:g} {cx:.4g} {cy:.4g}",
+                               dur, begin, repeat, freeze)
+
+    def slide_in(self, side: str = "left", dur: float = DEFAULT_DURATION, *, distance: float = 100.0,
+                 begin: float = 0.0, repeat: float | str | None = None, freeze: bool = True) -> Motion:
+        """Arrive from *distance* units toward a side (``left``, ``right``, ``top``, ``bottom``)."""
+        dx, dy = SIDES[side]
+        return self._transform("translate", f"{dx * distance:g} {dy * distance:g}", "0 0", dur, begin, repeat,
+                               freeze)
+
+    def move_to(self, x: float, y: float, dur: float = DEFAULT_DURATION, *, begin: float = 0.0,
+                repeat: float | str | None = None, freeze: bool = True) -> Motion:
+        """Glide so the element's centre ends at ``(x, y)``."""
+        cx, cy = self._centre()
+        return self._transform("translate", "0 0", f"{x - cx:g} {y - cy:g}", dur, begin, repeat, freeze)
+
+    def follow(self, path: Any, dur: float = DEFAULT_DURATION, *, begin: float = 0.0,
+               repeat: float | str | None = None, rotate: bool = True, freeze: bool = True) -> Motion:
+        """Travel along *path* (an element or path data), turning with it when *rotate*."""
+        data = path.outline() if hasattr(path, "outline") else path
+        return self._add(AnimateMotion(path=str(data), rotate="auto" if rotate else None,
+                                       **_timing(dur, begin, repeat, freeze)))
+
+    def shake(self, dur: float = DEFAULT_DURATION / 2, *, begin: float = 0.0, distance: float = SHAKE_DISTANCE,
+              repeat: float | str | None = None) -> Motion:
+        """Jitter sideways and settle back."""
+        values = ";".join(["0 0", *(f"{distance if i % 2 == 0 else -distance:g} 0" for i in range(SHAKE_STEPS)),
+                           "0 0"])
+        return self._add(AnimateTransform("translate", attribute_name="transform", values=values, additive="sum",
+                                          **_timing(dur, begin, repeat, False)))
+
+    def bounce(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, height: float = BOUNCE_HEIGHT,
+               repeat: float | str | None = None) -> Motion:
+        """Hop up and settle with smaller hops."""
+        values = ";".join(f"0 {-height * v:g}" for v in BOUNCE_VALUES)
+        times = ";".join(f"{t:g}" for t in BOUNCE_TIMES)
+        return self._add(AnimateTransform("translate", attribute_name="transform", values=values, key_times=times,
+                                          additive="sum", **_timing(dur, begin, repeat, False)))
+
+    def blink(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0,
+              repeat: float | str | None = FOREVER) -> Motion:
+        """Switch fully off and on again, by default forever."""
+        return self._add(Animate(attribute_name="opacity", values=BLINK_VALUES, calc_mode="discrete",
+                                 **_timing(dur, begin, repeat, False)))
+
+    def color_cycle(self, colors: list[Any], dur: float = DEFAULT_DURATION, *, attribute: str = "fill",
+                    begin: float = 0.0, repeat: float | str | None = FOREVER) -> Motion:
+        """Blend through *colors* (and back to the first), by default forever."""
+        from ..color.color import as_color
+
+        values = ";".join(as_color(c).hex for c in [*colors, colors[0]])
+        return self._add(Animate(attribute_name=attribute, values=values, **_timing(dur, begin, repeat, False)))
+
+    def morph(self, target: Element, dur: float = DEFAULT_DURATION, *, begin: float = 0.0,
+              repeat: float | str | None = None, freeze: bool = True) -> Motion:
+        """Turn this ``<path>``'s outline into *target*'s (any shape), matching their segments first."""
+        from ..ops.interpolate import interpolate
+
+        if self.element.tag != "path":
+            raise TypeError("morph animates a <path>'s d; convert first with element.to_path()")
+        start = interpolate(self.element.local_outline(), target.outline(), 0.0)  # type: ignore[attr-defined]
+        end = interpolate(self.element.local_outline(), target.outline(), 1.0)  # type: ignore[attr-defined]
+        self.element.set("d", start)
+        return self._add(Animate(attribute_name="d", from_=str(start), to=str(end),
+                                 **_timing(dur, begin, repeat, freeze)))
+
+    def stagger(self, preset: str, step: float = 0.2, **options: Any) -> Motion:
+        """Apply *preset* (a method name) to each child element, each starting *step* seconds after the last."""
+        begin = float(options.pop("begin", 0.0))
+        for index, child in enumerate(list(self.element)):
+            getattr(Motion(child), preset)(begin=begin + index * step, **options)
+        return self

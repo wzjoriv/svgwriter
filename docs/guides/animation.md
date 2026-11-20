@@ -14,6 +14,28 @@ ball.append(svg.Animate(attribute_name="cx", from_=20, to=80, dur="2s", repeat_c
 doc.save("ball.svg")
 ```
 
+## Presets
+
+`element.animate` adds ready-made SMIL animations and chains:
+
+```python
+logo = svg.circle(50, 50, 20, fill="teal")
+logo.animate.fade_in(0.5).spin(2, begin=0.5)
+```
+
+| Group | Presets |
+|---|---|
+| Appear / disappear | `fade_in`, `fade_out`, `draw` (stroke draws on), `wipe(side)`, `typewriter` (text) |
+| Motion | `slide_in(side)`, `move_to(x, y)`, `follow(path)`, `bounce`, `shake` |
+| Scale and turn | `grow`, `shrink`, `pulse`, `spin(turns=)` (about the element's centre) |
+| Color and any attribute | `blink`, `color_cycle(colors)`, `tween(attribute, start, end)` |
+| Shape | `morph(target)` (a `<path>` turning into any shape, segments matched by `interpolate`) |
+| Groups | `stagger(preset, step=)` (each child starts `step` seconds after the last) |
+
+Every preset takes `dur` and `begin` in seconds, `repeat` (a count or `"indefinite"`) and keeps its end
+state unless `freeze=False`. They are plain SMIL, so they play in browsers and in `doc.at(t)`, video,
+animated GIF, APNG and WebP.
+
 ## Playing SMIL
 
 `doc.at(seconds)` returns a static copy with every animation applied at that moment, so SMIL can be
