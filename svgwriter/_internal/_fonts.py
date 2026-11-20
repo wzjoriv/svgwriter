@@ -13,8 +13,12 @@ import skia
 
 from ._constants import (
     BOLD_WEIGHT,
+    COLOR_GLYPH_TABLES,
     DEFAULT_FAMILY,
     DEFAULT_FONT_SIZE,
+    EMOJI_JOINERS,
+    EMOJI_MODIFIERS,
+    EMOJI_PROBE,
     FONT_CACHE,
     FONT_SIZE_KEYWORDS,
     FONT_WEIGHTS,
@@ -30,7 +34,7 @@ from ._constants import (
 if TYPE_CHECKING:
     from ..ops.text import FontWeight
 
-__all__ = ["font_for", "font_size", "font_weight", "registered_face", "registered_typefaces", "resolve_font", "weight_value"]
+__all__ = ["cluster_font", "color_font", "font_for", "font_size", "font_weight", "registered_face", "registered_typefaces", "resolve_font", "weight_value"]
 
 
 def font_weight(value: object) -> int:
@@ -63,6 +67,16 @@ def weight_value(value: FontWeight) -> int:
 
 
 registered_typefaces: dict[str, list[Any]] = {}
+_COLOR_FACES: dict[int, bool] = {}
+
+
+def color_font(typeface: Any) -> bool:
+    """Whether *typeface* draws glyphs in colour (COLR, sbix, CBDT or SVG tables), as emoji fonts do."""
+    key = typeface.uniqueID()
+    if key not in _COLOR_FACES:
+        _COLOR_FACES[key] = any(typeface.copyTableData(int.from_bytes(tag.encode("latin-1"), "big")) is not None
+                                for tag in COLOR_GLYPH_TABLES)
+    return _COLOR_FACES[key]
 
 
 def registered_face(family: str, weight: int, slant: Any) -> Any:
@@ -168,3 +182,46 @@ def _scanned_family(code: int, weight: int, italic: bool) -> str | None:
         if typeface.getFamilyName().lower() == name.lower() and skia.Font(typeface).unicharToGlyph(code):
             return name
     return None
+
+
+def cluster_font(cluster: str, font_family: str, size: float, weight: FontWeight = "normal", italic: bool = False,
+                 language: str | None = None) -> Any:
+    """The font for one grapheme cluster: like :func:`font_for`, but an emoji sequence picks the emoji font.
+
+    A cluster that asks for emoji presentation (variation selector 16, keycap, ZWJ or skin tone) is
+    drawn from the colour emoji font when that font has its first character, so ``"1\ufe0f\u20e3"``
+    is a keycap rather than a digit.
+
+    Parameters
+    ----------
+    cluster : str
+        One user-perceived character, possibly several code points.
+    font_family : str
+        CSS font family list.
+    size : float
+        Font size in user units.
+    weight : {"normal", "bold"} or int, optional
+        Font weight. Defaults to "normal".
+    italic : bool, optional
+        Prefer an italic face. Defaults to False.
+    language : str, optional
+        BCP 47 language hint. Defaults to None.
+
+    Returns
+    -------
+    skia.Font
+        The font that draws the cluster.
+
+    Examples
+    --------
+    >>> from svgwriter._internal._fonts import cluster_font
+    >>> cluster_font("A", "sans-serif", 16).getSize()
+    16.0
+    """
+    font = font_for(cluster[:1], font_family, size, weight, italic, language)
+    if not any(char in EMOJI_JOINERS or EMOJI_MODIFIERS[0] <= ord(char) <= EMOJI_MODIFIERS[1] for char in cluster[1:]):
+        return font
+    emoji = font_for(EMOJI_PROBE, font_family, size, weight, italic, language)
+    if color_font(emoji.getTypeface()) and emoji.unicharToGlyph(ord(cluster[0])):
+        return emoji
+    return font
