@@ -16,14 +16,13 @@ from ..attributes.viewbox import ViewBox
 from ..transform.matrix import IDENTITY, Matrix
 from ._canvas import make_surface, paint_svg, read_pixels
 from ._constants import CHANNEL_MAX, DEFAULT_QUALITY, DISPLAY, FORMATS
-from ._layers import draw_image, hidden, layers, resolve_links
-from ._renderable import ellipses_as_paths, expand_image_patterns, outlined
+from ._layers import draw_image, hidden, layers
+from ._renderable import renderable_copy
 
 if TYPE_CHECKING:
     from ..color.color import ColorLike
     from ..document import Document
     from ..elements.base import Element
-    from ..elements.text import Text
 
 __all__ = [
     "DEFAULT_SIZE",
@@ -266,56 +265,6 @@ def paint_tree(
             draw_text(canvas, item, root, view)
         elif item is not None:
             draw_image(canvas, item, root, view)
-
-
-def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None = None) -> Element:
-    """A copy of *root* with every ``<text>`` replaced by its glyph outlines.
-
-    Skia's SVG renderer draws no text, so text is drawn as paths. Styles are resolved,
-    local image links embedded and ellipses converted to paths on the copy.
-
-    Parameters
-    ----------
-    root : Element
-        The tree to copy; it is not modified.
-    keep_text : callable, optional
-        Texts it accepts stay ``<text>`` elements (to be drawn as real glyphs). Defaults to None,
-        which outlines every text.
-
-    Returns
-    -------
-    Element
-        A render-ready copy.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> from svgwriter.ops.render import renderable_copy
-    >>> doc = svg.Document(10, 10)
-    >>> _ = doc.rect(0, 0, 5, 5)
-    >>> renderable_copy(doc.root) is doc.root
-    False
-    """
-    from ..attributes.cascade import resolve_styles
-    from ..elements.text import Text
-
-    copy = root.clone()
-    resolve_styles(copy)
-    resolve_links(copy)
-    ellipses_as_paths(copy)
-    expand_image_patterns(copy)
-    if isinstance(copy, Text):
-        return copy if keep_text is not None and keep_text(copy) else outlined(copy)
-    for text in [e for e in copy.iter() if isinstance(e, Text)]:
-        if keep_text is not None and keep_text(text):
-            continue
-        parent = text.parent
-        assert parent is not None
-        outline = outlined(text)
-        index = parent.children.index(text)
-        parent.remove(text)
-        parent.insert(index, outline)
-    return copy
 
 
 def _view(document: Document, width: float, height: float, box: ViewBox | None = None) -> Matrix:

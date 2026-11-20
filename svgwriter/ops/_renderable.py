@@ -4,13 +4,16 @@ Tree rewrites that make a copy drawable by skia's SVG renderer.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import TYPE_CHECKING
+
+from ._layers import resolve_links
 
 if TYPE_CHECKING:
     from ..elements.base import Element
     from ..elements.text import Text
 
-__all__ = ["ellipses_as_paths", "expand_image_patterns", "outlined"]
+__all__ = ["ellipses_as_paths", "expand_image_patterns", "outlined", "renderable_copy"]
 
 
 def expand_image_patterns(root: Element) -> None:
@@ -52,3 +55,53 @@ def outlined(text: Text) -> Element:
         if text.has(name):
             group.attributes[name] = text.attributes[name]
     return group
+
+
+def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None = None) -> Element:
+    """A copy of *root* with every ``<text>`` replaced by its glyph outlines.
+
+    Skia's SVG renderer draws no text, so text is drawn as paths. Styles are resolved,
+    local image links embedded and ellipses converted to paths on the copy.
+
+    Parameters
+    ----------
+    root : Element
+        The tree to copy; it is not modified.
+    keep_text : callable, optional
+        Texts it accepts stay ``<text>`` elements (to be drawn as real glyphs). Defaults to None,
+        which outlines every text.
+
+    Returns
+    -------
+    Element
+        A render-ready copy.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops._renderable import renderable_copy
+    >>> doc = svg.Document(10, 10)
+    >>> _ = doc.rect(0, 0, 5, 5)
+    >>> renderable_copy(doc.root) is doc.root
+    False
+    """
+    from ..attributes.cascade import resolve_styles
+    from ..elements.text import Text
+
+    copy = root.clone()
+    resolve_styles(copy)
+    resolve_links(copy)
+    ellipses_as_paths(copy)
+    expand_image_patterns(copy)
+    if isinstance(copy, Text):
+        return copy if keep_text is not None and keep_text(copy) else outlined(copy)
+    for text in [e for e in copy.iter() if isinstance(e, Text)]:
+        if keep_text is not None and keep_text(text):
+            continue
+        parent = text.parent
+        assert parent is not None
+        outline = outlined(text)
+        index = parent.children.index(text)
+        parent.remove(text)
+        parent.insert(index, outline)
+    return copy
