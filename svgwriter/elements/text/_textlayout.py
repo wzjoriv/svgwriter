@@ -240,9 +240,10 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
             pen_y = y
         pen_x += lists.value(char, "dx") or 0.0
         pen_y += lists.value(char, "dy") or 0.0
-        outline, advance = shaped[index] if index in shaped else glyph_shape(
-            char.char, family, size, weight, italic, language)
-        boxes.append(GlyphBox(char.char, outline, pen_x, pen_y, lists.value(char, "rotate") or 0.0, advance, source))
+        outline, advance, color = shaped[index] if index in shaped else (*glyph_shape(
+            char.char, family, size, weight, italic, language), None)
+        boxes.append(GlyphBox(char.char, outline, pen_x, pen_y, lists.value(char, "rotate") or 0.0, advance, source,
+                              color))
         pen_x += advance
     chunks.append(len(boxes))
     for start, stop in zip(chunks, chunks[1:], strict=False):
@@ -280,11 +281,15 @@ def _language(element: Element) -> str | None:
 
 
 def _shaped_runs(chars: list[Char], lists: Any, fonts: dict[int, tuple[Any, ...]],
-                 rules: list[Rule]) -> dict[int, tuple[Any, float]]:
-    """Shaped ``(outline, advance)`` by character index, for runs in one font that need a shaper."""
+                 rules: list[Rule]) -> dict[int, tuple[Any, float, Any]]:
+    """Shaped ``(outline, advance, colour glyphs)`` by character index, for runs in one font that need a shaper.
+
+    Runs in a colour font (emoji) are always shaped, so each emoji cluster becomes one glyph.
+    """
+    from ..._internal._fonts import color_font
     from ..._internal._shaping import needs_shaping, shape_run
 
-    result: dict[int, tuple[Any, float]] = {}
+    result: dict[int, tuple[Any, float, Any]] = {}
     start = 0
     while start < len(chars):
         key = _font_key(chars[start].chain[0], fonts, rules)
@@ -292,36 +297,39 @@ def _shaped_runs(chars: list[Char], lists: Any, fonts: dict[int, tuple[Any, ...]
         while stop < len(chars) and _font_key(chars[stop].chain[0], fonts, rules) == key and not any(
                 lists.value(chars[stop], name) is not None for name in POSITION_NAMES):
             stop += 1
-        for first, last in _font_segments(chars, start, stop, key):
+        for first, last, font in _font_segments(chars, start, stop, key):
             run = "".join(char.char for char in chars[first:last])
-            if needs_shaping(run):
-                for offset, item in enumerate(shape_run(run, *key)):
+            if needs_shaping(run) or color_font(font.getTypeface()):
+                for offset, item in enumerate(shape_run(run, font)):
                     result[first + offset] = item
         start = stop
     return result
 
 
-def _font_segments(chars: list[Char], start: int, stop: int, key: tuple[Any, ...]) -> list[tuple[int, int]]:
+def _font_segments(chars: list[Char], start: int, stop: int, key: tuple[Any, ...]) -> list[tuple[int, int, Any]]:
     """Split ``chars[start:stop]`` where the fallback font changes, so each piece is shaped in a font that has it.
 
-    Spaces and combining marks stay with the character before them.
+    Grapheme clusters stay whole, and spaces and format characters stay with the cluster before them.
     """
     import unicodedata
 
-    from ..._internal._fonts import font_for
+    from ..._internal._fonts import cluster_font
+    from ._clusters import cluster_bounds
 
-    segments: list[tuple[int, int]] = []
+    run = "".join(char.char for char in chars[start:stop])
+    bounds = cluster_bounds(run)
+    segments: list[tuple[int, int, Any]] = []
     current, begin = None, start
-    for index in range(start, stop):
-        char = chars[index].char
-        if char.isspace() or unicodedata.combining(char) or unicodedata.category(char) in ("Mn", "Mc", "Cf"):
+    for low, high in zip(bounds, bounds[1:], strict=False):
+        cluster = run[low:high]
+        if all(char.isspace() or unicodedata.category(char) == "Cf" for char in cluster):
             continue
-        family = font_for(char, *key).getTypeface().getFamilyName()
-        if current is not None and family != current:
-            segments.append((begin, index))
-            begin = index
-        current = family
-    segments.append((begin, stop))
+        font = cluster_font(cluster, *key)
+        if current is not None and font.getTypeface().getFamilyName() != current.getTypeface().getFamilyName():
+            segments.append((begin, start + low, current))
+            begin = start + low
+        current = font
+    segments.append((begin, stop, current if current is not None else cluster_font(run[:1], *key)))
     return segments
 
 
@@ -361,7 +369,7 @@ def _along_paths(chars: list[Char], boxes: list[Any]) -> None:
             box = boxes[index]
             middle = offset + box.x - origin + box.advance / 2
             if not 0 <= middle <= length:
-                box.outline = PathData()
+                box.outline, box.color = PathData(), None
                 continue
             point, tangent = point_at_length(guide, middle), tangent_at_length(guide, middle)
             angle = math.atan2(tangent.y, tangent.x)

@@ -4,16 +4,52 @@ HarfBuzz access for shaping complex scripts.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from ._constants import CJK_START, COMPLEX_SCRIPT_START, EMOJI_START, LATIN_EXTENDED_ADDITIONAL
-from ._fonts import font_for
+from ._constants import (
+    CJK_START,
+    COMPLEX_SCRIPT_START,
+    EMOJI_END,
+    EMOJI_JOINERS,
+    EMOJI_START,
+    LATIN_EXTENDED_ADDITIONAL,
+)
+from ._fonts import color_font
 
 if TYPE_CHECKING:
-    from ..ops.text import FontWeight
     from ..pathdata import PathData
 
-__all__ = ["harfbuzz", "hb_font", "needs_shaping", "shape_run"]
+__all__ = ["ColorGlyphs", "harfbuzz", "hb_font", "needs_shaping", "shape_run"]
+
+
+@dataclass(frozen=True)
+class ColorGlyphs:
+    """The shaped glyphs of one cluster in a colour font (an emoji), which have no outline to trace.
+
+    Attributes
+    ----------
+    text : str
+        The cluster's characters, for search and copy.
+    font : skia.Font
+        The colour font at the text's size.
+    glyphs : tuple of int
+        Glyph ids, usually one for the whole cluster.
+    offsets : tuple of (float, float)
+        Origin of each glyph relative to the glyph box, in user units.
+
+    Examples
+    --------
+    >>> from svgwriter._internal._fonts import font_for
+    >>> from svgwriter._internal._shaping import ColorGlyphs
+    >>> ColorGlyphs("x", font_for("x", "sans-serif", 16), (1,), ((0.0, 0.0),)).glyphs
+    (1,)
+    """
+
+    text: str
+    font: Any
+    glyphs: tuple[int, ...]
+    offsets: tuple[tuple[float, float], ...]
 
 _HB_FONTS: dict[int, Any] = {}
 
@@ -45,40 +81,36 @@ def hb_font(typeface: Any) -> Any:
 
 
 def needs_shaping(text: str) -> bool:
-    """Whether *text* has characters from scripts that need a shaper (Hebrew, Arabic, Indic, Thai, ...).
+    """Whether *text* needs a shaper: complex scripts (Hebrew, Arabic, Indic, Thai, ...) and emoji sequences.
 
     Always False without ``uharfbuzz``, so text then lays out glyph by glyph.
     """
-    complex_script = any(COMPLEX_SCRIPT_START <= ord(char) < LATIN_EXTENDED_ADDITIONAL
-                         or CJK_START <= ord(char) < EMOJI_START for char in text)
-    return complex_script and harfbuzz() is not None
+    shaped = any(COMPLEX_SCRIPT_START <= ord(char) < LATIN_EXTENDED_ADDITIONAL
+                 or CJK_START <= ord(char) < EMOJI_START or EMOJI_START <= ord(char) <= EMOJI_END
+                 or char in EMOJI_JOINERS for char in text)
+    return shaped and harfbuzz() is not None
 
 
-def shape_run(text: str, font_family: str, size: float, weight: FontWeight = "normal",
-              italic: bool = False, language: str | None = None) -> list[tuple[PathData, float]]:
-    """Shape *text* with HarfBuzz into one ``(outline, advance)`` per character.
+def shape_run(text: str, font: Any) -> list[tuple[PathData, float, ColorGlyphs | None]]:
+    """Shape *text* with HarfBuzz into one ``(outline, advance, colour glyphs)`` per character.
 
     The first character of each cluster carries its glyphs, already placed
     relative to the run's start; the last character carries the run's whole
-    advance, so per-character layout code places the run as one piece.
+    advance, so per-character layout code places the run as one piece. Glyphs
+    of a colour font that have no outline (emoji) are returned as
+    :class:`ColorGlyphs` instead, to be drawn as real glyphs.
 
     Parameters
     ----------
     text : str
         One run in a single font.
-    font_family : str
-        CSS font family list.
-    size : float
-        Font size in user units.
-    weight : {"normal", "bold"} or int, optional
-        Font weight. Defaults to "normal".
-    italic : bool, optional
-        Use the italic face. Defaults to False.
+    font : skia.Font
+        The font that draws the run, at its size.
 
     Returns
     -------
-    list of (PathData, float)
-        Outline and advance for each character of *text*.
+    list of (PathData, float, ColorGlyphs or None)
+        Outline, advance and colour glyphs for each character of *text*.
 
     Raises
     ------
@@ -87,9 +119,12 @@ def shape_run(text: str, font_family: str, size: float, weight: FontWeight = "no
 
     Examples
     --------
-    >>> from svgwriter._internal._shaping import needs_shaping
+    >>> from svgwriter._internal._fonts import font_for
+    >>> from svgwriter._internal._shaping import needs_shaping, shape_run
     >>> needs_shaping("plain latin")
     False
+    >>> [advance > 0 for _, advance, _ in shape_run("ab", font_for("a", "sans-serif", 16))]
+    [False, True]
     """
     from ..ops import from_skia
     from ..pathdata import PathData
@@ -98,26 +133,33 @@ def shape_run(text: str, font_family: str, size: float, weight: FontWeight = "no
     hb = harfbuzz()
     if hb is None:
         raise ImportError("text shaping needs uharfbuzz; pip install uharfbuzz")
-    first = next((char for char in text if not char.isspace()), text[:1])
-    font = font_for(first, font_family, size, weight, italic, language)
     shaper, units, _, _ = hb_font(font.getTypeface())
+    colored = color_font(font.getTypeface())
     buffer = hb.Buffer()
     buffer.add_str(text)
     buffer.guess_segment_properties()
     hb.shape(shaper, buffer, {})
-    scale = size / units
+    scale = font.getSize() / units
     outlines: dict[int, list[PathData]] = {}
+    colors: dict[int, list[tuple[int, float, float]]] = {}
     pen = 0.0
     for info, position in zip(buffer.glyph_infos, buffer.glyph_positions, strict=True):
+        x, y = pen + position.x_offset * scale, -position.y_offset * scale
         glyph = font.getPath(info.codepoint)
-        if glyph is not None:
-            placed = from_skia(glyph).transformed(
-                Matrix.translate(pen + position.x_offset * scale, -position.y_offset * scale))
-            outlines.setdefault(info.cluster, []).append(placed)
+        if glyph is not None and (glyph.countVerbs() or not colored):
+            outlines.setdefault(info.cluster, []).append(from_skia(glyph).transformed(Matrix.translate(x, y)))
+        elif colored:
+            colors.setdefault(info.cluster, []).append((info.codepoint, x, y))
         pen += position.x_advance * scale
-    result = []
+    starts = sorted({*outlines, *colors, len(text)})
+    result: list[tuple[PathData, float, ColorGlyphs | None]] = []
     for index in range(len(text)):
         parts = outlines.get(index, [])
         shape = sum(parts[1:], parts[0]) if parts else PathData()
-        result.append((shape, pen if index == len(text) - 1 else 0.0))
+        color = None
+        cluster = text[index:next((start for start in starts if start > index), len(text))]
+        if index in colors and cluster.strip():
+            glyphs = colors[index]
+            color = ColorGlyphs(cluster, font, tuple(g for g, _, _ in glyphs), tuple((x, y) for _, x, y in glyphs))
+        result.append((shape, pen if index == len(text) - 1 else 0.0, color))
     return result

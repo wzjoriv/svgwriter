@@ -68,6 +68,27 @@ for a character, layout falls back per character to a system font that has one, 
 Hindi, Bengali, Urdu, Chinese, Japanese and other scripts render with any family; `xml:lang` (for
 example `"zh"` or `"ja"`) steers that choice for shared CJK characters.
 
+## Emoji
+
+Emoji come from the system's colour emoji font (Segoe UI Emoji on Windows, Apple Color Emoji on
+macOS, Noto Color Emoji on Linux). Sequences such as skin tones (👍🏽), families joined with ZWJ
+(👨‍👩‍👧), keycaps (1️⃣) and flags (🇯🇵) are shaped as one user-perceived character, drawn as the
+single glyph the font provides. Colour glyphs have no outlines, so each format shows them as well as
+it can:
+
+| Format | Emoji |
+| --- | --- |
+| SVG, SVGZ, HTML | Kept as text; the viewer's emoji font draws them. |
+| PNG, JPEG, WebP, GIF, ICO, video and other rasters | Drawn in colour from the emoji font. |
+| PDF | Drawn in colour as one glyph each; copy and search give the emoji's characters. |
+| EPS | Embedded as masked images (PostScript level 3). |
+| TikZ | Drawn as small filled pixel cells, since LaTeX cannot typeset colour emoji. |
+| PowerPoint | Kept as text in the text boxes; PowerPoint draws them. |
+| DXF, HPGL, G-code, Excalidraw | Skipped with a warning: these formats hold only outlines. |
+
+`to_path()`, `text_outline()` and boolean operations use outlines, so emoji are left out of them. With
+no colour emoji font installed, emoji fall back to whatever font has the characters.
+
 ## Font files
 
 Fonts are found by family name among the installed fonts. To use a font file without installing it,

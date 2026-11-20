@@ -52,3 +52,49 @@ def test_loops_and_errors():
     assert len(dot.children) >= 5
     with pytest.raises(TypeError, match="to_path"):
         dot.animate.morph(svg.rect(0, 0, 1, 1))
+
+
+def test_show_and_hide_switch_visibility_at_their_moment():
+    doc = svg.Document(20, 20)
+    doc.rect(0, 0, 5, 5).animate.show(at=1)
+    doc.rect(5, 0, 5, 5).animate.hide(at=1)
+    assert [e.get("visibility") for e in doc.at(0.5)] == ["hidden", None]
+    assert [e.get("visibility") for e in doc.at(1.5)] == ["visible", "hidden"]
+
+
+def test_create_draws_the_outline_then_fills():
+    doc = svg.Document(100, 100)
+    doc.circle(50, 50, 20, fill="teal").animate.create(1)
+    start, middle, end = (doc.at(t)[0] for t in (0, 0.3, 1))
+    assert svg.Color.parse(str(start.get("stroke"))).hex == "#008080" and float(start.get("fill-opacity")) == 0
+    assert 0 < float(middle.get("stroke-dashoffset")) < float(start.get("stroke-dashoffset"))
+    assert float(middle.get("fill-opacity")) == 0
+    assert float(end.get("stroke-dashoffset")) == 0 and float(end.get("fill-opacity")) == 1
+
+
+def test_uncreate_fades_the_fill_then_draws_the_outline_off():
+    doc = svg.Document(100, 100)
+    doc.rect(10, 10, 40, 40, fill="red", stroke="black").animate.uncreate(1)
+    start, end = doc.at(0)[0], doc.at(1)[0]
+    assert float(start.get("stroke-dashoffset")) == 0 and float(start.get("fill-opacity")) == 1
+    assert float(end.get("stroke-dashoffset")) == pytest.approx(160, abs=0.1) and float(end.get("fill-opacity")) == 0
+
+
+def test_write_creates_text_one_character_after_another():
+    doc = svg.Document(200, 60)
+    doc.text("abc", x=0, y=40, font_size=30).animate.write(1)
+    spans = doc.at(0.3)[0].children
+    offsets = [float(span.get("stroke-dashoffset")) for span in spans]
+    assert offsets[0] < offsets[1] < offsets[2]
+    assert all(float(span.get("fill-opacity")) == 1 for span in doc.at(1)[0].children)
+    row = svg.group(*[svg.rect(i * 10, 0, 5, 5) for i in range(3)])
+    row.animate.write(1)
+    begins = [float(child.children[0].get("begin").rstrip("s")) for child in row]
+    assert begins[0] == 0 < begins[1] < begins[2]
+
+
+def test_create_then_uncreate_chain():
+    doc = svg.Document(100, 100)
+    doc.circle(50, 50, 30, fill="teal").animate.create(1, begin=0.5).uncreate(1, begin=3)
+    states = [(float(e.get("stroke-dashoffset")), float(e.get("fill-opacity"))) for e in (doc.at(t)[0] for t in (0, 2, 4.5))]
+    assert states == [(pytest.approx(188.5, abs=0.1), 0), (0, 1), (pytest.approx(188.5, abs=0.1), 0)]

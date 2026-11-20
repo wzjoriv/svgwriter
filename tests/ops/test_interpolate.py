@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
+from svgwriter._internal._flatten import polylines
 from svgwriter.builder import star
 
 
@@ -55,3 +56,42 @@ def test_item_assignment_replaces_in_place():
     group = svg.group(svg.rect(), svg.rect())
     group[1] = svg.circle()
     assert [e.tag for e in group] == ["rect", "circle"]
+
+
+def _filled_area(path):
+    total = 0.0
+    for points, _ in polylines(path.d, 0.05):
+        xy = np.asarray(points)
+        total += float(np.dot(xy[:, 0], np.roll(xy[:, 1], -1)) - np.dot(np.roll(xy[:, 0], -1), xy[:, 1])) / 2
+    return abs(total)
+
+
+RING = svg.circle(0, 0, 40) - svg.circle(0, 0, 20)
+
+
+@pytest.mark.parametrize("a, b", [
+    (RING, star(0, 0, 45, points=5)),
+    (svg.rect(-35, -35, 70, 70), svg.circle(0, 0, 40)),
+    (svg.circle(0, 0, 40), svg.Polygon([(0, -45), (40, 30), (-40, 30)])),
+    (svg.text_to_path("A", size=100), svg.text_to_path("B", size=100)),
+])
+def test_morph_does_not_twist(a, b):
+    ends = [_filled_area(svg.interpolate(a, b, t)) for t in (0, 1)]
+    middle = _filled_area(svg.interpolate(a, b, 0.5))
+    assert 0.7 * min(ends) < middle < 1.3 * max(ends)
+
+
+def test_morph_pairs_outlines_with_outlines_and_holes_with_holes():
+    letter = svg.text_to_path("B", size=100)
+    assert len(letter.d.subpaths()) == 3
+    for t in (0, 0.5, 1):
+        assert len(svg.interpolate(letter, RING, t).d.subpaths()) == 3
+    gone = svg.interpolate(RING, svg.circle(0, 0, 40), 1)
+    hole = gone.d.subpaths()[1].bbox
+    assert hole.width == pytest.approx(0, abs=1e-9) and hole.height == pytest.approx(0, abs=1e-9)
+
+
+def test_morph_is_deterministic_and_symmetric_at_the_ends():
+    a, b = svg.text_to_path("A", size=100), RING
+    assert str(svg.interpolate(a, b, 0.3).d) == str(svg.interpolate(a.clone(), b.clone(), 0.3).d)
+    assert svg.interpolate(a, b, 0).bounds() == pytest.approx(a.bounds(), abs=0.05)
