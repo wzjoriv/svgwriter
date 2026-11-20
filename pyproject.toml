@@ -106,3 +106,8 @@ args = ["tests", "-q", "-p", "no:cacheprovider"]
 [tool.devkit.tiers.cov]
 help = "The whole suite with a coverage report."
 args = ["tests", "-q", "--cov=svgwriter", "--cov-report=term-missing"]
+
+[tool.devkit.logo]
+source = "examples.logo:logo"
+variants = { dark = { theme = "dark" }, mono = { mono = true } }
+output = "docs/_static/logo"

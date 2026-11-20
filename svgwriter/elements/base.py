@@ -991,14 +991,23 @@ class Element(Composable):
             doc.root.set("height", box.height * zoom)
         return doc
 
-    def _repr_svg_(self) -> str:
-        """Jupyter display: the element alone in a fitted ``<svg>`` (an ``<svg>`` root shows as itself)."""
+    def _repr_svg_(self) -> str | None:
+        """Jupyter display: the element alone in a fitted ``<svg>``; None (text repr) when nothing is drawn."""
         if self.tag == "svg":
             return self.to_string(xml_declaration=False)
+        if not self._draws_something():
+            return None  # type: ignore[return-value]
         return self._preview().to_string(xml_declaration=False)
+
+    def _draws_something(self) -> bool:
+        """Whether the element has any visible extent (a zero-radius circle has none)."""
+        box = getattr(self, "render_bounds", lambda: None)()
+        return box is not None and (box.width > 0 or box.height > 0)
 
     def _repr_png_(self) -> bytes | None:
         """Jupyter display as PNG, for front ends that do not show SVG; None when there is nothing to draw."""
+        if not self._draws_something():
+            return None
         try:
             return self._preview().render_png(scale=PREVIEW_SCALE)
         except (TypeError, ValueError):

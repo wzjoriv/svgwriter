@@ -426,3 +426,9 @@ def test_notebook_display_is_a_fitted_standalone_svg_and_png() -> None:
     assert text.startswith("<svg") and "linearGradient" in text and 'viewBox="18 18 24 24"' in text and 'width="200"' in text
     assert shape._repr_png_()[:4] == b"\x89PNG"
     assert shape.parent is None and svg.Svg()._repr_svg_().startswith("<svg")
+
+
+def test_notebook_shows_text_for_elements_that_draw_nothing() -> None:
+    empty = svg.circle(30, 30, 0, fill="red")
+    assert empty._repr_svg_() is None and empty._repr_png_() is None
+    assert "r='0'" in repr(empty)

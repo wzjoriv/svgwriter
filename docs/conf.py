@@ -53,6 +53,8 @@ myst_heading_anchors = 3
 html_theme = "furo"
 html_title = f"svgwriter {release}"
 html_static_path = ["_static"]
+html_logo = "_static/logo/logo.svg"
+html_favicon = "_static/logo/favicon.ico"
 html_css_files = ["custom.css"]
 html_theme_options = {
     "navigation_with_keys": True,
