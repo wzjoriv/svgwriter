@@ -10,9 +10,8 @@ from typing import Any
 from ..._internal._typing import Opacity
 from ...attributes.viewbox import PreserveAspectRatio
 from ...color.color import Color
-from .._behavior._mixins import CoreAttributes, ExternalResourcesAttribute, XLinkAttributes
-from ..core._container import Container
-from ..core._element import Child, ContentModel
+from .._behavior import CoreAttributes, ExternalResourcesAttribute, XLinkAttributes
+from ..core import Child, Container, ContentModel
 from .base import FilterInput, FilterPrimitive, SingleInput, TwoInputs, remember_source, resolve_input
 
 __all__ = [

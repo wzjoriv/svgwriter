@@ -8,14 +8,8 @@ from typing import Any
 
 from ...pathdata.builder import PathBuilder
 from ...pathdata.data import PathData
-from .._behavior._mixins import (
-    CoreAttributes,
-    ExternalResourcesAttribute,
-    PresentationAttributes,
-    XLinkAttributes,
-)
-from ..core._container import Container
-from ..core._element import Category, Child, ContentModel, Element
+from .._behavior import CoreAttributes, ExternalResourcesAttribute, PresentationAttributes, XLinkAttributes
+from ..core import Category, Child, Container, ContentModel, Element
 from ._fontbase import FontGlyphs, _GlyphBase, _Kern
 
 __all__ = [

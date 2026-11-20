@@ -97,20 +97,20 @@ from .transform import Matrix, Point, Transform
 from .video import FFmpegNotFoundError, register_renderer
 
 if TYPE_CHECKING:
-    from .export._diagram import latex
-    from .io._async import write_async
+    from ._internal._latex import latex
+    from .io import write_async
     from .io.parser import Strictness, SVGParseError, parse, parse_file
 
 __version__ = "1.0.0"
 __author__ = "Josue N Rivera"
 
 _LAZY = {
-    "latex": ("export._diagram", "latex"),
+    "latex": ("_internal._latex", "latex"),
     "parse": ("io.parser", "parse"),
     "parse_file": ("io.parser", "parse_file"),
     "Strictness": ("io.parser", "Strictness"),
     "SVGParseError": ("io.parser", "SVGParseError"),
-    "write_async": ("io._async", "write_async"),
+    "write_async": ("io", "write_async"),
 }
 
 

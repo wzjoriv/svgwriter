@@ -26,7 +26,7 @@ from ._constants import (
 
 if TYPE_CHECKING:
     from ...document import Document
-    from ...elements.core._element import Element
+    from ...elements.core import Element
 
 __all__ = ["read_excalidraw", "to_excalidraw"]
 
@@ -67,7 +67,7 @@ def _arrowhead(tip: tuple[float, float], before: tuple[float, float], style: dic
 def _element(item: dict[str, Any], files: dict[str, Any]) -> Element | None:
     from ...elements.shapes import Ellipse, Path, Polygon, Rect
     from ...elements.structure import Group, Image
-    from ...elements.text._text import Text
+    from ...elements.text import Text
 
     kind = item.get("type")
     x, y = float(item.get("x", 0)), float(item.get("y", 0))
@@ -209,8 +209,7 @@ def to_excalidraw(document: Document, *, seed: int = 0) -> str:
     >>> to_excalidraw(doc, seed=1) == to_excalidraw(doc, seed=1)
     True
     """
-    from .._flatten import flatten
-    from .._plotter._cnc import polylines
+    from ..._internal._flatten import flatten, polylines
 
     rng = random.Random(seed)
     elements = []

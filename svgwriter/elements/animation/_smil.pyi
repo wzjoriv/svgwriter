@@ -1,7 +1,8 @@
 from collections.abc import Mapping, Sequence
 from typing import Any, Literal
 from ..._internal._typing import Self
-from ..core._element import AttrValue, Child, Element
+from ..core import Child, Element
+from ..core._element import AttrValue
 from ._elements import Accumulate, Additive, CalcMode
 
 __all__ = ["FadeShortcut", "SpinShortcut"]

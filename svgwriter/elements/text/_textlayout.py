@@ -8,13 +8,12 @@ import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
+from ..._internal._fonts import font_size, font_weight
 from ...attributes.cascade import Rule, computed, rules_of
 from ...attributes.length import Length, Unit
 from ._constants import (
     DEFAULT_FONT_FAMILY,
     DEFAULT_FONT_SIZE,
-    FONT_SIZE_KEYWORDS,
-    FONT_WEIGHTS,
     PERCENT,
     POSITION_NAMES,
     WHITESPACE_DEFAULT,
@@ -23,7 +22,7 @@ from ._constants import (
 
 if TYPE_CHECKING:
     from ...ops.text import GlyphBox
-    from ..core._element import Element
+    from ..core import Element
 
 __all__ = ["Char", "collect", "layout", "number_list"]
 
@@ -108,7 +107,7 @@ def number_list(value: object, reference: float = 0.0) -> list[float]:
 
 
 def _raw(element: Element, chain: tuple[Element, ...], out: list[tuple[str, tuple[Element, ...], int, int]]) -> None:
-    from ..core._element import Element as _Element
+    from ..core import Element as _Element
 
     for position, child in enumerate(element.children):
         if isinstance(child, str):
@@ -165,22 +164,6 @@ def collect(text: Element) -> list[Char]:
     return chars
 
 
-def _font_weight(value: object) -> int:
-    text = str(value).strip()
-    return FONT_WEIGHTS.get(text, int(text) if text.isdigit() else FONT_WEIGHTS["normal"])
-
-
-def _font_size(value: object) -> float:
-    text = str(value).strip()
-    if text in FONT_SIZE_KEYWORDS:
-        return FONT_SIZE_KEYWORDS[text]
-    try:
-        size = Length.parse(value)
-    except ValueError:
-        return DEFAULT_FONT_SIZE
-    return size.value * DEFAULT_FONT_SIZE / PERCENT if size.unit is Unit.PERCENT else size.to_user_units()
-
-
 def _viewport(element: Element) -> tuple[float, float]:
     root = element.root()
     box = getattr(root, "view_box", None)
@@ -232,7 +215,7 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
     >>> len(layout(svg.text("abc", x=0, y=20)))
     3
     """
-    from ...ops._constants import ANCHOR_SHIFT
+    from ..._internal._constants import ANCHOR_SHIFT
     from ...ops.text import GlyphBox, glyph_shape
 
     if rules is None:
@@ -277,8 +260,8 @@ def _font_key(source: Element, fonts: dict[int, tuple[Any, ...]], rules: list[Ru
     if id(source) not in fonts:
         fonts[id(source)] = (
             str(computed(source, "font-family", DEFAULT_FONT_FAMILY, rules)),
-            _font_size(computed(source, "font-size", DEFAULT_FONT_SIZE, rules)),
-            _font_weight(computed(source, "font-weight", "normal", rules)),
+            font_size(computed(source, "font-size", DEFAULT_FONT_SIZE, rules)),
+            font_weight(computed(source, "font-weight", "normal", rules)),
             str(computed(source, "font-style", "", rules)) in ("italic", "oblique"),
             _language(source),
         )
@@ -299,7 +282,7 @@ def _language(element: Element) -> str | None:
 def _shaped_runs(chars: list[Char], lists: Any, fonts: dict[int, tuple[Any, ...]],
                  rules: list[Rule]) -> dict[int, tuple[Any, float]]:
     """Shaped ``(outline, advance)`` by character index, for runs in one font that need a shaper."""
-    from ...ops._shaping import needs_shaping, shape_run
+    from ..._internal._shaping import needs_shaping, shape_run
 
     result: dict[int, tuple[Any, float]] = {}
     start = 0
@@ -325,7 +308,7 @@ def _font_segments(chars: list[Char], start: int, stop: int, key: tuple[Any, ...
     """
     import unicodedata
 
-    from ...ops._fonts import font_for
+    from ..._internal._fonts import font_for
 
     segments: list[tuple[int, int]] = []
     current, begin = None, start

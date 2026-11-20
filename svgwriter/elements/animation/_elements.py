@@ -10,13 +10,8 @@ from typing import Any, Literal, TypeAlias
 
 from ...pathdata.builder import PathBuilder
 from ...pathdata.data import PathData
-from .._behavior._mixins import (
-    ConditionalAttributes,
-    CoreAttributes,
-    ExternalResourcesAttribute,
-    XLinkAttributes,
-)
-from ..core._element import Category, Child, ContentModel, Element
+from .._behavior import ConditionalAttributes, CoreAttributes, ExternalResourcesAttribute, XLinkAttributes
+from ..core import Category, Child, ContentModel, Element
 from ._smil import FadeShortcut, SpinShortcut, _AttributeTarget, _clock, _list, _ValueAnimation
 
 __all__ = [

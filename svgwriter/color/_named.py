@@ -8,9 +8,10 @@ from typing import Final
 
 from ._constants import NAMED_TABLE
 
-__all__ = ["COLOR_ALIASES", "NAMED_COLORS"]
+__all__ = [
+    "NAMED_COLORS",
+]
 
-COLOR_ALIASES: Final = {"masooma": "green"}
 """Extra names svgwriter accepts; they are written as the standard SVG keyword they stand for."""
 
 

@@ -1,11 +1,13 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, TypeAlias
 from ..color.color import Color
 from ..document import Document
 from ..pathdata.data import PathData
 from ._paints import Shading
 
-__all__ = ["Item", "Scene", "flatten", "to_cubic"]
+__all__ = ["Item", "Point", "Scene", "flatten", "polylines", "to_cubic"]
+
+Point: TypeAlias = tuple[float, float]
 
 @dataclass
 class Item:
@@ -63,3 +65,5 @@ def flatten(
     handled: frozenset[str] = ...,
     text: bool = False,
 ) -> Scene: ...
+
+def polylines(data: object, tolerance: float) -> list[tuple[list[Point], bool]]: ...

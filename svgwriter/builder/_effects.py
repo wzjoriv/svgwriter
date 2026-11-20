@@ -21,7 +21,7 @@ from ..elements.filters import (
     Filter,
     StandardInput,
 )
-from ..elements.paint._clip import Marker
+from ..elements.paint import Marker
 from ..elements.shapes import Path
 from ..pathdata.builder import PathBuilder
 from ._constants import (

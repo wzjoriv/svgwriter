@@ -5,7 +5,7 @@ Behaviour shared by many element classes: attribute groups, transforms, geometry
 from __future__ import annotations
 
 from ._convert import Convertible
-from ._geometry import PathOperand
+from ._geometry import Operand, PathOperand, union_outline
 from ._mixins import (
     ConditionalAttributes,
     CoreAttributes,
@@ -17,7 +17,8 @@ from ._mixins import (
     XLinkAttributes,
     XmlSpace,
 )
-from ._viewport import FitToViewBox, Positioned
+from ._transformable import children_bbox, offset
+from ._viewport import FitToViewBox, Positioned, positioned_bbox, user_units
 
 __all__ = [
     "ConditionalAttributes",
@@ -26,6 +27,7 @@ __all__ = [
     "ExternalResourcesAttribute",
     "FitToViewBox",
     "GraphicsElement",
+    "Operand",
     "PathOperand",
     "Positioned",
     "PresentationAttributes",
@@ -33,4 +35,9 @@ __all__ = [
     "Transformable",
     "XLinkAttributes",
     "XmlSpace",
+    "children_bbox",
+    "offset",
+    "positioned_bbox",
+    "union_outline",
+    "user_units",
 ]

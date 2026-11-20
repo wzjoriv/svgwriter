@@ -33,7 +33,7 @@ from ._constants import (
     GIF_PALETTE_FLAG,
     GIF_TRAILER,
 )
-from ._pixels import _check_rgba
+from ._rgba import _check_rgba
 
 __all__ = ["encode_gif", "encode_gif_animation"]
 

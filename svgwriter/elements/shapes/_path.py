@@ -13,9 +13,8 @@ from ..._internal._typing import Self
 from ...attributes.descriptors import Attr
 from ...pathdata.builder import PathBuilder
 from ...pathdata.data import BBox, PathData, PathDataLike
-from .._behavior._geometry import Operand
-from .._behavior._transformable import offset
-from ..core._element import Element
+from .._behavior import Operand, offset
+from ..core import Element
 from ._base import Shape
 from ._commands import PathCommands
 

@@ -1,8 +1,10 @@
 from collections.abc import Mapping, Sequence
 from typing import Any
 from ...attributes.style import StyleLike
-from .._behavior._mixins import CoreAttributes, StyleAttributes, XmlSpace
-from ..core._element import AttrValue, Category, Child, ContentModel
+from .._behavior import CoreAttributes, StyleAttributes
+from .._behavior._mixins import XmlSpace
+from ..core import Category, Child, ContentModel
+from ..core._element import AttrValue
 
 __all__ = ["Desc", "Metadata", "Title"]
 

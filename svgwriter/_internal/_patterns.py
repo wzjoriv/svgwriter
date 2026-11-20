@@ -7,18 +7,18 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING, Any
 
-from ..pathdata.data import PathData
-from ..transform.matrix import IDENTITY, Matrix
-
 if TYPE_CHECKING:
     from ..document import Document
-    from ..elements.core._element import Element
+    from ..elements.core import Element
+    from ..pathdata.data import PathData
+    from ..transform.matrix import Matrix
 
 __all__ = ["placed_images"]
 
 
 def _ancestry(leaf: Element, root: Element) -> tuple[Matrix, float]:
-    from ..elements._behavior._transformable import Transformable
+    from ..elements import Transformable
+    from ..transform.matrix import IDENTITY
 
     matrix, opacity = IDENTITY, 1.0
     node = leaf.parent
@@ -32,10 +32,9 @@ def _ancestry(leaf: Element, root: Element) -> tuple[Matrix, float]:
 
 def _expand_patterns(root: Element) -> None:
     """Replace pattern-filled shapes by their tiles cut to the outline, so vector formats keep patterns."""
-    from ..elements._behavior._geometry import PathOperand, replace_in_parent
-    from ..elements.paint._servers import Pattern
-    from ..elements.structure import Group
-    from ..ops._layers import drawable_order
+    from ..elements import Group, PathOperand, Pattern
+    from ._layers import drawable_order
+    from ._tree import replace_in_parent
 
     for leaf in drawable_order(root):
         pattern = getattr(leaf.attributes.get("fill"), "element", None)
@@ -60,8 +59,9 @@ def _expand_patterns(root: Element) -> None:
 
 def _cut_tiles(pattern: Any, box: Any, outline: PathData) -> list[Any]:
     """Each shape of each tile as a ``<path>`` intersected with *outline* (pattern transform baked in)."""
-    from ..elements._behavior._geometry import PathOperand
+    from ..elements import PathOperand
     from ..ops.boolean import intersection
+    from ..transform.matrix import Matrix
 
     tile = pattern.tile(box)
     inverse = pattern.t.inverse()
@@ -107,13 +107,14 @@ def placed_images(document: Document) -> list[tuple[Any, Matrix]]:
     >>> [matrix.apply(0, 0) for _, matrix in placed_images(doc)]
     [Point(x=5.0, y=0.0)]
     """
-    from ..elements.structure import Image
-    from ..ops._layers import _ancestry, image_matrix
-    from ..ops.render import _view, document_size
+    from ..elements import Image
+    from ..ops.render import document_size
+    from ._layers import ancestry, image_matrix
+    from ._rendering import view_matrix
 
     with document._sized():
         width, height = document_size(document)
-        view = _view(document, width, height)
+        view = view_matrix(document, width, height)
         images = [element for element in document.root.iter() if isinstance(element, Image)]
-        return [(image, view @ _ancestry(image, document.root)[0] @ image_matrix(image))
+        return [(image, view @ ancestry(image, document.root)[0] @ image_matrix(image))
                 for image in images if image.pixels is not None]

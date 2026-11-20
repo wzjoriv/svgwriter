@@ -10,7 +10,7 @@ from ...attributes.descriptors import LengthAttr
 from ...attributes.length import Length, LengthLike
 from ...attributes.viewbox import PreserveAspectRatio, ViewBox
 from ...pathdata.data import BBox
-from ..core._element import Child, Element
+from ..core import Child, Element
 
 __all__ = ["FitToViewBox", "Positioned", "ViewBoxLike", "positioned_bbox", "user_units"]
 

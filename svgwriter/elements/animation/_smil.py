@@ -8,7 +8,7 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, Literal
 
 from ..._internal._typing import Self
-from ..core._element import Child, Element
+from ..core import Child, Element
 
 if TYPE_CHECKING:
     from ._elements import Accumulate, Additive, CalcMode, Clock

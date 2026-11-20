@@ -14,7 +14,7 @@ from ..attributes.reference import FuncIRI, parse_func_iri
 from .color import Color, parse_color
 
 if TYPE_CHECKING:
-    from ..elements.core._element import Element
+    from ..elements.core import Element
 
 __all__ = ["Paint", "PaintKeyword", "PaintRef", "PaintValue", "parse_paint"]
 

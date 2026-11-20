@@ -9,7 +9,7 @@ from typing import Any, TypeAlias
 
 from ..._internal._typing import LengthAdjust
 from ...attributes.length import LengthLike
-from ..core._element import Child, Element
+from ..core import Child, Element
 
 __all__ = ["Coordinates"]
 

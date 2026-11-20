@@ -16,7 +16,7 @@ from ...attributes.descriptors import Attr, LengthAttr
 from ...attributes.length import LengthLike
 from ...attributes.style import Style, StyleLike
 from ...color.paint import PaintValue, parse_paint
-from ..core._element import Child, Element
+from ..core import Child, Element
 from ._convert import Convertible
 from ._styling import PresentationMethods, StyleMethods
 from ._transformable import Transformable

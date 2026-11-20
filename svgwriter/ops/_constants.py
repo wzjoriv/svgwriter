@@ -10,25 +10,19 @@ import skia
 
 __all__ = [
     "ALPHA_ONLY",
-    "ANCHOR_SHIFT",
     "ARITHMETIC_TERMS",
     "ARROW_LENGTH",
     "ARROW_SPREAD",
     "BLEND",
-    "BOLD_WEIGHT",
     "CAPS",
     "CHANNEL_MAX",
     "CHANNEL_SCALE",
-    "CJK_START",
     "CLOSEPOLY",
-    "COMPLEX_SCRIPT_START",
     "COMPOSITE",
     "CONIC_SUBDIVISION",
-    "CONTAINERS",
     "CURVE4",
     "DEFAULT_FAMILY",
     "DEFAULT_FONT_SIZE",
-    "DEFAULT_MITER_LIMIT",
     "DEFAULT_QUALITY",
     "DEFAULT_STROKE_WIDTH",
     "DISCRETE_SWITCH",
@@ -36,25 +30,18 @@ __all__ = [
     "EDGE_STROKE",
     "EDGE_WIDTH",
     "EFFECTS",
-    "EMOJI_START",
     "EVENODD",
     "EXTRA_HINT",
-    "FONT_CACHE",
     "FORMATS",
     "FULL_TURN",
-    "GENERIC_CANDIDATES",
-    "MAC_FALLBACK_FAMILIES",
-    "GENERIC_FAMILIES",
     "GEOMETRY_SKIP",
     "GLYPH_CACHE",
     "GRAPH_SIZE",
     "HALF_TURN",
     "JOINS",
     "LABEL_SIZE",
-    "LATIN_EXTENDED_ADDITIONAL",
     "LAYOUTS",
     "LINETO",
-    "LINK_CACHE",
     "LUMA",
     "MARGIN",
     "MASK_CANVAS",
@@ -64,9 +51,6 @@ __all__ = [
     "NODE_FILL",
     "NODE_RADIUS",
     "NODE_STROKE",
-    "NORMAL_WEIGHT",
-    "NORMAL_WIDTH",
-    "NOT_RENDERED",
     "NO_DECORATION",
     "PIXEL_EPSILON",
     "POINTS_PER_UNIT",
@@ -87,12 +71,7 @@ COMPOSITE: Final = {"over": skia.BlendMode.kSrcOver, "in": skia.BlendMode.kSrcIn
                     "atop": skia.BlendMode.kSrcATop, "xor": skia.BlendMode.kXor}
 MASK_CANVAS: Final = 1e6
 
-NOT_RENDERED: Final = frozenset({"defs", "clipPath", "mask", "pattern", "marker", "symbol", "linearGradient",
-                                 "radialGradient", "filter", "title", "desc", "metadata", "style", "font",
-                                 "font-face", "glyph", "missing-glyph"})
-CONTAINERS: Final = frozenset({"svg", "g", "a", "switch"})
 CHANNEL_MAX: Final = 255
-LINK_CACHE: Final = 64
 
 EFFECTS: Final = ("filter", "mask")
 NO_DECORATION: Final = ("", "none")
@@ -124,7 +103,6 @@ DISCRETE_SWITCH: Final = 0.5
 GEOMETRY_SKIP: Final = frozenset({"id", "transform", "d", "points"})
 
 DEFAULT_STROKE_WIDTH: Final = 1.0
-DEFAULT_MITER_LIMIT: Final = 4.0
 MEASURE_PRECISION: Final = 16.0
 CAPS: Final = {"butt": "kButt_Cap", "round": "kRound_Cap", "square": "kSquare_Cap"}
 JOINS: Final = {"miter": "kMiter_Join", "round": "kRound_Join", "bevel": "kBevel_Join"}
@@ -144,25 +122,4 @@ PIXEL_EPSILON: Final = 1e-6
 FORMATS: Final = {"png": skia.kPNG, "jpeg": skia.kJPEG, "jpg": skia.kJPEG, "webp": skia.kWEBP}
 
 DEFAULT_FAMILY: Final = "sans-serif"
-NORMAL_WEIGHT: Final = 400
-BOLD_WEIGHT: Final = 700
-NORMAL_WIDTH: Final = 5
-GENERIC_FAMILIES: Final = frozenset({"serif", "sans-serif", "monospace", "cursive", "fantasy"})
-GENERIC_CANDIDATES: Final = {
-    "serif": ("Times New Roman", "Georgia", "Times", "Liberation Serif", "DejaVu Serif", "Noto Serif"),
-    "monospace": ("Consolas", "Courier New", "Menlo", "Monaco", "Liberation Mono", "DejaVu Sans Mono",
-                  "Noto Sans Mono", "Courier"),
-    "cursive": ("Comic Sans MS", "Segoe Script", "Apple Chancery", "URW Chancery L"),
-    "fantasy": ("Impact", "Papyrus", "Luminari"),
-}
-ANCHOR_SHIFT: Final = {"start": 0.0, "middle": 0.5, "end": 1.0}
-FONT_CACHE: Final = 64
 GLYPH_CACHE: Final = 8192
-COMPLEX_SCRIPT_START: Final = 0x0590
-LATIN_EXTENDED_ADDITIONAL: Final = 0x1E00
-CJK_START: Final = 0xA800
-EMOJI_START: Final = 0x1F000
-MAC_FALLBACK_FAMILIES: Final = (
-    "Helvetica Neue", "Arial Unicode MS", "PingFang SC", "Hiragino Sans", "Apple SD Gothic Neo",
-    "Kohinoor Devanagari", "Kohinoor Bangla", "Geeza Pro", "Noto Nastaliq Urdu", "Thonburi", "Apple Color Emoji",
-)

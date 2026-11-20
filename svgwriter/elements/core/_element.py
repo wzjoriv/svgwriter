@@ -161,7 +161,7 @@ class Element(Construction, AttributeAccess, TreeEditing, Queryable, Displayable
         >>> import svgwriter as svg
         >>> _ = svg.rect(0, 0, 10, 10).animate.fade_in()
         """
-        from ...builder._motion import Motion
+        from .._motion import Motion
 
         return Motion(self)
 

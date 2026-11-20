@@ -48,7 +48,8 @@ def pdf(document: Document, *, title: str | None = None, author: str | None = No
     >>> svg.export.export(svg.Document(4, 4), "pdf", title="demo")[:5]
     b'%PDF-'
     """
-    from ...ops.render import _view, document_size, paint_tree
+    from ..._internal._rendering import view_matrix
+    from ...ops.render import document_size, paint_tree
 
     width, height = document_size(document)
     stream = skia.DynamicMemoryWStream()
@@ -62,7 +63,7 @@ def pdf(document: Document, *, title: str | None = None, author: str | None = No
         width, height = document_size(document)
         canvas = pdf_document.beginPage(width, height)
         paint_tree(canvas, document.root, lambda text: text, width, height,
-                   view=_view(document, width, height), viewport=True, native_text=text)
+                   view=view_matrix(document, width, height), viewport=True, native_text=text)
         pdf_document.endPage()
     pdf_document.close()
     return bytes(stream.detachAsData())

@@ -1,10 +1,6 @@
 from ...document import Document
-from ...elements.structure import Group
 
-__all__ = ["DiagramToolError", "latex", "read_d2", "read_dot", "read_mermaid", "read_plantuml"]
-
-class DiagramToolError(RuntimeError):
-    ...
+__all__ = ["read_d2", "read_dot", "read_mermaid", "read_plantuml"]
 
 def read_dot(
     data: bytes,
@@ -17,14 +13,6 @@ def read_mermaid(
     *,
     theme: str = 'default',
 ) -> Document: ...
-
-def latex(
-    source: str,
-    *,
-    display: bool = False,
-    preamble: str = '',
-    engine: str = 'auto',
-) -> Group: ...
 
 def read_plantuml(data: bytes) -> Document: ...
 

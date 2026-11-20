@@ -60,7 +60,7 @@ def read_text(data: bytes) -> Document:
     ['first line', 'second line']
     """
     from ..elements.structure import Group
-    from ..elements.text._text import Text
+    from ..elements.text import Text
 
     group = Group(font_family=SANS, font_size=BODY_SIZE)
     y = BODY_SIZE
@@ -81,7 +81,7 @@ def _plain(text: str) -> str:
 
 def _runs(text: str, **base: object) -> list[object]:
     """``**bold**`` spans as bold ``<tspan>`` runs, the rest as plain strings."""
-    from ..elements.text._text import TSpan
+    from ..elements.text import TSpan
 
     parts: list[object] = []
     position = 0
@@ -118,7 +118,7 @@ def read_markdown(data: bytes) -> Document:
     [('Title', 32.0), ('Some bold text', None), ('• item', None)]
     """
     from ..elements.structure import Group
-    from ..elements.text._text import Text
+    from ..elements.text import Text
 
     group = Group(font_family=SANS, font_size=BODY_SIZE)
     y = 0.0

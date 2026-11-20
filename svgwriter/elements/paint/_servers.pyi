@@ -8,19 +8,21 @@ from ...color.color import Color
 from ...color.paint import PaintValue
 from ...pathdata.data import BBox
 from ...transform.transform import TransformLike
-from .._behavior._mixins import (
+from .._behavior import (
     ConditionalAttributes,
     CoreAttributes,
     ExternalResourcesAttribute,
+    FitToViewBox,
+    Positioned,
     PresentationAttributes,
     Transformable,
     XLinkAttributes,
-    XmlSpace,
 )
+from .._behavior._mixins import XmlSpace
 from .._behavior._transformable import PointLike
-from .._behavior._viewport import FitToViewBox, Positioned, ViewBoxLike
-from ..core._container import Container, GraphicsContainer
-from ..core._element import AttrValue, Category, Child, Element
+from .._behavior._viewport import ViewBoxLike
+from ..core import Category, Child, Container, GraphicsContainer
+from ..core._element import AttrValue, Element
 from ._stops import GradientStops
 from ._tiling import PatternTiling
 

@@ -15,8 +15,7 @@ from .._internal._sentinels import MISSING, MissingType
 from .._internal._typing import AnyPath
 from ..attributes.protocols import TextSink
 from ..attributes.values import format_value
-from ..elements.core._element import Element
-from ..elements.core._unknown import UnknownElement
+from ..elements.core import Element, UnknownElement
 from ..pathdata.data import PathData
 from ..transform.matrix import Matrix
 from ._constants import DEFAULT_ENCODING, FOREIGN_PREFIX

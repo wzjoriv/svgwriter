@@ -6,7 +6,8 @@ from ...attributes.style import StyleLike
 from ...color.paint import PaintValue
 from ...ops.text import GlyphBox
 from ...pathdata.data import BBox, PathData
-from ..core._element import AttrValue, Element
+from ..core import Element
+from ..core._element import AttrValue
 from ..shapes import Path
 from ..structure import Group
 from ._character import Character, CharacterRange

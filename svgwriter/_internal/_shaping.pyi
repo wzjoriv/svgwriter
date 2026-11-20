@@ -1,6 +1,6 @@
 from typing import Any
-from ..pathdata.data import PathData
-from .text import FontWeight
+from ..ops.text import FontWeight
+from ..pathdata import PathData
 
 __all__ = ["harfbuzz", "hb_font", "needs_shaping", "shape_run"]
 

@@ -4,13 +4,13 @@ Typed child lists, composition operators and nestable containers.
 
 from __future__ import annotations
 
-import weakref
 from collections.abc import Iterable, Iterator
 from contextlib import AbstractContextManager
 from types import TracebackType
 from typing import TYPE_CHECKING, Generic, TypeVar, overload
 
-from ..._internal._typing import Self, Stack
+from ..._internal._tree import attach_cursor, cursor_of, element_list
+from ..._internal._typing import Self
 from ._element import Element
 from ._factory import ElementFactory
 
@@ -23,101 +23,6 @@ ChildT = TypeVar("ChildT", bound=Element)
 E = TypeVar("E", bound=Element)
 
 Insertable = Element | str | Iterable[Element]
-
-_CURSORS: weakref.WeakKeyDictionary[Element, Stack[Element]] = weakref.WeakKeyDictionary()
-
-
-def attach_cursor(element: Element, stack: Stack[Element] | None) -> None:
-    """Let ``with element:`` move *stack*'s insertion point.
-
-    Parameters
-    ----------
-    element : Element
-        The element used in a ``with`` statement.
-    stack : Stack of Element or None
-        The insertion stack to move; None does nothing.
-
-    See Also
-    --------
-    cursor_of : Look up the stack attached to an element.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> from svgwriter._internal._stack import Stack
-    >>> from svgwriter.elements.core._container import attach_cursor, cursor_of
-    >>> group, stack = svg.group(), Stack()
-    >>> attach_cursor(group, stack)
-    >>> cursor_of(group) is stack
-    True
-    """
-    if stack is not None:
-        _CURSORS[element] = stack
-
-
-def cursor_of(element: Element) -> Stack[Element] | None:
-    """Return the insertion stack attached to *element*, if any.
-
-    Parameters
-    ----------
-    element : Element
-        The element to look up.
-
-    Returns
-    -------
-    Stack of Element or None
-        The stack set by :func:`attach_cursor`, or None.
-
-    See Also
-    --------
-    attach_cursor : Attach an insertion stack to an element.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> from svgwriter.elements.core._container import cursor_of
-    >>> cursor_of(svg.group()) is None
-    True
-    """
-    return _CURSORS.get(element)
-
-
-def flatten(items: Insertable) -> list[Element | str]:
-    """One element, a text run or an iterable of elements, as a list.
-
-    Parameters
-    ----------
-    items : Element, str or iterable of Element
-        What to normalize.
-
-    Returns
-    -------
-    list
-        The items as a list.
-
-    Raises
-    ------
-    TypeError
-        If *items* is not an element, a string or an iterable of elements.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> from svgwriter.elements.core._container import flatten
-    >>> len(flatten([svg.circle(0, 0, 1), svg.circle(1, 1, 1)]))
-    2
-    """
-    if isinstance(items, (Element, str)):
-        return [items]
-    try:
-        flat = list(items)
-    except TypeError:
-        raise TypeError(f"expected an element or an iterable of elements, got {type(items).__name__}") from None
-    for item in flat:
-        if not isinstance(item, Element):
-            raise TypeError(f"expected elements, got {type(item).__name__}")
-    return flat  # type: ignore[return-value]
-
 
 class Container(Element, Generic[ChildT]):
     """Adds typed ``add``/iteration and ``+=`` for elements with a known child type.
@@ -155,9 +60,9 @@ class Container(Element, Generic[ChildT]):
         'circle'
         """
         if not isinstance(child, (Element, str)):
-            from ..._document.ingest import _ingest
+            from ..._document.ingest import to_element
 
-            child = _ingest(child)
+            child = to_element(child)
         return self.append(child)
 
     def add_all(self, children: Iterable[ChildT]) -> list[ChildT]:
@@ -183,7 +88,7 @@ class Container(Element, Generic[ChildT]):
 
     def __iadd__(self, children: ChildT | Iterable[ChildT]) -> Self:
         """``container += child`` or ``container += [a, b]`` appends."""
-        self.extend(flatten(children))
+        self.extend(element_list(children))
         return self
 
     def __iter__(self) -> Iterator[ChildT]:
@@ -202,7 +107,7 @@ class Container(Element, Generic[ChildT]):
 
     def __setitem__(self, index: int, element: ChildT) -> None:
         """``group[i] = el``: put *el* where the *i*-th child element is."""
-        from .._behavior._geometry import replace_in_parent
+        from ..._internal._tree import replace_in_parent
 
         replace_in_parent(self[index], element)  # type: ignore[arg-type]
 

@@ -10,17 +10,19 @@ from ..._internal._typing import Opacity, Self, SpreadMethod, Units
 from ...attributes.length import LengthLike
 from ...color.color import Color
 from ...pathdata.data import BBox
-from .._behavior._mixins import (
+from .._behavior import (
     ConditionalAttributes,
     CoreAttributes,
     ExternalResourcesAttribute,
+    FitToViewBox,
+    Positioned,
     PresentationAttributes,
     Transformable,
     XLinkAttributes,
+    positioned_bbox,
+    user_units,
 )
-from .._behavior._viewport import FitToViewBox, Positioned, positioned_bbox, user_units
-from ..core._container import Container, GraphicsContainer
-from ..core._element import Category, Child
+from ..core import Category, Child, Container, GraphicsContainer
 from ._stops import GradientStops
 from ._tiling import PatternTiling
 

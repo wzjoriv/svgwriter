@@ -9,11 +9,11 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
+from ..._internal._flatten import Item, flatten, to_cubic
 from ..._internal._numbers import format_number
+from ..._internal._paints import Shading
+from ..._internal._patterns import placed_images
 from ...transform.matrix import Matrix
-from .._flatten import Item, flatten, to_cubic
-from .._paints import Shading
-from .._patterns import placed_images
 from ._constants import (
     AXIAL,
     BASE_LEVEL,

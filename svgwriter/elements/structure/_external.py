@@ -7,13 +7,8 @@ from __future__ import annotations
 from typing import Any
 
 from ...attributes.style import StyleSheet
-from .._behavior._mixins import (
-    CoreAttributes,
-    ExternalResourcesAttribute,
-    XLinkAttributes,
-)
-from .._behavior._viewport import FitToViewBox
-from ..core._element import ContentModel
+from .._behavior import CoreAttributes, ExternalResourcesAttribute, FitToViewBox, XLinkAttributes
+from ..core import ContentModel
 
 __all__ = ["ColorProfile", "StyleElement", "View"]
 

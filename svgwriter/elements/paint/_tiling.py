@@ -8,7 +8,7 @@ import math
 from typing import TYPE_CHECKING, Any
 
 from ...pathdata.data import BBox
-from .._behavior._viewport import positioned_bbox
+from .._behavior import positioned_bbox
 
 if TYPE_CHECKING:
     from ..structure import Group, Image

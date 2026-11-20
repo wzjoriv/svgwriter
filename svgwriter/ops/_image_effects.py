@@ -13,7 +13,7 @@ import skia
 from ._constants import ALPHA_ONLY, BLEND, COMPOSITE, LUMA, MASK_CANVAS, SOURCE_ALPHA, SOURCE_GRAPHIC
 
 if TYPE_CHECKING:
-    from ..elements.core._element import Element
+    from ..elements.core import Element
 
 __all__ = ["image_filter", "paint_mask"]
 

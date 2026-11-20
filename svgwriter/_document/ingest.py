@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, Protocol, TypeVar
 
 import numpy as np
 
-from ..elements.core._element import Element
+from ..elements.core import Element
 from ..elements.structure import Group
 from ._constants import RASTER_REPRS
 
@@ -45,7 +45,7 @@ class SupportsSVG(Protocol):
     def _repr_svg_(self) -> str | None: ...
 
 
-def _ingest(item: Any) -> Any:
+def to_element(item: Any) -> Any:
     """Turn anything :meth:`Document.add` accepts into an element.
 
     In order: elements pass through; ``__svgwriter__()`` (svgwriter's own
@@ -63,7 +63,7 @@ def _ingest(item: Any) -> Any:
         result = item.__svgwriter__()
         if result is None or result is item:
             raise TypeError(f"{type(item).__name__}.__svgwriter__() must return an element, document or drawable")
-        return _ingest(result)
+        return to_element(result)
     if isinstance(item, Document):
         return _nested(item.root.clone())
     if isinstance(item, str):

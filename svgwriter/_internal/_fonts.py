@@ -14,19 +14,43 @@ import skia
 from ._constants import (
     BOLD_WEIGHT,
     DEFAULT_FAMILY,
+    DEFAULT_FONT_SIZE,
     FONT_CACHE,
+    FONT_SIZE_KEYWORDS,
+    FONT_WEIGHTS,
     GENERIC_CANDIDATES,
     GENERIC_FAMILIES,
     GLYPH_CACHE,
     MAC_FALLBACK_FAMILIES,
     NORMAL_WEIGHT,
     NORMAL_WIDTH,
+    PERCENT,
 )
 
 if TYPE_CHECKING:
-    from .text import FontWeight
+    from ..ops.text import FontWeight
 
-__all__ = ["font_for", "registered_face", "registered_typefaces", "resolve_font", "weight_value"]
+__all__ = ["font_for", "font_size", "font_weight", "registered_face", "registered_typefaces", "resolve_font", "weight_value"]
+
+
+def font_weight(value: object) -> int:
+    """A ``font-weight`` value (keyword or number) as a number."""
+    text = str(value).strip()
+    return FONT_WEIGHTS.get(text, int(text) if text.isdigit() else FONT_WEIGHTS["normal"])
+
+
+def font_size(value: object) -> float:
+    """A ``font-size`` value (keyword, length or percentage of the default) in user units."""
+    from ..attributes.length import Length, Unit
+
+    text = str(value).strip()
+    if text in FONT_SIZE_KEYWORDS:
+        return FONT_SIZE_KEYWORDS[text]
+    try:
+        size = Length.parse(value)
+    except ValueError:
+        return DEFAULT_FONT_SIZE
+    return size.value * DEFAULT_FONT_SIZE / PERCENT if size.unit is Unit.PERCENT else size.to_user_units()
 
 
 def weight_value(value: FontWeight) -> int:
@@ -108,7 +132,7 @@ def font_for(char: str, font_family: str, size: float, weight: FontWeight = "nor
 
     Examples
     --------
-    >>> from svgwriter.ops._fonts import font_for
+    >>> from svgwriter._internal._fonts import font_for
     >>> font_for("A", "sans-serif", 16).getSize()
     16.0
     """

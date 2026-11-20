@@ -109,7 +109,7 @@ def draw_graph(graph: Any, *, layout: str | Mapping[Any, Any] | Callable[..., An
     >>> # import networkx as nx; doc = svg.Document(); doc.add(nx.karate_club_graph()); doc.fit()
     """
     from ..elements.structure import Group
-    from ..elements.text._text import Text
+    from ..elements.text import Text
 
     positions = _fit(_layout(graph, layout, seed), size) if len(graph) else {}
     directed = graph.is_directed()

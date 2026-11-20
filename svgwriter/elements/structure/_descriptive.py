@@ -6,8 +6,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from .._behavior._mixins import CoreAttributes, StyleAttributes
-from ..core._element import Category, Child, ContentModel
+from .._behavior import CoreAttributes, StyleAttributes
+from ..core import Category, Child, ContentModel
 
 __all__ = ["Desc", "Metadata", "Title"]
 

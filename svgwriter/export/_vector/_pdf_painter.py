@@ -235,7 +235,7 @@ def _intersect(current: list[Op] | None, ops: list[Op]) -> list[Op]:
 
 def _operations_of(data: Any) -> list[Op]:
     """Path data as ``M``/``L``/``C``/``Z`` operations."""
-    from ...ops._skia import from_skia, to_skia
+    from ...ops import from_skia, to_skia
     from ...pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
 
     ops: list[Op] = []

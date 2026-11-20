@@ -6,14 +6,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ..pathdata.data import PathData
-from ..transform.matrix import Matrix
 from ._constants import CJK_START, COMPLEX_SCRIPT_START, EMOJI_START, LATIN_EXTENDED_ADDITIONAL
 from ._fonts import font_for
-from ._skia import from_skia
 
 if TYPE_CHECKING:
-    from .text import FontWeight
+    from ..ops.text import FontWeight
+    from ..pathdata import PathData
 
 __all__ = ["harfbuzz", "hb_font", "needs_shaping", "shape_run"]
 
@@ -89,10 +87,14 @@ def shape_run(text: str, font_family: str, size: float, weight: FontWeight = "no
 
     Examples
     --------
-    >>> from svgwriter.ops._shaping import needs_shaping
+    >>> from svgwriter._internal._shaping import needs_shaping
     >>> needs_shaping("plain latin")
     False
     """
+    from ..ops import from_skia
+    from ..pathdata import PathData
+    from ..transform import Matrix
+
     hb = harfbuzz()
     if hb is None:
         raise ImportError("text shaping needs uharfbuzz; pip install uharfbuzz")

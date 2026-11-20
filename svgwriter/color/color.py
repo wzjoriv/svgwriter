@@ -12,7 +12,7 @@ from typing import Any, TypeAlias
 
 import numpy as np
 
-from .._internal._constants import DEFAULT_PRECISION
+from .._internal._constants import COLOR_ALIASES, DEFAULT_PRECISION
 from .._internal._drawable import Drawable, color_swatch
 from .._internal._numbers import format_number
 from .._internal._typing import N
@@ -26,7 +26,7 @@ from ._constants import (
     HEX_SHORT,
     ICC_RE,
 )
-from ._named import COLOR_ALIASES, NAMED_COLORS
+from ._named import NAMED_COLORS
 from ._parsing import color_function
 
 __all__ = ["Color", "ColorLike", "as_color", "clamp", "parse_color"]

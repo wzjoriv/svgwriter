@@ -7,14 +7,10 @@ from ...attributes.style import StyleLike
 from ...attributes.viewbox import PreserveAspectRatio
 from ...color.color import Color
 from ...color.paint import PaintValue
-from .._behavior._mixins import (
-    CoreAttributes,
-    ExternalResourcesAttribute,
-    XLinkAttributes,
-    XmlSpace,
-)
-from ..core._container import Container
-from ..core._element import AttrValue, Child, ContentModel, Element
+from .._behavior import CoreAttributes, ExternalResourcesAttribute, XLinkAttributes
+from .._behavior._mixins import XmlSpace
+from ..core import Child, Container, ContentModel
+from ..core._element import AttrValue, Element
 from .base import FilterInput, FilterPrimitive, SingleInput, TwoInputs
 
 __all__ = [

@@ -11,7 +11,7 @@ from typing import Any, Final, TypeVar
 
 from .._internal._registry import Registry
 from .._internal._typing import P
-from ..elements.core._element import Element
+from ..elements.core import Element
 from ..elements.shapes import Path, Polygon
 from ..pathdata.builder import PathBuilder
 from ._constants import (

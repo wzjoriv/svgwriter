@@ -9,8 +9,8 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 from ...color.color import Color
-from .._behavior._mixins import CoreAttributes
-from ..core._element import Category, Child, ContentModel
+from .._behavior import CoreAttributes
+from ..core import Category, Child, ContentModel
 from .base import SingleInput
 
 __all__ = [

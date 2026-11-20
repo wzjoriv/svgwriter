@@ -39,14 +39,14 @@ def _color_column(value: Any) -> list[Color]:
 
 def _standard_name(text: str) -> str:
     """An svgwriter color alias (``"masooma"``) as the SVG keyword it stands for; other text unchanged."""
-    from ...color._named import COLOR_ALIASES
+    from ..._internal._constants import COLOR_ALIASES
 
     return COLOR_ALIASES.get(text.strip().lower(), text)
 
 
 def _check_paint(key: str, text: str) -> None:
     """Raise a helpful ``ValueError`` when *text* is not a color or paint SVG understands."""
-    from ...color._named import NAMED_COLORS
+    from ...color import NAMED_COLORS
     from ...color.paint import parse_paint
 
     try:

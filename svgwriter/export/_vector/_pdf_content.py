@@ -190,7 +190,7 @@ def _next_line(painter: _Painter, operands: list[Any], resources: dict[str, Any]
 
 def _show(painter: _Painter, text: str) -> None:
     """Add a ``<text>`` run at the current text position and advance by its measured width."""
-    from ...elements.text._text import Text
+    from ...elements.text import Text
     from ...ops.text import text_width
     from ._reading import _hex
 

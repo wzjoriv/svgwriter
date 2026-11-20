@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 import numpy as np
 
 from .._internal._typing import AnyPath
-from ..elements.core._element import Element
+from ..elements.core import Element
 from ..video.animation import DEFAULT_FPS
 from ._constants import INLINE_STYLE
 
@@ -101,7 +101,7 @@ class Output:
         >>> doc.at(1.0)[0].get("cx")
         '50'
         """
-        from ..video._smil import snapshot
+        from .._internal._smil import snapshot
 
         return snapshot(self, time)
 
@@ -311,7 +311,7 @@ class Output:
         ...     print(path.exists())
         True
         """
-        from ..io._async import write_async
+        from ..io import write_async
 
         await write_async(self.root, path, **options)
 

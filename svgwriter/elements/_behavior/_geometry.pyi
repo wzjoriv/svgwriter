@@ -1,7 +1,7 @@
 from typing import Any, ClassVar, TypeAlias
 from ...pathdata.data import PathData
 from ...transform.transform import TransformLike
-from ..core._element import Element
+from ..core import Element
 from ..shapes import Path
 from ._boolean import BooleanOps
 from ._measure import Measurement

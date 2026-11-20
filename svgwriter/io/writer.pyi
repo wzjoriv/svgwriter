@@ -4,7 +4,7 @@ from typing import Any
 from .._internal._sentinels import MissingType
 from .._internal._typing import AnyPath
 from ..attributes.protocols import TextSink
-from ..elements.core._element import Element
+from ..elements.core import Element
 
 __all__ = ["SerializeOptions", "Writer", "iter_chunks", "to_string", "write"]
 

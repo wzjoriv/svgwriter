@@ -19,9 +19,9 @@ if TYPE_CHECKING:
 
 def _frames(document: Document, fps: float, duration: float | None, **options: Any) -> list[Any]:
     """Every frame of the SMIL animation as uint8 RGBA, or an empty list when nothing animates."""
+    from ..._internal._rgba import to_uint8
     from ...ops.parallel import rasterize_many
     from ...video.animation import animation_duration, frame_times
-    from ._pixels import to_uint8
 
     processes = options.pop("processes", 1)
     length = duration if duration is not None else animation_duration(document)
@@ -46,9 +46,9 @@ def _raster(format: str) -> Callable[..., bytes]:
                  padding: float = 0.0, background: ColorLike | None = None, quality: int = DEFAULT_QUALITY,
                  dpi: float | None = None, animate: bool = False, fps: float = DEFAULT_GIF_FPS,
                  duration: float | None = None, loop: int = 0, processes: int | None = 1) -> bytes:
+        from ..._internal._encoders import ENCODERS
+        from ..._internal._rgba import to_uint8
         from ...ops.render import encode_image
-        from ._encoders import ENCODERS
-        from ._pixels import to_uint8
 
         if format == "jpeg" and background is None:
             background = "white"
@@ -123,10 +123,10 @@ def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int |
     >>> svg.export.export(doc, "gif").count(b"NETSCAPE2.0")
     1
     """
-    from ...elements.animation._elements import AnimationElement
+    from ..._internal._gif import encode_gif, encode_gif_animation
+    from ..._internal._rgba import to_uint8
+    from ...elements.animation import AnimationElement
     from ...video.animation import animation_duration
-    from ._gif import encode_gif, encode_gif_animation
-    from ._pixels import to_uint8
 
     del quality
     if dpi is not None:
@@ -301,8 +301,8 @@ def read_pnm(data: bytes) -> Document:
     >>> doc.root.view_box.width, len(doc)
     (2, 1)
     """
+    from ..._internal._pnm import decode_pnm
     from ...elements.structure import Pixels
-    from ._pnm import decode_pnm
 
     return _image_document(Pixels.from_array(decode_pnm(data)))
 

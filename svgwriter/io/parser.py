@@ -12,8 +12,7 @@ from typing import Final
 from .._internal._constants import SVG_NS, XLINK_NS, XML_NS
 from .._internal._typing import AnyPath
 from ..attributes.names import UNSUPPORTED_ATTRIBUTES
-from ..elements.core._element import Category, ContentModel, Element
-from ..elements.core._unknown import UnknownElement
+from ..elements.core import Category, ContentModel, Element, UnknownElement
 
 __all__ = ["SVGParseError", "Strictness", "parse", "parse_file"]
 

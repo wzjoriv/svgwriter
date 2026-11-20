@@ -10,7 +10,7 @@ from typing import IO, Any
 
 from .._internal._constants import SVG_NS, XLINK_NS
 from .._internal._typing import AnyPath
-from ..elements.core._element import Category, Element
+from ..elements.core import Category, Element
 from ._constants import RANK
 
 __all__ = ["default_namespaces", "inline_content", "open_text", "ordered", "uses_xlink"]

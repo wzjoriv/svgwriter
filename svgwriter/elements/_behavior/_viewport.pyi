@@ -3,7 +3,8 @@ from typing import Any, TypeAlias
 from ...attributes.length import LengthLike
 from ...attributes.viewbox import PreserveAspectRatio, ViewBox
 from ...pathdata.data import BBox
-from ..core._element import AttrValue, Child, Element
+from ..core import Child, Element
+from ..core._element import AttrValue
 
 __all__ = ["FitToViewBox", "Positioned", "ViewBoxLike", "positioned_bbox", "user_units"]
 

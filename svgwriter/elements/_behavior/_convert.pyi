@@ -4,8 +4,9 @@ from typing import Any, TypeVar
 from ...color.color import ColorLike
 from ...pathdata.data import BBox
 from ...transform.transform import TransformLike
-from ..core._element import AttrValue, Element
-from ..paint._clip import ClipPath
+from ..core import Element
+from ..core._element import AttrValue
+from ..paint import ClipPath
 from ..shapes import Path
 from ..structure import Group, Image
 from ._transformable import PointLike, Transformable

@@ -18,8 +18,8 @@ from ._constants import DEFAULT_FONT_SIZE, EFFECTS, MISSING_GLYPH, NO_DECORATION
 
 if TYPE_CHECKING:
     from ..color.color import Color
-    from ..elements.core._element import Element
-    from ..elements.text._text import Text
+    from ..elements.core import Element
+    from ..elements.text import Text
 
 __all__ = ["draw_text", "native_text"]
 
@@ -84,12 +84,13 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix) -> N
     --------
     native_text : Which texts can be drawn this way.
     """
-    from ..elements._behavior._geometry import clip_outline
-    from ..elements._behavior._transformable import Transformable
-    from ._layers import _ancestry, _chain, _skia_matrix
+    from .._internal._layers import ancestry
+    from .._internal._tree import clip_outline
+    from ..elements import Transformable
+    from ._layers import _chain, _skia_matrix
     from ._skia import to_skia
 
-    _, opacity = _ancestry(text, root)
+    _, opacity = ancestry(text, root)
     canvas.save()
     canvas.concat(_skia_matrix(view))
     for node in _chain(text, root):
@@ -121,16 +122,15 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix) -> N
 
 def _glyph_font(box: Any) -> Any:
     """The skia font that draws *box* as one glyph, or None when it must be an outline."""
+    from .._internal._fonts import font_for, font_size, font_weight
+    from .._internal._shaping import needs_shaping
     from ..attributes.cascade import computed
-    from ..elements.text._textlayout import _font_size, _font_weight
-    from ._fonts import font_for
-    from ._shaping import needs_shaping
 
     if needs_shaping(box.char) or box.source is None:
         return None
     family = str(computed(box.source, "font-family", "sans-serif", []))
-    size = _font_size(computed(box.source, "font-size", DEFAULT_FONT_SIZE, []))
-    weight = _font_weight(computed(box.source, "font-weight", "normal", []))
+    size = font_size(computed(box.source, "font-size", DEFAULT_FONT_SIZE, []))
+    weight = font_weight(computed(box.source, "font-weight", "normal", []))
     italic = str(computed(box.source, "font-style", "", [])) in ("italic", "oblique")
     font = font_for(box.char, family, size, weight, italic)
     if font is None or font.textToGlyphs(box.char)[:1] in ([], [MISSING_GLYPH]):
@@ -191,9 +191,9 @@ def _natural(boxes: list[Any], font: Any) -> bool:
 
 def _paints(source: Element, opacity: float) -> tuple[skia.Paint | None, skia.Paint | None]:
     """Fill and stroke paints for *source* (None where it is unpainted)."""
+    from .._internal._flatten import _number
+    from .._internal._paints import _paint
     from ..attributes.cascade import computed
-    from ..export._flatten import _number
-    from ..export._paints import _paint
 
     fill_paint = stroke_paint = None
     group = opacity * _number(source, "opacity", 1.0, []) if source.tag != "text" else opacity
