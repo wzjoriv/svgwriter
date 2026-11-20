@@ -124,3 +124,9 @@ doc.add(Network([3, 5, 2]))
 `_repr_svg_` (parsed into elements), anything with only `_repr_png_` or `_repr_jpeg_` (an `<image>`),
 and numpy pixel arrays.
 
+## Back into matplotlib
+
+`svgwriter.ops.to_matplotlib(element_or_document, ax)` draws onto matplotlib axes as `PathPatch`
+artists with their curves, colors, opacity and stroke widths, so svgwriter shapes can annotate plots
+and stay editable there. With `doc.add(fig)` in the other direction, figures and drawings move both ways.
+

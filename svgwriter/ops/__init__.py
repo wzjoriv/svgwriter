@@ -30,6 +30,7 @@ from .measure import (
     total_length,
 )
 from .parallel import rasterize_many
+from .plot import to_matplotlib
 from .render import encode, rasterize, render_frame, render_png, render_svg
 from .text import Anchor, FontWeight, register_font, text_outline, text_to_path, text_width
 
@@ -64,6 +65,7 @@ __all__ = [
     "text_outline",
     "text_to_path",
     "text_width",
+    "to_matplotlib",
     "to_skia",
     "total_length",
     "union",
