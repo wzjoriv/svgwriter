@@ -86,6 +86,7 @@ def _bisect(incoming: float, outgoing: float) -> float:
 def _placement(marker: Element, x: float, y: float, angle: float, stroke_width: float) -> Matrix:
     """Marker content space to the shape's space at one vertex."""
     from ..attributes.length import Length
+    from ..attributes.viewbox import ViewBox
     from ..transform.matrix import Matrix
 
     def number(name: str, default: float) -> float:
@@ -96,6 +97,8 @@ def _placement(marker: Element, x: float, y: float, angle: float, stroke_width: 
     if str(marker.get("markerUnits") or "strokeWidth") == "strokeWidth":
         matrix = matrix @ Matrix.scale(stroke_width)
     box = marker.get("viewBox")
+    if isinstance(box, str):
+        box = ViewBox.parse(box)
     if box is not None and box.width and box.height:
         fit = min(number("markerWidth", MARKER_DEFAULT_SIZE) / box.width,
                   number("markerHeight", MARKER_DEFAULT_SIZE) / box.height)
