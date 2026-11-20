@@ -6,33 +6,23 @@ from __future__ import annotations
 
 import os
 from collections.abc import Iterator
-from contextlib import contextmanager
 from dataclasses import InitVar, dataclass, field
-from typing import IO, Any
+from typing import Any
 
-from .._internal._constants import DEFAULT_INDENT, DEFAULT_PRECISION, DOCTYPE, SVG_NS, XLINK_NS
+from .._internal._constants import DEFAULT_INDENT, DEFAULT_PRECISION, DOCTYPE, XLINK_NS
 from .._internal._escape import escape_attribute, escape_text
 from .._internal._sentinels import MISSING, MissingType
 from .._internal._typing import AnyPath
 from ..attributes.protocols import TextSink
 from ..attributes.values import format_value
-from ..elements.base import Category, Element
+from ..elements.base import Element
 from ..elements.unknown import UnknownElement
 from ..pathdata.data import PathData
 from ..transform.matrix import Matrix
-from ._constants import DEFAULT_ENCODING, FOREIGN_PREFIX, RANK
+from ._constants import DEFAULT_ENCODING, FOREIGN_PREFIX
+from ._markup import default_namespaces, inline_content, open_text, ordered, uses_xlink
 
 __all__ = ["SerializeOptions", "Writer", "iter_chunks", "to_string", "write"]
-
-
-def _ordered(attributes: dict[str, Any]) -> list[tuple[str, Any]]:
-    """``id`` and geometry first (in a conventional order), then the rest as inserted."""
-    lead = sorted((item for item in attributes.items() if item[0] in RANK), key=lambda item: RANK[item[0]])
-    return lead + [item for item in attributes.items() if item[0] not in RANK]
-
-
-def _default_namespaces() -> dict[str, str]:
-    return {"xmlns": SVG_NS, "xmlns:xlink": XLINK_NS}
 
 
 @dataclass(kw_only=True)
@@ -83,21 +73,13 @@ class SerializeOptions:
     doctype: bool = False
     encoding: str = DEFAULT_ENCODING
     compact_paths: bool = False
-    namespaces: dict[str, str] = field(default_factory=_default_namespaces)
+    namespaces: dict[str, str] = field(default_factory=default_namespaces)
     newline: str = field(init=False, default="\n")
 
     def __post_init__(self, pretty: bool) -> None:
         if not pretty:
             self.indent = ""
             self.newline = ""
-
-
-def _inline(element: Element) -> bool:
-    return element.category is Category.TEXT_CONTENT or any(isinstance(c, str) for c in element.children)
-
-
-def _uses_xlink(element: Element) -> bool:
-    return any(key.startswith("xlink:") for node in element.iter() for key in node.attributes)
 
 
 class Writer:
@@ -141,7 +123,7 @@ class Writer:
     def _open_tag(self, element: Element, extra: dict[str, str]) -> str:
         attributes = dict(extra)
         prefixes: dict[str, str] = {}
-        for key, value in _ordered(element.attributes):
+        for key, value in ordered(element.attributes):
             if key.startswith("{"):
                 namespace, _, local = key[1:].partition("}")
                 if namespace not in prefixes:
@@ -155,10 +137,10 @@ class Writer:
     def _root_namespaces(self, element: Element) -> dict[str, str]:
         if element.tag == "svg" and not isinstance(element, UnknownElement):
             declared = dict(self.options.namespaces)
-            if not _uses_xlink(element):
+            if not uses_xlink(element):
                 declared.pop("xmlns:xlink", None)
             return declared
-        return {"xmlns:xlink": XLINK_NS} if _uses_xlink(element) else {}
+        return {"xmlns:xlink": XLINK_NS} if uses_xlink(element) else {}
 
     def _element(self, element: Element, depth: int, extra: dict[str, str], inline: bool) -> Iterator[str]:
         opts = self.options
@@ -168,7 +150,7 @@ class Writer:
             yield "/>"
             return
         yield ">"
-        inner_inline = inline or _inline(element)
+        inner_inline = inline or inline_content(element)
         namespace = getattr(element, "namespace", None)
         for child in element.children:
             if isinstance(child, str):
@@ -289,18 +271,12 @@ class Writer:
             raise TypeError(f"cannot write to {type(target).__name__}")
 
     def _write_path(self, element: Element, path: AnyPath, **kwargs: Any) -> None:
-        with _open_text(path, self.options.encoding) as stream:
+        with open_text(path, self.options.encoding) as stream:
             self._write_stream(element, stream, **kwargs)
 
     def _write_stream(self, element: Element, stream: TextSink, **kwargs: Any) -> None:
         for chunk in self.iter_chunks(element, **kwargs):
             stream.write(chunk)
-
-
-@contextmanager
-def _open_text(path: AnyPath, encoding: str) -> Iterator[IO[str]]:
-    with open(path, "w", encoding=encoding, newline="\n") as handle:
-        yield handle
 
 
 def iter_chunks(element: Element, **kwargs: Any) -> Iterator[str]:
