@@ -365,16 +365,25 @@
 <div class="viewcode-block" id="Document.from_string">
 <a class="viewcode-back" href="../../reference/document.html#svgwriter.Document.from_string">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">strictness</span><span class="p">:</span> <span class="n">Strictness</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Document</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Parse SVG text into a document.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"svg"</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">strictness</span><span class="p">:</span> <span class="n">Strictness</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Document</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Parse text in any registered format into a document: SVG by default, or Mermaid, DOT, TikZ, ...</span>
+
+<span class="sd">        Text formats that are usually files (``"mermaid"``, ``"dot"``, ``"tikz"``, ``"markdown"``,</span>
+<span class="sd">        ``"txt"``, ``"eps"``, ...) are read from the string itself, with the same importer as</span>
+<span class="sd">        :meth:`open`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        text : str or bytes</span>
-<span class="sd">            The SVG source.</span>
+<span class="sd">            The source; ``str`` is encoded as UTF-8 for formats read as bytes.</span>
+<span class="sd">        format : str, optional</span>
+<span class="sd">            A registered importer name (see ``svg.export.importers()``). Defaults to ``"svg"``.</span>
 <span class="sd">        strictness : Strictness, optional</span>
-<span class="sd">            How to treat unknown elements and unsupported attributes. Defaults to</span>
-<span class="sd">            ``Strictness.LENIENT``.</span>
+<span class="sd">            How SVG treats unknown elements and unsupported attributes. Defaults to</span>
+<span class="sd">            ``Strictness.LENIENT``. SVG only.</span>
+<span class="sd">        **options : Any</span>
+<span class="sd">            Options of the importer (for example ``theme=`` for Mermaid).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -386,7 +395,9 @@
 <span class="sd">        SVGParseError</span>
 <span class="sd">            If the text is malformed or, when strict, unsupported.</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If the root element is not ``&lt;svg&gt;``.</span>
+<span class="sd">            If the root element is not ``&lt;svg&gt;``, or *format* is not a registered importer.</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If *strictness* is given for a format other than SVG.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -397,9 +408,23 @@
 <span class="sd">        &gt;&gt;&gt; doc = Document.from_string('&lt;svg xmlns="http://www.w3.org/2000/svg"&gt;&lt;rect width="4" height="4"/&gt;&lt;/svg&gt;')</span>
 <span class="sd">        &gt;&gt;&gt; [element.tag for element in doc]</span>
 <span class="sd">        ['rect']</span>
+<span class="sd">        &gt;&gt;&gt; chart = Document.from_string("flowchart LR\\n  A --&gt; B", "mermaid")</span>
+<span class="sd">        &gt;&gt;&gt; len(chart.root.children) &gt; 0</span>
+<span class="sd">        True</span>
 <span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.io.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">Strictness</span><span class="p">,</span> <span class="n">parse</span>
 
+        <span class="k">if</span> <span class="nb">format</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">"svg"</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.export</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_importer</span>
+
+            <span class="k">if</span> <span class="n">strictness</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"strictness= applies to SVG only"</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">importer</span> <span class="o">=</span> <span class="n">find_importer</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">importer</span> <span class="o">=</span> <span class="n">find_importer</span><span class="p">(</span><span class="sa">f</span><span class="s2">"text.</span><span class="si">{</span><span class="nb">format</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">text</span>
+            <span class="k">return</span> <span class="n">importer</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>  <span class="c1"># type: ignore[no-any-return]</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">strictness</span><span class="o">=</span><span class="n">strictness</span> <span class="ow">or</span> <span class="n">Strictness</span><span class="o">.</span><span class="n">LENIENT</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">Svg</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"root element is &lt;</span><span class="si">{</span><span class="n">root</span><span class="o">.</span><span class="n">tag</span><span class="si">}</span><span class="s2">&gt;, not &lt;svg&gt;"</span><span class="p">)</span>
