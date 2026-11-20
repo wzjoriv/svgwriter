@@ -1,9 +1,9 @@
 """numpy pixels next to vectors, then one drawing exported to every registered format.
 
-Run it as ``python pixels_and_formats.py [OUTPUT_DIR]`` or open ``pixels_and_formats.ipynb`` to see each step.
+Run it as ``python pixels_and_formats.py`` or open ``pixels_and_formats.ipynb`` to see each step.
 """
 
-import sys
+import os
 import tempfile
 import warnings
 from pathlib import Path
@@ -50,11 +50,11 @@ doc
 
 # %% [markdown]
 # Save the SVG, then export the same drawing to every registered format.
-# Pass a folder as the first argument to choose where the files go.
+# Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
 
 # %%
-args = sys.argv[1:2]
-out = Path(args[0]) if args and not args[0].startswith("-") else Path(tempfile.mkdtemp(prefix="svgwriter-"))
+out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
+out.mkdir(parents=True, exist_ok=True)
 doc.save(out / "pixels_and_formats.svg")
 formats = out / "formats"
 formats.mkdir(exist_ok=True)

@@ -1,9 +1,9 @@
 """Shapes, gradients, text and nested groups with document shortcuts.
 
-Run it as ``python basic_shapes.py [OUTPUT_DIR]`` or open ``basic_shapes.ipynb`` to see each step.
+Run it as ``python basic_shapes.py`` or open ``basic_shapes.ipynb`` to see each step.
 """
 
-import sys
+import os
 import tempfile
 from pathlib import Path
 
@@ -51,10 +51,10 @@ title.span(" sweet home", font_style="italic")
 doc
 
 # %% [markdown]
-# Save it. Pass a folder as the first argument to choose where the file goes.
+# Save it. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
 
 # %%
-args = sys.argv[1:2]
-out = Path(args[0]) if args and not args[0].startswith("-") else Path(tempfile.mkdtemp(prefix="svgwriter-"))
+out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
+out.mkdir(parents=True, exist_ok=True)
 doc.save(out / "basic_shapes.svg")
 print("saved basic_shapes.svg")

@@ -1,9 +1,9 @@
 """Path data, arcs, markers, baked transforms and registered composite shapes.
 
-Run it as ``python paths_and_markers.py [OUTPUT_DIR]`` or open ``paths_and_markers.ipynb`` to see each step.
+Run it as ``python paths_and_markers.py`` or open ``paths_and_markers.ipynb`` to see each step.
 """
 
-import sys
+import os
 import tempfile
 from pathlib import Path
 
@@ -51,12 +51,12 @@ doc
 
 # %% [markdown]
 # Save a readable file and a compact one (shorter path data, fewer digits).
-# Pass a folder as the first argument to choose where they go.
+# Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
 
 # %%
-args = sys.argv[1:2]
-out = Path(args[0]) if args and not args[0].startswith("-") else Path(tempfile.mkdtemp(prefix="svgwriter-"))
+out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
+out.mkdir(parents=True, exist_ok=True)
 doc.save(out / "paths_pretty.svg")
 doc.save(out / "paths_compact.svg", pretty=False, compact_paths=True, precision=2)
 for name in ("paths_pretty.svg", "paths_compact.svg"):
-    print(name, (out / name).stat().st_size, "bytes")
+    print("saved", name)

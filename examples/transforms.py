@@ -1,10 +1,10 @@
 """Placement through one transform: rotate, scale, flip and place, plus boolean cut-outs.
 
 A ring of petals is built from one shape by rotating copies about a shared pivot, then cut and clipped.
-Run it as ``python transforms.py [OUTPUT_DIR]`` or open ``transforms.ipynb`` to see each step.
+Run it as ``python transforms.py`` or open ``transforms.ipynb`` to see each step.
 """
 
-import sys
+import os
 import tempfile
 from pathlib import Path
 
@@ -64,11 +64,11 @@ doc += window
 doc
 
 # %% [markdown]
-# Save SVG and a 2x PNG. Pass a folder as the first argument to choose where they go.
+# Save SVG and a 2x PNG. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
 
 # %%
-args = sys.argv[1:2]
-out = Path(args[0]) if args and not args[0].startswith("-") else Path(tempfile.mkdtemp(prefix="svgwriter-"))
+out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
+out.mkdir(parents=True, exist_ok=True)
 doc.save(out / "transforms.svg")
 doc.save(out / "transforms.png", scale=2)
 print("saved transforms.svg and transforms.png")

@@ -1,10 +1,10 @@
 """Text as live characters: styled ranges, per-glyph moves and rotations, outlines and cut-outs.
 
-Run it as ``python typography.py [OUTPUT_DIR]`` or open ``typography.ipynb`` to see each step.
+Run it as ``python typography.py`` or open ``typography.ipynb`` to see each step.
 """
 
 import math
-import sys
+import os
 import tempfile
 from pathlib import Path
 
@@ -57,11 +57,11 @@ doc += outlines
 doc
 
 # %% [markdown]
-# Save SVG and a 2x PNG. Pass a folder as the first argument to choose where they go.
+# Save SVG and a 2x PNG. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
 
 # %%
-args = sys.argv[1:2]
-out = Path(args[0]) if args and not args[0].startswith("-") else Path(tempfile.mkdtemp(prefix="svgwriter-"))
+out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
+out.mkdir(parents=True, exist_ok=True)
 doc.save(out / "typography.svg")
 doc.save(out / "typography.png", scale=2)
 print("saved typography.svg and typography.png")

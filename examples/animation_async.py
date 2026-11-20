@@ -1,11 +1,11 @@
 """SMIL animation, written concurrently with the async helpers.
 
 The drawing is animated by the SVG itself (open the saved file in a browser); the notebook shows a still.
-Run it as ``python animation_async.py [OUTPUT_DIR]`` or open ``animation_async.ipynb``.
+Run it as ``python animation_async.py`` or open ``animation_async.ipynb``.
 """
 
 import asyncio
-import sys
+import os
 import tempfile
 from collections.abc import Coroutine
 from concurrent.futures import ThreadPoolExecutor
@@ -62,10 +62,10 @@ async def write_all(out_dir: Path) -> list[Path]:
 
 
 # %% [markdown]
-# Write the three spinners. Pass a folder as the first argument to choose where they go.
+# Write the three spinners. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
 
 # %%
-args = sys.argv[1:2]
-out = Path(args[0]) if args and not args[0].startswith("-") else Path(tempfile.mkdtemp(prefix="svgwriter-"))
+out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
+out.mkdir(parents=True, exist_ok=True)
 written = run(write_all(out))
 print("saved", ", ".join(path.name for path in written))
