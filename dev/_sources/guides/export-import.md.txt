@@ -32,16 +32,16 @@ print(sorted(svg.export.exporters()))
 | PPM / PGM / PNM | `.ppm` `.pgm` `.pnm` | ✓ | ✓ | import also reads `.pbm` |
 | ICO | `.ico` | ✓ | ✓ | PNG entries at `sizes=`, `padding=`; import takes the largest image |
 | ICNS | `.icns` | ✓ | ✓ | standard and Retina sizes; import takes the largest image |
-| PDF | `.pdf` | ✓ | ✓ | vector (skia); text kept as text, in an embedded font subset; import reads paths, images, clips, text and shadings, `page=` |
+| PDF | `.pdf` | ✓ | ✓ | vector (skia); text kept as text, in an embedded font subset; import reads paths, images, clips, text and shadings, `page=`; links stay clickable; a list of documents gives one page each (`page=None` reads all) |
 | EPS / PostScript | `.eps` `.ps` | ✓ | ✓ | text kept as text (ASCII in standard fonts); no transparency; import is a small PostScript interpreter |
 | TikZ | `.tikz` `.tex` | ✓ | ✓ | `standalone=True` for a compilable document; text kept as `\node`; import reads `\draw`, `\fill`, nodes, `\foreach` |
 | DXF | `.dxf` | ✓ | ✓ | CAD polylines in mm, one layer per colour; import reads lines, polylines, circles, arcs, ellipses |
 | HPGL | `.hpgl` `.plt` | ✓ | ✓ | pen plotters and cutters, one pen per colour |
 | G-code | `.gcode` `.nc` `.ngc` | ✓ | ✓ | `mode="mill"` or `"laser"`, `feed`, `cut_z`, `tolerance` |
-| Excalidraw | `.excalidraw` | ✓ | ✓ | import reads shapes, arrows, text, images and groups (also `.json`) |
+| Excalidraw | `.excalidraw` | ✓ | ✓ | writes outlines, text, images and links; import reads shapes, arrows, text, images and groups (also `.json`) |
 | HTML | `.html` `.htm` | ✓ | ✓ | standalone page with the SVG inline (text kept as text), `css=`, `handlers=`; import reads the first inline `<svg>` |
-| PowerPoint | `.pptx` | ✓ | ✓ | needs `pysvgwriter[office]`; editable shapes and text boxes both ways, `slide=` on import; text kept as text |
-| Word | `.docx` | ✓ | ✓ | needs `pysvgwriter[office]`; export is a picture, import reads pictures and drawn shapes (no text) |
+| PowerPoint | `.pptx` | ✓ | ✓ | needs `pysvgwriter[office]`; editable shapes and text boxes both ways, `slide=` on import; text kept as text; a list of documents gives one slide each (`slide=None` reads all); `svg.latex` formulas become editable equations |
+| Word | `.docx` | ✓ | ✓ | needs `pysvgwriter[office]`; export is a picture, import reads pictures and drawn shapes (no text); `svg.latex` formulas become editable equations |
 | Excel | `.xlsx` | ✓ | — | needs `pysvgwriter[office]`; the drawing as a picture |
 | Markdown | `.md` `.markdown` | — | ✓ | headings, lists, code and bold become `<text>` |
 | Plain text | `.txt` `.text` | — | ✓ | one `<text>` per line |
@@ -52,9 +52,41 @@ print(sorted(svg.export.exporters()))
 | LaTeX math | `svg.latex(...)` | — | ✓ | formulas as glyph outlines: TeX (`latex` + `dvisvgm`), else Ziamath (`pysvgwriter[math]`), else matplotlib mathtext |
 | Video frames | `.mp4` `.webm` `.mov` | ✓ | ✓ | needs ffmpeg: `render_animation` writes frames, `svgwriter.video.Video` reads them |
 
-TikZ, EPS and the polyline formats work from a flattened copy of the drawing. TikZ writes gradients
-as shadings and EPS as `shfill`; the polyline formats take their first colour. EPS embeds images,
-the others skip them with a warning.
+TikZ, EPS, PowerPoint, Excalidraw and the polyline formats work from a flattened copy of the
+drawing: transforms, clipping, patterns and markers are worked into the shapes themselves. Masks and
+filters cannot be, so these formats skip them with a warning.
+
+## What each format keeps
+
+Checked by exporting a drawing with each feature to every format and reading it back. "shapes" means
+the effect is drawn into plain outlines, which look the same but are no longer the effect itself.
+
+| feature | SVG, HTML | PNG and other rasters | PDF | EPS | TikZ | PowerPoint | Word, Excel | Excalidraw | DXF, HPGL, G-code |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| solid fill | yes | yes | yes | yes | yes | yes | picture | yes | outline only |
+| linear, radial gradient | yes | yes | yes | yes (`shfill`) | yes (shading) | yes (radial approximate) | picture | first colour | no |
+| pattern | yes | yes | yes | shapes | shapes | shapes | picture | shapes | outlines |
+| stroke width | yes | yes | yes | yes | yes | yes | picture | yes | no |
+| dashes | yes | yes | shapes | yes | yes | yes | picture | dashed style | no |
+| caps, joins | yes | yes | yes | yes | yes | yes | picture | round | no |
+| fill, stroke opacity | yes | yes | yes | no | yes | yes | picture | one per element | no |
+| group opacity | yes | yes | yes | no | per shape | per shape | picture | per element | no |
+| clipping | yes | yes | yes | shapes | shapes | shapes | picture | shapes | shapes |
+| masks | yes | yes | yes (pixels) | skipped | skipped | skipped | picture | skipped | skipped |
+| filters | yes | yes | yes (pixels) | skipped | skipped | skipped | picture | skipped | skipped |
+| text | text | pixels | text or outlines | text or outlines | text | text boxes | picture | text | outlines |
+| images | yes | yes | yes | yes | skipped | pictures | picture | yes | skipped |
+| transforms | yes | yes | yes | applied | applied | applied | picture | applied | applied |
+| markers | yes | shapes | shapes | shapes | shapes | shapes | picture | shapes | outlines |
+| LaTeX formulas | outlines | pixels | outlines | outlines | outlines | equations | equations (Word) | outlines | outlines |
+| SMIL animation | yes | one frame | one frame | one frame | one frame | one frame | one frame | one frame | one frame |
+| links | yes | no | yes | no | no | on shapes | no | yes | no |
+
+"one frame" is the drawing at t = 0, or at `time=`; `render_animation` writes animated GIF and video.
+PowerPoint places pictures by their bounding box, so a rotated or skewed image comes out upright, and
+group opacity is multiplied into each shape's own transparency. A radial gradient becomes a
+PowerPoint path gradient centred on the gradient's centre, which matches circles and differs on
+ellipses. Excalidraw writes every outline as a `line` element, with Excalidraw's own dash pattern.
 
 ## Text stays text
 
@@ -69,6 +101,7 @@ same but are shapes. Only raster formats turn text into pixels.
 | TikZ | everything, as `\node` with size, family, weight, style, colour, opacity and rotation | nothing |
 | EPS | ASCII text in Helvetica, Times or Courier | other characters |
 | PowerPoint | everything, as text boxes with font, size, weight, style, colour, opacity and rotation | nothing |
+| Excalidraw | everything, as text elements with size, colour, opacity and rotation (Helvetica, Cascadia or Virgil) | nothing |
 
 Pass `text=False` to `pdf`, `tikz` or `eps` to get exact outlines everywhere, for example when the
 reader of the file may lack the fonts:
@@ -97,6 +130,26 @@ and xcolor mixes, the common line options, nodes (with shapes and names), `\tikz
 page = svg.export.load("figure.pdf", page=0)
 picture = svg.Document.open("figure.tex")
 ```
+
+## Pages and slides
+
+PDF and PowerPoint hold several drawings. Pass a list to `export` or `save` to write one page or
+slide per document, and use `Document.open_all` to read them all back as a list:
+
+```python
+cover = svg.Document(160, 90)
+cover.text("Results", x=80, y=50, font_size=20, text_anchor="middle")
+svg.export.save([cover, doc], "report.pdf")             # two pages, each its own size
+svg.export.save([cover, doc], "deck.pptx")              # two slides
+pages = svg.Document.open_all("report.pdf")             # [Document, Document]
+second = svg.Document.open("deck.pptx", slide=1)        # one slide, as before
+```
+
+A PDF page takes the size of its document. A PowerPoint deck has one slide size, so it fits the
+widest and the tallest drawing, and smaller drawings are centred on their slides. Other formats
+hold one drawing and raise `ValueError` for a list. The low-level `load` returns the list too when
+the page option is `None` (`page=None` for PDF, `slide=None` for PowerPoint); `Document.open` reads
+one page and `Document.open_all` reads every page, or wraps a single-page file in a list of one.
 
 ## Your own formats
 
@@ -141,10 +194,26 @@ mathtext; `engine="tex"`, `"ziamath"` or `"mathtext"` picks one.
 
 `pip install "pysvgwriter[office]"` adds PowerPoint, Word and Excel:
 
-- `.pptx` out: one slide sized like the drawing, each outline an editable PowerPoint shape (curves,
-  fill, outline, transparency), text as editable text boxes and images as pictures. In: shapes, pictures and text boxes of a slide
-  (`svg.Document.open("deck.pptx", slide=2)`) as native SVG elements.
+- `.pptx` out: one slide per drawing (a list gives a deck), each outline an editable PowerPoint shape
+  (curves, solid or gradient fill, outline with dashes, caps and joins, transparency, hyperlink), text
+  as editable text boxes and images as pictures. In: shapes, pictures and text boxes of a slide
+  (`svg.Document.open("deck.pptx", slide=2)`) as native SVG elements, with the same paints and links.
 - `.docx` and `.xlsx` out: the drawing as a picture at its natural size.
+
+Formulas made with `svg.latex` remember their source (the group's `data-latex` attribute), so the
+PowerPoint and Word exports write them as native, editable Office equations instead of outlines.
+The LaTeX goes through MathML (`latex2mathml`) to Office Math: fractions, scripts, roots, sums and
+integrals, accents, bars, limits, `\left`/`\right` delimiters, matrices, text and Greek letters.
+Each equation is centred on the box the formula occupied, in Cambria Math at the drawn size; in Word
+it floats over the picture, or becomes an equation paragraph when the drawing holds nothing else.
+LaTeX with no Office equivalent stays as outlines. Reading a deck back gives an equation's
+characters as plain text, without its layout.
+
+```python
+slide = svg.Document(320, 120)
+slide.add(svg.latex(r"\int_0^1 x^2\,dx = \frac{1}{3}", display=True)).scale(2).place(160, 60)
+slide.save("formula.pptx")      # an editable equation, not shapes
+```
 
 Without the extra these formats raise an `ImportError` that names the install command.
 

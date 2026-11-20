@@ -392,7 +392,7 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">.pdf</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
-<td><p>vector (skia); text kept as text, in an embedded font subset; import reads paths, images, clips, text and shadings, <code class="docutils literal notranslate"><span class="pre">page=</span></code></p></td>
+<td><p>vector (skia); text kept as text, in an embedded font subset; import reads paths, images, clips, text and shadings, <code class="docutils literal notranslate"><span class="pre">page=</span></code>; links stay clickable; a list of documents gives one page each (<code class="docutils literal notranslate"><span class="pre">page=None</span></code> reads all)</p></td>
 </tr>
 <tr class="row-odd"><td><p>EPS / PostScript</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.eps</span></code> <code class="docutils literal notranslate"><span class="pre">.ps</span></code></p></td>
@@ -428,7 +428,7 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">.excalidraw</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
-<td><p>import reads shapes, arrows, text, images and groups (also <code class="docutils literal notranslate"><span class="pre">.json</span></code>)</p></td>
+<td><p>writes outlines, text, images and links; import reads shapes, arrows, text, images and groups (also <code class="docutils literal notranslate"><span class="pre">.json</span></code>)</p></td>
 </tr>
 <tr class="row-odd"><td><p>HTML</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.html</span></code> <code class="docutils literal notranslate"><span class="pre">.htm</span></code></p></td>
@@ -440,13 +440,13 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">.pptx</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
-<td><p>needs <code class="docutils literal notranslate"><span class="pre">pysvgwriter[office]</span></code>; editable shapes and text boxes both ways, <code class="docutils literal notranslate"><span class="pre">slide=</span></code> on import; text kept as text</p></td>
+<td><p>needs <code class="docutils literal notranslate"><span class="pre">pysvgwriter[office]</span></code>; editable shapes and text boxes both ways, <code class="docutils literal notranslate"><span class="pre">slide=</span></code> on import; text kept as text; a list of documents gives one slide each (<code class="docutils literal notranslate"><span class="pre">slide=None</span></code> reads all); <code class="docutils literal notranslate"><span class="pre">svg.latex</span></code> formulas become editable equations</p></td>
 </tr>
 <tr class="row-odd"><td><p>Word</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.docx</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
-<td><p>needs <code class="docutils literal notranslate"><span class="pre">pysvgwriter[office]</span></code>; export is a picture, import reads pictures and drawn shapes (no text)</p></td>
+<td><p>needs <code class="docutils literal notranslate"><span class="pre">pysvgwriter[office]</span></code>; export is a picture, import reads pictures and drawn shapes (no text); <code class="docutils literal notranslate"><span class="pre">svg.latex</span></code> formulas become editable equations</p></td>
 </tr>
 <tr class="row-even"><td><p>Excel</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.xlsx</span></code></p></td>
@@ -505,9 +505,236 @@
 </tbody>
 </table>
 </div>
-<p>TikZ, EPS and the polyline formats work from a flattened copy of the drawing. TikZ writes gradients
-as shadings and EPS as <code class="docutils literal notranslate"><span class="pre">shfill</span></code>; the polyline formats take their first colour. EPS embeds images,
-the others skip them with a warning.</p>
+<p>TikZ, EPS, PowerPoint, Excalidraw and the polyline formats work from a flattened copy of the
+drawing: transforms, clipping, patterns and markers are worked into the shapes themselves. Masks and
+filters cannot be, so these formats skip them with a warning.</p>
+<section id="what-each-format-keeps">
+<h2>What each format keeps<a class="headerlink" href="#what-each-format-keeps" title="Link to this heading">¶</a></h2>
+<p>Checked by exporting a drawing with each feature to every format and reading it back. “shapes” means
+the effect is drawn into plain outlines, which look the same but are no longer the effect itself.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>feature</p></th>
+<th class="head"><p>SVG, HTML</p></th>
+<th class="head"><p>PNG and other rasters</p></th>
+<th class="head"><p>PDF</p></th>
+<th class="head"><p>EPS</p></th>
+<th class="head"><p>TikZ</p></th>
+<th class="head"><p>PowerPoint</p></th>
+<th class="head"><p>Word, Excel</p></th>
+<th class="head"><p>Excalidraw</p></th>
+<th class="head"><p>DXF, HPGL, G-code</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>solid fill</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>picture</p></td>
+<td><p>yes</p></td>
+<td><p>outline only</p></td>
+</tr>
+<tr class="row-odd"><td><p>linear, radial gradient</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes (<code class="docutils literal notranslate"><span class="pre">shfill</span></code>)</p></td>
+<td><p>yes (shading)</p></td>
+<td><p>yes (radial approximate)</p></td>
+<td><p>picture</p></td>
+<td><p>first colour</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-even"><td><p>pattern</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>shapes</p></td>
+<td><p>shapes</p></td>
+<td><p>shapes</p></td>
+<td><p>picture</p></td>
+<td><p>shapes</p></td>
+<td><p>outlines</p></td>
+</tr>
+<tr class="row-odd"><td><p>stroke width</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>picture</p></td>
+<td><p>yes</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-even"><td><p>dashes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>shapes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>picture</p></td>
+<td><p>dashed style</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-odd"><td><p>caps, joins</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>picture</p></td>
+<td><p>round</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-even"><td><p>fill, stroke opacity</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>no</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>picture</p></td>
+<td><p>one per element</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-odd"><td><p>group opacity</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>no</p></td>
+<td><p>per shape</p></td>
+<td><p>per shape</p></td>
+<td><p>picture</p></td>
+<td><p>per element</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-even"><td><p>clipping</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>shapes</p></td>
+<td><p>shapes</p></td>
+<td><p>shapes</p></td>
+<td><p>picture</p></td>
+<td><p>shapes</p></td>
+<td><p>shapes</p></td>
+</tr>
+<tr class="row-odd"><td><p>masks</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes (pixels)</p></td>
+<td><p>skipped</p></td>
+<td><p>skipped</p></td>
+<td><p>skipped</p></td>
+<td><p>picture</p></td>
+<td><p>skipped</p></td>
+<td><p>skipped</p></td>
+</tr>
+<tr class="row-even"><td><p>filters</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes (pixels)</p></td>
+<td><p>skipped</p></td>
+<td><p>skipped</p></td>
+<td><p>skipped</p></td>
+<td><p>picture</p></td>
+<td><p>skipped</p></td>
+<td><p>skipped</p></td>
+</tr>
+<tr class="row-odd"><td><p>text</p></td>
+<td><p>text</p></td>
+<td><p>pixels</p></td>
+<td><p>text or outlines</p></td>
+<td><p>text or outlines</p></td>
+<td><p>text</p></td>
+<td><p>text boxes</p></td>
+<td><p>picture</p></td>
+<td><p>text</p></td>
+<td><p>outlines</p></td>
+</tr>
+<tr class="row-even"><td><p>images</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>skipped</p></td>
+<td><p>pictures</p></td>
+<td><p>picture</p></td>
+<td><p>yes</p></td>
+<td><p>skipped</p></td>
+</tr>
+<tr class="row-odd"><td><p>transforms</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>applied</p></td>
+<td><p>applied</p></td>
+<td><p>applied</p></td>
+<td><p>picture</p></td>
+<td><p>applied</p></td>
+<td><p>applied</p></td>
+</tr>
+<tr class="row-even"><td><p>markers</p></td>
+<td><p>yes</p></td>
+<td><p>shapes</p></td>
+<td><p>shapes</p></td>
+<td><p>shapes</p></td>
+<td><p>shapes</p></td>
+<td><p>shapes</p></td>
+<td><p>picture</p></td>
+<td><p>shapes</p></td>
+<td><p>outlines</p></td>
+</tr>
+<tr class="row-odd"><td><p>LaTeX formulas</p></td>
+<td><p>outlines</p></td>
+<td><p>pixels</p></td>
+<td><p>outlines</p></td>
+<td><p>outlines</p></td>
+<td><p>outlines</p></td>
+<td><p>equations</p></td>
+<td><p>equations (Word)</p></td>
+<td><p>outlines</p></td>
+<td><p>outlines</p></td>
+</tr>
+<tr class="row-even"><td><p>SMIL animation</p></td>
+<td><p>yes</p></td>
+<td><p>one frame</p></td>
+<td><p>one frame</p></td>
+<td><p>one frame</p></td>
+<td><p>one frame</p></td>
+<td><p>one frame</p></td>
+<td><p>one frame</p></td>
+<td><p>one frame</p></td>
+<td><p>one frame</p></td>
+</tr>
+<tr class="row-odd"><td><p>links</p></td>
+<td><p>yes</p></td>
+<td><p>no</p></td>
+<td><p>yes</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p>on shapes</p></td>
+<td><p>no</p></td>
+<td><p>yes</p></td>
+<td><p>no</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>“one frame” is the drawing at t = 0, or at <code class="docutils literal notranslate"><span class="pre">time=</span></code>; <code class="docutils literal notranslate"><span class="pre">render_animation</span></code> writes animated GIF and video.
+PowerPoint places pictures by their bounding box, so a rotated or skewed image comes out upright, and
+group opacity is multiplied into each shape’s own transparency. A radial gradient becomes a
+PowerPoint path gradient centred on the gradient’s centre, which matches circles and differs on
+ellipses. Excalidraw writes every outline as a <code class="docutils literal notranslate"><span class="pre">line</span></code> element, with Excalidraw’s own dash pattern.</p>
+</section>
 <section id="text-stays-text">
 <h2>Text stays text<a class="headerlink" href="#text-stays-text" title="Link to this heading">¶</a></h2>
 <p>Every format that can hold text keeps it as text, so it can be selected, searched and edited. Where
@@ -542,6 +769,10 @@ same but are shapes. Only raster formats turn text into pixels.</p>
 <td><p>everything, as text boxes with font, size, weight, style, colour, opacity and rotation</p></td>
 <td><p>nothing</p></td>
 </tr>
+<tr class="row-odd"><td><p>Excalidraw</p></td>
+<td><p>everything, as text elements with size, colour, opacity and rotation (Helvetica, Cascadia or Virgil)</p></td>
+<td><p>nothing</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -569,6 +800,24 @@ and xcolor mixes, the common line options, nodes (with shapes and names), <code 
 <span class="n">picture</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"figure.tex"</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="pages-and-slides">
+<h2>Pages and slides<a class="headerlink" href="#pages-and-slides" title="Link to this heading">¶</a></h2>
+<p>PDF and PowerPoint hold several drawings. Pass a list to <code class="docutils literal notranslate"><span class="pre">export</span></code> or <code class="docutils literal notranslate"><span class="pre">save</span></code> to write one page or
+slide per document, and use <code class="docutils literal notranslate"><span class="pre">Document.open_all</span></code> to read them all back as a list:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cover</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+<span class="n">cover</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Results"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">text_anchor</span><span class="o">=</span><span class="s2">"middle"</span><span class="p">)</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">export</span><span class="o">.</span><span class="n">save</span><span class="p">([</span><span class="n">cover</span><span class="p">,</span> <span class="n">doc</span><span class="p">],</span> <span class="s2">"report.pdf"</span><span class="p">)</span>             <span class="c1"># two pages, each its own size</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">export</span><span class="o">.</span><span class="n">save</span><span class="p">([</span><span class="n">cover</span><span class="p">,</span> <span class="n">doc</span><span class="p">],</span> <span class="s2">"deck.pptx"</span><span class="p">)</span>              <span class="c1"># two slides</span>
+<span class="n">pages</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="o">.</span><span class="n">open_all</span><span class="p">(</span><span class="s2">"report.pdf"</span><span class="p">)</span>             <span class="c1"># [Document, Document]</span>
+<span class="n">second</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"deck.pptx"</span><span class="p">,</span> <span class="n">slide</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>        <span class="c1"># one slide, as before</span>
+</pre></div>
+</div>
+<p>A PDF page takes the size of its document. A PowerPoint deck has one slide size, so it fits the
+widest and the tallest drawing, and smaller drawings are centred on their slides. Other formats
+hold one drawing and raise <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> for a list. The low-level <code class="docutils literal notranslate"><span class="pre">load</span></code> returns the list too when
+the page option is <code class="docutils literal notranslate"><span class="pre">None</span></code> (<code class="docutils literal notranslate"><span class="pre">page=None</span></code> for PDF, <code class="docutils literal notranslate"><span class="pre">slide=None</span></code> for PowerPoint); <code class="docutils literal notranslate"><span class="pre">Document.open</span></code> reads
+one page and <code class="docutils literal notranslate"><span class="pre">Document.open_all</span></code> reads every page, or wraps a single-page file in a list of one.</p>
 </section>
 <section id="your-own-formats">
 <h2>Your own formats<a class="headerlink" href="#your-own-formats" title="Link to this heading">¶</a></h2>
@@ -612,11 +861,25 @@ mathtext; <code class="docutils literal notranslate"><span class="pre">engine=&q
 <h2>Office files<a class="headerlink" href="#office-files" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;pysvgwriter[office]&quot;</span></code> adds PowerPoint, Word and Excel:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">.pptx</span></code> out: one slide sized like the drawing, each outline an editable PowerPoint shape (curves,
-fill, outline, transparency), text as editable text boxes and images as pictures. In: shapes, pictures and text boxes of a slide
-(<code class="docutils literal notranslate"><span class="pre">svg.Document.open(&quot;deck.pptx&quot;,</span> <span class="pre">slide=2)</span></code>) as native SVG elements.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.pptx</span></code> out: one slide per drawing (a list gives a deck), each outline an editable PowerPoint shape
+(curves, solid or gradient fill, outline with dashes, caps and joins, transparency, hyperlink), text
+as editable text boxes and images as pictures. In: shapes, pictures and text boxes of a slide
+(<code class="docutils literal notranslate"><span class="pre">svg.Document.open(&quot;deck.pptx&quot;,</span> <span class="pre">slide=2)</span></code>) as native SVG elements, with the same paints and links.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.docx</span></code> and <code class="docutils literal notranslate"><span class="pre">.xlsx</span></code> out: the drawing as a picture at its natural size.</p></li>
 </ul>
+<p>Formulas made with <code class="docutils literal notranslate"><span class="pre">svg.latex</span></code> remember their source (the group’s <code class="docutils literal notranslate"><span class="pre">data-latex</span></code> attribute), so the
+PowerPoint and Word exports write them as native, editable Office equations instead of outlines.
+The LaTeX goes through MathML (<code class="docutils literal notranslate"><span class="pre">latex2mathml</span></code>) to Office Math: fractions, scripts, roots, sums and
+integrals, accents, bars, limits, <code class="docutils literal notranslate"><span class="pre">\left</span></code>/<code class="docutils literal notranslate"><span class="pre">\right</span></code> delimiters, matrices, text and Greek letters.
+Each equation is centred on the box the formula occupied, in Cambria Math at the drawn size; in Word
+it floats over the picture, or becomes an equation paragraph when the drawing holds nothing else.
+LaTeX with no Office equivalent stays as outlines. Reading a deck back gives an equation’s
+characters as plain text, without its layout.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">slide</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">320</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
+<span class="n">slide</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">latex</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\int_0^1 x^2\,dx = \frac</span><span class="si">{1}{3}</span><span class="s2">"</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="n">slide</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"formula.pptx"</span><span class="p">)</span>      <span class="c1"># an editable equation, not shapes</span>
+</pre></div>
+</div>
 <p>Without the extra these formats raise an <code class="docutils literal notranslate"><span class="pre">ImportError</span></code> that names the install command.</p>
 </section>
 <section id="html-pages">
@@ -687,7 +950,9 @@ interaction is attached by the page, by element id:</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Export and import</a><ul>
+<li><a class="reference internal" href="#what-each-format-keeps">What each format keeps</a></li>
 <li><a class="reference internal" href="#text-stays-text">Text stays text</a></li>
+<li><a class="reference internal" href="#pages-and-slides">Pages and slides</a></li>
 <li><a class="reference internal" href="#your-own-formats">Your own formats</a></li>
 <li><a class="reference internal" href="#diagrams">Diagrams</a></li>
 <li><a class="reference internal" href="#office-files">Office files</a></li>
