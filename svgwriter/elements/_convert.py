@@ -4,10 +4,11 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Final, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from .._internal._constants import SVG_NS, XLINK_NS
 from ..attributes.length import Length
+from ._constants import DEFAULT_STROKE_WIDTH
 from ._transformable import Transformable
 from .base import Element
 
@@ -23,7 +24,6 @@ if TYPE_CHECKING:
 __all__ = ["Convertible"]
 
 E = TypeVar("E", bound="Convertible")
-DEFAULT_STROKE_WIDTH: Final = 1.0
 
 
 class Convertible(Transformable):

@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Any, ClassVar, Final
+from typing import Any, ClassVar
 
 import numpy as np
 
@@ -15,10 +15,9 @@ from ..._internal._typing import Self
 from ...pathdata.builder import PathBuilder
 from ...pathdata.data import BBox, PathData
 from ._base import Shape, parse_points
+from ._constants import DEFAULT_SIDES, EMPTY_POINTS, FULL_CIRCLE
 
 PointsLike = np.ndarray | Sequence[Sequence[float]]
-_EMPTY: Final = np.zeros((0, 2))
-_EMPTY.flags.writeable = False
 
 
 class PointList:
@@ -107,17 +106,13 @@ def as_points(value: PointsLike | str) -> np.ndarray:
     """
     array = np.array(parse_points(value) if isinstance(value, str) else value, dtype=float)
     if array.size == 0:
-        return _EMPTY
+        return EMPTY_POINTS
     if array.ndim != 2 or array.shape[1] != 2:
         raise ValueError(f"points must have shape (N, 2), got {array.shape}")
     array.flags.writeable = False
     return array
 
 __all__ = ["PointList", "PointsLike", "Polygon", "Polyline", "as_points"]
-
-DEFAULT_SIDES: Final = 6
-
-FULL_CIRCLE: Final = 360.0
 
 
 class Polyline(Shape, tag="polyline"):
@@ -166,7 +161,7 @@ class Polyline(Shape, tag="polyline"):
         """
         raw = self.attributes.get("points")
         if raw is None:
-            return _EMPTY
+            return EMPTY_POINTS
         if not isinstance(raw, PointList):
             raw = PointList(as_points(raw))
             self.attributes["points"] = raw

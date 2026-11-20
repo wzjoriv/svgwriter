@@ -8,10 +8,10 @@ import enum
 from collections.abc import Sequence
 from typing import Any, Literal, TypeAlias
 
-from .._internal._typing import Self
 from ..pathdata.builder import PathBuilder
 from ..pathdata.data import PathData
 from ._mixins import ConditionalAttributes, CoreAttributes, ExternalResourcesAttribute, XLinkAttributes
+from ._smil import FadeShortcut, SpinShortcut, _AttributeTarget, _clock, _list, _ValueAnimation
 from .base import Category, Child, ContentModel, Element
 
 __all__ = [
@@ -143,18 +143,6 @@ class TransformType(str, enum.Enum):
     SKEW_Y = "skewY"
 
 
-def _clock(value: Clock | None) -> str | None:
-    if value is None or isinstance(value, str):
-        return value
-    return f"{value:g}s"
-
-
-def _list(value: Any, separator: str = ";") -> Any:
-    if isinstance(value, (list, tuple)):
-        return separator.join(str(v) for v in value)
-    return value
-
-
 class AnimationElement(
     XLinkAttributes,
     ConditionalAttributes,
@@ -224,50 +212,7 @@ class AnimationElement(
         )
 
 
-class _AttributeTarget(Element):
-    def __init__(
-        self,
-        *args: Child,
-        attribute_name: str | None = None,
-        attribute_type: Literal["CSS", "XML", "auto"] | None = None,
-        **kwargs: Any,
-    ) -> None:
-        super().__init__(*args, **kwargs)
-        self.update(attribute_name=attribute_name, attribute_type=attribute_type)
-
-
-class _ValueAnimation(Element):
-    def __init__(
-        self,
-        *args: Child,
-        values: Sequence[Any] | str | None = None,
-        from_: Any = None,
-        to: Any = None,
-        by: Any = None,
-        calc_mode: CalcMode | None = None,
-        key_times: Sequence[float] | str | None = None,
-        key_splines: Sequence[tuple[float, float, float, float]] | str | None = None,
-        additive: Additive | None = None,
-        accumulate: Accumulate | None = None,
-        **kwargs: Any,
-    ) -> None:
-        super().__init__(*args, **kwargs)
-        if isinstance(key_splines, (list, tuple)):
-            key_splines = ";".join(" ".join(f"{n:g}" for n in spline) for spline in key_splines)
-        self.update(
-            values=_list(values),
-            from_=from_,
-            to=to,
-            by=by,
-            calc_mode=calc_mode,
-            key_times=_list(key_times),
-            key_splines=key_splines,
-            additive=additive,
-            accumulate=accumulate,
-        )
-
-
-class Animate(AnimationElement, _ValueAnimation, _AttributeTarget, tag="animate"):
+class Animate(FadeShortcut, AnimationElement, _ValueAnimation, _AttributeTarget, tag="animate"):
     """``<animate>``: interpolate one attribute over time.
 
     Parameters
@@ -308,31 +253,6 @@ class Animate(AnimationElement, _ValueAnimation, _AttributeTarget, tag="animate"
     >>> str(Animate.fade(1, 0, dur=2))
     '<animate attributeName="opacity" from="1" to="0" dur="2s"/>'
     """
-
-    @classmethod
-    def fade(cls, start: float, stop: float, **kwargs: Any) -> Self:
-        """Create an opacity animation.
-
-        Parameters
-        ----------
-        start : float
-            Opacity at the beginning.
-        stop : float
-            Opacity at the end.
-        **kwargs
-            Further attributes, typically timing such as ``dur``.
-
-        Returns
-        -------
-        Animate
-            An ``<animate>`` of ``opacity`` from *start* to *stop*.
-
-        Examples
-        --------
-        >>> Animate.fade(0, 1, dur=1).get("to")
-        1
-        """
-        return cls(attribute_name="opacity", from_=start, to=stop, **kwargs)
 
 
 class Set(AnimationElement, _AttributeTarget, tag="set"):
@@ -378,7 +298,7 @@ class AnimateColor(AnimationElement, _ValueAnimation, _AttributeTarget, tag="ani
     """
 
 
-class AnimateTransform(AnimationElement, _ValueAnimation, _AttributeTarget, tag="animateTransform"):
+class AnimateTransform(SpinShortcut, AnimationElement, _ValueAnimation, _AttributeTarget, tag="animateTransform"):
     """``<animateTransform>``: animate the ``transform`` attribute.
 
     Parameters
@@ -403,31 +323,6 @@ class AnimateTransform(AnimationElement, _ValueAnimation, _AttributeTarget, tag=
         kwargs.setdefault("attribute_name", "transform")
         super().__init__(**kwargs)
         self.update(type=type)
-
-    @classmethod
-    def spin(cls, cx: float = 0, cy: float = 0, **kwargs: Any) -> Self:
-        """Create an endlessly repeating full clockwise rotation.
-
-        Parameters
-        ----------
-        cx, cy : float, optional
-            The center of rotation. Defaults to 0.
-        **kwargs
-            Further attributes, typically ``dur``; ``repeat_count`` defaults to
-            infinite.
-
-        Returns
-        -------
-        AnimateTransform
-            A rotation from 0 to 360 degrees about ``(cx, cy)``.
-
-        Examples
-        --------
-        >>> AnimateTransform.spin(5, 5, dur=3).get("to")
-        '360 5 5'
-        """
-        kwargs.setdefault("repeat_count", float("inf"))
-        return cls(TransformType.ROTATE, from_=f"0 {cx:g} {cy:g}", to=f"360 {cx:g} {cy:g}", **kwargs)
 
 
 class MPath(XLinkAttributes, ExternalResourcesAttribute, CoreAttributes, tag="mpath", category=Category.ANIMATION):

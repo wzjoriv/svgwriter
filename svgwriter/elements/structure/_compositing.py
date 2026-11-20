@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any, Final
 
 from ..base import Element
 from ..filters import BlendMode, CompositeOperator
+from ._constants import DEFAULT_SCALE, GEOMETRY_KEYS
 
 if TYPE_CHECKING:
     from ...ops.composite import Operator
@@ -17,10 +18,8 @@ if TYPE_CHECKING:
 
 __all__ = ["Compositing"]
 
-GEOMETRY_KEYS: Final = frozenset({"x", "y", "width", "height", "xlink:href", "preserveAspectRatio", "transform", "id"})
 SOURCE_AREA: Final = frozenset({CompositeOperator.IN, CompositeOperator.OUT})
 BACKDROP_AREA: Final = frozenset({CompositeOperator.ATOP})
-DEFAULT_SCALE: Final = 1.0
 
 
 def _same_raster(a: Element, b: Element) -> bool:
