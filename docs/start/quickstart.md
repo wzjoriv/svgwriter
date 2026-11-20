@@ -52,3 +52,7 @@ doc.save("hello.tex")                 # TikZ
 again = svg.Document.open("hello.svg")
 print(again[0].tag, len(again))       # top-level content by index
 ```
+
+## More examples
+
+The `examples/` folder of the repository has runnable scripts, each with a Jupyter notebook beside it (`examples/<name>.ipynb`) that shows the results as pictures.

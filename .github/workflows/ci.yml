@@ -43,6 +43,8 @@ jobs:
         run: ruff check --output-format github
       - name: Stubs are current
         run: python scripts/dev.py stub check
+      - name: Notebooks match their scripts
+        run: python scripts/dev.py notebooks check
       - name: Quick tests
         run: pytest -q -p no:cacheprovider --durations=15
 
