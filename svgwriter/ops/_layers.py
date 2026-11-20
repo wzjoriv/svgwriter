@@ -269,6 +269,15 @@ def _ancestry(image: Element, root: Element) -> tuple[Matrix, float]:
     return matrix, opacity
 
 
+def _referenced(element: Element, name: str) -> Element | None:
+    """The element a ``url(#id)`` attribute points at, or None."""
+    value = element.get(name)
+    target = getattr(value, "element", None)
+    if target is None and value is not None and str(value).startswith("url(#"):
+        target = element.root().get_element_by_id(str(value)[5:].split(")")[0])
+    return target
+
+
 def hidden(root: Element, keep: list[Element]) -> list[Element]:
     """Leaves of *root* outside *keep*, to hide while painting one layer.
 
@@ -320,6 +329,7 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
     layers : Decide which images are drawn separately.
     """
     from ..elements._geometry import clip_outline
+    from ._image_effects import image_filter, paint_mask
     from ._skia import to_skia
 
     ancestry, opacity = _ancestry(image, root)
@@ -332,9 +342,21 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
     clip = clip_outline(image)
     if clip is not None:
         canvas.clipPath(to_skia(clip), doAntiAlias=True)
+    effects, mask = _referenced(image, "filter"), _referenced(image, "mask")
+    layer = skia.Paint()
+    if effects is not None:
+        layer.setImageFilter(image_filter(effects))
+    canvas.saveLayer(None, layer)
     m = image_matrix(image)
+    canvas.save()
     canvas.concat(skia.Matrix.MakeAll(m.a, m.c, m.e, m.b, m.d, m.f, 0, 0, 1))
     paint = skia.Paint(AntiAlias=True)
     paint.setAlphaf(opacity)
     canvas.drawImage(picture, 0, 0, skia.SamplingOptions(skia.FilterMode.kLinear), paint)
+    canvas.restore()
+    if mask is not None:
+        from .render import _paint_svg
+
+        paint_mask(canvas, mask, _paint_svg)
+    canvas.restore()
     canvas.restore()
