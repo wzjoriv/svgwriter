@@ -31,8 +31,10 @@ from .animation import (
     unregister_renderer,
 )
 from .frames import Frame, FrameData, RGBAArray, frame_times
+from .reader import Video
 
 __all__ = [
+    "Video",
     "DEFAULT_FPS",
     "RENDERERS",
     "FFmpegError",

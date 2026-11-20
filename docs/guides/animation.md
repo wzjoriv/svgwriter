@@ -65,3 +65,19 @@ print(frames[5].tag, frames[5].get("fill"))
 
 In an `update` callback this gives morphs and tweens per frame, for instance
 `doc[0] = svg.interpolate(start, end, time / duration)`.
+
+## Video in
+
+`svgwriter.video.Video(path)` reads a video lazily through ffmpeg: `video[i]` is frame `i` as an
+`<image>`, `video.at(seconds)` the frame shown at that time, and iterating streams every frame as a
+numpy array. Mix footage with vector animation in `update`:
+
+```python
+from svgwriter.video import Video
+
+# clip = Video("footage.mp4")
+# backdrop = doc.add(clip[0])
+# def update(document, seconds):
+#     backdrop.color = clip.at(seconds).color
+```
+
