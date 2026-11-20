@@ -12,7 +12,7 @@ import numpy as np
 import skia
 
 from ..._internal._constants import DEFAULT_PRECISION
-from ..._internal._drawable import Drawable, pixels_picture
+from ..._internal._drawable import pixels_picture
 from ._constants import CHANNEL_MAX, DATA_URI_PREFIX
 
 if TYPE_CHECKING:
@@ -36,7 +36,7 @@ def _normalize(array: np.ndarray) -> np.ndarray:
     return data
 
 
-class Pixels(Drawable):
+class Pixels:
     """Image data: color channels plus a broadcastable alpha.
 
     ``color`` is ``(H, W, C)`` with ``C`` in {1, 3} and ``alpha`` broadcasts
@@ -302,7 +302,8 @@ class Pixels(Drawable):
         """Composite these pixels onto *backdrop*, pixel for pixel.
 
         ``a | b``, ``a & b``, ``a - b`` and ``a ^ b`` are ``over``, ``in``,
-        ``out`` and ``xor``.
+        ``out`` and ``xor``; ``a * b`` is the ``multiply`` blend. To combine
+        images, composite their pixels: ``image.pixels | other.pixels``.
 
         Parameters
         ----------
@@ -326,7 +327,7 @@ class Pixels(Drawable):
 
         See Also
         --------
-        Image.composite : Composite placed images, resampling as needed.
+        svgwriter.ops.composite_rgba : The same on raw RGBA arrays.
 
         Examples
         --------
@@ -345,7 +346,7 @@ class Pixels(Drawable):
             if "broadcast" not in str(error):
                 raise
             raise ValueError(f"pixel shapes {self.shape} and {under.shape[:2]} differ; "
-                             "composite the Image elements to resample them onto one canvas") from None
+                             "rasterize the elements onto one canvas first") from None
 
     def _pair(self, other: object, operator: str) -> Pixels:
         return self.composite(other, operator) if isinstance(other, (Pixels, np.ndarray)) else NotImplemented  # type: ignore[return-value]
@@ -362,9 +363,31 @@ class Pixels(Drawable):
     def __xor__(self, other: object) -> Pixels:
         return self._pair(other, "xor")
 
+    def __mul__(self, other: object) -> Pixels:
+        return self._pair(other, "multiply")
+
     def __svgwriter__(self) -> Any:
-        """The pixels as an ``<image>`` (``doc.add(pixels)``, notebook display)."""
+        """Return the pixels as an ``<image>`` for ``doc.add(pixels)`` and notebook display.
+
+        Returns
+        -------
+        Image
+            A new ``<image>`` at the pixel size.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from svgwriter.elements.structure import Pixels
+        >>> Pixels.from_array(np.zeros((2, 3, 3))).__svgwriter__().tag
+        'image'
+        """
         return pixels_picture(self)
+
+    def _repr_svg_(self) -> str | None:
+        return self.__svgwriter__()._repr_svg_()  # type: ignore[no-any-return]
+
+    def _repr_png_(self) -> bytes | None:
+        return self.__svgwriter__()._repr_png_()  # type: ignore[no-any-return]
 
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
         """Serialize as a ``data:`` URI.
