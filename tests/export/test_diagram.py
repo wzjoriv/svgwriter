@@ -67,9 +67,21 @@ def test_latex_formula_becomes_outlines():
     assert formula.tag == "g" and box is not None and box.height > box.width * 0.5
 
 
-def test_latex_reports_missing_tools(monkeypatch):
+def test_latex_falls_back_to_mathtext_without_tex(monkeypatch):
+    pytest.importorskip("matplotlib")
     monkeypatch.setenv("PATH", "")
     monkeypatch.delenv("SVGWRITER_LATEX", raising=False)
+    formula = svg.latex(r"\frac{a}{b}")
+    assert formula.tag == "g" and formula.bounds() is not None
+
+
+def test_latex_reports_missing_tools_without_any_fallback(monkeypatch):
+    import sys
+
+    monkeypatch.setenv("PATH", "")
+    monkeypatch.delenv("SVGWRITER_LATEX", raising=False)
+    for name in ("matplotlib", "matplotlib.font_manager", "matplotlib.textpath"):
+        monkeypatch.setitem(sys.modules, name, None)
     with pytest.raises(DiagramToolError, match="TeX"):
         svg.latex("x")
 

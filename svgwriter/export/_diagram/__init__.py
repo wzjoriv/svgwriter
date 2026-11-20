@@ -191,6 +191,11 @@ def latex(source: str, *, display: bool = False, preamble: str = "") -> Group:
     """
     from ...elements.structure import Group
 
+    if not (os.environ.get("SVGWRITER_LATEX") or shutil.which(LATEX)) or not (
+            os.environ.get("SVGWRITER_DVISVGM") or shutil.which(DVISVGM)):
+        fallback = _mathtext(source, display)
+        if fallback is not None:
+            return fallback
     body = source if ("$" in source or r"\begin" in source) else (
         rf"$\displaystyle {source}$" if display else f"${source}$")
     latex_tool, svg_tool = _tool(LATEX), _tool(DVISVGM)
@@ -209,6 +214,56 @@ def latex(source: str, *, display: bool = False, preamble: str = "") -> Group:
             drawing.root.remove(element)
             group.add(element)
     return group
+
+
+MATHTEXT_SIZE: Final = 10.0
+DISPLAY_SCALE: Final = 1.2
+MPL_MOVETO: Final = 1
+MPL_LINETO: Final = 2
+MPL_CURVE3: Final = 3
+MPL_CURVE4: Final = 4
+MPL_CLOSE: Final = 79
+
+
+def _mathtext(source: str, display: bool) -> Group | None:
+    """The formula through matplotlib's mathtext (no TeX needed; a large subset of TeX math), or None."""
+    try:
+        from matplotlib.font_manager import FontProperties
+        from matplotlib.textpath import TextPath
+    except ImportError:
+        return None
+    from ...elements.shapes import Path
+    from ...elements.structure import Group
+    from ...pathdata.builder import PathBuilder
+
+    text = source if "$" in source else f"${source}$"
+    try:
+        outline = TextPath((0, 0), text, size=MATHTEXT_SIZE * (DISPLAY_SCALE if display else 1.0),
+                           prop=FontProperties(math_fontfamily="cm"))
+    except ValueError as error:
+        raise DiagramToolError(f"mathtext could not typeset {source!r}: {error}") from error
+    builder = PathBuilder()
+    vertices, codes = outline.vertices, outline.codes
+    index = 0
+    while index < len(codes):
+        code = codes[index]
+        x, y = float(vertices[index][0]), -float(vertices[index][1])
+        if code == MPL_MOVETO:
+            builder.move_to(x, y)
+        elif code == MPL_LINETO:
+            builder.line_to(x, y)
+        elif code == MPL_CURVE3:
+            end = vertices[index + 1]
+            builder.quad_to(x, y, float(end[0]), -float(end[1]))
+            index += 1
+        elif code == MPL_CURVE4:
+            second, end = vertices[index + 1], vertices[index + 2]
+            builder.curve_to(x, y, float(second[0]), -float(second[1]), float(end[0]), -float(end[1]))
+            index += 2
+        elif code == MPL_CLOSE:
+            builder.close()
+        index += 1
+    return Group(Path(builder.build()))
 
 
 @register_importer("plantuml", extensions=(".puml", ".plantuml"))
