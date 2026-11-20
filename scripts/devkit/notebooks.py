@@ -115,7 +115,19 @@ def _sources(notebook: dict[str, Any]) -> list[tuple[str, str]]:
     return out
 
 
-def _execute(notebook: dict[str, Any], workdir: Path, timeout: int, kernel: str) -> dict[str, Any]:
+def _drop(outputs: list[dict[str, Any]], drop: list[str]) -> None:
+    """Remove the *drop* mimetypes from rich outputs that would still show something else."""
+    for output in outputs:
+        data = output.get("data")
+        if not data:
+            continue
+        kept = {kind: value for kind, value in data.items() if kind not in drop}
+        if any(kind != "text/plain" for kind in kept) or not any(kind != "text/plain" for kind in data):
+            output["data"] = kept
+
+
+def _execute(notebook: dict[str, Any], workdir: Path, timeout: int, kernel: str,
+             drop: list[str]) -> dict[str, Any]:
     """Run *notebook* in *workdir* and return it with outputs, stripped of run-specific metadata."""
     try:
         import nbformat
@@ -128,6 +140,7 @@ def _execute(notebook: dict[str, Any], workdir: Path, timeout: int, kernel: str)
     result = json.loads(nbformat.writes(node))
     for cell in result["cells"]:
         cell.get("metadata", {}).pop("execution", None)
+        _drop(cell.get("outputs", []), drop)
     result["metadata"] = notebook["metadata"]
     return result
 
@@ -145,8 +158,11 @@ def register(app: typer.Typer, cfg: dict[str, Any]) -> None:
     timeout = typed(cfg, "timeout", int, DEFAULT_TIMEOUT, WHERE)
     kernel = typed(cfg, "kernel", str, DEFAULT_KERNEL, WHERE)
     execute = typed(cfg, "execute", bool, True, WHERE)
+    drop = typed(cfg, "drop", list, [], WHERE)
     if not all(isinstance(name, str) for name in exclude):
         raise ConfigError(f"[{WHERE}] exclude must be a list of file names")
+    if not all(isinstance(kind, str) for kind in drop):
+        raise ConfigError(f"[{WHERE}] drop must be a list of mimetypes such as 'image/png'")
     group = typer.Typer(help="Build Jupyter notebooks from the .py examples (cells split at '# %%').",
                         no_args_is_help=True, add_completion=False, context_settings=_HELP)
 
@@ -168,7 +184,7 @@ def register(app: typer.Typer, cfg: dict[str, Any]) -> None:
             notebook = notebook_of(script.read_text(encoding="utf-8"), kernel)
             if execute and not no_run:
                 with tempfile.TemporaryDirectory(prefix="devkit-nb-") as work:
-                    notebook = _execute(notebook, Path(work), timeout, kernel)
+                    notebook = _execute(notebook, Path(work), timeout, kernel, drop)
             target = out / f"{script.stem}.ipynb"
             target.write_text(_dump(notebook), encoding="utf-8", newline="\n")
             typer.echo(f"wrote {shown(target)}")

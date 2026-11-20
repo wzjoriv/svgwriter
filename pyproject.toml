@@ -143,6 +143,7 @@ args = ["tests", "-q", "--cov=svgwriter", "--cov-report=term-missing"]
 
 [tool.devkit.notebooks]
 source = "examples"
+drop = ["image/png", "text/html"]
 
 [tool.devkit.logo]
 source = "examples.logo:logo"

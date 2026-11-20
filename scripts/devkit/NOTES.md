@@ -188,6 +188,7 @@ exclude = ["helpers.py"]   # file names to skip
 execute = true             # run notebooks on build (false: cells only)
 timeout = 600              # seconds per cell
 kernel = "python3"         # Jupyter kernel name
+drop = ["image/png"]       # output mimetypes to leave out when another picture type remains (smaller files)
 ```
 
 # Logo
