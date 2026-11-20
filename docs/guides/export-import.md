@@ -86,7 +86,8 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 PowerPoint places pictures by their bounding box, so a rotated or skewed image comes out upright, and
 group opacity is multiplied into each shape's own transparency. A radial gradient becomes a
 PowerPoint path gradient centred on the gradient's centre, which matches circles and differs on
-ellipses. Excalidraw writes every outline as a `line` element, with Excalidraw's own dash pattern.
+ellipses. Excalidraw writes every outline as a `line` element, with Excalidraw's own dash pattern;
+its elements have no holes, so the inside of a ring or of a letter such as "o" comes out filled.
 
 ## Text stays text
 
