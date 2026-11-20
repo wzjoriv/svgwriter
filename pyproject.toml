@@ -42,8 +42,11 @@ office = [
 plot = [
     "matplotlib>=3.7",
 ]
+graph = [
+    "networkx>=3.0",
+]
 test = [
-    "svgwriter[office,plot]",
+    "svgwriter[office,plot,graph]",
     "pytest>=7",
     "ezdxf>=1.0",
     "pillow>=10",

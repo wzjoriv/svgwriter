@@ -71,6 +71,10 @@ def _ingest(item: Any) -> Any:
         return _nested(item.root.clone())
     if isinstance(item, str):
         raise TypeError("add() takes elements, not strings; parse markup first: doc.add(svg.parse('<rect .../>'))")
+    from ..ops.graph import draw_graph, is_graph
+
+    if is_graph(item):
+        return draw_graph(item)
     if isinstance(item, np.ndarray):
         from ..elements.structure import Image
 

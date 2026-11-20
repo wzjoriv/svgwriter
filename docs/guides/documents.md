@@ -130,3 +130,11 @@ and numpy pixel arrays.
 artists with their curves, colors, opacity and stroke widths, so svgwriter shapes can annotate plots
 and stay editable there. With `doc.add(fig)` in the other direction, figures and drawings move both ways.
 
+## Graphs
+
+With the `svgwriter[graph]` extra, networkx graphs draw themselves: `doc.add(G)`, or
+`svgwriter.ops.draw_graph(G, layout="circular", node_radius=8)` for options. Nodes are circles with
+ids `node-<name>`, edges are lines (arcs when a directed edge runs both ways) with arrowheads for
+directed graphs, and node or edge attributes (`fill`, `radius`, `label`, `stroke`, `width`) style
+single items. Any networkx layout, a positions mapping or a layout function places the nodes.
+

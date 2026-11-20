@@ -18,6 +18,7 @@ from __future__ import annotations
 from ._skia import Geometry, from_skia, to_skia
 from .boolean import BooleanOp, combine, difference, intersection, simplify, union, xor
 from .composite import Operator, composite_rgba, resolve_operator
+from .graph import draw_graph
 from .interpolate import interpolate
 from .measure import (
     Cap,
@@ -47,6 +48,7 @@ __all__ = [
     "composite_rgba",
     "contains",
     "difference",
+    "draw_graph",
     "from_skia",
     "interpolate",
     "intersection",
