@@ -1,10 +1,10 @@
 name: Tests
 
 # quick: every pull request / push (lint, stubs generate, the suite on one Python).
-# full: every supported CPython on Linux plus the oldest and newest on Windows / macOS, and coverage;
+# full: every supported CPython (and free-threaded 3.14t) on Linux plus the oldest and newest on Windows / macOS, and coverage;
 # runs on pushes to main, when a maintainer adds the `full-tests` label to a pull request,
-# or when the workflow is started by hand. skia-python ships no wheels for PyPy, free-threaded
-# builds or Pyodide, so those are not tested.
+# or when the workflow is started by hand. skia-python ships no wheels for PyPy,
+# GraalPy or Pyodide, so those are not tested.
 
 on:
   pull_request:
@@ -59,7 +59,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python: ["3.10", "3.11", "3.12", "3.13", "3.14", "3.15"]
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14", "3.15", "3.14t"]
         include:
           - { os: windows-latest, python: "3.10" }
           - { os: windows-latest, python: "3.15" }
