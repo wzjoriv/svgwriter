@@ -17,6 +17,8 @@ from ..base import Element
 if TYPE_CHECKING:
     from ..shapes import Path
 
+__all__ = ["UseGeometry"]
+
 
 def _symbol_outline(symbol: Element, use: Element) -> PathData:
     """A ``<symbol>``'s children as one outline, its ``viewBox`` fitted into the ``<use>``'s width and height."""

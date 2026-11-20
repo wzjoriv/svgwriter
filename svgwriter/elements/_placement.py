@@ -9,10 +9,10 @@ from typing import TYPE_CHECKING, Any
 from ..pathdata.data import BBox
 from ..transform.matrix import Point
 
-__all__ = ["Placement"]
-
 if TYPE_CHECKING:
     from ._transformable import E, PointLike
+
+__all__ = ["Placement"]
 
 
 def _target_point(target: Any, name: str) -> Point:

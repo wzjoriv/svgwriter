@@ -23,6 +23,8 @@ from ...pathdata.commands import (
 )
 from ...pathdata.data import PathData
 
+__all__ = ["PathCommands"]
+
 
 class PathCommands:
     """Chainable drawing commands; mixed into :class:`~svgwriter.elements.shapes.Path`."""

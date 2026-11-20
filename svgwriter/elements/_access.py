@@ -20,6 +20,8 @@ from ._constants import COLOR_ATTRIBUTES, COLOR_OPACITY, HREF_ATTRIBUTES, XML_NA
 if TYPE_CHECKING:
     from .base import AttrValue, Element, T
 
+__all__ = ["AttributeAccess"]
+
 
 def _color_column(value: Any) -> list[Color]:
     """One color, a list of colors, or an ``(n, 3|4)`` array of 0-1 floats, as a list of colors."""

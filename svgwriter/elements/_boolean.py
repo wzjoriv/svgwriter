@@ -8,12 +8,12 @@ from typing import TYPE_CHECKING, Any
 
 from ..pathdata.data import PathData
 
-__all__ = ["BooleanOps"]
-
 if TYPE_CHECKING:
     from ..ops.boolean import BooleanOp
     from ._geometry import Operand
     from .shapes import Path
+
+__all__ = ["BooleanOps"]
 
 
 def _operand(value: object) -> bool:

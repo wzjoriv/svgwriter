@@ -10,6 +10,8 @@ from .._internal._registry import chainable
 from ..attributes.names import PRESENTATION_ATTRIBUTES
 from ..attributes.style import Style, StyleLike
 
+__all__ = ["PresentationMethods", "StyleMethods"]
+
 
 class PresentationMethods:
     """Presentation attributes as a dict and as CSS; mixed into :class:`~svgwriter.elements._mixins.PresentationAttributes`."""

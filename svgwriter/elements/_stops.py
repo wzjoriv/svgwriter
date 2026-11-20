@@ -11,10 +11,10 @@ from .._internal._typing import Opacity, Self
 from ..color.color import Color
 from ..pathdata.data import BBox
 
-__all__ = ["GradientStops"]
-
 if TYPE_CHECKING:
     from .paint import Stop, StopSpec
+
+__all__ = ["GradientStops"]
 
 
 class GradientStops:

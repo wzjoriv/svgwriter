@@ -9,11 +9,11 @@ from typing import TYPE_CHECKING, Any
 from ..pathdata.data import BBox
 from ..transform.matrix import Point
 
-__all__ = ["Measurement"]
-
 if TYPE_CHECKING:
     from ..ops.measure import Cap, Join
     from .shapes import Path
+
+__all__ = ["Measurement"]
 
 
 class Measurement:

@@ -12,6 +12,8 @@ from ._categories import ContentModel
 if TYPE_CHECKING:
     from .base import C, Child, Element
 
+__all__ = ["TreeEditing"]
+
 
 class TreeEditing:
     """Adding, inserting and removing children; mixed into :class:`~svgwriter.elements.base.Element`."""

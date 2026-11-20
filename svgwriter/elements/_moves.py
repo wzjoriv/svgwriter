@@ -11,10 +11,10 @@ from ..transform.matrix import Matrix, Point
 from ..transform.ops import TransformOp
 from ..transform.transform import Transform, TransformLike, as_transform
 
-__all__ = ["TransformMethods"]
-
 if TYPE_CHECKING:
     from ._transformable import E, PointLike
+
+__all__ = ["TransformMethods"]
 
 _TRANSFORMS = (Transform, TransformOp, Matrix)
 

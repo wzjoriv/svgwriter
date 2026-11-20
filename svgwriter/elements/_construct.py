@@ -15,6 +15,8 @@ from ._constants import COLOR_ATTRIBUTES, COLOR_OPACITY
 if TYPE_CHECKING:
     from .base import E, Element
 
+__all__ = ["Construction"]
+
 
 class Construction:
     """Tag lookup, registry queries and ``many``; mixed into :class:`~svgwriter.elements.base.Element`."""
