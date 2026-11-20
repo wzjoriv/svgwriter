@@ -133,13 +133,22 @@ def read_mermaid(data: bytes, *, theme: str = "default") -> Document:
     Notes
     -----
     Labels are requested as SVG text rather than HTML, so they render and
-    convert like any other text.
+    convert like any other text. Without ``mmdc``, flowcharts (``graph`` /
+    ``flowchart``) are parsed and laid out by svgwriter itself; other
+    diagram kinds need the CLI.
 
     Examples
     --------
     >>> import svgwriter as svg
     >>> # doc = svg.Document.open("flow.mmd"); doc.save("flow.png")
     """
+    if not (os.environ.get("SVGWRITER_MMDC") or shutil.which(MERMAID)):
+        from ._mermaid import flowchart_document
+
+        try:
+            return flowchart_document(data.decode("utf-8-sig"))
+        except ValueError:
+            pass
     executable = _tool(MERMAID)
     with tempfile.TemporaryDirectory() as folder:
         source, target, config = (Path(folder) / name for name in ("in.mmd", "out.svg", "config.json"))

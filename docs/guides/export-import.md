@@ -83,6 +83,8 @@ tools, so layouts match what those tools draw: `svg.Document.open("graph.dot")` 
 edit, combine or export to any format. Install Graphviz or `@mermaid-js/mermaid-cli`, or point
 `SVGWRITER_DOT` / `SVGWRITER_MMDC` at the executables; a missing tool raises `DiagramToolError` with
 the install hint.
+Without `mmdc`, Mermaid flowcharts (`graph` / `flowchart`: node shapes, edge styles and labels, chains, `&`
+groups, subgraphs) are parsed and laid out by svgwriter itself, so they need no tool at all.
 
 PlantUML (`.puml`) and D2 (`.d2`) load the same way through `plantuml` and `d2`. Math comes from LaTeX
 itself: `svg.latex(r"\int_0^1 x^2\,dx = \frac{1}{3}", display=True)` returns the typeset formula as

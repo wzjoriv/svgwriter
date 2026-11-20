@@ -115,3 +115,45 @@ def test_svg2_href_and_symbols_resolve():
               '<rect width="10" height="10"/></symbol><use href="#s" x="5" width="20" height="20"/></svg>')
     use = next(svg.parse(markup).iter("use"))
     assert use.get("xlink:href") is not None and use.to_path().bounds() == pytest.approx((5, 0, 20, 20))
+
+
+class TestMermaidFlowcharts:
+    SOURCE = """flowchart TD
+      A[Start] -->|go| B{Choice} & C((Circle))
+      B -.-> D[(Store)]
+      C ==> D
+      D --> A
+      subgraph Group
+        B
+        C
+      end
+    """
+
+    def test_parse_shapes_edges_and_subgraphs(self):
+        from svgwriter.export._diagram._mermaid import parse_flowchart
+
+        chart = parse_flowchart(self.SOURCE)
+        assert [(n.id, n.shape) for n in chart.nodes.values()] == [
+            ("A", "rect"), ("B", "diamond"), ("C", "circle"), ("D", "cylinder")]
+        assert [(e.source, e.target, e.label, e.style) for e in chart.edges] == [
+            ("A", "B", "go", "solid"), ("A", "C", "go", "solid"), ("B", "D", "", "dotted"),
+            ("C", "D", "", "thick"), ("D", "A", "", "solid")]
+        assert chart.subgraphs == [("Group", ["B", "C"])]
+
+    def test_layout_ranks_top_to_bottom_and_left_to_right(self):
+        from svgwriter.export._diagram._mermaid import draw_flowchart, parse_flowchart
+
+        chart = parse_flowchart(self.SOURCE)
+        draw_flowchart(chart)
+        assert chart.nodes["A"].y < chart.nodes["B"].y < chart.nodes["D"].y
+        sideways = parse_flowchart("graph LR\n  A --> B")
+        draw_flowchart(sideways)
+        assert sideways.nodes["A"].x < sideways.nodes["B"].x
+
+    def test_read_mermaid_uses_the_builtin_layout_without_mmdc(self, monkeypatch):
+        monkeypatch.setenv("PATH", "")
+        monkeypatch.delenv("SVGWRITER_MMDC", raising=False)
+        doc = read_mermaid(self.SOURCE.encode())
+        assert len(list(doc.root.iter("text"))) >= 4
+        with pytest.raises(DiagramToolError, match="mmdc"):
+            read_mermaid(b"sequenceDiagram\n  A->>B: hi")
