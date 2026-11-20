@@ -4,30 +4,30 @@ PDF content beyond paths: images, clipping paths and text, as handlers for the P
 
 from __future__ import annotations
 
-import re
 from typing import TYPE_CHECKING, Any, Final
 
 import numpy as np
 
 from ...transform.matrix import Matrix
+from ._constants import (
+    BF_CHAR_RE,
+    BF_RANGE_RE,
+    CHANNEL_MAX,
+    COMPONENTS,
+    DEFAULT_TEXT_SIZE,
+    GAP_TOLERANCE,
+    HEX_RE,
+    MATRIX_TOLERANCE,
+    RANGE_RE,
+    STYLE_RE,
+    SUBSET_RE,
+    WORD_RE,
+)
 
 if TYPE_CHECKING:
     from ._pdf_read import _Painter
 
 __all__ = ["CONTENT_HANDLERS", "draw_image"]
-
-CHANNEL_MAX: Final = 255.0
-COMPONENTS: Final = {"DeviceRGB": 3, "DeviceGray": 1, "DeviceCMYK": 4, "CalRGB": 3, "CalGray": 1}
-DEFAULT_TEXT_SIZE: Final = 12.0
-MATRIX_TOLERANCE: Final = 1e-4
-GAP_TOLERANCE: Final = 0.05
-_SUBSET_RE: Final = re.compile(r"^[A-Z]{6}\+")
-_STYLE_RE: Final = re.compile(r"[-,]?(Bold|Italic|Oblique|BoldItalic|Regular|Roman|MT|PS)+$", re.I)
-_WORD_RE: Final = re.compile(r"(?<=[a-z])(?=[A-Z])")
-_HEX_RE: Final = re.compile(r"<([0-9A-Fa-f]+)>")
-_BF_CHAR_RE: Final = re.compile(r"beginbfchar(.*?)endbfchar", re.S)
-_BF_RANGE_RE: Final = re.compile(r"beginbfrange(.*?)endbfrange", re.S)
-_RANGE_RE: Final = re.compile(r"<([0-9A-Fa-f]+)>" + r"\s*<([0-9A-Fa-f]+)>" + r"\s*(<[0-9A-Fa-f]+>|\[[^\]]*\])")
 
 
 def _filters(info: dict[str, Any]) -> list[str]:
@@ -117,9 +117,9 @@ def _font(painter: _Painter, operands: list[Any], resources: dict[str, Any]) -> 
 
     font = painter.resource(resources, "Font", operands[0]) or {}
     font = font if isinstance(font, dict) else {}
-    base = _SUBSET_RE.sub("", str(font.get("BaseFont", "")).lstrip("/"))
+    base = SUBSET_RE.sub("", str(font.get("BaseFont", "")).lstrip("/"))
     style = base.lower()
-    painter.text_font = (_family(_STYLE_RE.sub("", base)), "bold" in style, "italic" in style or "oblique" in style)
+    painter.text_font = (_family(STYLE_RE.sub("", base)), "bold" in style, "italic" in style or "oblique" in style)
     painter.text_size = _numbers(operands[1:], 1)[0]
     painter.text_codes = (2 if str(font.get("Subtype", "")).lstrip("/") == "Type0" else 1,
                           _to_unicode(painter, font.get("ToUnicode")))
@@ -131,7 +131,7 @@ def _family(name: str) -> str:
 
     if not name:
         return "serif"
-    spaced = _WORD_RE.sub(" ", name)
+    spaced = WORD_RE.sub(" ", name)
     for candidate in dict.fromkeys((name, spaced)):
         if skia.Typeface(candidate).getFamilyName().lower() == candidate.lower():
             return candidate
@@ -147,15 +147,15 @@ def _to_unicode(painter: _Painter, value: Any) -> dict[int, str]:
         return {}
     cmap = _decode(stream).decode("latin-1") if stream.info.get("Filter") else stream.raw.decode("latin-1")
     table: dict[int, str] = {}
-    for block in _BF_CHAR_RE.findall(cmap):
-        codes = _HEX_RE.findall(block)
+    for block in BF_CHAR_RE.findall(cmap):
+        codes = HEX_RE.findall(block)
         for code, text in zip(codes[::2], codes[1::2], strict=False):
             table[int(code, 16)] = _utf16(text)
-    for block in _BF_RANGE_RE.findall(cmap):
-        for low, high, target in _RANGE_RE.findall(block):
+    for block in BF_RANGE_RE.findall(cmap):
+        for low, high, target in RANGE_RE.findall(block):
             first, last = int(low, 16), int(high, 16)
             if target.startswith("["):
-                for offset, text in enumerate(_HEX_RE.findall(target)):
+                for offset, text in enumerate(HEX_RE.findall(target)):
                     table[first + offset] = _utf16(text)
             else:
                 start = int(target[1:-1], 16)

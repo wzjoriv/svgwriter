@@ -6,48 +6,16 @@ from __future__ import annotations
 
 import html
 import json
-import re
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
+from ._constants import PAGE, SCRIPT, SVG_RE
 from ._registry import register, register_importer
 
 if TYPE_CHECKING:
     from ..document import Document
 
 __all__ = ["html_page", "read_html"]
-
-_SVG_RE: Final = re.compile(r"<svg[\s>].*?</svg\s*>", re.S | re.I)
-PAGE: Final = """<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{title}</title>
-<style>
-body {{ margin: 0; background: {background}; display: flex; justify-content: center; align-items: center;
-  min-height: 100vh; }}
-svg {{ max-width: 100vw; max-height: 100vh; height: auto; }}
-{css}
-</style>
-</head>
-<body>
-{svg}
-{script}</body>
-</html>
-"""
-SCRIPT: Final = """<script>
-const svgwriterHandlers = {handlers};
-for (const [id, events] of Object.entries(svgwriterHandlers)) {{
-  const element = document.getElementById(id);
-  if (!element) continue;
-  element.style.cursor = "pointer";
-  for (const [event, code] of Object.entries(events)) {{
-    element.addEventListener(event, new Function("event", code));
-  }}
-}}
-</script>
-"""
 
 
 @register("html", extensions=(".html", ".htm"), binary=False)
@@ -135,7 +103,7 @@ def read_html(data: bytes) -> Document:
     """
     from ..document import Document
 
-    found = _SVG_RE.search(data.decode("utf-8", "replace"))
+    found = SVG_RE.search(data.decode("utf-8", "replace"))
     if found is None:
         raise ValueError("the page has no inline <svg>")
     markup = found.group(0)

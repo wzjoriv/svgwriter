@@ -4,23 +4,16 @@ PDF shadings and patterns read as SVG gradients and ``<pattern>`` paint servers.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from ...transform.matrix import Matrix
+from ._constants import AXIAL, EXPONENTIAL, IDENTITY_MATRIX, RADIAL, SHADING, STITCHING, TILING
 
 if TYPE_CHECKING:
     from ...elements.base import Element
     from ._pdf_read import _Painter
 
 __all__ = ["fill_with_pattern", "paint_shading", "pattern_paint"]
-
-AXIAL: Final = 2
-RADIAL: Final = 3
-TILING: Final = 1
-SHADING: Final = 2
-EXPONENTIAL: Final = 2
-STITCHING: Final = 3
-IDENTITY_MATRIX: Final = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
 
 
 def _stops(painter: _Painter, function: Any, low: float = 0.0, high: float = 1.0) -> list[tuple[float, Any]] | None:

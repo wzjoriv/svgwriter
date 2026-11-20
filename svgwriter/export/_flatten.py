@@ -7,7 +7,7 @@ from __future__ import annotations
 import math
 import warnings
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from ..attributes.cascade import computed
 from ..attributes.length import Length
@@ -15,16 +15,13 @@ from ..color.color import Color, as_color
 from ..pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
 from ..pathdata.data import PathData
 from ..transform.matrix import IDENTITY, Matrix
+from ._constants import DEFAULT_MITER, NONE, PERCENT
 
 if TYPE_CHECKING:
     from ..document import Document
     from ..elements.base import Element
 
 __all__ = ["Item", "Scene", "flatten", "to_cubic"]
-
-PERCENT: Final = 100.0
-NONE: Final = "none"
-DEFAULT_MITER: Final = 4.0
 
 
 @dataclass

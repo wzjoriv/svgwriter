@@ -6,10 +6,20 @@ from __future__ import annotations
 
 import math
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from ..._internal._numbers import format_number
 from .._flatten import Item, Shading, flatten, to_cubic
+from ._constants import (
+    ANGLE_EPSILON,
+    LATEX_SPECIALS,
+    LINE_SPREAD,
+    MONOSPACE_WORDS,
+    SERIF_WORDS,
+    TIKZ_CAPS,
+    TIKZ_JOINS,
+    TIKZ_PRECISION,
+)
 
 if TYPE_CHECKING:
     from ...color.color import Color
@@ -17,14 +27,9 @@ if TYPE_CHECKING:
 
 __all__ = ["to_tikz"]
 
-PRECISION: Final = 3
-ANGLE_EPSILON: Final = 1e-6
-CAPS: Final = {"butt": "butt", "round": "round", "square": "rect"}
-JOINS: Final = {"miter": "miter", "round": "round", "bevel": "bevel"}
-
 
 def _n(value: float) -> str:
-    return format_number(value, PRECISION)
+    return format_number(value, TIKZ_PRECISION)
 
 
 def _path(item: Item) -> str:
@@ -40,15 +45,6 @@ def _path(item: Item) -> str:
         else:
             parts.append("-- cycle")
     return " ".join(parts)
-
-
-LATEX_SPECIALS: Final = {
-    "\\": r"\textbackslash{}", "{": r"\{", "}": r"\}", "#": r"\#", "$": r"\$", "%": r"\%", "&": r"\&",
-    "_": r"\_", "^": r"\textasciicircum{}", "~": r"\textasciitilde{}",
-}
-LINE_SPREAD: Final = 1.2
-MONOSPACE_WORDS: Final = ("mono", "courier", "consolas", "menlo")
-SERIF_WORDS: Final = ("times", "georgia", "garamond")
 
 
 def _escape(text: str) -> str:
@@ -158,7 +154,7 @@ def to_tikz(document: Document, *, standalone: bool = False, text: bool = True) 
                 options.append("even odd rule")
         if item.stroke is not None and item.stroke_width > 0:
             options += [f"draw={color(item.stroke)}", f"line width={_n(item.stroke_width)}pt",
-                        f"line cap={CAPS.get(item.linecap, 'butt')}", f"line join={JOINS.get(item.linejoin, 'miter')}"]
+                        f"line cap={TIKZ_CAPS.get(item.linecap, 'butt')}", f"line join={TIKZ_JOINS.get(item.linejoin, 'miter')}"]
             if item.stroke_opacity < 1:
                 options.append(f"draw opacity={_n(item.stroke_opacity)}")
             if item.dashes:

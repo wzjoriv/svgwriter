@@ -5,10 +5,11 @@ Polyline formats for CAD, plotters and CNC machines: DXF (R12), HPGL and G-code.
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING, Final, Literal
+from typing import TYPE_CHECKING, Literal
 
 from ..._internal._numbers import format_number
 from .._flatten import Scene, flatten, to_cubic
+from ._constants import DEFAULT_TOLERANCE, HPGL_UNITS_PER_MM, MAX_SEGMENTS, MM_PER_USER_UNIT, PRECISION
 
 if TYPE_CHECKING:
     from ...color.color import Color
@@ -16,11 +17,6 @@ if TYPE_CHECKING:
 
 __all__ = ["polylines", "to_dxf", "to_gcode", "to_hpgl"]
 
-MM_PER_USER_UNIT: Final = 25.4 / 96.0
-DEFAULT_TOLERANCE: Final = 0.05
-HPGL_UNITS_PER_MM: Final = 40.0
-PRECISION: Final = 4
-MAX_SEGMENTS: Final = 512
 
 Point = tuple[float, float]
 

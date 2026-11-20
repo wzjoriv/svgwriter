@@ -7,25 +7,26 @@ from __future__ import annotations
 import struct
 import zlib
 from collections.abc import Sequence
-from typing import Final
 
 import numpy as np
 
-__all__ = ["encode_apng", "encode_webp_animation"]
+from ._constants import (
+    APNG_DELAY_DENOMINATOR,
+    BLEND_SOURCE,
+    CHUNK_HEADER,
+    CRC_SIZE,
+    DISPOSE_NONE,
+    LOSSLESS,
+    MILLISECONDS,
+    PNG_SIGNATURE,
+    RIFF_HEADER,
+    WEBP_ALPHA_FLAG,
+    WEBP_ANIMATION_FLAG,
+    WEBP_CHUNK_HEADER,
+    WEBP_NO_BLEND,
+)
 
-PNG_SIGNATURE: Final = b"\x89PNG\r\n\x1a\n"
-CHUNK_HEADER: Final = 8
-CRC_SIZE: Final = 4
-APNG_DELAY_DENOMINATOR: Final = 1000
-DISPOSE_NONE: Final = 0
-BLEND_SOURCE: Final = 0
-RIFF_HEADER: Final = 12
-WEBP_CHUNK_HEADER: Final = 8
-WEBP_ANIMATION_FLAG: Final = 0x02
-WEBP_ALPHA_FLAG: Final = 0x10
-WEBP_NO_BLEND: Final = 0x02
-MILLISECONDS: Final = 1000
-LOSSLESS: Final = 100
+__all__ = ["encode_apng", "encode_webp_animation"]
 
 
 def _encode_png(frame: np.ndarray) -> bytes:

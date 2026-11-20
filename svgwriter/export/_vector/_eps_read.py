@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import math
 import re
-import struct
 from collections.abc import Callable
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Any, Final
@@ -14,52 +13,44 @@ from typing import TYPE_CHECKING, Any, Final
 import numpy as np
 
 from ...transform.matrix import Matrix
-from ._pdf_content import _STYLE_RE, DEFAULT_TEXT_SIZE, _clip
+from ._constants import (
+    BLACK,
+    BOUNDS_RE,
+    CAP_NAMES,
+    CHANNEL_MAX,
+    CMYK_CHANNELS,
+    DEFAULT_FONT,
+    DEFAULT_TEXT_SIZE,
+    DOS_EPS_HEADER,
+    DOS_EPS_MAGIC,
+    ESCAPE_RE,
+    GRAY_CHANNELS,
+    HAIRLINE,
+    HEX_DIGITS_RE,
+    HEX_END,
+    IMAGE_OPERATORS,
+    INLINE_LOOKBACK,
+    JOIN_NAMES,
+    MAX_IMAGE_CALLS,
+    MAX_STEPS,
+    PS_HEADER,
+    PS_MAX_DEPTH,
+    PS_TOKEN_RE,
+    RGB_CHANNELS,
+    SAVE_OBJECT,
+    SIMPLE_ESCAPES,
+    STYLE_RE,
+    SUPPORTED_BITS,
+)
+from ._pdf_content import _clip
 from ._pdf_read import _intersect
-from ._reading import BLACK, HAIRLINE, Outline, Shape, _hex, cmyk_to_rgb, string_end, to_document
+from ._reading import Outline, Shape, _hex, cmyk_to_rgb, string_end, to_document
 
 if TYPE_CHECKING:
     from ...document import Document
     from ._reading import RGB
 
 __all__ = ["read_eps"]
-
-PS_HEADER: Final = b"%!"
-DOS_EPS_MAGIC: Final = b"\xc5\xd0\xd3\xc6"
-DOS_EPS_HEADER: Final = struct.Struct("<4sII")
-MAX_DEPTH: Final = 64
-MAX_STEPS: Final = 2_000_000
-SAVE_OBJECT: Final = object()
-CAPS: Final = ("butt", "round", "square")
-JOINS: Final = ("miter", "round", "bevel")
-CHANNEL_MAX: Final = 255.0
-GRAY_CHANNELS: Final = 1
-RGB_CHANNELS: Final = 3
-CMYK_CHANNELS: Final = 4
-SUPPORTED_BITS: Final = 8
-MAX_IMAGE_CALLS: Final = 100_000
-IMAGE_OPERATORS: Final = (b"image", b"colorimage")
-INLINE_LOOKBACK: Final = 8
-HEX_END: Final = b">"
-DEFAULT_FONT: Final = "serif"
-_HEX_DIGITS_RE: Final = re.compile(rb"[^0-9A-Fa-f]")
-_ESCAPE_RE: Final = re.compile(rb"\\([0-7]{1,3}|\r\n|\n|\r|.)", re.S)
-_SIMPLE_ESCAPES: Final = {b"n": b"\n", b"r": b"\r", b"t": b"\t", b"b": b"\b", b"f": b"\f"}
-_DELIMITERS: Final = rb"\x00\t\n\x0c\r ()<>\[\]{}/%"
-_TOKEN_RE: Final = re.compile(
-    rb"(?P<skip>[\x00\t\n\x0c\r ]+|%[^\r\n]*)"
-    rb"|(?P<radix>\d+#[0-9A-Za-z]+)(?![^" + _DELIMITERS + rb"])"
-    rb"|(?P<num>[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)(?![^" + _DELIMITERS + rb"])"
-    rb"|(?P<literal>/[^" + _DELIMITERS + rb"]*)"
-    rb"|(?P<string>\()"
-    rb"|(?P<a85><~.*?~>)"
-    rb"|(?P<dict><<|>>)"
-    rb"|(?P<hex><[^<>]*>)"
-    rb"|(?P<open>\{)|(?P<close>\})"
-    rb"|(?P<name>[\[\]]|[^" + _DELIMITERS + rb"]+)"
-    rb"|(?P<other>.)", re.S)
-_BOUNDS_RE: Final = {name: re.compile(rb"^%%" + name + rb":\s*([-+\d.eE]+)\s+([-+\d.eE]+)\s+([-+\d.eE]+)\s+([-+\d.eE]+)",
-                                      re.M) for name in (b"HiResBoundingBox", b"BoundingBox")}
 
 
 class Name(str):
@@ -106,15 +97,15 @@ def _unescape(raw: bytes) -> bytes:
             return bytes([int(code, 8) & 0xFF])
         if code in (b"\r\n", b"\n", b"\r"):
             return b""
-        return _SIMPLE_ESCAPES.get(code, code)
-    return _ESCAPE_RE.sub(replace, raw)
+        return SIMPLE_ESCAPES.get(code, code)
+    return ESCAPE_RE.sub(replace, raw)
 
 
 def _inline_hex(data: bytes, pos: int) -> tuple[Inline, int]:
     """The ASCII-hex data from *pos* up to its ``>``, and the position after it."""
     end = data.find(HEX_END, pos)
     end = len(data) if end < 0 else end
-    digits = _HEX_DIGITS_RE.sub(b"", data[pos:end])
+    digits = HEX_DIGITS_RE.sub(b"", data[pos:end])
     return Inline(bytes.fromhex(digits[:len(digits) // 2 * 2].decode("ascii"))), end + 1
 
 
@@ -122,7 +113,7 @@ def _parse(data: bytes) -> Procedure:
     """The program's objects, procedures nested; unbalanced braces are tolerated."""
     stack = [Procedure()]
     pos = 0
-    while (match := _TOKEN_RE.match(data, pos)) is not None:
+    while (match := PS_TOKEN_RE.match(data, pos)) is not None:
         pos, kind, text = match.end(), match.lastgroup, match.group()
         if kind == "string":
             pos = string_end(data, pos)
@@ -146,7 +137,7 @@ def _parse(data: bytes) -> Procedure:
             procedure = stack.pop()
             stack[-1].append(procedure)
         elif kind == "hex":
-            digits = _HEX_DIGITS_RE.sub(b"", text)
+            digits = HEX_DIGITS_RE.sub(b"", text)
             stack[-1].append(bytes.fromhex(digits[:len(digits) // 2 * 2].decode("ascii")))
         elif kind == "a85":
             stack[-1].append(b"")
@@ -202,7 +193,7 @@ class _Machine:
         """Run a user definition or a built-in operator; unknown names are ignored."""
         found, value = self.lookup(name)
         if found:
-            if isinstance(value, (Procedure, Name)) and depth < MAX_DEPTH:
+            if isinstance(value, (Procedure, Name)) and depth < PS_MAX_DEPTH:
                 self.execute(value if isinstance(value, Procedure) else [value], depth + 1)
             elif not isinstance(value, (Procedure, Name)):
                 self.stack.append(value)
@@ -237,8 +228,8 @@ class _Machine:
         scale = math.sqrt(abs(state.ctm.determinant))
         self.shapes.append(Shape(
             ops, fill=state.color if fill else None, stroke=None if fill else state.color, evenodd=evenodd,
-            stroke_width=state.line_width * scale if state.line_width > 0 else HAIRLINE, linecap=CAPS[state.cap % len(CAPS)],
-            linejoin=JOINS[state.join % len(JOINS)], miter_limit=state.miter,
+            stroke_width=state.line_width * scale if state.line_width > 0 else HAIRLINE, linecap=CAP_NAMES[state.cap % len(CAP_NAMES)],
+            linejoin=JOIN_NAMES[state.join % len(JOIN_NAMES)], miter_limit=state.miter,
             dashes=tuple(d * scale for d in state.dashes), clip=state.clip))
 
     def relative(self, *offsets: float) -> list[float]:
@@ -286,7 +277,7 @@ def _load(machine: _Machine, _: int) -> None:
 def _exec(machine: _Machine, depth: int) -> None:
     """``exec``: run a procedure or executable name from the stack."""
     value = machine.pop(1, object)[0]
-    if isinstance(value, Procedure) and depth < MAX_DEPTH:
+    if isinstance(value, Procedure) and depth < PS_MAX_DEPTH:
         machine.execute(value, depth + 1)
     elif isinstance(value, Name):
         machine.call(value, depth + 1)
@@ -495,7 +486,7 @@ def _run(machine: _Machine, text: str) -> tuple[float, float]:
     size = math.sqrt(abs(a * d - b * c)) or DEFAULT_TEXT_SIZE
     unit = Matrix(a / size, b / size, c / size, d / size, 0.0, 0.0)
     style = font.name.lower()
-    family = _STYLE_RE.sub("", font.name) or DEFAULT_FONT
+    family = STYLE_RE.sub("", font.name) or DEFAULT_FONT
     bold, italic = "bold" in style, "italic" in style or "oblique" in style
     if text.strip():
         run = Text(text, x=0, y=0, font_size=size, font_family=family, fill=_hex(machine.state.color),
@@ -644,7 +635,7 @@ OPERATORS: Final[dict[str, Callable[[_Machine, int], None]]] = {
 
 def _bounding_box(data: bytes) -> tuple[float, float, float, float] | None:
     """``%%HiResBoundingBox`` or ``%%BoundingBox`` as ``(llx, lly, urx, ury)``."""
-    for pattern in _BOUNDS_RE.values():
+    for pattern in BOUNDS_RE.values():
         match = pattern.search(data)
         if match is not None:
             try:

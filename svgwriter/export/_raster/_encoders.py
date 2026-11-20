@@ -11,51 +11,50 @@ from typing import Final
 
 import numpy as np
 
+from ._constants import (
+    BMP_BI_BITFIELDS,
+    BMP_BITS_PER_PIXEL,
+    BMP_FILE_HEADER_SIZE,
+    BMP_LCS_SRGB,
+    BMP_MAGIC,
+    BMP_MASKS,
+    BMP_PIXELS_PER_METER,
+    BMP_V4_HEADER_SIZE,
+    CHANNEL_MAX,
+    GIF_APPLICATION,
+    GIF_APPLICATION_SIZE,
+    GIF_BLOCK_SIZE,
+    GIF_CENTISECONDS,
+    GIF_DISPOSE_BACKGROUND,
+    GIF_EXTENSION,
+    GIF_FLAG_TRANSPARENT,
+    GIF_GRAPHIC_CONTROL,
+    GIF_GRAPHIC_CONTROL_SIZE,
+    GIF_HEADER,
+    GIF_IMAGE_SEPARATOR,
+    GIF_LOOP_BLOCK_SIZE,
+    GIF_MAX_CODE_SIZE,
+    GIF_MAX_CODES,
+    GIF_MAX_COLORS,
+    GIF_MAX_DIMENSION,
+    GIF_MIN_CODE_SIZE,
+    GIF_MIN_PALETTE,
+    GIF_NETSCAPE,
+    GIF_OPAQUE_THRESHOLD,
+    GIF_PALETTE_FLAG,
+    GIF_TRAILER,
+    LUMA,
+    PNM_BINARY_FROM,
+    PNM_BITMAP,
+    PNM_COMMENT,
+    PNM_MAGIC,
+    PNM_WHITESPACE,
+    RGBA_CHANNELS,
+    UINT16_MAX,
+    WHITE,
+)
+
 __all__ = ["ENCODERS", "decode_pnm", "encode_bmp", "encode_gif", "encode_pnm", "is_pnm", "to_uint8"]
-
-CHANNEL_MAX: Final = 255
-UINT16_MAX: Final = 65535
-RGBA_CHANNELS: Final = 4
-WHITE: Final = (255, 255, 255)
-LUMA: Final = np.array([0.299, 0.587, 0.114], np.float64)
-
-BMP_MAGIC: Final = b"BM"
-BMP_FILE_HEADER_SIZE: Final = 14
-BMP_V4_HEADER_SIZE: Final = 108
-BMP_BITS_PER_PIXEL: Final = 32
-BMP_BI_BITFIELDS: Final = 3
-BMP_PIXELS_PER_METER: Final = 2835
-BMP_LCS_SRGB: Final = 0x73524742
-BMP_MASKS: Final = (0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000)
-
-GIF_HEADER: Final = b"GIF89a"
-GIF_TRAILER: Final = b"\x3b"
-GIF_EXTENSION: Final = 0x21
-GIF_GRAPHIC_CONTROL: Final = 0xF9
-GIF_GRAPHIC_CONTROL_SIZE: Final = 4
-GIF_FLAG_TRANSPARENT: Final = 0x01
-GIF_IMAGE_SEPARATOR: Final = 0x2C
-GIF_PALETTE_FLAG: Final = 0x80
-GIF_MAX_COLORS: Final = 256
-GIF_MIN_PALETTE: Final = 2
-GIF_MAX_DIMENSION: Final = UINT16_MAX
-GIF_MIN_CODE_SIZE: Final = 2
-GIF_MAX_CODE_SIZE: Final = 12
-GIF_MAX_CODES: Final = 1 << GIF_MAX_CODE_SIZE
-GIF_BLOCK_SIZE: Final = 255
-GIF_OPAQUE_THRESHOLD: Final = 128
-GIF_DISPOSE_BACKGROUND: Final = 0x08
-GIF_CENTISECONDS: Final = 100
-GIF_APPLICATION: Final = 0xFF
-GIF_APPLICATION_SIZE: Final = 11
-GIF_NETSCAPE: Final = b"NETSCAPE2.0"
-GIF_LOOP_BLOCK_SIZE: Final = 3
-
-PNM_MAGIC: Final = re.compile(rb"P[1-6]")
-PNM_WHITESPACE: Final = b" \t\r\n\v\f"
-PNM_BITMAP: Final = (1, 4)
-PNM_BINARY_FROM: Final = 4
-_PNM_COMMENT: Final = re.compile(rb"#[^\r\n]*")
 
 
 def to_uint8(array: object) -> np.ndarray:
@@ -509,7 +508,7 @@ def decode_pnm(data: bytes) -> np.ndarray:
     count = width * height * channels
     body = data[position:]
     if kind == 1:
-        digits = re.sub(rb"[^01]", b"", _PNM_COMMENT.sub(b"", body))
+        digits = re.sub(rb"[^01]", b"", PNM_COMMENT.sub(b"", body))
         samples = np.frombuffer(digits, np.uint8)[:count] - ord("0")
     elif kind == 4:
         stride = (width + 7) // 8
@@ -518,7 +517,7 @@ def decode_pnm(data: bytes) -> np.ndarray:
             raise ValueError("truncated PNM data")
         samples = np.unpackbits(packed.reshape(height, stride), axis=1)[:, :width].reshape(-1)
     elif kind < PNM_BINARY_FROM:
-        tokens = _PNM_COMMENT.sub(b"", body).split()
+        tokens = PNM_COMMENT.sub(b"", body).split()
         try:
             samples = np.array(tokens[:count], dtype=np.int64)
         except ValueError:

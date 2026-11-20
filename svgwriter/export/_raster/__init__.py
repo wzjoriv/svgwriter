@@ -4,17 +4,15 @@ Raster formats: PNG, JPEG, WebP, BMP, GIF and PPM out; ICO and ICNS icon familie
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from ..._internal._constants import DEFAULT_DPI
 from .._registry import register, register_importer
+from ._constants import DEFAULT_GIF_FPS, DEFAULT_QUALITY
 
 if TYPE_CHECKING:
     from ...color.color import ColorLike
     from ...document import Document
-
-DEFAULT_QUALITY: Final = 90
-DEFAULT_GIF_FPS: Final = 12.0
 
 
 def _frames(document: Document, fps: float, duration: float | None, **options: Any) -> list[Any]:

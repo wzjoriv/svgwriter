@@ -12,7 +12,49 @@ from typing import TYPE_CHECKING, Any, Final
 
 from ...color.color import as_color
 from ...transform.matrix import IDENTITY, Matrix
-from ._reading import BLACK, Outline, Shape, cmyk_to_rgb, to_document
+from ._constants import (
+    ANCHORS,
+    BLACK,
+    BRACKETS,
+    COLORLET_RE,
+    COMMAND_PAINTS,
+    COMMENT_RE,
+    DASH_RE,
+    DASHES,
+    DEFAULT_LINE_WIDTH,
+    DEFAULT_UNIT,
+    DEFINECOLOR_RE,
+    DIAGONAL,
+    DIMENSION_RE,
+    EVENT_RE,
+    FOREACH_RE,
+    FULL_TURN,
+    INNER_SEP,
+    LINE_WIDTHS,
+    MACRO_RE,
+    MARKUP_RE,
+    MAX_LOOP_ITEMS,
+    MAX_LOOPS,
+    MAX_STYLE_DEPTH,
+    NODE_BASELINE,
+    NODE_COMMANDS,
+    NODE_FONT_SIZE,
+    NODE_POSITIONS,
+    NODE_SHAPES,
+    NODE_TEXT_HEIGHT,
+    PATH_TOKEN_RE,
+    PERCENT,
+    PICTURE_RE,
+    POSITIONS,
+    RGB_SCALE,
+    SPACE_RE,
+    TIKZ_CAP_NAMES,
+    TIKZSET_RE,
+    TIKZSTYLE_RE,
+    UNITS,
+    XCOLOR,
+)
+from ._reading import Outline, Shape, cmyk_to_rgb, to_document
 
 if TYPE_CHECKING:
     from ...document import Document
@@ -22,63 +64,6 @@ __all__ = ["read_tikz"]
 
 Point = tuple[float, float]
 Pair = tuple[str, str | None]
-
-TEX_PT_PER_INCH: Final = 72.27
-UNITS: Final = {"pt": 1.0, "bp": TEX_PT_PER_INCH / 72.0, "in": TEX_PT_PER_INCH, "cm": TEX_PT_PER_INCH / 2.54,
-                "mm": TEX_PT_PER_INCH / 25.4, "pc": 12.0, "em": 10.0, "ex": 4.3}
-DEFAULT_UNIT: Final = UNITS["cm"]
-DEFAULT_LINE_WIDTH: Final = 0.4
-LINE_WIDTHS: Final = {"ultra thin": 0.1, "very thin": 0.2, "thin": 0.4, "semithick": 0.6, "thick": 0.8,
-                      "very thick": 1.2, "ultra thick": 1.6}
-DASHES: Final = {"dashed": (3.0, 3.0), "densely dashed": (3.0, 2.0), "loosely dashed": (3.0, 6.0),
-                 "dotted": (DEFAULT_LINE_WIDTH, 2.0), "densely dotted": (DEFAULT_LINE_WIDTH, 1.0),
-                 "loosely dotted": (DEFAULT_LINE_WIDTH, 4.0), "solid": ()}
-CAPS: Final = {"butt": "butt", "round": "round", "rect": "square"}
-XCOLOR: Final = {
-    "red": (1.0, 0.0, 0.0), "green": (0.0, 1.0, 0.0), "blue": (0.0, 0.0, 1.0), "cyan": (0.0, 1.0, 1.0),
-    "magenta": (1.0, 0.0, 1.0), "yellow": (1.0, 1.0, 0.0), "black": BLACK, "white": (1.0, 1.0, 1.0),
-    "gray": (0.5, 0.5, 0.5), "darkgray": (0.25, 0.25, 0.25), "lightgray": (0.75, 0.75, 0.75),
-    "brown": (0.75, 0.5, 0.25), "lime": (0.75, 1.0, 0.0), "olive": (0.5, 0.5, 0.0), "orange": (1.0, 0.5, 0.0),
-    "pink": (1.0, 0.75, 0.75), "purple": (0.75, 0.0, 0.25), "teal": (0.0, 0.5, 0.5), "violet": (0.5, 0.0, 0.5),
-}
-COMMAND_PAINTS: Final = {"draw": (False, True), "fill": (True, False), "filldraw": (True, True),
-                         "path": (False, False), "useasboundingbox": (False, False)}
-RGB_SCALE: Final = 255.0
-PERCENT: Final = 100.0
-FULL_TURN: Final = 2 * math.pi
-_COMMENT_RE: Final = re.compile(r"(?<!\\)%[^\n]*")
-NODE_FONT_SIZE: Final = 10.0
-NODE_BASELINE: Final = 0.35
-NODE_TEXT_HEIGHT: Final = 0.8 * NODE_FONT_SIZE
-INNER_SEP: Final = 3.333
-MAX_STYLE_DEPTH: Final = 8
-MAX_LOOPS: Final = 1000
-MAX_LOOP_ITEMS: Final = 10000
-DIAGONAL: Final = math.sqrt(0.5)
-NODE_SHAPES: Final = ("circle", "rectangle", "ellipse")
-ANCHORS: Final = {"center": (0, 0), "north": (0, -1), "south": (0, 1), "east": (1, 0), "west": (-1, 0),
-                  "north east": (1, -1), "north west": (-1, -1), "south east": (1, 1), "south west": (-1, 1)}
-POSITIONS: Final = {"above": "south", "below": "north", "left": "east", "right": "west",
-                    "above left": "south east", "above right": "south west",
-                    "below left": "north east", "below right": "north west"}
-NODE_POSITIONS: Final = {"midway": 0.5, "near start": 0.25, "near end": 0.75, "very near start": 0.125,
-                         "very near end": 0.875, "at start": 0.0, "at end": 1.0}
-_MARKUP_RE: Final = re.compile(r"\\[A-Za-z]+\*?\{([^{}]*)\}")
-_SPACE_RE: Final = re.compile(r"\s+")
-_EVENT_RE: Final = re.compile(r"\\(?:(begin|end)\s*\{scope\}|(filldraw|draw|fill|path|useasboundingbox|node|coordinate)"
-                              r"(?![A-Za-z]))")
-NODE_COMMANDS: Final = ("node", "coordinate")
-_FOREACH_RE: Final = re.compile(r"\\foreach\s+(\\[A-Za-z]+(?:\s*/\s*\\[A-Za-z]+)*)\s+in\s*")
-_MACRO_RE: Final = re.compile(r"\\[A-Za-z]+")
-_TIKZSET_RE: Final = re.compile(r"\\tikzset\s*\{")
-_TIKZSTYLE_RE: Final = re.compile(r"\\tikzstyle\s*\{([^}]*)\}\s*=\s*\[")
-_DEFINECOLOR_RE: Final = re.compile(r"\\definecolor\s*\{([^}]*)\}\s*\{([^}]*)\}\s*\{([^}]*)\}")
-_COLORLET_RE: Final = re.compile(r"\\colorlet\s*\{([^}]*)\}\s*\{([^}]*)\}")
-_PICTURE_RE: Final = re.compile(r"\\begin\s*\{tikzpicture\}")
-_DIMENSION_RE: Final = re.compile(r"^\s*([+-]?(?:\d+\.?\d*|\.\d+))\s*([a-z]{2})?\s*$")
-_PATH_TOKEN_RE: Final = re.compile(r"\s*(\+\+|\+|--|\|-|-\||\.\.|[A-Za-z]+|.)", re.S)
-_DASH_RE: Final = re.compile(r"(?:on|off)\s+([+-]?(?:\d+\.?\d*|\.\d+)\s*(?:[a-z]{2}(?![a-z]))?)")
-BRACKETS: Final = {"(": ")", "[": "]", "{": "}"}
 
 
 def _balanced(text: str, start: int) -> tuple[str, int]:
@@ -146,9 +131,9 @@ def _define(table: dict[str, list[Pair]], pairs: list[Pair]) -> None:
 def _style_table(text: str, picture: str) -> dict[str, list[Pair]]:
     """Styles from ``\\tikzset``, ``\\tikzstyle`` and the picture's own options, by name."""
     table: dict[str, list[Pair]] = {}
-    for match in _TIKZSET_RE.finditer(text):
+    for match in TIKZSET_RE.finditer(text):
         _define(table, _options(_balanced(text, match.end() - 1)[0]))
-    for match in _TIKZSTYLE_RE.finditer(text):
+    for match in TIKZSTYLE_RE.finditer(text):
         table[match.group(1).strip()] = _options(_balanced(text, match.end() - 1)[0])
     _define(table, _options(picture))
     return table
@@ -156,7 +141,7 @@ def _style_table(text: str, picture: str) -> dict[str, list[Pair]]:
 
 def _dimension(text: str) -> tuple[float, bool]:
     """A length in points and whether it carried a unit."""
-    match = _DIMENSION_RE.match(text)
+    match = DIMENSION_RE.match(text)
     if match is None:
         raise ValueError(f"not a TikZ dimension: {text!r}")
     value, unit = float(match.group(1)), match.group(2)
@@ -239,7 +224,7 @@ class _Frame:
 
 def _picture_options(text: str) -> str:
     """The option list of the first ``tikzpicture`` environment, empty when it has none."""
-    match = _PICTURE_RE.search(text)
+    match = PICTURE_RE.search(text)
     if match is None:
         return ""
     start = match.end() + len(text[match.end():]) - len(text[match.end():].lstrip())
@@ -300,14 +285,14 @@ COLOR_MODELS: Final[dict[str, Callable[[str], tuple[float, ...]]]] = {
 def _definitions(text: str) -> dict[str, RGB]:
     """Colours from ``\\definecolor`` (``RGB``, ``rgb``, ``HTML``, ``gray``, ``cmyk``) and ``\\colorlet``."""
     colors: dict[str, RGB] = {}
-    for name, model, spec in _DEFINECOLOR_RE.findall(text):
+    for name, model, spec in DEFINECOLOR_RE.findall(text):
         try:
             color = COLOR_MODELS[model.strip()](spec.strip())
         except (KeyError, IndexError, TypeError, ValueError):
             continue
         if len(color) == len(BLACK):
             colors[name.strip()] = color
-    for name, expression in _COLORLET_RE.findall(text):
+    for name, expression in COLORLET_RE.findall(text):
         try:
             colors[name.strip()] = _mix(expression, colors)
         except ValueError:
@@ -358,7 +343,7 @@ def _opacity(style: _Style, value: str | None) -> None:
 
 def _dash_pattern(value: str | None) -> tuple[float, ...]:
     """Dash lengths of ``on <len> off <len> ...``."""
-    return tuple(_dimension(v)[0] for v in _DASH_RE.findall(value or ""))
+    return tuple(_dimension(v)[0] for v in DASH_RE.findall(value or ""))
 
 
 OPTIONS: Final[dict[str, Callable[[_Style, str | None], None]]] = {
@@ -370,7 +355,7 @@ OPTIONS: Final[dict[str, Callable[[_Style, str | None], None]]] = {
     "opacity": _opacity,
     "fill opacity": lambda s, v: setattr(s, "fill_opacity", float(v or 1)),
     "draw opacity": lambda s, v: setattr(s, "draw_opacity", float(v or 1)),
-    "line cap": lambda s, v: setattr(s, "linecap", CAPS[v or "butt"]),
+    "line cap": lambda s, v: setattr(s, "linecap", TIKZ_CAP_NAMES[v or "butt"]),
     "line join": lambda s, v: setattr(s, "linejoin", v or "miter"),
     "miter limit": lambda s, v: setattr(s, "miter_limit", float(v or 10)),
     "even odd rule": lambda s, v: setattr(s, "evenodd", True),
@@ -401,7 +386,7 @@ def _tokens(text: str) -> list[tuple[str, str]]:
     tokens, pos = [], 0
     kinds = {"(": "coord", "[": "opts", "{": "text"}
     while pos < len(text):
-        match = _PATH_TOKEN_RE.match(text, pos)
+        match = PATH_TOKEN_RE.match(text, pos)
         if match is None or not match.group(1).strip():
             break
         word, start = match.group(1), match.start(1)
@@ -725,7 +710,7 @@ def _events(text: str) -> list[tuple[str, str, str, str]]:
     A ``\\node`` or ``\\coordinate`` is read as ``\\path node ...``: its options stay in its path.
     """
     out, pos = [], 0
-    while (match := _EVENT_RE.search(text, pos)) is not None:
+    while (match := EVENT_RE.search(text, pos)) is not None:
         pos = match.end() + len(text[match.end():]) - len(text[match.end():].lstrip())
         command, options = match.group(2) or "", ""
         if match.group(1) == "end":
@@ -761,7 +746,7 @@ def _loop_items(text: str) -> list[str]:
 
 def _unrolled(text: str, match: re.Match[str]) -> tuple[str, int]:
     """The repeated body of the ``\\foreach`` at *match*, and the index where the loop ends."""
-    names = _MACRO_RE.findall(match.group(1))
+    names = MACRO_RE.findall(match.group(1))
     if text[match.end()] != "{":
         raise ValueError("\\foreach list must be in braces")
     items, pos = _balanced(text, match.end())
@@ -774,14 +759,14 @@ def _unrolled(text: str, match: re.Match[str]) -> tuple[str, int]:
     copies = []
     for item in _loop_items(items):
         values = dict(zip(names, item.split("/") if len(names) > 1 else [item], strict=False))
-        copies.append(_MACRO_RE.sub(lambda m, v=values: v.get(m.group(), m.group()), body))
+        copies.append(MACRO_RE.sub(lambda m, v=values: v.get(m.group(), m.group()), body))
     return "\n".join(copies), end
 
 
 def _unroll(text: str) -> str:
     """*text* with each ``\\foreach`` replaced by its body once per value, the variable substituted."""
     for _ in range(MAX_LOOPS):
-        match = _FOREACH_RE.search(text)
+        match = FOREACH_RE.search(text)
         if match is None:
             break
         try:
@@ -872,9 +857,9 @@ def read_tikz(text: str) -> Document:
     >>> doc[0].get("fill"), round(doc[0].bounds().width, 2)
     ('#0000ff', 28.45)
     """
-    text = _unroll(_COMMENT_RE.sub("", text))
+    text = _unroll(COMMENT_RE.sub("", text))
     events = _events(text)
-    if not any(kind == "cmd" for kind, *_ in events) and _PICTURE_RE.search(text) is None:
+    if not any(kind == "cmd" for kind, *_ in events) and PICTURE_RE.search(text) is None:
         raise ValueError("not TikZ: no tikzpicture and no \\draw, \\fill, \\filldraw or \\path command")
     picture = _picture_options(text)
     context = _Context(_definitions(text), _style_table(text, picture))
@@ -907,5 +892,5 @@ def _plain(latex: str) -> str:
     text = latex.replace("\\\\", " ")
     previous = None
     while previous != text:
-        previous, text = text, _MARKUP_RE.sub(r"\1", text)
-    return _SPACE_RE.sub(" ", text.replace("{", "").replace("}", "")).strip()
+        previous, text = text, MARKUP_RE.sub(r"\1", text)
+    return SPACE_RE.sub(" ", text.replace("{", "").replace("}", "")).strip()

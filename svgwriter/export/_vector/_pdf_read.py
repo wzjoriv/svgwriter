@@ -12,45 +12,33 @@ from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Any, Final
 
 from ...transform.matrix import Matrix
-from ._reading import BLACK, HAIRLINE, Outline, Shape, cmyk_to_rgb, string_end, to_document
+from ._constants import (
+    BLACK,
+    CAP_NAMES,
+    DEFAULT_MEDIABOX,
+    ENCRYPT_RE,
+    ENDSTREAM_RE,
+    FLATE,
+    HAIRLINE,
+    HEADER_WINDOW,
+    INLINE_IMAGE_END_RE,
+    JOIN_NAMES,
+    LITERALS,
+    NAME_ESCAPE_RE,
+    OBJECT_RE,
+    PAINTS,
+    PDF_HEADER,
+    PDF_MAX_DEPTH,
+    PDF_TOKEN_RE,
+    STREAM_RE,
+)
+from ._reading import Outline, Shape, cmyk_to_rgb, string_end, to_document
 
 if TYPE_CHECKING:
     from ...document import Document
     from ._reading import RGB, Op
 
 __all__ = ["read_pdf"]
-
-PDF_HEADER: Final = b"%PDF-"
-HEADER_WINDOW: Final = 1024
-DEFAULT_MEDIABOX: Final = (0.0, 0.0, 612.0, 792.0)
-MAX_DEPTH: Final = 32
-CAPS: Final = ("butt", "round", "square")
-JOINS: Final = ("miter", "round", "bevel")
-FLATE: Final = ("FlateDecode", "Fl")
-_REGULAR: Final = rb"[^\x00\t\n\x0c\r ()<>\[\]{}/%]"
-_TOKEN_RE: Final = re.compile(
-    rb"(?P<skip>[\x00\t\n\x0c\r ]+|%[^\r\n]*)"
-    rb"|(?P<num>[+-]?(?:\d+\.?\d*|\.\d+))(?!" + _REGULAR + rb")"
-    rb"|(?P<name>/" + _REGULAR + rb"*)"
-    rb"|(?P<dict><<|>>)"
-    rb"|(?P<hex><[^<>]*>)"
-    rb"|(?P<string>\()"
-    rb"|(?P<word>" + _REGULAR + rb"+|[\[\]{}])"
-    rb"|(?P<other>.)", re.S)
-_OBJECT_RE: Final = re.compile(rb"(?<!\d)(\d+)\s+(\d+)\s+obj(?!" + _REGULAR + rb")")
-_STREAM_RE: Final = re.compile(rb"\s*stream(?:\r\n|\n|\r)")
-_ENDSTREAM_RE: Final = re.compile(rb"\s*endstream")
-_INLINE_IMAGE_END_RE: Final = re.compile(rb"\sEI(?=\s|$)")
-_ENCRYPT_RE: Final = re.compile(rb"/Encrypt\s*(?:\d+\s+\d+\s+R|<<)")
-_NAME_ESCAPE_RE: Final = re.compile(rb"#([0-9A-Fa-f]{2})")
-LITERALS: Final = {b"true": True, b"false": False, b"null": None}
-# fill, stroke, even-odd, close first
-PAINTS: Final = {
-    "S": (False, True, False, False), "s": (False, True, False, True),
-    "f": (True, False, False, False), "F": (True, False, False, False), "f*": (True, False, True, False),
-    "B": (True, True, False, False), "B*": (True, True, True, False),
-    "b": (True, True, False, True), "b*": (True, True, True, True),
-}
 
 
 class Name(str):
@@ -84,7 +72,7 @@ class _Lexer:
 
     def token(self) -> tuple[str, bytes] | None:
         """The next token as ``(kind, text)``, or None at the end."""
-        while (match := _TOKEN_RE.match(self.data, self.pos)) is not None:
+        while (match := PDF_TOKEN_RE.match(self.data, self.pos)) is not None:
             self.pos = match.end()
             if match.lastgroup == "string":
                 self.pos = string_end(self.data, self.pos)
@@ -100,7 +88,7 @@ class _Lexer:
             number = float(text) if b"." in text else int(text)
             return self._ref(number) if refs and isinstance(number, int) else number
         if kind == "name":
-            return Name(_NAME_ESCAPE_RE.sub(lambda m: bytes.fromhex(m.group(1).decode()), text[1:]).decode("latin-1"))
+            return Name(NAME_ESCAPE_RE.sub(lambda m: bytes.fromhex(m.group(1).decode()), text[1:]).decode("latin-1"))
         if kind == "hex":
             digits = re.sub(rb"\s", b"", text[1:-1]).decode("latin-1")
             return bytes.fromhex(digits + "0" * (len(digits) % 2))
@@ -143,11 +131,11 @@ class _Lexer:
 
 def _stream_raw(data: bytes, info: dict[str, Any], pos: int) -> tuple[bytes, int] | None:
     """The stream bytes after the dictionary ending at *pos*, and where the object ends."""
-    match = _STREAM_RE.match(data, pos)
+    match = STREAM_RE.match(data, pos)
     if match is None:
         return None
     start, length = match.end(), info.get("Length")
-    if isinstance(length, int) and _ENDSTREAM_RE.match(data, start + length):
+    if isinstance(length, int) and ENDSTREAM_RE.match(data, start + length):
         return data[start:start + length], start + length
     end = data.find(b"endstream", start)
     end = len(data) if end < 0 else end
@@ -158,7 +146,7 @@ def _objects(data: bytes) -> dict[int, Any]:
     """Every ``N G obj`` found by scanning, later definitions winning, so the xref table is not needed."""
     objects: dict[int, Any] = {}
     floor = 0
-    for match in _OBJECT_RE.finditer(data):
+    for match in OBJECT_RE.finditer(data):
         if match.start() < floor:
             continue
         lexer = _Lexer(data, match.end())
@@ -209,7 +197,7 @@ def _decode(stream: Stream) -> bytes:
 
 def _resolve(objects: dict[int, Any], value: Any) -> Any:
     """Follow indirect references to the object they name."""
-    for _ in range(MAX_DEPTH):
+    for _ in range(PDF_MAX_DEPTH):
         if not isinstance(value, Ref):
             return value
         value = objects.get(value.number)
@@ -247,7 +235,7 @@ def _pages(objects: dict[int, Any]) -> list[dict[str, Any]]:
 def _inherited(objects: dict[int, Any], page: dict[str, Any], key: str) -> Any:
     """*key* from the page or the nearest ancestor that has it."""
     node: Any = page
-    for _ in range(MAX_DEPTH):
+    for _ in range(PDF_MAX_DEPTH):
         if not isinstance(node, dict):
             return None
         if key in node:
@@ -266,7 +254,7 @@ def _operations(content: bytes) -> Iterator[tuple[str, list[Any]]]:
             operands.append(value)
             continue
         if value == "BI":
-            end = _INLINE_IMAGE_END_RE.search(content, lexer.pos)
+            end = INLINE_IMAGE_END_RE.search(content, lexer.pos)
             lexer.pos = end.end() if end else len(content)
         else:
             yield str(value), operands
@@ -350,7 +338,7 @@ class _Painter:
             ops, fill=state.fill if fill else None, stroke=state.stroke if stroke else None,
             fill_opacity=state.fill_alpha * state.group_alpha, stroke_opacity=state.stroke_alpha * state.group_alpha,
             evenodd=evenodd, stroke_width=state.line_width * scale if state.line_width > 0 else HAIRLINE,
-            linecap=CAPS[state.cap % len(CAPS)], linejoin=JOINS[state.join % len(JOINS)],
+            linecap=CAP_NAMES[state.cap % len(CAP_NAMES)], linejoin=JOIN_NAMES[state.join % len(JOIN_NAMES)],
             miter_limit=state.miter, dashes=tuple(d * scale for d in state.dashes), clip=state.clip))
 
     def form(self, xobject: Any, resources: dict[str, Any]) -> None:
@@ -358,7 +346,7 @@ class _Painter:
         if isinstance(xobject, Stream) and xobject.info.get("Subtype") == "Image":
             draw_image(self, xobject)
             return
-        if not (isinstance(xobject, Stream) and xobject.info.get("Subtype") == "Form") or self.depth >= MAX_DEPTH:
+        if not (isinstance(xobject, Stream) and xobject.info.get("Subtype") == "Form") or self.depth >= PDF_MAX_DEPTH:
             return
         saved = self.state
         matrix = _resolve(self.objects, xobject.info.get("Matrix")) or [1, 0, 0, 1, 0, 0]
@@ -598,7 +586,7 @@ def read_pdf(data: bytes, *, page: int = 0) -> Document:
     """
     if PDF_HEADER not in data[:HEADER_WINDOW]:
         raise ValueError("not a PDF file: no '%PDF-' header")
-    if _ENCRYPT_RE.search(data):
+    if ENCRYPT_RE.search(data):
         raise ValueError("encrypted PDF files are not supported")
     objects = _objects(data)
     pages = _pages(objects)

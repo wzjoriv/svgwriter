@@ -6,25 +6,20 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from ...color.color import Color
+from ._constants import BEZIER_ARC_FACTOR, DEFAULT_MITER, MAX_ARC_SEGMENT
 
 if TYPE_CHECKING:
     from ...document import Document
     from ...elements.shapes import Path
     from ...transform.matrix import Matrix
 
-__all__ = ["BLACK", "HAIRLINE", "Outline", "Shape", "cmyk_to_rgb", "string_end", "to_document"]
+__all__ = ["Outline", "Shape", "cmyk_to_rgb", "string_end", "to_document"]
 
 Op = tuple[str, tuple[float, ...]]
 RGB = tuple[float, float, float]
-
-BLACK: Final = (0.0, 0.0, 0.0)
-DEFAULT_MITER: Final = 4.0
-HAIRLINE: Final = 0.25
-MAX_ARC_SEGMENT: Final = math.pi / 2
-BEZIER_ARC_FACTOR: Final = 4.0 / 3.0
 
 
 @dataclass

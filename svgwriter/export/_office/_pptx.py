@@ -6,30 +6,30 @@ from __future__ import annotations
 
 import io
 import math
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from . import require
+from ._constants import (
+    A_NS,
+    ALPHA_SCALE,
+    ASCENT,
+    BLANK_LAYOUT,
+    DEFAULT_TEXT_PT,
+    EMU_PER_POINT,
+    EMU_PER_UNIT,
+    GENERIC_FONTS,
+    LINE_HEIGHT,
+    POINTS_PER_UNIT,
+    ROUND_RECT_ADJUST,
+    SLIDE_MAX_EMU,
+    SLIDE_MIN_EMU,
+)
 
 if TYPE_CHECKING:
     from ...color.color import Color
     from ...document import Document
     from ...pathdata.data import PathData
     from .._flatten import Item
-
-EMU_PER_UNIT: Final = 9525
-SLIDE_MIN_EMU: Final = 914400
-SLIDE_MAX_EMU: Final = 51206400
-BLANK_LAYOUT: Final = 6
-ALPHA_SCALE: Final = 100000
-POINTS_PER_UNIT: Final = 0.75
-DEFAULT_TEXT_PT: Final = 18.0
-ROUND_RECT_ADJUST: Final = 16667
-EMU_PER_POINT: Final = 12700
-LINE_HEIGHT: Final = 1.2
-ASCENT: Final = 0.9
-GENERIC_FONTS: Final = {"sans-serif": "Arial", "serif": "Times New Roman", "monospace": "Courier New",
-                        "system-ui": "Segoe UI", "cursive": "Comic Sans MS"}
-A_NS: Final = "http://schemas.openxmlformats.org/drawingml/2006/main"
 
 
 def _a(tag: str) -> str:
