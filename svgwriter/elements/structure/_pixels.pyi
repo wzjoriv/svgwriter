@@ -2,11 +2,12 @@ import numpy as np
 from collections.abc import Sequence
 from typing import ClassVar
 from numpy import ndarray
+from ..._internal._drawable import Drawable
 from ...ops.composite import Operator
 
 __all__ = ["Pixels"]
 
-class Pixels:
+class Pixels(Drawable):
     __hash__: ClassVar[None]
 
     def __init__(

@@ -12,7 +12,7 @@ import numpy as np
 import skia
 
 from ..._internal._constants import DEFAULT_PRECISION
-from ..._internal._drawable import pixels_picture
+from ..._internal._drawable import Drawable, pixels_picture
 from ._constants import CHANNEL_MAX, DATA_URI_PREFIX
 
 if TYPE_CHECKING:
@@ -36,7 +36,7 @@ def _normalize(array: np.ndarray) -> np.ndarray:
     return data
 
 
-class Pixels:
+class Pixels(Drawable):
     """Image data: color channels plus a broadcastable alpha.
 
     ``color`` is ``(H, W, C)`` with ``C`` in {1, 3} and ``alpha`` broadcasts
@@ -436,12 +436,6 @@ class Pixels:
         'image'
         """
         return pixels_picture(self)
-
-    def _repr_svg_(self) -> str | None:
-        return self.__svgwriter__()._repr_svg_()  # type: ignore[no-any-return]
-
-    def _repr_png_(self) -> bytes | None:
-        return self.__svgwriter__()._repr_png_()  # type: ignore[no-any-return]
 
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
         """Serialize as a ``data:`` URI.
