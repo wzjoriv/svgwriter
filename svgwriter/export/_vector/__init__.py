@@ -199,7 +199,7 @@ def read_tikz(data: bytes) -> Document:
     Reads what :func:`tikz` writes and common hand-written pictures: straight
     and Bézier segments, ``cycle``, ``rectangle``, ``circle``, colours with
     ``\\definecolor``, ``draw=``, ``fill=``, ``line width=``, opacity and
-    dashes. Macros, ``\\foreach``, styles, nodes and text are not read; see
+    dashes, plus nodes, styles, scopes and ``\\foreach`` loops. Macros are not read; see
     :func:`~svgwriter.export._vector._tikz_read.read_tikz` for the full subset.
 
     Examples
