@@ -211,3 +211,15 @@ def test_tikz_rotated_text_keeps_its_turn():
     back = svg.export.find_importer("tikz").function(svg.export.export(doc, "tikz").encode())
     assert back[0].bounds().y < 50 < back[0].bounds().y + back[0].bounds().height + 10
     assert back[0].t.b == pytest.approx(0.5, abs=1e-6)
+
+
+def test_markers_from_a_parsed_file_render(tmp_path) -> None:
+    import svgwriter as svg
+
+    doc = svg.Document(60, 30)
+    marker = doc.defs.add(svg.builder.arrow_marker(id="tip"))
+    doc.add(svg.path("M5 15 L50 15", stroke="black", stroke_width=2, marker_end=marker))
+    path = tmp_path / "markers.svg"
+    doc.save(path)
+    pixels = svg.Document.open(path).rasterize()
+    assert pixels[..., 3].sum() > 0
