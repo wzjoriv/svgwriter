@@ -104,7 +104,7 @@ EVENODD: Final = "evenodd"
 
 ARITHMETIC_TERMS: Final = 4
 
-EXTRA_HINT: Final = "pip install 'svgwriter[graph]'"
+EXTRA_HINT: Final = "pip install 'pysvgwriter[graph]'"
 GRAPH_SIZE: Final = 400.0
 MARGIN: Final = 30.0
 NODE_RADIUS: Final = 12.0

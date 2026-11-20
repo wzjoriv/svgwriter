@@ -2,8 +2,8 @@
 
 [![Tests](https://github.com/wzjoriv/svgwriter/actions/workflows/ci.yml/badge.svg)](https://github.com/wzjoriv/svgwriter/actions/workflows/ci.yml)
 [![Docs](https://github.com/wzjoriv/svgwriter/actions/workflows/docs.yml/badge.svg)](https://wzjoriv.github.io/svgwriter)
-[![PyPI](https://img.shields.io/pypi/v/svgwriter)](https://pypi.org/project/svgwriter/)
-[![Python](https://img.shields.io/pypi/pyversions/svgwriter)](https://pypi.org/project/svgwriter/)
+[![PyPI](https://img.shields.io/pypi/v/pysvgwriter)](https://pypi.org/project/pysvgwriter/)
+[![Python](https://img.shields.io/pypi/pyversions/pysvgwriter)](https://pypi.org/project/pysvgwriter/)
 [![CPython 3.10-3.14](https://img.shields.io/badge/CPython-3.10%E2%80%933.14-blue)](https://github.com/wzjoriv/svgwriter/actions/workflows/ci.yml)
 [![Linux · Windows · macOS](https://img.shields.io/badge/OS-Linux%20%C2%B7%20Windows%20%C2%B7%20macOS-blue)](https://github.com/wzjoriv/svgwriter/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
@@ -11,7 +11,7 @@
 Build, edit and render vector graphics in Python with a complete SVG 1.1 object model. Shapes move,
 rotate and scale through one transform; geometry has boolean operations and measurement; text, images
 and colors are first-class (numpy-backed); documents render with skia and export to PNG, PDF, TikZ, DXF
-and more. Python 3.10+, `pip install svgwriter` (brings skia-python, numpy and uharfbuzz).
+and more. Python 3.10+, `pip install pysvgwriter` (brings skia-python, numpy and uharfbuzz), then `import svgwriter`.
 
 ```python
 import svgwriter as svg
@@ -43,7 +43,7 @@ pixels = doc.rasterize(scale=2)                          # numpy float32 RGBA, s
 | Colors and images | `Color` in 0-1 floats with alpha (auto `*-opacity`); `Image(numpy_array)` with color channels and broadcastable alpha; `Image.open("photo.png")`; Porter-Duff compositing `a \| b` (over), `a & b` (in), `a - b` (out), `a ^ b`, `a * b` (multiply), `a.composite(b, "screen")` |
 | Documents | `doc[0]`, `doc["logo"]`, `for el in doc`; auto-size to content; definitions land in `<defs>` when referenced; plots and anything with `_repr_svg_` or `savefig` can be added; notebook display |
 | Rendering | skia: `rasterize(size=..., padding=...)` to numpy, embedded and linked images, text, CSS `<style>`; deterministic output |
-| Export / import | Registry by name or extension. Out: SVG, SVGZ, PNG, JPEG, WebP, BMP, GIF, PPM, PDF (vector), TikZ, EPS, DXF, HPGL, G-code, Excalidraw, ICO, ICNS. In: SVG, SVGZ, PNG, JPEG, WebP, GIF, BMP, PNM, PDF, TikZ, EPS (their vector paths), DXF, HPGL, G-code, Excalidraw, ICO, ICNS, Graphviz DOT and Mermaid diagrams through their tools, and with `svgwriter[office]` PowerPoint (editable shapes, both ways) plus Word and Excel (picture). `svg.export.register(...)` for more |
+| Export / import | Registry by name or extension. Out: SVG, SVGZ, PNG, JPEG, WebP, BMP, GIF, PPM, PDF (vector), TikZ, EPS, DXF, HPGL, G-code, Excalidraw, ICO, ICNS. In: SVG, SVGZ, PNG, JPEG, WebP, GIF, BMP, PNM, PDF, TikZ, EPS (their vector paths), DXF, HPGL, G-code, Excalidraw, ICO, ICNS, Graphviz DOT and Mermaid diagrams through their tools, and with `pysvgwriter[office]` PowerPoint (editable shapes, both ways) plus Word and Excel (picture). `svg.export.register(...)` for more |
 | Animation | SMIL elements; `doc.render_animation("out.mp4", update=...)` through ffmpeg; `svg.interpolate(a, b, t)` tweens numbers, colors, transforms and morphs any two shapes |
 
 ## Geometry in one minute

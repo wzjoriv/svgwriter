@@ -1,5 +1,5 @@
 """
-Office files through the optional ``svgwriter[office]`` extra: PowerPoint shapes out and in, Word and Excel pictures out.
+Office files through the optional ``pysvgwriter[office]`` extra: PowerPoint shapes out and in, Word and Excel pictures out.
 """
 
 from __future__ import annotations

@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "svgwriter"
+name = "pysvgwriter"
 dynamic = ["version"]
 description = "SVG 1.1 as Python objects: draw, transform, combine, render and convert vector graphics."
 readme = "README.md"
@@ -55,14 +55,14 @@ math = [
     "ziamath>=0.11",
 ]
 test = [
-    "svgwriter[office,plot,graph,math]",
+    "pysvgwriter[office,plot,graph,math]",
     "pytest>=7",
     "ezdxf>=1.0",
     "pillow>=10",
     "fonttools>=4.40",
 ]
 dev = [
-    "svgwriter[test,docs]",
+    "pysvgwriter[test,docs]",
     "stubpy",
     "pytest-cov",
     "ruff>=0.6",

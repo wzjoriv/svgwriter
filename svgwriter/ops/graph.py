@@ -99,7 +99,7 @@ def draw_graph(graph: Any, *, layout: str | Mapping[Any, Any] | Callable[..., An
     Raises
     ------
     ImportError
-        If networkx is not installed (``pip install 'svgwriter[graph]'``).
+        If networkx is not installed (``pip install 'pysvgwriter[graph]'``).
     ValueError
         If the layout name is unknown.
 

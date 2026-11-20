@@ -77,7 +77,7 @@ def to_matplotlib(item: Element | Document, ax: Any, *, flip: bool = True) -> li
     Raises
     ------
     ImportError
-        If matplotlib is not installed (``pip install 'svgwriter[plot]'``).
+        If matplotlib is not installed (``pip install 'pysvgwriter[plot]'``).
 
     See Also
     --------
@@ -93,7 +93,7 @@ def to_matplotlib(item: Element | Document, ax: Any, *, flip: bool = True) -> li
         from matplotlib.patches import PathPatch
         from matplotlib.path import Path as MplPath
     except ImportError as error:
-        raise ImportError("drawing into matplotlib needs matplotlib; pip install 'svgwriter[plot]'") from error
+        raise ImportError("drawing into matplotlib needs matplotlib; pip install 'pysvgwriter[plot]'") from error
 
     from ..document import Document
     from ..export._flatten import flatten

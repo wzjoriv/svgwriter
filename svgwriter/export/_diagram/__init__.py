@@ -173,7 +173,7 @@ def latex(source: str, *, display: bool = False, preamble: str = "", engine: str
 
     With ``engine="auto"`` the first available engine typesets it: real TeX
     (``latex`` + ``dvisvgm``, exact and with every package), then Ziamath
-    (pure Python, the ``svgwriter[math]`` extra), then matplotlib's mathtext.
+    (pure Python, the ``pysvgwriter[math]`` extra), then matplotlib's mathtext.
 
     Parameters
     ----------

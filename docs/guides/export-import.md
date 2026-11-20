@@ -114,12 +114,12 @@ groups, subgraphs) are parsed and laid out by svgwriter itself, so they need no 
 
 PlantUML (`.puml`) and D2 (`.d2`) load the same way through `plantuml` and `d2`. Math comes from LaTeX
 itself: `svg.latex(r"\int_0^1 x^2\,dx = \frac{1}{3}", display=True)` returns the typeset formula as
-outlines. Without TeX it falls back to Ziamath (pure Python, `svgwriter[math]`) and then to matplotlib's
+outlines. Without TeX it falls back to Ziamath (pure Python, `pysvgwriter[math]`) and then to matplotlib's
 mathtext; `engine="tex"`, `"ziamath"` or `"mathtext"` picks one.
 
 ## Office files
 
-`pip install "svgwriter[office]"` adds PowerPoint, Word and Excel:
+`pip install "pysvgwriter[office]"` adds PowerPoint, Word and Excel:
 
 - `.pptx` out: one slide sized like the drawing, each outline an editable PowerPoint shape (curves,
   fill, outline, transparency), text as editable text boxes and images as pictures. In: shapes, pictures and text boxes of a slide

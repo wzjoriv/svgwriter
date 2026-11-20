@@ -1,12 +1,18 @@
 # Installation
 
 ```console
-$ pip install svgwriter
+$ pip install pysvgwriter
+```
+
+The package installs as `pysvgwriter` and imports as `svgwriter`:
+
+```python
+import svgwriter as svg
 ```
 
 svgwriter needs Python 3.10 or newer. It installs [skia-python](https://kyamagu.github.io/skia-python/)
-(geometry, text outlines and rendering) and numpy (pixels, points and colors as arrays). Nothing else is
-needed at runtime.
+(geometry, text outlines and rendering), numpy (pixels, points and colors as arrays) and uharfbuzz (text
+shaping). Nothing else is needed at runtime.
 
 Optional external program:
 

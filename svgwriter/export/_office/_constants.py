@@ -13,7 +13,7 @@ __all__ = [
     "WP", "WPS"
 ]
 
-EXTRA_HINT: Final = "pip install 'svgwriter[office]'"
+EXTRA_HINT: Final = "pip install 'pysvgwriter[office]'"
 PICTURE_SCALE: Final = 2.0
 USER_UNITS_PER_INCH: Final = 96.0
 WP: Final = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
