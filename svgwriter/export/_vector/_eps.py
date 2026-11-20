@@ -193,12 +193,11 @@ def to_eps(document: Document, *, text: bool = True) -> str:
         "%%EndComments",
         "gsave",
     ]
-    pending = list(scene.images)
-    for index, item in enumerate([*scene.items, None]):
-        while pending and pending[0][0] <= index:
-            _, image, matrix = pending.pop(0)
-            lines.append(_image(image, matrix, scene.height))
-        if item is None or not len(item.data):
+    for item in scene.painted():
+        if isinstance(item, tuple):
+            lines.append(_image(*item, scene.height))
+            continue
+        if not len(item.data):
             continue
         path = _path(item, scene.height)
         if item.shading is not None:

@@ -1,4 +1,7 @@
+import json
+
 import numpy as np
+import pytest
 
 import svgwriter as svg
 
@@ -40,3 +43,22 @@ def test_a_standalone_tikz_document_sets_fonts_that_match_the_measured_text():
     doc.text("Hello", x=10, y=30, font_size=12, font_family="Helvetica")
     text = svg.export.export(doc, "tikz", standalone=True)
     assert r"\usepackage{times}" in text.split(r"\begin{document}")[0]
+
+
+def _picture_between_shapes():
+    doc = svg.Document(40, 20)
+    doc.rect(0, 0, 40, 20, fill="white")
+    doc.add(svg.Image(np.full((4, 4, 3), 0.0), 10, 5, 10, 10))
+    doc.rect(15, 0, 25, 20, fill="red")
+    return doc
+
+
+def test_a_pptx_picture_keeps_its_place_among_the_shapes():
+    pytest.importorskip("pptx")
+    back = svg.export.find_importer("pptx").function(svg.export.export(_picture_between_shapes(), "pptx"))
+    assert [element.tag for element in back] == ["path", "image", "path"]
+
+
+def test_an_excalidraw_image_keeps_its_place_among_the_shapes():
+    scene = json.loads(svg.export.export(_picture_between_shapes(), "excalidraw"))
+    assert [element["type"] for element in scene["elements"]] == ["line", "image", "line"]

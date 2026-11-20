@@ -14,6 +14,8 @@ from ._paints import _paint, _shading
 from ._patterns import _ancestry, _expand_patterns
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
+
     from ..color.color import Color
     from ..document import Document
     from ..elements.core import Element
@@ -119,6 +121,17 @@ class Scene:
     skipped: list[str]
     texts: list[Any] = field(default_factory=list)
     images: list[tuple[int, Any, Any]] = field(default_factory=list)
+
+    def painted(self) -> Iterator[Item | tuple[Any, Any]]:
+        """Items and ``(image, matrix)`` pairs in paint order."""
+        pending = iter(self.images)
+        image = next(pending, None)
+        for index, item in enumerate([*self.items, None]):
+            while image is not None and image[0] <= index:
+                yield image[1], image[2]
+                image = next(pending, None)
+            if item is not None:
+                yield item
 
 
 def to_cubic(data: PathData) -> list[tuple[str, tuple[float, ...]]]:
