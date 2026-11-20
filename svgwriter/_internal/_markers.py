@@ -128,7 +128,6 @@ def expand_markers(root: Element) -> None:
     """
     from ..attributes.cascade import computed, rules_of
     from ..attributes.length import Length
-    from ..attributes.viewbox import ViewBox
     from ..elements import Group, Marker
 
     rules = rules_of(root)
