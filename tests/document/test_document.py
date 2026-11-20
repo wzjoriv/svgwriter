@@ -188,3 +188,22 @@ def test_value_objects_draw_themselves():
         assert value._repr_svg_().startswith("<svg")
         doc.add(value)
     assert len(doc) == len(objects)
+
+
+def test_from_string_reads_any_text_format() -> None:
+    chart = svg.Document.from_string("flowchart LR\n  A --> B", "mermaid")
+    assert any(e.tag == "text" for e in chart.root.iter())
+    notes = svg.Document.from_string("# Title\n\nSome text", "markdown")
+    assert any(e.tag == "text" for e in notes.root.iter())
+    tikz = svg.Document.from_string(r"\draw (0,0) -- (10,10);", "tikz")
+    assert any(e.tag == "path" for e in tikz.root.iter())
+    assert svg.Document.from_string(b"line one\nline two", "txt") is not None
+
+
+def test_from_string_rejects_unknown_formats_and_svg_only_options() -> None:
+    import pytest
+
+    with pytest.raises(ValueError, match="no importer"):
+        svg.Document.from_string("x", "nope")  # no importer for this name or extension
+    with pytest.raises(TypeError):
+        svg.Document.from_string("flowchart LR\n  A --> B", "mermaid", strictness=svg.Strictness.STRICT)

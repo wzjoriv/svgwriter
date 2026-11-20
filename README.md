@@ -19,7 +19,7 @@ import svgwriter as svg
 doc = svg.Document()                                    # sized to its content when saved or shown
 doc.rect(0, 0, 160, 60, rx=12, fill=svg.LinearGradient.horizontal("gold", "tomato"))
 doc.circle(30, 30, 18, fill=(1, 1, 1, 0.8))             # colors: names, CSS, or 0-1 tuples (alpha too)
-title = doc.text("svgwriter", x=88, y=36, font_size=18, text_anchor="middle")
+title = doc.text("svgwriter", x=104, y=35, font_size=15.3, text_anchor="middle")
 title[3:].fill = "navy"                                  # style a character range (becomes a <tspan>)
 
 star = svg.builder.star(0, 0, 10, points=5, fill="navy")
@@ -28,6 +28,8 @@ doc += star.place(30, 30).rotate(15)                    # placement and rotation
 doc.save("badge.svg")                                    # also .png .pdf .tex .eps .dxf .ico ...
 pixels = doc.rasterize(scale=2)                          # numpy float32 RGBA, shape (rows, cols, 4)
 ```
+
+<img src="https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/readme.png" alt="The badge drawn by the code above" width="320">
 
 ## Feature overview
 

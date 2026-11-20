@@ -8,7 +8,7 @@ from typing import Any
 
 from ._constants import GHOST, GRID, GRID_STEP, OUTLINE, STROKE, SWATCH
 
-__all__ = ["Drawable"]
+__all__ = ["Drawable", "ascii_markup"]
 
 
 class Drawable:
@@ -80,3 +80,11 @@ def pixels_picture(pixels: Any) -> Any:
     from ..elements.structure import Image
 
     return Image(pixels.rgba())
+
+
+def ascii_markup(markup: str) -> str:
+    """*markup* with every non-ASCII character as an XML character reference.
+
+    Notebook viewers that mishandle non-ASCII in SVG outputs (GitHub shows ``\xe0...``) still read these.
+    """
+    return markup.encode("ascii", "xmlcharrefreplace").decode("ascii")

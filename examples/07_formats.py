@@ -8,8 +8,6 @@ Run it as ``python 07_formats.py`` or open ``07_formats.ipynb`` to see each step
 """
 
 import importlib.util
-import os
-import tempfile
 import warnings
 from pathlib import Path
 
@@ -32,16 +30,14 @@ doc.text("export me", x=WIDTH / 2, y=32, font_size=24, font_family="Arial, Helve
 doc
 
 # %% [markdown]
-# Save SVG and PNG. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder. A PNG is pixels, so text becomes
+# Save SVG and PNG. A PNG is pixels, so text becomes
 # pixels too; the SVG keeps it as text.
 
 # %%
-out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
-out.mkdir(parents=True, exist_ok=True)
-formats = out / "formats"
+formats = Path("formats")
 formats.mkdir(exist_ok=True)
 
-doc.save(out / "07_formats.svg")
+doc.save("07_formats.svg")
 doc.save(formats / "drawing.svg")
 doc.save(formats / "drawing.png", scale=2)
 print("svg and png:", ", ".join(sorted(path.name for path in formats.iterdir())))

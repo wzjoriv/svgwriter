@@ -1,6 +1,6 @@
 # svgwriter examples
 
-A numbered learning path: each example is a short step-by-step script that builds on the ones before it. Run one with `python examples/<name>.py`, or open the notebook beside it to see every step as a picture. Saved files go to `$SVGWRITER_EXAMPLES_OUT`, or to a temporary folder when it is not set.
+A numbered learning path: each example is a short step-by-step script that builds on the ones before it. Run one with `python examples/<name>.py`, or open the notebook beside it to see every step as a picture. Saved files are written to the folder you run the example from.
 
 | # | Example | Notebook | What it shows | Key APIs |
 |--:|---|---|---|---|

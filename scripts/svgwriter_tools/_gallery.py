@@ -17,7 +17,6 @@ __all__ = ["GALLERY", "GALLERY_DIR", "Picture", "build_gallery"]
 ROOT = Path(__file__).resolve().parents[2]
 GALLERY_DIR = ROOT / "docs" / "_static" / "examples"
 SCALE = 2.0
-OUT_VARIABLE = "SVGWRITER_EXAMPLES_OUT"
 
 
 class Picture(NamedTuple):
@@ -63,7 +62,7 @@ def build_gallery(out: Path = GALLERY_DIR, scale: float = SCALE) -> list[Path]:
     written = []
     ran: set[str] = set()
     with tempfile.TemporaryDirectory(prefix="svgwriter-gallery-") as work:
-        env = {**os.environ, "PYTHONPATH": str(ROOT), OUT_VARIABLE: work}
+        env = {**os.environ, "PYTHONPATH": str(ROOT)}
         for name, picture in GALLERY.items():
             if picture.example not in ran:
                 script = ROOT / "examples" / f"{picture.example}.py"
@@ -77,4 +76,21 @@ def build_gallery(out: Path = GALLERY_DIR, scale: float = SCALE) -> list[Path]:
                 target = out / f"{name}.png"
                 svg.Document.open(source).save(target, scale=scale, background=picture.background, padding=picture.padding)
             written.append(target)
+        written.append(_readme_picture(out, Path(work), scale))
     return written
+
+
+def _readme_picture(out: Path, work: Path, scale: float) -> Path:
+    """Run the README's first Python block in *work* and save its ``doc`` as ``readme.png`` in *out*."""
+    text = (ROOT / "README.md").read_text(encoding="utf-8")
+    code = text.split("```python\n", 1)[1].split("```", 1)[0]
+    namespace: dict[str, object] = {}
+    previous = Path.cwd()
+    os.chdir(work)
+    try:
+        exec(compile(code, "README.md", "exec"), namespace)
+    finally:
+        os.chdir(previous)
+    target = out / "readme.png"
+    namespace["doc"].save(target, scale=scale)  # type: ignore[attr-defined]
+    return target

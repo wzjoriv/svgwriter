@@ -97,8 +97,8 @@ def _placement(marker: Element, x: float, y: float, angle: float, stroke_width: 
     if str(marker.get("markerUnits") or "strokeWidth") == "strokeWidth":
         matrix = matrix @ Matrix.scale(stroke_width)
     box = marker.get("viewBox")
-    if isinstance(box, str):
-        box = ViewBox.parse(box)
+    if box is not None and not isinstance(box, ViewBox):
+        box = ViewBox.parse(str(box))
     if box is not None and box.width and box.height:
         fit = min(number("markerWidth", MARKER_DEFAULT_SIZE) / box.width,
                   number("markerHeight", MARKER_DEFAULT_SIZE) / box.height)

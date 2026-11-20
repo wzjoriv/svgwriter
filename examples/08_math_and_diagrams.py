@@ -5,10 +5,6 @@ LaTeX formulas and a Mermaid flowchart, both drawn without any tool beyond Pytho
 Run it as ``python 08_math_and_diagrams.py`` or open ``08_math_and_diagrams.ipynb`` to see each step.
 """
 
-import os
-import tempfile
-from pathlib import Path
-
 import svgwriter as svg
 
 # %% [markdown]
@@ -32,8 +28,9 @@ for index, (source, color) in enumerate(FORMULAS):
 formulas
 
 # %% [markdown]
-# `Document.open` reads Mermaid files. Flowcharts (`graph` / `flowchart`) are parsed and laid out by
-# svgwriter itself when the Mermaid CLI is missing, so this needs no external tool.
+# `Document.from_string(text, "mermaid")` reads Mermaid source (`Document.open` reads a file).
+# Flowcharts (`graph` / `flowchart`) are parsed and laid out by svgwriter itself when the Mermaid CLI
+# is missing, so this needs no external tool.
 
 # %%
 FLOWCHART = """flowchart LR
@@ -46,18 +43,12 @@ FLOWCHART = """flowchart LR
     E --> G[[Paper]]
 """
 
-source = Path(tempfile.mkdtemp(prefix="svgwriter-")) / "flow.mmd"
-source.write_text(FLOWCHART, encoding="utf-8")
-flow = svg.Document.open(source)
+flow = svg.Document.from_string(FLOWCHART, "mermaid")
 flow
 
 # %% [markdown]
 # The imported diagram is made of native elements, so it can be edited or exported to any format.
-# Set `SVGWRITER_EXAMPLES_OUT` to choose the folder for the saved pictures.
 
 # %%
-out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
-out.mkdir(parents=True, exist_ok=True)
-formulas.save(out / "08_math.svg")
-flow.save(out / "08_flowchart.svg")
-print("saved 08_math.svg and 08_flowchart.svg")
+formulas.save("08_math.svg")
+flow.save("08_flowchart.svg")

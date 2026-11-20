@@ -5,9 +5,6 @@ numpy pixels sit next to vectors, and Porter-Duff operators combine pixels with 
 Run it as ``python 06_pixels_and_compositing.py`` or open ``06_pixels_and_compositing.ipynb`` to see each step.
 """
 
-import os
-import tempfile
-from pathlib import Path
 
 import numpy as np
 
@@ -90,12 +87,9 @@ doc2 += svg.Image(screened.rgba(), TILE + 24, 12, TILE, TILE)
 doc2
 
 # %% [markdown]
-# Save the drawings. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
+# Save the drawings.
 
 # %%
-out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
-out.mkdir(parents=True, exist_ok=True)
-doc.save(out / "06_pixels.svg")
-board.save(out / "06_compositing.svg")
-doc2.save(out / "06_blend.svg")
-print("saved 06_pixels.svg, 06_compositing.svg and 06_blend.svg")
+doc.save("06_pixels.svg")
+board.save("06_compositing.svg")
+doc2.save("06_blend.svg")

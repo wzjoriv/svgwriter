@@ -6,9 +6,6 @@ then a second drawing lays shapes out with the named points of their bounds and 
 Run it as ``python 02_transforms_and_layout.py`` or open ``02_transforms_and_layout.ipynb`` to see each step.
 """
 
-import os
-import tempfile
-from pathlib import Path
 
 import svgwriter as svg
 
@@ -98,12 +95,9 @@ layout += stamp
 layout
 
 # %% [markdown]
-# Save SVG and a 2x PNG. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
+# Save SVG and a 2x PNG.
 
 # %%
-out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
-out.mkdir(parents=True, exist_ok=True)
-doc.save(out / "02_transforms_and_layout.svg")
-doc.save(out / "02_transforms_and_layout.png", scale=2)
-layout.save(out / "02_layout.svg")
-print("saved 02_transforms_and_layout.svg, .png and 02_layout.svg")
+doc.save("02_transforms_and_layout.svg")
+doc.save("02_transforms_and_layout.png", scale=2)
+layout.save("02_layout.svg")

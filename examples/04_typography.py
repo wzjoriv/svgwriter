@@ -7,9 +7,6 @@ Run it as ``python 04_typography.py`` or open ``04_typography.ipynb`` to see eac
 """
 
 import math
-import os
-import tempfile
-from pathlib import Path
 
 import svgwriter as svg
 
@@ -64,13 +61,14 @@ doc
 #
 # Scripts that need shaping (Devanagari, Bengali, Arabic) and CJK text work with any `font_family`: where the
 # font has no glyph, layout falls back per character to an installed font that has one. `xml_lang` steers
-# the choice for shared CJK characters, and `direction="rtl"` with `text_anchor="end"` sets Urdu from the right.
+# the choice for shared CJK characters, and `direction="rtl"` sets Urdu from the right: its start is the
+# right end, so `x` is where the line begins.
 
 # %%
 LINES = (
     ("Hindi", "नमस्ते दुनिया", {}),
     ("Bengali", "ওহে বিশ্ব, কেমন আছো", {}),
-    ("Urdu", "ہیلو دنیا", {"direction": "rtl", "text_anchor": "end", "x": 380}),
+    ("Urdu", "ہیلو دنیا", {"direction": "rtl", "x": 380}),
     ("Japanese", "こんにちは、世界", {"xml_lang": "ja"}),
     ("Chinese", "你好，世界", {"xml_lang": "zh"}),
 )
@@ -84,12 +82,9 @@ for row, (name, line, options) in enumerate(LINES):
 world
 
 # %% [markdown]
-# Save SVG and a 2x PNG. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
+# Save SVG and a 2x PNG.
 
 # %%
-out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
-out.mkdir(parents=True, exist_ok=True)
-doc.save(out / "04_typography.svg")
-doc.save(out / "04_typography.png", scale=2)
-world.save(out / "04_scripts.svg")
-print("saved 04_typography.svg, .png and 04_scripts.svg")
+doc.save("04_typography.svg")
+doc.save("04_typography.png", scale=2)
+world.save("04_scripts.svg")
