@@ -81,3 +81,12 @@ def test_a_pptx_equation_reads_back_centred_in_its_box_at_its_size():
     assert float(text.get("x")) == pytest.approx(box.x + box.width / 2, abs=0.5)
     assert box.y < float(text.get("y")) < box.y + box.height + 2
     assert float(text.get("font-size")) < 2 * box.height
+
+
+def test_an_enlarged_image_has_no_dark_fringe_at_transparent_edges():
+    pixels = np.zeros((8, 8, 4))
+    pixels[4:] = 1
+    doc = svg.Document(8, 8)
+    doc.add(svg.Image(pixels, 0, 0, 8, 8))
+    edge = doc.rasterize(scale=4)[12:20, 10]
+    assert edge[edge[:, 3] > 0, :3].min() > 0.99
