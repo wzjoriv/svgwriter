@@ -20,7 +20,7 @@ from ._patterns import _ancestry, _expand_patterns
 
 if TYPE_CHECKING:
     from ..document import Document
-    from ..elements.base import Element
+    from ..elements.core._element import Element
     from ._paints import Shading
 
 __all__ = ["Item", "Scene", "flatten", "to_cubic"]
@@ -222,7 +222,7 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
     (1, [])
     """
     from ..attributes.cascade import rules_of
-    from ..elements._geometry import PathOperand
+    from ..elements._behavior._geometry import PathOperand
     from ..ops._layers import drawable_order
     from ..ops._renderable import renderable_copy
     from ..ops.render import _view, document_size

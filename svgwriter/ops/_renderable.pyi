@@ -1,6 +1,6 @@
 from collections.abc import Callable
-from ..elements.base import Element
-from ..elements.text import Text
+from ..elements.core._element import Element
+from ..elements.text._text import Text
 
 __all__ = ["ellipses_as_paths", "expand_image_patterns", "outlined", "renderable_copy"]
 

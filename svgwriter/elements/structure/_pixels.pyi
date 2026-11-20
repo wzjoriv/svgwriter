@@ -2,12 +2,11 @@ import numpy as np
 from collections.abc import Sequence
 from typing import ClassVar
 from numpy import ndarray
-from ..._internal._drawable import Drawable
 from ...ops.composite import Operator
 
 __all__ = ["Pixels"]
 
-class Pixels(Drawable):
+class Pixels:
     __hash__: ClassVar[None]
 
     def __init__(
@@ -46,5 +45,6 @@ class Pixels(Drawable):
     def __and__(self, other: object) -> Pixels: ...
     def __sub__(self, other: object) -> Pixels: ...
     def __xor__(self, other: object) -> Pixels: ...
+    def __mul__(self, other: object) -> Pixels: ...
     def svg_value(self, precision: int = 4) -> str: ...
     def __repr__(self) -> str: ...

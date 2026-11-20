@@ -80,8 +80,8 @@ Things to keep in mind:
 - Operators never take elements out of a document: `a + b` copies operands that already have a parent.
   The in-place forms work in place: `a -= b` puts the resulting `<path>` where `a` was, keeping its id.
 - `+` groups and `-` cuts, so `a + b - b` is not `a`: the group is cut by `b`'s outline.
-- With images, `|`, `&`, `-`, `^` and `*` composite pixels (see *Compositing images*); numbers and offsets
-  still transform, so `img * 2` scales.
+- Images composite through their pixels: `img.pixels | other.pixels` (see *Compositing images*); on the
+  element, numbers and offsets transform, so `img * 2` scales.
 
 ## Bounds
 

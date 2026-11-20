@@ -60,7 +60,7 @@ def _move_current(machine: _Machine, x: float, y: float) -> None:
 
 def _run(machine: _Machine, text: str) -> tuple[float, float]:
     """Draw *text* at the current point; the user-space advance of its measured width."""
-    from ...elements.text import Text
+    from ...elements.text._text import Text
     from ...ops.text import text_width
 
     current = machine.outline.user_current(machine.state.ctm)

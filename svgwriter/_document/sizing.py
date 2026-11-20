@@ -9,7 +9,7 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING, TypeVar
 
 from .._internal._typing import Self
-from ..elements.base import Element
+from ..elements.core._element import Element
 from ..pathdata.data import BBox
 
 if TYPE_CHECKING:
@@ -64,7 +64,7 @@ class Sizing:
         >>> doc.content_bounds(padding=2)
         BBox(x=8.0, y=8.0, width=24.0, height=24.0)
         """
-        from ..elements._convert import Convertible
+        from ..elements._behavior._convert import Convertible
 
         box: BBox | None = None
         for element in self:

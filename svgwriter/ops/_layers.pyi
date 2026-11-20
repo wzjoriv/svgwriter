@@ -1,5 +1,5 @@
 import skia
-from ..elements.base import Element
+from ..elements.core._element import Element
 from ..elements.structure import Image
 from ..transform.matrix import Matrix
 

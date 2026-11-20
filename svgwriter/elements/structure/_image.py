@@ -5,28 +5,23 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 import numpy as np
 
 from ...attributes.length import LengthLike
 from ...attributes.viewbox import PreserveAspectRatio
 from ...pathdata.data import BBox
-from .._mixins import GraphicsElement, XLinkAttributes
-from .._viewport import Positioned, positioned_bbox
-from ..base import Category, ContentModel
-from ._compositing import Compositing
+from .._behavior._mixins import GraphicsElement, XLinkAttributes
+from .._behavior._viewport import Positioned, positioned_bbox
+from ..core._element import Category, ContentModel
 from ._constants import DATA_URI_PREFIX, HREF
 from ._pixels import Pixels
-
-if TYPE_CHECKING:
-    pass
 
 __all__ = ["Image"]
 
 
 class Image(
-    Compositing,
     GraphicsElement, XLinkAttributes, Positioned, tag="image", category=Category.GRAPHICS, content=ContentModel.ELEMENTS
 ):
     """``<image>``: embedded pixels (numpy) or a linked file.

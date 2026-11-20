@@ -310,7 +310,7 @@ def _clip_to(node: Node, toward: tuple[float, float]) -> tuple[float, float]:
 def draw_flowchart(chart: Flowchart) -> Group:
     """Lay out and draw a parsed flowchart as a group of editable shapes, edges and labels."""
     from ...elements.structure import Group
-    from ...elements.text import Text
+    from ...elements.text._text import Text
 
     _measure(chart)
     _place(chart, _order(chart, _ranks(chart)))

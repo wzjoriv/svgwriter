@@ -17,7 +17,7 @@ from ..transform.matrix import IDENTITY, Matrix
 from ._constants import CHANNEL_MAX, CONTAINERS, LINK_CACHE, NOT_RENDERED
 
 if TYPE_CHECKING:
-    from ..elements.base import Element
+    from ..elements.core._element import Element
     from ..elements.structure import Image
 
 __all__ = ["draw_image", "drawable_order", "hidden", "image_matrix", "layers"]
@@ -185,7 +185,7 @@ def layers(root: Element) -> list[tuple[list[Element], Element | None]]:
     [(1, None)]
     """
     from ..elements.structure import Image
-    from ..elements.text import Text
+    from ..elements.text._text import Text
 
     result: list[tuple[list[Element], Element | None]] = []
     run: list[Element] = []
@@ -267,7 +267,7 @@ def _skia_matrix(m: Matrix) -> skia.Matrix:
 
 
 def _ancestry(image: Element, root: Element) -> tuple[Matrix, float]:
-    from ..elements._transformable import Transformable
+    from ..elements._behavior._transformable import Transformable
 
     matrix, opacity = IDENTITY, 1.0
     node: Element | None = image
@@ -342,8 +342,8 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
     --------
     layers : Decide which images are drawn separately.
     """
-    from ..elements._geometry import clip_outline
-    from ..elements._transformable import Transformable
+    from ..elements._behavior._geometry import clip_outline
+    from ..elements._behavior._transformable import Transformable
     from ._image_effects import image_filter, paint_mask
     from ._skia import to_skia
 

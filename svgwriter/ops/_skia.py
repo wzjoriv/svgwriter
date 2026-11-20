@@ -13,7 +13,7 @@ from ..pathdata.data import PathData
 from ._constants import CONIC_SUBDIVISION, EVENODD
 
 if TYPE_CHECKING:
-    from ..elements._geometry import PathOperand
+    from ..elements._behavior._geometry import PathOperand
 
 __all__ = [
     "Geometry",
@@ -52,7 +52,7 @@ def geometry_data(item: Geometry) -> tuple[PathData, bool]:
     >>> evenodd
     False
     """
-    from ..elements._geometry import PathOperand
+    from ..elements._behavior._geometry import PathOperand
 
     if isinstance(item, PathOperand):
         return item.outline(), str(item.get("fill-rule", "")) == EVENODD

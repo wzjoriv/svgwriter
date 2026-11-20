@@ -2,7 +2,7 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from typing import IO, Any
 from .._internal._typing import AnyPath
-from ..elements.base import Element
+from ..elements.core._element import Element
 
 __all__ = ["default_namespaces", "inline_content", "open_text", "ordered", "uses_xlink"]
 

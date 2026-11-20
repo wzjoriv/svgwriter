@@ -65,25 +65,23 @@ plain = badge.expand_pattern()                # tiles clipped to the circle: pla
 
 ## Compositing images
 
-The boolean operators that combine shape areas combine image coverage too, using the Porter-Duff
-operators of `feComposite`: `a | b` is *a* over *b*, `a & b` keeps *a* where *b* is opaque, `a - b`
-keeps *a* where *b* is not, and `a ^ b` keeps whatever is not shared. `a * b` is the multiply blend.
-`a.composite(b, operator)` takes any `feComposite` operator or `feBlend` mode by name: `"over"`, `"in"`,
-`"out"`, `"atop"`, `"xor"`, `"arithmetic"` (with `k=(k1, k2, k3, k4)`), `"multiply"`, `"screen"`,
-`"darken"`, `"lighten"`.
+An image's pixels combine with the Porter-Duff operators of `feComposite`: on `Pixels`, `a | b` is
+*a* over *b*, `a & b` keeps *a* where *b* is opaque, `a - b` keeps *a* where *b* is not, and `a ^ b`
+keeps whatever is not shared. `a * b` is the multiply blend. `a.composite(b, operator)` takes any
+`feComposite` operator or `feBlend` mode by name: `"over"`, `"in"`, `"out"`, `"atop"`, `"xor"`,
+`"arithmetic"` (with `k=(k1, k2, k3, k4)`), `"multiply"`, `"screen"`, `"darken"`, `"lighten"`.
 
 ```python
 photo = svg.Image(np.dstack([x, y, 1 - x]))                 # 64 x 64
-badge = photo & svg.circle(32, 32, 32)                      # masked by a shape
-shadow = svg.Image(np.zeros((64, 64)), 4, 4, alpha=0.4)
-card = badge | shadow                                       # over, on the union of both boxes
-glow = photo.composite(shadow, "screen")
-print(card.shape, (card.x, card.y, card.width))
+shadow = svg.Image(np.zeros((64, 64)), alpha=0.4)
+card = photo.pixels | shadow.pixels                         # over, pixel for pixel
+glow = photo.pixels.composite(shadow.pixels, "screen")
+badge = photo.pixels & svg.circle(32, 32, 32).rasterize()   # masked by a shape
+print(card.shape, svg.Image(badge.rgba()).shape)
 ```
 
-Images with the same placement and pixel size combine pixel for pixel. Otherwise both are rendered onto
-one canvas in parent coordinates (the union of their boxes, the source's box for `in` and `out`, the
-backdrop's for `atop`) at the finer resolution of the two, or at `scale=`. The other operand can be any
-drawable element, and numbers keep their transform meaning: `img * 2` scales and `img - (dx, dy)`
-moves. `Pixels` offers the same operators pixel for pixel, and `svgwriter.ops.composite_rgba` works on
-raw RGBA arrays that broadcast, so a `(1, 1, 4)` color composites onto a whole image.
+The operands combine pixel for pixel, so their shapes must broadcast; `element.rasterize()` turns any
+element into an RGBA array to composite with, and `svg.Image(pixels.rgba())` places a result. On
+elements the operators keep their other meanings: `img * 2` scales and `img - (dx, dy)` moves.
+`svgwriter.ops.composite_rgba` works on raw RGBA arrays that broadcast, so a `(1, 1, 4)` color
+composites onto a whole image.

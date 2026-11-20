@@ -123,7 +123,7 @@ def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int |
     >>> svg.export.export(doc, "gif").count(b"NETSCAPE2.0")
     1
     """
-    from ...elements.animation import AnimationElement
+    from ...elements.animation._elements import AnimationElement
     from ...video.animation import animation_duration
     from ._gif import encode_gif, encode_gif_animation
     from ._pixels import to_uint8

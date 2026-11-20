@@ -9,16 +9,15 @@ from ...attributes.viewbox import PreserveAspectRatio
 from ...color.paint import PaintValue
 from ...pathdata.data import BBox
 from ...transform.transform import TransformLike
-from .._mixins import GraphicsElement, XLinkAttributes, XmlSpace
-from .._transformable import PointLike
-from .._viewport import Positioned
-from ..base import AttrValue, Category, ContentModel, Element
-from ._compositing import Compositing
+from .._behavior._mixins import GraphicsElement, XLinkAttributes, XmlSpace
+from .._behavior._transformable import PointLike
+from .._behavior._viewport import Positioned
+from ..core._element import AttrValue, Category, ContentModel, Element
 from ._pixels import Pixels
 
 __all__ = ["Image"]
 
-class Image(Compositing, GraphicsElement, XLinkAttributes, Positioned, tag='image', category=Category.GRAPHICS, content=ContentModel.ELEMENTS):
+class Image(GraphicsElement, XLinkAttributes, Positioned, tag='image', category=Category.GRAPHICS, content=ContentModel.ELEMENTS):
     def __init__(
         self,
         source: ndarray | str | None = None,

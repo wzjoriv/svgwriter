@@ -10,8 +10,8 @@ from ..._internal._constants import SVG_VERSION
 from ..._internal._typing import Self
 from ...attributes.length import LengthLike
 from ...pathdata.data import BBox, PathData
-from .._geometry import PathOperand, union_outline
-from .._mixins import (
+from .._behavior._geometry import PathOperand, union_outline
+from .._behavior._mixins import (
     ConditionalAttributes,
     CoreAttributes,
     ExternalResourcesAttribute,
@@ -19,10 +19,10 @@ from .._mixins import (
     PresentationAttributes,
     XLinkAttributes,
 )
-from .._transformable import children_bbox
-from .._viewport import FitToViewBox, Positioned
-from ..base import Category, Child, Element
-from ..container import GraphicsContainer
+from .._behavior._transformable import children_bbox
+from .._behavior._viewport import FitToViewBox, Positioned
+from ..core._container import GraphicsContainer
+from ..core._element import Category, Child, Element
 from ._use import UseGeometry
 
 __all__ = ["A", "Defs", "Group", "Svg", "Switch", "Symbol", "Use"]

@@ -6,7 +6,7 @@ from numpy import ndarray
 from ..attributes.viewbox import ViewBox
 from ..color.color import ColorLike
 from ..document import Document
-from ..elements.base import Element
+from ..elements.core._element import Element
 from ..transform.matrix import Matrix
 
 __all__ = [

@@ -301,11 +301,3 @@ class TestOwnership:
         group = doc.group()
         group += svg.rect(0, 0, 1, 1)
         assert len(group) == 1 and [e.tag for e in doc] == ["g"]
-
-    def test_image_composite_in_place(self):
-        import numpy as np
-
-        doc = svg.Document(4, 4)
-        img = doc.add(svg.Image(np.ones((4, 4, 3))))
-        img &= svg.circle(2, 2, 2)
-        assert [e.tag for e in doc] == ["image"] and img in doc

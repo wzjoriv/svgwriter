@@ -22,7 +22,7 @@ from ._constants import (
 
 if TYPE_CHECKING:
     from ..document import Document
-    from ..elements.base import Element
+    from ..elements.core._element import Element
 
 __all__ = ["snapshot"]
 
@@ -238,7 +238,7 @@ def snapshot(document: Document, time: float) -> Document:
     spline timing are treated as their linear, clock-based equivalents.
     """
     from ..document import Document
-    from ..elements.animation import AnimationElement
+    from ..elements.animation._elements import AnimationElement
 
     root = document.root.clone()
     root.__dict__["_source_path"] = document.root.__dict__.get("_source_path")

@@ -1,7 +1,7 @@
 from typing import Any
 from ..._internal._typing import Self
 from ...pathdata.data import BBox, PathData
-from ..base import Element
+from ..core._element import Element
 from ..shapes import Path
 
 __all__ = ["UseGeometry"]

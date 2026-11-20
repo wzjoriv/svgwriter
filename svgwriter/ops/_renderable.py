@@ -10,16 +10,16 @@ from typing import TYPE_CHECKING
 from ._layers import resolve_links
 
 if TYPE_CHECKING:
-    from ..elements.base import Element
-    from ..elements.text import Text
+    from ..elements.core._element import Element
+    from ..elements.text._text import Text
 
 __all__ = ["ellipses_as_paths", "expand_image_patterns", "outlined", "renderable_copy"]
 
 
 def expand_image_patterns(root: Element) -> None:
     """Shapes filled with a pattern that holds images become clipped tiles, so the images get drawn."""
-    from ..elements._geometry import PathOperand, replace_in_parent
-    from ..elements.paint import Pattern
+    from ..elements._behavior._geometry import PathOperand, replace_in_parent
+    from ..elements.paint._servers import Pattern
 
     for leaf in list(root.iter()):
         pattern = getattr(leaf.attributes.get("fill"), "element", None)
@@ -86,7 +86,7 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     False
     """
     from ..attributes.cascade import resolve_styles
-    from ..elements.text import Text
+    from ..elements.text._text import Text
 
     copy = root.clone()
     resolve_styles(copy)

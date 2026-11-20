@@ -9,8 +9,8 @@ from typing import overload
 
 from .._internal._constants import NON_CONTENT
 from .._internal._typing import Self
-from ..elements.base import Element
-from ..elements.container import flatten
+from ..elements.core._container import flatten
+from ..elements.core._element import Element
 from .ingest import SupportsSVG, _ingest
 
 __all__ = ["Access"]
@@ -88,7 +88,7 @@ class Access:
         >>> doc[0].tag, doc[0].id
         ('circle', 'logo')
         """
-        from ..elements._geometry import replace_in_parent
+        from ..elements._behavior._geometry import replace_in_parent
 
         replace_in_parent(self[key], _ingest(element))
 

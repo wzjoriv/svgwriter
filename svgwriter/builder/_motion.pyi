@@ -1,5 +1,5 @@
 from typing import Any
-from ..elements.base import Element
+from ..elements.core._element import Element
 
 __all__ = ["Motion"]
 

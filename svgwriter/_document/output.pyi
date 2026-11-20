@@ -6,7 +6,7 @@ from .._internal._typing import AnyPath
 from ..attributes.protocols import TextSink
 from ..color.color import ColorLike
 from ..document import Document
-from ..elements.base import Element
+from ..elements.core._element import Element
 from ..video.animation import Renderer, Update
 
 E = TypeVar('E', bound=Element)

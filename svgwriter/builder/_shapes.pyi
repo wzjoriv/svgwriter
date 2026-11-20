@@ -5,9 +5,9 @@ from .._internal._typing import FillRule, LineCap, LineJoin, Opacity, P
 from ..attributes.length import LengthLike
 from ..attributes.style import StyleLike
 from ..color.paint import PaintValue
-from ..elements._mixins import XmlSpace
-from ..elements._transformable import PointLike
-from ..elements.base import AttrValue, Element
+from ..elements._behavior._mixins import XmlSpace
+from ..elements._behavior._transformable import PointLike
+from ..elements.core._element import AttrValue, Element
 from ..elements.shapes import Path, Polygon
 from ..transform.transform import TransformLike
 

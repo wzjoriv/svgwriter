@@ -1,6 +1,6 @@
 from collections.abc import Callable
 from typing import Any, Generic, TypeVar, overload
-from ..elements.base import Element
+from ..elements.core._element import Element
 from .length import Length
 
 __all__ = ["Attr", "LengthAttr"]

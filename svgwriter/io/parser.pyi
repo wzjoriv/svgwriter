@@ -1,6 +1,6 @@
 from enum import IntEnum
 from .._internal._typing import AnyPath
-from ..elements.base import Element
+from ..elements.core._element import Element
 
 __all__ = ["SVGParseError", "Strictness", "parse", "parse_file"]
 

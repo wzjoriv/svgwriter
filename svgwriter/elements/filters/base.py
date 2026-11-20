@@ -8,10 +8,15 @@ import enum
 from typing import Any, TypeAlias, Union
 
 from ..._internal._typing import Self, Units
-from .._mixins import CoreAttributes, ExternalResourcesAttribute, PresentationAttributes, XLinkAttributes
-from .._viewport import Positioned
-from ..base import Category, Child, Element
-from ..container import Container
+from .._behavior._mixins import (
+    CoreAttributes,
+    ExternalResourcesAttribute,
+    PresentationAttributes,
+    XLinkAttributes,
+)
+from .._behavior._viewport import Positioned
+from ..core._container import Container
+from ..core._element import Category, Child, Element
 
 __all__ = [
     "Filter",

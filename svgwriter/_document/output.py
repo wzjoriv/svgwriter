@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 import numpy as np
 
 from .._internal._typing import AnyPath
-from ..elements.base import Element
+from ..elements.core._element import Element
 from ..video.animation import DEFAULT_FPS
 from ._constants import INLINE_STYLE
 

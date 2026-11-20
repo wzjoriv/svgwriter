@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Final
-from ..elements.base import Element
+from ..elements.core._element import Element
 
 __all__ = ["INHERITED", "Rule", "computed", "parse_css", "resolve_styles", "rules_of"]
 

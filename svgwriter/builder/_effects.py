@@ -11,7 +11,6 @@ from typing import Any, Concatenate
 from .._internal._typing import Opacity, P
 from ..color.color import Color
 from ..document import Document
-from ..elements.clip import Marker
 from ..elements.filters import (
     CompositeOperator,
     FeComposite,
@@ -22,6 +21,7 @@ from ..elements.filters import (
     Filter,
     StandardInput,
 )
+from ..elements.paint._clip import Marker
 from ..elements.shapes import Path
 from ..pathdata.builder import PathBuilder
 from ._constants import (
@@ -139,7 +139,7 @@ def arrow_marker(color: Color | str = "black", size: float = MARKER_SIZE, **kwar
     size : float, optional
         Width and height of the marker. Defaults to 10.0.
     **kwargs
-        Forwarded to :class:`~svgwriter.elements.clip.Marker`.
+        Forwarded to :class:`~svgwriter.elements.Marker`.
 
     Returns
     -------

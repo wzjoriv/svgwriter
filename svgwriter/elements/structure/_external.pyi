@@ -2,9 +2,14 @@ from collections.abc import Mapping
 from typing import Any
 from ...attributes.style import StyleSheet
 from ...attributes.viewbox import PreserveAspectRatio
-from .._mixins import CoreAttributes, ExternalResourcesAttribute, XLinkAttributes, XmlSpace
-from .._viewport import FitToViewBox, ViewBoxLike
-from ..base import AttrValue, ContentModel
+from .._behavior._mixins import (
+    CoreAttributes,
+    ExternalResourcesAttribute,
+    XLinkAttributes,
+    XmlSpace,
+)
+from .._behavior._viewport import FitToViewBox, ViewBoxLike
+from ..core._element import AttrValue, ContentModel
 
 __all__ = ["ColorProfile", "StyleElement", "View"]
 

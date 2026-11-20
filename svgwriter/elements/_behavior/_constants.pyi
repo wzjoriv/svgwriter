@@ -1,0 +1,6 @@
+from typing import Final
+
+__all__ = ["DEFAULT_STROKE_WIDTH", "NOT_COPIED"]
+
+NOT_COPIED: Final = ...
+DEFAULT_STROKE_WIDTH: Final = ...

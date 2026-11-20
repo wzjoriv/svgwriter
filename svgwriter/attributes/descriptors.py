@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any, Generic, TypeVar, overload
 from .names import svg_name
 
 if TYPE_CHECKING:
-    from ..elements.base import Element
+    from ..elements.core._element import Element
 
 __all__ = ["Attr", "LengthAttr"]
 

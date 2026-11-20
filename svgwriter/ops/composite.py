@@ -136,7 +136,7 @@ def composite_rgba(
 
     See Also
     --------
-    svgwriter.Image.composite : Composite placed images and other elements.
+    svgwriter.elements.structure.Pixels.composite : Composite the pixels of images.
 
     Notes
     -----

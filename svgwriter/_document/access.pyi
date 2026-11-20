@@ -1,7 +1,7 @@
 from collections.abc import Iterable, Iterator
 from typing import overload
 from .._internal._typing import Self
-from ..elements.base import Element
+from ..elements.core._element import Element
 from .ingest import SupportsSVG
 
 __all__ = ["Access"]
