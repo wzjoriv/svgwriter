@@ -155,7 +155,7 @@ class Document(Sizing, Output, ElementFactory):
         ...     path = pathlib.Path(folder) / "a.svg"
         ...     with Document.writing(path, 10, 10) as doc:
         ...         _ = doc.circle(5, 5, 2)
-        ...     print("<circle" in path.read_text())
+        ...     print("<circle" in path.read_text(encoding="utf-8"))
         True
         """
         options = kwargs.pop("options", None)

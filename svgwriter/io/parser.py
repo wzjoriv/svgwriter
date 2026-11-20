@@ -216,7 +216,7 @@ def parse_file(path: AnyPath, *, strictness: Strictness = Strictness.LENIENT) ->
     >>> from svgwriter.io import parse_file
     >>> with tempfile.TemporaryDirectory() as folder:
     ...     path = pathlib.Path(folder) / "a.svg"
-    ...     _ = path.write_text('<svg xmlns="http://www.w3.org/2000/svg"/>')
+    ...     _ = path.write_text('<svg xmlns="http://www.w3.org/2000/svg"/>', encoding="utf-8")
     ...     print(type(parse_file(path)).__name__)
     Svg
     """

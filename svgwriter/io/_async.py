@@ -41,7 +41,7 @@ async def write_async(element: Element, path: AnyPath, **kwargs: Any) -> None:
     >>> with tempfile.TemporaryDirectory() as folder:
     ...     path = pathlib.Path(folder) / "a.svg"
     ...     asyncio.run(write_async(Circle(5, 5, 2), path))
-    ...     print(path.read_text().count("<circle"))
+    ...     print(path.read_text(encoding="utf-8").count("<circle"))
     1
     """
     await asyncio.to_thread(write, element, path, **kwargs)
