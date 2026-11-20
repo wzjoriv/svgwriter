@@ -287,7 +287,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVG_NS</span><span class="p">,</span> <span class="n">XLINK_NS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..core._element</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_STROKE_WIDTH</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._transformable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transformable</span>
 
@@ -296,7 +296,7 @@
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">...color.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColorLike</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">...pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">BBox</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..paint._clip</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClipPath</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..paint</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClipPath</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Group</span><span class="p">,</span> <span class="n">Image</span>
 
@@ -468,7 +468,7 @@
 <span class="sd">        &gt;&gt;&gt; art.clip_region.tag</span>
 <span class="sd">        'clipPath'</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">..paint._clip</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClipPath</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..paint</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClipPath</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">shapes</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"clip() needs at least one shape; use unclip() to remove the clip"</span><span class="p">)</span>
@@ -511,8 +511,8 @@
 <span class="sd">        &gt;&gt;&gt; svg.rect(0, 0, 9, 9).clip_region is None</span>
 <span class="sd">        True</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">..paint._clip</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClipPath</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">._geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">resolve</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">resolve</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..paint</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClipPath</span>
 
         <span class="n">region</span> <span class="o">=</span> <span class="n">resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"clip-path"</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">region</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">ClipPath</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>

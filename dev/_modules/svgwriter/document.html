@@ -288,13 +288,12 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">overload</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.access</span><span class="w"> </span><span class="kn">import</span> <span class="n">Access</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._document.ingest</span><span class="w"> </span><span class="kn">import</span> <span class="n">SupportsSVG</span><span class="p">,</span> <span class="n">_ingest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._document.ingest</span><span class="w"> </span><span class="kn">import</span> <span class="n">SupportsSVG</span><span class="p">,</span> <span class="n">to_element</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.output</span><span class="w"> </span><span class="kn">import</span> <span class="n">Output</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.sizing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sizing</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._internal._tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">attach_cursor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyPath</span><span class="p">,</span> <span class="n">Stack</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.elements.core._container</span><span class="w"> </span><span class="kn">import</span> <span class="n">attach_cursor</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.elements.core._element</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.elements.core._factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">ElementFactory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">ElementFactory</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.elements.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Defs</span><span class="p">,</span> <span class="n">Desc</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="n">Svg</span><span class="p">,</span> <span class="n">Title</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -534,7 +533,7 @@
 <span class="sd">        &gt;&gt;&gt; rect.parent is doc.root</span>
 <span class="sd">        True</span>
 <span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_place</span><span class="p">(</span><span class="n">_ingest</span><span class="p">(</span><span class="n">element</span><span class="p">))</span>  <span class="c1"># type: ignore[arg-type]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_place</span><span class="p">(</span><span class="n">to_element</span><span class="p">(</span><span class="n">element</span><span class="p">))</span>  <span class="c1"># type: ignore[arg-type]</span></div>
 
 
 <div class="viewcode-block" id="Document.define">
