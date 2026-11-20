@@ -7,6 +7,7 @@ Element classes. Every class also has a lowercase alias (`svgwriter.circle` is `
 ```{eval-rst}
 .. autoclass:: svgwriter.elements.Element
    :members:
+   :inherited-members: Composable
 
 .. autoclass:: svgwriter.elements.Transformable
    :members:
