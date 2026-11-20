@@ -69,3 +69,15 @@ def test_a_gradient_without_a_vector_form_becomes_its_average_colour():
     doc.circle(20, 20, 15, fill=svg.RadialGradient(svg.Stop(0, "white"), svg.Stop(1, "#000000")))
     element = json.loads(svg.export.export(doc, "excalidraw"))["elements"][0]
     assert element["backgroundColor"] == "#808080"
+
+
+def test_a_pptx_equation_reads_back_centred_in_its_box_at_its_size():
+    pytest.importorskip("pptx")
+    doc = svg.Document(200, 100)
+    formula = doc.add(svg.latex("x+1").translate(20, 30))
+    box = formula.bounds()
+    back = svg.export.find_importer("pptx").function(svg.export.export(doc, "pptx"))
+    text = next(e for e in back.root.iter() if e.tag == "text")
+    assert float(text.get("x")) == pytest.approx(box.x + box.width / 2, abs=0.5)
+    assert box.y < float(text.get("y")) < box.y + box.height + 2
+    assert float(text.get("font-size")) < 2 * box.height
