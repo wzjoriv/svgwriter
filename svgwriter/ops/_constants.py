@@ -55,6 +55,7 @@ __all__ = [
     "PIXEL_EPSILON",
     "POINTS_PER_UNIT",
     "POSITION_TOLERANCE",
+    "SEARCHABLE_ALPHA",
     "SERIAL_LIMIT",
     "SOURCE_ALPHA",
     "SOURCE_GRAPHIC",
@@ -76,6 +77,7 @@ CHANNEL_MAX: Final = 255
 EFFECTS: Final = ("filter", "mask")
 NO_DECORATION: Final = ("", "none")
 DEFAULT_FONT_SIZE: Final = 16.0
+SEARCHABLE_ALPHA: Final = 1 / 255
 MISSING_GLYPH: Final = 0
 POSITION_TOLERANCE: Final = 0.01
 
