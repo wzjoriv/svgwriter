@@ -252,6 +252,24 @@ def image_matrix(image: Image) -> Matrix:
     return Matrix.translate(_number(image.get("x")), _number(image.get("y"))) @ fit
 
 
+def _chain(image: Element, root: Element) -> list[Element]:
+    """Elements from just below *root* (or *root* itself unless it is the outer ``<svg>``) down to *image*."""
+    chain: list[Element] = []
+    node: Element | None = image
+    while node is not None:
+        if node is root and root.tag == "svg":
+            break
+        chain.append(node)
+        if node is root:
+            break
+        node = node.parent
+    return chain[::-1]
+
+
+def _skia_matrix(m: Matrix) -> skia.Matrix:
+    return skia.Matrix.MakeAll(m.a, m.c, m.e, m.b, m.d, m.f, 0, 0, 1)
+
+
 def _ancestry(image: Element, root: Element) -> tuple[Matrix, float]:
     from ..elements._transformable import Transformable
 
@@ -329,19 +347,22 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
     layers : Decide which images are drawn separately.
     """
     from ..elements._geometry import clip_outline
+    from ..elements._transformable import Transformable
     from ._image_effects import image_filter, paint_mask
     from ._skia import to_skia
 
     ancestry, opacity = _ancestry(image, root)
     pixels = np.ascontiguousarray(np.clip(np.rint(image.rgba() * CHANNEL_MAX), 0, CHANNEL_MAX).astype(np.uint8))
     picture = skia.Image.fromarray(pixels, colorType=skia.kRGBA_8888_ColorType, alphaType=skia.kUnpremul_AlphaType)
+    del ancestry
     canvas.save()
-    to_parent = view @ ancestry
-    canvas.concat(skia.Matrix.MakeAll(to_parent.a, to_parent.c, to_parent.e, to_parent.b, to_parent.d, to_parent.f,
-                                      0, 0, 1))
-    clip = clip_outline(image)
-    if clip is not None:
-        canvas.clipPath(to_skia(clip), doAntiAlias=True)
+    canvas.concat(_skia_matrix(view))
+    for node in _chain(image, root):
+        if isinstance(node, Transformable):
+            canvas.concat(_skia_matrix(node.t))
+        clip = clip_outline(node)
+        if clip is not None:
+            canvas.clipPath(to_skia(clip), doAntiAlias=True)
     effects, mask = _referenced(image, "filter"), _referenced(image, "mask")
     layer = skia.Paint()
     if effects is not None:

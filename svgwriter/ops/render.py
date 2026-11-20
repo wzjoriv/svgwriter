@@ -324,6 +324,7 @@ def renderable_copy(root: Element) -> Element:
     resolve_styles(copy)
     resolve_links(copy)
     _ellipses_as_paths(copy)
+    _expand_image_patterns(copy)
     if isinstance(copy, Text):
         return _outlined(copy)
     for text in [e for e in copy.iter() if isinstance(e, Text)]:
@@ -334,6 +335,21 @@ def renderable_copy(root: Element) -> Element:
         parent.remove(text)
         parent.insert(index, outline)
     return copy
+
+
+def _expand_image_patterns(root: Element) -> None:
+    """Shapes filled with a pattern that holds images become clipped tiles, so the images get drawn."""
+    from ..elements._geometry import PathOperand, replace_in_parent
+    from ..elements.paint import Pattern
+
+    for leaf in list(root.iter()):
+        pattern = getattr(leaf.attributes.get("fill"), "element", None)
+        if (isinstance(pattern, Pattern) and isinstance(leaf, PathOperand) and leaf.parent is not None
+                and any(e.tag == "image" for e in pattern.iter())):
+            try:
+                replace_in_parent(leaf, leaf.expand_pattern())
+            except (TypeError, ValueError):
+                continue
 
 
 def _ellipses_as_paths(root: Element) -> None:

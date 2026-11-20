@@ -20,6 +20,7 @@ class _State:
     miter: float = 4.0
     dashes: tuple[float, ...] = ()
     clip: list[Op] | None = None
+    fill_pattern: Any = None
 
     def __init__(
         self,
@@ -35,6 +36,7 @@ class _State:
         miter: float = 4.0,
         dashes: tuple[float, ...] = (),
         clip: list[Op] | None = None,
+        fill_pattern: Any = None,
     ) -> None: ...
 
 class _Painter:
@@ -48,6 +50,8 @@ class _Painter:
     text_matrix: Matrix
     line_matrix: Matrix
     leading: float
+    base: Matrix
+    page: list[Op]
 
     def __init__(self, objects: dict[int, Any], ctm: Matrix) -> None: ...
     def run(self, content: bytes, resources: dict[str, Any]) -> None: ...

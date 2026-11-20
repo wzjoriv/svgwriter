@@ -462,29 +462,46 @@ class PathOperand(Element):
 
         return bounds(self)
 
-    def contains_point(self, x: float, y: float) -> bool:
-        """Whether ``(x, y)`` lies inside the filled outline (skia).
+    def contains_point(self, x: Any, y: float | None = None) -> Any:
+        """Whether points lie inside the filled outline (skia).
 
         Parameters
         ----------
-        x, y : float
-            The point, in parent coordinates.
+        x : float, (float, float), Point or array-like
+            The x coordinate with `y`, or a point, or an ``(n, 2)`` array of points,
+            in parent coordinates.
+        y : float, optional
+            The y coordinate when `x` is a number. Defaults to None.
 
         Returns
         -------
-        bool
-            True if the point is inside.
+        bool or numpy.ndarray
+            True when inside; one boolean per point for an array.
 
         Examples
         --------
+        >>> import numpy as np
         >>> import svgwriter as svg
         >>> r = svg.rect(0, 0, 10, 10)
-        >>> r.contains_point(5, 5), r.contains_point(20, 5)
+        >>> r.contains_point(5, 5), r.contains_point((20, 5))
         (True, False)
+        >>> r.contains_point(np.array([[1, 1], [11, 1], [9, 9]])).tolist()
+        [True, False, True]
         """
-        from ..ops.measure import contains
+        import numpy as np
 
-        return contains(self, x, y)
+        from ..ops._skia import to_skia
+
+        if y is not None:
+            points = np.array([[float(x), float(y)]])
+            single = True
+        else:
+            points = np.asarray(x, dtype=float)
+            single = points.ndim == 1
+            points = points.reshape(-1, 2)
+        outline = to_skia(self.outline(), evenodd=str(self.get("fill-rule", "nonzero")) == "evenodd")
+        inside = np.fromiter((outline.contains(px, py) for px, py in points), dtype=bool, count=len(points))
+        return bool(inside[0]) if single else inside
 
     def total_length(self) -> float:
         """Length of the outline, like ``getTotalLength()`` (skia).

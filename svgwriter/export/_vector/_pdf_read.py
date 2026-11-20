@@ -297,6 +297,7 @@ class _State:
     miter: float = 4.0
     dashes: tuple[float, ...] = ()
     clip: list[Op] | None = None
+    fill_pattern: Any = None
 
 
 class _Painter:
@@ -312,6 +313,8 @@ class _Painter:
         self.pending_clip: bool | None = None
         self.text_matrix = self.line_matrix = Matrix()
         self.leading = 0.0
+        self.base = ctm
+        self.page: list[Op] = []
 
     def run(self, content: bytes, resources: dict[str, Any]) -> None:
         """Execute *content* with *resources*; malformed operations are skipped."""
@@ -340,6 +343,8 @@ class _Painter:
     def paint(self, fill: bool, stroke: bool, evenodd: bool) -> None:
         """Paint the current path and start a new one."""
         state, ops = self.state, self.take()
+        if fill and state.fill_pattern is not None and ops and fill_with_pattern(self, ops, evenodd, stroke):
+            return
         scale = math.sqrt(abs(state.ctm.determinant))
         self.shapes.append(Shape(
             ops, fill=state.fill if fill else None, stroke=state.stroke if stroke else None,
@@ -412,6 +417,15 @@ def _set_color(attribute: str, count: int | None) -> Callable[[_Painter, list[An
     return handler
 
 
+def _fill_paint(painter: _Painter, operands: list[Any], resources: dict[str, Any]) -> None:
+    """``scn``: a pattern name selects a pattern fill; numbers set a plain colour and clear the pattern."""
+    if operands and isinstance(operands[-1], Name):
+        painter.state.fill_pattern = painter.resource(resources, "Pattern", operands[-1])
+        return
+    painter.state.fill_pattern = None
+    painter.state.fill = _color(operands)
+
+
 def _paint(op: str) -> Callable[[_Painter, list[Any], dict[str, Any]], None]:
     """A handler for a path-painting operator such as ``f*`` or ``b``."""
     fill, stroke, evenodd, close = PAINTS[op]
@@ -437,6 +451,7 @@ def _setter(attribute: str, convert: Callable[[float], Any]) -> Callable[[_Paint
 
 
 from ._pdf_content import CONTENT_HANDLERS, draw_image  # noqa: E402
+from ._pdf_paint import fill_with_pattern, paint_shading  # noqa: E402
 
 _HANDLERS: Final[dict[str, Callable[[_Painter, list[Any], dict[str, Any]], None]]] = {
     "m": lambda p, o, _: p.outline.move(p.state.ctm, *_numbers(o, 2)),
@@ -460,7 +475,8 @@ _HANDLERS: Final[dict[str, Callable[[_Painter, list[Any], dict[str, Any]], None]
     "rg": _set_color("fill", 3), "RG": _set_color("stroke", 3),
     "g": _set_color("fill", 1), "G": _set_color("stroke", 1),
     "k": _set_color("fill", 4), "K": _set_color("stroke", 4),
-    "sc": _set_color("fill", None), "scn": _set_color("fill", None),
+    "sc": _set_color("fill", None), "scn": lambda p, o, r: _fill_paint(p, o, r),
+    "sh": lambda p, o, r: paint_shading(p, o, r),
     "SC": _set_color("stroke", None), "SCN": _set_color("stroke", None),
     "cs": lambda p, o, _: setattr(p.state, "fill", BLACK),
     "CS": lambda p, o, _: setattr(p.state, "stroke", BLACK),
@@ -565,8 +581,10 @@ def read_pdf(data: bytes, *, page: int = 0) -> Document:
     clipping paths (``W``, ``W*``) become ``clip-path``, and text
     (``BT``..``ET`` with ``Tf``, ``Td``, ``TD``, ``Tm``, ``T*``, ``Tj``,
     ``TJ``, ``'``, ``"``) becomes ``<text>`` in the font family named by the
-    font, decoded as single-byte text. Shadings, tiling patterns, blend
-    modes and ``/Rotate`` are ignored.
+    font, decoded as single-byte text. Axial and radial shadings (``sh`` and
+    shading patterns) become linear and radial gradients, and tiling
+    patterns become ``<pattern>`` elements. Blend modes, mesh shadings and
+    ``/Rotate`` are ignored.
 
     Examples
     --------
@@ -591,6 +609,8 @@ def read_pdf(data: bytes, *, page: int = 0) -> Document:
     leaf = pages[page]
     x0, y0, x1, y1 = _media_box(objects, leaf)
     painter = _Painter(objects, Matrix(1.0, 0.0, 0.0, -1.0, -x0, y1))
+    width, height = x1 - x0, y1 - y0
+    painter.page = [("M", (0.0, 0.0)), ("L", (width, 0.0)), ("L", (width, height)), ("L", (0.0, height)), ("Z", ())]
     resources = _inherited(objects, leaf, "Resources")
     painter.run(_content(objects, leaf), resources if isinstance(resources, dict) else {})
     return to_document(painter.shapes, (0.0, 0.0, x1 - x0, y1 - y0))
