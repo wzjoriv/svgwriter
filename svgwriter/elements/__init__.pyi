@@ -1,17 +1,17 @@
-from ._factory import ElementFactory as ElementFactory
-from ._geometry import PathOperand as PathOperand
-from ._mixins import (
+from ._behavior import (
     ConditionalAttributes as ConditionalAttributes,
     CoreAttributes as CoreAttributes,
     ExternalResourcesAttribute as ExternalResourcesAttribute,
+    FitToViewBox as FitToViewBox,
     GraphicsElement as GraphicsElement,
+    PathOperand as PathOperand,
+    Positioned as Positioned,
     PresentationAttributes as PresentationAttributes,
     StyleAttributes as StyleAttributes,
     Transformable as Transformable,
     XLinkAttributes as XLinkAttributes,
     XmlSpace as XmlSpace,
 )
-from ._viewport import FitToViewBox as FitToViewBox, Positioned as Positioned
 from .animation import (
     Accumulate as Accumulate,
     Additive as Additive,
@@ -27,15 +27,17 @@ from .animation import (
     Set as Set,
     TransformType as TransformType,
 )
-from .base import (
+from .core import (
     AttrValue as AttrValue,
     Category as Category,
     Child as Child,
+    Container as Container,
     ContentModel as ContentModel,
     Element as Element,
+    ElementFactory as ElementFactory,
+    GraphicsContainer as GraphicsContainer,
+    UnknownElement as UnknownElement,
 )
-from .clip import ClipPath as ClipPath, Marker as Marker, Mask as Mask
-from .container import Container as Container, GraphicsContainer as GraphicsContainer
 from .filters import (
     BlendMode as BlendMode,
     Channel as Channel,
@@ -79,21 +81,12 @@ from .filters import (
     TwoInputs as TwoInputs,
     resolve_input as resolve_input,
 )
-from .fonts import (
-    Font as Font,
-    FontFace as FontFace,
-    FontFaceFormat as FontFaceFormat,
-    FontFaceName as FontFaceName,
-    FontFaceSrc as FontFaceSrc,
-    FontFaceUri as FontFaceUri,
-    Glyph as Glyph,
-    HKern as HKern,
-    MissingGlyph as MissingGlyph,
-    VKern as VKern,
-)
 from .paint import (
+    ClipPath as ClipPath,
     Gradient as Gradient,
     LinearGradient as LinearGradient,
+    Marker as Marker,
+    Mask as Mask,
     Pattern as Pattern,
     RadialGradient as RadialGradient,
     Stop as Stop,
@@ -128,14 +121,23 @@ from .text import (
     AltGlyph as AltGlyph,
     AltGlyphDef as AltGlyphDef,
     AltGlyphItem as AltGlyphItem,
+    Font as Font,
+    FontFace as FontFace,
+    FontFaceFormat as FontFaceFormat,
+    FontFaceName as FontFaceName,
+    FontFaceSrc as FontFaceSrc,
+    FontFaceUri as FontFaceUri,
+    Glyph as Glyph,
     GlyphRef as GlyphRef,
+    HKern as HKern,
+    MissingGlyph as MissingGlyph,
     TRef as TRef,
     TSpan as TSpan,
     Text as Text,
     TextDecoration as TextDecoration,
     TextPath as TextPath,
+    VKern as VKern,
 )
-from .unknown import UnknownElement as UnknownElement
 
 __all__ = [
     "A",

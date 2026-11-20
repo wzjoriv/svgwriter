@@ -6,9 +6,9 @@ from ...attributes.style import StyleLike
 from ...color.paint import PaintValue
 from ...pathdata.data import BBox, PathData
 from ...transform.transform import TransformLike
-from .._mixins import XmlSpace
-from .._transformable import PointLike
-from ..base import AttrValue, Element
+from .._behavior._mixins import XmlSpace
+from .._behavior._transformable import PointLike
+from ..core._element import AttrValue, Element
 from ._base import Shape
 from ._rectbuild import RectConstructors
 

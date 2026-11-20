@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import TypeAlias
 from ..attributes.reference import FuncIRI
-from ..elements.base import Element
+from ..elements.core._element import Element
 from .color import Color
 
 __all__ = ["Paint", "PaintKeyword", "PaintRef", "PaintValue", "parse_paint"]

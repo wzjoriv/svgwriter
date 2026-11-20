@@ -1,6 +1,6 @@
 import argparse
 from argparse import ArgumentParser, Namespace
-from ..elements.base import Element
+from ..elements.core._element import Element
 
 __all__ = ["add_basic_commands", "emit", "output_options"]
 

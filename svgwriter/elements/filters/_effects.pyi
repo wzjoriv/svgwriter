@@ -5,8 +5,8 @@ from ..._internal._typing import FillRule, LineCap, LineJoin, Opacity
 from ...attributes.length import LengthLike
 from ...attributes.style import StyleLike
 from ...color.paint import PaintValue
-from .._mixins import XmlSpace
-from ..base import AttrValue, Element
+from .._behavior._mixins import XmlSpace
+from ..core._element import AttrValue, Element
 from ._colormatrix import ColorMatrixShortcuts
 from .base import FilterInput, FilterPrimitive, SingleInput, TwoInputs
 

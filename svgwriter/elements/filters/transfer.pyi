@@ -5,9 +5,9 @@ from ..._internal._typing import FillRule, LineCap, LineJoin, Opacity, Self
 from ...attributes.length import LengthLike
 from ...attributes.style import StyleLike
 from ...color.paint import PaintValue
-from .._mixins import CoreAttributes, XmlSpace
-from ..base import AttrValue, ContentModel, Element
-from ..container import Container
+from .._behavior._mixins import CoreAttributes, XmlSpace
+from ..core._container import Container
+from ..core._element import AttrValue, ContentModel, Element
 from .base import FilterInput, SingleInput
 
 __all__ = [

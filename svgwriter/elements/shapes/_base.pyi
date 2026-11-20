@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from ...pathdata.data import BBox
-from .._geometry import PathOperand
-from .._mixins import GraphicsElement
-from .._viewport import user_units as user_units
-from ..base import Category
+from .._behavior._geometry import PathOperand
+from .._behavior._mixins import GraphicsElement
+from .._behavior._viewport import user_units as user_units
+from ..core._element import Category
 
 __all__ = ["Shape", "parse_points", "user_units"]
 

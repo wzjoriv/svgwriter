@@ -7,8 +7,8 @@ from ...attributes.viewbox import PreserveAspectRatio
 from ...color.paint import PaintValue
 from ...pathdata.data import BBox, PathData
 from ...transform.transform import TransformLike
-from .._geometry import PathOperand
-from .._mixins import (
+from .._behavior._geometry import PathOperand
+from .._behavior._mixins import (
     ConditionalAttributes,
     CoreAttributes,
     ExternalResourcesAttribute,
@@ -17,10 +17,10 @@ from .._mixins import (
     XLinkAttributes,
     XmlSpace,
 )
-from .._transformable import PointLike
-from .._viewport import FitToViewBox, Positioned, ViewBoxLike
-from ..base import AttrValue, Category, Child, Element
-from ..container import GraphicsContainer
+from .._behavior._transformable import PointLike
+from .._behavior._viewport import FitToViewBox, Positioned, ViewBoxLike
+from ..core._container import GraphicsContainer
+from ..core._element import AttrValue, Category, Child, Element
 from ._use import UseGeometry
 
 __all__ = ["A", "Defs", "Group", "Svg", "Switch", "Symbol", "Use"]

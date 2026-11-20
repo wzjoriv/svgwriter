@@ -1,5 +1,5 @@
 from typing import Any, TypeAlias
-from ..elements._geometry import PathOperand
+from ..elements._behavior._geometry import PathOperand
 from ..pathdata.data import PathData
 
 __all__ = ["Geometry", "from_skia", "geometry_data", "to_skia"]

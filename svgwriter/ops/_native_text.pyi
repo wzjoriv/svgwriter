@@ -1,6 +1,6 @@
 import skia
-from ..elements.base import Element
-from ..elements.text import Text
+from ..elements.core._element import Element
+from ..elements.text._text import Text
 from ..transform.matrix import Matrix
 
 __all__ = ["draw_text", "native_text"]

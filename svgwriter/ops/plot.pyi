@@ -1,6 +1,6 @@
 from typing import Any
 from ..document import Document
-from ..elements.base import Element
+from ..elements.core._element import Element
 
 __all__ = ["to_matplotlib"]
 

@@ -6,8 +6,8 @@ from ...attributes.length import LengthLike
 from ...attributes.style import StyleLike
 from ...color.color import Color
 from ...color.paint import PaintValue
-from .._mixins import CoreAttributes, XmlSpace
-from ..base import AttrValue, Category, Child, ContentModel, Element
+from .._behavior._mixins import CoreAttributes, XmlSpace
+from ..core._element import AttrValue, Category, Child, ContentModel, Element
 from .base import FilterInput, SingleInput
 
 __all__ = [

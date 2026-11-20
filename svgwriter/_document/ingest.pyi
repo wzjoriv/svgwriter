@@ -1,5 +1,5 @@
 from typing import Protocol, TypeVar
-from ..elements.base import Element
+from ..elements.core._element import Element
 
 E = TypeVar('E', bound=Element)
 

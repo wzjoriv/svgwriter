@@ -7,10 +7,10 @@ from ..attributes.viewbox import PreserveAspectRatio
 from ..color.color import Color
 from ..color.paint import PaintValue
 from ..document import Document
-from ..elements._mixins import XmlSpace
-from ..elements.base import AttrValue, Element
-from ..elements.clip import Marker, MarkerOrient
+from ..elements._behavior._mixins import XmlSpace
+from ..elements.core._element import AttrValue, Element
 from ..elements.filters import Filter
+from ..elements.paint._clip import Marker, MarkerOrient
 
 __all__ = ["arrow_marker", "drawing", "drop_shadow", "glow"]
 

@@ -6,8 +6,8 @@ from .._internal._typing import FillRule, LineCap, LineJoin, Opacity
 from ..attributes.length import LengthLike
 from ..attributes.style import StyleLike
 from ..color.paint import PaintValue
-from ..elements._mixins import XmlSpace
-from ..elements.base import AttrValue, Element
+from ..elements._behavior._mixins import XmlSpace
+from ..elements.core._element import AttrValue, Element
 from ..elements.shapes import Path
 from ..pathdata.data import PathData
 from ..transform.transform import TransformLike

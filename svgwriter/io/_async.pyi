@@ -1,7 +1,7 @@
 from collections.abc import AsyncIterator, Mapping
 from typing import Any
 from .._internal._typing import AnyPath
-from ..elements.base import Element
+from ..elements.core._element import Element
 from .writer import SerializeOptions
 
 __all__ = ["aiter_chunks", "write_async", "write_many_async"]

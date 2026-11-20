@@ -1,6 +1,6 @@
 from typing import TypeVar
 from .._internal._typing import Self
-from ..elements.base import Element
+from ..elements.core._element import Element
 from ..pathdata.data import BBox
 
 E = TypeVar('E', bound=Element)
