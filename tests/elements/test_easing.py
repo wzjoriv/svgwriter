@@ -180,11 +180,12 @@ def test_spline_mode_written_by_hand_is_evaluated():
 @pytest.mark.parametrize(("preset", "args"), [
     ("tween", ("x", 0, 10)), ("fade_in", ()), ("fade_out", ()), ("grow", ()), ("shrink", ()), ("pulse", ()),
     ("spin", ()), ("slide_in", ()), ("move_to", (50, 5)), ("shake", ()), ("bounce", ()), ("blink", ()),
-    ("color_cycle", (["red", "blue"],)), ("wipe", ()), ("draw", ()),
+    ("color_cycle", (["red", "blue"],)), ("wipe", ()), ("draw", ()), ("create", ()), ("uncreate", ()),
+    ("write", ()), ("follow", ("M0 0L10 10",)), ("morph", (svg.circle(5, 5, 5),)),
 ])
 def test_every_preset_takes_ease(preset, args):
     doc = svg.Document(100, 100)
-    box = doc.rect(0, 0, 10, 10, fill="red", stroke="black")
+    box = doc.add(svg.Path("M0 0H10V10H0Z", fill="red", stroke="black"))
     getattr(box.animate, preset)(*args, ease="ease-in-out")
     animations = list(doc.root.find_all(svg.AnimationElement))
     assert any(a.get("calcMode") in ("spline", "discrete") for a in animations)
@@ -198,3 +199,14 @@ def test_typewriter_and_stagger_follow_the_curve():
     group = svg.Group(svg.rect(0, 0, 1, 1), svg.rect(2, 0, 1, 1))
     group.animate.stagger("fade_in", ease="ease-out")
     assert all(child.children[0].get("keySplines") == "0 0 0.58 1" for child in group)
+
+
+def test_write_spaces_characters_along_the_curve():
+    def starts(ease):
+        text = svg.Text("abcde", x=0, y=10)
+        text.animate.write(2, ease=ease)
+        return [float(str(span.children[-2].get("begin")).rstrip("s")) for span in text.children]
+
+    linear, eased = starts(None), starts("ease-in")
+    assert linear[0] == eased[0] == 0 and linear[-1] == pytest.approx(eased[-1])
+    assert eased[2] > linear[2]

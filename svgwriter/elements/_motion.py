@@ -1,5 +1,5 @@
 """
-Animation presets: fades, draw-on, wipes, typewriter, slides, spins, pulses, color changes, morphs and staggers.
+Animation presets: show/hide, fades, draw-on, create/write, wipes, typewriter, slides, spins, pulses, color changes, morphs and staggers.
 """
 
 from __future__ import annotations
@@ -12,6 +12,8 @@ from .._internal._constants import (
     BOUNCE_HEIGHT,
     BOUNCE_TIMES,
     BOUNCE_VALUES,
+    CONTAINERS,
+    CREATE_DRAW_SHARE,
     DEFAULT_DURATION,
     FOREVER,
     FULL_TURN,
@@ -19,6 +21,7 @@ from .._internal._constants import (
     SHAKE_DISTANCE,
     SHAKE_STEPS,
     SIDES,
+    WRITE_LAG,
 )
 from .animation import Animate, AnimateMotion, AnimateTransform, Ease, EaseLike, Set
 
@@ -36,6 +39,53 @@ def _timing(dur: float, begin: float, repeat: float | str | None, freeze: bool,
     return timing
 
 
+def _longest_contour(element: Element) -> float:
+    from ..ops.measure import total_length
+
+    outline = element.local_outline()  # type: ignore[attr-defined]
+    return max((total_length(part) for part in outline.subpaths()), default=0.0)
+
+
+def _parts(element: Element) -> list[Element]:
+    from .core import Element
+
+    if element.tag in CONTAINERS:
+        return [child for child in element.children if isinstance(child, Element)]
+    return [element]
+
+
+def _ink(element: Element) -> tuple[bool, float]:
+    """Give *element* a stroke to draw with (its fill, or black) when it has none; return (filled, fill opacity)."""
+    fill = element.get("fill")
+    filled = fill is None or str(fill) != "none"
+    if element.get("stroke") in (None, "none"):
+        element.set("stroke", fill if filled and fill is not None else "black")
+    opacity = element.get("fill-opacity")
+    return filled, 1.0 if opacity is None else float(opacity)
+
+
+def _create(element: Element, length: float, paint: tuple[bool, float], dur: float, begin: float, freeze: bool,
+            *, reverse: bool = False, ease: EaseLike | None = None) -> None:
+    """Stroke drawn on (or off) by its dash offset, with the fill faded in after (or out before)."""
+    filled, opacity = paint
+    drawing = dur * CREATE_DRAW_SHARE if filled else dur
+    dash = f"{length:.4g}"
+    element.set("stroke-dasharray", f"{dash} {dash}")
+    if not reverse or element.get("stroke-dashoffset") is None:
+        element.set("stroke-dashoffset", 0 if reverse else dash)
+    if reverse:
+        stroke, fade = (0, dash, begin + dur - drawing), (opacity, 0, begin)
+    else:
+        stroke, fade = (dash, 0, begin), (0, opacity, begin + drawing)
+        if filled:
+            element.set("fill-opacity", 0)
+    element.append(Animate(attribute_name="stroke-dashoffset", from_=stroke[0], to=stroke[1],
+                           **_timing(drawing, stroke[2], None, freeze, ease)))
+    if filled:
+        element.append(Animate(attribute_name="fill-opacity", from_=fade[0], to=fade[1],
+                               **_timing(dur - drawing, fade[2], None, freeze, ease)))
+
+
 class Motion:
     """Animation presets for one element; every method adds SMIL children and returns ``self`` to chain.
 
@@ -45,7 +95,8 @@ class Motion:
     ``repeat`` (a count, or ``"indefinite"``), ``freeze`` (keep the end
     state; default True) and ``ease``, a timing curve over the whole preset
     (a name such as ``"ease-in-out"``, a bézier 4-tuple, ``("steps", n)`` or
-    a function; see :class:`~svgwriter.Ease`).
+    a function; see :class:`~svgwriter.Ease`). ``show`` and ``hide`` act at
+    one instant, so they take only the moment.
 
     Parameters
     ----------
@@ -83,6 +134,15 @@ class Motion:
         return self._add(Animate(attribute_name=attribute, from_=start, to=end,
                                  **_timing(dur, begin, repeat, freeze, ease)))
 
+    def show(self, at: float = 0.0) -> Motion:
+        """Hidden until *at* seconds, then shown at once."""
+        self.element.set("visibility", "hidden")
+        return self._add(Set(attribute_name="visibility", to="visible", begin=at, fill="freeze"))
+
+    def hide(self, at: float = 0.0) -> Motion:
+        """Shown until *at* seconds, then hidden at once."""
+        return self._add(Set(attribute_name="visibility", to="hidden", begin=at, fill="freeze"))
+
     def fade_in(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, repeat: float | str | None = None,
                 freeze: bool = True, ease: EaseLike | None = None) -> Motion:
         """Opacity from 0 to 1."""
@@ -106,6 +166,54 @@ class Motion:
         self.element.update(stroke_dasharray=f"{length:.4g} {length:.4g}", stroke_dashoffset=f"{length:.4g}")
         return self.tween("stroke-dashoffset", f"{length:.4g}", 0, dur, begin=begin, repeat=repeat, freeze=freeze,
                           ease=ease)
+
+    def create(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, freeze: bool = True,
+               ease: EaseLike | None = None) -> Motion:
+        """Draw the outline on, then fade the fill in; a group creates every child at once.
+
+        A shape without a stroke is drawn with its fill color. Every contour
+        starts drawing together, at the same pen speed. *ease* shapes the
+        drawing and the fade each.
+        """
+        for part in _parts(self.element):
+            _create(part, _longest_contour(part), _ink(part), dur, begin, freeze, ease=ease)
+        return self
+
+    def uncreate(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, freeze: bool = True,
+                 ease: EaseLike | None = None) -> Motion:
+        """The reverse of :meth:`create`: fade the fill out, then draw the outline off."""
+        for part in _parts(self.element):
+            _create(part, _longest_contour(part), _ink(part), dur, begin, freeze, reverse=True, ease=ease)
+        return self
+
+    def write(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, freeze: bool = True,
+              ease: EaseLike | None = None) -> Motion:
+        """Create a ``<text>`` character by character (a group child by child), each starting before the last ends.
+
+        *ease* spaces the starts along the curve and shapes each character's drawing.
+        """
+        from .text import TSpan
+
+        element = self.element
+        if element.tag == "text":
+            text = element.text_content
+            if not text:
+                return self
+            length, paint = _longest_contour(element), _ink(element)
+            element.text_content = ""
+            pieces: list[tuple[Element, float, tuple[bool, float]]] = []
+            for char in text:
+                span = TSpan(char)
+                element.append(span)
+                pieces.append((span, length, paint))
+        else:
+            pieces = [(part, _longest_contour(part), _ink(part)) for part in _parts(element)]
+        run = dur / (1 + WRITE_LAG * (len(pieces) - 1)) if pieces else dur
+        curve = Ease("linear" if ease is None else ease)
+        for index, (piece, length, paint) in enumerate(pieces):
+            start = begin + (dur - run) * curve.time_of(index * WRITE_LAG * run / (dur - run)) if dur > run else begin
+            _create(piece, length, paint, run, start, freeze, ease=ease)
+        return self
 
     def wipe(self, side: str = "left", dur: float = DEFAULT_DURATION, *, begin: float = 0.0,
              repeat: float | str | None = None, freeze: bool = True, ease: EaseLike | None = None) -> Motion:

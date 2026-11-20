@@ -8,6 +8,7 @@ import math
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
+from ..._internal._emoji import color_glyph_cells
 from ..._internal._flatten import Item, flatten, to_cubic
 from ..._internal._numbers import format_number
 from ..._internal._paints import Shading
@@ -18,6 +19,7 @@ from ._constants import (
     MONOSPACE_WORDS,
     SERIF_WORDS,
     TIKZ_CAPS,
+    TIKZ_EMOJI_PIXELS,
     TIKZ_JOINS,
     TIKZ_PRECISION,
 )
@@ -101,6 +103,7 @@ def to_tikz(document: Document, *, standalone: bool = False, text: bool = True) 
 
     The document is flattened first: gradients become TikZ shadings and images are skipped. Text is
     written as ``\\node`` commands typeset by LaTeX (``text=False`` writes glyph outlines instead).
+    LaTeX cannot typeset colour emoji, so they are drawn as small filled pixel cells.
 
     Parameters
     ----------
@@ -129,7 +132,7 @@ def to_tikz(document: Document, *, standalone: bool = False, text: bool = True) 
     >>> "begin{tikzpicture}" in to_tikz(doc)
     True
     """
-    scene = flatten(document, text=text)
+    scene = flatten(document, text=text, color_glyphs=False)
     colors: dict[tuple[int, int, int], str] = {}
 
     def color(value: Color) -> str:
@@ -139,7 +142,7 @@ def to_tikz(document: Document, *, standalone: bool = False, text: bool = True) 
         return colors[key]
 
     body = []
-    for item in scene.items:
+    for item in [*scene.items, *color_glyph_cells(document, TIKZ_EMOJI_PIXELS)]:
         if not len(item.data):
             continue
         options = []

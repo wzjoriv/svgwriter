@@ -7,7 +7,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
-from ._layers import resolve_links
+from ._layers import drawable_order, resolve_links
 from ._tree import replace_in_parent
 
 if TYPE_CHECKING:
@@ -60,7 +60,8 @@ def outlined(text: Text) -> Element:
     return group
 
 
-def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None = None) -> Element:
+def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None = None,
+                    color_glyphs: bool = False) -> Element:
     """A copy of *root* with every ``<text>`` replaced by its glyph outlines.
 
     Skia's SVG renderer draws no text, so text is drawn as paths. Styles are resolved,
@@ -73,6 +74,9 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     keep_text : callable, optional
         Texts it accepts stay ``<text>`` elements (to be drawn as real glyphs). Defaults to None,
         which outlines every text.
+    color_glyphs : bool, optional
+        Follow each outlined, rendered text that has colour glyphs (emoji, which have no outline)
+        with a copy kept as ``<text>``, from which a canvas draws just those glyphs. Defaults to False.
 
     Returns
     -------
@@ -97,7 +101,14 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     ellipses_as_paths(copy)
     expand_image_patterns(copy)
     if isinstance(copy, Text):
-        return copy if keep_text is not None and keep_text(copy) else outlined(copy)
+        if keep_text is not None and keep_text(copy):
+            return copy
+        if color_glyphs and _has_color(copy):
+            from ..elements.structure import Group
+
+            return Group(outlined(copy), _color_layer(copy))
+        return outlined(copy)
+    rendered = {id(e) for e in drawable_order(copy)} if color_glyphs else set()
     for text in [e for e in copy.iter() if isinstance(e, Text)]:
         if keep_text is not None and keep_text(text):
             continue
@@ -107,7 +118,20 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
         index = parent.children.index(text)
         parent.remove(text)
         parent.insert(index, outline)
+        if id(text) in rendered and _has_color(text):
+            parent.insert(index + 1, _color_layer(text))
     return copy
+
+
+def _has_color(text: Text) -> bool:
+    return any(box.color is not None for box in text.layout())
+
+
+def _color_layer(text: Text) -> Text:
+    """*text* without its id, kept as ``<text>`` so its colour glyphs are drawn over its outlines."""
+    layer = text.clone()
+    layer.attributes.pop("id", None)
+    return layer
 
 
 def view_matrix(document: Document, width: float, height: float, box: ViewBox | None = None) -> Matrix:
