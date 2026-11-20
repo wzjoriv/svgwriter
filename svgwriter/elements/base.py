@@ -49,6 +49,8 @@ COLOR_OPACITY: Final = {
 }
 COLOR_ATTRIBUTES: Final = frozenset({*COLOR_OPACITY, "color", "lighting-color"})
 SUGGESTIONS: Final = 3
+PREVIEW_PADDING: Final = 2.0
+PREVIEW_SCALE: Final = 2.0
 _XML_NAME_RE: Final = re.compile(r"^[A-Za-z_][\w.\-]*$")
 
 
@@ -973,8 +975,26 @@ class Element(Composable):
 
         write(self, target, **options)
 
+    def _preview(self) -> Any:
+        """A document showing a copy of this element alone, fitted to its bounds (notebook display)."""
+        from ..document import Document
+
+        doc = Document()
+        doc.add(self.clone())
+        return doc.fit(padding=PREVIEW_PADDING)
+
     def _repr_svg_(self) -> str:
-        return self.to_string(xml_declaration=False)
+        """Jupyter display: the element alone in a fitted ``<svg>`` (an ``<svg>`` root shows as itself)."""
+        if self.tag == "svg":
+            return self.to_string(xml_declaration=False)
+        return self._preview().to_string(xml_declaration=False)
+
+    def _repr_png_(self) -> bytes | None:
+        """Jupyter display as PNG, for front ends that do not show SVG; None when there is nothing to draw."""
+        try:
+            return self._preview().render_png(scale=PREVIEW_SCALE)
+        except (TypeError, ValueError):
+            return None
 
     def __str__(self) -> str:
         return self.to_string(xml_declaration=False, pretty=False)

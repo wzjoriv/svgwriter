@@ -417,3 +417,12 @@ def test_rasterize_square_size_and_wide_int_pixels() -> None:
     assert svg.Document(5, 5).rasterize(size=8).shape == (8, 8, 4)
     with pytest.raises(ValueError, match="astype"):
         svg.Image(np.full((2, 2), 300, dtype=np.int16))
+
+
+def test_notebook_display_is_a_fitted_standalone_svg_and_png() -> None:
+    grad = svg.LinearGradient.horizontal("gold", "red")
+    shape = svg.circle(30, 30, 10, fill=grad)
+    text = shape._repr_svg_()
+    assert text.startswith("<svg") and "linearGradient" in text and 'viewBox="18 18 24 24"' in text
+    assert shape._repr_png_()[:4] == b"\x89PNG"
+    assert shape.parent is None and svg.Svg()._repr_svg_().startswith("<svg")
