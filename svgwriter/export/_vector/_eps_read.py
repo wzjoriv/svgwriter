@@ -11,8 +11,12 @@ from collections.abc import Callable
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Any, Final
 
+import numpy as np
+
 from ...transform.matrix import Matrix
-from ._reading import BLACK, HAIRLINE, Outline, Shape, cmyk_to_rgb, string_end, to_document
+from ._pdf_content import _STYLE_RE, DEFAULT_TEXT_SIZE, _clip
+from ._pdf_read import _intersect
+from ._reading import BLACK, HAIRLINE, Outline, Shape, _hex, cmyk_to_rgb, string_end, to_document
 
 if TYPE_CHECKING:
     from ...document import Document
@@ -28,6 +32,19 @@ MAX_STEPS: Final = 2_000_000
 SAVE_OBJECT: Final = object()
 CAPS: Final = ("butt", "round", "square")
 JOINS: Final = ("miter", "round", "bevel")
+CHANNEL_MAX: Final = 255.0
+GRAY_CHANNELS: Final = 1
+RGB_CHANNELS: Final = 3
+CMYK_CHANNELS: Final = 4
+SUPPORTED_BITS: Final = 8
+MAX_IMAGE_CALLS: Final = 100_000
+IMAGE_OPERATORS: Final = (b"image", b"colorimage")
+INLINE_LOOKBACK: Final = 8
+HEX_END: Final = b">"
+DEFAULT_FONT: Final = "serif"
+_HEX_DIGITS_RE: Final = re.compile(rb"[^0-9A-Fa-f]")
+_ESCAPE_RE: Final = re.compile(rb"\\([0-7]{1,3}|\r\n|\n|\r|.)", re.S)
+_SIMPLE_ESCAPES: Final = {b"n": b"\n", b"r": b"\r", b"t": b"\t", b"b": b"\b", b"f": b"\f"}
 _DELIMITERS: Final = rb"\x00\t\n\x0c\r ()<>\[\]{}/%"
 _TOKEN_RE: Final = re.compile(
     rb"(?P<skip>[\x00\t\n\x0c\r ]+|%[^\r\n]*)"
@@ -61,8 +78,44 @@ class Mark:
     """The ``[`` mark that ``]`` collects an array up to."""
 
 
+class Inline(bytes):
+    """Hex-decoded image data that follows an image operator reading ``currentfile``."""
+
+
+class _File:
+    """The ``currentfile`` object, whose data is the program's :class:`Inline` bytes."""
+
+
+@dataclass
+class _Font:
+    """A font from ``findfont``: its name and the matrix ``scalefont``/``makefont`` built."""
+
+    name: str
+    matrix: Matrix
+
+
 class _Underflow(Exception):
     """An operator found too few operands, or operands of the wrong type."""
+
+
+def _unescape(raw: bytes) -> bytes:
+    """The bytes of a PostScript string body, backslash escapes resolved."""
+    def replace(match: re.Match[bytes]) -> bytes:
+        code = match.group(1)
+        if code[:1].isdigit():
+            return bytes([int(code, 8) & 0xFF])
+        if code in (b"\r\n", b"\n", b"\r"):
+            return b""
+        return _SIMPLE_ESCAPES.get(code, code)
+    return _ESCAPE_RE.sub(replace, raw)
+
+
+def _inline_hex(data: bytes, pos: int) -> tuple[Inline, int]:
+    """The ASCII-hex data from *pos* up to its ``>``, and the position after it."""
+    end = data.find(HEX_END, pos)
+    end = len(data) if end < 0 else end
+    digits = _HEX_DIGITS_RE.sub(b"", data[pos:end])
+    return Inline(bytes.fromhex(digits[:len(digits) // 2 * 2].decode("ascii"))), end + 1
 
 
 def _parse(data: bytes) -> Procedure:
@@ -73,7 +126,11 @@ def _parse(data: bytes) -> Procedure:
         pos, kind, text = match.end(), match.lastgroup, match.group()
         if kind == "string":
             pos = string_end(data, pos)
-            stack[-1].append(data[match.end():pos - 1])
+            stack[-1].append(_unescape(data[match.end():pos - 1]))
+        elif kind == "name" and len(stack) == 1 and text in IMAGE_OPERATORS and any(
+                item == "currentfile" for item in stack[0][-INLINE_LOOKBACK:] if isinstance(item, Name)):
+            inline, pos = _inline_hex(data, pos)
+            stack[0] += [inline, Name(text.decode("latin-1"))]
         elif kind == "num":
             stack[-1].append(float(text))
         elif kind == "radix":
@@ -88,7 +145,10 @@ def _parse(data: bytes) -> Procedure:
         elif kind == "close" and len(stack) > 1:
             procedure = stack.pop()
             stack[-1].append(procedure)
-        elif kind in ("hex", "a85"):
+        elif kind == "hex":
+            digits = _HEX_DIGITS_RE.sub(b"", text)
+            stack[-1].append(bytes.fromhex(digits[:len(digits) // 2 * 2].decode("ascii")))
+        elif kind == "a85":
             stack[-1].append(b"")
     while len(stack) > 1:
         procedure = stack.pop()
@@ -107,6 +167,8 @@ class _State:
     join: int = 0
     miter: float = 10.0
     dashes: tuple[float, ...] = ()
+    font: _Font | None = None
+    clip: list[tuple[str, tuple[float, ...]]] | None = None
 
 
 class _Machine:
@@ -118,7 +180,8 @@ class _Machine:
         self.state = _State(ctm)
         self.saved: list[tuple[_State, Outline]] = []
         self.outline = Outline()
-        self.shapes: list[Shape] = []
+        self.shapes: list[Any] = []
+        self.file_data = b""
         self.steps = 0
         self.done = False
 
@@ -130,6 +193,8 @@ class _Machine:
             self.steps += 1
             if isinstance(item, Name):
                 self.call(item, depth)
+            elif isinstance(item, Inline):
+                self.file_data = bytes(item)
             else:
                 self.stack.append(item)
 
@@ -147,7 +212,7 @@ class _Machine:
             return
         try:
             operator(self, depth)
-        except (_Underflow, ValueError, ZeroDivisionError, OverflowError):
+        except (_Underflow, ValueError, ZeroDivisionError, OverflowError, TypeError, AttributeError):
             return
 
     def lookup(self, name: str) -> tuple[bool, Any]:
@@ -174,7 +239,7 @@ class _Machine:
             ops, fill=state.color if fill else None, stroke=None if fill else state.color, evenodd=evenodd,
             stroke_width=state.line_width * scale if state.line_width > 0 else HAIRLINE, linecap=CAPS[state.cap % len(CAPS)],
             linejoin=JOINS[state.join % len(JOINS)], miter_limit=state.miter,
-            dashes=tuple(d * scale for d in state.dashes)))
+            dashes=tuple(d * scale for d in state.dashes), clip=state.clip))
 
     def relative(self, *offsets: float) -> list[float]:
         """Absolute user coordinates of *offsets* (x, y pairs) from the current point."""
@@ -293,7 +358,235 @@ def _binary(function: Callable[[float, float], float]) -> Callable[[_Machine, in
     return operator
 
 
+def _clip_to_path(machine: _Machine, _: int) -> None:
+    """``clip``/``eoclip``: intersect the clip with the current path, which stays the current path."""
+    ops = list(machine.outline.ops)
+    if ops:
+        machine.state.clip = _intersect(machine.state.clip, ops)
+
+
+def _source_bytes(machine: _Machine, source: Any, need: int, depth: int) -> bytes:
+    """Up to *need* bytes from an image data source: ``currentfile``, a string or a procedure returning strings."""
+    if isinstance(source, _File):
+        return machine.file_data[:need]
+    if isinstance(source, bytes):
+        return source[:need]
+    if not isinstance(source, Procedure):
+        return b""
+    chunks: list[bytes] = []
+    size = 0
+    for _ in range(MAX_IMAGE_CALLS):
+        before = len(machine.stack)
+        machine.execute(source, depth + 1)
+        if len(machine.stack) <= before or not isinstance(machine.stack[-1], bytes) or not machine.stack[-1]:
+            break
+        chunks.append(machine.stack.pop())
+        size += len(chunks[-1])
+        if size >= need:
+            break
+    return b"".join(chunks)[:need]
+
+
+def _place_image(machine: _Machine, depth: int, operands: list[Any], sources: list[Any], channels: int) -> None:
+    """Add an ``Image`` for 8-bit samples read from *sources* (one interleaved source, or one per channel)."""
+    from ...elements.structure import Image
+
+    width, height, bits, matrix = operands
+    if int(bits) != SUPPORTED_BITS or not isinstance(matrix, list) or width < 1 or height < 1:
+        raise _Underflow
+    columns, rows = int(width), int(height)
+    count = columns * rows
+    if len(sources) == 1:
+        data = _source_bytes(machine, sources[0], count * channels, depth)
+        raw = np.frombuffer(data, np.uint8)
+    else:
+        planes = [np.frombuffer(_source_bytes(machine, s, count, depth), np.uint8) for s in sources]
+        raw = np.dstack(planes).ravel() if len({p.size for p in planes}) == 1 else np.empty(0, np.uint8)
+    if raw.size < count * channels:
+        raise _Underflow
+    samples = raw[:count * channels].reshape(rows, columns, channels).astype(np.float32) / CHANNEL_MAX
+    if channels == GRAY_CHANNELS:
+        rgb = np.repeat(samples, RGB_CHANNELS, axis=2)
+    elif channels == CMYK_CHANNELS:
+        c, m, y, k = (samples[..., i] for i in range(CMYK_CHANNELS))
+        rgb = np.dstack([(1 - c) * (1 - k), (1 - m) * (1 - k), (1 - y) * (1 - k)])
+    else:
+        rgb = samples
+    pixels = np.concatenate([rgb, np.ones((rows, columns, 1), np.float32)], axis=2)
+    image = Image(pixels, 0, 0, columns, rows, preserve_aspect_ratio="none")
+    image.t = machine.state.ctm @ Matrix(*(float(v) for v in matrix[:6])).inverse()
+    if machine.state.clip:
+        _clip(image, machine.state.clip)
+    machine.shapes.append(image)
+
+
+def _image(machine: _Machine, depth: int) -> None:
+    """``image`` in its five-operand gray form."""
+    operands = machine.pop(5, object)
+    _place_image(machine, depth, operands[:4], operands[4:], GRAY_CHANNELS)
+
+
+def _colorimage(machine: _Machine, depth: int) -> None:
+    """``colorimage``: gray, RGB or CMYK samples from one source or one source per component."""
+    channels = int(machine.pop(1)[0])
+    multi = machine.pop(1, bool)[0]
+    if channels not in (GRAY_CHANNELS, RGB_CHANNELS, CMYK_CHANNELS):
+        raise _Underflow
+    sources = machine.pop(channels if multi else 1, object)
+    _place_image(machine, depth, machine.pop(4, object), sources, channels)
+
+
+def _filter(machine: _Machine, _: int) -> None:
+    """``filter``: the ASCII-hex data is decoded when read, so the source is returned unchanged."""
+    machine.pop(1, Literal)
+    machine.pop(1, object)
+    machine.stack.append(_File())
+
+
+def _find_font(machine: _Machine, _: int) -> None:
+    """``findfont``: a font of one unit size under the given name."""
+    machine.stack.append(_Font(machine.pop(1, str)[0], Matrix()))
+
+
+def _scale_font(machine: _Machine, _: int) -> None:
+    """``scalefont``: scale the font matrix."""
+    font, size = machine.pop(2, object)
+    machine.stack.append(_Font(font.name, Matrix.scale(size) @ font.matrix))
+
+
+def _make_font(machine: _Machine, _: int) -> None:
+    """``makefont``: transform the font matrix by a six-element matrix."""
+    font, matrix = machine.pop(2, object)
+    machine.stack.append(_Font(font.name, Matrix(*(float(v) for v in matrix[:6])) @ font.matrix))
+
+
+def _select_font(machine: _Machine, _: int) -> None:
+    """``selectfont``: a name with a size or a matrix, made the current font."""
+    name, scale = machine.pop(2, object)
+    matrix = Matrix.scale(scale) if isinstance(scale, float) else Matrix(*(float(v) for v in scale[:6]))
+    machine.state.font = _Font(str(name), matrix)
+
+
+def _set_font(machine: _Machine, _: int) -> None:
+    """``setfont``: make a font current."""
+    machine.state.font = machine.pop(1, _Font)[0]
+
+
+def _move_current(machine: _Machine, x: float, y: float) -> None:
+    """Set the current point to user coordinates (*x*, *y*) without adding a path segment."""
+    outline = machine.outline
+    point = tuple(machine.state.ctm.apply(x, y))
+    if outline.ops and outline.ops[-1][0] == "M":
+        outline.ops[-1] = ("M", point)
+        outline.start = point
+    outline.current = point
+
+
+def _run(machine: _Machine, text: str) -> tuple[float, float]:
+    """Draw *text* at the current point; the user-space advance of its measured width."""
+    from ...elements.text import Text
+    from ...ops.text import text_width
+
+    current = machine.outline.user_current(machine.state.ctm)
+    font = machine.state.font
+    if current is None or font is None:
+        raise _Underflow
+    a, b, c, d, _, _ = font.matrix.as_tuple()
+    size = math.sqrt(abs(a * d - b * c)) or DEFAULT_TEXT_SIZE
+    unit = Matrix(a / size, b / size, c / size, d / size, 0.0, 0.0)
+    style = font.name.lower()
+    family = _STYLE_RE.sub("", font.name) or DEFAULT_FONT
+    bold, italic = "bold" in style, "italic" in style or "oblique" in style
+    if text.strip():
+        run = Text(text, x=0, y=0, font_size=size, font_family=family, fill=_hex(machine.state.color),
+                   font_weight="bold" if bold else None, font_style="italic" if italic else None,
+                   xml_space="preserve")
+        run.t = machine.state.ctm @ Matrix.translate(*current) @ unit @ Matrix.scale(1, -1)
+        if machine.state.clip:
+            _clip(run, machine.state.clip)
+        machine.shapes.append(run)
+    width = text_width(text, family, size, weight="bold" if bold else "normal", italic=italic)
+    return tuple(unit.apply(width, 0.0))
+
+
+def _advance(machine: _Machine, dx: float, dy: float) -> None:
+    """Move the current point by a user-space vector."""
+    x, y = machine.outline.user_current(machine.state.ctm)
+    _move_current(machine, x + dx, y + dy)
+
+
+def _show_spaced(machine: _Machine, text: bytes, extras: list[tuple[float, float]]) -> None:
+    """Show *text*, adding the user-space vector in *extras* after each character; one run when there are none."""
+    string = text.decode("latin-1")
+    if not any(extra != (0.0, 0.0) for extra in extras):
+        _advance(machine, *_run(machine, string))
+        return
+    for char, (ex, ey) in zip(string, extras, strict=True):
+        dx, dy = _run(machine, char)
+        _advance(machine, dx + ex, dy + ey)
+
+
+def _show(machine: _Machine, _: int) -> None:
+    """``show``."""
+    text = machine.pop(1, bytes)[0]
+    _show_spaced(machine, text, [(0.0, 0.0)] * len(text))
+
+
+def _ashow(machine: _Machine, _: int) -> None:
+    """``ashow``: extra advance (ax, ay) after every character."""
+    ax, ay, text = machine.pop(3, (float, bytes))
+    if not isinstance(text, bytes):
+        raise _Underflow
+    _show_spaced(machine, text, [(ax, ay)] * len(text))
+
+
+def _widthshow(machine: _Machine, _: int) -> None:
+    """``widthshow``: extra advance (cx, cy) after each occurrence of one character code."""
+    cx, cy, code, text = machine.pop(4, (float, bytes))
+    if not isinstance(text, bytes):
+        raise _Underflow
+    _show_spaced(machine, text, [(cx, cy) if char == int(code) else (0.0, 0.0) for char in text])
+
+
+def _awidthshow(machine: _Machine, _: int) -> None:
+    """``awidthshow``: ``widthshow`` plus (ax, ay) after every character."""
+    cx, cy, code, ax, ay, text = machine.pop(6, (float, bytes))
+    if not isinstance(text, bytes):
+        raise _Underflow
+    _show_spaced(machine, text, [(ax + cx, ay + cy) if char == int(code) else (ax, ay) for char in text])
+
+
+def _xyshow(machine: _Machine, _: int) -> None:
+    """``xyshow``: the advance after each character is the (x, y) pair given for it."""
+    text, offsets = machine.pop(2, (bytes, list))
+    if not isinstance(text, bytes) or not isinstance(offsets, list):
+        raise _Underflow
+    for i, char in enumerate(text.decode("latin-1")):
+        _run(machine, char)
+        pair = offsets[2 * i:2 * i + 2]
+        if len(pair) == 2:
+            _advance(machine, *pair)
+
+
 OPERATORS: Final[dict[str, Callable[[_Machine, int], None]]] = {
+    "clip": _clip_to_path,
+    "eoclip": _clip_to_path,
+    "image": _image,
+    "colorimage": _colorimage,
+    "currentfile": lambda m, _: m.stack.append(_File()),
+    "filter": _filter,
+    "true": lambda m, _: m.stack.append(True),
+    "false": lambda m, _: m.stack.append(False),
+    "findfont": _find_font,
+    "scalefont": _scale_font,
+    "makefont": _make_font,
+    "selectfont": _select_font,
+    "setfont": _set_font,
+    "show": _show,
+    "ashow": _ashow,
+    "widthshow": _widthshow,
+    "awidthshow": _awidthshow,
+    "xyshow": _xyshow,
     "moveto": lambda m, _: m.outline.move(m.state.ctm, *m.pop(2)),
     "lineto": lambda m, _: m.outline.line(m.state.ctm, *m.pop(2)),
     "curveto": lambda m, _: m.outline.curve(m.state.ctm, *m.pop(6)),
@@ -374,7 +667,7 @@ def _postscript(data: bytes) -> bytes:
 
 
 def read_eps(data: bytes) -> Document:
-    """Read the paths an EPS or PostScript program paints as ``<path>`` elements.
+    """Read the paths, images and text an EPS or PostScript program paints as elements.
 
     Parameters
     ----------
@@ -409,8 +702,20 @@ def read_eps(data: bytes) -> Document:
     and ``dup pop exch add sub mul div neg``. Reading stops at the first
     ``showpage``. Unknown operators are ignored and an operator that finds
     too few operands is skipped, so a program using more of the language
-    reads as far as this subset reaches. Text, images, clipping and control
-    flow (``if``, ``loop``, ...) are not interpreted.
+    reads as far as this subset reaches.
+
+    Also read: 8-bit ``image`` (gray, five operands) and ``colorimage``
+    (gray, RGB, CMYK; one source or one per component) from ``currentfile``
+    with ``/ASCIIHexDecode filter`` or from procedures returning strings,
+    placed as ``<image>`` through the current transform and the image
+    matrix; text with ``findfont scalefont makefont setfont selectfont`` and
+    ``show ashow widthshow awidthshow xyshow`` as ``<text>`` at the current
+    point (family from the font name, ``-Bold``/``-Italic`` as weight and
+    style, advance from the measured width); and ``clip``/``eoclip``,
+    intersected with the current clip and kept by ``gsave``/``grestore``
+    (``eoclip`` clips with the nonzero rule). Image data inline in a
+    procedure body, other bit depths and image dictionaries are skipped, as
+    is control flow (``if``, ``loop``, ...).
 
     Examples
     --------
