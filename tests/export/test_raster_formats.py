@@ -245,3 +245,30 @@ def test_exporters_accept_png_options() -> None:
 def test_gif_exporter_keeps_transparent_background() -> None:
     out = _decode(svg.export.export(_doc(), "gif"))
     assert out[0, 15, 3] == 0 and out[4, 2, 3] == 255
+
+
+def test_animated_documents_export_animated_gifs():
+    import svgwriter as svg
+    from svgwriter.elements.structure import Pixels
+
+    doc = svg.Document(40, 20)
+    ball = doc.circle(4, 10, 4, fill="red")
+    ball.append(svg.Animate(attribute_name="cx", from_=4, to=36, dur=1))
+    animated = svg.export.export(doc, "gif", fps=5)
+    assert animated.count(b"NETSCAPE2.0") == 1 and animated.count(bytes([0x2C, 0, 0, 0, 0])) == 5
+    still = svg.export.export(doc, "gif", animate=False)
+    assert b"NETSCAPE2.0" not in still and Pixels.decode(animated).shape == (20, 40)
+
+
+def test_time_option_picks_the_frame_for_still_formats():
+    import numpy as np
+
+    import svgwriter as svg
+    from svgwriter.elements.structure import Pixels
+
+    doc = svg.Document(40, 20)
+    ball = doc.circle(5, 10, 4, fill="red")
+    ball.append(svg.Animate(attribute_name="cx", from_=5, to=35, dur=1, fill="freeze"))
+    start = Pixels.decode(svg.export.export(doc, "png")).rgba()
+    end = Pixels.decode(svg.export.export(doc, "png", time=1)).rgba()
+    assert np.argmax(start[10, :, 3]) < 10 < 30 < np.argmax(end[10, :, 3]) + 5

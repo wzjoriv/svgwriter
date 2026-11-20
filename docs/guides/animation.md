@@ -25,6 +25,11 @@ timing, repeats, `fill="freeze"`, `values`/`keyTimes`, discrete mode and `additi
 frame = doc.at(1.0)          # the ball halfway along
 ```
 
+Saving keeps the animation where the format can play it: `.svg` and `.svgz` keep the SMIL elements,
+and `.gif` becomes an animated GIF of the whole animation (`fps=`, `duration=`, `loop=`; no ffmpeg
+needed). Other still formats show one moment, chosen with `time=`:
+`doc.save("end.png", time=2.0)`.
+
 ## Video through ffmpeg
 
 `render_animation` draws frames and pipes them to ffmpeg (mp4, gif, webm, mov, apng). The `update`

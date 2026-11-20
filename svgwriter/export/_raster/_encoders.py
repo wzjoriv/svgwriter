@@ -44,6 +44,12 @@ GIF_MAX_CODE_SIZE: Final = 12
 GIF_MAX_CODES: Final = 1 << GIF_MAX_CODE_SIZE
 GIF_BLOCK_SIZE: Final = 255
 GIF_OPAQUE_THRESHOLD: Final = 128
+GIF_DISPOSE_BACKGROUND: Final = 0x08
+GIF_CENTISECONDS: Final = 100
+GIF_APPLICATION: Final = 0xFF
+GIF_APPLICATION_SIZE: Final = 11
+GIF_NETSCAPE: Final = b"NETSCAPE2.0"
+GIF_LOOP_BLOCK_SIZE: Final = 3
 
 PNM_MAGIC: Final = re.compile(rb"P[1-6]")
 PNM_WHITESPACE: Final = b" \t\r\n\v\f"
@@ -330,26 +336,86 @@ def encode_gif(rgba: np.ndarray) -> bytes:
     """
     pixels = _check_rgba(rgba)
     rows, columns = pixels.shape[:2]
+    _check_gif_size(rows, columns)
+    table, bits, frame = _gif_frame(pixels, delay=0, local=False)
+    screen = struct.pack("<HHBBB", columns, rows, GIF_PALETTE_FLAG | ((bits - 1) << 4) | (bits - 1), 0, 0)
+    return GIF_HEADER + screen + table + frame + GIF_TRAILER
+
+
+def _check_gif_size(rows: int, columns: int) -> None:
     if not 0 < rows <= GIF_MAX_DIMENSION or not 0 < columns <= GIF_MAX_DIMENSION:
         raise ValueError(f"GIF dimensions must be 1..{GIF_MAX_DIMENSION}, got {columns}x{rows}")
+
+
+def _gif_frame(pixels: np.ndarray, *, delay: int, local: bool) -> tuple[bytes, int, bytes]:
+    """Quantize one frame: its color table, table bits and the extension + image blocks."""
+    rows, columns = pixels.shape[:2]
     indices, palette, transparent = _quantize(pixels)
     bits = max(int(np.ceil(np.log2(max(len(palette), GIF_MIN_PALETTE)))), 1)
     table = np.zeros((1 << bits, 3), np.uint8)
     table[: len(palette)] = palette
     min_code_size = max(bits, GIF_MIN_CODE_SIZE)
-    screen = struct.pack("<HHBBB", columns, rows, GIF_PALETTE_FLAG | ((bits - 1) << 4) | (bits - 1), 0, 0)
     control = b""
-    if transparent is not None:
+    if transparent is not None or delay:
+        flags = (GIF_FLAG_TRANSPARENT if transparent is not None else 0) | (GIF_DISPOSE_BACKGROUND if local else 0)
         control = struct.pack("<BBBBHBB", GIF_EXTENSION, GIF_GRAPHIC_CONTROL, GIF_GRAPHIC_CONTROL_SIZE,
-                              GIF_FLAG_TRANSPARENT, 0, transparent, 0)
-    descriptor = struct.pack("<BHHHHB", GIF_IMAGE_SEPARATOR, 0, 0, columns, rows, 0)
+                              flags, delay, transparent or 0, 0)
+    packed = (GIF_PALETTE_FLAG | (bits - 1)) if local else 0
+    descriptor = struct.pack("<BHHHHB", GIF_IMAGE_SEPARATOR, 0, 0, columns, rows, packed)
     compressed = _lzw(indices.tobytes(), min_code_size)
     blocks = b"".join(
         bytes([len(chunk)]) + chunk
         for chunk in (compressed[i:i + GIF_BLOCK_SIZE] for i in range(0, len(compressed), GIF_BLOCK_SIZE))
     )
-    return (GIF_HEADER + screen + table.tobytes() + control + descriptor + bytes([min_code_size]) + blocks
-            + b"\x00" + GIF_TRAILER)
+    image = descriptor + (table.tobytes() if local else b"") + bytes([min_code_size]) + blocks + b"\x00"
+    return table.tobytes(), bits, control + image
+
+
+def encode_gif_animation(frames: Sequence[np.ndarray], fps: float, *, loop: int = 0) -> bytes:
+    """Encode RGBA frames as an animated GIF89a, each frame with its own palette.
+
+    Parameters
+    ----------
+    frames : sequence of numpy.ndarray
+        ``(H, W, 4)`` ``uint8`` frames of equal size.
+    fps : float
+        Frames per second; GIF stores delays in hundredths of a second.
+    loop : int, optional
+        Number of repeats; 0 loops forever. Defaults to 0.
+
+    Returns
+    -------
+    bytes
+        The GIF file.
+
+    Raises
+    ------
+    ValueError
+        If there are no frames or their sizes differ.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> frames = [np.full((2, 2, 4), v, np.uint8) for v in (0, 255)]
+    >>> encode_gif_animation(frames, fps=10)[:6]
+    b'GIF89a'
+    """
+    if not len(frames):
+        raise ValueError("an animated GIF needs at least one frame")
+    first = _check_rgba(frames[0])
+    rows, columns = first.shape[:2]
+    _check_gif_size(rows, columns)
+    delay = max(round(GIF_CENTISECONDS / fps), 1)
+    screen = struct.pack("<HHBBB", columns, rows, 0, 0, 0)
+    looping = (bytes([GIF_EXTENSION, GIF_APPLICATION, GIF_APPLICATION_SIZE]) + GIF_NETSCAPE
+               + struct.pack("<BBHB", GIF_LOOP_BLOCK_SIZE, 1, loop, 0))
+    parts = [GIF_HEADER, screen, looping]
+    for frame in frames:
+        pixels = _check_rgba(frame)
+        if pixels.shape[:2] != (rows, columns):
+            raise ValueError(f"frame size {pixels.shape[1]}x{pixels.shape[0]} differs from {columns}x{rows}")
+        parts.append(_gif_frame(pixels, delay=delay, local=True)[2])
+    return b"".join(parts) + GIF_TRAILER
 
 
 ENCODERS: Final[dict[str, Callable[[np.ndarray], bytes]]] = {

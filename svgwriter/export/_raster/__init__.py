@@ -39,7 +39,61 @@ register("png", extensions=(".png",))(_raster("png"))
 register("jpeg", extensions=(".jpg", ".jpeg"))(_raster("jpeg"))
 register("webp", extensions=(".webp",))(_raster("webp"))
 register("bmp", extensions=(".bmp",))(_raster("bmp"))
-register("gif", extensions=(".gif",))(_raster("gif"))
+DEFAULT_GIF_FPS: Final = 12.0
+
+
+@register("gif", extensions=(".gif",))
+def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int | None = None, padding: float = 0.0,
+        background: ColorLike | None = None, animate: bool | None = None, fps: float = DEFAULT_GIF_FPS,
+        duration: float | None = None, loop: int = 0, quality: int = DEFAULT_QUALITY) -> bytes:
+    """GIF: a still image, or an animated GIF of the document's SMIL animation.
+
+    Parameters
+    ----------
+    document : Document
+        The drawing.
+    scale, size, padding, background : optional
+        As for PNG.
+    animate : bool, optional
+        Write every frame of the SMIL animation. Defaults to None, which
+        animates when the document contains animation elements.
+    fps : float, optional
+        Frames per second of an animated GIF. Defaults to 12.
+    duration : float, optional
+        Seconds to record. Defaults to None, the end of the last animation.
+    loop : int, optional
+        Repeats; 0 loops forever. Defaults to 0.
+    quality : int, optional
+        Accepted like the other raster formats; GIF is lossless. Defaults to 90.
+
+    Returns
+    -------
+    bytes
+        The GIF file.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> doc = svg.Document(20, 10)
+    >>> ball = doc.circle(2, 5, 2)
+    >>> _ = ball.append(svg.Animate(attribute_name="cx", from_=2, to=18, dur=1))
+    >>> svg.export.export(doc, "gif").count(b"NETSCAPE2.0")
+    1
+    """
+    from ...elements.animation import AnimationElement
+    from ...video.animation import animation_duration, frame_times
+    from ._encoders import encode_gif, encode_gif_animation, to_uint8
+
+    del quality
+    if isinstance(size, int):
+        size = (size, size)
+    options = {"scale": scale, "size": size, "padding": padding, "background": background}
+    length = duration if duration is not None else animation_duration(document)
+    moving = animate if animate is not None else document.root.find(AnimationElement) is not None
+    if not moving or not length:
+        return encode_gif(to_uint8(document.rasterize(**options)))
+    frames = [to_uint8(document.at(time).rasterize(**options)) for time in frame_times(fps, length)]
+    return encode_gif_animation(frames, fps, loop=loop)
 register("ppm", extensions=(".ppm", ".pgm", ".pnm"))(_raster("ppm"))
 
 

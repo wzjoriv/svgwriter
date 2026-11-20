@@ -368,7 +368,7 @@ def find_importer(key: str | os.PathLike[str]) -> Importer:
     return _find(_IMPORTERS, key, "importer")
 
 
-def export(document: Document, format: str, **options: Any) -> bytes | str:
+def export(document: Document, format: str, *, time: float | None = None, **options: Any) -> bytes | str:
     """Convert *document* to *format* (a name or extension); returns ``bytes`` or ``str``.
 
     Parameters
@@ -377,6 +377,10 @@ def export(document: Document, format: str, **options: Any) -> bytes | str:
         The document to convert.
     format : str
         A registered format name or an extension such as ``".pdf"``.
+    time : float, optional
+        Export the SMIL animation frame at this many seconds (see
+        :meth:`Document.at`) instead of the document as written. Defaults to
+        None, which keeps animations (formats without animation show t = 0).
     **options
         Passed to the exporter function (see each format's description in :func:`exporters`).
 
@@ -401,10 +405,12 @@ def export(document: Document, format: str, **options: Any) -> bytes | str:
     >>> svg.export.export(doc, "png")[:4] == bytes.fromhex("89504e47")
     True
     """
-    return find_exporter(format).function(document, **options)
+    exporter = find_exporter(format)
+    return exporter.function(document.at(time) if time is not None else document, **options)
 
 
-def save(document: Document, path: str | os.PathLike[str], format: str | None = None, **options: Any) -> Path:
+def save(document: Document, path: str | os.PathLike[str], format: str | None = None, *, time: float | None = None,
+    **options: Any) -> Path:
     """Write *document* to *path*, choosing the format from *format* or the file extension.
 
     Parameters
@@ -415,6 +421,9 @@ def save(document: Document, path: str | os.PathLike[str], format: str | None = 
         Destination file.
     format : str, optional
         Format name overriding the extension. Defaults to None.
+    time : float, optional
+        Save the SMIL animation frame at this many seconds instead of the
+        animated document. Defaults to None.
     **options
         Passed to the exporter function.
 
@@ -444,7 +453,7 @@ def save(document: Document, path: str | os.PathLike[str], format: str | None = 
     True
     """
     exporter = find_exporter(format or path)
-    data = exporter.function(document, **options)
+    data = exporter.function(document.at(time) if time is not None else document, **options)
     target = Path(path)
     if isinstance(data, bytes):
         target.write_bytes(data)
