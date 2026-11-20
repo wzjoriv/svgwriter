@@ -284,24 +284,21 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Final</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">skia</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._rendering</span><span class="w"> </span><span class="kn">import</span> <span class="n">renderable_copy</span><span class="p">,</span> <span class="n">view_matrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._rendering</span><span class="w"> </span><span class="kn">import</span> <span class="n">view_matrix</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span><span class="p">,</span> <span class="n">Unit</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..attributes.viewbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">ViewBox</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..transform.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">IDENTITY</span><span class="p">,</span> <span class="n">Matrix</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_surface</span><span class="p">,</span> <span class="n">paint_svg</span><span class="p">,</span> <span class="n">read_pixels</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">CHANNEL_MAX</span><span class="p">,</span> <span class="n">DEFAULT_QUALITY</span><span class="p">,</span> <span class="n">DISPLAY</span><span class="p">,</span> <span class="n">FORMATS</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._layers</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_image</span><span class="p">,</span> <span class="n">hidden</span><span class="p">,</span> <span class="n">layers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">CHANNEL_MAX</span><span class="p">,</span> <span class="n">DEFAULT_QUALITY</span><span class="p">,</span> <span class="n">FORMATS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._painting</span><span class="w"> </span><span class="kn">import</span> <span class="n">paint_tree</span><span class="p">,</span> <span class="n">render_tree</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..color.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColorLike</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..document</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">"DEFAULT_SIZE"</span><span class="p">,</span>
@@ -411,142 +408,6 @@
     <span class="n">paint_svg</span><span class="p">(</span><span class="n">surface</span><span class="o">.</span><span class="n">getCanvas</span><span class="p">(),</span> <span class="n">text</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">read_pixels</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span></div>
 
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">render_tree</span><span class="p">(</span>
-    <span class="n">root</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span>
-    <span class="n">wrap</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">],</span>
-    <span class="n">width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">height</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">view</span><span class="p">:</span> <span class="n">Matrix</span> <span class="o">=</span> <span class="n">IDENTITY</span><span class="p">,</span>
-    <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">background</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">viewport</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">view_box</span><span class="p">:</span> <span class="n">ViewBox</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">snapshot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Render the tree under *root*, drawing embedded ``&lt;image&gt;`` pixels in paint order.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    root : Element</span>
-<span class="sd">        A root ``&lt;svg&gt;`` or any element.</span>
-<span class="sd">    wrap : callable</span>
-<span class="sd">        Turns the serialized *root* into a complete SVG document.</span>
-<span class="sd">    width, height : float</span>
-<span class="sd">        Canvas size in user units.</span>
-<span class="sd">    view : Matrix, optional</span>
-<span class="sd">        Maps *root*'s parent coordinates to canvas user units (the ``viewBox`` mapping).</span>
-<span class="sd">        Defaults to the identity.</span>
-<span class="sd">    scale : float, optional</span>
-<span class="sd">        Pixels per user unit. Defaults to 1.0.</span>
-<span class="sd">    background : color, optional</span>
-<span class="sd">        Painted under the drawing. Defaults to None.</span>
-<span class="sd">    viewport : bool, optional</span>
-<span class="sd">        *root* is the outermost ``&lt;svg&gt;``: draw it at exactly ``width x height``. Defaults to False.</span>
-<span class="sd">    view_box : ViewBox, optional</span>
-<span class="sd">        Replace the root's ``viewBox`` while drawing (used for padding). Defaults to None.</span>
-<span class="sd">    snapshot : bool, optional</span>
-<span class="sd">        Return the ``skia.Image`` instead of an array (encoders use it directly). Defaults to False.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    numpy.ndarray or skia.Image</span>
-<span class="sd">        ``float32`` ``(rows, columns, 4)`` straight RGBA in ``0..1``, or the image when</span>
-<span class="sd">        *snapshot* is true.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    rasterize : Render a whole document.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.ops.render import render_tree</span>
-<span class="sd">    &gt;&gt;&gt; doc = svg.Document(4, 2)</span>
-<span class="sd">    &gt;&gt;&gt; _ = doc.rect(0, 0, 4, 2, fill="red")</span>
-<span class="sd">    &gt;&gt;&gt; render_tree(doc.root, lambda text: text, 4, 2, viewport=True).shape</span>
-<span class="sd">    (2, 4, 4)</span>
-<span class="sd">    """</span>
-    <span class="n">surface</span> <span class="o">=</span> <span class="n">make_surface</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">background</span><span class="p">)</span>
-    <span class="n">paint_tree</span><span class="p">(</span><span class="n">surface</span><span class="o">.</span><span class="n">getCanvas</span><span class="p">(),</span> <span class="n">root</span><span class="p">,</span> <span class="n">wrap</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="n">view</span><span class="p">,</span> <span class="n">viewport</span><span class="o">=</span><span class="n">viewport</span><span class="p">,</span> <span class="n">view_box</span><span class="o">=</span><span class="n">view_box</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">surface</span><span class="o">.</span><span class="n">makeImageSnapshot</span><span class="p">()</span> <span class="k">if</span> <span class="n">snapshot</span> <span class="k">else</span> <span class="n">read_pixels</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">paint_tree</span><span class="p">(</span>
-    <span class="n">canvas</span><span class="p">:</span> <span class="n">skia</span><span class="o">.</span><span class="n">Canvas</span><span class="p">,</span>
-    <span class="n">root</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span>
-    <span class="n">wrap</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">],</span>
-    <span class="n">width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">height</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">view</span><span class="p">:</span> <span class="n">Matrix</span> <span class="o">=</span> <span class="n">IDENTITY</span><span class="p">,</span>
-    <span class="n">viewport</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">view_box</span><span class="p">:</span> <span class="n">ViewBox</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">native_text</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Paint the tree under *root* onto any skia canvas (raster, PDF, ...).</span>
-
-<span class="sd">    Text becomes outlines (or real glyphs with *native_text*) and embedded images are drawn in</span>
-<span class="sd">    paint order; the other arguments match :func:`render_tree`.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    canvas : skia.Canvas</span>
-<span class="sd">        Destination canvas.</span>
-<span class="sd">    root : Element</span>
-<span class="sd">        A root ``&lt;svg&gt;`` or any element.</span>
-<span class="sd">    wrap : callable</span>
-<span class="sd">        Turns the serialized *root* into a complete SVG document.</span>
-<span class="sd">    width, height : float</span>
-<span class="sd">        Canvas size in user units.</span>
-<span class="sd">    view : Matrix, optional</span>
-<span class="sd">        Maps *root*'s parent coordinates to canvas user units. Defaults to the identity.</span>
-<span class="sd">    viewport : bool, optional</span>
-<span class="sd">        *root* is the outermost ``&lt;svg&gt;``: draw it at exactly ``width x height``. Defaults to False.</span>
-<span class="sd">    view_box : ViewBox, optional</span>
-<span class="sd">        Replace the root's ``viewBox`` while drawing. Defaults to None.</span>
-<span class="sd">    native_text : bool, optional</span>
-<span class="sd">        Draw text that a canvas can reproduce exactly (plain colours, no filter or mask) as real</span>
-<span class="sd">        glyphs, so a PDF canvas keeps it selectable. Defaults to False.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    render_tree : Paint onto a new raster surface and return the pixels.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import skia</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.ops.render import paint_tree</span>
-<span class="sd">    &gt;&gt;&gt; doc = svg.Document(4, 2)</span>
-<span class="sd">    &gt;&gt;&gt; _ = doc.rect(0, 0, 4, 2, fill="red")</span>
-<span class="sd">    &gt;&gt;&gt; surface = skia.Surface(4, 2)</span>
-<span class="sd">    &gt;&gt;&gt; paint_tree(surface.getCanvas(), doc.root, lambda text: text, 4, 2, viewport=True)</span>
-<span class="sd">    """</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">Text</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..io.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_string</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">._native_text</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_text</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">._native_text</span><span class="w"> </span><span class="kn">import</span> <span class="n">native_text</span> <span class="k">as</span> <span class="n">drawable</span>
-
-    <span class="n">root</span> <span class="o">=</span> <span class="n">renderable_copy</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">keep_text</span><span class="o">=</span><span class="n">drawable</span> <span class="k">if</span> <span class="n">native_text</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">viewport</span><span class="p">:</span>
-        <span class="n">root</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">"width"</span><span class="p">],</span> <span class="n">root</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">"height"</span><span class="p">]</span> <span class="o">=</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span>
-    <span class="k">if</span> <span class="n">view_box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">root</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">"viewBox"</span><span class="p">]</span> <span class="o">=</span> <span class="n">view_box</span>
-    <span class="n">parts</span> <span class="o">=</span> <span class="n">layers</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">run</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">run</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">leaf</span> <span class="ow">in</span> <span class="n">hidden</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">run</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">():</span>
-                <span class="n">leaf</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="n">DISPLAY</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"none"</span>
-            <span class="n">paint_svg</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">wrap</span><span class="p">(</span><span class="n">to_string</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">xml_declaration</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="kc">False</span><span class="p">)),</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">leaf</span> <span class="ow">in</span> <span class="n">hidden</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">run</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">():</span>
-                <span class="n">leaf</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">DISPLAY</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Text</span><span class="p">):</span>
-            <span class="n">draw_text</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">draw_image</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="rasterize">
