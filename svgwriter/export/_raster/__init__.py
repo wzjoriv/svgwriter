@@ -19,15 +19,20 @@ DEFAULT_GIF_FPS: Final = 12.0
 
 def _frames(document: Document, fps: float, duration: float | None, **options: Any) -> list[Any]:
     """Every frame of the SMIL animation as uint8 RGBA, or an empty list when nothing animates."""
+    from ...ops.parallel import rasterize_many
     from ...video.animation import animation_duration, frame_times
     from ._encoders import to_uint8
 
+    processes = options.pop("processes", 1)
     length = duration if duration is not None else animation_duration(document)
     if not length:
         return []
     if isinstance(options.get("size"), int):
         options["size"] = (options["size"], options["size"])
-    return [to_uint8(document.at(time).rasterize(**options)) for time in frame_times(fps, length)]
+    if processes == 1:
+        return [to_uint8(document.at(time).rasterize(**options)) for time in frame_times(fps, length)]
+    snapshots = [document.at(time) for time in frame_times(fps, length)]
+    return rasterize_many(snapshots, processes=processes, dtype="uint8", **options)
 
 
 def _animation_encoders() -> dict[str, Any]:
@@ -40,7 +45,7 @@ def _raster(format: str):  # type: ignore[no-untyped-def]
     def exporter(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int | None = None,
                  padding: float = 0.0, background: ColorLike | None = None, quality: int = DEFAULT_QUALITY,
                  dpi: float | None = None, animate: bool = False, fps: float = DEFAULT_GIF_FPS,
-                 duration: float | None = None, loop: int = 0) -> bytes:
+                 duration: float | None = None, loop: int = 0, processes: int | None = 1) -> bytes:
         from ...ops.render import encode_image
         from ._encoders import ENCODERS, to_uint8
 
@@ -52,7 +57,8 @@ def _raster(format: str):  # type: ignore[no-untyped-def]
             scale = dpi / DEFAULT_DPI
         animated = _animation_encoders()
         if animate and format in animated:
-            frames = _frames(document, fps, duration, scale=scale, size=size, padding=padding, background=background)
+            frames = _frames(document, fps, duration, scale=scale, size=size, padding=padding, background=background,
+                             processes=processes)
             if frames:
                 return animated[format](frames, fps, loop=loop)
         native = format not in ENCODERS
@@ -77,7 +83,7 @@ register("bmp", extensions=(".bmp",))(_raster("bmp"))
 def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int | None = None, padding: float = 0.0,
         background: ColorLike | None = None, animate: bool | None = None, fps: float = DEFAULT_GIF_FPS,
         duration: float | None = None, loop: int = 0, quality: int = DEFAULT_QUALITY,
-        dpi: float | None = None) -> bytes:
+        dpi: float | None = None, processes: int | None = 1) -> bytes:
     """GIF: a still image, or an animated GIF of the document's SMIL animation.
 
     Parameters
@@ -99,6 +105,8 @@ def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int |
         Accepted like the other raster formats; GIF is lossless. Defaults to 90.
     dpi : float, optional
         Pixels per inch instead of `scale` (96 is scale 1). Defaults to None.
+    processes : int, optional
+        Worker processes for the frames; None uses every CPU. Defaults to 1.
 
     Returns
     -------
@@ -115,7 +123,7 @@ def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int |
     1
     """
     from ...elements.animation import AnimationElement
-    from ...video.animation import animation_duration, frame_times
+    from ...video.animation import animation_duration
     from ._encoders import encode_gif, encode_gif_animation, to_uint8
 
     del quality
@@ -128,7 +136,7 @@ def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int |
     moving = animate if animate is not None else document.root.find(AnimationElement) is not None
     if not moving or not length:
         return encode_gif(to_uint8(document.rasterize(**options)))
-    frames = [to_uint8(document.at(time).rasterize(**options)) for time in frame_times(fps, length)]
+    frames = _frames(document, fps, length, processes=processes, **options)
     return encode_gif_animation(frames, fps, loop=loop)
 register("ppm", extensions=(".ppm", ".pgm", ".pnm"))(_raster("ppm"))
 

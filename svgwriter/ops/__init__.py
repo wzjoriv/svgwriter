@@ -29,6 +29,7 @@ from .measure import (
     tangent_at_length,
     total_length,
 )
+from .parallel import rasterize_many
 from .render import encode, rasterize, render_frame, render_png, render_svg
 from .text import Anchor, FontWeight, register_font, text_outline, text_to_path, text_width
 
@@ -51,6 +52,7 @@ __all__ = [
     "point_at_length",
     "encode",
     "rasterize",
+    "rasterize_many",
     "render_png",
     "register_font",
     "render_svg",

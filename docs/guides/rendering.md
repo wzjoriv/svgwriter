@@ -39,3 +39,13 @@ pixels and the same file bytes.
 
 Text uses installed fonts through skia. `font-family` may list fallbacks (`"Inter, Arial, sans-serif"`);
 the first installed family wins and a warning names the substitute when none is found.
+
+## Many documents at once
+
+skia holds Python's global lock, so threads do not speed up rendering; processes do.
+`svgwriter.ops.rasterize_many(documents, processes=None, dtype="uint8")` renders a batch in worker
+processes (each document travels as SVG text) and returns the arrays in order. Animated exports take
+`processes=` too: `doc.save("clip.gif", processes=None)`. Pools start in about a second, so they pay off
+for batches of a few dozen non-trivial drawings; scripts on Windows and macOS need the usual
+`if __name__ == "__main__":` guard.
+
