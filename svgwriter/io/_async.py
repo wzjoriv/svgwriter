@@ -9,7 +9,7 @@ from collections.abc import AsyncIterator, Mapping
 from typing import Any
 
 from .._internal._typing import AnyPath
-from ..elements.base import Element
+from ..elements.core._element import Element
 from ._constants import CHUNKS_PER_YIELD
 from .writer import Writer, write
 

@@ -194,7 +194,7 @@ def animation_duration(document: Document) -> float | None:
     >>> animation_duration(doc) is None
     True
     """
-    from ..elements.animation import AnimationElement
+    from ..elements.animation._elements import AnimationElement
 
     ends = []
     for element in document.root.find_all(AnimationElement):

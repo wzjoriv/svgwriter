@@ -9,9 +9,9 @@ from collections.abc import Sequence
 from typing import Any
 
 from ..._internal._typing import Self
-from .._mixins import CoreAttributes
-from ..base import ContentModel
-from ..container import Container
+from .._behavior._mixins import CoreAttributes
+from ..core._container import Container
+from ..core._element import ContentModel
 from .base import SingleInput
 
 __all__ = ["FeComponentTransfer", "FeFunc", "FeFuncA", "FeFuncB", "FeFuncG", "FeFuncR", "TransferType"]

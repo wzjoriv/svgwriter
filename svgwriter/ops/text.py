@@ -168,7 +168,7 @@ def text_width(
 
 def _laid_out(text: str, font_family: str, size: float, weight: FontWeight, italic: bool) -> list[Any]:
     """Glyph boxes from the full text engine (per-character font fallback and shaping included)."""
-    from ..elements.text import Text
+    from ..elements.text._text import Text
 
     element = Text(text, x=0, y=0, font_family=font_family, font_size=size, xml_space="preserve",
                    font_weight=None if weight == "normal" else weight, font_style="italic" if italic else None)

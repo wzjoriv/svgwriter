@@ -14,13 +14,13 @@ from ..transform.matrix import Matrix
 from ._constants import NONE, PERCENT
 
 if TYPE_CHECKING:
-    from ..elements.base import Element
+    from ..elements.core._element import Element
 
 __all__ = ["Shading"]
 
 
 def _paint(element: Element, name: str, default: str, rules: list) -> Color | None:
-    from ..elements._geometry import resolve
+    from ..elements._behavior._geometry import resolve
 
     value = computed(element, name, default, rules)
     text = str(value.svg_value() if hasattr(value, "svg_value") else value).strip()
@@ -66,7 +66,7 @@ class Shading:
 
 def _shading(element: Element, to_page: Matrix, rules: list) -> Shading | None:
     """The gradient behind ``fill``, when it is a linear or radial gradient with stops."""
-    from ..elements._geometry import resolve
+    from ..elements._behavior._geometry import resolve
 
     value = computed(element, "fill", "black", rules)
     if not str(getattr(value, "svg_value", lambda: value)()).startswith("url("):

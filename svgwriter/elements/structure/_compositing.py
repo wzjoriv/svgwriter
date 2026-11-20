@@ -7,7 +7,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, Final
 
-from ..base import Element
+from ..core._element import Element
 from ..filters import BlendMode, CompositeOperator
 from ._constants import DEFAULT_SCALE, GEOMETRY_KEYS
 
@@ -104,7 +104,7 @@ def composite(
     [[[0.5, 0.0, 0.5, 1.0]]]
     """
     from ...ops.composite import composite_rgba, resolve_operator
-    from .._convert import render_box
+    from .._behavior._convert import render_box
     from ._image import Image
 
     op = resolve_operator(operator)
@@ -246,7 +246,7 @@ class Compositing:
         return super().__rmul__(other)  # type: ignore[misc]
 
     def _in_place(self, result: Any) -> Any:
-        from .._geometry import replace_in_parent
+        from .._behavior._geometry import replace_in_parent
 
         if result is not NotImplemented:
             replace_in_parent(self, result)  # type: ignore[arg-type]

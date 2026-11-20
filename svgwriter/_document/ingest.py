@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, Protocol, TypeVar
 
 import numpy as np
 
-from ..elements.base import Element
+from ..elements.core._element import Element
 from ..elements.structure import Group
 from ._constants import RASTER_REPRS
 

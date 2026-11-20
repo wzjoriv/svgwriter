@@ -22,7 +22,7 @@ from ._renderable import renderable_copy
 if TYPE_CHECKING:
     from ..color.color import ColorLike
     from ..document import Document
-    from ..elements.base import Element
+    from ..elements.core._element import Element
 
 __all__ = [
     "DEFAULT_SIZE",
@@ -243,7 +243,7 @@ def paint_tree(
     >>> surface = skia.Surface(4, 2)
     >>> paint_tree(surface.getCanvas(), doc.root, lambda text: text, 4, 2, viewport=True)
     """
-    from ..elements.text import Text
+    from ..elements.text._text import Text
     from ..io.writer import to_string
     from ._native_text import draw_text
     from ._native_text import native_text as drawable
@@ -505,7 +505,7 @@ def render_frame(document: Document, time: float) -> np.ndarray:
     >>> frame.shape, frame.dtype.name
     ((2, 4, 4), 'uint8')
     """
-    from ..elements.animation import AnimationElement
+    from ..elements.animation._elements import AnimationElement
     from ..video._smil import snapshot
 
     if document.root.find(AnimationElement) is not None:

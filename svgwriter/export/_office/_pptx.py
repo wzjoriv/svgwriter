@@ -323,7 +323,7 @@ def _preset_path(name: str | None, left: float, top: float, width: float, height
 def _text(shape: Any, left: float, top: float) -> Any:
     """A text box's paragraphs as one ``<text>`` per line, with font, weight, style and colour, or None."""
     from ...elements.structure import Group
-    from ...elements.text import Text
+    from ...elements.text._text import Text
 
     if not getattr(shape, "has_text_frame", False) or not shape.text_frame.text.strip():
         return None

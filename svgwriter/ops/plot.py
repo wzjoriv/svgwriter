@@ -12,7 +12,7 @@ from ._constants import CLOSEPOLY, CURVE4, LINETO, MOVETO, POINTS_PER_UNIT
 
 if TYPE_CHECKING:
     from ..document import Document
-    from ..elements.base import Element
+    from ..elements.core._element import Element
 
 __all__ = ["to_matplotlib"]
 

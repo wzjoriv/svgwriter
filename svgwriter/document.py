@@ -13,9 +13,9 @@ from ._document.ingest import SupportsSVG, _ingest
 from ._document.output import Output
 from ._document.sizing import Sizing
 from ._internal._typing import AnyPath, Stack
-from .elements._factory import ElementFactory
-from .elements.base import Element
-from .elements.container import attach_cursor
+from .elements.core._container import attach_cursor
+from .elements.core._element import Element
+from .elements.core._factory import ElementFactory
 from .elements.structure import Defs, Desc, Group, Svg, Title
 
 if TYPE_CHECKING:

@@ -11,7 +11,7 @@ from .._internal._constants import DEFAULT_PRECISION
 from ._constants import FUNC_IRI_RE
 
 if TYPE_CHECKING:
-    from ..elements.base import Element
+    from ..elements.core._element import Element
 
 __all__ = ["IRI", "FuncIRI", "parse_func_iri"]
 

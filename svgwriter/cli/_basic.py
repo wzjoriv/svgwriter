@@ -10,7 +10,7 @@ from collections import Counter
 
 from ..builder import SHAPES
 from ..document import Document
-from ..elements.base import Category, Element
+from ..elements.core._element import Category, Element
 from ..io.parser import Strictness, parse_file
 from ..io.writer import SerializeOptions
 from ._constants import CANVAS_MARGIN, DEFAULT_CANVAS, STROKE_WIDTH

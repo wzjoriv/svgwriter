@@ -10,9 +10,9 @@ from ..._internal._typing import Self
 from ...attributes.names import PRESENTATION_ATTRIBUTES
 from ...pathdata.data import BBox, PathData
 from ...transform.matrix import Matrix
-from .._geometry import PathOperand
-from .._viewport import positioned_bbox, user_units
-from ..base import Element
+from .._behavior._geometry import PathOperand
+from .._behavior._viewport import positioned_bbox, user_units
+from ..core._element import Element
 
 if TYPE_CHECKING:
     from ..shapes import Path
@@ -24,7 +24,7 @@ def _symbol_outline(symbol: Element, use: Element) -> PathData:
     """A ``<symbol>``'s children as one outline, its ``viewBox`` fitted into the ``<use>``'s width and height."""
     from ...attributes.viewbox import PreserveAspectRatio, ViewBox
     from ...ops._layers import _fit
-    from .._geometry import union_outline
+    from .._behavior._geometry import union_outline
 
     data = union_outline(symbol)
     box = symbol.get("viewBox")
@@ -111,7 +111,7 @@ class UseGeometry:
         box = positioned_bbox(self)
         if box is not None:
             return box
-        from .._transformable import Transformable
+        from .._behavior._transformable import Transformable
 
         target = self.referenced()
         inner = target.bounds() if isinstance(target, Transformable) else None

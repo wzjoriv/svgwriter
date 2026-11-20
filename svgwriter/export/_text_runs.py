@@ -14,7 +14,7 @@ from ._constants import DEFAULT_SIZE, JOIN_TOLERANCE
 if TYPE_CHECKING:
     from ..color.color import Color
     from ..document import Document
-    from ..elements.base import Element
+    from ..elements.core._element import Element
 
 __all__ = ["TextRun", "text_runs"]
 
@@ -56,7 +56,7 @@ class TextRun:
 
 def _font(source: Element, rules: list[Any]) -> tuple[str, float, bool, bool]:
     from ..attributes.cascade import computed
-    from ..elements._textlayout import _font_size, _font_weight
+    from ..elements.text._textlayout import _font_size, _font_weight
 
     family = str(computed(source, "font-family", "sans-serif", rules))
     size = _font_size(computed(source, "font-size", DEFAULT_SIZE, rules))
@@ -87,7 +87,7 @@ def text_runs(document: Document) -> list[TextRun]:
     [('Hello', 20.0, 10.0)]
     """
     from ..attributes.cascade import rules_of
-    from ..elements.text import Text
+    from ..elements.text._text import Text
     from ..ops._layers import _ancestry
     from ..ops.render import _view, document_size
     from ._flatten import _number

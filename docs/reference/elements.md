@@ -12,7 +12,7 @@ Element classes. Every class also has a lowercase alias (`svgwriter.circle` is `
 .. autoclass:: svgwriter.elements.Transformable
    :members:
 
-.. autoclass:: svgwriter.elements._convert.Convertible
+.. autoclass:: svgwriter.elements._behavior.Convertible
    :members:
 
 .. autoclass:: svgwriter.elements.PathOperand
@@ -33,16 +33,10 @@ Element classes. Every class also has a lowercase alias (`svgwriter.circle` is `
    :members:
 ```
 
-## Text
+## Text and fonts
 
 ```{eval-rst}
 .. automodule:: svgwriter.elements.text
-   :members:
-
-.. autoclass:: svgwriter.elements._character.Character
-   :members:
-
-.. autoclass:: svgwriter.elements._character.CharacterRange
    :members:
 ```
 
@@ -50,9 +44,6 @@ Element classes. Every class also has a lowercase alias (`svgwriter.circle` is `
 
 ```{eval-rst}
 .. automodule:: svgwriter.elements.paint
-   :members:
-
-.. automodule:: svgwriter.elements.clip
    :members:
 ```
 

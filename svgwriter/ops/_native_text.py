@@ -18,8 +18,8 @@ from ._constants import DEFAULT_FONT_SIZE, EFFECTS, MISSING_GLYPH, NO_DECORATION
 
 if TYPE_CHECKING:
     from ..color.color import Color
-    from ..elements.base import Element
-    from ..elements.text import Text
+    from ..elements.core._element import Element
+    from ..elements.text._text import Text
 
 __all__ = ["draw_text", "native_text"]
 
@@ -84,8 +84,8 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix) -> N
     --------
     native_text : Which texts can be drawn this way.
     """
-    from ..elements._geometry import clip_outline
-    from ..elements._transformable import Transformable
+    from ..elements._behavior._geometry import clip_outline
+    from ..elements._behavior._transformable import Transformable
     from ._layers import _ancestry, _chain, _skia_matrix
     from ._skia import to_skia
 
@@ -122,7 +122,7 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix) -> N
 def _glyph_font(box: Any) -> Any:
     """The skia font that draws *box* as one glyph, or None when it must be an outline."""
     from ..attributes.cascade import computed
-    from ..elements._textlayout import _font_size, _font_weight
+    from ..elements.text._textlayout import _font_size, _font_weight
     from ._fonts import font_for
     from ._shaping import needs_shaping
 

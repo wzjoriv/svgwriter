@@ -12,13 +12,13 @@ from ..transform.matrix import IDENTITY, Matrix
 
 if TYPE_CHECKING:
     from ..document import Document
-    from ..elements.base import Element
+    from ..elements.core._element import Element
 
 __all__ = ["placed_images"]
 
 
 def _ancestry(leaf: Element, root: Element) -> tuple[Matrix, float]:
-    from ..elements._transformable import Transformable
+    from ..elements._behavior._transformable import Transformable
 
     matrix, opacity = IDENTITY, 1.0
     node = leaf.parent
@@ -32,8 +32,8 @@ def _ancestry(leaf: Element, root: Element) -> tuple[Matrix, float]:
 
 def _expand_patterns(root: Element) -> None:
     """Replace pattern-filled shapes by their tiles cut to the outline, so vector formats keep patterns."""
-    from ..elements._geometry import PathOperand, replace_in_parent
-    from ..elements.paint import Pattern
+    from ..elements._behavior._geometry import PathOperand, replace_in_parent
+    from ..elements.paint._servers import Pattern
     from ..elements.structure import Group
     from ..ops._layers import drawable_order
 
@@ -60,7 +60,7 @@ def _expand_patterns(root: Element) -> None:
 
 def _cut_tiles(pattern: Any, box: Any, outline: PathData) -> list[Any]:
     """Each shape of each tile as a ``<path>`` intersected with *outline* (pattern transform baked in)."""
-    from ..elements._geometry import PathOperand
+    from ..elements._behavior._geometry import PathOperand
     from ..ops.boolean import intersection
 
     tile = pattern.tile(box)
