@@ -16,6 +16,7 @@ from ._constants import DEFAULT_FAMILY, DEFAULT_FONT_SIZE
 from ._skia import from_skia
 
 if TYPE_CHECKING:
+    from .._internal._shaping import ColorGlyphs
     from .text import Anchor, FontWeight
 
 __all__ = ["GlyphBox", "layout_glyphs"]
@@ -39,6 +40,9 @@ class GlyphBox:
         Advance width of the glyph.
     source : object, optional
         The element the character came from, if any. Defaults to None.
+    color : ColorGlyphs, optional
+        Colour glyphs (an emoji) drawn for the cluster this character starts, which have no
+        outline. Defaults to None.
 
     See Also
     --------
@@ -59,6 +63,7 @@ class GlyphBox:
     angle: float
     advance: float
     source: Any = None
+    color: ColorGlyphs | None = None
 
     def placed(self) -> PathData:
         """The outline rotated by ``angle`` and moved to ``(x, y)``.

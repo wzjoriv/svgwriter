@@ -1,3 +1,0 @@
-__all__ = ["latex_to_omml"]
-
-def latex_to_omml(source: str, run_properties: str = '') -> str: ...

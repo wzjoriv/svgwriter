@@ -1,3 +1,0 @@
-from ...document import Document
-
-def write_pptx(documents: list[Document]) -> bytes: ...

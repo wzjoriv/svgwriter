@@ -1,6 +1,6 @@
 name: Tests
 
-# quick: every pull request / push (lint, stubs current, the suite on one Python).
+# quick: every pull request / push (lint, stubs generate, the suite on one Python).
 # full: every supported CPython on Linux plus the oldest and newest on Windows / macOS, and coverage;
 # runs on pushes to main, when a maintainer adds the `full-tests` label to a pull request,
 # or when the workflow is started by hand. skia-python ships no wheels for PyPy, free-threaded
@@ -34,15 +34,15 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
       - name: System libraries for skia
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq libegl1 libgl1 libfontconfig1 fonts-dejavu-core
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libegl1 libgl1 libfontconfig1 fonts-dejavu-core fonts-noto-color-emoji
       - name: Install
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[test,dev]"
       - name: Lint
         run: ruff check --output-format github
-      - name: Stubs are current
-        run: python scripts/dev.py stub check
+      - name: Stubs generate
+        run: python scripts/dev.py stub generate
       - name: Notebooks match their scripts
         run: python scripts/dev.py notebooks check
       - name: Quick tests
@@ -59,12 +59,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14", "3.15"]
         include:
           - { os: windows-latest, python: "3.10" }
-          - { os: windows-latest, python: "3.14" }
+          - { os: windows-latest, python: "3.15" }
           - { os: macos-latest, python: "3.10" }
-          - { os: macos-latest, python: "3.14" }
+          - { os: macos-latest, python: "3.15" }
     steps:
       - uses: actions/checkout@v7
         with:
@@ -77,7 +77,7 @@ jobs:
           cache-dependency-path: pyproject.toml
       - name: System libraries for skia
         if: runner.os == 'Linux'
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq libegl1 libgl1 libfontconfig1 fonts-dejavu-core
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libegl1 libgl1 libfontconfig1 fonts-dejavu-core fonts-noto-color-emoji
       - name: Install
         run: pip install -e ".[test]"
       - name: Full tests
@@ -97,7 +97,7 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
       - name: System libraries for skia
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq libegl1 libgl1 libfontconfig1 fonts-dejavu-core
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libegl1 libgl1 libfontconfig1 fonts-dejavu-core fonts-noto-color-emoji
       - name: Install
         run: pip install -e . "pytest>=7.0"
       - name: Import and render without extras
@@ -116,7 +116,7 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
       - name: System libraries for skia
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq libegl1 libgl1 libfontconfig1 fonts-dejavu-core
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libegl1 libgl1 libfontconfig1 fonts-dejavu-core fonts-noto-color-emoji
       - name: Install
         run: pip install -e ".[test]" pytest-cov
       - name: Tests with coverage

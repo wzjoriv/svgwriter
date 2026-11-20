@@ -1,3 +1,0 @@
-from ...document import Document
-
-def read_pptx(data: bytes, index: int | None) -> Document | list[Document]: ...

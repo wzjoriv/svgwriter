@@ -201,7 +201,8 @@ def _effects_and_link(leaf: Element, root: Element) -> tuple[list[str], str | No
     return dropped, link
 
 
-def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: bool = False) -> Scene:
+def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: bool = False,
+            color_glyphs: bool = True) -> Scene:
     """Reduce *document* to :class:`Item` paths in its user space (``viewBox`` applied).
 
     Parameters
@@ -214,6 +215,10 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
     handled : frozenset of str, optional
         Tags the caller draws itself (``{"image"}`` for formats that embed
         pictures), left out of the warning. Defaults to an empty set.
+    color_glyphs : bool, optional
+        Leave emoji to the outlines or text runs, warning when outlines lose them (colour
+        glyphs have no outline); False when the caller places them itself, see
+        :func:`~svgwriter._internal._emoji.color_glyph_images`. Defaults to True.
 
     Returns
     -------
@@ -299,6 +304,8 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
             shading=_shading(leaf, matrix @ leaf.t, rules),
             link=link,
         ))
+    if color_glyphs and not text and _has_emoji(document):
+        skipped.append("colour emoji")
     reported = [entry for entry in skipped if entry.strip("<>") not in handled]
     if reported:
         warnings.warn(f"not representable in this format, skipped: {', '.join(sorted(set(reported)))}",
@@ -307,8 +314,14 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
     if text:
         from ._text_runs import text_runs
 
-        texts = text_runs(document)
+        texts = text_runs(document, color_glyphs=color_glyphs)
     return Scene(width, height, items, skipped, texts)
+
+
+def _has_emoji(document: Document) -> bool:
+    from ._emoji import color_glyph_boxes
+
+    return next(color_glyph_boxes(document), None) is not None
 
 
 def polylines(data: object, tolerance: float) -> list[tuple[list[Point], bool]]:

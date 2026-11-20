@@ -89,7 +89,7 @@ class TestCli:
         out = capsys.readouterr().out
         assert "shape: circle ellipse line path polygon polyline rect" in out
 
-    @pytest.mark.parametrize("shape", ["star", "gear", "polygon", "arrow"])
+    @pytest.mark.parametrize("shape", ["star", "gear", "polygon", "arrow", "regular_polygon", "heart", "callout", "cross", "grid", "spiral", "wave"])
     def test_draw(self, shape: str, capsys: pytest.CaptureFixture[str]) -> None:
         assert main(["draw", shape, "--size", "100"]) == 0
         wellformed(capsys.readouterr().out)
@@ -112,9 +112,9 @@ class TestCli:
 def test_examples_run(tmp_path: Path) -> None:
     examples = sorted((ROOT / "examples").glob("*.py"))
     assert len(examples) >= 3
-    env = {**os.environ, "PYTHONPATH": str(ROOT)}
+    env = {**os.environ, "PYTHONPATH": str(ROOT), "SVGWRITER_EXAMPLES_OUT": str(tmp_path)}
     for script in examples:
-        result = subprocess.run([sys.executable, str(script), str(tmp_path)], cwd=ROOT, env=env, capture_output=True, text=True)
+        result = subprocess.run([sys.executable, str(script)], cwd=ROOT, env=env, capture_output=True, text=True)
         assert result.returncode == 0, result.stderr
     outputs = sorted(tmp_path.glob("*.svg"))
     assert len(outputs) >= len(examples)

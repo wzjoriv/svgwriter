@@ -65,13 +65,16 @@ def _font(source: Element, rules: list[Any]) -> tuple[str, float, bool, bool]:
     return family, size, weight >= 600, italic
 
 
-def text_runs(document: Document) -> list[TextRun]:
+def text_runs(document: Document, *, color_glyphs: bool = True) -> list[TextRun]:
     """Every ``<text>`` of *document* as page-placed runs, in paint order.
 
     Parameters
     ----------
     document : Document
         The document.
+    color_glyphs : bool, optional
+        Keep emoji in the runs; False leaves them out (splitting the run) for formats that place
+        them as images. Defaults to True.
 
     Returns
     -------
@@ -106,7 +109,16 @@ def text_runs(document: Document) -> list[TextRun]:
             placement, opacity = ancestry(text, root)
             page = view @ placement
             current: list[Any] = []
+            skip = 0
             for box in text.layout():
+                if skip:
+                    skip -= 1
+                    continue
+                if box.color is not None and not color_glyphs:
+                    if current:
+                        runs.append(_run(current, page, opacity, rules, _font, _paint, _number))
+                    current, skip = [], len(box.color.text) - 1
+                    continue
                 if current and not _continues(current[-1], box):
                     runs.append(_run(current, page, opacity, rules, _font, _paint, _number))
                     current = []
