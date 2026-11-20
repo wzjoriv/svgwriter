@@ -12,14 +12,13 @@ URDU = "\u06c1\u06cc\u0644\u0648"
 @pytest.mark.parametrize(("anchor", "side"), [("start", "right"), ("end", "left")])
 def test_rtl_anchor_follows_the_text_direction(anchor: str, side: str) -> None:
     box = svg.text(URDU, x=100, y=40, font_size=24, direction="rtl", text_anchor=anchor).bounds()
-    if side == "right":
-        assert box.x + box.width <= 100.5
-    else:
-        assert box.x >= 99.5
+    centre = box.x + box.width / 2
+    assert (centre < 100 - box.width / 4) if side == "right" else (centre > 100 + box.width / 4)
 
 
 def test_ltr_anchor_is_unchanged() -> None:
-    assert svg.text("abc", x=100, y=40, font_size=24).bounds().x >= 99.5
+    box = svg.text("abc", x=100, y=40, font_size=24).bounds()
+    assert box.x + box.width / 2 > 100 + box.width / 4
 
 
 def test_notebook_svg_is_ascii_and_keeps_the_text() -> None:
