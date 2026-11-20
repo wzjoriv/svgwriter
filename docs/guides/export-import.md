@@ -34,7 +34,7 @@ print(sorted(svg.export.exporters()))
 | ICNS | `.icns` | ✓ | ✓ | standard and Retina sizes; import takes the largest image |
 | PDF | `.pdf` | ✓ | ✓ | vector (skia); text kept as text, in an embedded font subset; import reads paths, images, clips, text and shadings, `page=`; links stay clickable; a list of documents gives one page each (`page=None` reads all) |
 | EPS / PostScript | `.eps` `.ps` | ✓ | ✓ | text kept as text (ASCII in standard fonts); no transparency; import is a small PostScript interpreter |
-| TikZ | `.tikz` `.tex` | ✓ | ✓ | `standalone=True` for a compilable document; text kept as `\node`; import reads `\draw`, `\fill`, nodes, `\foreach` |
+| TikZ | `.tikz` `.tex` | ✓ | ✓ | `standalone=True` for a compilable document; text kept as `\node`; import reads `\draw`, `\fill`, nodes, grids, shadings, `\foreach` |
 | DXF | `.dxf` | ✓ | ✓ | CAD polylines in mm, one layer per colour; import reads lines, polylines, circles, arcs, ellipses |
 | HPGL | `.hpgl` `.plt` | ✓ | ✓ | pen plotters and cutters, one pen per colour |
 | G-code | `.gcode` `.nc` `.ngc` | ✓ | ✓ | `mode="mill"` or `"laser"`, `feed`, `cut_z`, `tolerance` |
@@ -111,19 +111,19 @@ doc.save("figure.pdf")                 # selectable text
 doc.save("figure.pdf", text=False)     # glyph outlines only
 ```
 
-PDF, EPS and TikZ read back as filled and stroked `<path>` elements with solid colours, stroke width,
-dashes, caps, joins and opacity, in points with y pointing down. The PDF reader scans for objects (a
+PDF, EPS and TikZ read back as filled and stroked `<path>` elements with solid colours or gradients,
+stroke width, dashes, caps, joins and opacity, in points with y pointing down. The PDF reader scans for objects (a
 broken xref table does not matter), inflates `/FlateDecode` streams, follows Form XObjects and `gs`
 alpha, and reads page 1 unless you pass `page=`. Images, clipping paths and text come in as
 `<image>`, `clip-path` and `<text>`. Text is decoded through the font's `/ToUnicode` map, which most
 PDF writers embed. Glyphs placed one at a time are joined back into words, and the font family
 comes from the font's name. Axial and radial shadings become gradients and tiling patterns become
 `<pattern>`. The EPS reader is a small PostScript interpreter. It handles paths, `arc`, painting,
-colours, line styles, `gsave`/`grestore`, transforms, `image`/`colorimage`, `clip`, `show` with
+colours, line styles, `gsave`/`grestore`, transforms, `image`/`colorimage`, `clip`, `shfill`, `show` with
 `findfont`, and procedures and dictionaries with `def`. It honours `%%BoundingBox` and ignores
 operators it does not know. The TikZ reader takes `\draw`, `\fill`, `\filldraw` and `\path` with
-`--`, `.. controls ..`, `cycle`, `rectangle` and `circle`. It also reads colours from `\definecolor`
-and xcolor mixes, the common line options, nodes (with shapes and names), `\tikzset` styles,
+`--`, `.. controls ..`, `cycle`, `rectangle`, `circle` and `grid`. It also reads colours from `\definecolor`
+and xcolor mixes, the common line options, shadings (`top color`, `inner color` and the like), nodes (with shapes and names), `\tikzset` styles,
 `scope` and `\foreach`. Other macros are not expanded.
 
 ```python

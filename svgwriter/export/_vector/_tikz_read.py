@@ -80,9 +80,11 @@ def read_tikz(text: str) -> Document:
     ``\\x/\\y in {1/a,2/b}`` are unrolled by substituting the variables
     before parsing; arithmetic on them (``\\x*2``) is not evaluated.
 
-    Macros, ``to``/``arc``/``grid`` operations, positioning libraries
-    (``right=of a``), ``sloped``, node rotation and shading are not
-    interpreted; a command that cannot be read is skipped.
+    ``grid`` draws its lines at the multiples of ``step`` (``help lines``
+    included), and shadings (``top color``, ``inner color``, ...) become
+    gradients. Macros, ``to``/``arc`` operations, positioning libraries
+    (``right=of a``), ``sloped`` and node rotation are not interpreted; a
+    command that cannot be read is skipped.
 
     Examples
     --------

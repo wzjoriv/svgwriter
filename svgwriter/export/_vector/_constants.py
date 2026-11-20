@@ -58,7 +58,9 @@ __all__ = [
     "FULL_TURN",
     "GAP_TOLERANCE",
     "GRAY_CHANNELS",
+    "GRID_EPSILON",
     "HAIRLINE",
+    "HELP_LINES_COLOR",
     "HEADER_WINDOW",
     "HEX_DIGITS_RE",
     "HEX_END",
@@ -134,6 +136,8 @@ __all__ = [
     "TIKZ_JOINS",
     "TIKZ_PRECISION",
     "TIKZ_STANDALONE",
+    "SIDE_SHADING_ANGLE",
+    "TIKZ_GRID_STEP",
     "TILING",
     "UNITS",
     "WORD_RE",
@@ -250,6 +254,10 @@ HAIRLINE: Final = 0.25
 MAX_ARC_SEGMENT: Final = math.pi / 2
 BEZIER_ARC_FACTOR: Final = 4.0 / 3.0
 TIKZ_PRECISION: Final = 3
+SIDE_SHADING_ANGLE: Final = 90.0
+TIKZ_GRID_STEP: Final = "1cm"
+HELP_LINES_COLOR: Final = "gray!50"
+GRID_EPSILON: Final = 1e-6
 TIKZ_STANDALONE: Final = "\\documentclass[tikz]{standalone}\n\\usepackage[T1]{fontenc}\n\\usepackage{times}\n"
 ANGLE_EPSILON: Final = 1e-6
 TIKZ_CAPS: Final = {"butt": "butt", "round": "round", "square": "rect"}

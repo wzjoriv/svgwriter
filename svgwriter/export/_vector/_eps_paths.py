@@ -72,3 +72,17 @@ def _clip_to_path(machine: _Machine, _: int) -> None:
     ops = list(machine.outline.ops)
     if ops:
         machine.state.clip = _intersect(machine.state.clip, ops)
+
+
+def _shfill(machine: _Machine, _: int) -> None:
+    """``shfill``: fill the clip with an axial or radial shading dictionary, as a gradient."""
+    from ._pdf_paint import gradient
+    from ._reading import Shape, _path
+
+    paint = gradient({}, machine.pop(1, dict)[0], machine.state.ctm)
+    if paint is None or not machine.state.clip:
+        return
+    area = _path(Shape(machine.state.clip))
+    area.set("fill", paint)
+    area.set("stroke", "none")
+    machine.shapes.append(area)

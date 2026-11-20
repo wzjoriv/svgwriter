@@ -90,3 +90,21 @@ def test_an_enlarged_image_has_no_dark_fringe_at_transparent_edges():
     doc.add(svg.Image(pixels, 0, 0, 8, 8))
     edge = doc.rasterize(scale=4)[12:20, 10]
     assert edge[edge[:, 3] > 0, :3].min() > 0.99
+
+
+@pytest.mark.parametrize("gradient", [lambda: svg.LinearGradient.horizontal("red", "blue"),
+                                      lambda: svg.RadialGradient(svg.Stop(0, "white"), svg.Stop(1, "green"))])
+@pytest.mark.parametrize("format", ["tikz", "eps"])
+def test_a_tikz_or_eps_shading_reads_back_as_a_gradient(gradient, format):
+    doc = svg.Document(60, 40)
+    doc.rect(10, 5, 40, 30, fill=gradient())
+    data = svg.export.export(doc, format)
+    back = svg.export.find_importer(format).function(data.encode() if isinstance(data, str) else data)
+    assert np.abs(back.rasterize() - doc.rasterize()).mean() < 0.02
+
+
+def test_a_tikz_grid_reads_back_as_its_lines():
+    picture = r"\begin{tikzpicture}\draw[help lines, step=0.5] (0,0) grid (2,1);\end{tikzpicture}"
+    (path,) = svg.export.find_importer("tikz").function(picture.encode())
+    assert str(path.get("d")).count("M") == 5 + 3
+    assert path.get("stroke") == "#bfbfbf"

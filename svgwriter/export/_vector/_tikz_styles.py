@@ -4,9 +4,10 @@ TikZ colours and path options resolved into fill and stroke styles.
 
 from __future__ import annotations
 
+import math
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Any, Final
 
 from ...color.color import as_color
 from ._constants import (
@@ -17,9 +18,11 @@ from ._constants import (
     DASHES,
     DEFAULT_LINE_WIDTH,
     DEFINECOLOR_RE,
+    HELP_LINES_COLOR,
     LINE_WIDTHS,
     PERCENT,
     RGB_SCALE,
+    SIDE_SHADING_ANGLE,
     TIKZ_CAP_NAMES,
     XCOLOR,
 )
@@ -104,6 +107,15 @@ class _Style:
     miter_limit: float = 10.0
     evenodd: bool = False
     dashes: tuple[float, ...] = field(default=())
+    shades: dict[str, RGB] = field(default_factory=dict)
+    shading_angle: float = 0.0
+
+    def shade(self, key: str, value: str | None, angle: float | None = None) -> None:
+        """A shading colour (``top color``, ``inner color``, ...), which also turns the fill on."""
+        self.shades[key] = _mix(value or "black", self.colors)
+        self.fill = True
+        if angle is not None:
+            self.shading_angle = angle
 
     def paint(self, key: str, value: str | None) -> None:
         """``draw``/``fill``, bare or with a colour or ``none``."""
@@ -114,16 +126,41 @@ class _Style:
 
     def shape(self, ops: list) -> Shape:
         """A shape painting *ops* with this style."""
-        return Shape(ops, fill=(self.fill_color or self.color) if self.fill else None,
+        paint, stand_in = _shading(self.shades, self.shading_angle) if self.shades else (None, None)
+        return Shape(ops, fill=(stand_in or self.fill_color or self.color) if self.fill else None, fill_paint=paint,
                      stroke=(self.draw_color or self.color) if self.draw else None,
                      fill_opacity=self.fill_opacity, stroke_opacity=self.draw_opacity, evenodd=self.evenodd,
                      stroke_width=self.line_width, linecap=self.linecap, linejoin=self.linejoin,
                      miter_limit=self.miter_limit, dashes=self.dashes)
 
 
+def _shading(shades: dict[str, RGB], angle: float) -> tuple[Any, RGB]:
+    """A TikZ shading as an SVG gradient over the shape's box, with its average colour as the solid stand-in."""
+    from ...elements.paint import LinearGradient, RadialGradient, Stop
+    from ._reading import _hex
+
+    if "inner" in shades or "outer" in shades:
+        colors = [shades.get("inner", shades.get("outer", BLACK)), shades.get("outer", shades.get("inner", BLACK))]
+        gradient: Any = RadialGradient(*(Stop(i, _hex(c)) for i, c in enumerate(colors)))
+    else:
+        top, bottom = shades.get("top", shades.get("bottom", BLACK)), shades.get("bottom", shades.get("top", BLACK))
+        colors = [top, shades["middle"], bottom] if "middle" in shades else [top, bottom]
+        dx, dy = math.sin(math.radians(angle)) / 2, math.cos(math.radians(angle)) / 2
+        gradient = LinearGradient(*(Stop(i / (len(colors) - 1), _hex(c)) for i, c in enumerate(colors)),
+                                  x1=0.5 - dx, y1=0.5 - dy, x2=0.5 + dx, y2=0.5 + dy)
+    mean = tuple(sum(channel) / len(colors) for channel in zip(*colors, strict=True))
+    return gradient, (mean[0], mean[1], mean[2])
+
+
 def _opacity(style: _Style, value: str | None) -> None:
     """``opacity``: the same opacity for fill and stroke."""
     style.fill_opacity = style.draw_opacity = float(value or 1)
+
+
+def _help_lines(style: _Style, _: str | None) -> None:
+    """``help lines``: TikZ's thin grey style for grids."""
+    style.color = _mix(HELP_LINES_COLOR, style.colors)
+    style.line_width = LINE_WIDTHS["very thin"]
 
 
 def _dash_pattern(value: str | None) -> tuple[float, ...]:
@@ -146,6 +183,11 @@ OPTIONS: Final[dict[str, Callable[[_Style, str | None], None]]] = {
     "even odd rule": lambda s, v: setattr(s, "evenodd", True),
     "nonzero rule": lambda s, v: setattr(s, "evenodd", False),
     "dash pattern": lambda s, v: setattr(s, "dashes", _dash_pattern(v)),
+    **{f"{name} color": lambda s, v, n=name: s.shade(n, v) for name in ("top", "bottom", "middle", "inner", "outer")},
+    "left color": lambda s, v: s.shade("top", v, SIDE_SHADING_ANGLE),
+    "right color": lambda s, v: s.shade("bottom", v, SIDE_SHADING_ANGLE),
+    "shading angle": lambda s, v: setattr(s, "shading_angle", float(v or 0)),
+    "help lines": _help_lines,
     **{name: lambda s, v, w=width: setattr(s, "line_width", w) for name, width in LINE_WIDTHS.items()},
     **{name: lambda s, v, d=dashes: setattr(s, "dashes", d) for name, dashes in DASHES.items()},
 }

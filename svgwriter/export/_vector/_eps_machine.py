@@ -12,7 +12,17 @@ from typing import TYPE_CHECKING, Any, Final
 from ...transform.matrix import Matrix
 from ._constants import BLACK, CAP_NAMES, HAIRLINE, JOIN_NAMES, MAX_STEPS, PS_MAX_DEPTH, SAVE_OBJECT
 from ._eps_images import _colorimage, _filter, _image
-from ._eps_paths import _arc, _clip_to_path, _grestore, _gsave, _rectangle, _rotation, _setdash, _setter
+from ._eps_paths import (
+    _arc,
+    _clip_to_path,
+    _grestore,
+    _gsave,
+    _rectangle,
+    _rotation,
+    _setdash,
+    _setter,
+    _shfill,
+)
 from ._eps_syntax import Inline, Literal, Mark, Name, Procedure, _File, _Underflow
 from ._eps_text import (
     _ashow,
@@ -192,6 +202,7 @@ def _binary(function: Callable[[float, float], float]) -> Callable[[_Machine, in
 OPERATORS: Final[dict[str, Callable[[_Machine, int], None]]] = {
     "clip": _clip_to_path,
     "eoclip": _clip_to_path,
+    "shfill": _shfill,
     "image": _image,
     "colorimage": _colorimage,
     "currentfile": lambda m, _: m.stack.append(_File()),

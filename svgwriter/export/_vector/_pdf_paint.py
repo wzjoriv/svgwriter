@@ -1,5 +1,5 @@
 """
-PDF shadings and patterns read as SVG gradients and ``<pattern>`` paint servers.
+PDF and PostScript shadings read as SVG gradients, and PDF patterns as ``<pattern>`` paint servers.
 """
 
 from __future__ import annotations
@@ -13,35 +13,35 @@ if TYPE_CHECKING:
     from ...elements.core import Element
     from ._pdf_painter import _Painter
 
-__all__ = ["fill_with_pattern", "paint_shading", "pattern_paint"]
+__all__ = ["fill_with_pattern", "gradient", "paint_shading", "pattern_paint"]
 
 
-def _stops(painter: _Painter, function: Any, low: float = 0.0, high: float = 1.0) -> list[tuple[float, Any]] | None:
+def _stops(objects: dict[Any, Any], function: Any, low: float = 0.0, high: float = 1.0) -> list[tuple[float, Any]] | None:
     """Gradient stops ``(offset, rgb)`` for an exponential or stitching function, offsets mapped to 0..1."""
     from ._pdf_objects import _resolve
     from ._pdf_painter import _color
 
-    function = _resolve(painter.objects, function)
+    function = _resolve(objects, function)
     if isinstance(function, list):
-        parts = [_stops(painter, f, low, high) for f in function]
+        parts = [_stops(objects, f, low, high) for f in function]
         return parts[0] if parts and all(parts) else None
     info = function.info if hasattr(function, "info") else function
     if not isinstance(info, dict):
         return None
     kind = int(info.get("FunctionType", -1))
     if kind == EXPONENTIAL:
-        start = _color(_resolve(painter.objects, info.get("C0")) or [0.0])
-        end = _color(_resolve(painter.objects, info.get("C1")) or [1.0])
+        start = _color(_resolve(objects, info.get("C0")) or [0.0])
+        end = _color(_resolve(objects, info.get("C1")) or [1.0])
         return [(low, start), (high, end)]
     if kind == STITCHING:
-        domain = [float(v) for v in _resolve(painter.objects, info.get("Domain")) or [0, 1]]
-        bounds = [float(v) for v in _resolve(painter.objects, info.get("Bounds")) or []]
+        domain = [float(v) for v in _resolve(objects, info.get("Domain")) or [0, 1]]
+        bounds = [float(v) for v in _resolve(objects, info.get("Bounds")) or []]
         edges = [domain[0], *bounds, domain[1]]
         span = (domain[1] - domain[0]) or 1.0
         stops: list[tuple[float, Any]] = []
-        for part, (a, b) in zip(_resolve(painter.objects, info.get("Functions")) or [], zip(edges, edges[1:], strict=False),
+        for part, (a, b) in zip(_resolve(objects, info.get("Functions")) or [], zip(edges, edges[1:], strict=False),
                                 strict=False):
-            piece = _stops(painter, part, low + (a - domain[0]) / span * (high - low),
+            piece = _stops(objects, part, low + (a - domain[0]) / span * (high - low),
                            low + (b - domain[0]) / span * (high - low))
             if piece is None:
                 return None
@@ -50,7 +50,7 @@ def _stops(painter: _Painter, function: Any, low: float = 0.0, high: float = 1.0
     return None
 
 
-def gradient(painter: _Painter, shading: Any, matrix: Matrix) -> Element | None:
+def gradient(objects: dict[Any, Any], shading: Any, matrix: Matrix) -> Element | None:
     """An axial or radial shading as a ``userSpaceOnUse`` gradient carrying *matrix*, or None if unsupported."""
     from ...color.color import Color
     from ...elements.paint import LinearGradient, RadialGradient, Stop
@@ -60,8 +60,8 @@ def gradient(painter: _Painter, shading: Any, matrix: Matrix) -> Element | None:
     if not isinstance(info, dict):
         return None
     kind = int(info.get("ShadingType", 0))
-    coords = [float(v) for v in _resolve(painter.objects, info.get("Coords")) or []]
-    stops = _stops(painter, info.get("Function"))
+    coords = [float(v) for v in _resolve(objects, info.get("Coords")) or []]
+    stops = _stops(objects, info.get("Function"))
     if stops is None or kind not in (AXIAL, RADIAL) or len(coords) < (4 if kind == AXIAL else 6):
         return None
     children = [Stop(offset, Color(*rgb)) for offset, rgb in stops]
@@ -80,7 +80,7 @@ def paint_shading(painter: _Painter, operands: list[Any], resources: dict[str, A
     from ._reading import Shape, _path
 
     shading = painter.resource(resources, "Shading", operands[-1])
-    paint = gradient(painter, shading, painter.state.ctm) if shading is not None else None
+    paint = gradient(painter.objects, shading, painter.state.ctm) if shading is not None else None
     region = painter.state.clip or painter.page
     if paint is None or not region:
         return
@@ -100,7 +100,7 @@ def pattern_paint(painter: _Painter, pattern: Any) -> Element | None:
     matrix = painter.base @ Matrix(*map(float, _resolve(painter.objects, info.get("Matrix")) or IDENTITY_MATRIX))
     kind = int(info.get("PatternType", 0))
     if kind == SHADING:
-        return gradient(painter, _resolve(painter.objects, info.get("Shading")), matrix)
+        return gradient(painter.objects, _resolve(painter.objects, info.get("Shading")), matrix)
     if kind == TILING and hasattr(pattern, "raw"):
         return _tiling(painter, pattern, matrix)
     return None
