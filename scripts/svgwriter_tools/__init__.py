@@ -3,6 +3,7 @@
 python scripts/dev.py svgwriter fetch-suite
 python scripts/dev.py svgwriter conformance [--filter shapes] [--report build/conformance.md]
 python scripts/dev.py svgwriter bench [--count 100000]
+python scripts/dev.py svgwriter gallery
 """
 
 from __future__ import annotations
@@ -15,6 +16,15 @@ from ._conformance import run_suite, write_report
 from ._suite import SUITE_DIR, SUITE_URL, fetch
 
 app = typer.Typer(name="svgwriter", help=__doc__, add_completion=False, no_args_is_help=True)
+
+
+@app.command()
+def gallery() -> None:
+    """Render the README gallery: each example's picture as a PNG in docs/_static/examples."""
+    from ._gallery import build_gallery
+
+    for path in build_gallery():
+        typer.echo(f"wrote {path.relative_to(Path.cwd()) if path.is_relative_to(Path.cwd()) else path}")
 
 
 @app.command("fetch-suite")

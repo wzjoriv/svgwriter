@@ -78,7 +78,14 @@ svg.Document.open("sketch.excalidraw").save("sketch.svg")
 
 ## Examples
 
-[`examples/`](examples) has runnable scripts for shapes, transforms, typography, boolean operations, filters, markers, pixels and animation; each has a Jupyter notebook next to it that shows the results as pictures.
+[`examples/`](https://github.com/wzjoriv/svgwriter/tree/main/examples) has runnable scripts for shapes, transforms, typography, boolean operations, filters, markers, pixels and animation; each has a Jupyter notebook next to it that shows the results as pictures. All pictures below are rendered by svgwriter.
+
+| | | |
+|:---:|:---:|:---:|
+| [![Shapes, gradients and text](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/basic_shapes.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/basic_shapes.ipynb)<br>[Shapes, gradients, text](https://github.com/wzjoriv/svgwriter/blob/main/examples/basic_shapes.ipynb) | [![Transforms](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/transforms.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/transforms.ipynb)<br>[Transforms](https://github.com/wzjoriv/svgwriter/blob/main/examples/transforms.ipynb) | [![Boolean operations](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/boolean_ops.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/boolean_ops.ipynb)<br>[Boolean operations](https://github.com/wzjoriv/svgwriter/blob/main/examples/boolean_ops.ipynb) |
+| [![Typography](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/typography.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/typography.ipynb)<br>[Typography](https://github.com/wzjoriv/svgwriter/blob/main/examples/typography.ipynb) | [![Filter effects](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/filter_effects.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/filter_effects.ipynb)<br>[Filter effects](https://github.com/wzjoriv/svgwriter/blob/main/examples/filter_effects.ipynb) | [![Paths and markers](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/paths_and_markers.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/paths_and_markers.ipynb)<br>[Paths and markers](https://github.com/wzjoriv/svgwriter/blob/main/examples/paths_and_markers.ipynb) |
+
+Regenerate the pictures with `python scripts/dev.py svgwriter gallery`.
 
 ## Development
 
