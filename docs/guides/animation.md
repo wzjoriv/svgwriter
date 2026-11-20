@@ -14,6 +14,17 @@ ball.append(svg.Animate(attribute_name="cx", from_=20, to=80, dur="2s", repeat_c
 doc.save("ball.svg")
 ```
 
+## Playing SMIL
+
+`doc.at(seconds)` returns a static copy with every animation applied at that moment, so SMIL can be
+inspected, rasterized or exported frame by frame, and `render_animation` plays it without an `update`
+callback. It covers `animate`, `set`, `animateColor`, `animateTransform` and `animateMotion` with clock
+timing, repeats, `fill="freeze"`, `values`/`keyTimes`, discrete mode and `additive="sum"`.
+
+```python
+frame = doc.at(1.0)          # the ball halfway along
+```
+
 ## Video through ffmpeg
 
 `render_animation` draws frames and pipes them to ffmpeg (mp4, gif, webm, mov, apng). The `update`

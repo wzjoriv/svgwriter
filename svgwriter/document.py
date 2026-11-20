@@ -669,6 +669,44 @@ class Document(ElementFactory):
     def _repr_svg_(self) -> str:
         return self.to_string(xml_declaration=False)
 
+    def at(self, time: float) -> Document:
+        """A static copy with every SMIL animation applied at *time* seconds (and removed).
+
+        Parameters
+        ----------
+        time : float
+            Seconds since the document began.
+
+        Returns
+        -------
+        Document
+            The frame at that moment; this document is unchanged.
+
+        See Also
+        --------
+        render_animation : Uses this for each frame, so SMIL plays without ``update``.
+
+        Notes
+        -----
+        Supports ``animate``, ``set``, ``animateColor``, ``animateTransform``
+        and ``animateMotion`` with clock timing, ``repeatCount``,
+        ``repeatDur``, ``fill="freeze"``, ``values``/``from``/``to``/``by``,
+        ``keyTimes``, discrete mode and ``additive="sum"``. Event-based begins
+        and spline timing are treated as their clock-based, linear equivalents.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> doc = svg.Document(100, 20)
+        >>> ball = doc.circle(10, 10, 5)
+        >>> _ = ball.append(svg.Animate(attribute_name="cx", from_=10, to=90, dur=2))
+        >>> doc.at(1.0)[0].get("cx")
+        '50'
+        """
+        from .video._smil import snapshot
+
+        return snapshot(self, time)
+
     def _repr_png_(self) -> bytes:
         return self.render_png()
 

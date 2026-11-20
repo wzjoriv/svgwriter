@@ -600,7 +600,11 @@ def render_frame(document: Document, time: float) -> np.ndarray:
     >>> frame.shape, frame.dtype.name
     ((2, 4, 4), 'uint8')
     """
-    del time
+    from ..elements.animation import AnimationElement
+    from ..video._smil import snapshot
+
+    if document.root.find(AnimationElement) is not None:
+        document = snapshot(document, time)
     image = document.rasterize(background="white", snapshot=True)
     info = skia.ImageInfo.Make(image.width(), image.height(), skia.kRGBA_8888_ColorType, skia.kPremul_AlphaType)
     frame = np.empty((image.height(), image.width(), 4), np.uint8)
