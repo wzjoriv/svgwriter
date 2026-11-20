@@ -8,15 +8,27 @@ import re
 from typing import Final
 
 __all__ = [
-    "BODY_SIZE", "BOLD_RE", "BULLET", "BULLET_RE", "CODE_FILL", "DEFAULT_MITER", "DEFAULT_SIZE",
-    "GZIP_MAGIC", "HEADING_RE", "HEADING_SIZES", "INDENT_PER_LEVEL", "INLINE_RE", "JOIN_TOLERANCE",
-    "LINE_HEIGHT", "MARGIN", "MONOSPACE", "NONE", "NUMBERED_RE", "PAGE", "PERCENT", "SANS", "SCRIPT",
-    "SPACES_PER_LEVEL", "SVG_RE"
+    "BODY_SIZE",
+    "BOLD_RE",
+    "BULLET",
+    "BULLET_RE",
+    "CODE_FILL",
+    "GZIP_MAGIC",
+    "HEADING_RE",
+    "HEADING_SIZES",
+    "INDENT_PER_LEVEL",
+    "INLINE_RE",
+    "LINE_HEIGHT",
+    "MARGIN",
+    "MONOSPACE",
+    "NUMBERED_RE",
+    "PAGE",
+    "SANS",
+    "SCRIPT",
+    "SPACES_PER_LEVEL",
+    "SVG_RE",
 ]
 
-PERCENT: Final = 100.0
-NONE: Final = "none"
-DEFAULT_MITER: Final = 4.0
 SVG_RE: Final = re.compile(r"<svg[\s>].*?</svg\s*>", re.S | re.I)
 PAGE: Final = """<!doctype html>
 <html lang="en">
@@ -64,5 +76,3 @@ BOLD_RE: Final = re.compile(r"\*\*(.+?)\*\*|__(.+?)__")
 INLINE_RE: Final = re.compile(r"`([^`]*)`|\*([^*]+)\*|_([^_]+)_|!?\[([^\]]*)\]\([^)]*\)")
 INDENT_PER_LEVEL: Final = 20.0
 SPACES_PER_LEVEL: Final = 2
-JOIN_TOLERANCE: Final = 0.01
-DEFAULT_SIZE: Final = 16.0

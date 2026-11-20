@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 from ._constants import COMPOUND_RE
 
 if TYPE_CHECKING:
-    from ..elements.core._element import Element
+    from ..elements.core import Element
 
 __all__ = ["matches_compound", "specificity"]
 

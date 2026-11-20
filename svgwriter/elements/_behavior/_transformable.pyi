@@ -3,7 +3,8 @@ from typing import Any, ClassVar, TypeAlias, TypeVar
 from ...pathdata.data import BBox
 from ...transform.matrix import Matrix, Point
 from ...transform.transform import TransformLike
-from ..core._element import AttrValue, Child, Element
+from ..core import Child, Element
+from ..core._element import AttrValue
 from ._moves import TransformMethods
 from ._placement import Placement
 

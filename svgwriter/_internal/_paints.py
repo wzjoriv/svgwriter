@@ -7,20 +7,20 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from ..attributes.cascade import computed
-from ..attributes.length import Length
-from ..color.color import Color, as_color
-from ..transform.matrix import Matrix
 from ._constants import NONE, PERCENT
+from ._tree import resolve
 
 if TYPE_CHECKING:
-    from ..elements.core._element import Element
+    from ..color.color import Color
+    from ..elements.core import Element
+    from ..transform.matrix import Matrix
 
 __all__ = ["Shading"]
 
 
 def _paint(element: Element, name: str, default: str, rules: list) -> Color | None:
-    from ..elements._behavior._geometry import resolve
+    from ..attributes.cascade import computed
+    from ..color.color import Color, as_color
 
     value = computed(element, name, default, rules)
     text = str(value.svg_value() if hasattr(value, "svg_value") else value).strip()
@@ -66,7 +66,10 @@ class Shading:
 
 def _shading(element: Element, to_page: Matrix, rules: list) -> Shading | None:
     """The gradient behind ``fill``, when it is a linear or radial gradient with stops."""
-    from ..elements._behavior._geometry import resolve
+    from ..attributes.cascade import computed
+    from ..attributes.length import Length
+    from ..color.color import as_color
+    from ..transform.matrix import Matrix
 
     value = computed(element, "fill", "black", rules)
     if not str(getattr(value, "svg_value", lambda: value)()).startswith("url("):

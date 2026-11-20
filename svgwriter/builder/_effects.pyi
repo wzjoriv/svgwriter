@@ -10,7 +10,8 @@ from ..document import Document
 from ..elements._behavior._mixins import XmlSpace
 from ..elements.core._element import AttrValue, Element
 from ..elements.filters import Filter
-from ..elements.paint._clip import Marker, MarkerOrient
+from ..elements.paint import Marker
+from ..elements.paint._clip import MarkerOrient
 
 __all__ = ["arrow_marker", "drawing", "drop_shadow", "glow"]
 

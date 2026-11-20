@@ -5,17 +5,17 @@ from ..._internal._typing import FillRule, LengthAdjust, LineCap, LineJoin, Opac
 from ...attributes.length import LengthLike
 from ...attributes.style import StyleLike
 from ...color.paint import PaintValue
-from .._behavior._geometry import PathOperand
-from .._behavior._mixins import (
+from .._behavior import (
     ConditionalAttributes,
     CoreAttributes,
     GraphicsElement,
+    PathOperand,
     PresentationAttributes,
     XLinkAttributes,
-    XmlSpace,
 )
-from ..core._container import Container
-from ..core._element import AttrValue, Category, Child, ContentModel, Element
+from .._behavior._mixins import XmlSpace
+from ..core import Category, Child, Container, ContentModel, Element
+from ..core._element import AttrValue
 from ._textaccess import TextAccess
 from ._textbase import Coordinates, _TextLength, _TextPositioning
 

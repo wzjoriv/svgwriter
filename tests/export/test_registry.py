@@ -94,7 +94,7 @@ class TestFormats:
             doc.export("tikz")
 
     def test_flatten_transforms_opacity_and_paint_fallbacks(self) -> None:
-        from svgwriter.export._flatten import flatten
+        from svgwriter._internal._flatten import flatten
 
         doc = svg.Document(100, 100)
         g = doc.group(opacity=0.5).translate(10, 0)

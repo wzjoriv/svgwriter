@@ -31,11 +31,11 @@ class Composable:
 
     def __add__(self: Element, other: Element | Iterable[Element]) -> Group:
         """``a + b``: a new ``<g>`` holding both; operands already in a tree are copied, never moved."""
+        from ..._internal._tree import element_list
         from ..structure import Group
-        from ._container import flatten
 
         try:
-            items = flatten(other)
+            items = element_list(other)
         except TypeError:
             return NotImplemented
         if any(isinstance(item, str) for item in items):
@@ -44,12 +44,11 @@ class Composable:
 
     def __iadd__(self: Element, other: Element | Iterable[Element]) -> Group:
         """``a += b``: a ``<g>`` holding *a* and *b* takes *a*'s place in its parent."""
-        from .._behavior._geometry import replace_in_parent
+        from ..._internal._tree import element_list, replace_in_parent
         from ..structure import Group
-        from ._container import flatten
 
         try:
-            items = flatten(other)
+            items = element_list(other)
         except TypeError:
             return NotImplemented
         if any(isinstance(item, str) for item in items):
@@ -61,11 +60,11 @@ class Composable:
 
     def __radd__(self: Element, other: Iterable[Element]) -> Group:
         """``[a, b] + c``: a new ``<g>`` holding all three."""
+        from ..._internal._tree import element_list
         from ..structure import Group
-        from ._container import flatten
 
         try:
-            items = flatten(other)
+            items = element_list(other)
         except TypeError:
             return NotImplemented
         if any(isinstance(item, str) for item in items):

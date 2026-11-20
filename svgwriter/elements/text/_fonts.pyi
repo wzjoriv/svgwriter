@@ -6,15 +6,15 @@ from ...attributes.style import StyleLike
 from ...color.paint import PaintValue
 from ...pathdata.builder import PathBuilder
 from ...pathdata.data import PathData
-from .._behavior._mixins import (
+from .._behavior import (
     CoreAttributes,
     ExternalResourcesAttribute,
     PresentationAttributes,
     XLinkAttributes,
-    XmlSpace,
 )
-from ..core._container import Container
-from ..core._element import AttrValue, Category, Child, ContentModel, Element
+from .._behavior._mixins import XmlSpace
+from ..core import Category, Child, Container, ContentModel, Element
+from ..core._element import AttrValue
 from ._fontbase import FontGlyphs, _GlyphBase, _Kern
 
 __all__ = [

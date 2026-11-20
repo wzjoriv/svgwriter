@@ -7,8 +7,7 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING, Any
 
-from ..elements.animation._elements import Animate, AnimateMotion, AnimateTransform, Set
-from ._constants import (
+from .._internal._constants import (
     BLINK_VALUES,
     BOUNCE_HEIGHT,
     BOUNCE_TIMES,
@@ -21,9 +20,10 @@ from ._constants import (
     SHAKE_STEPS,
     SIDES,
 )
+from .animation import Animate, AnimateMotion, AnimateTransform, Set
 
 if TYPE_CHECKING:
-    from ..elements.core._element import Element
+    from .core import Element
 
 __all__ = ["Motion"]
 
@@ -120,7 +120,7 @@ class Motion:
 
     def typewriter(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0) -> Motion:
         """Show a ``<text>`` one character at a time over *dur* seconds."""
-        from ..elements.text._text import TSpan
+        from .text import TSpan
 
         text = self.element.text_content
         if not text:

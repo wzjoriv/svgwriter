@@ -1,11 +1,7 @@
-from typing import Literal, TypeAlias
+from typing import Literal
 from ...document import Document
 
-__all__ = ["polylines", "to_dxf", "to_gcode", "to_hpgl"]
-
-Point: TypeAlias = tuple[float, float]
-
-def polylines(data: object, tolerance: float) -> list[tuple[list[Point], bool]]: ...
+__all__ = ["to_dxf", "to_gcode", "to_hpgl"]
 
 def to_dxf(
     document: Document,

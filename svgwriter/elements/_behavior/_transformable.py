@@ -12,7 +12,7 @@ import numpy as np
 from ...pathdata.data import BBox
 from ...transform.matrix import IDENTITY, Matrix, Point
 from ...transform.transform import TransformLike, as_transform
-from ..core._element import Child, Element
+from ..core import Child, Element
 from ._moves import TransformMethods, _as_matrix
 from ._placement import Placement
 

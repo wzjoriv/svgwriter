@@ -5,7 +5,8 @@ from ..._internal._typing import FillRule, LineCap, LineJoin, Opacity
 from ...attributes.length import LengthLike
 from ...attributes.style import Style, StyleLike
 from ...color.paint import PaintValue
-from ..core._element import AttrValue, Child, Element
+from ..core import Child, Element
+from ..core._element import AttrValue
 from ._convert import Convertible
 from ._styling import PresentationMethods, StyleMethods
 from ._transformable import Transformable as Transformable

@@ -16,7 +16,7 @@ from ..transform.matrix import Matrix, Point
 from ._constants import DISCRETE_SWITCH, FULL_TURN, GEOMETRY_SKIP, HALF_TURN
 
 if TYPE_CHECKING:
-    from ..elements.core._element import Element
+    from ..elements.core import Element
 
 __all__ = ["interpolate"]
 
@@ -130,7 +130,7 @@ def _is_array(value: object) -> bool:
 
 
 def _is_element(value: object) -> bool:
-    from ..elements.core._element import Element
+    from ..elements.core import Element
 
     return isinstance(value, Element)
 

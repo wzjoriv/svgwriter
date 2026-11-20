@@ -20,7 +20,7 @@ from ._constants import (
     UINT16_MAX,
     WHITE,
 )
-from ._pixels import _check_rgba, _composite
+from ._rgba import _check_rgba, _composite
 
 __all__ = ["decode_pnm", "encode_pnm", "is_pnm"]
 

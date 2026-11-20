@@ -159,7 +159,7 @@ class BooleanOps:
 
     def _take_place(self, result: Any) -> Any:
         """Put *result* where this element is in its parent, keeping an explicit id."""
-        from ._geometry import replace_in_parent
+        from ..._internal._tree import replace_in_parent
 
         if result is NotImplemented:
             return result

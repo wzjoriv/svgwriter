@@ -8,9 +8,10 @@ from typing import Any, Literal
 
 import skia
 
+from .._internal._constants import DEFAULT_MITER_LIMIT
 from ..pathdata.data import BBox, PathData
 from ..transform.matrix import Point
-from ._constants import CAPS, DEFAULT_MITER_LIMIT, DEFAULT_STROKE_WIDTH, JOINS, MEASURE_PRECISION
+from ._constants import CAPS, DEFAULT_STROKE_WIDTH, JOINS, MEASURE_PRECISION
 from ._skia import Geometry, from_skia, geometry_data, to_skia
 
 __all__ = [

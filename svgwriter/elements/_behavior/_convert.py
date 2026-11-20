@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from ..._internal._constants import SVG_NS, XLINK_NS
 from ...attributes.length import Length
-from ..core._element import Element
+from ..core import Element
 from ._constants import DEFAULT_STROKE_WIDTH
 from ._transformable import Transformable
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
     from ...color.color import ColorLike
     from ...pathdata.data import BBox
-    from ..paint._clip import ClipPath
+    from ..paint import ClipPath
     from ..shapes import Path
     from ..structure import Group, Image
 
@@ -176,7 +176,7 @@ class Convertible(Transformable):
         >>> art.clip_region.tag
         'clipPath'
         """
-        from ..paint._clip import ClipPath
+        from ..paint import ClipPath
 
         if not shapes:
             raise TypeError("clip() needs at least one shape; use unclip() to remove the clip")
@@ -215,8 +215,8 @@ class Convertible(Transformable):
         >>> svg.rect(0, 0, 9, 9).clip_region is None
         True
         """
-        from ..paint._clip import ClipPath
-        from ._geometry import resolve
+        from ..._internal._tree import resolve
+        from ..paint import ClipPath
 
         region = resolve(self, self.attributes.get("clip-path"))
         return region if isinstance(region, ClipPath) else None

@@ -12,7 +12,7 @@ from ._constants import CLOSEPOLY, CURVE4, LINETO, MOVETO, POINTS_PER_UNIT
 
 if TYPE_CHECKING:
     from ..document import Document
-    from ..elements.core._element import Element
+    from ..elements.core import Element
 
 __all__ = ["to_matplotlib"]
 
@@ -95,8 +95,8 @@ def to_matplotlib(item: Element | Document, ax: Any, *, flip: bool = True) -> li
     except ImportError as error:
         raise ImportError("drawing into matplotlib needs matplotlib; pip install 'pysvgwriter[plot]'") from error
 
+    from .._internal._flatten import flatten
     from ..document import Document
-    from ..export._flatten import flatten
 
     document = item if isinstance(item, Document) else Document()
     if not isinstance(item, Document):

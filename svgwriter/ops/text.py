@@ -12,15 +12,11 @@ from typing import TYPE_CHECKING, Any, Literal
 
 import skia
 
+from .._internal._constants import ANCHOR_SHIFT
+from .._internal._fonts import font_for, registered_typefaces, resolve_font
 from ..pathdata.data import PathData
 from ..transform.matrix import Matrix
-from ._constants import (
-    ANCHOR_SHIFT,
-    DEFAULT_FAMILY,
-    DEFAULT_FONT_SIZE,
-    GLYPH_CACHE,
-)
-from ._fonts import font_for, registered_typefaces, resolve_font
+from ._constants import DEFAULT_FAMILY, DEFAULT_FONT_SIZE, GLYPH_CACHE
 from ._skia import from_skia
 
 if TYPE_CHECKING:
@@ -168,7 +164,7 @@ def text_width(
 
 def _laid_out(text: str, font_family: str, size: float, weight: FontWeight, italic: bool) -> list[Any]:
     """Glyph boxes from the full text engine (per-character font fallback and shaping included)."""
-    from ..elements.text._text import Text
+    from ..elements.text import Text
 
     element = Text(text, x=0, y=0, font_family=font_family, font_size=size, xml_space="preserve",
                    font_weight=None if weight == "normal" else weight, font_style="italic" if italic else None)

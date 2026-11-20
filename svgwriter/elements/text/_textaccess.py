@@ -8,7 +8,7 @@ from collections.abc import Iterator
 from typing import TYPE_CHECKING, Any, overload
 
 from ...attributes.names import PRESENTATION_ATTRIBUTES
-from ..core._element import Element
+from ..core import Element
 from ._character import Character, CharacterRange
 from ._clusters import cluster_bounds
 from ._textlayout import collect, layout

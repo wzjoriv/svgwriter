@@ -75,8 +75,8 @@ class Measurement:
         >>> outline.exact_bbox().height, outline.get("fill")
         (2.0, 'red')
         """
+        from ..._internal._constants import DEFAULT_MITER_LIMIT
         from ...attributes.length import Length
-        from ...ops._constants import DEFAULT_MITER_LIMIT
         from ...ops.measure import stroke_to_path
 
         width = width if width is not None else Length.parse(self.get("stroke-width", 1)).to_user_units()
@@ -139,7 +139,7 @@ class Measurement:
         """
         import numpy as np
 
-        from ...ops._skia import to_skia
+        from ...ops import to_skia
 
         if y is not None:
             points = np.array([[float(x), float(y)]])

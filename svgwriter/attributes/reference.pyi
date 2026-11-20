@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from ..elements.core._element import Element
+from ..elements.core import Element
 
 __all__ = ["IRI", "FuncIRI", "parse_func_iri"]
 

@@ -1,4 +1,5 @@
 from . import export as export, ops as ops, video as video
+from ._internal._latex import latex as latex
 from .aliases import (
     a as a,
     alt_glyph as alt_glyph,
@@ -241,8 +242,7 @@ from .elements import (
     XmlSpace as XmlSpace,
     resolve_input as resolve_input,
 )
-from .export._diagram import latex as latex
-from .io._async import write_async as write_async
+from .io import write_async as write_async
 from .io.parser import (
     SVGParseError as SVGParseError,
     Strictness as Strictness,

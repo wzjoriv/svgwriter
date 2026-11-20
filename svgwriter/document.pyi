@@ -12,8 +12,8 @@ from .attributes.viewbox import PreserveAspectRatio
 from .color.paint import PaintValue
 from .elements._behavior._mixins import XmlSpace
 from .elements._behavior._viewport import ViewBoxLike
-from .elements.core._element import AttrValue, Element
-from .elements.core._factory import ElementFactory
+from .elements.core import Element, ElementFactory
+from .elements.core._element import AttrValue
 from .elements.structure import Defs, Desc, Group, StyleElement, Svg, Title
 from .io.parser import Strictness
 

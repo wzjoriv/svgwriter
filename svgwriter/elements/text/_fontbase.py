@@ -9,9 +9,8 @@ from typing import TYPE_CHECKING, Any
 from ..._internal._typing import Self
 from ...pathdata.builder import PathBuilder
 from ...pathdata.data import PathData
-from .._behavior._mixins import CoreAttributes, PresentationAttributes
-from ..core._container import Container
-from ..core._element import Category, Child, ContentModel, Element
+from .._behavior import CoreAttributes, PresentationAttributes
+from ..core import Category, Child, Container, ContentModel, Element
 
 if TYPE_CHECKING:
     from ._fonts import Glyph

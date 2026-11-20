@@ -8,16 +8,27 @@ import re
 from typing import Final
 
 __all__ = [
-    "ARC_STEP_DEGREES", "DEFAULT_TOLERANCE", "DXF_POINT_FIELDS", "DXF_VARIABLE", "DXF_X", "DXF_Y",
-    "GCODE_PAGE_RE", "GCODE_WORD_RE", "HEX_RE", "HPGL_PENS", "HPGL_RE", "HPGL_UNITS_PER_MM", "MAX_PAGE_MM",
-    "MAX_SEGMENTS", "MM_PER_USER_UNIT", "PRECISION"
+    "ARC_STEP_DEGREES",
+    "DEFAULT_TOLERANCE",
+    "DXF_POINT_FIELDS",
+    "DXF_VARIABLE",
+    "DXF_X",
+    "DXF_Y",
+    "GCODE_PAGE_RE",
+    "GCODE_WORD_RE",
+    "HEX_RE",
+    "HPGL_PENS",
+    "HPGL_RE",
+    "HPGL_UNITS_PER_MM",
+    "MAX_PAGE_MM",
+    "MM_PER_USER_UNIT",
+    "PRECISION",
 ]
 
 MM_PER_USER_UNIT: Final = 25.4 / 96.0
 DEFAULT_TOLERANCE: Final = 0.05
 HPGL_UNITS_PER_MM: Final = 40.0
 PRECISION: Final = 4
-MAX_SEGMENTS: Final = 512
 HPGL_PENS: Final = {0: "none", 1: "black", 2: "red", 3: "green", 4: "yellow", 5: "blue", 6: "magenta", 7: "cyan"}
 ARC_STEP_DEGREES: Final = 5.0
 HEX_RE: Final = re.compile(r"^[0-9A-Fa-f]{6}$")

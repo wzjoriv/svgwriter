@@ -8,7 +8,6 @@ import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from ..transform.matrix import IDENTITY, Matrix
 from ._constants import (
     CLOCK_RE,
     EPSILON,
@@ -22,7 +21,8 @@ from ._constants import (
 
 if TYPE_CHECKING:
     from ..document import Document
-    from ..elements.core._element import Element
+    from ..elements.core import Element
+    from ..transform.matrix import Matrix
 
 __all__ = ["snapshot"]
 
@@ -149,6 +149,8 @@ def _target(animation: Element, root: Element) -> Element | None:
 
 
 def _transform_matrix(kind: str, numbers: list[float]) -> Matrix:
+    from ..transform.matrix import IDENTITY, Matrix
+
     padded = [*numbers, 0.0, 0.0, 0.0]
     if kind == "translate":
         return Matrix.translate(padded[0], padded[1] if len(numbers) > 1 else 0.0)
@@ -191,6 +193,7 @@ def _apply(animation: Element, target: Element, p: float, base_t: dict[int, Matr
 
 def _motion(animation: Element, target: Element, p: float, base_t: dict[int, Matrix]) -> None:
     from ..ops.measure import point_at_length, tangent_at_length, total_length
+    from ..transform.matrix import IDENTITY, Matrix
 
     data = _motion_path(animation)
     if data is None:
@@ -238,7 +241,7 @@ def snapshot(document: Document, time: float) -> Document:
     spline timing are treated as their linear, clock-based equivalents.
     """
     from ..document import Document
-    from ..elements.animation._elements import AnimationElement
+    from ..elements.animation import AnimationElement
 
     root = document.root.clone()
     root.__dict__["_source_path"] = document.root.__dict__.get("_source_path")

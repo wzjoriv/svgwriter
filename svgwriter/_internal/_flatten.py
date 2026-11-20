@@ -9,21 +9,20 @@ import warnings
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
-from ..attributes.cascade import computed
-from ..attributes.length import Length
-from ..color.color import Color
-from ..pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
-from ..pathdata.data import PathData
-from ._constants import DEFAULT_MITER, NONE
+from ._constants import DEFAULT_MITER, MAX_SEGMENTS, NONE
 from ._paints import _paint, _shading
 from ._patterns import _ancestry, _expand_patterns
 
 if TYPE_CHECKING:
+    from ..color.color import Color
     from ..document import Document
-    from ..elements.core._element import Element
+    from ..elements.core import Element
+    from ..pathdata.data import PathData
     from ._paints import Shading
 
-__all__ = ["Item", "Scene", "flatten", "to_cubic"]
+__all__ = ["Item", "Point", "Scene", "flatten", "polylines", "to_cubic"]
+
+Point = tuple[float, float]
 
 
 @dataclass
@@ -56,7 +55,7 @@ class Item:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._flatten import flatten
+    >>> from svgwriter._internal._flatten import flatten
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, fill="red")
     >>> item = flatten(doc).items[0]
@@ -100,7 +99,7 @@ class Scene:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._flatten import flatten
+    >>> from svgwriter._internal._flatten import flatten
     >>> scene = flatten(svg.Document(10, 5))
     >>> (scene.width, scene.height, scene.items)
     (10.0, 5.0, [])
@@ -133,11 +132,12 @@ def to_cubic(data: PathData) -> list[tuple[str, tuple[float, ...]]]:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._flatten import to_cubic
+    >>> from svgwriter._internal._flatten import to_cubic
     >>> to_cubic(svg.PathData("M0 0 L10 0 Z"))
     [('M', (0.0, 0.0)), ('L', (10.0, 0.0)), ('Z', ())]
     """
-    from ..ops._skia import from_skia, to_skia
+    from ..ops import from_skia, to_skia
+    from ..pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
 
     ops: list[tuple[str, tuple[float, ...]]] = []
     current = (0.0, 0.0)
@@ -162,6 +162,9 @@ def to_cubic(data: PathData) -> list[tuple[str, tuple[float, ...]]]:
 
 
 def _number(element: Element, name: str, default: float, rules: list) -> float:
+    from ..attributes.cascade import computed
+    from ..attributes.length import Length
+
     value = computed(element, name, default, rules)
     try:
         return float(Length.parse(value).to_user_units())
@@ -170,6 +173,8 @@ def _number(element: Element, name: str, default: float, rules: list) -> float:
 
 
 def _hidden(leaf: Element, root: Element) -> bool:
+    from ..attributes.cascade import computed
+
     node: Element | None = leaf
     while node is not None and node is not root:
         if str(node.get("display", "")) == NONE:
@@ -214,22 +219,22 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.export._flatten import flatten
+    >>> from svgwriter._internal._flatten import flatten
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, fill="red")
     >>> scene = flatten(doc)
     >>> len(scene.items), scene.skipped
     (1, [])
     """
-    from ..attributes.cascade import rules_of
-    from ..elements._behavior._geometry import PathOperand
-    from ..ops._layers import drawable_order
-    from ..ops._renderable import renderable_copy
-    from ..ops.render import _view, document_size
+    from ..attributes.cascade import computed, rules_of
+    from ..elements import PathOperand
+    from ..ops.render import document_size
+    from ._layers import drawable_order
+    from ._rendering import renderable_copy, view_matrix
 
     with document._sized():
         width, height = document_size(document)
-        view = _view(document, width, height)
+        view = view_matrix(document, width, height)
         source = document.root
         if text:
             source = source.clone()
@@ -282,3 +287,60 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
 
         texts = text_runs(document)
     return Scene(width, height, items, skipped, texts)
+
+
+def polylines(data: object, tolerance: float) -> list[tuple[list[Point], bool]]:
+    """Subpaths as point lists (curves subdivided to within *tolerance*), each with a closed flag.
+
+    Parameters
+    ----------
+    data : PathData
+        The outline to flatten.
+    tolerance : float
+        Maximum deviation allowed when curves become line segments, in the data's units.
+
+    Returns
+    -------
+    list of (list of (float, float), bool)
+        One entry per subpath: its points and whether it was closed. Closed subpaths repeat
+        their first point at the end.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter._internal._flatten import polylines
+    >>> polylines(svg.PathData("M0 0 L10 0 L10 10 Z"), 0.1)
+    [([(0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 0.0)], True)]
+    """
+    result: list[tuple[list[Point], bool]] = []
+    points: list[Point] = []
+    current: Point = (0.0, 0.0)
+    for op, args in to_cubic(data):  # type: ignore[arg-type]
+        if op == "M":
+            if len(points) > 1:
+                result.append((points, False))
+            current = (args[0], args[1])
+            points = [current]
+        elif op == "L":
+            current = (args[0], args[1])
+            points.append(current)
+        elif op == "C":
+            p0, p1, p2, p3 = current, (args[0], args[1]), (args[2], args[3]), (args[4], args[5])
+            dd = max(math.hypot(p0[0] - 2 * p1[0] + p2[0], p0[1] - 2 * p1[1] + p2[1]),
+                     math.hypot(p1[0] - 2 * p2[0] + p3[0], p1[1] - 2 * p2[1] + p3[1]))
+            steps = min(MAX_SEGMENTS, max(1, math.ceil(math.sqrt(0.75 * dd / tolerance)))) if tolerance > 0 else 1
+            for i in range(1, steps + 1):
+                t = i / steps
+                u = 1 - t
+                points.append((u ** 3 * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t ** 3 * p3[0],
+                               u ** 3 * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t ** 3 * p3[1]))
+            current = p3
+        elif op == "Z" and points:
+            if points[-1] != points[0]:
+                points.append(points[0])
+            result.append((points, True))
+            current = points[0]
+            points = [current]
+    if len(points) > 1:
+        result.append((points, False))
+    return result

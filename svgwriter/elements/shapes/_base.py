@@ -7,10 +7,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 
 from ...pathdata.data import BBox
-from .._behavior._geometry import PathOperand
-from .._behavior._mixins import GraphicsElement
-from .._behavior._viewport import user_units
-from ..core._element import Category
+from .._behavior import GraphicsElement, PathOperand, user_units
+from ..core import Category
 
 __all__ = ["Shape", "parse_points", "user_units"]
 

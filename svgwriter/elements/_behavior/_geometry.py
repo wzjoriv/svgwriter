@@ -6,10 +6,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, ClassVar, TypeAlias, Union
 
+from ..._internal._tree import clip_outline
 from ...pathdata.data import PathData
-from ...transform.matrix import Matrix
 from ...transform.transform import TransformLike, as_transform
-from ..core._element import Element
+from ..core import Element
 from ._boolean import BooleanOps
 from ._constants import NOT_COPIED
 from ._measure import Measurement
@@ -170,7 +170,7 @@ class PathOperand(BooleanOps, Measurement, Element):
         >>> [e.tag for e in expanded], len(expanded[0][0])
         (['g', 'rect'], 4)
         """
-        from ..paint._servers import Pattern
+        from ..paint import Pattern
         from ..shapes import Path
         from ..structure import Group
 
@@ -259,100 +259,3 @@ def union_outline(children: Any) -> PathData:
     if not parts:
         return PathData()
     return parts[0].outline() if len(parts) == 1 else union(*parts)
-
-
-def resolve(element: Element, value: Any) -> Element | None:
-    """The element an attribute value refers to, if it can be found.
-
-    Parameters
-    ----------
-    element : Element
-        The element holding the value; its root is searched for ids.
-    value : object
-        A reference, ``#id``, ``url(#id)`` text, or None.
-
-    Returns
-    -------
-    Element or None
-        The referenced element, or None.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> from svgwriter.elements._behavior._geometry import resolve
-    >>> g = svg.group(svg.circle(0, 0, 1, id="dot"))
-    >>> resolve(g, "url(#dot)").tag
-    'circle'
-    """
-    target = getattr(value, "element", None)
-    if isinstance(target, Element):
-        return target
-    if value is None:
-        return None
-    text = str(value.svg_value() if hasattr(value, "svg_value") else value).strip()
-    if text.startswith("url(") and text.endswith(")"):
-        text = text[4:-1].strip("'\" ")
-    return element.root().get_element_by_id(text[1:]) if text.startswith("#") else None
-
-
-def clip_outline(element: Element) -> PathData | None:
-    """The clip region of *element* in its local coordinates, or ``None``.
-
-    Parameters
-    ----------
-    element : Element
-        The clipped element.
-
-    Returns
-    -------
-    PathData or None
-        The clip outline, or None when the element is not clipped.
-
-    Raises
-    ------
-    TypeError
-        If ``clip-path`` refers to something other than a ``<clipPath>``.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> from svgwriter.elements._behavior._geometry import clip_outline
-    >>> clip_outline(svg.rect(0, 0, 9, 9)) is None
-    True
-    """
-    clip = resolve(element, element.attributes.get("clip-path"))
-    if clip is None:
-        return None
-    if not isinstance(clip, PathOperand):
-        raise TypeError(f"clip-path refers to <{clip.tag}>, not a <clipPath>")
-    data = clip.outline()
-    if str(clip.get("clipPathUnits", "userSpaceOnUse")) == "objectBoundingBox":
-        box = element.local_outline().bbox if isinstance(element, PathOperand) else None
-        if box is None:
-            return PathData()
-        data = data.transformed(Matrix(box.width, 0, 0, box.height, box.x, box.y))
-    return data
-
-
-def replace_in_parent(old: Element, new: Element) -> None:
-    """Swap *new* into *old*'s place in its parent; an explicit (not generated) id moves with it.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> doc = svg.Document(10, 10)
-    >>> c = doc.circle(5, 5, 5, id="dot")
-    >>> c -= svg.rect(0, 0, 5, 5)
-    >>> [(e.tag, e.id) for e in doc]
-    [('path', 'dot')]
-    """
-    parent = old.parent
-    if parent is None or new is old:
-        return
-    index = next(i for i, child in enumerate(parent) if child is old)
-    explicit = None if old._auto_id else old.get("id")
-    parent.remove(old)
-    if explicit is not None:
-        old.discard("id")
-        new.id = explicit
-    parent.insert(index, new)

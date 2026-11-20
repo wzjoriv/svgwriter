@@ -26,10 +26,10 @@ from ._constants import (
 )
 
 if TYPE_CHECKING:
+    from ..._internal._flatten import Item
     from ...color.color import Color
     from ...document import Document
     from ...pathdata.data import PathData
-    from .._flatten import Item
 
 
 def _a(tag: str) -> str:
@@ -50,7 +50,7 @@ def _emu_scale(width: float, height: float) -> float:
 def write_pptx(document: Document) -> bytes:
     """Write the deck; see :func:`svgwriter.export._office.pptx`."""
     presentation_module = require("pptx")
-    from .._flatten import flatten
+    from ..._internal._flatten import flatten
 
     scene = flatten(document, handled=frozenset({"image"}), text=True)
     scale = _emu_scale(scene.width, scene.height)
@@ -124,7 +124,7 @@ def _freeform(slide: Any, item: Item, scale: float) -> None:
     """One flattened item as a custom-geometry shape with its paints."""
     shapes_module = require("pptx.enum.shapes")
     oxml = require("pptx.oxml")
-    from ...ops._skia import from_skia, to_skia
+    from ...ops import from_skia, to_skia
 
     data = from_skia(to_skia(item.data))
     box = data.bbox
@@ -323,7 +323,7 @@ def _preset_path(name: str | None, left: float, top: float, width: float, height
 def _text(shape: Any, left: float, top: float) -> Any:
     """A text box's paragraphs as one ``<text>`` per line, with font, weight, style and colour, or None."""
     from ...elements.structure import Group
-    from ...elements.text._text import Text
+    from ...elements.text import Text
 
     if not getattr(shape, "has_text_frame", False) or not shape.text_frame.text.strip():
         return None

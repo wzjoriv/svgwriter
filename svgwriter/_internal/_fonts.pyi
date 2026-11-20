@@ -1,7 +1,19 @@
 from typing import Any
-from .text import FontWeight
+from ..ops.text import FontWeight
 
-__all__ = ["font_for", "registered_face", "registered_typefaces", "resolve_font", "weight_value"]
+__all__ = [
+    "font_for",
+    "font_size",
+    "font_weight",
+    "registered_face",
+    "registered_typefaces",
+    "resolve_font",
+    "weight_value",
+]
+
+def font_weight(value: object) -> int: ...
+
+def font_size(value: object) -> float: ...
 
 def weight_value(value: FontWeight) -> int: ...
 

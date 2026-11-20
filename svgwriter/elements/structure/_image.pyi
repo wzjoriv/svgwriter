@@ -9,10 +9,11 @@ from ...attributes.viewbox import PreserveAspectRatio
 from ...color.paint import PaintValue
 from ...pathdata.data import BBox
 from ...transform.transform import TransformLike
-from .._behavior._mixins import GraphicsElement, XLinkAttributes, XmlSpace
+from .._behavior import GraphicsElement, Positioned, XLinkAttributes
+from .._behavior._mixins import XmlSpace
 from .._behavior._transformable import PointLike
-from .._behavior._viewport import Positioned
-from ..core._element import AttrValue, Category, ContentModel, Element
+from ..core import Category, ContentModel
+from ..core._element import AttrValue, Element
 from ._pixels import Pixels
 
 __all__ = ["Image"]

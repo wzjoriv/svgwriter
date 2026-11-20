@@ -1,5 +1,5 @@
 """
-Tree rewrites that make a copy drawable by skia's SVG renderer.
+Tree rewrites that make a copy drawable by skia's SVG renderer, and the document ``viewBox`` mapping.
 """
 
 from __future__ import annotations
@@ -8,18 +8,21 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 from ._layers import resolve_links
+from ._tree import replace_in_parent
 
 if TYPE_CHECKING:
-    from ..elements.core._element import Element
-    from ..elements.text._text import Text
+    from ..attributes.viewbox import ViewBox
+    from ..document import Document
+    from ..elements import Text
+    from ..elements.core import Element
+    from ..transform.matrix import Matrix
 
-__all__ = ["ellipses_as_paths", "expand_image_patterns", "outlined", "renderable_copy"]
+__all__ = ["ellipses_as_paths", "expand_image_patterns", "outlined", "renderable_copy", "view_matrix"]
 
 
 def expand_image_patterns(root: Element) -> None:
     """Shapes filled with a pattern that holds images become clipped tiles, so the images get drawn."""
-    from ..elements._behavior._geometry import PathOperand, replace_in_parent
-    from ..elements.paint._servers import Pattern
+    from ..elements import PathOperand, Pattern
 
     for leaf in list(root.iter()):
         pattern = getattr(leaf.attributes.get("fill"), "element", None)
@@ -79,14 +82,14 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.ops._renderable import renderable_copy
+    >>> from svgwriter._internal._rendering import renderable_copy
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 5, 5)
     >>> renderable_copy(doc.root) is doc.root
     False
     """
     from ..attributes.cascade import resolve_styles
-    from ..elements.text._text import Text
+    from ..elements import Text
 
     copy = root.clone()
     resolve_styles(copy)
@@ -105,3 +108,15 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
         parent.remove(text)
         parent.insert(index, outline)
     return copy
+
+
+def view_matrix(document: Document, width: float, height: float, box: ViewBox | None = None) -> Matrix:
+    """The ``viewBox`` mapping of *document* onto a *width* by *height* page, centred and uniformly scaled."""
+    from ..transform.matrix import IDENTITY, Matrix
+
+    box = box or document.root.view_box
+    if box is None or not box.width or not box.height:
+        return IDENTITY
+    s = min(width / box.width, height / box.height)
+    return (Matrix.translate((width - box.width * s) / 2, (height - box.height * s) / 2)
+            @ Matrix.scale(s) @ Matrix.translate(-box.min_x, -box.min_y))

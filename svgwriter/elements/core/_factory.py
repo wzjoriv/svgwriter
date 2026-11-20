@@ -13,11 +13,10 @@ from typing import TYPE_CHECKING, Any, Concatenate, Final, Generic, ParamSpec, T
 
 if TYPE_CHECKING:
     from ..filters.base import Filter
-    from ..paint._clip import ClipPath, Marker, Mask
-    from ..paint._servers import LinearGradient, Pattern, RadialGradient
+    from ..paint import ClipPath, LinearGradient, Marker, Mask, Pattern, RadialGradient
     from ..shapes import Circle, Ellipse, Line, Path, Polygon, Polyline, Rect
     from ..structure import A, Group, Image, Switch, Symbol, Use
-    from ..text._text import Text
+    from ..text import Text
     from ._element import Element
 
 __all__ = ["ElementFactory"]

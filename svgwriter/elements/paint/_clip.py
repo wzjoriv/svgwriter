@@ -9,18 +9,19 @@ from typing import Any, Literal, TypeAlias
 from ..._internal._typing import Units
 from ...attributes.length import LengthLike
 from ...pathdata.data import BBox, PathData
-from .._behavior._geometry import PathOperand, union_outline
-from .._behavior._mixins import (
+from .._behavior import (
     ConditionalAttributes,
     CoreAttributes,
     ExternalResourcesAttribute,
+    FitToViewBox,
+    PathOperand,
+    Positioned,
     PresentationAttributes,
     Transformable,
+    children_bbox,
+    union_outline,
 )
-from .._behavior._transformable import children_bbox
-from .._behavior._viewport import FitToViewBox, Positioned
-from ..core._container import GraphicsContainer
-from ..core._element import Category, Child
+from ..core import Category, Child, GraphicsContainer
 
 __all__ = ["ClipPath", "Marker", "MarkerOrient", "Mask"]
 

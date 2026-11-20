@@ -9,16 +9,15 @@ from typing import Any, ClassVar
 
 from ..._internal._constants import DEFAULT_PRECISION
 from ...attributes.length import LengthLike
-from .._behavior._geometry import PathOperand
-from .._behavior._mixins import (
+from .._behavior import (
     ConditionalAttributes,
     CoreAttributes,
     GraphicsElement,
+    PathOperand,
     PresentationAttributes,
     XLinkAttributes,
 )
-from ..core._container import Container
-from ..core._element import Category, Child, ContentModel, Element
+from ..core import Category, Child, Container, ContentModel, Element
 from ._textaccess import TextAccess
 from ._textbase import _TextLength, _TextPositioning
 

@@ -1,7 +1,7 @@
 import skia
 from collections.abc import Callable
 from typing import Any
-from ..elements.core._element import Element
+from ..elements.core import Element
 
 __all__ = ["image_filter", "paint_mask"]
 

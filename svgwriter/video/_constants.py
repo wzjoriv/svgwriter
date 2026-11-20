@@ -10,15 +10,11 @@ from typing import Final
 __all__ = [
     "CHANNELS",
     "CHANNEL_MAX",
-    "CLOCK_RE",
     "DURATION_RE",
-    "EPSILON",
     "EVEN_PAD",
     "FFMPEG",
     "FPS_RE",
     "GIF_FILTER",
-    "INDEFINITE",
-    "NUMBER_RE",
     "OUTPUTS",
     "PNG_SIGNATURE",
     "PNG_SIZE_OFFSET",
@@ -46,13 +42,9 @@ OUTPUTS: Final = {
 }
 
 TIMECOUNT_RE: Final = re.compile(r"^\s*([+-]?\d*\.?\d+)\s*(ms|s|min|h)?\s*$")
-CLOCK_RE: Final = re.compile(r"^\s*(?:(\d+):)?(\d{1,2}):(\d{1,2}(?:\.\d+)?)\s*$")
 TIME_SCALE: Final = {"ms": 0.001, "s": 1.0, "min": 60.0, "h": 3600.0, None: 1.0}
-NUMBER_RE: Final = re.compile(r"[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?")
 SECONDS_PER_MINUTE: Final = 60.0
 SECONDS_PER_HOUR: Final = 3600.0
-INDEFINITE: Final = "indefinite"
-EPSILON: Final = 1e-9
 
 
 PNG_SIGNATURE: Final = b"\x89PNG\r\n\x1a\n"

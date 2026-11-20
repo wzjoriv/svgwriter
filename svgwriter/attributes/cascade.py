@@ -12,7 +12,7 @@ from ._selectors import matches_compound, specificity
 from .names import PRESENTATION_ATTRIBUTES
 
 if TYPE_CHECKING:
-    from ..elements.core._element import Element
+    from ..elements.core import Element
 
 __all__ = ["INHERITED", "Rule", "computed", "parse_css", "resolve_styles", "rules_of"]
 

@@ -7,19 +7,21 @@ from ...attributes.viewbox import PreserveAspectRatio
 from ...color.paint import PaintValue
 from ...pathdata.data import BBox, PathData
 from ...transform.transform import TransformLike
-from .._behavior._geometry import PathOperand
-from .._behavior._mixins import (
+from .._behavior import (
     ConditionalAttributes,
     CoreAttributes,
     ExternalResourcesAttribute,
+    FitToViewBox,
+    PathOperand,
+    Positioned,
     PresentationAttributes,
     Transformable,
-    XmlSpace,
 )
+from .._behavior._mixins import XmlSpace
 from .._behavior._transformable import PointLike
-from .._behavior._viewport import FitToViewBox, Positioned, ViewBoxLike
-from ..core._container import GraphicsContainer
-from ..core._element import AttrValue, Category, Child, Element
+from .._behavior._viewport import ViewBoxLike
+from ..core import Category, Child, GraphicsContainer
+from ..core._element import AttrValue, Element
 
 __all__ = ["ClipPath", "Marker", "MarkerOrient", "Mask"]
 

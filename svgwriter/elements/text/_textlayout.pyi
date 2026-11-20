@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from ...attributes.cascade import Rule
 from ...ops.text import GlyphBox
-from ..core._element import Element
+from ..core import Element
 
 __all__ = ["Char", "collect", "layout", "number_list"]
 

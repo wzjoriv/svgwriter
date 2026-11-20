@@ -11,18 +11,18 @@ from typing import TYPE_CHECKING, Any, Final
 import numpy as np
 import skia
 
+from .._internal._rendering import renderable_copy, view_matrix
 from ..attributes.length import Length, Unit
 from ..attributes.viewbox import ViewBox
 from ..transform.matrix import IDENTITY, Matrix
 from ._canvas import make_surface, paint_svg, read_pixels
 from ._constants import CHANNEL_MAX, DEFAULT_QUALITY, DISPLAY, FORMATS
 from ._layers import draw_image, hidden, layers
-from ._renderable import renderable_copy
 
 if TYPE_CHECKING:
     from ..color.color import ColorLike
     from ..document import Document
-    from ..elements.core._element import Element
+    from ..elements.core import Element
 
 __all__ = [
     "DEFAULT_SIZE",
@@ -243,7 +243,7 @@ def paint_tree(
     >>> surface = skia.Surface(4, 2)
     >>> paint_tree(surface.getCanvas(), doc.root, lambda text: text, 4, 2, viewport=True)
     """
-    from ..elements.text._text import Text
+    from ..elements.text import Text
     from ..io.writer import to_string
     from ._native_text import draw_text
     from ._native_text import native_text as drawable
@@ -265,15 +265,6 @@ def paint_tree(
             draw_text(canvas, item, root, view)
         elif item is not None:
             draw_image(canvas, item, root, view)
-
-
-def _view(document: Document, width: float, height: float, box: ViewBox | None = None) -> Matrix:
-    box = box or document.root.view_box
-    if box is None or not box.width or not box.height:
-        return IDENTITY
-    s = min(width / box.width, height / box.height)
-    return (Matrix.translate((width - box.width * s) / 2, (height - box.height * s) / 2)
-            @ Matrix.scale(s) @ Matrix.translate(-box.min_x, -box.min_y))
 
 
 def rasterize(
@@ -347,7 +338,7 @@ def rasterize(
         else:
             scale = min(columns / width, rows / height)
             width, height = columns / scale, rows / scale
-    return render_tree(document.root, lambda text: text, width, height, view=_view(document, width, height, box),
+    return render_tree(document.root, lambda text: text, width, height, view=view_matrix(document, width, height, box),
                        scale=scale, background=background, viewport=True, view_box=padded, snapshot=snapshot)
 
 
@@ -505,8 +496,8 @@ def render_frame(document: Document, time: float) -> np.ndarray:
     >>> frame.shape, frame.dtype.name
     ((2, 4, 4), 'uint8')
     """
-    from ..elements.animation._elements import AnimationElement
-    from ..video._smil import snapshot
+    from .._internal._smil import snapshot
+    from ..elements.animation import AnimationElement
 
     if document.root.find(AnimationElement) is not None:
         document = snapshot(document, time)

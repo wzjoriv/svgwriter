@@ -8,13 +8,13 @@ import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from ..transform.matrix import Matrix
 from ._constants import DEFAULT_SIZE, JOIN_TOLERANCE
 
 if TYPE_CHECKING:
     from ..color.color import Color
     from ..document import Document
-    from ..elements.core._element import Element
+    from ..elements.core import Element
+    from ..transform.matrix import Matrix
 
 __all__ = ["TextRun", "text_runs"]
 
@@ -56,11 +56,11 @@ class TextRun:
 
 def _font(source: Element, rules: list[Any]) -> tuple[str, float, bool, bool]:
     from ..attributes.cascade import computed
-    from ..elements.text._textlayout import _font_size, _font_weight
+    from ._fonts import font_size, font_weight
 
     family = str(computed(source, "font-family", "sans-serif", rules))
-    size = _font_size(computed(source, "font-size", DEFAULT_SIZE, rules))
-    weight = _font_weight(computed(source, "font-weight", "normal", rules))
+    size = font_size(computed(source, "font-size", DEFAULT_SIZE, rules))
+    weight = font_weight(computed(source, "font-weight", "normal", rules))
     italic = str(computed(source, "font-style", "", rules)) in ("italic", "oblique")
     return family, size, weight >= 600, italic
 
@@ -87,23 +87,24 @@ def text_runs(document: Document) -> list[TextRun]:
     [('Hello', 20.0, 10.0)]
     """
     from ..attributes.cascade import rules_of
-    from ..elements.text._text import Text
-    from ..ops._layers import _ancestry
-    from ..ops.render import _view, document_size
+    from ..elements import Text
+    from ..ops.render import document_size
     from ._flatten import _number
+    from ._layers import ancestry
     from ._paints import _paint
+    from ._rendering import view_matrix
 
     runs: list[TextRun] = []
     with document._sized():
         width, height = document_size(document)
-        view = _view(document, width, height)
+        view = view_matrix(document, width, height)
         root = document.root
         rules = rules_of(root)
         for text in [e for e in root.iter() if isinstance(e, Text)]:
             if str(text.get("display", "")) == "none":
                 continue
-            ancestry, opacity = _ancestry(text, root)
-            page = view @ ancestry
+            placement, opacity = ancestry(text, root)
+            page = view @ placement
             current: list[Any] = []
             for box in text.layout():
                 if current and not _continues(current[-1], box):
@@ -123,6 +124,8 @@ def _continues(previous: Any, box: Any) -> bool:
 
 
 def _run(boxes: list[Any], page: Matrix, opacity: float, rules: list[Any], font: Any, paint: Any, number: Any) -> TextRun:
+    from ..transform.matrix import Matrix
+
     first, last = boxes[0], boxes[-1]
     family, size, bold, italic = font(first.source, rules)
     frame = page @ Matrix.translate(first.x, first.y) @ Matrix.rotate(first.angle)

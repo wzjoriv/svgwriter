@@ -9,13 +9,12 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any, TypeVar, overload
 
 from ._document.access import Access
-from ._document.ingest import SupportsSVG, _ingest
+from ._document.ingest import SupportsSVG, to_element
 from ._document.output import Output
 from ._document.sizing import Sizing
+from ._internal._tree import attach_cursor
 from ._internal._typing import AnyPath, Stack
-from .elements.core._container import attach_cursor
-from .elements.core._element import Element
-from .elements.core._factory import ElementFactory
+from .elements.core import Element, ElementFactory
 from .elements.structure import Defs, Desc, Group, Svg, Title
 
 if TYPE_CHECKING:
@@ -245,7 +244,7 @@ class Document(Sizing, Output, Access, ElementFactory):
         >>> rect.parent is doc.root
         True
         """
-        return self._place(_ingest(element))  # type: ignore[arg-type]
+        return self._place(to_element(element))  # type: ignore[arg-type]
 
     def define(self, element: E) -> E:
         """Put *element* in ``<defs>`` (giving it an id) and return it.

@@ -5,16 +5,16 @@ from ..._internal._typing import FillRule, LineCap, LineJoin, Opacity, Self, Uni
 from ...attributes.length import LengthLike
 from ...attributes.style import StyleLike
 from ...color.paint import PaintValue
-from .._behavior._mixins import (
+from .._behavior import (
     CoreAttributes,
     ExternalResourcesAttribute,
+    Positioned,
     PresentationAttributes,
     XLinkAttributes,
-    XmlSpace,
 )
-from .._behavior._viewport import Positioned
-from ..core._container import Container
-from ..core._element import AttrValue, Category, Child, Element
+from .._behavior._mixins import XmlSpace
+from ..core import Category, Child, Container, Element
+from ..core._element import AttrValue
 
 __all__ = [
     "Filter",

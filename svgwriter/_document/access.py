@@ -8,10 +8,10 @@ from collections.abc import Iterable, Iterator
 from typing import overload
 
 from .._internal._constants import NON_CONTENT
+from .._internal._tree import element_list
 from .._internal._typing import Self
-from ..elements.core._container import flatten
-from ..elements.core._element import Element
-from .ingest import SupportsSVG, _ingest
+from ..elements.core import Element
+from .ingest import SupportsSVG, to_element
 
 __all__ = ["Access"]
 
@@ -20,7 +20,7 @@ class Access:
     """Sequence-like access to the top-level content; mixed into :class:`~svgwriter.Document`."""
 
     def __iadd__(self, elements: Element | SupportsSVG | Iterable[Element]) -> Self:
-        for element in flatten(_ingest(elements)):
+        for element in element_list(to_element(elements)):
             self._place(element)  # type: ignore[type-var]
         return self
 
@@ -88,9 +88,9 @@ class Access:
         >>> doc[0].tag, doc[0].id
         ('circle', 'logo')
         """
-        from ..elements._behavior._geometry import replace_in_parent
+        from .._internal._tree import replace_in_parent
 
-        replace_in_parent(self[key], _ingest(element))
+        replace_in_parent(self[key], to_element(element))
 
     def __contains__(self, item: object) -> bool:
         if isinstance(item, str):

@@ -21,8 +21,8 @@ from ._constants import (
     BMP_V4_HEADER_SIZE,
 )
 from ._gif import encode_gif
-from ._pixels import _check_rgba
 from ._pnm import encode_pnm
+from ._rgba import _check_rgba
 
 __all__ = ["ENCODERS", "encode_bmp"]
 

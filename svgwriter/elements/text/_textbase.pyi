@@ -2,7 +2,8 @@ from collections.abc import Mapping, Sequence
 from typing import Any, TypeAlias
 from ..._internal._typing import LengthAdjust
 from ...attributes.length import LengthLike
-from ..core._element import AttrValue, Child, Element
+from ..core import Child, Element
+from ..core._element import AttrValue
 
 __all__ = ["Coordinates"]
 

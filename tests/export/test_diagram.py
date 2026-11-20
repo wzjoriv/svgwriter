@@ -5,7 +5,8 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter.export._diagram import DiagramToolError, read_dot, read_mermaid
+from svgwriter._internal._tools import DiagramToolError
+from svgwriter.export._diagram import read_dot, read_mermaid
 
 SVG_OUT = b'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="10"><rect width="20" height="10"/></svg>'
 

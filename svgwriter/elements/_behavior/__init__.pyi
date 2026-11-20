@@ -1,5 +1,9 @@
 from ._convert import Convertible as Convertible
-from ._geometry import PathOperand as PathOperand
+from ._geometry import (
+    Operand as Operand,
+    PathOperand as PathOperand,
+    union_outline as union_outline,
+)
 from ._mixins import (
     ConditionalAttributes as ConditionalAttributes,
     CoreAttributes as CoreAttributes,
@@ -11,7 +15,13 @@ from ._mixins import (
     XLinkAttributes as XLinkAttributes,
     XmlSpace as XmlSpace,
 )
-from ._viewport import FitToViewBox as FitToViewBox, Positioned as Positioned
+from ._transformable import children_bbox as children_bbox, offset as offset
+from ._viewport import (
+    FitToViewBox as FitToViewBox,
+    Positioned as Positioned,
+    positioned_bbox as positioned_bbox,
+    user_units as user_units,
+)
 
 __all__ = [
     "ConditionalAttributes",
@@ -20,6 +30,7 @@ __all__ = [
     "ExternalResourcesAttribute",
     "FitToViewBox",
     "GraphicsElement",
+    "Operand",
     "PathOperand",
     "Positioned",
     "PresentationAttributes",
@@ -27,4 +38,9 @@ __all__ = [
     "Transformable",
     "XLinkAttributes",
     "XmlSpace",
+    "children_bbox",
+    "offset",
+    "positioned_bbox",
+    "union_outline",
+    "user_units",
 ]

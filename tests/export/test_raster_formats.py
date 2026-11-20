@@ -8,10 +8,10 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
+from svgwriter._internal._encoders import encode_bmp
+from svgwriter._internal._gif import encode_gif
+from svgwriter._internal._pnm import decode_pnm, encode_pnm
 from svgwriter.elements.structure import Image, Pixels
-from svgwriter.export._raster._encoders import encode_bmp
-from svgwriter.export._raster._gif import encode_gif
-from svgwriter.export._raster._pnm import decode_pnm, encode_pnm
 
 
 def _noise(rows: int = 40, columns: int = 50, seed: int = 0) -> np.ndarray:
