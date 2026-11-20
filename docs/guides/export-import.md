@@ -36,7 +36,7 @@ TikZ, EPS and the polyline formats work from a flattened copy of the drawing. Ti
 as shadings and EPS as `shfill`; the polyline formats take their first colour. EPS embeds images,
 the others skip them with a warning.
 
-### Text stays text
+## Text stays text
 
 Every format that can hold text keeps it as text, so it can be selected, searched and edited. Where
 a format cannot hold some text exactly, that text is drawn as its glyph outlines, which look the
