@@ -1,5 +1,5 @@
 """
-Namespaces, defaults and unit conversion factors.
+Namespaces, defaults, unit conversion factors and shared tables.
 """
 
 from __future__ import annotations
