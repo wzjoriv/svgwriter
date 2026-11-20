@@ -59,3 +59,48 @@ def test_pptx_keeps_text_as_editable_boxes() -> None:
     assert texts[0].get("font-weight") == "bold"
     assert texts[1].get("font-style") == "italic"
     assert "path" not in back.to_string()
+
+
+def _pdf_text_objects(data: bytes) -> int:
+    import re
+    import zlib
+
+    count = 0
+    for stream in re.findall(rb"stream\r?\n(.*?)\r?\nendstream", data, re.S):
+        try:
+            stream = zlib.decompress(stream)
+        except zlib.error:
+            pass
+        count += len(re.findall(rb"(?m)^BT$", stream))
+    return count
+
+
+def test_pdf_keeps_plain_text_as_text() -> None:
+    from svgwriter.export import export
+
+    doc = _doc("Hello")
+    assert _pdf_text_objects(export(doc, "pdf")) > 0
+    assert _pdf_text_objects(export(doc, "pdf", text=False)) == 0
+
+
+def test_pdf_outlines_text_it_cannot_keep() -> None:
+    from svgwriter.export import export
+
+    doc = svg.Document(100, 40)
+    doc.text("Hello", x=10, y=28, font_size=16, fill=svg.LinearGradient(svg.Stop(0, "red"), svg.Stop(1, "blue")))
+    assert _pdf_text_objects(export(doc, "pdf")) == 0
+
+
+def test_pdf_text_matches_outline_render() -> None:
+    import numpy as np
+
+    from svgwriter.export import export, find_importer
+
+    doc = svg.Document(120, 40)
+    doc.rect(0, 0, 120, 40, fill="white")
+    doc.text("Hello", x=10, y=28, font_size=20, fill="red")
+    read = find_importer("pdf").function
+    back = read(export(doc, "pdf"))
+    texts = [element for element in back.root.iter() if element.tag == "text"]
+    assert [text.text_content for text in texts] == ["Hello"]
+    assert np.abs(back.rasterize() - doc.rasterize()).mean() < 0.02

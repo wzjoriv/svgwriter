@@ -15,8 +15,12 @@ if TYPE_CHECKING:
 
 
 @register("pdf", extensions=(".pdf",))
-def pdf(document: Document, *, title: str | None = None, author: str | None = None) -> bytes:
-    """Single-page vector PDF drawn by skia (shapes and text stay vector; images embedded).
+def pdf(document: Document, *, title: str | None = None, author: str | None = None, text: bool = True) -> bytes:
+    """Single-page vector PDF drawn by skia: shapes stay vector, text stays selectable, images are embedded.
+
+    Text painted with plain colours is written as real text in an embedded font subset, so it can
+    be selected, searched and copied. Text with a gradient or pattern paint, a filter or a mask,
+    and characters that need a shaper (Devanagari, Arabic, ...), are drawn as exact glyph outlines.
 
     Parameters
     ----------
@@ -26,6 +30,8 @@ def pdf(document: Document, *, title: str | None = None, author: str | None = No
         PDF title metadata. Defaults to None.
     author : str, optional
         PDF author metadata. Defaults to None.
+    text : bool, optional
+        Keep text as text where possible; False draws every glyph as an outline. Defaults to True.
 
     Returns
     -------
@@ -56,7 +62,7 @@ def pdf(document: Document, *, title: str | None = None, author: str | None = No
         width, height = document_size(document)
         canvas = pdf_document.beginPage(width, height)
         paint_tree(canvas, document.root, lambda text: text, width, height,
-                   view=_view(document, width, height), viewport=True)
+                   view=_view(document, width, height), viewport=True, native_text=text)
         pdf_document.endPage()
     pdf_document.close()
     return bytes(stream.detachAsData())

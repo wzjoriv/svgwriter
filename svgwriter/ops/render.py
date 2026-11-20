@@ -236,11 +236,12 @@ def paint_tree(
     view: Matrix = IDENTITY,
     viewport: bool = False,
     view_box: ViewBox | None = None,
+    native_text: bool = False,
 ) -> None:
     """Paint the tree under *root* onto any skia canvas (raster, PDF, ...).
 
-    Text becomes outlines and embedded images are drawn in paint order; the arguments
-    match :func:`render_tree`.
+    Text becomes outlines (or real glyphs with *native_text*) and embedded images are drawn in
+    paint order; the other arguments match :func:`render_tree`.
 
     Parameters
     ----------
@@ -258,6 +259,9 @@ def paint_tree(
         *root* is the outermost ``<svg>``: draw it at exactly ``width x height``. Defaults to False.
     view_box : ViewBox, optional
         Replace the root's ``viewBox`` while drawing. Defaults to None.
+    native_text : bool, optional
+        Draw text that a canvas can reproduce exactly (plain colours, no filter or mask) as real
+        glyphs, so a PDF canvas keeps it selectable. Defaults to False.
 
     See Also
     --------
@@ -273,26 +277,31 @@ def paint_tree(
     >>> surface = skia.Surface(4, 2)
     >>> paint_tree(surface.getCanvas(), doc.root, lambda text: text, 4, 2, viewport=True)
     """
+    from ..elements.text import Text
     from ..io.writer import to_string
+    from ._native_text import draw_text
+    from ._native_text import native_text as drawable
 
-    root = renderable_copy(root)
+    root = renderable_copy(root, keep_text=drawable if native_text else None)
     if viewport:
         root.attributes["width"], root.attributes["height"] = width, height
     if view_box is not None:
         root.attributes["viewBox"] = view_box
     parts = layers(root)
-    for run, image in parts:
+    for run, item in parts:
         if run or len(parts) == 1:
             for leaf in hidden(root, run) if len(parts) > 1 else ():
                 leaf.attributes[DISPLAY] = "none"
             _paint_svg(canvas, wrap(to_string(root, xml_declaration=False, pretty=False)), width, height)
             for leaf in hidden(root, run) if len(parts) > 1 else ():
                 leaf.attributes.pop(DISPLAY, None)
-        if image is not None:
-            draw_image(canvas, image, root, view)
+        if isinstance(item, Text):
+            draw_text(canvas, item, root, view)
+        elif item is not None:
+            draw_image(canvas, item, root, view)
 
 
-def renderable_copy(root: Element) -> Element:
+def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None = None) -> Element:
     """A copy of *root* with every ``<text>`` replaced by its glyph outlines.
 
     Skia's SVG renderer draws no text, so text is drawn as paths. Styles are resolved,
@@ -302,6 +311,9 @@ def renderable_copy(root: Element) -> Element:
     ----------
     root : Element
         The tree to copy; it is not modified.
+    keep_text : callable, optional
+        Texts it accepts stay ``<text>`` elements (to be drawn as real glyphs). Defaults to None,
+        which outlines every text.
 
     Returns
     -------
@@ -326,8 +338,10 @@ def renderable_copy(root: Element) -> Element:
     _ellipses_as_paths(copy)
     _expand_image_patterns(copy)
     if isinstance(copy, Text):
-        return _outlined(copy)
+        return copy if keep_text is not None and keep_text(copy) else _outlined(copy)
     for text in [e for e in copy.iter() if isinstance(e, Text)]:
+        if keep_text is not None and keep_text(text):
+            continue
         parent = text.parent
         assert parent is not None
         outline = _outlined(text)

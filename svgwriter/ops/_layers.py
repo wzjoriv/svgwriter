@@ -159,11 +159,12 @@ def _length(value: object) -> float:
         return 0.0
 
 
-def layers(root: Element) -> list[tuple[list[Element], Image | None]]:
-    """Split the paint order into runs of vector leaves, each followed by an embedded image.
+def layers(root: Element) -> list[tuple[list[Element], Element | None]]:
+    """Split the paint order into runs of vector leaves, each followed by an image or a text.
 
-    Skia's SVG renderer cannot load images, so each run is painted by skia and the image that
-    ends it is drawn separately, keeping z-order.
+    Skia's SVG renderer cannot load images or draw text, so each run is painted by skia and the
+    embedded image or ``<text>`` (left in a render copy only to be drawn as real glyphs) that ends
+    it is drawn separately, keeping z-order.
 
     Parameters
     ----------
@@ -172,9 +173,9 @@ def layers(root: Element) -> list[tuple[list[Element], Image | None]]:
 
     Returns
     -------
-    list of (list of Element, Image or None)
-        Runs of vector leaves, each paired with the embedded image that follows it. The last
-        pair has ``None`` for its image.
+    list of (list of Element, Element or None)
+        Runs of vector leaves, each paired with the image or text that follows it. The last
+        pair has ``None`` there.
 
     See Also
     --------
@@ -190,11 +191,12 @@ def layers(root: Element) -> list[tuple[list[Element], Image | None]]:
     [(1, None)]
     """
     from ..elements.structure import Image
+    from ..elements.text import Text
 
-    result: list[tuple[list[Element], Image | None]] = []
+    result: list[tuple[list[Element], Element | None]] = []
     run: list[Element] = []
     for leaf in drawable_order(root):
-        if isinstance(leaf, Image) and leaf.pixels is not None:
+        if isinstance(leaf, Text) or (isinstance(leaf, Image) and leaf.pixels is not None):
             result.append((run, leaf))
             run = []
         else:
@@ -351,10 +353,9 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
     from ._image_effects import image_filter, paint_mask
     from ._skia import to_skia
 
-    ancestry, opacity = _ancestry(image, root)
+    _, opacity = _ancestry(image, root)
     pixels = np.ascontiguousarray(np.clip(np.rint(image.rgba() * CHANNEL_MAX), 0, CHANNEL_MAX).astype(np.uint8))
     picture = skia.Image.fromarray(pixels, colorType=skia.kRGBA_8888_ColorType, alphaType=skia.kUnpremul_AlphaType)
-    del ancestry
     canvas.save()
     canvas.concat(_skia_matrix(view))
     for node in _chain(image, root):
