@@ -82,16 +82,25 @@ class Document(Sizing, Output, Access, ElementFactory):
         attach_cursor(root, self._stack)
 
     @classmethod
-    def from_string(cls, text: str | bytes, *, strictness: Strictness | None = None) -> Document:
-        """Parse SVG text into a document.
+    def from_string(cls, text: str | bytes, format: str = "svg", *, strictness: Strictness | None = None,
+                    **options: Any) -> Document:
+        """Parse text in any registered format into a document: SVG by default, or Mermaid, DOT, TikZ, ...
+
+        Text formats that are usually files (``"mermaid"``, ``"dot"``, ``"tikz"``, ``"markdown"``,
+        ``"txt"``, ``"eps"``, ...) are read from the string itself, with the same importer as
+        :meth:`open`.
 
         Parameters
         ----------
         text : str or bytes
-            The SVG source.
+            The source; ``str`` is encoded as UTF-8 for formats read as bytes.
+        format : str, optional
+            A registered importer name (see ``svg.export.importers()``). Defaults to ``"svg"``.
         strictness : Strictness, optional
-            How to treat unknown elements and unsupported attributes. Defaults to
-            ``Strictness.LENIENT``.
+            How SVG treats unknown elements and unsupported attributes. Defaults to
+            ``Strictness.LENIENT``. SVG only.
+        **options : Any
+            Options of the importer (for example ``theme=`` for Mermaid).
 
         Returns
         -------
@@ -103,7 +112,9 @@ class Document(Sizing, Output, Access, ElementFactory):
         SVGParseError
             If the text is malformed or, when strict, unsupported.
         ValueError
-            If the root element is not ``<svg>``.
+            If the root element is not ``<svg>``, or *format* is not a registered importer.
+        TypeError
+            If *strictness* is given for a format other than SVG.
 
         See Also
         --------
@@ -114,9 +125,23 @@ class Document(Sizing, Output, Access, ElementFactory):
         >>> doc = Document.from_string('<svg xmlns="http://www.w3.org/2000/svg"><rect width="4" height="4"/></svg>')
         >>> [element.tag for element in doc]
         ['rect']
+        >>> chart = Document.from_string("flowchart LR\\n  A --> B", "mermaid")
+        >>> len(chart.root.children) > 0
+        True
         """
         from .io.parser import Strictness, parse
 
+        if format.lower() != "svg":
+            from .export import find_importer
+
+            if strictness is not None:
+                raise TypeError("strictness= applies to SVG only")
+            try:
+                importer = find_importer(format)
+            except ValueError:
+                importer = find_importer(f"text.{format.lstrip('.')}")
+            data = text.encode("utf-8") if isinstance(text, str) else text
+            return importer.function(data, **options)  # type: ignore[no-any-return]
         root = parse(text, strictness=strictness or Strictness.LENIENT)
         if not isinstance(root, Svg):
             raise ValueError(f"root element is <{root.tag}>, not <svg>")
