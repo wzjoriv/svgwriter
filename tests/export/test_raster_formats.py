@@ -272,3 +272,18 @@ def test_time_option_picks_the_frame_for_still_formats():
     start = Pixels.decode(svg.export.export(doc, "png")).rgba()
     end = Pixels.decode(svg.export.export(doc, "png", time=1)).rgba()
     assert np.argmax(start[10, :, 3]) < 10 < 30 < np.argmax(end[10, :, 3]) + 5
+
+
+def test_animated_png_and_webp_on_request():
+    import skia
+
+    import svgwriter as svg
+
+    doc = svg.Document(40, 20)
+    ball = doc.circle(4, 10, 4, fill="red")
+    ball.append(svg.Animate(attribute_name="cx", from_=4, to=36, dur=1))
+    apng = svg.export.export(doc, "png", animate=True, fps=4)
+    assert apng.count(b"fcTL") == 4 and apng.count(b"acTL") == 1
+    webp = svg.export.export(doc, "webp", animate=True, fps=4)
+    assert skia.Codec.MakeFromData(skia.Data.MakeWithCopy(webp)).getFrameCount() == 4
+    assert b"acTL" not in svg.export.export(doc, "png")

@@ -14,12 +14,33 @@ if TYPE_CHECKING:
     from ...document import Document
 
 DEFAULT_QUALITY: Final = 90
+DEFAULT_GIF_FPS: Final = 12.0
+
+
+def _frames(document: Document, fps: float, duration: float | None, **options: Any) -> list[Any]:
+    """Every frame of the SMIL animation as uint8 RGBA, or an empty list when nothing animates."""
+    from ...video.animation import animation_duration, frame_times
+    from ._encoders import to_uint8
+
+    length = duration if duration is not None else animation_duration(document)
+    if not length:
+        return []
+    if isinstance(options.get("size"), int):
+        options["size"] = (options["size"], options["size"])
+    return [to_uint8(document.at(time).rasterize(**options)) for time in frame_times(fps, length)]
+
+
+def _animation_encoders() -> dict[str, Any]:
+    from ._animated import encode_apng, encode_webp_animation
+
+    return {"png": encode_apng, "webp": encode_webp_animation}
 
 
 def _raster(format: str):  # type: ignore[no-untyped-def]
     def exporter(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int | None = None,
                  padding: float = 0.0, background: ColorLike | None = None, quality: int = DEFAULT_QUALITY,
-                 dpi: float | None = None) -> bytes:
+                 dpi: float | None = None, animate: bool = False, fps: float = DEFAULT_GIF_FPS,
+                 duration: float | None = None, loop: int = 0) -> bytes:
         from ...ops.render import encode_image
         from ._encoders import ENCODERS, to_uint8
 
@@ -29,6 +50,11 @@ def _raster(format: str):  # type: ignore[no-untyped-def]
             size = (size, size)
         if dpi is not None:
             scale = dpi / DEFAULT_DPI
+        animated = _animation_encoders()
+        if animate and format in animated:
+            frames = _frames(document, fps, duration, scale=scale, size=size, padding=padding, background=background)
+            if frames:
+                return animated[format](frames, fps, loop=loop)
         native = format not in ENCODERS
         image = document.rasterize(scale=scale, size=size, padding=padding, background=background, snapshot=native)
         if not native:
@@ -36,7 +62,8 @@ def _raster(format: str):  # type: ignore[no-untyped-def]
         return encode_image(image, format, quality=quality)
 
     exporter.__doc__ = (f"{format.upper()} raster (``scale`` or ``dpi``, ``size``, ``padding``, ``background``, "
-                        "``quality``).")
+                        "``quality``)" + ("; ``animate=True`` with ``fps``, ``duration``, ``loop`` writes the SMIL "
+                                          "animation" if format in ("png", "webp") else "") + ".")
     return exporter
 
 
@@ -44,7 +71,6 @@ register("png", extensions=(".png",))(_raster("png"))
 register("jpeg", extensions=(".jpg", ".jpeg"))(_raster("jpeg"))
 register("webp", extensions=(".webp",))(_raster("webp"))
 register("bmp", extensions=(".bmp",))(_raster("bmp"))
-DEFAULT_GIF_FPS: Final = 12.0
 
 
 @register("gif", extensions=(".gif",))
