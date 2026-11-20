@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import importlib
 import io
+from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any
 
 from .._registry import register, register_importer
@@ -36,17 +37,21 @@ def require(module: str) -> Any:
         raise OfficeExtraError(f"{module.split('.')[0]} is needed for this format; {EXTRA_HINT}") from error
 
 
-@register("pptx", extensions=(".pptx",))
-def pptx(document: Document) -> bytes:
-    """A PowerPoint deck with one slide holding the drawing as editable shapes.
+@register("pptx", extensions=(".pptx",), multipage=True)
+def pptx(document: Document | Sequence[Document]) -> bytes:
+    """A PowerPoint deck with one slide per drawing, as editable shapes.
 
     Every painted outline becomes a freeform shape with its curves, solid
-    fill, outline and transparency; embedded images become pictures.
+    fill, outline and transparency; embedded images become pictures, and
+    formulas made by :func:`svgwriter.latex` become editable equations
+    (outlines when the LaTeX has no Office equivalent).
 
     Parameters
     ----------
-    document : Document
-        The drawing.
+    document : Document or sequence of Document
+        The drawing, or several drawings for one slide each. A deck has a
+        single slide size, so it fits the widest and tallest drawing and
+        smaller drawings are centred on their slides.
 
     Returns
     -------
@@ -70,15 +75,18 @@ def pptx(document: Document) -> bytes:
     >>> _ = doc.rect(0, 0, 40, 20, fill="teal")
     >>> svg.export.export(doc, "pptx")[:2]
     b'PK'
+    >>> deck = svg.export.export([doc, svg.Document(20, 20)], "pptx")
+    >>> len(svg.export.find_importer("pptx").function(deck, slide=None))
+    2
     """
     from ._pptx import write_pptx
 
-    return write_pptx(document)
+    return write_pptx(list(document) if isinstance(document, Sequence) else [document])
 
 
-@register_importer("pptx", extensions=(".pptx",))
-def read_pptx(data: bytes, *, slide: int = 0) -> Document:
-    """One slide of a PowerPoint deck as native SVG elements.
+@register_importer("pptx", extensions=(".pptx",), page_option="slide")
+def read_pptx(data: bytes, *, slide: int | None = 0) -> Document | list[Document]:
+    """The slides of a PowerPoint deck as native SVG elements.
 
     Freeform and preset shapes (rectangles, rounded rectangles, ellipses,
     lines) become paths with their solid fill and outline, pictures become
@@ -88,13 +96,13 @@ def read_pptx(data: bytes, *, slide: int = 0) -> Document:
     ----------
     data : bytes
         The ``.pptx`` file.
-    slide : int, optional
-        Zero-based slide number. Defaults to 0.
+    slide : int or None, optional
+        Zero-based slide number, or None for every slide. Defaults to 0.
 
     Returns
     -------
-    Document
-        The slide, sized like it.
+    Document or list of Document
+        The slide, sized like it; a list with one per slide when *slide* is None.
 
     Raises
     ------
@@ -112,7 +120,7 @@ def read_pptx(data: bytes, *, slide: int = 0) -> Document:
     >>> [e.tag for e in back]
     ['path']
     """
-    from ._pptx import read_pptx as read
+    from ._pptx_read import read_pptx as read
 
     return read(data, slide)
 
@@ -128,7 +136,11 @@ def _picture(document: Document) -> tuple[bytes, float, float]:
 
 @register("docx", extensions=(".docx",))
 def docx(document: Document) -> bytes:
-    """A Word document holding the drawing as a picture at its natural size.
+    """A Word document holding the drawing as a picture at its natural size, with editable equations.
+
+    Formulas made by :func:`svgwriter.latex` become editable Word equations:
+    floating over the picture where they were drawn, or as equation
+    paragraphs when the drawing holds nothing else.
 
     Parameters
     ----------
@@ -151,14 +163,9 @@ def docx(document: Document) -> bytes:
     >>> svg.export.export(svg.Document(40, 20), "docx")[:2]
     b'PK'
     """
-    word = require("docx")
-    shared = require("docx.shared")
-    png, width, height = _picture(document)
-    out = word.Document()
-    out.add_picture(io.BytesIO(png), width=shared.Inches(width), height=shared.Inches(height))
-    buffer = io.BytesIO()
-    out.save(buffer)
-    return buffer.getvalue()
+    from ._docx import write_docx
+
+    return write_docx(document)
 
 
 @register("xlsx", extensions=(".xlsx",))

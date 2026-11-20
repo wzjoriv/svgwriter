@@ -9,7 +9,7 @@ import warnings
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
-from ._constants import DEFAULT_MITER, MAX_SEGMENTS, NONE
+from ._constants import DEFAULT_MITER, DROPPED_EFFECTS, MAX_SEGMENTS, NONE
 from ._paints import _paint, _shading
 from ._patterns import _ancestry, _expand_patterns
 
@@ -47,6 +47,10 @@ class Item:
         ``stroke-miterlimit``.
     dashes : tuple of float
         Dash lengths in page units; empty for a solid stroke.
+    shading : Shading or None
+        The gradient behind the fill, for formats that can write gradients.
+    link : str or None
+        The ``href`` of the nearest enclosing ``<a>``, for formats that keep links.
 
     See Also
     --------
@@ -75,6 +79,7 @@ class Item:
     miter_limit: float
     dashes: tuple[float, ...]
     shading: Shading | None = None
+    link: str | None = None
 
 
 @dataclass
@@ -183,6 +188,19 @@ def _hidden(leaf: Element, root: Element) -> bool:
     return str(computed(leaf, "visibility", "visible")) in ("hidden", "collapse")
 
 
+def _effects_and_link(leaf: Element, root: Element) -> tuple[list[str], str | None]:
+    """The masks, filters and markers on *leaf* or its ancestors (dropped by flattening) and its link."""
+    dropped: list[str] = []
+    link: str | None = None
+    node: Element | None = leaf
+    while node is not None and node is not root:
+        dropped += [name for name, attributes in DROPPED_EFFECTS.items() if any(node.get(a) for a in attributes)]
+        if link is None and node.tag == "a":
+            link = str(node.get("href") or node.get("xlink:href") or "") or None
+        node = node.parent
+    return dropped, link
+
+
 def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: bool = False,
             color_glyphs: bool = True) -> Scene:
     """Reduce *document* to :class:`Item` paths in its user space (``viewBox`` applied).
@@ -218,8 +236,9 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
 
     Notes
     -----
-    Gradients and patterns become their first stop color; images, masks,
-    filters and markers are not represented and are listed in ``skipped``.
+    Gradients become their first stop color (with the gradient kept in
+    :attr:`Item.shading`), patterns are expanded into their tiles and markers
+    into shapes; images, masks and filters are not represented and are listed in ``skipped``.
 
     Examples
     --------
@@ -263,6 +282,8 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
             skipped.append(str(exc))
             continue
         ancestry, opacity = _ancestry(leaf, root)
+        dropped, link = _effects_and_link(leaf, root)
+        skipped += dropped
         matrix = view @ ancestry
         opacity *= float(leaf.get("opacity", 1.0))
         stretch = math.sqrt(abs((matrix @ leaf.t).determinant)) or 1.0
@@ -281,6 +302,7 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
             dashes=() if str(dashes) == NONE else tuple(
                 v * stretch for v in (float(p) for p in str(dashes).replace(",", " ").split())),
             shading=_shading(leaf, matrix @ leaf.t, rules),
+            link=link,
         ))
     if color_glyphs and not text and _has_emoji(document):
         skipped.append("colour emoji")

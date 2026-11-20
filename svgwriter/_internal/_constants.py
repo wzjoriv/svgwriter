@@ -47,6 +47,7 @@ __all__ = [
     "DISPLAY_SCALE",
     "DOCTYPE",
     "DOT",
+    "DROPPED_EFFECTS",
     "DVISVGM",
     "EASE_BEND_SAMPLES",
     "EASE_BISECTIONS",
@@ -101,11 +102,15 @@ __all__ = [
     "INSTALL_HINT",
     "JOIN_TOLERANCE",
     "LATEX",
+    "LATEX_SIZE",
+    "LATEX_SOURCE",
     "LATEX_TEMPLATE",
     "LATIN_EXTENDED_ADDITIONAL",
     "LINK_CACHE",
     "LUMA",
     "MAC_FALLBACK_FAMILIES",
+    "MARKER_DEFAULT_SIZE",
+    "MARKER_PROPERTIES",
     "MATHTEXT_SIZE",
     "MAX_SEGMENTS",
     "MERMAID",
@@ -150,6 +155,7 @@ __all__ = [
     "WRITE_LAG",
     "XLINK_NS",
     "XML_NS",
+    "TEX_SIZE",
     "ZIAMATH_SIZE",
 ]
 
@@ -245,6 +251,9 @@ TIMECOUNT_RE: Final = re.compile(r"^\s*([+-]?\d*\.?\d+)\s*(ms|s|min|h)?\s*$")
 
 DEFAULT_MITER: Final = 4.0
 NONE: Final = "none"
+DROPPED_EFFECTS: Final = {"mask": ("mask",), "filter": ("filter",)}
+MARKER_PROPERTIES: Final = ("marker-start", "marker-mid", "marker-end")
+MARKER_DEFAULT_SIZE: Final = 3.0
 PERCENT: Final = 100.0
 DEFAULT_SIZE: Final = 16.0
 JOIN_TOLERANCE: Final = 0.01
@@ -340,6 +349,9 @@ LATEX_TEMPLATE: Final = (r"\documentclass[preview,border=0pt]{{standalone}}" "\n
                          r"\usepackage{{amsmath,amssymb}}" "\n"
                          r"\begin{{document}}" "\n{body}\n" r"\end{{document}}" "\n")
 ZIAMATH_SIZE: Final = 10.0
+TEX_SIZE: Final = 10.0
+LATEX_SOURCE: Final = "data-latex"
+LATEX_SIZE: Final = "data-latex-size"
 MATHTEXT_SIZE: Final = 10.0
 DISPLAY_SCALE: Final = 1.2
 MPL_MOVETO: Final = 1

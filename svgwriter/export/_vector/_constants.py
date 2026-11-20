@@ -13,6 +13,7 @@ __all__ = [
     "ANCHORS",
     "ANGLE_EPSILON",
     "AXIAL",
+    "BASE_ANCHORS",
     "BASE_LEVEL",
     "BEZIER_ARC_FACTOR",
     "BF_CHAR_RE",
@@ -52,6 +53,7 @@ __all__ = [
     "EVENT_RE",
     "EXPONENTIAL",
     "FLATE",
+    "FONTSIZE_RE",
     "FOREACH_RE",
     "FULL_TURN",
     "GAP_TOLERANCE",
@@ -95,6 +97,7 @@ __all__ = [
     "PAINTS",
     "PATH_TOKEN_RE",
     "PDF_HEADER",
+    "PDF_LINK_KEY",
     "PDF_MAX_DEPTH",
     "PDF_TOKEN_RE",
     "PERCENT",
@@ -121,6 +124,7 @@ __all__ = [
     "STYLE_RE",
     "SUBSET_RE",
     "SUPPORTED_BITS",
+    "TEX_FAMILIES",
     "TEX_PT_PER_INCH",
     "TIKZSET_RE",
     "TIKZSTYLE_RE",
@@ -309,4 +313,8 @@ DIMENSION_RE: Final = re.compile(r"^\s*([+-]?(?:\d+\.?\d*|\.\d+))\s*([a-z]{2})?\
 PATH_TOKEN_RE: Final = re.compile(r"\s*(\+\+|\+|--|\|-|-\||\.\.|[A-Za-z]+|.)", re.S)
 DASH_RE: Final = re.compile(r"(?:on|off)\s+([+-]?(?:\d+\.?\d*|\.\d+)\s*(?:[a-z]{2}(?![a-z]))?)")
 BRACKETS: Final = {"(": ")", "[": "]", "{": "}"}
+PDF_LINK_KEY: Final = "SkAnnotationKey_URL"
+BASE_ANCHORS: Final = {"base west": "start", "base": "middle", "base east": "end"}
+TEX_FAMILIES: Final = {r"\sffamily": "sans-serif", r"\rmfamily": "serif", r"\ttfamily": "monospace"}
+FONTSIZE_RE: Final = re.compile(r"\\fontsize\{([\d.]+)\}")
 CLIP_TOLERANCE: Final = 1e-3

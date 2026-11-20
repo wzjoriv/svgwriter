@@ -4,28 +4,32 @@ Vector page formats: PDF (via skia), TikZ and EPS, out and in.
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 import skia
 
 from .._registry import register, register_importer
+from ._constants import PDF_LINK_KEY
 
 if TYPE_CHECKING:
     from ...document import Document
 
 
-@register("pdf", extensions=(".pdf",))
-def pdf(document: Document, *, title: str | None = None, author: str | None = None, text: bool = True) -> bytes:
-    """Single-page vector PDF drawn by skia: shapes stay vector, text stays selectable, images are embedded.
+@register("pdf", extensions=(".pdf",), multipage=True)
+def pdf(document: Document | Sequence[Document], *, title: str | None = None, author: str | None = None,
+        text: bool = True) -> bytes:
+    """Vector PDF drawn by skia: shapes stay vector, text stays selectable, images are embedded.
 
     Text painted with plain colours is written as real text in an embedded font subset, so it can
-    be selected, searched and copied. Text with a gradient or pattern paint, a filter or a mask,
+    be selected, searched and copied. Links (``<a href>``) become clickable areas. Text with a gradient or pattern paint, a filter or a mask,
     and characters that need a shaper (Devanagari, Arabic, ...), are drawn as exact glyph outlines.
 
     Parameters
     ----------
-    document : Document
-        The document to draw; the page has the document's size.
+    document : Document or sequence of Document
+        The document to draw, or several documents for one page each; every
+        page has its own document's size.
     title : str, optional
         PDF title metadata. Defaults to None.
     author : str, optional
@@ -51,7 +55,6 @@ def pdf(document: Document, *, title: str | None = None, author: str | None = No
     from ..._internal._rendering import view_matrix
     from ...ops.render import document_size, paint_tree
 
-    width, height = document_size(document)
     stream = skia.DynamicMemoryWStream()
     metadata = skia.PDF.Metadata()
     if title:
@@ -59,14 +62,27 @@ def pdf(document: Document, *, title: str | None = None, author: str | None = No
     if author:
         metadata.fAuthor = author
     pdf_document = skia.PDF.MakeDocument(stream, metadata)
-    with document._sized():
-        width, height = document_size(document)
-        canvas = pdf_document.beginPage(width, height)
-        paint_tree(canvas, document.root, lambda text: text, width, height,
-                   view=view_matrix(document, width, height), viewport=True, native_text=text)
+    for page in document if isinstance(document, Sequence) else [document]:
+        with page._sized():
+            width, height = document_size(page)
+            canvas = pdf_document.beginPage(width, height)
+            paint_tree(canvas, page.root, lambda text: text, width, height,
+                       view=view_matrix(page, width, height), viewport=True, native_text=text)
+        _links(canvas, page)
         pdf_document.endPage()
     pdf_document.close()
     return bytes(stream.detachAsData())
+
+
+def _links(canvas: skia.Canvas, page: Document) -> None:
+    """A clickable URL area over every ``<a href>`` of *page*."""
+    from ..._internal._rendering import page_box
+
+    for anchor in [element for element in page.root.iter() if element.tag == "a"]:
+        target = str(anchor.get("href") or anchor.get("xlink:href") or "")
+        box, _ = page_box(page, anchor)
+        if target and box is not None:
+            canvas.drawAnnotation(skia.Rect.MakeXYWH(*box), PDF_LINK_KEY, skia.Data(target.encode() + b"\0"))
 
 
 @register("tikz", extensions=(".tikz", ".tex"), binary=False)
@@ -134,21 +150,22 @@ def eps(document: Document, *, text: bool = True) -> bytes:
     return to_eps(document, text=text).encode("ascii")
 
 
-@register_importer("pdf", extensions=(".pdf",))
-def read_pdf(data: bytes, *, page: int = 0) -> Document:
-    """The vector paths of one PDF page as filled and stroked paths (text and images skipped).
+@register_importer("pdf", extensions=(".pdf",), page_option="page")
+def read_pdf(data: bytes, *, page: int | None = 0) -> Document | list[Document]:
+    """The paths, images, clips and text of a PDF page as elements.
 
     Parameters
     ----------
     data : bytes
         The PDF file.
-    page : int, optional
-        Zero-based index of the page to read. Defaults to 0.
+    page : int or None, optional
+        Zero-based index of the page to read, or None for every page. Defaults to 0.
 
     Returns
     -------
-    Document
-        A document the size of the page in points, y pointing down.
+    Document or list of Document
+        A document the size of the page in points, y pointing down; a list
+        with one per page when *page* is None.
 
     Raises
     ------
@@ -163,8 +180,8 @@ def read_pdf(data: bytes, *, page: int = 0) -> Document:
     -----
     Supported: objects found by scanning (no xref table needed), object
     streams, uncompressed and ``/FlateDecode`` content streams, Form XObjects,
-    the path, line-style and colour operators and ``gs`` alpha. Text, images,
-    shadings, patterns and clipping are not read; see
+    the path, line-style and colour operators and ``gs`` alpha, images,
+    clipping, text, shadings and tiling patterns; see
     :func:`~svgwriter.export._vector._pdf_read.read_pdf` for the full subset.
 
     Examples
@@ -176,8 +193,11 @@ def read_pdf(data: bytes, *, page: int = 0) -> Document:
     >>> svg.export.find_importer(".pdf").function(data)[0].get("fill")
     '#ff0000'
     """
+    from ._pdf_read import page_count
     from ._pdf_read import read_pdf as read
 
+    if page is None:
+        return [read(data, page=index) for index in range(page_count(data))]
     return read(data, page=page)
 
 

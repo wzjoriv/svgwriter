@@ -269,9 +269,15 @@ class Output:
         Document
             The loaded document.
 
+        Raises
+        ------
+        ValueError
+            If the options ask for every page (``page=None``); use :meth:`open_all`.
+
         See Also
         --------
         from_string : Parse SVG text.
+        open_all : Every page or slide of a file.
 
         Examples
         --------
@@ -285,7 +291,51 @@ class Output:
         """
         from ..export import load
 
-        return load(path, format, **options)
+        result = load(path, format, **options)
+        if isinstance(result, list):
+            raise ValueError("these options read every page; use Document.open_all for a list of documents")
+        return result
+
+    @classmethod
+    def open_all(cls, path: AnyPath, *, format: str | None = None, **options: Any) -> list[Document]:
+        """Read every page of a PDF, every slide of a PowerPoint deck, or the one drawing of other formats.
+
+        Parameters
+        ----------
+        path : str or os.PathLike
+            The file to read.
+        format : str, optional
+            Format name or extension. Defaults to None, which follows the
+            extension of `path`.
+        **options
+            Loader options other than the page choice.
+
+        Returns
+        -------
+        list of Document
+            One document per page or slide; a single-page format gives a list of one.
+
+        See Also
+        --------
+        open : Read one page.
+        svgwriter.export.save : Writes a list of documents as pages or slides.
+
+        Examples
+        --------
+        >>> import tempfile, pathlib
+        >>> import svgwriter as svg
+        >>> with tempfile.TemporaryDirectory() as folder:
+        ...     path = svg.export.save([svg.Document(10, 10), svg.Document(20, 5)], pathlib.Path(folder) / "a.pdf")
+        ...     [page.root.get("width") for page in svg.Document.open_all(path)]
+        [10.0, 20.0]
+        """
+        from ..export import find_importer, load
+
+        page_option = find_importer(format or path).page_option
+        if page_option is not None:
+            options[page_option] = None
+        result = load(path, format, **options)
+        return result if isinstance(result, list) else [result]
 
     async def save_async(self, path: AnyPath, **options: Any) -> None:
         """Write the SVG text to *path* in a worker thread.

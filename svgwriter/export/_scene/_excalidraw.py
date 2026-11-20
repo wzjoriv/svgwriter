@@ -4,6 +4,7 @@ Excalidraw scenes (``.excalidraw`` JSON) in and out.
 
 from __future__ import annotations
 
+import base64
 import json
 import math
 import random
@@ -14,6 +15,7 @@ from ._constants import (
     ARROW_LENGTH,
     ARROW_SPREAD,
     ASCENT,
+    EXPORT_FAMILIES,
     EXPORT_TOLERANCE,
     FONTS,
     LINE_HEIGHT,
@@ -158,7 +160,7 @@ def read_excalidraw(text: str) -> Document:
     1
     """
     from ...document import Document
-    from ...elements.structure import Group
+    from ...elements.structure import A, Group
 
     scene = json.loads(text)
     if scene.get("type") != "excalidraw":
@@ -177,12 +179,58 @@ def read_excalidraw(text: str) -> Document:
             if group_id not in groups:
                 groups[group_id] = parent.add(Group(id=f"group-{group_id}"))
             parent = groups[group_id]
-        parent.add(element)
+        parent.add(A(element, href=item["link"]) if item.get("link") else element)
     return doc.fit(padding=10)
 
 
+def _common(rng: random.Random, number: int, link: str | None) -> dict[str, Any]:
+    """The bookkeeping fields every exported Excalidraw element carries."""
+    return {"id": f"svgw{number}", "groupIds": [], "roundness": None, "seed": rng.randrange(2 ** 31), "version": 1,
+            "versionNonce": rng.randrange(2 ** 31), "isDeleted": False, "boundElements": None, "locked": False,
+            "link": link, "roughness": 0}
+
+
+def _images(document: Document, rng: random.Random, files: dict[str, Any]) -> list[dict[str, Any]]:
+    """Every embedded image as an Excalidraw ``image`` element, its PNG stored in *files*."""
+    from ..._internal._rendering import page_box
+    from ...elements.structure import Image
+
+    elements = []
+    for image in [e for e in document.root.iter() if isinstance(e, Image) and e.pixels is not None]:
+        box, _ = page_box(document, image)
+        if box is None:
+            continue
+        key = f"svgw-image{len(files)}"
+        files[key] = {"mimeType": "image/png", "id": key, "created": 0,
+                      "dataURL": "data:image/png;base64," + base64.b64encode(image.encode("png")).decode("ascii")}
+        elements.append({**_common(rng, len(elements), None), "type": "image", "x": box.x, "y": box.y,
+                         "width": box.width, "height": box.height, "angle": 0, "fileId": key, "status": "saved",
+                         "scale": [1, 1], "strokeColor": TRANSPARENT, "backgroundColor": TRANSPARENT,
+                         "fillStyle": "solid", "strokeWidth": 0, "strokeStyle": "solid", "opacity": 100})
+    return elements
+
+
+def _text(run: Any, rng: random.Random, number: int) -> dict[str, Any]:
+    """One text run as an Excalidraw ``text`` element, turned about its centre like the run."""
+    matrix = run.matrix
+    stretch = math.sqrt(abs(matrix.determinant))
+    size, width = run.size * stretch, run.width * stretch
+    height = size * LINE_HEIGHT
+    angle = math.atan2(matrix.b, matrix.a)
+    top = -size * ASCENT
+    centre_x = matrix.e + math.cos(angle) * width / 2 - math.sin(angle) * (top + height / 2)
+    centre_y = matrix.f + math.sin(angle) * width / 2 + math.cos(angle) * (top + height / 2)
+    family = next((code for word, code in EXPORT_FAMILIES.items() if word in run.family.lower()), 2)
+    return {**_common(rng, number, None), "type": "text", "x": centre_x - width / 2, "y": centre_y - height / 2,
+            "width": width, "height": height, "angle": angle % math.tau, "text": run.text, "originalText": run.text,
+            "fontSize": size, "fontFamily": family, "textAlign": "left", "verticalAlign": "top",
+            "lineHeight": LINE_HEIGHT, "containerId": None, "autoResize": True,
+            "strokeColor": run.fill.hex if run.fill is not None else TRANSPARENT, "backgroundColor": TRANSPARENT,
+            "fillStyle": "solid", "strokeWidth": 1, "strokeStyle": "solid", "opacity": round(OPACITY_SCALE * run.opacity)}
+
+
 def to_excalidraw(document: Document, *, seed: int = 0) -> str:
-    """An Excalidraw scene of the flattened outlines (one ``line`` element per subpath).
+    """An Excalidraw scene: outlines as ``line`` elements (one per subpath), images and text.
 
     Parameters
     ----------
@@ -212,8 +260,10 @@ def to_excalidraw(document: Document, *, seed: int = 0) -> str:
     from ..._internal._flatten import flatten, polylines
 
     rng = random.Random(seed)
-    elements = []
-    for item in flatten(document).items:
+    files: dict[str, Any] = {}
+    elements = _images(document, rng, files)
+    scene = flatten(document, handled=frozenset({"image"}), text=True)
+    for item in scene.items:
         stroke = item.stroke.hex if item.stroke is not None else TRANSPARENT
         fill = item.fill.hex if item.fill is not None else TRANSPARENT
         opacity = round(OPACITY_SCALE * (item.fill_opacity if item.fill is not None else item.stroke_opacity))
@@ -221,15 +271,14 @@ def to_excalidraw(document: Document, *, seed: int = 0) -> str:
             x0, y0 = points[0]
             xs, ys = [p[0] for p in points], [p[1] for p in points]
             elements.append({
-                "id": f"svgw{len(elements)}", "type": "line", "x": x0, "y": y0,
+                **_common(rng, len(elements), item.link), "type": "line", "x": x0, "y": y0,
                 "width": max(xs) - min(xs), "height": max(ys) - min(ys), "angle": 0,
                 "strokeColor": stroke, "backgroundColor": fill if closed else TRANSPARENT,
                 "fillStyle": "solid", "strokeWidth": item.stroke_width if item.stroke is not None else 0,
-                "strokeStyle": "dashed" if item.dashes else "solid", "roughness": 0, "opacity": opacity,
-                "groupIds": [], "roundness": None, "seed": rng.randrange(2 ** 31), "version": 1,
-                "versionNonce": rng.randrange(2 ** 31), "isDeleted": False, "boundElements": None,
-                "locked": False, "points": [[px - x0, py - y0] for px, py in points],
+                "strokeStyle": "dashed" if item.dashes else "solid", "opacity": opacity,
+                "points": [[px - x0, py - y0] for px, py in points],
                 "lastCommittedPoint": None, "startArrowhead": None, "endArrowhead": None,
             })
+    elements += [_text(run, rng, len(elements) + index) for index, run in enumerate(scene.texts)]
     return json.dumps({"type": "excalidraw", "version": 2, "source": SOURCE, "elements": elements,
-                       "appState": {"viewBackgroundColor": "#ffffff"}, "files": {}}, indent=1)
+                       "appState": {"viewBackgroundColor": "#ffffff"}, "files": files}, indent=1)
