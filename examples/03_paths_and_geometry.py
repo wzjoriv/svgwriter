@@ -6,9 +6,6 @@ bounds, points along an outline and hit tests.
 Run it as ``python 03_paths_and_geometry.py`` or open ``03_paths_and_geometry.ipynb`` to see each step.
 """
 
-import os
-import tempfile
-from pathlib import Path
 
 import numpy as np
 
@@ -126,13 +123,9 @@ flower_doc
 
 # %% [markdown]
 # Save a readable file and a compact one (shorter path data, fewer digits), and the flower.
-# Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
 
 # %%
-out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
-out.mkdir(parents=True, exist_ok=True)
-doc.save(out / "03_paths_pretty.svg")
-probe.save(out / "03_measure.svg")
-doc.save(out / "03_paths_compact.svg", pretty=False, compact_paths=True, precision=2)
-flower_doc.save(out / "03_boolean.svg")
-print("saved 03_paths_pretty.svg, 03_paths_compact.svg, 03_measure.svg and 03_boolean.svg")
+doc.save("03_paths_pretty.svg")
+probe.save("03_measure.svg")
+doc.save("03_paths_compact.svg", pretty=False, compact_paths=True, precision=2)
+flower_doc.save("03_boolean.svg")

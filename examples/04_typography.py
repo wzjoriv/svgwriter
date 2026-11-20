@@ -7,9 +7,6 @@ Run it as ``python 04_typography.py`` or open ``04_typography.ipynb`` to see eac
 """
 
 import math
-import os
-import tempfile
-from pathlib import Path
 
 import svgwriter as svg
 
@@ -84,12 +81,9 @@ for row, (name, line, options) in enumerate(LINES):
 world
 
 # %% [markdown]
-# Save SVG and a 2x PNG. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
+# Save SVG and a 2x PNG.
 
 # %%
-out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
-out.mkdir(parents=True, exist_ok=True)
-doc.save(out / "04_typography.svg")
-doc.save(out / "04_typography.png", scale=2)
-world.save(out / "04_scripts.svg")
-print("saved 04_typography.svg, .png and 04_scripts.svg")
+doc.save("04_typography.svg")
+doc.save("04_typography.png", scale=2)
+world.save("04_scripts.svg")

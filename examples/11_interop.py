@@ -8,9 +8,6 @@ Run it as ``python 11_interop.py`` or open ``11_interop.ipynb`` to see each step
 """
 
 import importlib.util
-import os
-import tempfile
-from pathlib import Path
 
 import numpy as np
 
@@ -129,10 +126,7 @@ doc.add(ramp).scale(2.5).place(*cell(2, 1), at="top_left")
 doc
 
 # %% [markdown]
-# Save the board. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
+# Save the board.
 
 # %%
-out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
-out.mkdir(parents=True, exist_ok=True)
-doc.save(out / "11_interop.svg")
-print("saved 11_interop.svg")
+doc.save("11_interop.svg")

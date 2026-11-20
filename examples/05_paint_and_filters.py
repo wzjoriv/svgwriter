@@ -6,9 +6,6 @@ lighting and color changes.
 Run it as ``python 05_paint_and_filters.py`` or open ``05_paint_and_filters.ipynb`` to see each step.
 """
 
-import os
-import tempfile
-from pathlib import Path
 
 import svgwriter as svg
 from svgwriter.elements import filters as fe
@@ -105,11 +102,8 @@ doc.add(svg.Text("grey", x=100, y=300, font_size=64, fill="purple", filter=grey)
 doc
 
 # %% [markdown]
-# Save both, the second with an XML doctype. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
+# Save both, the second with an XML doctype.
 
 # %%
-out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
-out.mkdir(parents=True, exist_ok=True)
-paint.save(out / "05_paint.svg")
-doc.save(out / "05_filters.svg", doctype=True)
-print("saved 05_paint.svg and 05_filters.svg")
+paint.save("05_paint.svg")
+doc.save("05_filters.svg", doctype=True)

@@ -7,9 +7,6 @@ favicons. Output is deterministic, so stale assets can be detected by regenerati
 Run it as ``python 12_logo.py`` or open ``12_logo.ipynb`` to see each variant.
 """
 
-import os
-import tempfile
-from pathlib import Path
 from typing import Literal
 
 import svgwriter as svg
@@ -77,21 +74,17 @@ logo(mono=True)
 
 # %% [markdown]
 # Every asset a project usually needs comes from that one definition: SVG variants, PNGs at any size,
-# a multi-size `.ico`, an `.icns` and an apple-touch icon. Set `SVGWRITER_EXAMPLES_OUT` to choose
-# the folder. This cell only runs when the file is executed, not when it is imported
+# a multi-size `.ico`, an `.icns` and an apple-touch icon. This cell only runs when the file is executed, not when it is imported
 # (the devkit `logo` tool imports `logo` from here as `examples.12_logo`).
 
 # %%
 if __name__ == "__main__":
-    out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
-    out.mkdir(parents=True, exist_ok=True)
     for theme in THEMES:
-        logo(theme).save(out / f"logo-{theme}.svg")
-    logo(mono=True).save(out / "logo-mono.svg")
+        logo(theme).save(f"logo-{theme}.svg")
+    logo(mono=True).save("logo-mono.svg")
     light = logo()
     for size in (16, 32, 48, 64, 128, 256, 512, 1024):
-        light.save(out / f"logo-{size}.png", size=size, padding=PADDING)
-    light.save(out / "favicon.ico", padding=PADDING, sizes=(16, 32, 48))
-    light.save(out / "logo.icns", padding=PADDING)
-    light.save(out / "apple-touch-icon.png", padding=PADDING, size=180, background=THEMES["light"]["ground"])
-    print(f"saved {len(list(out.iterdir()))} files")
+        light.save(f"logo-{size}.png", size=size, padding=PADDING)
+    light.save("favicon.ico", padding=PADDING, sizes=(16, 32, 48))
+    light.save("logo.icns", padding=PADDING)
+    light.save("apple-touch-icon.png", padding=PADDING, size=180, background=THEMES["light"]["ground"])
