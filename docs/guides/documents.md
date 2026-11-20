@@ -82,3 +82,19 @@ text = doc.to_string()
 back = svg.Document.from_string(text)
 doc.save("figure.svg", pretty=True, precision=3)
 ```
+
+## Documents inside documents
+
+A document has one outermost `<svg>`, its root. SVG allows further `<svg>` elements inside as their
+own viewports, and `doc.add(other)` uses that: it adds a copy of the other document's `<svg>` (its size
+and `viewBox` kept) inside a `<g>`, so the whole drawing moves and scales as one piece:
+
+```python
+icon = svg.Document(24, 24)
+icon.circle(12, 12, 10, fill="teal")
+sheet = svg.Document(200, 100)
+sheet.add(icon).place(50, 50)        # a copy; later edits to icon do not change sheet
+```
+
+Explicit ids keep their values, so give embedded drawings distinct ids if they are referenced.
+

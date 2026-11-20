@@ -60,9 +60,14 @@ class SupportsSVG(Protocol):
 
 
 def _ingest(item: Any) -> Any:
-    """Elements and iterables pass through; ``_repr_svg_`` objects become a ``<g>`` holding their ``<svg>``."""
+    """Elements pass through; documents (copied) and ``_repr_svg_``/``savefig`` objects become a ``<g>`` holding an ``<svg>``."""
     if isinstance(item, Element):
         return item
+    if isinstance(item, Document):
+        root = item.root.clone()
+        for key in ("version", "baseProfile"):
+            root.attributes.pop(key, None)
+        return Group(root)
     if isinstance(item, str):
         raise TypeError("add() takes elements, not strings; parse markup first: doc.add(svg.parse('<rect .../>'))")
     if hasattr(item, "savefig"):

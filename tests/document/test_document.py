@@ -92,3 +92,15 @@ def test_save_auto_sized(tmp_path) -> None:
     doc.rect(0, 0, 7, 3)
     doc.save(tmp_path / "x.svg")
     assert 'viewBox="0 0 7 3"' in (tmp_path / "x.svg").read_text()
+
+
+def test_documents_embed_as_a_placeable_nested_svg_copy():
+    import svgwriter as svg
+
+    inner = svg.Document(50, 50)
+    rect = inner.rect(0, 0, 50, 50, fill="red")
+    outer = svg.Document(200, 100)
+    holder = outer.add(inner).place(100, 50)
+    rect.set("fill", "blue")
+    assert holder.tag == "g" and holder[0].tag == "svg" and holder[0].get("version") is None
+    assert outer.rasterize()[50, 100].round(2).tolist() == [1, 0, 0, 1]
