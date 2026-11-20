@@ -217,6 +217,7 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
     """
     from ..._internal._constants import ANCHOR_SHIFT, RTL_ANCHORS
     from ...ops.text import GlyphBox, glyph_shape
+    from ._textfit import fit_lengths
 
     if rules is None:
         root = text.root()
@@ -246,6 +247,7 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
                               color))
         pen_x += advance
     chunks.append(len(boxes))
+    fit_lengths(chars, boxes, chunks, lists.reference["x"])
     for start, stop in zip(chunks, chunks[1:], strict=False):
         if start == stop:
             continue
