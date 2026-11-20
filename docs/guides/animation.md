@@ -25,7 +25,8 @@ logo.animate.fade_in(0.5).spin(2, begin=0.5)
 
 | Group | Presets |
 |---|---|
-| Appear / disappear | `fade_in`, `fade_out`, `draw` (stroke draws on), `wipe(side)`, `typewriter` (text) |
+| Appear / disappear | `show(at=)`, `hide(at=)` (at once), `fade_in`, `fade_out`, `draw` (stroke draws on), `wipe(side)`, `typewriter` (text) |
+| Create | `create` (outline draws on, then the fill fades in), `uncreate` (the reverse), `write` (text character by character, a group child by child) |
 | Motion | `slide_in(side)`, `move_to(x, y)`, `follow(path)`, `bounce`, `shake` |
 | Scale and turn | `grow`, `shrink`, `pulse`, `spin(turns=)` (about the element's centre) |
 | Color and any attribute | `blink`, `color_cycle(colors)`, `tween(attribute, start, end)` |
@@ -35,6 +36,17 @@ logo.animate.fade_in(0.5).spin(2, begin=0.5)
 Every preset takes `dur` and `begin` in seconds, `repeat` (a count or `"indefinite"`) and keeps its end
 state unless `freeze=False`. They are plain SMIL, so they play in browsers and in `doc.at(t)`, video,
 animated GIF, APNG and WebP.
+
+`create`, `uncreate` and `write` animate `stroke-dasharray`/`stroke-dashoffset` and `fill-opacity`.
+A shape without a stroke is drawn with its fill color, every contour of a shape draws at once, and
+`write` starts each character a little before the previous one finishes:
+
+```python
+title = svg.text("Hello", x=10, y=60, font_size=48, fill="tomato")
+title.animate.write(1.5)
+badge = svg.circle(50, 50, 30, fill="teal")
+badge.animate.create(1).uncreate(1, begin=3)
+```
 
 ## Playing SMIL
 

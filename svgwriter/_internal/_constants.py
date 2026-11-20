@@ -33,6 +33,7 @@ __all__ = [
     "COLOR_ALIASES",
     "COMPLEX_SCRIPT_START",
     "CONTAINERS",
+    "CREATE_DRAW_SHARE",
     "DEFAULT_DPI",
     "DEFAULT_DURATION",
     "DEFAULT_FAMILY",
@@ -133,6 +134,7 @@ __all__ = [
     "TIME_SCALE",
     "UINT16_MAX",
     "WHITE",
+    "WRITE_LAG",
     "XLINK_NS",
     "XML_NS",
     "ZIAMATH_SIZE",
@@ -278,11 +280,13 @@ BLINK_VALUES: Final = "1;0;1"
 BOUNCE_HEIGHT: Final = 20.0
 BOUNCE_TIMES: Final = (0.0, 0.25, 0.5, 0.65, 0.8, 0.9, 1.0)
 BOUNCE_VALUES: Final = (0.0, 1.0, 0.0, 0.45, 0.0, 0.15, 0.0)
+CREATE_DRAW_SHARE: Final = 0.6
 DEFAULT_DURATION: Final = 1.0
 FOREVER: Final = "indefinite"
 PULSE_SCALE: Final = 1.1
 SHAKE_DISTANCE: Final = 4.0
 SHAKE_STEPS: Final = 6
+WRITE_LAG: Final = 0.35
 SIDES: Final = {"left": (-1.0, 0.0), "right": (1.0, 0.0), "top": (0.0, -1.0), "bottom": (0.0, 1.0)}
 
 FULL_TURN: Final = 360.0
