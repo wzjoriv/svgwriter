@@ -12,6 +12,7 @@ PROMPT.md
 *.prof
 *.mp4
 *.gif
+!docs/_static/examples/*.gif
 
 # ---- Byte-compiled / optimized / DLL files ----
 __pycache__/
