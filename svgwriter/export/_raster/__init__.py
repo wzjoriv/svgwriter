@@ -11,6 +11,8 @@ from .._registry import register, register_importer
 from ._constants import DEFAULT_GIF_FPS, DEFAULT_QUALITY
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from ...color.color import ColorLike
     from ...document import Document
 
@@ -19,7 +21,7 @@ def _frames(document: Document, fps: float, duration: float | None, **options: A
     """Every frame of the SMIL animation as uint8 RGBA, or an empty list when nothing animates."""
     from ...ops.parallel import rasterize_many
     from ...video.animation import animation_duration, frame_times
-    from ._encoders import to_uint8
+    from ._pixels import to_uint8
 
     processes = options.pop("processes", 1)
     length = duration if duration is not None else animation_duration(document)
@@ -39,13 +41,14 @@ def _animation_encoders() -> dict[str, Any]:
     return {"png": encode_apng, "webp": encode_webp_animation}
 
 
-def _raster(format: str):  # type: ignore[no-untyped-def]
+def _raster(format: str) -> Callable[..., bytes]:
     def exporter(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int | None = None,
                  padding: float = 0.0, background: ColorLike | None = None, quality: int = DEFAULT_QUALITY,
                  dpi: float | None = None, animate: bool = False, fps: float = DEFAULT_GIF_FPS,
                  duration: float | None = None, loop: int = 0, processes: int | None = 1) -> bytes:
         from ...ops.render import encode_image
-        from ._encoders import ENCODERS, to_uint8
+        from ._encoders import ENCODERS
+        from ._pixels import to_uint8
 
         if format == "jpeg" and background is None:
             background = "white"
@@ -122,7 +125,8 @@ def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int |
     """
     from ...elements.animation import AnimationElement
     from ...video.animation import animation_duration
-    from ._encoders import encode_gif, encode_gif_animation, to_uint8
+    from ._gif import encode_gif, encode_gif_animation
+    from ._pixels import to_uint8
 
     del quality
     if dpi is not None:
@@ -298,7 +302,7 @@ def read_pnm(data: bytes) -> Document:
     (2, 1)
     """
     from ...elements.structure import Pixels
-    from ._encoders import decode_pnm
+    from ._pnm import decode_pnm
 
     return _image_document(Pixels.from_array(decode_pnm(data)))
 
