@@ -350,6 +350,48 @@ for a character, layout falls back per character to a system font that has one, 
 Hindi, Bengali, Urdu, Chinese, Japanese and other scripts render with any family; <code class="docutils literal notranslate"><span class="pre">xml:lang</span></code> (for
 example <code class="docutils literal notranslate"><span class="pre">&quot;zh&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;ja&quot;</span></code>) steers that choice for shared CJK characters.</p>
 </section>
+<section id="emoji">
+<h2>Emoji<a class="headerlink" href="#emoji" title="Link to this heading">¶</a></h2>
+<p>Emoji come from the system’s colour emoji font (Segoe UI Emoji on Windows, Apple Color Emoji on
+macOS, Noto Color Emoji on Linux). Sequences such as skin tones (👍🏽), families joined with ZWJ
+(👨‍👩‍👧), keycaps (1️⃣) and flags (🇯🇵) are shaped as one user-perceived character, drawn as the
+single glyph the font provides. Colour glyphs have no outlines, so each format shows them as well as
+it can:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Format</p></th>
+<th class="head"><p>Emoji</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SVG, SVGZ, HTML</p></td>
+<td><p>Kept as text; the viewer’s emoji font draws them.</p></td>
+</tr>
+<tr class="row-odd"><td><p>PNG, JPEG, WebP, GIF, ICO, video and other rasters</p></td>
+<td><p>Drawn in colour from the emoji font.</p></td>
+</tr>
+<tr class="row-even"><td><p>PDF</p></td>
+<td><p>Drawn in colour as one glyph each; copy and search give the emoji’s characters.</p></td>
+</tr>
+<tr class="row-odd"><td><p>EPS</p></td>
+<td><p>Embedded as masked images (PostScript level 3).</p></td>
+</tr>
+<tr class="row-even"><td><p>TikZ</p></td>
+<td><p>Drawn as small filled pixel cells, since LaTeX cannot typeset colour emoji.</p></td>
+</tr>
+<tr class="row-odd"><td><p>PowerPoint</p></td>
+<td><p>Kept as text in the text boxes; PowerPoint draws them.</p></td>
+</tr>
+<tr class="row-even"><td><p>DXF, HPGL, G-code, Excalidraw</p></td>
+<td><p>Skipped with a warning: these formats hold only outlines.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">to_path()</span></code>, <code class="docutils literal notranslate"><span class="pre">text_outline()</span></code> and boolean operations use outlines, so emoji are left out of them. With
+no colour emoji font installed, emoji fall back to whatever font has the characters.</p>
+</section>
 <section id="font-files">
 <h2>Font files<a class="headerlink" href="#font-files" title="Link to this heading">¶</a></h2>
 <p>Fonts are found by family name among the installed fonts. To use a font file without installing it,
@@ -424,6 +466,7 @@ longer support SVG 1.1 <code class="docutils literal notranslate"><span class="p
 <li><a class="reference internal" href="#characters-as-handles">Characters as handles</a></li>
 <li><a class="reference internal" href="#outlines-and-measurement">Outlines and measurement</a></li>
 <li><a class="reference internal" href="#fonts-and-scripts">Fonts and scripts</a></li>
+<li><a class="reference internal" href="#emoji">Emoji</a></li>
 <li><a class="reference internal" href="#font-files">Font files</a></li>
 </ul>
 </li>
