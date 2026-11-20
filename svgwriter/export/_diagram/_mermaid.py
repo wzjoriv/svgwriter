@@ -7,41 +7,36 @@ from __future__ import annotations
 import math
 import re
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
+
+from ._constants import (
+    ARROW_LENGTH,
+    ARROW_SPREAD,
+    DIRECTIONS,
+    EDGE_RE,
+    EDGE_STROKE,
+    FONT_SIZE,
+    HEADER_RE,
+    ID_RE,
+    LABEL_BACKGROUND,
+    MARGIN,
+    NODE_FILL,
+    NODE_GAP,
+    NODE_STROKE,
+    PADDING_X,
+    PADDING_Y,
+    RANK_GAP,
+    SHAPES,
+    SUBGRAPH_FILL,
+    SUBGRAPH_STROKE,
+    SWEEPS,
+)
 
 if TYPE_CHECKING:
     from ...document import Document
     from ...elements.structure import Group
 
 __all__ = ["Flowchart", "parse_flowchart", "draw_flowchart"]
-
-FONT_SIZE: Final = 14.0
-PADDING_X: Final = 14.0
-PADDING_Y: Final = 9.0
-RANK_GAP: Final = 50.0
-NODE_GAP: Final = 30.0
-MARGIN: Final = 10.0
-SWEEPS: Final = 6
-ARROW_LENGTH: Final = 8.0
-ARROW_SPREAD: Final = 28.0
-NODE_FILL: Final = "#ececff"
-NODE_STROKE: Final = "#9370db"
-EDGE_STROKE: Final = "#333333"
-SUBGRAPH_FILL: Final = "#ffffde"
-SUBGRAPH_STROKE: Final = "#aaaa33"
-LABEL_BACKGROUND: Final = "#e8e8e8"
-DIRECTIONS: Final = {"TD": "TB", "TB": "TB", "BT": "BT", "LR": "LR", "RL": "RL"}
-SHAPES: Final = [  # (opening, closing, shape) tried longest first
-    ("(((", ")))", "double-circle"), ("([", "])", "stadium"), ("[[", "]]", "subroutine"), ("[(", ")]", "cylinder"),
-    ("((", "))", "circle"), ("{{", "}}", "hexagon"), ("[/", "/]", "parallelogram"), ("[\\", "\\]", "parallelogram-alt"),
-    ("[/", "\\]", "trapezoid"), ("[\\", "/]", "trapezoid-alt"), (">", "]", "flag"), ("{", "}", "diamond"),
-    ("(", ")", "round"), ("[", "]", "rect"),
-]
-_HEADER_RE: Final = re.compile(r"^\s*(?:graph|flowchart)\s*(TD|TB|BT|LR|RL)?\s*$", re.I)
-_EDGE_RE: Final = re.compile(
-    r"\s*(?P<arrow><-->|<==>|-\.->|-\.-|==>|===|-->|---|--o|--x|~~~)\s*(?:\|(?P<label>[^|]*)\|)?\s*"
-    r"|\s*--\s*(?P<label2>[^->]+?)\s*-->\s*|\s*==\s*(?P<label3>[^=>]+?)\s*==>\s*|\s*-\.\s*(?P<label4>.+?)\s*\.->\s*")
-_ID_RE: Final = re.compile(r"[A-Za-z0-9_][\w\-]*")
 
 
 @dataclass
@@ -82,7 +77,7 @@ class Flowchart:
 def _node(chart: Flowchart, text: str) -> str | None:
     """Parse ``id``, ``id[label]``, ``id((label))``... adding or updating the node; returns its id."""
     text = text.strip().rstrip(";").strip()
-    match = _ID_RE.match(text)
+    match = ID_RE.match(text)
     if match is None:
         return None
     node_id, rest = match.group(0), text[match.end():].strip()
@@ -130,7 +125,7 @@ def parse_flowchart(source: str) -> Flowchart:
     """
     lines = [line.split("%%", 1)[0] for line in re.split(r"[\n;]", source)]
     lines = [line for line in lines if line.strip()]
-    if not lines or (header := _HEADER_RE.match(lines[0])) is None:
+    if not lines or (header := HEADER_RE.match(lines[0])) is None:
         raise ValueError("not a Mermaid flowchart: it must start with 'graph' or 'flowchart' and a direction")
     chart = Flowchart(DIRECTIONS[(header.group(1) or "TB").upper()])
     stack: list[tuple[str, list[str]]] = []
@@ -151,10 +146,10 @@ def parse_flowchart(source: str) -> Flowchart:
 
 def _statement(chart: Flowchart, text: str, stack: list[tuple[str, list[str]]]) -> None:
     """One line: a node list or a chain ``a --> b -- label --> c`` with ``&`` groups."""
-    parts = _EDGE_RE.split(text)
+    parts = EDGE_RE.split(text)
     groups, links = [], []
     position = 0
-    for match in _EDGE_RE.finditer(text):
+    for match in EDGE_RE.finditer(text):
         groups.append(text[position:match.start()])
         arrow = match.group("arrow") or ("-->" if match.group("label2") is not None else
                                          "==>" if match.group("label3") is not None else "-.->")

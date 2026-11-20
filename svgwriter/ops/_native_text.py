@@ -196,7 +196,8 @@ def _natural(boxes: list[Any], font: Any) -> bool:
 def _paints(source: Element, opacity: float) -> tuple[skia.Paint | None, skia.Paint | None]:
     """Fill and stroke paints for *source* (None where it is unpainted)."""
     from ..attributes.cascade import computed
-    from ..export._flatten import _number, _paint
+    from ..export._flatten import _number
+    from ..export._paints import _paint
 
     fill_paint = stroke_paint = None
     group = opacity * _number(source, "opacity", 1.0, []) if source.tag != "text" else opacity

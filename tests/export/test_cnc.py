@@ -5,7 +5,8 @@ import math
 import pytest
 
 import svgwriter as svg
-from svgwriter.export._plotter._cnc import MM_PER_USER_UNIT, polylines
+from svgwriter.export._plotter._cnc import polylines
+from svgwriter.export._plotter._constants import MM_PER_USER_UNIT
 from svgwriter.pathdata import PathData
 
 

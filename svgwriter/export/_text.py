@@ -4,9 +4,25 @@ Plain text and Markdown in: lines and blocks as ``<text>`` elements in one group
 
 from __future__ import annotations
 
-import re
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
+from ._constants import (
+    BODY_SIZE,
+    BOLD_RE,
+    BULLET,
+    BULLET_RE,
+    CODE_FILL,
+    HEADING_RE,
+    HEADING_SIZES,
+    INDENT_PER_LEVEL,
+    INLINE_RE,
+    LINE_HEIGHT,
+    MARGIN,
+    MONOSPACE,
+    NUMBERED_RE,
+    SANS,
+    SPACES_PER_LEVEL,
+)
 from ._registry import register_importer
 
 if TYPE_CHECKING:
@@ -14,22 +30,6 @@ if TYPE_CHECKING:
     from ..elements.structure import Group
 
 __all__ = ["read_markdown", "read_text"]
-
-BODY_SIZE: Final = 16.0
-LINE_HEIGHT: Final = 1.4
-MARGIN: Final = 10.0
-HEADING_SIZES: Final = {1: 32.0, 2: 26.0, 3: 22.0, 4: 19.0, 5: 17.0, 6: 16.0}
-BULLET: Final = "• "
-MONOSPACE: Final = "monospace"
-SANS: Final = "sans-serif"
-CODE_FILL: Final = "#333333"
-_HEADING_RE: Final = re.compile(r"^(#{1,6})\s+(.*?)\s*#*\s*$")
-_BULLET_RE: Final = re.compile(r"^(\s*)[-*+]\s+(.*)$")
-_NUMBERED_RE: Final = re.compile(r"^(\s*)(\d+)[.)]\s+(.*)$")
-_BOLD_RE: Final = re.compile(r"\*\*(.+?)\*\*|__(.+?)__")
-_INLINE_RE: Final = re.compile(r"`([^`]*)`|\*([^*]+)\*|_([^_]+)_|!?\[([^\]]*)\]\([^)]*\)")
-INDENT_PER_LEVEL: Final = 20.0
-SPACES_PER_LEVEL: Final = 2
 
 
 def _document(group: Group) -> Document:
@@ -76,7 +76,7 @@ register_importer("text", extensions=(".txt", ".text"))(read_text)
 
 def _plain(text: str) -> str:
     """Markdown inline markup removed (code, emphasis, links keep their text)."""
-    return _INLINE_RE.sub(lambda m: next(g for g in m.groups() if g is not None), text)
+    return INLINE_RE.sub(lambda m: next(g for g in m.groups() if g is not None), text)
 
 
 def _runs(text: str, **base: object) -> list[object]:
@@ -85,7 +85,7 @@ def _runs(text: str, **base: object) -> list[object]:
 
     parts: list[object] = []
     position = 0
-    for match in _BOLD_RE.finditer(text):
+    for match in BOLD_RE.finditer(text):
         if match.start() > position:
             parts.append(_plain(text[position:match.start()]))
         parts.append(TSpan(_plain(match.group(1) or match.group(2)), font_weight="bold"))
@@ -131,14 +131,14 @@ def read_markdown(data: bytes) -> Document:
         if in_code:
             extra = {"font_family": MONOSPACE, "fill": CODE_FILL, "xml_space": "preserve"}
             runs: list[object] = [line]
-        elif heading := _HEADING_RE.match(line):
+        elif heading := HEADING_RE.match(line):
             size = HEADING_SIZES[len(heading.group(1))]
             extra = {"font_size": size, "font_weight": "bold"}
             runs = _runs(heading.group(2))
-        elif bullet := _BULLET_RE.match(line):
+        elif bullet := BULLET_RE.match(line):
             x = len(bullet.group(1)) // SPACES_PER_LEVEL * INDENT_PER_LEVEL
             runs = [BULLET, *_runs(bullet.group(2))]
-        elif numbered := _NUMBERED_RE.match(line):
+        elif numbered := NUMBERED_RE.match(line):
             x = len(numbered.group(1)) // SPACES_PER_LEVEL * INDENT_PER_LEVEL
             runs = [f"{numbered.group(2)}. ", *_runs(numbered.group(3))]
         else:

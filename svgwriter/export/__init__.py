@@ -20,18 +20,16 @@ b'%PDF-'
 
 from __future__ import annotations
 
+from ._exchange import export, load, save
 from ._registry import (
     Exporter,
     Importer,
-    export,
     exporters,
     find_exporter,
     find_importer,
     importers,
-    load,
     register,
     register_importer,
-    save,
     unregister,
 )
 

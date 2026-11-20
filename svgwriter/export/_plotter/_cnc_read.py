@@ -6,9 +6,23 @@ from __future__ import annotations
 
 import math
 import re
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
-from ._cnc import HPGL_UNITS_PER_MM, MM_PER_USER_UNIT
+from ._constants import (
+    ARC_STEP_DEGREES,
+    DXF_POINT_FIELDS,
+    DXF_VARIABLE,
+    DXF_X,
+    DXF_Y,
+    GCODE_PAGE_RE,
+    GCODE_WORD_RE,
+    HEX_RE,
+    HPGL_PENS,
+    HPGL_RE,
+    HPGL_UNITS_PER_MM,
+    MAX_PAGE_MM,
+    MM_PER_USER_UNIT,
+)
 
 if TYPE_CHECKING:
     from ...document import Document
@@ -17,18 +31,6 @@ __all__ = ["read_dxf", "read_gcode", "read_hpgl"]
 
 Point = tuple[float, float]
 Stroke = tuple[str, list[Point], bool]
-
-HPGL_PENS: Final = {0: "none", 1: "black", 2: "red", 3: "green", 4: "yellow", 5: "blue", 6: "magenta", 7: "cyan"}
-ARC_STEP_DEGREES: Final = 5.0
-_HEX_RE: Final = re.compile(r"^[0-9A-Fa-f]{6}$")
-_HPGL_RE: Final = re.compile(r"([A-Z]{2})([^;A-Z]*)")
-DXF_VARIABLE: Final = 9
-DXF_X: Final = 10
-DXF_Y: Final = 20
-DXF_POINT_FIELDS: Final = 4
-MAX_PAGE_MM: Final = 1e7
-_GCODE_PAGE_RE: Final = re.compile(r"\(page ([\d.]+) x ([\d.]+) mm\)")
-_GCODE_WORD_RE: Final = re.compile(r"([A-Z])\s*([-+]?\d*\.?\d+)")
 
 
 def _document(strokes: list[Stroke], unit_mm: float, page: tuple[float, float] | None = None) -> Document:
@@ -122,7 +124,7 @@ def _entities(pairs: list[tuple[int, str]]) -> list[tuple[str, list[tuple[int, s
 
 
 def _color(layer: str) -> str:
-    return f"#{layer.lower()}" if _HEX_RE.match(layer) else "black"
+    return f"#{layer.lower()}" if HEX_RE.match(layer) else "black"
 
 
 def read_dxf(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
@@ -246,7 +248,7 @@ def read_hpgl(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
             strokes.append((HPGL_PENS.get(pen, "black"), current, False))
         current = []
 
-    for command, args in _HPGL_RE.findall(text.upper()):
+    for command, args in HPGL_RE.findall(text.upper()):
         numbers = [float(v) for v in re.findall(r"[-+]?\d*\.?\d+", args)]
         if command == "SP":
             flush()
@@ -329,7 +331,7 @@ def read_gcode(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
 
     for raw in text.splitlines():
         line = re.sub(r"\(.*?\)|;.*", "", raw).upper()
-        words = _GCODE_WORD_RE.findall(line)
+        words = GCODE_WORD_RE.findall(line)
         if not words:
             continue
         codes = {(letter, float(value)) for letter, value in words if letter in "GM"}
@@ -374,5 +376,5 @@ def read_gcode(text: str, *, unit_mm: float = MM_PER_USER_UNIT) -> Document:
             current.append((nx, ny))
         x, y = nx, ny
     flush()
-    found = _GCODE_PAGE_RE.search(text)
+    found = GCODE_PAGE_RE.search(text)
     return _document(strokes, unit_mm, (float(found[1]), float(found[2])) if found else None)

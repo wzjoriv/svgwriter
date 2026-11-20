@@ -5,13 +5,31 @@ Encapsulated PostScript output from a flattened scene.
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
 from ..._internal._numbers import format_number
 from ...transform.matrix import Matrix
-from .._flatten import Item, Shading, flatten, placed_images, to_cubic
+from .._flatten import Item, flatten, to_cubic
+from .._paints import Shading
+from .._patterns import placed_images
+from ._constants import (
+    AXIAL,
+    BASE_LEVEL,
+    EPS_CAPS,
+    EPS_CHANNEL_MAX,
+    EPS_JOINS,
+    EPS_PRECISION,
+    HEX_LINE,
+    LEVEL_LINE,
+    MONOSPACE_WORDS,
+    POSTSCRIPT_FONTS,
+    PS_ESCAPES,
+    RADIAL,
+    SERIF_WORDS,
+    SHADING_LEVEL,
+)
 
 if TYPE_CHECKING:
     from ...color.color import Color
@@ -19,22 +37,9 @@ if TYPE_CHECKING:
 
 __all__ = ["to_eps"]
 
-PRECISION: Final = 3
-CAPS: Final = {"butt": 0, "round": 1, "square": 2}
-JOINS: Final = {"miter": 0, "round": 1, "bevel": 2}
-
 
 def _n(value: float) -> str:
-    return format_number(value, PRECISION)
-
-
-BASE_LEVEL: Final = 2
-LEVEL_LINE: Final = 4
-CHANNEL_MAX: Final = 255
-HEX_LINE: Final = 120
-SHADING_LEVEL: Final = 3
-AXIAL: Final = 2
-RADIAL: Final = 3
+    return format_number(value, EPS_PRECISION)
 
 
 def _path(item: Item, height: float) -> str:
@@ -51,7 +56,7 @@ def _image(image: Any, matrix: Matrix, height: float) -> str:
     """An embedded image as ``colorimage`` in its pixel grid; alpha is composited onto white (EPS has none)."""
     rgba = image.rgba()
     rgb = rgba[..., :3] * rgba[..., 3:] + (1.0 - rgba[..., 3:])
-    data = np.clip(np.rint(rgb * CHANNEL_MAX), 0, CHANNEL_MAX).astype(np.uint8).tobytes().hex()
+    data = np.clip(np.rint(rgb * EPS_CHANNEL_MAX), 0, EPS_CHANNEL_MAX).astype(np.uint8).tobytes().hex()
     rows, columns = rgba.shape[:2]
     flip = Matrix(1, 0, 0, -1, 0, height) @ matrix
     lines = [data[i:i + HEX_LINE] for i in range(0, len(data), HEX_LINE)]
@@ -91,19 +96,6 @@ def _shfill(shading: Shading, height: float) -> str:
     return (f"[{' '.join(_n(v) for v in flip.as_tuple())}] concat\n"
             f"<< /ShadingType {kind} /ColorSpace /DeviceRGB /Coords [{coords}] /Extend [true true] "
             f"/Function {_function(shading.stops)} >> shfill")
-
-
-POSTSCRIPT_FONTS: Final = {
-    ("sans", False, False): "Helvetica", ("sans", True, False): "Helvetica-Bold",
-    ("sans", False, True): "Helvetica-Oblique", ("sans", True, True): "Helvetica-BoldOblique",
-    ("serif", False, False): "Times-Roman", ("serif", True, False): "Times-Bold",
-    ("serif", False, True): "Times-Italic", ("serif", True, True): "Times-BoldItalic",
-    ("mono", False, False): "Courier", ("mono", True, False): "Courier-Bold",
-    ("mono", False, True): "Courier-Oblique", ("mono", True, True): "Courier-BoldOblique",
-}
-MONOSPACE_WORDS: Final = ("mono", "courier", "consolas", "menlo")
-SERIF_WORDS: Final = ("times", "georgia", "garamond")
-PS_ESCAPES: Final = {"\\": "\\\\", "(": "\\(", ")": "\\)"}
 
 
 def _postscript_font(run: Any) -> str:
@@ -194,7 +186,7 @@ def to_eps(document: Document, *, text: bool = True) -> str:
             r, g, b = item.stroke.rgb
             dashes = " ".join(_n(d) for d in item.dashes)
             lines += [path, f"{_n(r)} {_n(g)} {_n(b)} setrgbcolor", f"{_n(item.stroke_width)} setlinewidth",
-                      f"{CAPS.get(item.linecap, 0)} setlinecap {JOINS.get(item.linejoin, 0)} setlinejoin",
+                      f"{EPS_CAPS.get(item.linecap, 0)} setlinecap {EPS_JOINS.get(item.linejoin, 0)} setlinejoin",
                       f"{_n(item.miter_limit)} setmiterlimit [{dashes}] 0 setdash", "stroke"]
     lines += [_text(run, scene.height) for run in scene.texts]
     lines += ["grestore", "showpage", "%%EOF"]

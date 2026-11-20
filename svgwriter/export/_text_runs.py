@@ -6,9 +6,10 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from ..transform.matrix import Matrix
+from ._constants import DEFAULT_SIZE, JOIN_TOLERANCE
 
 if TYPE_CHECKING:
     from ..color.color import Color
@@ -16,9 +17,6 @@ if TYPE_CHECKING:
     from ..elements.base import Element
 
 __all__ = ["TextRun", "text_runs"]
-
-JOIN_TOLERANCE: Final = 0.01
-DEFAULT_SIZE: Final = 16.0
 
 
 @dataclass
@@ -92,7 +90,8 @@ def text_runs(document: Document) -> list[TextRun]:
     from ..elements.text import Text
     from ..ops._layers import _ancestry
     from ..ops.render import _view, document_size
-    from ._flatten import _number, _paint
+    from ._flatten import _number
+    from ._paints import _paint
 
     runs: list[TextRun] = []
     with document._sized():

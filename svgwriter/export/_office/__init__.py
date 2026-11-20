@@ -6,17 +6,15 @@ from __future__ import annotations
 
 import importlib
 import io
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from .._registry import register, register_importer
+from ._constants import EXTRA_HINT, PICTURE_SCALE, USER_UNITS_PER_INCH
 
 if TYPE_CHECKING:
     from ...document import Document
 
 __all__ = ["OfficeExtraError"]
-
-EXTRA_HINT: Final = "pip install 'svgwriter[office]'"
-PICTURE_SCALE: Final = 2.0
 
 
 class OfficeExtraError(ImportError):
@@ -126,9 +124,6 @@ def _picture(document: Document) -> tuple[bytes, float, float]:
     width, height = document_size(document)
     png = document.export("png", scale=PICTURE_SCALE)
     return png, width / USER_UNITS_PER_INCH, height / USER_UNITS_PER_INCH
-
-
-USER_UNITS_PER_INCH: Final = 96.0
 
 
 @register("docx", extensions=(".docx",))

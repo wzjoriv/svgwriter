@@ -4,28 +4,22 @@ PDF shadings and patterns read as SVG gradients and ``<pattern>`` paint servers.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from ...transform.matrix import Matrix
+from ._constants import AXIAL, EXPONENTIAL, IDENTITY_MATRIX, RADIAL, SHADING, STITCHING, TILING
 
 if TYPE_CHECKING:
     from ...elements.base import Element
-    from ._pdf_read import _Painter
+    from ._pdf_painter import _Painter
 
 __all__ = ["fill_with_pattern", "paint_shading", "pattern_paint"]
-
-AXIAL: Final = 2
-RADIAL: Final = 3
-TILING: Final = 1
-SHADING: Final = 2
-EXPONENTIAL: Final = 2
-STITCHING: Final = 3
-IDENTITY_MATRIX: Final = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
 
 
 def _stops(painter: _Painter, function: Any, low: float = 0.0, high: float = 1.0) -> list[tuple[float, Any]] | None:
     """Gradient stops ``(offset, rgb)`` for an exponential or stitching function, offsets mapped to 0..1."""
-    from ._pdf_read import _color, _resolve
+    from ._pdf_objects import _resolve
+    from ._pdf_painter import _color
 
     function = _resolve(painter.objects, function)
     if isinstance(function, list):
@@ -60,7 +54,7 @@ def gradient(painter: _Painter, shading: Any, matrix: Matrix) -> Element | None:
     """An axial or radial shading as a ``userSpaceOnUse`` gradient carrying *matrix*, or None if unsupported."""
     from ...color.color import Color
     from ...elements.paint import LinearGradient, RadialGradient, Stop
-    from ._pdf_read import _resolve
+    from ._pdf_objects import _resolve
 
     info = shading.info if hasattr(shading, "info") else shading
     if not isinstance(info, dict):
@@ -98,7 +92,7 @@ def paint_shading(painter: _Painter, operands: list[Any], resources: dict[str, A
 
 def pattern_paint(painter: _Painter, pattern: Any) -> Element | None:
     """A PDF pattern (shading or tiling) as an SVG paint server in page coordinates."""
-    from ._pdf_read import _resolve
+    from ._pdf_objects import _resolve
 
     info = pattern.info if hasattr(pattern, "info") else pattern
     if not isinstance(info, dict):
@@ -115,7 +109,8 @@ def pattern_paint(painter: _Painter, pattern: Any) -> Element | None:
 def _tiling(painter: _Painter, pattern: Any, matrix: Matrix) -> Element | None:
     """A tiling pattern's cell drawn by a nested painter into a ``<pattern>``."""
     from ...elements.paint import Pattern
-    from ._pdf_read import _decode, _Painter, _resolve
+    from ._pdf_objects import _decode, _resolve
+    from ._pdf_painter import _Painter
     from ._reading import Shape, _path
 
     info = pattern.info

@@ -4,30 +4,30 @@ PDF content beyond paths: images, clipping paths and text, as handlers for the P
 
 from __future__ import annotations
 
-import re
 from typing import TYPE_CHECKING, Any, Final
 
 import numpy as np
 
 from ...transform.matrix import Matrix
+from ._constants import (
+    BF_CHAR_RE,
+    BF_RANGE_RE,
+    CHANNEL_MAX,
+    COMPONENTS,
+    DEFAULT_TEXT_SIZE,
+    GAP_TOLERANCE,
+    HEX_RE,
+    MATRIX_TOLERANCE,
+    RANGE_RE,
+    STYLE_RE,
+    SUBSET_RE,
+    WORD_RE,
+)
 
 if TYPE_CHECKING:
-    from ._pdf_read import _Painter
+    from ._pdf_painter import _Painter
 
 __all__ = ["CONTENT_HANDLERS", "draw_image"]
-
-CHANNEL_MAX: Final = 255.0
-COMPONENTS: Final = {"DeviceRGB": 3, "DeviceGray": 1, "DeviceCMYK": 4, "CalRGB": 3, "CalGray": 1}
-DEFAULT_TEXT_SIZE: Final = 12.0
-MATRIX_TOLERANCE: Final = 1e-4
-GAP_TOLERANCE: Final = 0.05
-_SUBSET_RE: Final = re.compile(r"^[A-Z]{6}\+")
-_STYLE_RE: Final = re.compile(r"[-,]?(Bold|Italic|Oblique|BoldItalic|Regular|Roman|MT|PS)+$", re.I)
-_WORD_RE: Final = re.compile(r"(?<=[a-z])(?=[A-Z])")
-_HEX_RE: Final = re.compile(r"<([0-9A-Fa-f]+)>")
-_BF_CHAR_RE: Final = re.compile(r"beginbfchar(.*?)endbfchar", re.S)
-_BF_RANGE_RE: Final = re.compile(r"beginbfrange(.*?)endbfrange", re.S)
-_RANGE_RE: Final = re.compile(r"<([0-9A-Fa-f]+)>" + r"\s*<([0-9A-Fa-f]+)>" + r"\s*(<[0-9A-Fa-f]+>|\[[^\]]*\])")
 
 
 def _filters(info: dict[str, Any]) -> list[str]:
@@ -38,7 +38,7 @@ def _filters(info: dict[str, Any]) -> list[str]:
 def _samples(painter: _Painter, stream: Any) -> np.ndarray | None:
     """An image XObject's pixels as straight RGBA floats, or None for unsupported encodings."""
     from ...elements.structure import Pixels
-    from ._pdf_read import _resolve
+    from ._pdf_objects import _resolve
 
     info = stream.info
     filters = _filters(info)
@@ -55,7 +55,7 @@ def _samples(painter: _Painter, stream: Any) -> np.ndarray | None:
     channels = COMPONENTS.get(name)
     if channels is None or not width or not height:
         return None
-    from ._pdf_read import _decode
+    from ._pdf_objects import _decode
 
     data = _decode(stream) if filters else stream.raw
     raw = np.frombuffer(data[:width * height * channels], np.uint8)
@@ -113,13 +113,13 @@ def _text_begin(painter: _Painter, operands: list[Any], resources: dict[str, Any
 
 def _font(painter: _Painter, operands: list[Any], resources: dict[str, Any]) -> None:
     """``Tf``: font resource and size; the family comes from the font's base name."""
-    from ._pdf_read import _numbers
+    from ._pdf_objects import _numbers
 
     font = painter.resource(resources, "Font", operands[0]) or {}
     font = font if isinstance(font, dict) else {}
-    base = _SUBSET_RE.sub("", str(font.get("BaseFont", "")).lstrip("/"))
+    base = SUBSET_RE.sub("", str(font.get("BaseFont", "")).lstrip("/"))
     style = base.lower()
-    painter.text_font = (_family(_STYLE_RE.sub("", base)), "bold" in style, "italic" in style or "oblique" in style)
+    painter.text_font = (_family(STYLE_RE.sub("", base)), "bold" in style, "italic" in style or "oblique" in style)
     painter.text_size = _numbers(operands[1:], 1)[0]
     painter.text_codes = (2 if str(font.get("Subtype", "")).lstrip("/") == "Type0" else 1,
                           _to_unicode(painter, font.get("ToUnicode")))
@@ -131,7 +131,7 @@ def _family(name: str) -> str:
 
     if not name:
         return "serif"
-    spaced = _WORD_RE.sub(" ", name)
+    spaced = WORD_RE.sub(" ", name)
     for candidate in dict.fromkeys((name, spaced)):
         if skia.Typeface(candidate).getFamilyName().lower() == candidate.lower():
             return candidate
@@ -140,22 +140,22 @@ def _family(name: str) -> str:
 
 def _to_unicode(painter: _Painter, value: Any) -> dict[int, str]:
     """The character codes of a ``/ToUnicode`` CMap mapped to their text (empty when there is none)."""
-    from ._pdf_read import _decode, _resolve
+    from ._pdf_objects import _decode, _resolve
 
     stream = _resolve(painter.objects, value)
     if stream is None or not hasattr(stream, "info"):
         return {}
     cmap = _decode(stream).decode("latin-1") if stream.info.get("Filter") else stream.raw.decode("latin-1")
     table: dict[int, str] = {}
-    for block in _BF_CHAR_RE.findall(cmap):
-        codes = _HEX_RE.findall(block)
+    for block in BF_CHAR_RE.findall(cmap):
+        codes = HEX_RE.findall(block)
         for code, text in zip(codes[::2], codes[1::2], strict=False):
             table[int(code, 16)] = _utf16(text)
-    for block in _BF_RANGE_RE.findall(cmap):
-        for low, high, target in _RANGE_RE.findall(block):
+    for block in BF_RANGE_RE.findall(cmap):
+        for low, high, target in RANGE_RE.findall(block):
             first, last = int(low, 16), int(high, 16)
             if target.startswith("["):
-                for offset, text in enumerate(_HEX_RE.findall(target)):
+                for offset, text in enumerate(HEX_RE.findall(target)):
                     table[first + offset] = _utf16(text)
             else:
                 start = int(target[1:-1], 16)
@@ -170,7 +170,7 @@ def _utf16(hex_text: str) -> str:
 
 
 def _move(painter: _Painter, operands: list[Any], resources: dict[str, Any]) -> None:
-    from ._pdf_read import _numbers
+    from ._pdf_objects import _numbers
 
     tx, ty = _numbers(operands, 2)
     painter.line_matrix = painter.line_matrix @ Matrix.translate(tx, ty)
@@ -178,7 +178,7 @@ def _move(painter: _Painter, operands: list[Any], resources: dict[str, Any]) -> 
 
 
 def _set_matrix(painter: _Painter, operands: list[Any], resources: dict[str, Any]) -> None:
-    from ._pdf_read import _numbers
+    from ._pdf_objects import _numbers
 
     painter.text_matrix = painter.line_matrix = Matrix(*_numbers(operands, 6))
 
@@ -278,13 +278,13 @@ def _quote(painter: _Painter, operands: list[Any], resources: dict[str, Any]) ->
 
 
 def _leading(painter: _Painter, operands: list[Any], resources: dict[str, Any]) -> None:
-    from ._pdf_read import _numbers
+    from ._pdf_objects import _numbers
 
     painter.leading = _numbers(operands, 1)[0]
 
 
 def _move_leading(painter: _Painter, operands: list[Any], resources: dict[str, Any]) -> None:
-    from ._pdf_read import _numbers
+    from ._pdf_objects import _numbers
 
     painter.leading = -_numbers(operands, 2)[1]
     _move(painter, operands, resources)

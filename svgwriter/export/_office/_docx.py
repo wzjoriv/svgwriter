@@ -5,20 +5,14 @@ Word documents in: the pictures and DrawingML shapes of a ``.docx`` as elements.
 from __future__ import annotations
 
 import io
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from . import require
-from ._pptx import EMU_PER_UNIT, _a, _custom_path, _preset_path, _solid
+from ._constants import EMU_PER_UNIT, INLINE_GAP, MARGIN, REL, WP, WPS
+from ._pptx import _a, _custom_path, _preset_path, _solid
 
 if TYPE_CHECKING:
     from ...document import Document
-
-WP: Final = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
-WPS: Final = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"
-PIC: Final = "http://schemas.openxmlformats.org/drawingml/2006/picture"
-REL: Final = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
-INLINE_GAP: Final = 10.0
-MARGIN: Final = 10.0
 
 
 def _wp(tag: str) -> str:

@@ -5,14 +5,13 @@ SVG and gzip-compressed SVGZ, out and in.
 from __future__ import annotations
 
 import gzip
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
+from ._constants import GZIP_MAGIC
 from ._registry import register, register_importer
 
 if TYPE_CHECKING:
     from ..document import Document
-
-GZIP_MAGIC: Final = b"\x1f\x8b"
 
 
 @register("svg", extensions=(".svg",), binary=False)

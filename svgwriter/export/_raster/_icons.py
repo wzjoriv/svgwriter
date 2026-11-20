@@ -4,25 +4,25 @@ Icon containers: Windows ``.ico`` and macOS ``.icns``, both holding PNG images.
 
 from __future__ import annotations
 
-import struct
 from collections.abc import Iterable
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
+
+from ._constants import (
+    BITS_PER_PIXEL,
+    ICNS_HEADER,
+    ICNS_SIZES,
+    ICNS_TYPES,
+    ICO_ENTRY,
+    ICO_HEADER,
+    ICO_MAX,
+    ICO_SIZES,
+    PNG_MAGIC,
+)
 
 if TYPE_CHECKING:
     from ...document import Document
 
 __all__ = ["ICNS_SIZES", "ICO_SIZES", "read_icon", "to_icns", "to_ico"]
-
-ICO_SIZES: Final = (16, 24, 32, 48, 64, 128, 256)
-ICNS_SIZES: Final = (16, 32, 64, 128, 256, 512, 1024)
-ICO_MAX: Final = 256
-ICO_HEADER: Final = struct.Struct("<HHH")
-ICO_ENTRY: Final = struct.Struct("<BBBBHHII")
-ICNS_HEADER: Final = struct.Struct(">4sI")
-ICNS_TYPES: Final = {16: (b"icp4",), 32: (b"icp5", b"ic11"), 64: (b"icp6", b"ic12"), 128: (b"ic07",),
-                     256: (b"ic08", b"ic13"), 512: (b"ic09", b"ic14"), 1024: (b"ic10",)}
-PNG_MAGIC: Final = bytes.fromhex("89504e470d0a1a0a")
-BITS_PER_PIXEL: Final = 32
 
 
 def _pngs(document: Document, sizes: Iterable[int], padding: float) -> dict[int, bytes]:

@@ -10,24 +10,34 @@ import shutil
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from .._registry import register_importer
+from ._constants import (
+    DISPLAY_SCALE,
+    DOT,
+    DVISVGM,
+    ENGINES,
+    INSTALL_HINT,
+    LATEX,
+    LATEX_TEMPLATE,
+    MATHTEXT_SIZE,
+    MERMAID,
+    MERMAID_CONFIG,
+    MPL_CLOSE,
+    MPL_CURVE3,
+    MPL_CURVE4,
+    MPL_LINETO,
+    MPL_MOVETO,
+    TIMEOUT_SECONDS,
+    ZIAMATH_SIZE,
+)
 
 if TYPE_CHECKING:
     from ...document import Document
     from ...elements.structure import Group
 
 __all__ = ["DiagramToolError", "latex", "read_d2", "read_dot", "read_mermaid", "read_plantuml"]
-
-DOT: Final = "dot"
-MERMAID: Final = "mmdc"
-TIMEOUT_SECONDS: Final = 60
-MERMAID_CONFIG: Final = {"flowchart": {"htmlLabels": False}, "class": {"htmlLabels": False}}
-INSTALL_HINT: Final = {
-    DOT: "install Graphviz (https://graphviz.org/download/) so that `dot` is on PATH",
-    MERMAID: "install the Mermaid CLI (`npm install -g @mermaid-js/mermaid-cli`) so that `mmdc` is on PATH",
-}
 
 
 class DiagramToolError(RuntimeError):
@@ -158,17 +168,6 @@ def read_mermaid(data: bytes, *, theme: str = "default") -> Document:
         return _document(target.read_bytes())
 
 
-LATEX_TEMPLATE: Final = (r"\documentclass[preview,border=0pt]{{standalone}}" "\n"
-                         r"\usepackage{{amsmath,amssymb}}" "\n"
-                         r"\begin{{document}}" "\n{body}\n" r"\end{{document}}" "\n")
-LATEX: Final = "latex"
-DVISVGM: Final = "dvisvgm"
-INSTALL_HINT[LATEX] = "install a TeX distribution (TeX Live or MiKTeX) so that `latex` is on PATH"
-INSTALL_HINT[DVISVGM] = "install dvisvgm (bundled with TeX Live and MiKTeX) so that `dvisvgm` is on PATH"
-INSTALL_HINT["plantuml"] = "install PlantUML so that `plantuml` is on PATH"
-INSTALL_HINT["d2"] = "install D2 (https://d2lang.com) so that `d2` is on PATH"
-
-
 def latex(source: str, *, display: bool = False, preamble: str = "", engine: str = "auto") -> Group:
     r"""A LaTeX formula or snippet as vector outlines.
 
@@ -239,10 +238,6 @@ def latex(source: str, *, display: bool = False, preamble: str = "", engine: str
     return group
 
 
-ENGINES: Final = ("auto", "tex", "ziamath", "mathtext")
-ZIAMATH_SIZE: Final = 10.0
-
-
 def _ziamath(source: str, display: bool) -> Group | None:
     """The formula through Ziamath (pure Python, STIX math font) as outlines, or None without Ziamath."""
     try:
@@ -276,15 +271,6 @@ def _ancestors(element: Any) -> list[Any]:
         chain.append(node)
         node = node.parent
     return chain
-
-
-MATHTEXT_SIZE: Final = 10.0
-DISPLAY_SCALE: Final = 1.2
-MPL_MOVETO: Final = 1
-MPL_LINETO: Final = 2
-MPL_CURVE3: Final = 3
-MPL_CURVE4: Final = 4
-MPL_CLOSE: Final = 79
 
 
 def _mathtext(source: str, display: bool) -> Group | None:
