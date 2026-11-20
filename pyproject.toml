@@ -114,7 +114,7 @@ output = "."
 
 [tool.devkit.version]
 file = "svgwriter/__init__.py"
-tag = "v{version}"
+tag = "{version}"
 
 [tool.devkit.docs]
 source = "docs"
