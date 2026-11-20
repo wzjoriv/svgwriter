@@ -64,7 +64,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 | feature | SVG, HTML | PNG and other rasters | PDF | EPS | TikZ | PowerPoint | Word, Excel | Excalidraw | DXF, HPGL, G-code |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | solid fill | yes | yes | yes | yes | yes | yes | picture | yes | outline only |
-| linear, radial gradient | yes | yes | yes | yes (`shfill`) | yes (shading) | yes (radial approximate) | picture | first colour | no |
+| linear, radial gradient | yes | yes | yes | yes (`shfill`) | yes (shading) | yes (radial approximate) | picture | average colour | no |
 | pattern | yes | yes | yes | shapes | shapes | shapes | picture | shapes | outlines |
 | stroke width | yes | yes | yes | yes | yes | yes | picture | yes | no |
 | dashes | yes | yes | shapes | yes | yes | yes | picture | dashed style | no |

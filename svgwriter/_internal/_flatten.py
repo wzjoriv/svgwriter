@@ -253,7 +253,7 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
 
     Notes
     -----
-    Gradients become their first stop color (with the gradient kept in
+    Gradients become their average color along the axis (with the gradient kept in
     :attr:`Item.shading`), patterns are expanded into their tiles and markers
     into shapes; images, masks and filters are not represented and are listed in ``skipped``.
 

@@ -102,5 +102,5 @@ class TestFormats:
                        stroke_width=2)).scale(2, about=(0, 0))
         doc.rect(0, 0, 1, 1, fill="none", display="none")
         (item,) = flatten(doc).items
-        assert item.data.bbox == (10, 0, 20, 20) and item.fill.hex == "#00ff00"
+        assert item.data.bbox == (10, 0, 20, 20) and item.fill.hex == "#808000"
         assert item.fill_opacity == 0.5 and item.stroke_width == pytest.approx(4)

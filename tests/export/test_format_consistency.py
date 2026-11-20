@@ -62,3 +62,10 @@ def test_a_pptx_picture_keeps_its_place_among_the_shapes():
 def test_an_excalidraw_image_keeps_its_place_among_the_shapes():
     scene = json.loads(svg.export.export(_picture_between_shapes(), "excalidraw"))
     assert [element["type"] for element in scene["elements"]] == ["line", "image", "line"]
+
+
+def test_a_gradient_without_a_vector_form_becomes_its_average_colour():
+    doc = svg.Document(40, 40)
+    doc.circle(20, 20, 15, fill=svg.RadialGradient(svg.Stop(0, "white"), svg.Stop(1, "#000000")))
+    element = json.loads(svg.export.export(doc, "excalidraw"))["elements"][0]
+    assert element["backgroundColor"] == "#808080"

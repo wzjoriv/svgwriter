@@ -65,8 +65,8 @@ def pptx(document: Document | Sequence[Document]) -> bytes:
 
     Notes
     -----
-    Gradients and patterns become their first color, as in the other vector
-    exports; pictures keep their place among the shapes.
+    Patterns become their tiles, as in the other vector exports; pictures keep
+    their place among the shapes.
 
     Examples
     --------

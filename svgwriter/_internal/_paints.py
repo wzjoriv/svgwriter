@@ -30,15 +30,41 @@ def _paint(element: Element, name: str, default: str, rules: list) -> Color | No
         text = str(computed(element, "color", "black", rules))
     if text.startswith("url("):
         server = resolve(element, value)
-        stops = list(server.iter("stop")) if server is not None else []
+        stops = _stops(server, rules) if server is not None else []
         fallback = text.split(")", 1)[1].strip()
         if stops:
-            return as_color(str(computed(stops[0], "stop-color", "black", rules)))
+            return _mean_color(stops)
         return as_color(fallback) if fallback and fallback != NONE else None
     try:
         return as_color(value if isinstance(value, Color) else text)
     except (TypeError, ValueError):
         return None
+
+
+def _stops(server: Element, rules: list) -> list[tuple[float, Color]]:
+    """The ``(offset, colour)`` stops of a gradient, offsets clamped to ``0..1``."""
+    from ..attributes.cascade import computed
+    from ..attributes.length import Length
+    from ..color.color import as_color
+
+    return [(min(max(float(Length.parse(stop.get("offset", 0)).value) / (PERCENT if "%" in str(stop.get("offset", ""))
+             else 1.0), 0.0), 1.0), as_color(str(computed(stop, "stop-color", "black", rules))))
+            for stop in server.iter("stop")]
+
+
+def _mean_color(stops: list[tuple[float, Color]]) -> Color:
+    """The average colour along a gradient's axis: the solid colour that stands in for it."""
+    from ..color.color import Color
+
+    offsets = [offset for offset, _ in stops]
+    for index in range(1, len(offsets)):
+        offsets[index] = max(offsets[index], offsets[index - 1])
+    colors = [color.rgb for _, color in stops]
+    total = [offsets[0] * channel + (1.0 - offsets[-1]) * last for channel, last in zip(colors[0], colors[-1], strict=True)]
+    for (start, low), (end, high) in zip(zip(offsets, colors, strict=True), zip(offsets[1:], colors[1:], strict=True),
+                                         strict=False):
+        total = [sum_ + (end - start) * (a + b) / 2 for sum_, a, b in zip(total, low, high, strict=True)]
+    return Color(*total)
 
 
 @dataclass
@@ -68,7 +94,6 @@ def _shading(element: Element, to_page: Matrix, rules: list) -> Shading | None:
     """The gradient behind ``fill``, when it is a linear or radial gradient with stops."""
     from ..attributes.cascade import computed
     from ..attributes.length import Length
-    from ..color.color import as_color
     from ..transform.matrix import Matrix
 
     value = computed(element, "fill", "black", rules)
@@ -77,9 +102,7 @@ def _shading(element: Element, to_page: Matrix, rules: list) -> Shading | None:
     server = resolve(element, value)
     if server is None or server.tag not in ("linearGradient", "radialGradient"):
         return None
-    stops = [(min(max(float(Length.parse(stop.get("offset", 0)).value) / (PERCENT if "%" in str(stop.get("offset", ""))
-              else 1.0), 0.0), 1.0), as_color(str(computed(stop, "stop-color", "black", rules))))
-             for stop in server.iter("stop")]
+    stops = _stops(server, rules)
     if not stops:
         return None
     matrix = to_page
