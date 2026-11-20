@@ -1,16 +1,46 @@
-__pycache__/
-*.py[cod]
-*.egg-info/
-build/
-dist/
-.venv/
-.pytest_cache/
+# ---- svgwriter — project-specific ----
+.vscode/
+.idea
 .claude/
-TODO.md
-*.mp4
-*.gif
-docs/_build/
-*.prof
-PROMPT.md
 DESIGN.md
 ROADMAP.md
+TODO.md
+LATER.md
+PROMPT.md
+*.prof
+*.mp4
+*.gif
+
+# ---- Byte-compiled / optimized / DLL files ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ---- Distribution / packaging ----
+build/
+dist/
+*.egg-info/
+wheels/
+
+# ---- Testing / coverage ----
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.hypothesis/
+
+# ---- Sphinx documentation ----
+docs/_build/
+
+# ---- Environments ----
+.env
+.venv
+.venv/
+.venvs/
+venv/
+env/
+
+# ---- Type checkers / static analysis ----
+.mypy_cache/
+.ruff_cache/

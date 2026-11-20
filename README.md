@@ -1,5 +1,13 @@
 # svgwriter
 
+[![Tests](https://github.com/wzjoriv/svgwriter/actions/workflows/ci.yml/badge.svg)](https://github.com/wzjoriv/svgwriter/actions/workflows/ci.yml)
+[![Docs](https://github.com/wzjoriv/svgwriter/actions/workflows/docs.yml/badge.svg)](https://wzjoriv.github.io/svgwriter)
+[![PyPI](https://img.shields.io/pypi/v/svgwriter)](https://pypi.org/project/svgwriter/)
+[![Python](https://img.shields.io/pypi/pyversions/svgwriter)](https://pypi.org/project/svgwriter/)
+[![CPython 3.10-3.14](https://img.shields.io/badge/CPython-3.10%E2%80%933.14-blue)](https://github.com/wzjoriv/svgwriter/actions/workflows/ci.yml)
+[![Linux · Windows · macOS](https://img.shields.io/badge/OS-Linux%20%C2%B7%20Windows%20%C2%B7%20macOS-blue)](https://github.com/wzjoriv/svgwriter/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
 Build, edit and render vector graphics in Python with a complete SVG 1.1 object model. Shapes move,
 rotate and scale through one transform; geometry has boolean operations and measurement; text, images
 and colors are first-class (numpy-backed); documents render with skia and export to PNG, PDF, TikZ, DXF

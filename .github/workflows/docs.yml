@@ -25,7 +25,7 @@ jobs:
     name: Build docs
     runs-on: ubuntu-latest
     env:
-      DOCS_CHANNEL: ${{ github.event_name == 'release' && 'stable' || 'dev' }}
+      SVGWRITER_DOCS_CHANNEL: ${{ github.event_name == 'release' && 'stable' || 'dev' }}
     outputs:
       series: ${{ steps.series.outputs.series }}
     steps:
@@ -40,8 +40,8 @@ jobs:
       - uses: actions/cache@v5
         with:
           path: docs/_build/doctrees
-          key: doctrees-${{ env.DOCS_CHANNEL }}-${{ hashFiles('docs/**', 'svgwriter/**') }}
-          restore-keys: doctrees-${{ env.DOCS_CHANNEL }}-
+          key: doctrees-${{ env.SVGWRITER_DOCS_CHANNEL }}-${{ hashFiles('docs/**', 'svgwriter/**') }}
+          restore-keys: doctrees-${{ env.SVGWRITER_DOCS_CHANNEL }}-
       - name: Install
         run: pip install -e ".[docs]"
       - name: Build HTML

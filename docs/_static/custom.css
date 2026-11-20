@@ -34,3 +34,23 @@ table.docutils td,
 table.docutils th {
     vertical-align: top;
 }
+
+.sidebar-versions {
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+    padding: 0.25rem var(--sidebar-item-spacing-horizontal) 0.75rem;
+    font-size: var(--sidebar-item-font-size);
+}
+.sidebar-versions-label {
+    color: var(--color-foreground-muted);
+    margin-right: auto;
+}
+.sidebar-versions a {
+    color: var(--color-foreground-secondary);
+    text-decoration: none;
+}
+.sidebar-versions a.current {
+    color: var(--color-brand-primary);
+    font-weight: 600;
+}
