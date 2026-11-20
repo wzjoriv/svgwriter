@@ -29,7 +29,7 @@ logo.animate.fade_in(0.5).spin(2, begin=0.5)
 | Motion | `slide_in(side)`, `move_to(x, y)`, `follow(path)`, `bounce`, `shake` |
 | Scale and turn | `grow`, `shrink`, `pulse`, `spin(turns=)` (about the element's centre) |
 | Color and any attribute | `blink`, `color_cycle(colors)`, `tween(attribute, start, end)` |
-| Shape | `morph(target)` (a `<path>` turning into any shape, segments matched by `interpolate`) |
+| Shape | `morph(target)` (a `<path>` turning into any shape, contours matched by `interpolate`) |
 | Groups | `stagger(preset, step=)` (each child starts `step` seconds after the last) |
 
 Every preset takes `dur` and `begin` in seconds, `repeat` (a count or `"indefinite"`) and keeps its end
@@ -81,7 +81,10 @@ $ python -m svgwriter animate scene.py -o out.mp4 --fps 30
 `svg.interpolate(a, b, t)` returns the value a fraction `t` of the way from `a` to `b`: numbers, points,
 colors, matrices (rotation, scale and skew blended separately, turning the short way), path data and
 whole elements. Elements of the same kind blend their attributes and transform; different shapes morph
-as outlines (both become cubic paths with matching subpaths), and paint blends along the way.
+as outlines, and paint blends along the way. Outlines pair with outlines and holes with holes, nearest
+first; a contour without a partner grows from (or shrinks to) its centre, so a `B` with two holes can
+become a ring with one. Each pair is resampled to the same number of points, keeping sharp corners, and
+started where the points have least distance to travel, so the in-between shapes do not twist.
 
 ```python
 start = svg.Polygon.regular(50, 50, 40, 5, fill="gold")
