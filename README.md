@@ -29,6 +29,8 @@ doc.save("badge.svg")                                    # also .png .pdf .tex .
 pixels = doc.rasterize(scale=2)                          # numpy float32 RGBA, shape (rows, cols, 4)
 ```
 
+<img src="https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/readme.png" alt="The badge drawn by the code above" width="320">
+
 ## Feature overview
 
 | Area | What you get |

@@ -77,4 +77,21 @@ def build_gallery(out: Path = GALLERY_DIR, scale: float = SCALE) -> list[Path]:
                 target = out / f"{name}.png"
                 svg.Document.open(source).save(target, scale=scale, background=picture.background, padding=picture.padding)
             written.append(target)
+        written.append(_readme_picture(out, Path(work), scale))
     return written
+
+
+def _readme_picture(out: Path, work: Path, scale: float) -> Path:
+    """Run the README's first Python block in *work* and save its ``doc`` as ``readme.png`` in *out*."""
+    text = (ROOT / "README.md").read_text(encoding="utf-8")
+    code = text.split("```python\n", 1)[1].split("```", 1)[0]
+    namespace: dict[str, object] = {}
+    previous = Path.cwd()
+    os.chdir(work)
+    try:
+        exec(compile(code, "README.md", "exec"), namespace)
+    finally:
+        os.chdir(previous)
+    target = out / "readme.png"
+    namespace["doc"].save(target, scale=scale)  # type: ignore[attr-defined]
+    return target
