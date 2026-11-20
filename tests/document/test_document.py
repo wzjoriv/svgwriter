@@ -104,3 +104,19 @@ def test_documents_embed_as_a_placeable_nested_svg_copy():
     rect.set("fill", "blue")
     assert holder.tag == "g" and holder[0].tag == "svg" and holder[0].get("version") is None
     assert outer.rasterize()[50, 100].round(2).tolist() == [1, 0, 0, 1]
+
+
+def test_id_lookup_stays_correct_after_edits():
+    import svgwriter as svg
+
+    doc = svg.Document(10, 10)
+    a = doc.rect(0, 0, 1, 1, id="a")
+    assert doc["a"] is a
+    a.id = "b"
+    assert doc.root.get_element_by_id("a") is None and doc["b"] is a
+    doc.root.remove(a)
+    assert "b" not in doc
+    c = doc.circle(1, 1, 1, id="b")
+    assert doc["b"] is c
+    copy = doc.root.clone()
+    assert copy.get_element_by_id("b") is not c and copy.get_element_by_id("b").parent is copy

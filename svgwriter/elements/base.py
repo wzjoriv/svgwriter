@@ -835,7 +835,17 @@ class Element(Composable):
         >>> g.get_element_by_id("dot").tag
         'circle'
         """
-        return next((e for e in self.iter() if e.id == element_id), None)
+        index = self.__dict__.get("_id_index")
+        found = index.get(element_id) if index is not None else None
+        if found is not None and found.get("id") == element_id and _within(found, self):
+            return found
+        index = {}
+        for element in self.iter():
+            key = element.get("id")
+            if key is not None:
+                index.setdefault(str(key), element)
+        self.__dict__["_id_index"] = index
+        return index.get(element_id)
 
     def root(self) -> Element:
         """Return the topmost ancestor, or this element if it has no parent.
@@ -1027,6 +1037,16 @@ class Element(Composable):
 OPEN_PREFIXES: Final = ("data-", "aria-")
 _INSTANCE_FIELDS: Final = frozenset({"attributes", "children", "parent"})
 _PY_NAMES: Final = sorted({py_name(n) for n in KNOWN_ATTRIBUTES})
+
+
+def _within(element: Element, ancestor: Element) -> bool:
+    """Whether *element* is *ancestor* or lies below it."""
+    node: Element | None = element
+    while node is not None:
+        if node is ancestor:
+            return True
+        node = node.parent
+    return False
 
 
 class UnknownAttributeError(AttributeError):
