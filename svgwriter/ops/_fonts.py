@@ -4,6 +4,7 @@ Font resolution: registered faces, generic families and system fallbacks.
 
 from __future__ import annotations
 
+import sys
 import warnings
 from functools import lru_cache
 from typing import TYPE_CHECKING, Any
@@ -17,6 +18,7 @@ from ._constants import (
     GENERIC_CANDIDATES,
     GENERIC_FAMILIES,
     GLYPH_CACHE,
+    MAC_FALLBACK_FAMILIES,
     NORMAL_WEIGHT,
     NORMAL_WIDTH,
 )
@@ -115,9 +117,30 @@ def font_for(char: str, font_family: str, size: float, weight: FontWeight = "nor
         return font
     slant = skia.FontStyle.kItalic_Slant if italic else skia.FontStyle.kUpright_Slant
     style = skia.FontStyle(weight_value(weight), NORMAL_WIDTH, slant)
-    family = font.getTypeface().getFamilyName()
-    hints = [language] if language else []
-    fallback = skia.FontMgr.RefDefault().matchFamilyStyleCharacter(family, style, hints, ord(char[0]))
-    if fallback is None:
+    if sys.platform == "darwin":
+        name = _scanned_family(ord(char[0]), weight_value(weight), italic)
+    else:
+        family = font.getTypeface().getFamilyName()
+        hints = [language] if language else []
+        match = skia.FontMgr.RefDefault().matchFamilyStyleCharacter(family, style, hints, ord(char[0]))
+        name = match.getFamilyName() if match is not None else None
+    if name is None:
         return font
-    return skia.Font(skia.Typeface(fallback.getFamilyName(), style), size)
+    return skia.Font(skia.Typeface(name, style), size)
+
+
+@lru_cache(maxsize=GLYPH_CACHE)
+def _scanned_family(code: int, weight: int, italic: bool) -> str | None:
+    """The first installed family with a glyph for *code*: common macOS fallbacks first, then all families.
+
+    skia-python's character matching crashes on macOS, so fallback there searches the families itself.
+    """
+    manager = skia.FontMgr.RefDefault()
+    slant = skia.FontStyle.kItalic_Slant if italic else skia.FontStyle.kUpright_Slant
+    style = skia.FontStyle(weight, NORMAL_WIDTH, slant)
+    installed = [manager.getFamilyName(index) for index in range(manager.countFamilies())]
+    for name in dict.fromkeys([*MAC_FALLBACK_FAMILIES, *installed]):
+        typeface = manager.matchFamilyStyle(name, style)
+        if typeface is not None and skia.Font(typeface).unicharToGlyph(code):
+            return typeface.getFamilyName()
+    return None
