@@ -1,9 +1,0 @@
-from typing import Final
-
-__all__ = ["CHUNKS_PER_YIELD", "DEFAULT_ENCODING", "FOREIGN_PREFIX", "LEADING_ATTRIBUTES", "RANK"]
-
-CHUNKS_PER_YIELD: Final = ...
-DEFAULT_ENCODING: str
-FOREIGN_PREFIX: str
-LEADING_ATTRIBUTES: Final = ...
-RANK: Final = ...

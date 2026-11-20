@@ -1,3 +1,0 @@
-__all__ = ["cluster_bounds"]
-
-def cluster_bounds(text: str) -> list[int]: ...
