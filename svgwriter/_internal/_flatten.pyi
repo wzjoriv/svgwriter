@@ -23,6 +23,7 @@ class Item:
     miter_limit: float
     dashes: tuple[float, ...]
     shading: Shading | None = None
+    link: str | None = None
 
     def __init__(
         self,
@@ -38,6 +39,7 @@ class Item:
         miter_limit: float,
         dashes: tuple[float, ...],
         shading: Shading | None = None,
+        link: str | None = None,
     ) -> None: ...
 
 @dataclass

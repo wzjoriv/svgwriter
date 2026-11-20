@@ -5,9 +5,9 @@ TikZ node placement and labels: anchors, positions along a path and node options
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from ._constants import ANCHORS, DIAGONAL, MARKUP_RE, SPACE_RE
+from ._constants import ANCHORS, DIAGONAL, FONTSIZE_RE, MARKUP_RE, NODE_FONT_SIZE, SPACE_RE, TEX_FAMILIES
 from ._tikz_syntax import _options
 
 if TYPE_CHECKING:
@@ -64,6 +64,23 @@ def _read_node(tokens: list[tuple[str, str]], i: int, coordinate: bool) -> tuple
             break
         i += 1
     return pairs, name, at, content, i
+
+
+def _font(keys: dict[str, str]) -> dict[str, Any]:
+    r"""SVG font keywords for a node's ``font=`` (``\fontsize``, family, ``\bfseries``, ``\itshape``) and opacity."""
+    font = keys.get("font", "")
+    size = FONTSIZE_RE.search(font)
+    attributes: dict[str, Any] = {"font_size": float(size.group(1)) if size else NODE_FONT_SIZE}
+    family = next((name for command, name in TEX_FAMILIES.items() if command in font), None)
+    if family:
+        attributes["font_family"] = family
+    if "\\bfseries" in font:
+        attributes["font_weight"] = "bold"
+    if "\\itshape" in font or "\\slshape" in font:
+        attributes["font_style"] = "italic"
+    if keys.get("text opacity"):
+        attributes["fill_opacity"] = float(keys["text opacity"])
+    return attributes
 
 
 def _plain(latex: str) -> str:

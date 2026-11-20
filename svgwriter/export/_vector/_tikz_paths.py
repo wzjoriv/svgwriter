@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any
 from ...transform.matrix import IDENTITY
 from ._constants import (
     ANCHORS,
+    BASE_ANCHORS,
     DIAGONAL,
     FULL_TURN,
     INNER_SEP,
@@ -21,7 +22,7 @@ from ._constants import (
     POSITIONS,
 )
 from ._reading import Outline
-from ._tikz_nodes import _Place, _plain, _read_node
+from ._tikz_nodes import _font, _Place, _plain, _read_node
 from ._tikz_styles import _style
 from ._tikz_syntax import _expand, _length, _options
 
@@ -192,6 +193,15 @@ class _PathReader:
         else:
             x, y = self.last if fraction is None else self.along(fraction)
         label = "" if coordinate else _plain(content or "")
+        if label and keys.get("anchor") in BASE_ANCHORS:
+            style = _style("path", options, self.context.colors)
+            x, y = x + _length(keys, "xshift", 0.0), y - _length(keys, "yshift", 0.0)
+            text = Text(label, x=x, y=y, text_anchor=BASE_ANCHORS[keys["anchor"]],
+                        fill=_hex(style.text_color or style.color), **_font(keys))
+            if keys.get("rotate"):
+                text.rotate(-float(keys["rotate"]), about=(x, y))
+            self.extras.append(text)
+            return i
         shape, half_width, half_height = ("rectangle", 0.0, 0.0) if coordinate else _geometry(label, keys)
         anchor, distance = keys.get("anchor") or "center", 0.0
         for key, anchor_name in POSITIONS.items():

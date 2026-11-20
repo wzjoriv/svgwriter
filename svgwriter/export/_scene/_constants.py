@@ -7,7 +7,8 @@ from __future__ import annotations
 from typing import Final
 
 __all__ = [
-    "ANCHORS", "ARROW_LENGTH", "ARROW_SPREAD", "ASCENT", "EXPORT_TOLERANCE", "FONTS", "LINE_HEIGHT",
+    "ANCHORS", "ARROW_LENGTH", "ARROW_SPREAD", "ASCENT", "EXPORT_FAMILIES", "EXPORT_TOLERANCE", "FONTS",
+    "LINE_HEIGHT",
     "OPACITY_SCALE", "ROUND_FRACTION", "ROUND_RADIUS", "SOURCE", "TRANSPARENT"
 ]
 
@@ -26,3 +27,4 @@ ARROW_SPREAD: Final = 25.0
 OPACITY_SCALE: Final = 100.0
 EXPORT_TOLERANCE: Final = 0.1
 SOURCE: Final = "svgwriter"
+EXPORT_FAMILIES: Final = {"mono": 3, "consolas": 3, "courier": 3, "cursive": 1, "comic": 8}

@@ -23,18 +23,50 @@ print(sorted(svg.export.exporters()))
 | SVG | `.svg` | yes | yes | links, `<a>` and ids preserved; `pretty`, `precision` options |
 | SVGZ | `.svgz` | yes | yes | gzip-compressed SVG |
 | PNG, JPEG, WebP | `.png .jpg .jpeg .webp` | yes | yes | `scale`, `size`, `padding`, `background`, `quality`; imports become an `<image>` |
-| PDF | `.pdf` | yes | yes | vector, via skia; selectable text; a list of documents gives one page each; `title`, `author`, `text`; reads paths, images, clips, text and shadings, `page=` |
+| PDF | `.pdf` | yes | yes | vector, via skia; selectable text; clickable links; a list of documents gives one page each; `title`, `author`, `text`; reads paths, images, clips, text and shadings, `page=` |
 | TikZ | `.tikz .tex` | yes | yes | `standalone=True` for a compilable document; text as `\node`; SVG coordinates kept (`x=1pt, y=-1pt`) |
 | EPS | `.eps .ps` | yes | yes | text in the standard fonts; PostScript has no transparency |
 | DXF | `.dxf` | yes | yes | R12 polylines in mm, layer per colour; reads lines, polylines with bulges, circles, arcs, ellipses |
 | HPGL | `.hpgl .plt` | yes | yes | pen plotters and cutters, one pen per colour |
 | G-code | `.gcode .nc .ngc` | yes | yes | `mode="mill"` or `"laser"`, `feed`, `cut_z`, `tolerance` |
-| Excalidraw | `.excalidraw` | yes | yes | imports native shapes, arrows, text, images and groups |
+| Excalidraw | `.excalidraw` | yes | yes | writes outlines, text, images and links; imports native shapes, arrows, text, images and groups |
 | ICO, ICNS | `.ico .icns` | yes | yes | PNG entries at `sizes=`, `padding=` |
 
-TikZ, EPS and the polyline formats work from a flattened copy of the drawing. TikZ writes gradients
-as shadings and EPS as `shfill`; the polyline formats take their first colour. EPS embeds images,
-the others skip them with a warning.
+TikZ, EPS, PowerPoint, Excalidraw and the polyline formats work from a flattened copy of the
+drawing: transforms, clipping, patterns and markers are worked into the shapes themselves. Masks and
+filters cannot be, so these formats skip them with a warning.
+
+## What each format keeps
+
+Checked by exporting a drawing with each feature to every format and reading it back. "shapes" means
+the effect is drawn into plain outlines, which look the same but are no longer the effect itself.
+
+| feature | SVG, HTML | PNG and other rasters | PDF | EPS | TikZ | PowerPoint | Word, Excel | Excalidraw | DXF, HPGL, G-code |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| solid fill | yes | yes | yes | yes | yes | yes | picture | yes | outline only |
+| linear, radial gradient | yes | yes | yes | yes (`shfill`) | yes (shading) | yes (radial approximate) | picture | first colour | no |
+| pattern | yes | yes | yes | shapes | shapes | shapes | picture | shapes | outlines |
+| stroke width | yes | yes | yes | yes | yes | yes | picture | yes | no |
+| dashes | yes | yes | shapes | yes | yes | yes | picture | dashed style | no |
+| caps, joins | yes | yes | yes | yes | yes | yes | picture | round | no |
+| fill, stroke opacity | yes | yes | yes | no | yes | yes | picture | one per element | no |
+| group opacity | yes | yes | yes | no | per shape | per shape | picture | per element | no |
+| clipping | yes | yes | yes | shapes | shapes | shapes | picture | shapes | shapes |
+| masks | yes | yes | yes (pixels) | skipped | skipped | skipped | picture | skipped | skipped |
+| filters | yes | yes | yes (pixels) | skipped | skipped | skipped | picture | skipped | skipped |
+| text | text | pixels | text or outlines | text or outlines | text | text boxes | picture | text | outlines |
+| images | yes | yes | yes | yes | skipped | pictures | picture | yes | skipped |
+| transforms | yes | yes | yes | applied | applied | applied | picture | applied | applied |
+| markers | yes | shapes | shapes | shapes | shapes | shapes | picture | shapes | outlines |
+| LaTeX formulas | outlines | pixels | outlines | outlines | outlines | equations | equations (Word) | outlines | outlines |
+| SMIL animation | yes | one frame | one frame | one frame | one frame | one frame | one frame | one frame | one frame |
+| links | yes | no | yes | no | no | on shapes | no | yes | no |
+
+"one frame" is the drawing at t = 0, or at `time=`; `render_animation` writes animated GIF and video.
+PowerPoint places pictures by their bounding box, so a rotated or skewed image comes out upright, and
+group opacity is multiplied into each shape's own transparency. A radial gradient becomes a
+PowerPoint path gradient centred on the gradient's centre, which matches circles and differs on
+ellipses. Excalidraw writes every outline as a `line` element, with Excalidraw's own dash pattern.
 
 ## Text stays text
 
@@ -49,6 +81,7 @@ same but are shapes. Only raster formats turn text into pixels.
 | TikZ | everything, as `\node` with size, family, weight, style, colour, opacity and rotation | nothing |
 | EPS | ASCII text in Helvetica, Times or Courier | other characters |
 | PowerPoint | everything, as text boxes with font, size, weight, style, colour, opacity and rotation | nothing |
+| Excalidraw | everything, as text elements with size, colour, opacity and rotation (Helvetica, Cascadia or Virgil) | nothing |
 
 Pass `text=False` to `pdf`, `tikz` or `eps` to get exact outlines everywhere, for example when the
 reader of the file may lack the fonts:
@@ -141,9 +174,10 @@ mathtext; `engine="tex"`, `"ziamath"` or `"mathtext"` picks one.
 
 `pip install "pysvgwriter[office]"` adds PowerPoint, Word and Excel:
 
-- `.pptx` out: one slide per drawing (a list gives a deck), each outline an editable PowerPoint shape (curves,
-  fill, outline, transparency), text as editable text boxes and images as pictures. In: shapes, pictures and text boxes of a slide
-  (`svg.Document.open("deck.pptx", slide=2)`) as native SVG elements.
+- `.pptx` out: one slide per drawing (a list gives a deck), each outline an editable PowerPoint shape
+  (curves, solid or gradient fill, outline with dashes, caps and joins, transparency, hyperlink), text
+  as editable text boxes and images as pictures. In: shapes, pictures and text boxes of a slide
+  (`svg.Document.open("deck.pptx", slide=2)`) as native SVG elements, with the same paints and links.
 - `.docx` and `.xlsx` out: the drawing as a picture at its natural size.
 
 Formulas made with `svg.latex` remember their source (the group's `data-latex` attribute), so the

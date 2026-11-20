@@ -311,7 +311,7 @@ def _find(registry: dict[str, Any], key: str | os.PathLike[str], kind: str) -> A
     lowered = text.lower()
     if lowered in registry:
         return registry[lowered]
-    suffix = "".join(Path(lowered).suffixes[-1:]) if not lowered.startswith(".") else lowered
+    suffix = Path(lowered).suffix or lowered
     for item in registry.values():
         if suffix in item.extensions:
             return item

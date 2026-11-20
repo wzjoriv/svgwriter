@@ -4,10 +4,12 @@ Tree rewrites that make a copy drawable by skia's SVG renderer, and the document
 
 from __future__ import annotations
 
+import math
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
-from ._layers import resolve_links
+from ._layers import ancestry, resolve_links
+from ._markers import expand_markers
 from ._tree import replace_in_parent
 
 if TYPE_CHECKING:
@@ -15,9 +17,10 @@ if TYPE_CHECKING:
     from ..document import Document
     from ..elements import Text
     from ..elements.core import Element
+    from ..pathdata.data import BBox
     from ..transform.matrix import Matrix
 
-__all__ = ["ellipses_as_paths", "expand_image_patterns", "outlined", "renderable_copy", "view_matrix"]
+__all__ = ["ellipses_as_paths", "expand_image_patterns", "outlined", "page_box", "renderable_copy", "view_matrix"]
 
 
 def expand_image_patterns(root: Element) -> None:
@@ -96,6 +99,7 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     resolve_links(copy)
     ellipses_as_paths(copy)
     expand_image_patterns(copy)
+    expand_markers(copy)
     if isinstance(copy, Text):
         return copy if keep_text is not None and keep_text(copy) else outlined(copy)
     for text in [e for e in copy.iter() if isinstance(e, Text)]:
@@ -120,3 +124,43 @@ def view_matrix(document: Document, width: float, height: float, box: ViewBox | 
     s = min(width / box.width, height / box.height)
     return (Matrix.translate((width - box.width * s) / 2, (height - box.height * s) / 2)
             @ Matrix.scale(s) @ Matrix.translate(-box.min_x, -box.min_y))
+
+
+def page_box(document: Document, element: Element) -> tuple[BBox | None, float]:
+    """The box of *element* on the page (ancestor transforms and ``viewBox`` applied) and its linear scale.
+
+    Parameters
+    ----------
+    document : Document
+        The document holding *element*.
+    element : Element
+        A sized element.
+
+    Returns
+    -------
+    tuple of (BBox or None, float)
+        The page box (None when the element has no size) and the square root
+        of the page transform's determinant.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter._internal._rendering import page_box
+    >>> doc = svg.Document(100, 100)
+    >>> box = doc.add(svg.Group()).scale(2).add(svg.rect(1, 1, 4, 4))
+    >>> page_box(doc, box)
+    (BBox(x=2.0, y=2.0, width=8.0, height=8.0), 2.0)
+    """
+    from ..ops.render import document_size
+    from ..pathdata.data import BBox
+
+    with document._sized():
+        width, height = document_size(document)
+        matrix = view_matrix(document, width, height) @ ancestry(element, document.root)[0]
+    box = element.local_bbox()  # type: ignore[attr-defined]
+    scale = math.sqrt(abs(matrix.determinant))
+    if box is None:
+        return None, scale
+    corners = [(box.x, box.y), (box.x + box.width, box.y), (box.x, box.y + box.height),
+               (box.x + box.width, box.y + box.height)]
+    return BBox.from_points(matrix.apply(*corner) for corner in corners), scale

@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 import skia
 
 from .._registry import register, register_importer
+from ._constants import PDF_LINK_KEY
 
 if TYPE_CHECKING:
     from ...document import Document
@@ -21,7 +22,7 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     """Vector PDF drawn by skia: shapes stay vector, text stays selectable, images are embedded.
 
     Text painted with plain colours is written as real text in an embedded font subset, so it can
-    be selected, searched and copied. Text with a gradient or pattern paint, a filter or a mask,
+    be selected, searched and copied. Links (``<a href>``) become clickable areas. Text with a gradient or pattern paint, a filter or a mask,
     and characters that need a shaper (Devanagari, Arabic, ...), are drawn as exact glyph outlines.
 
     Parameters
@@ -67,9 +68,21 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
             canvas = pdf_document.beginPage(width, height)
             paint_tree(canvas, page.root, lambda text: text, width, height,
                        view=view_matrix(page, width, height), viewport=True, native_text=text)
-            pdf_document.endPage()
+        _links(canvas, page)
+        pdf_document.endPage()
     pdf_document.close()
     return bytes(stream.detachAsData())
+
+
+def _links(canvas: skia.Canvas, page: Document) -> None:
+    """A clickable URL area over every ``<a href>`` of *page*."""
+    from ..._internal._rendering import page_box
+
+    for anchor in [element for element in page.root.iter() if element.tag == "a"]:
+        target = str(anchor.get("href") or anchor.get("xlink:href") or "")
+        box, _ = page_box(page, anchor)
+        if target and box is not None:
+            canvas.drawAnnotation(skia.Rect.MakeXYWH(*box), PDF_LINK_KEY, skia.Data(target.encode() + b"\0"))
 
 
 @register("tikz", extensions=(".tikz", ".tex"), binary=False)

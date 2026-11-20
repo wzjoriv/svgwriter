@@ -1,10 +1,9 @@
 """
-Page placement for Office exports: element boxes on the page and the LaTeX groups written as native equations.
+The LaTeX groups that Office exports write as native equations, placed on the page.
 """
 
 from __future__ import annotations
 
-import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
@@ -12,10 +11,8 @@ from ..._internal._constants import LATEX_SIZE, LATEX_SOURCE
 
 if TYPE_CHECKING:
     from ...document import Document
-    from ...elements.core import Element
-    from ...pathdata.data import BBox
 
-__all__ = ["Equation", "page_box", "split_equations"]
+__all__ = ["Equation", "split_equations"]
 
 
 @dataclass(frozen=True)
@@ -46,48 +43,6 @@ class Equation:
     size: float
 
 
-def page_box(document: Document, element: Element) -> tuple[BBox | None, float]:
-    """The box of *element* on the page (ancestor transforms and ``viewBox`` applied) and its linear scale.
-
-    Parameters
-    ----------
-    document : Document
-        The document holding *element*.
-    element : Element
-        A sized element.
-
-    Returns
-    -------
-    tuple of (BBox or None, float)
-        The page box (None when the element has no size) and the square root
-        of the page transform's determinant.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> from svgwriter.export._office._layout import page_box
-    >>> doc = svg.Document(100, 100)
-    >>> box = doc.add(svg.Group()).scale(2).add(svg.rect(1, 1, 4, 4))
-    >>> page_box(doc, box)
-    (BBox(x=2.0, y=2.0, width=8.0, height=8.0), 2.0)
-    """
-    from ..._internal._layers import ancestry
-    from ..._internal._rendering import view_matrix
-    from ...ops.render import document_size
-    from ...pathdata.data import BBox
-
-    with document._sized():
-        width, height = document_size(document)
-        matrix = view_matrix(document, width, height) @ ancestry(element, document.root)[0]
-    box = element.local_bbox()  # type: ignore[attr-defined]
-    scale = math.sqrt(abs(matrix.determinant))
-    if box is None:
-        return None, scale
-    corners = [(box.x, box.y), (box.x + box.width, box.y), (box.x, box.y + box.height),
-               (box.x + box.width, box.y + box.height)]
-    return BBox.from_points(matrix.apply(*corner) for corner in corners), scale
-
-
 def split_equations(document: Document) -> tuple[Document, list[Equation]]:
     """A copy of *document* without the LaTeX groups that convert to Office math, and those equations.
 
@@ -115,6 +70,7 @@ def split_equations(document: Document) -> tuple[Document, list[Equation]]:
     >>> len(rest), [e.source for e in found]
     (0, ['x^2'])
     """
+    from ..._internal._rendering import page_box
     from ...document import Document
     from ._omml import latex_to_omml
 

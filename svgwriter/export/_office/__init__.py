@@ -120,7 +120,7 @@ def read_pptx(data: bytes, *, slide: int | None = 0) -> Document | list[Document
     >>> [e.tag for e in back]
     ['path']
     """
-    from ._pptx import read_pptx as read
+    from ._pptx_read import read_pptx as read
 
     return read(data, slide)
 

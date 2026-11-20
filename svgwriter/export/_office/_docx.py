@@ -22,7 +22,8 @@ from ._constants import (
     WP,
     WPS,
 )
-from ._pptx import _a, _custom_path, _preset_path, _solid
+from ._pptx import _a
+from ._pptx_read import _custom_path, _preset_path, _solid
 
 if TYPE_CHECKING:
     from ...document import Document

@@ -3,10 +3,12 @@ from typing import Final
 __all__ = [
     "A14_NS",
     "ALPHA_SCALE",
+    "ANGLE_UNIT",
     "ASCENT",
     "A_NS",
     "BAR_CHARS",
     "BLANK_LAYOUT",
+    "CAPS",
     "DEFAULT_TEXT_PT",
     "EMU_PER_POINT",
     "EMU_PER_UNIT",
@@ -16,11 +18,13 @@ __all__ = [
     "GROUP_CHARS",
     "HALF_POINTS_PER_UNIT",
     "INLINE_GAP",
+    "JOINS",
     "LINE_HEIGHT",
     "MARGIN",
     "MATHML_NS",
     "MATH_FONT",
     "MC_NS",
+    "MITER_SCALE",
     "M_NS",
     "NARY_CHARS",
     "PIC",
@@ -69,3 +73,7 @@ EQUATION_ID: Final = ...
 NARY_CHARS: Final = ...
 BAR_CHARS: Final = ...
 GROUP_CHARS: Final = ...
+ANGLE_UNIT: Final = ...
+MITER_SCALE: Final = ...
+CAPS: Final = ...
+JOINS: Final = ...

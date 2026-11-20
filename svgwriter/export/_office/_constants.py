@@ -7,11 +7,11 @@ from __future__ import annotations
 from typing import Final
 
 __all__ = [
-    "A14_NS", "ALPHA_SCALE", "ASCENT", "A_NS", "BAR_CHARS", "BLANK_LAYOUT", "DEFAULT_TEXT_PT", "EMU_PER_POINT", "EMU_PER_UNIT",
-    "EQUATION_ID", "EXTRA_HINT", "GENERIC_FONTS", "GROUP_CHARS", "HALF_POINTS_PER_UNIT", "INLINE_GAP", "LINE_HEIGHT", "MARGIN", "MATHML_NS", "MATH_FONT",
-    "MC_NS", "M_NS", "NARY_CHARS", "PIC", "PICTURE_SCALE",
-    "POINTS_PER_UNIT", "REL", "ROUND_RECT_ADJUST", "SLIDE_MAX_EMU", "SLIDE_MIN_EMU", "USER_UNITS_PER_INCH",
-    "WP", "WPS", "W_NS"
+    "A14_NS", "ALPHA_SCALE", "ANGLE_UNIT", "ASCENT", "A_NS", "BAR_CHARS", "BLANK_LAYOUT", "CAPS",
+    "DEFAULT_TEXT_PT", "EMU_PER_POINT", "EMU_PER_UNIT", "EQUATION_ID", "EXTRA_HINT", "GENERIC_FONTS",
+    "GROUP_CHARS", "HALF_POINTS_PER_UNIT", "INLINE_GAP", "JOINS", "LINE_HEIGHT", "MARGIN", "MATHML_NS",
+    "MATH_FONT", "MC_NS", "MITER_SCALE", "M_NS", "NARY_CHARS", "PIC", "PICTURE_SCALE", "POINTS_PER_UNIT", "REL",
+    "ROUND_RECT_ADJUST", "SLIDE_MAX_EMU", "SLIDE_MIN_EMU", "USER_UNITS_PER_INCH", "WP", "WPS", "W_NS"
 ]
 
 EXTRA_HINT: Final = "pip install 'pysvgwriter[office]'"
@@ -49,3 +49,7 @@ NARY_CHARS: Final = frozenset("∑∏∐∫∬∭∮∯∰⋃⋂⋁⋀"
                               "⨀⨁⨂⨄⨆")
 BAR_CHARS: Final = frozenset("―¯‾_̲")
 GROUP_CHARS: Final = frozenset("⏞⏟")
+ANGLE_UNIT: Final = 60000
+MITER_SCALE: Final = 100000
+CAPS: Final = {"butt": "flat", "round": "rnd", "square": "sq"}
+JOINS: Final = {"miter": "miter", "round": "round", "bevel": "bevel"}

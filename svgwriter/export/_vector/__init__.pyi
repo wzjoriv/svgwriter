@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 from ...document import Document as Document
 from .._registry import register as register, register_importer as register_importer
+from ._constants import PDF_LINK_KEY as PDF_LINK_KEY
 
 def pdf(
     document: Document | Sequence[Document],

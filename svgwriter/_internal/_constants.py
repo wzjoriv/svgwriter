@@ -45,6 +45,7 @@ __all__ = [
     "DISPLAY_SCALE",
     "DOCTYPE",
     "DOT",
+    "DROPPED_EFFECTS",
     "DVISVGM",
     "EMOJI_START",
     "ENGINES",
@@ -94,6 +95,8 @@ __all__ = [
     "LINK_CACHE",
     "LUMA",
     "MAC_FALLBACK_FAMILIES",
+    "MARKER_DEFAULT_SIZE",
+    "MARKER_PROPERTIES",
     "MATHTEXT_SIZE",
     "MAX_SEGMENTS",
     "MERMAID",
@@ -226,6 +229,9 @@ TIMECOUNT_RE: Final = re.compile(r"^\s*([+-]?\d*\.?\d+)\s*(ms|s|min|h)?\s*$")
 
 DEFAULT_MITER: Final = 4.0
 NONE: Final = "none"
+DROPPED_EFFECTS: Final = {"mask": ("mask",), "filter": ("filter",)}
+MARKER_PROPERTIES: Final = ("marker-start", "marker-mid", "marker-end")
+MARKER_DEFAULT_SIZE: Final = 3.0
 PERCENT: Final = 100.0
 DEFAULT_SIZE: Final = 16.0
 JOIN_TOLERANCE: Final = 0.01
