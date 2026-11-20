@@ -7,6 +7,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+import numpy as np
+
 from ._constants import NONE, PERCENT
 from ._tree import resolve
 
@@ -56,15 +58,9 @@ def _mean_color(stops: list[tuple[float, Color]]) -> Color:
     """The average colour along a gradient's axis: the solid colour that stands in for it."""
     from ..color.color import Color
 
-    offsets = [offset for offset, _ in stops]
-    for index in range(1, len(offsets)):
-        offsets[index] = max(offsets[index], offsets[index - 1])
-    colors = [color.rgb for _, color in stops]
-    total = [offsets[0] * channel + (1.0 - offsets[-1]) * last for channel, last in zip(colors[0], colors[-1], strict=True)]
-    for (start, low), (end, high) in zip(zip(offsets, colors, strict=True), zip(offsets[1:], colors[1:], strict=True),
-                                         strict=False):
-        total = [sum_ + (end - start) * (a + b) / 2 for sum_, a, b in zip(total, low, high, strict=True)]
-    return Color(*total)
+    offsets = np.maximum.accumulate([0.0, *(offset for offset, _ in stops), 1.0])
+    colors = np.array([stops[0][1].rgb, *(color.rgb for _, color in stops), stops[-1][1].rgb])
+    return Color(*((colors[1:] + colors[:-1]) / 2 * np.diff(offsets)[:, None]).sum(axis=0))
 
 
 @dataclass

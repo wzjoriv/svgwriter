@@ -16,7 +16,8 @@ if TYPE_CHECKING:
 __all__ = ["fill_with_pattern", "gradient", "paint_shading", "pattern_paint"]
 
 
-def _stops(objects: dict[Any, Any], function: Any, low: float = 0.0, high: float = 1.0) -> list[tuple[float, Any]] | None:
+def _stops(objects: dict[Any, Any], function: Any, low: float = 0.0,
+           high: float = 1.0) -> list[tuple[float, Any]] | None:
     """Gradient stops ``(offset, rgb)`` for an exponential or stitching function, offsets mapped to 0..1."""
     from ._pdf_objects import _resolve
     from ._pdf_painter import _color
