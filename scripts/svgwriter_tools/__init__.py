@@ -20,7 +20,7 @@ app = typer.Typer(name="svgwriter", help=__doc__, add_completion=False, no_args_
 
 @app.command()
 def gallery() -> None:
-    """Render the README gallery: each example's picture as a PNG in docs/_static/examples."""
+    """Render the README gallery: each example's picture as a PNG (animations as GIF) in docs/_static/examples."""
     from ._gallery import build_gallery
 
     for path in build_gallery():

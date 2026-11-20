@@ -4,11 +4,11 @@ The script defines a drawing (``doc``) and an ``update(doc, seconds)`` function 
 animate command renders one frame per time step.
 
     python -m svgwriter animate examples/orbit_scene.py -o orbit.gif --renderer skia
-    python orbit_scene.py [OUTPUT_DIR]      writes the first frame as SVG
+    python orbit_scene.py                   writes the first frame as SVG
 """
 
 import math
-import sys
+import os
 import tempfile
 from pathlib import Path
 
@@ -49,13 +49,13 @@ update(doc, DURATION / 4)
 doc
 
 # %% [markdown]
-# Back to the first frame and save it. Pass a folder as the first argument to choose where it goes.
+# Back to the first frame and save it. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
 # This cell is skipped when `svgwriter animate` loads the script.
 
 # %%
 if __name__ == "__main__":
     update(doc, 0)
-    args = sys.argv[1:2]
-    out = Path(args[0]) if args and not args[0].startswith("-") else Path(tempfile.mkdtemp(prefix="svgwriter-"))
+    out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
+    out.mkdir(parents=True, exist_ok=True)
     doc.save(out / "orbit_frame0.svg")
     print("saved orbit_frame0.svg")
