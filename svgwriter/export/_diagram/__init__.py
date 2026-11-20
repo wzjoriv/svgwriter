@@ -16,8 +16,9 @@ from .._registry import register_importer
 
 if TYPE_CHECKING:
     from ...document import Document
+    from ...elements.structure import Group
 
-__all__ = ["DiagramToolError", "read_dot", "read_mermaid"]
+__all__ = ["DiagramToolError", "latex", "read_d2", "read_dot", "read_mermaid", "read_plantuml"]
 
 DOT: Final = "dot"
 MERMAID: Final = "mmdc"
@@ -145,4 +146,115 @@ def read_mermaid(data: bytes, *, theme: str = "default") -> Document:
         source.write_bytes(data)
         config.write_text(json.dumps(MERMAID_CONFIG), encoding="utf-8")
         _run([executable, "-i", str(source), "-o", str(target), "-t", theme, "-c", str(config), "-q"])
+        return _document(target.read_bytes())
+
+
+LATEX_TEMPLATE: Final = (r"\documentclass[preview,border=0pt]{{standalone}}" "\n"
+                         r"\usepackage{{amsmath,amssymb}}" "\n"
+                         r"\begin{{document}}" "\n{body}\n" r"\end{{document}}" "\n")
+LATEX: Final = "latex"
+DVISVGM: Final = "dvisvgm"
+INSTALL_HINT[LATEX] = "install a TeX distribution (TeX Live or MiKTeX) so that `latex` is on PATH"
+INSTALL_HINT[DVISVGM] = "install dvisvgm (bundled with TeX Live and MiKTeX) so that `dvisvgm` is on PATH"
+INSTALL_HINT["plantuml"] = "install PlantUML so that `plantuml` is on PATH"
+INSTALL_HINT["d2"] = "install D2 (https://d2lang.com) so that `d2` is on PATH"
+
+
+def latex(source: str, *, display: bool = False, preamble: str = "") -> Group:
+    r"""A LaTeX formula or snippet as vector outlines, typeset by LaTeX itself.
+
+    Parameters
+    ----------
+    source : str
+        Math without delimiters (``r"e^{i\pi} + 1 = 0"``), or any LaTeX body
+        when it already contains ``$`` or ``\begin``.
+    display : bool, optional
+        Typeset math in display style. Defaults to False.
+    preamble : str, optional
+        Extra preamble lines (``\usepackage{...}``). Defaults to "".
+
+    Returns
+    -------
+    Group
+        The glyph outlines (no fonts needed), in points with the baseline
+        near y = 0; place it with ``place`` or ``align``.
+
+    Raises
+    ------
+    DiagramToolError
+        If ``latex`` or ``dvisvgm`` is missing or the source does not compile.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> # formula = svg.latex(r"\int_0^1 x^2\,dx = \frac{1}{3}").place(50, 20)
+    """
+    from ...elements.structure import Group
+
+    body = source if ("$" in source or r"\begin" in source) else (
+        rf"$\displaystyle {source}$" if display else f"${source}$")
+    latex_tool, svg_tool = _tool(LATEX), _tool(DVISVGM)
+    with tempfile.TemporaryDirectory() as folder:
+        tex = Path(folder) / "formula.tex"
+        text = LATEX_TEMPLATE.format(body=body)
+        if preamble:
+            text = text.replace(r"\begin{document}", preamble + "\n" + r"\begin{document}", 1)
+        tex.write_text(text, encoding="utf-8")
+        _run([latex_tool, "-interaction=nonstopmode", "-halt-on-error", f"-output-directory={folder}", str(tex)])
+        output = _run([svg_tool, "--no-fonts", "--exact-bbox", "--stdout", str(tex.with_suffix(".dvi"))])
+    drawing = _document(output)
+    group = Group()
+    for element in list(drawing.root):
+        if element.tag not in ("title", "desc", "metadata"):
+            drawing.root.remove(element)
+            group.add(element)
+    return group
+
+
+@register_importer("plantuml", extensions=(".puml", ".plantuml"))
+def read_plantuml(data: bytes) -> Document:
+    """A PlantUML diagram drawn by PlantUML (``plantuml -tsvg -pipe``), as a document.
+
+    Parameters
+    ----------
+    data : bytes
+        PlantUML source.
+
+    Returns
+    -------
+    Document
+        The drawing as native SVG elements.
+
+    Raises
+    ------
+    DiagramToolError
+        If ``plantuml`` is missing or rejects the diagram.
+    """
+    return _document(_run([_tool("plantuml"), "-tsvg", "-pipe"], data))
+
+
+@register_importer("d2", extensions=(".d2",))
+def read_d2(data: bytes) -> Document:
+    """A D2 diagram drawn by D2, as a document.
+
+    Parameters
+    ----------
+    data : bytes
+        D2 source.
+
+    Returns
+    -------
+    Document
+        The drawing as native SVG elements.
+
+    Raises
+    ------
+    DiagramToolError
+        If ``d2`` is missing or rejects the diagram.
+    """
+    executable = _tool("d2")
+    with tempfile.TemporaryDirectory() as folder:
+        source, target = Path(folder) / "in.d2", Path(folder) / "out.svg"
+        source.write_bytes(data)
+        _run([executable, str(source), str(target)])
         return _document(target.read_bytes())

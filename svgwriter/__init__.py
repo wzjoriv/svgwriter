@@ -97,6 +97,7 @@ from .transform import Matrix, Point, Transform
 from .video import FFmpegNotFoundError, register_renderer
 
 if TYPE_CHECKING:
+    from .export._diagram import latex
     from .io._async import write_async
     from .io.parser import Strictness, SVGParseError, parse, parse_file
 
@@ -104,6 +105,7 @@ __version__ = "2.0.0"
 __author__ = "Josue N Rivera"
 
 _LAZY = {
+    "latex": ("export._diagram", "latex"),
     "parse": ("io.parser", "parse"),
     "parse_file": ("io.parser", "parse_file"),
     "Strictness": ("io.parser", "Strictness"),
@@ -170,6 +172,7 @@ __all__ = [
     "turn",
     "mm",
     "interpolate",
+    "latex",
     "parse",
     "register_font",
     "parse_color",
