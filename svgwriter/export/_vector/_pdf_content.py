@@ -25,7 +25,7 @@ from ._constants import (
 )
 
 if TYPE_CHECKING:
-    from ._pdf_read import _Painter
+    from ._pdf_painter import _Painter
 
 __all__ = ["CONTENT_HANDLERS", "draw_image"]
 
@@ -38,7 +38,7 @@ def _filters(info: dict[str, Any]) -> list[str]:
 def _samples(painter: _Painter, stream: Any) -> np.ndarray | None:
     """An image XObject's pixels as straight RGBA floats, or None for unsupported encodings."""
     from ...elements.structure import Pixels
-    from ._pdf_read import _resolve
+    from ._pdf_objects import _resolve
 
     info = stream.info
     filters = _filters(info)
@@ -55,7 +55,7 @@ def _samples(painter: _Painter, stream: Any) -> np.ndarray | None:
     channels = COMPONENTS.get(name)
     if channels is None or not width or not height:
         return None
-    from ._pdf_read import _decode
+    from ._pdf_objects import _decode
 
     data = _decode(stream) if filters else stream.raw
     raw = np.frombuffer(data[:width * height * channels], np.uint8)
@@ -113,7 +113,7 @@ def _text_begin(painter: _Painter, operands: list[Any], resources: dict[str, Any
 
 def _font(painter: _Painter, operands: list[Any], resources: dict[str, Any]) -> None:
     """``Tf``: font resource and size; the family comes from the font's base name."""
-    from ._pdf_read import _numbers
+    from ._pdf_objects import _numbers
 
     font = painter.resource(resources, "Font", operands[0]) or {}
     font = font if isinstance(font, dict) else {}
@@ -140,7 +140,7 @@ def _family(name: str) -> str:
 
 def _to_unicode(painter: _Painter, value: Any) -> dict[int, str]:
     """The character codes of a ``/ToUnicode`` CMap mapped to their text (empty when there is none)."""
-    from ._pdf_read import _decode, _resolve
+    from ._pdf_objects import _decode, _resolve
 
     stream = _resolve(painter.objects, value)
     if stream is None or not hasattr(stream, "info"):
@@ -170,7 +170,7 @@ def _utf16(hex_text: str) -> str:
 
 
 def _move(painter: _Painter, operands: list[Any], resources: dict[str, Any]) -> None:
-    from ._pdf_read import _numbers
+    from ._pdf_objects import _numbers
 
     tx, ty = _numbers(operands, 2)
     painter.line_matrix = painter.line_matrix @ Matrix.translate(tx, ty)
@@ -178,7 +178,7 @@ def _move(painter: _Painter, operands: list[Any], resources: dict[str, Any]) -> 
 
 
 def _set_matrix(painter: _Painter, operands: list[Any], resources: dict[str, Any]) -> None:
-    from ._pdf_read import _numbers
+    from ._pdf_objects import _numbers
 
     painter.text_matrix = painter.line_matrix = Matrix(*_numbers(operands, 6))
 
@@ -278,13 +278,13 @@ def _quote(painter: _Painter, operands: list[Any], resources: dict[str, Any]) ->
 
 
 def _leading(painter: _Painter, operands: list[Any], resources: dict[str, Any]) -> None:
-    from ._pdf_read import _numbers
+    from ._pdf_objects import _numbers
 
     painter.leading = _numbers(operands, 1)[0]
 
 
 def _move_leading(painter: _Painter, operands: list[Any], resources: dict[str, Any]) -> None:
-    from ._pdf_read import _numbers
+    from ._pdf_objects import _numbers
 
     painter.leading = -_numbers(operands, 2)[1]
     _move(painter, operands, resources)
