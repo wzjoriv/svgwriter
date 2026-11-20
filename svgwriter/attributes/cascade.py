@@ -8,6 +8,7 @@ import re
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from ._constants import AT_BLOCK_RE, COMMENT_RE, COMPOUND_RE, IMPORTANT, RULE_RE
 from .names import PRESENTATION_ATTRIBUTES
 
 if TYPE_CHECKING:
@@ -25,12 +26,6 @@ INHERITED: Final = frozenset({
     "stroke-width", "text-anchor", "text-rendering", "visibility", "word-spacing", "writing-mode",
 })
 """Properties that inherit by default (SVG 1.1, appendix N)."""
-
-_COMMENT_RE: Final = re.compile(r"/\*.*?\*/", re.S)
-_RULE_RE: Final = re.compile(r"([^{}@]+)\{([^}]*)\}")
-_AT_BLOCK_RE: Final = re.compile(r"@[^{;]+(\{(?:[^{}]|\{[^{}]*\})*\}|;)")
-_COMPOUND_RE: Final = re.compile(r"(\*|[A-Za-z][\w-]*)|#([\w-]+)|\.([\w-]+)|\[([\w:-]+)(?:([~|]?=)\"?([^\"\]]*)\"?)?\]|(:[\w-]+(?:\([^)]*\))?)")
-IMPORTANT: Final = "!important"
 
 
 @dataclass(frozen=True)
@@ -101,9 +96,9 @@ def parse_css(text: str, start: int = 0) -> list[Rule]:
     >>> [r.selector for r in parse_css("rect, .a { fill: red } /* x */ #b{stroke:blue}")]
     ['rect', '.a', '#b']
     """
-    text = _AT_BLOCK_RE.sub("", _COMMENT_RE.sub("", text))
+    text = AT_BLOCK_RE.sub("", COMMENT_RE.sub("", text))
     rules: list[Rule] = []
-    for selectors, body in _RULE_RE.findall(text):
+    for selectors, body in RULE_RE.findall(text):
         declarations = []
         for item in body.split(";"):
             name, sep, value = item.partition(":")
@@ -123,7 +118,7 @@ def parse_css(text: str, start: int = 0) -> list[Rule]:
 
 def _matches_compound(element: Element, compound: str) -> bool:
     position = 0
-    for match in _COMPOUND_RE.finditer(compound):
+    for match in COMPOUND_RE.finditer(compound):
         if match.start() != position:
             return False
         position = match.end()

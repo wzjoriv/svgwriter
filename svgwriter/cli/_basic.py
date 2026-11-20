@@ -7,19 +7,15 @@ from __future__ import annotations
 import argparse
 import sys
 from collections import Counter
-from typing import Final
 
 from ..builder import SHAPES
 from ..document import Document
 from ..elements.base import Category, Element
 from ..io.parser import Strictness, parse_file
 from ..io.writer import SerializeOptions
+from ._constants import CANVAS_MARGIN, DEFAULT_CANVAS, STROKE_WIDTH
 
 __all__ = ["add_basic_commands", "emit", "output_options"]
-
-DEFAULT_CANVAS: Final = 200.0
-CANVAS_MARGIN: Final = 0.4
-STROKE_WIDTH: Final = 2
 
 
 def _cmd_shapes(args: argparse.Namespace) -> int:

@@ -6,13 +6,11 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import Final
 
 from ..transform.matrix import Point
+from ._constants import FULL_TURN
 
 __all__ = ["CenterArc", "endpoint_to_center"]
-
-FULL_TURN: Final = 2.0 * math.pi
 
 
 @dataclass(frozen=True)

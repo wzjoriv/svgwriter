@@ -4,27 +4,16 @@ Transform lists: parsing, building and composition.
 
 from __future__ import annotations
 
-import re
 from collections.abc import Iterable, Iterator
-from typing import Final, overload
+from typing import overload
 
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._hybrid import hybridmethod
+from ._constants import ARITY, FUNCTION_RE, NUMBER_RE
 from .matrix import Matrix, Point
 from .ops import MatrixOp, Rotate, Scale, SkewX, SkewY, TransformOp, Translate
 
 __all__ = ["Transform", "TransformLike", "as_transform", "parse_transform"]
-
-_FUNCTION_RE: Final = re.compile(r"(matrix|translate|scale|rotate|skewX|skewY)\s*\(([^)]*)\)")
-_NUMBER_RE: Final = re.compile(r"[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?")
-_ARITY: Final = {
-    "matrix": (6,),
-    "translate": (1, 2),
-    "scale": (1, 2),
-    "rotate": (1, 3),
-    "skewX": (1,),
-    "skewY": (1,),
-}
 
 
 class Transform:
@@ -422,14 +411,14 @@ def parse_transform(text: str) -> Transform:
     """
     ops = []
     position = 0
-    for match in _FUNCTION_RE.finditer(text):
+    for match in FUNCTION_RE.finditer(text):
         if text[position:match.start()].strip(" \t\r\n,"):
             raise ValueError(f"invalid transform: {text!r}")
         position = match.end()
         name, body = match.groups()
-        args = [float(n) for n in _NUMBER_RE.findall(body)]
-        if len(args) not in _ARITY[name]:
-            expected = " or ".join(str(n) for n in _ARITY[name])
+        args = [float(n) for n in NUMBER_RE.findall(body)]
+        if len(args) not in ARITY[name]:
+            expected = " or ".join(str(n) for n in ARITY[name])
             raise ValueError(f"{name}() takes {expected} arguments, got {len(args)}: {text!r}")
         ops.append(_make_op(name, args))
     if text[position:].strip(" \t\r\n,"):

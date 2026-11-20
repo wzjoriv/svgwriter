@@ -5,16 +5,14 @@
 from __future__ import annotations
 
 import enum
-import re
 from dataclasses import dataclass
-from typing import Final, NamedTuple
+from typing import NamedTuple
 
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._numbers import format_number
+from ._constants import SEPARATORS
 
 __all__ = ["Align", "MeetOrSlice", "PreserveAspectRatio", "ViewBox"]
-
-_SEPARATORS: Final = re.compile(r"[\s,]+")
 
 
 class ViewBox(NamedTuple):
@@ -70,7 +68,7 @@ class ViewBox(NamedTuple):
         >>> ViewBox.parse("0,0 100 50")
         ViewBox(min_x=0.0, min_y=0.0, width=100.0, height=50.0)
         """
-        parts = [p for p in _SEPARATORS.split(text.strip()) if p]
+        parts = [p for p in SEPARATORS.split(text.strip()) if p]
         if len(parts) != 4:
             raise ValueError(f"viewBox needs four numbers: {text!r}")
         box = cls(*(float(p) for p in parts))

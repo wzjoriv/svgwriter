@@ -9,21 +9,22 @@ import runpy
 import sys
 from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Final
+from typing import Any
 
 from ..document import Document
 from ..video import FFmpegError, FFmpegNotFoundError
 from ..video.animation import DEFAULT_FPS, RENDERERS
 from ._basic import emit, output_options
+from ._constants import (
+    DEFAULT_FONT,
+    DEFAULT_TEXT_SIZE,
+    EXIT_FAILURE,
+    SCENE_DOCUMENTS,
+    SCENE_FACTORIES,
+    TEXT_MARGIN,
+)
 
 __all__ = ["SceneError", "add_media_commands", "load_scene"]
-
-SCENE_FACTORIES: Final = ("build", "scene")
-SCENE_DOCUMENTS: Final = ("document", "doc")
-EXIT_FAILURE: Final = 1
-DEFAULT_TEXT_SIZE: Final = 48.0
-DEFAULT_FONT: Final = "sans-serif"
-TEXT_MARGIN: Final = 4.0
 
 
 class SceneError(ValueError):

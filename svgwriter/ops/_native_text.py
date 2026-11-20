@@ -9,11 +9,12 @@ as a ``<text>`` leaf and drawn here in z-order, like an image. Characters that n
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 import skia
 
 from ..transform.matrix import Matrix
+from ._constants import DEFAULT_FONT_SIZE, EFFECTS, MISSING_GLYPH, NO_DECORATION, POSITION_TOLERANCE
 
 if TYPE_CHECKING:
     from ..color.color import Color
@@ -21,12 +22,6 @@ if TYPE_CHECKING:
     from ..elements.text import Text
 
 __all__ = ["draw_text", "native_text"]
-
-EFFECTS: Final = ("filter", "mask")
-NO_DECORATION: Final = ("", "none")
-DEFAULT_SIZE: Final = 16.0
-MISSING_GLYPH: Final = 0
-POSITION_TOLERANCE: Final = 0.01
 
 
 def native_text(text: Text) -> bool:
@@ -133,7 +128,7 @@ def _glyph_font(box: Any) -> Any:
     if needs_shaping(box.char) or box.source is None:
         return None
     family = str(computed(box.source, "font-family", "sans-serif", []))
-    size = _font_size(computed(box.source, "font-size", DEFAULT_SIZE, []))
+    size = _font_size(computed(box.source, "font-size", DEFAULT_FONT_SIZE, []))
     weight = _font_weight(computed(box.source, "font-weight", "normal", []))
     italic = str(computed(box.source, "font-style", "", [])) in ("italic", "oblique")
     font = font_for(box.char, family, size, weight, italic)

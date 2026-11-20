@@ -4,21 +4,17 @@ matplotlib interop: svgwriter elements drawn onto matplotlib axes as native, edi
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
+
+from ._constants import CLOSEPOLY, CURVE4, LINETO, MOVETO, POINTS_PER_UNIT
 
 if TYPE_CHECKING:
     from ..document import Document
     from ..elements.base import Element
 
 __all__ = ["to_matplotlib"]
-
-MOVETO: Final = 1
-LINETO: Final = 2
-CURVE4: Final = 4
-CLOSEPOLY: Final = 79
-POINTS_PER_UNIT: Final = 0.75
 
 
 def _codes(data: Any) -> tuple[np.ndarray, np.ndarray]:

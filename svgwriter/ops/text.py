@@ -9,12 +9,28 @@ import warnings
 from collections.abc import Sequence
 from dataclasses import dataclass, replace
 from functools import lru_cache
-from typing import TYPE_CHECKING, Any, Final, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 import skia
 
 from ..pathdata.data import PathData
 from ..transform.matrix import Matrix
+from ._constants import (
+    ANCHOR_SHIFT,
+    BOLD_WEIGHT,
+    CJK_START,
+    COMPLEX_SCRIPT_START,
+    DEFAULT_FAMILY,
+    DEFAULT_FONT_SIZE,
+    EMOJI_START,
+    FONT_CACHE,
+    GENERIC_CANDIDATES,
+    GENERIC_FAMILIES,
+    GLYPH_CACHE,
+    LATIN_EXTENDED_ADDITIONAL,
+    NORMAL_WEIGHT,
+    NORMAL_WIDTH,
+)
 from ._skia import from_skia
 
 if TYPE_CHECKING:
@@ -27,24 +43,6 @@ __all__ = [
 
 Anchor = Literal["start", "middle", "end"]
 FontWeight = int | Literal["normal", "bold"]
-
-DEFAULT_FAMILY: Final = "sans-serif"
-DEFAULT_SIZE: Final = 16.0
-NORMAL_WEIGHT: Final = 400
-BOLD_WEIGHT: Final = 700
-NORMAL_WIDTH: Final = 5
-GENERIC_FAMILIES: Final = frozenset({"serif", "sans-serif", "monospace", "cursive", "fantasy"})
-GENERIC_CANDIDATES: Final = {
-    "serif": ("Times New Roman", "Georgia", "Times", "Liberation Serif", "DejaVu Serif", "Noto Serif"),
-    "monospace": ("Consolas", "Courier New", "Menlo", "Monaco", "Liberation Mono", "DejaVu Sans Mono",
-                  "Noto Sans Mono", "Courier"),
-    "cursive": ("Comic Sans MS", "Segoe Script", "Apple Chancery", "URW Chancery L"),
-    "fantasy": ("Impact", "Papyrus", "Luminari"),
-}
-_ANCHOR_SHIFT: Final = {"start": 0.0, "middle": 0.5, "end": 1.0}
-ANCHOR_SHIFT: Final = _ANCHOR_SHIFT
-FONT_CACHE: Final = 64
-GLYPH_CACHE: Final = 8192
 
 
 def _weight(value: FontWeight) -> int:
@@ -138,7 +136,6 @@ def _font(font_family: str, size: float, weight: FontWeight, italic: bool) -> An
     return skia.Font(typeface, size)
 
 
-COMPLEX_SCRIPT_START: Final = 0x0590
 _HB_FONTS: dict[int, Any] = {}
 
 
@@ -150,11 +147,6 @@ def needs_shaping(text: str) -> bool:
     complex_script = any(COMPLEX_SCRIPT_START <= ord(char) < LATIN_EXTENDED_ADDITIONAL
                          or CJK_START <= ord(char) < EMOJI_START for char in text)
     return complex_script and _harfbuzz() is not None
-
-
-LATIN_EXTENDED_ADDITIONAL: Final = 0x1E00
-CJK_START: Final = 0xA800
-EMOJI_START: Final = 0x1F000
 
 
 def _harfbuzz() -> Any:
@@ -340,7 +332,7 @@ def glyph_shape(char: str, font_family: str, size: float, weight: FontWeight = "
 def text_width(
     text: str,
     font_family: str = DEFAULT_FAMILY,
-    size: float = DEFAULT_SIZE,
+    size: float = DEFAULT_FONT_SIZE,
     *,
     weight: FontWeight = "normal",
     italic: bool = False,
@@ -393,7 +385,7 @@ def _laid_out(text: str, font_family: str, size: float, weight: FontWeight, ital
 def text_outline(
     text: str,
     font_family: str = DEFAULT_FAMILY,
-    size: float = DEFAULT_SIZE,
+    size: float = DEFAULT_FONT_SIZE,
     *,
     x: float = 0.0,
     y: float = 0.0,
@@ -442,7 +434,7 @@ def text_outline(
     if not boxes:
         return PathData()
     width = boxes[-1].x + boxes[-1].advance - boxes[0].x
-    shift = Matrix.translate(x - _ANCHOR_SHIFT[anchor] * width, y)
+    shift = Matrix.translate(x - ANCHOR_SHIFT[anchor] * width, y)
     return sum((box.placed() for box in boxes), PathData()).transformed(shift)
 
 
@@ -509,7 +501,7 @@ def _pick(values: Sequence[float], index: int) -> float | None:
 def layout_glyphs(
     text: str,
     font_family: str = DEFAULT_FAMILY,
-    size: float = DEFAULT_SIZE,
+    size: float = DEFAULT_FONT_SIZE,
     *,
     x: Sequence[float] = (0.0,),
     y: Sequence[float] = (0.0,),
@@ -577,7 +569,7 @@ def layout_glyphs(
         boxes.append(GlyphBox(char, data, pen_x, pen_y, angle, float(advance)))
         pen_x += advance
     if boxes and anchor != "start" and len(x) <= 1:
-        shift = _ANCHOR_SHIFT[anchor] * (boxes[-1].x + boxes[-1].advance - boxes[0].x)
+        shift = ANCHOR_SHIFT[anchor] * (boxes[-1].x + boxes[-1].advance - boxes[0].x)
         boxes = [replace(b, x=b.x - shift) for b in boxes]
     return boxes
 
@@ -585,7 +577,7 @@ def layout_glyphs(
 def text_to_path(
     text: str,
     font_family: str = DEFAULT_FAMILY,
-    size: float = DEFAULT_SIZE,
+    size: float = DEFAULT_FONT_SIZE,
     *,
     x: float = 0.0,
     y: float = 0.0,

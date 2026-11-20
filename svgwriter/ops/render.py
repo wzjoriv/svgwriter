@@ -14,6 +14,7 @@ import skia
 from ..attributes.length import Length, Unit
 from ..attributes.viewbox import ViewBox
 from ..transform.matrix import IDENTITY, Matrix
+from ._constants import CHANNEL_MAX, DEFAULT_QUALITY, DISPLAY, FORMATS, PIXEL_EPSILON
 from ._layers import draw_image, hidden, layers, resolve_links
 
 if TYPE_CHECKING:
@@ -36,11 +37,6 @@ __all__ = [
 ]
 
 DEFAULT_SIZE: Final = 300.0
-DEFAULT_QUALITY: Final = 90
-CHANNEL_MAX: Final = 255
-DISPLAY: Final = "display"
-PIXEL_EPSILON: Final = 1e-6
-FORMATS: Final = {"png": skia.kPNG, "jpeg": skia.kJPEG, "jpg": skia.kJPEG, "webp": skia.kWEBP}
 
 
 def _dimension(value: object, fallback: float) -> float:

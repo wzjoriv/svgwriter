@@ -6,13 +6,14 @@ from __future__ import annotations
 
 import os
 from pathlib import Path as FilePath
-from typing import TYPE_CHECKING, Any, Final, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 import numpy as np
 
 from .._internal._typing import AnyPath
 from ..elements.base import Element
 from ..video.animation import DEFAULT_FPS
+from ._constants import INLINE_STYLE
 
 if TYPE_CHECKING:
     from ..attributes.protocols import TextSink
@@ -21,8 +22,6 @@ if TYPE_CHECKING:
     from ..video.animation import Renderer, Update
 
 
-NON_CONTENT: Final = frozenset({"defs", "style", "title", "desc", "metadata"})
-INLINE_STYLE: Final = "display:inline-block;max-width:100%;overflow:auto;line-height:0"
 E = TypeVar("E", bound=Element)
 
 

@@ -6,25 +6,16 @@ from __future__ import annotations
 
 import math
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 import skia
+
+from ._constants import ALPHA_ONLY, BLEND, COMPOSITE, LUMA, MASK_CANVAS, SOURCE_ALPHA, SOURCE_GRAPHIC
 
 if TYPE_CHECKING:
     from ..elements.base import Element
 
 __all__ = ["image_filter", "paint_mask"]
-
-SOURCE_GRAPHIC: Final = "SourceGraphic"
-SOURCE_ALPHA: Final = "SourceAlpha"
-ALPHA_ONLY: Final = [0.0] * 15 + [0.0, 0.0, 0.0, 1.0, 0.0]
-LUMA: Final = (0.2125, 0.7154, 0.0721)
-BLEND: Final = {"normal": skia.BlendMode.kSrcOver, "multiply": skia.BlendMode.kMultiply,
-                "screen": skia.BlendMode.kScreen, "darken": skia.BlendMode.kDarken,
-                "lighten": skia.BlendMode.kLighten}
-COMPOSITE: Final = {"over": skia.BlendMode.kSrcOver, "in": skia.BlendMode.kSrcIn, "out": skia.BlendMode.kSrcOut,
-                    "atop": skia.BlendMode.kSrcATop, "xor": skia.BlendMode.kXor}
-MASK_CANVAS: Final = 1e6
 
 
 def _numbers(value: object) -> list[float]:

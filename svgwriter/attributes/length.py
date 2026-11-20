@@ -5,7 +5,6 @@ Lengths with units (``10``, ``2.5mm``, ``50%``).
 from __future__ import annotations
 
 import enum
-import re
 from dataclasses import dataclass
 from functools import lru_cache
 from typing import Any, Final, TypeAlias, overload
@@ -21,6 +20,7 @@ from .._internal._constants import (
     PT_PER_INCH,
 )
 from .._internal._numbers import format_number
+from ._constants import LENGTH_RE
 
 __all__ = [
     "Length",
@@ -83,9 +83,6 @@ _ABSOLUTE_PER_INCH: Final = {
     Unit.MM: MM_PER_INCH,
     Unit.CM: CM_PER_INCH,
 }
-_LENGTH_RE: Final = re.compile(
-    r"^\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)\s*(px|pt|pc|mm|cm|in|em|ex|%)?\s*$"
-)
 
 
 @dataclass(frozen=True, slots=True)
@@ -337,7 +334,7 @@ LengthLike: TypeAlias = Length | float | int | str
 
 @lru_cache(maxsize=512)
 def _parse_cached(text: str) -> Length:
-    match = _LENGTH_RE.match(text)
+    match = LENGTH_RE.match(text)
     if match is None:
         raise ValueError(f"invalid length: {text!r}")
     number, unit = match.groups()

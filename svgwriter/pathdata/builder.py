@@ -5,11 +5,12 @@ Fluent construction of path data.
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from .._internal._registry import chainable
 from .._internal._typing import Self
 from ..transform.matrix import Point
+from ._constants import FULL_CIRCLE, QUARTER_TURN
 from .commands import (
     ArcTo,
     ClosePath,
@@ -29,9 +30,6 @@ if TYPE_CHECKING:
     from ..elements.shapes import Path
 
 __all__ = ["PathBuilder"]
-
-FULL_CIRCLE: Final = 360.0
-QUARTER_TURN: Final = 90.0
 
 
 class PathBuilder:

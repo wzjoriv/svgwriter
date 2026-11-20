@@ -7,6 +7,8 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Final
 
+from ._constants import PLAIN_ATTRIBUTES, PREFIXES
+
 __all__ = [
     "CAMEL_CASE_ATTRIBUTES",
     "KNOWN_ATTRIBUTES",
@@ -59,34 +61,6 @@ PRESENTATION_ATTRIBUTES: Final = frozenset(
     }
 )
 
-PLAIN_ATTRIBUTES: Final = frozenset(
-    {
-        "accent-height", "accumulate", "additive", "alphabetic", "amplitude",
-        "arabic-form", "ascent", "azimuth", "bbox", "begin", "bias", "by",
-        "cap-height", "class", "cx", "cy", "d", "descent", "divisor", "dur",
-        "dx", "dy", "elevation", "end", "exponent", "format", "from", "fr",
-        "fx", "fy", "g1", "g2", "glyph-name", "hanging", "height",
-        "horiz-adv-x", "horiz-origin-x", "horiz-origin-y", "id", "ideographic",
-        "in", "in2", "intercept", "k", "k1", "k2", "k3", "k4", "lang",
-        "local", "mathematical", "max", "media", "method", "min", "mode",
-        "name", "offset", "operator", "order", "orient", "orientation",
-        "origin", "overline-position", "overline-thickness",
-        "panose-1", "path", "points", "r", "radius", "rendering-intent",
-        "restart", "result", "rotate", "rx", "ry", "scale", "seed", "slope",
-        "spacing", "stemh", "stemv", "strikethrough-position",
-        "strikethrough-thickness", "string", "style", "target", "title",
-        "to", "transform", "type", "u1", "u2", "underline-position",
-        "underline-thickness", "unicode", "unicode-range", "units-per-em",
-        "v-alphabetic", "v-hanging", "v-ideographic", "v-mathematical",
-        "values", "version", "vert-adv-y", "vert-origin-x", "vert-origin-y",
-        "visibility", "width", "widths", "x", "x-height", "x1", "x2", "y",
-        "y1", "y2", "z", "zoomAndPan",
-        "xlink:href", "xlink:title", "xlink:show", "xlink:actuate",
-        "xlink:role", "xlink:arcrole", "xlink:type", "xml:base",
-        "xml:lang", "xml:space",
-    }
-)
-
 EVENT_ATTRIBUTES: Final = frozenset(
     {
         "onabort", "onactivate", "onbegin", "onclick", "onend", "onerror",
@@ -101,7 +75,6 @@ UNSUPPORTED_ATTRIBUTES: Final = EVENT_ATTRIBUTES | {"cursor", "contentScriptType
 KNOWN_ATTRIBUTES: Final = CAMEL_CASE_ATTRIBUTES | PRESENTATION_ATTRIBUTES | PLAIN_ATTRIBUTES
 """Every SVG 1.1 attribute name svgwriter writes (web-only ones excluded)."""
 
-_PREFIXES: Final = ("xlink", "xml")
 _CAMEL_LOOKUP: Final = {
     name.lower(): name for name in CAMEL_CASE_ATTRIBUTES
 }
@@ -144,7 +117,7 @@ def svg_name(name: str) -> str:
     name = name.rstrip("_")
     if ":" in name or name in CAMEL_CASE_ATTRIBUTES:
         return name
-    for prefix in _PREFIXES:
+    for prefix in PREFIXES:
         if name.startswith(prefix + "_"):
             return f"{prefix}:{name[len(prefix) + 1:]}"
     compact = name.replace("_", "").lower()

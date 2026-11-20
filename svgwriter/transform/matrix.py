@@ -14,10 +14,9 @@ from .._internal._constants import DEFAULT_PRECISION
 from .._internal._drawable import Drawable, matrix_picture
 from .._internal._numbers import format_number
 from .._internal._typing import Matrix6
+from ._constants import EPSILON
 
 __all__ = ["IDENTITY", "Matrix", "Point"]
-
-EPSILON: Final = 1e-12
 
 
 class Point(NamedTuple):

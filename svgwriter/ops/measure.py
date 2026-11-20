@@ -4,12 +4,13 @@ Exact measurement, hit testing and stroking of outlines.
 
 from __future__ import annotations
 
-from typing import Any, Final, Literal
+from typing import Any, Literal
 
 import skia
 
 from ..pathdata.data import BBox, PathData
 from ..transform.matrix import Point
+from ._constants import CAPS, DEFAULT_MITER_LIMIT, DEFAULT_STROKE_WIDTH, JOINS, MEASURE_PRECISION
 from ._skia import Geometry, from_skia, geometry_data, to_skia
 
 __all__ = [
@@ -25,12 +26,6 @@ __all__ = [
 
 Cap = Literal["butt", "round", "square"]
 Join = Literal["miter", "round", "bevel"]
-
-DEFAULT_STROKE_WIDTH: Final = 1.0
-DEFAULT_MITER_LIMIT: Final = 4.0
-MEASURE_PRECISION: Final = 16.0
-_CAPS: Final = {"butt": "kButt_Cap", "round": "kRound_Cap", "square": "kSquare_Cap"}
-_JOINS: Final = {"miter": "kMiter_Join", "round": "kRound_Join", "bevel": "kBevel_Join"}
 
 
 def _skia_path(item: Geometry) -> Any:
@@ -258,11 +253,10 @@ def stroke_to_path(
     paint = skia.Paint(
         Style=skia.Paint.kStroke_Style,
         StrokeWidth=width,
-        StrokeCap=getattr(skia.Paint, _CAPS[cap]),
-        StrokeJoin=getattr(skia.Paint, _JOINS[join]),
+        StrokeCap=getattr(skia.Paint, CAPS[cap]),
+        StrokeJoin=getattr(skia.Paint, JOINS[join]),
         StrokeMiter=miter_limit,
     )
     result = skia.Path()
     paint.getFillPath(path, result)
     return from_skia(result)
-

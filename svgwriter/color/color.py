@@ -5,12 +5,11 @@ RGBA colors with channels in ``0..1`` and the SVG/CSS color syntaxes.
 from __future__ import annotations
 
 import colorsys
-import re
 from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field, replace
 from functools import lru_cache
 from numbers import Real
-from typing import Any, Final, TypeAlias
+from typing import Any, TypeAlias
 
 import numpy as np
 
@@ -18,23 +17,23 @@ from .._internal._constants import DEFAULT_PRECISION
 from .._internal._drawable import Drawable, color_swatch
 from .._internal._numbers import format_number
 from .._internal._typing import N, Opacity
+from ._constants import (
+    CHANNEL_MAX,
+    DEGREES,
+    FUNCTION_RE,
+    HEX_LONG,
+    HEX_SHORT,
+    ICC_RE,
+    LUMA_WEIGHTS,
+    PERCENT_MAX,
+    SRGB_GAMMA,
+    SRGB_LINEAR_SLOPE,
+    SRGB_OFFSET,
+    SRGB_THRESHOLD,
+)
 from ._named import COLOR_ALIASES, NAMED_COLORS
 
 __all__ = ["Color", "ColorLike", "as_color", "clamp", "parse_color"]
-
-CHANNEL_MAX: Final = 255
-PERCENT_MAX: Final = 100.0
-HEX_SHORT: Final = frozenset({3, 4})
-HEX_LONG: Final = frozenset({6, 8})
-DEGREES: Final = 360.0
-SRGB_THRESHOLD: Final = 0.03928
-SRGB_LINEAR_SLOPE: Final = 12.92
-SRGB_OFFSET: Final = 0.055
-SRGB_GAMMA: Final = 2.4
-LUMA_WEIGHTS: Final = (0.2126, 0.7152, 0.0722)
-
-_FUNCTION_RE: Final = re.compile(r"^(rgba?|hsla?)\(\s*(.*?)\s*\)$")
-_ICC_RE: Final = re.compile(r"\s+(icc-color\([^)]*\))\s*$")
 
 
 def clamp(value: N, low: N, high: N) -> N:
@@ -656,7 +655,7 @@ def parse_color(text: str) -> Color:
     """
     source = text.strip()
     icc = None
-    match = _ICC_RE.search(source)
+    match = ICC_RE.search(source)
     if match:
         icc = match.group(1)
         source = source[: match.start()]
@@ -672,7 +671,7 @@ def parse_color(text: str) -> Color:
             raise ValueError(f"invalid hex color: {text!r}")
         channels = [int(digits[i:i + 2], 16) for i in range(0, len(digits), 2)]
         return replace(Color.from_uint8(*channels), icc=icc)
-    function = _FUNCTION_RE.match(lowered)
+    function = FUNCTION_RE.match(lowered)
     if function:
         return replace(_function(function.group(1), function.group(2), text), icc=icc)
     raise ValueError(f"unknown color: {text!r}")

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import functools
 from collections.abc import Callable
-from typing import Any, Concatenate, Final
+from typing import Any, Concatenate
 
 from .._internal._typing import Opacity, P
 from ..color.color import Color
@@ -24,15 +24,16 @@ from ..elements.filters import (
 )
 from ..elements.shapes import Path
 from ..pathdata.builder import PathBuilder
+from ._constants import (
+    DEFAULT_BLUR,
+    DEFAULT_SHADOW_OFFSET,
+    DEFAULT_SHADOW_OPACITY,
+    FILTER_EXTENT,
+    FILTER_MARGIN,
+    MARKER_SIZE,
+)
 
 __all__ = ["arrow_marker", "drawing", "drop_shadow", "glow"]
-
-DEFAULT_SHADOW_OFFSET: Final = 2.0
-DEFAULT_BLUR: Final = 2.0
-DEFAULT_SHADOW_OPACITY: Final = 0.5
-FILTER_MARGIN: Final = "-20%"
-FILTER_EXTENT: Final = "140%"
-MARKER_SIZE: Final = 10.0
 
 
 def drop_shadow(

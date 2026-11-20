@@ -14,20 +14,22 @@ from .._internal._typing import P
 from ..elements.base import Element
 from ..elements.shapes import Path, Polygon
 from ..pathdata.builder import PathBuilder
+from ._constants import (
+    ARROW_HEAD_ANGLE,
+    DEFAULT_HEAD_SIZE,
+    DEFAULT_INNER_RATIO,
+    DEFAULT_STAR_POINTS,
+    DEFAULT_TEETH,
+    FULL_TURN,
+    QUARTER_TURN,
+    TOOTH_DEPTH_RATIO,
+)
 
 __all__ = ["SHAPES", "arrow", "gear", "shape_factory", "star"]
 
 E = TypeVar("E", bound=Element)
 
 SHAPES: Final[Registry[Callable[..., Element]]] = Registry("shape")
-FULL_TURN: Final = 360.0
-QUARTER_TURN: Final = 90.0
-DEFAULT_STAR_POINTS: Final = 5
-DEFAULT_INNER_RATIO: Final = 0.5
-DEFAULT_HEAD_SIZE: Final = 10.0
-ARROW_HEAD_ANGLE: Final = 30.0
-DEFAULT_TEETH: Final = 12
-TOOTH_DEPTH_RATIO: Final = 0.15
 
 
 def shape_factory(name: str) -> Callable[[Callable[P, E]], Callable[P, E]]:

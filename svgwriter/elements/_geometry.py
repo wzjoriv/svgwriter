@@ -428,7 +428,8 @@ class PathOperand(Element):
         (2.0, 'red')
         """
         from ..attributes.length import Length
-        from ..ops.measure import DEFAULT_MITER_LIMIT, stroke_to_path
+        from ..ops._constants import DEFAULT_MITER_LIMIT
+        from ..ops.measure import stroke_to_path
 
         width = width if width is not None else Length.parse(self.get("stroke-width", 1)).to_user_units()
         data = stroke_to_path(

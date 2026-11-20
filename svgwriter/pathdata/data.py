@@ -17,6 +17,7 @@ from .._internal._numbers import format_number
 from ..transform.matrix import Matrix, Point
 from ..transform.transform import TransformLike, as_transform
 from ._affine import transform_commands
+from ._constants import ARC_SAMPLES, BOX_POINTS, CURVE_SAMPLES, IMPLIED
 from .arc import endpoint_to_center
 from .commands import (
     ArcTo,
@@ -35,10 +36,7 @@ from .parser import parse_path
 
 __all__ = ["BBox", "PathData", "PathDataLike"]
 
-CURVE_SAMPLES: Final = 16
-ARC_SAMPLES: Final = 32
 ORIGIN: Final = Point(0.0, 0.0)
-_IMPLIED: Final = {"M": "L", "m": "l"}
 
 
 def _short_number(text: str) -> str:
@@ -49,13 +47,6 @@ def _short_number(text: str) -> str:
     return text
 
 
-BOX_POINTS: Final[dict[str, tuple[float, float]]] = {
-    "center": (0.5, 0.5),
-    "top_left": (0.0, 0.0), "top_center": (0.5, 0.0), "top_right": (1.0, 0.0),
-    "center_left": (0.0, 0.5), "center_right": (1.0, 0.5),
-    "bottom_left": (0.0, 1.0), "bottom_center": (0.5, 1.0), "bottom_right": (1.0, 1.0),
-    "top": (0.5, 0.0), "bottom": (0.5, 1.0), "left": (0.0, 0.5), "right": (1.0, 0.5),
-}
 """Named points of a box as fractions of its width and height, from the top-left corner."""
 
 
@@ -647,7 +638,7 @@ class PathData(Drawable, Sequence[PathCommand]):
         previous = ""
         for command in self._commands:
             letter = command.letter
-            needs_separator = letter == _IMPLIED.get(previous, previous) and letter not in "Zz"
+            needs_separator = letter == IMPLIED.get(previous, previous) and letter not in "Zz"
             if not needs_separator:
                 out.append(letter)
             for value in command.arguments:

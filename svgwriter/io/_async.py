@@ -6,15 +6,14 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import AsyncIterator, Mapping
-from typing import Any, Final
+from typing import Any
 
 from .._internal._typing import AnyPath
 from ..elements.base import Element
+from ._constants import CHUNKS_PER_YIELD
 from .writer import Writer, write
 
 __all__ = ["aiter_chunks", "write_async", "write_many_async"]
-
-CHUNKS_PER_YIELD: Final = 64
 
 
 async def write_async(element: Element, path: AnyPath, **kwargs: Any) -> None:

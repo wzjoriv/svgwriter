@@ -5,14 +5,11 @@ Small conveniences: styled presets of the basic shapes.
 from __future__ import annotations
 
 from functools import partial
-from typing import Final
 
 from ..elements.shapes import Circle, Line, Rect
+from ._constants import DASH_PATTERN, DOT_RADIUS
 
 __all__ = ["dashed_line", "dot", "outline"]
-
-DASH_PATTERN: Final = (4, 2)
-DOT_RADIUS: Final = 2
 
 outline = partial(Rect, fill="none", stroke="black")
 """``outline(x, y, width, height, **kwargs)``: an unfilled black-stroked rectangle."""

@@ -5,17 +5,14 @@ Angles with units: degrees, radians, gradians and turns, converted and combined 
 from __future__ import annotations
 
 import math
-import re
 from dataclasses import dataclass
-from typing import Any, Final
+from typing import Any
 
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._numbers import format_number
+from ._constants import ANGLE_RE, DEGREES_PER
 
 __all__ = ["Angle", "AngleUnit", "deg", "grad", "rad", "turn"]
-
-DEGREES_PER: Final = {"deg": 1.0, "rad": 180.0 / math.pi, "grad": 0.9, "turn": 360.0}
-_ANGLE_RE: Final = re.compile(r"^\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)\s*(deg|rad|grad|turn)?\s*$")
 
 
 @dataclass(frozen=True, slots=True)
@@ -76,7 +73,7 @@ class Angle:
             return text
         if isinstance(text, (int, float)):
             return cls(float(text))
-        match = _ANGLE_RE.match(str(text))
+        match = ANGLE_RE.match(str(text))
         if match is None:
             raise ValueError(f"invalid angle: {text!r}")
         return cls(float(match.group(1)), match.group(2) or "deg")

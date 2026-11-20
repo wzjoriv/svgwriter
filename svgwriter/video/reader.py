@@ -5,14 +5,21 @@ Reading video: frames decoded lazily through ffmpeg as numpy arrays or ``<image>
 from __future__ import annotations
 
 import os
-import re
 import subprocess
 from collections.abc import Iterator
 from fractions import Fraction
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 import numpy as np
 
+from ._constants import (
+    CHANNELS,
+    DURATION_RE,
+    FPS_RE,
+    SECONDS_PER_HOUR,
+    SECONDS_PER_MINUTE,
+    STREAM_RE,
+)
 from ._ffmpeg import FFmpegError, find_ffmpeg
 
 if TYPE_CHECKING:
@@ -20,14 +27,6 @@ if TYPE_CHECKING:
     from ..elements.structure import Image
 
 __all__ = ["Video"]
-
-CHANNELS: Final = 4
-CHANNEL_MAX: Final = 255.0
-_STREAM_RE: Final = re.compile(r"Stream #\S+.*?Video:.*?(\d{2,5})x(\d{2,5})")
-_FPS_RE: Final = re.compile(r"(\d+(?:\.\d+)?) (?:fps|tbr)")
-_DURATION_RE: Final = re.compile(r"Duration: (\d+):(\d+):(\d+(?:\.\d+)?)")
-SECONDS_PER_MINUTE: Final = 60
-SECONDS_PER_HOUR: Final = 3600
 
 
 class Video:
@@ -76,13 +75,13 @@ class Video:
         self._ffmpeg = find_ffmpeg(ffmpeg)
         probe = subprocess.run([self._ffmpeg, "-hide_banner", "-i", self.path], capture_output=True, check=False)
         info = probe.stderr.decode("utf-8", "replace")
-        size = _STREAM_RE.search(info)
+        size = STREAM_RE.search(info)
         if size is None:
             raise FFmpegError(f"no video stream in {self.path!r}: {info.strip().splitlines()[-1] if info.strip() else ''}")
         self.width, self.height = int(size.group(1)), int(size.group(2))
-        rate = _FPS_RE.search(info[size.start():])
+        rate = FPS_RE.search(info[size.start():])
         self.fps = float(Fraction(rate.group(1))) if rate else 25.0
-        length = _DURATION_RE.search(info)
+        length = DURATION_RE.search(info)
         self.duration = (int(length.group(1)) * SECONDS_PER_HOUR + int(length.group(2)) * SECONDS_PER_MINUTE
                          + float(length.group(3))) if length else 0.0
 

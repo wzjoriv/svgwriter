@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import Final
 
 __all__ = [
+    "ATTRIBUTE_TABLE",
     "BASE_PROFILE",
     "CM_PER_INCH",
     "DEFAULT_DPI",
@@ -15,12 +16,20 @@ __all__ = [
     "DEFAULT_PRECISION",
     "DOCTYPE",
     "EX_PER_EM",
+    "GHOST",
+    "GRID",
+    "GRID_STEP",
     "INDEFINITE",
     "MM_PER_INCH",
+    "NON_CONTENT",
+    "OUTLINE",
     "PC_PER_INCH",
     "PT_PER_INCH",
+    "STROKE",
     "SVG_NS",
     "SVG_VERSION",
+    "SWATCH",
+    "TEXT_TABLE",
     "XLINK_NS",
     "XML_NS",
 ]
@@ -47,3 +56,25 @@ PT_PER_INCH: Final = 72.0
 PC_PER_INCH: Final = 6.0
 MM_PER_INCH: Final = 25.4
 CM_PER_INCH: Final = 2.54
+
+SWATCH: Final = 40.0
+GRID: Final = 4
+GRID_STEP: Final = 10.0
+OUTLINE: Final = "#1e1e1e"
+GHOST: Final = "#bbbbbb"
+STROKE: Final = 1.0
+
+TEXT_TABLE = str.maketrans({"&": "&amp;", "<": "&lt;", ">": "&gt;"})
+ATTRIBUTE_TABLE = str.maketrans(
+    {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "\n": "&#10;",
+        "\r": "&#13;",
+        "\t": "&#9;",
+    }
+)
+
+NON_CONTENT: Final = frozenset({"defs", "style", "title", "desc", "metadata"})

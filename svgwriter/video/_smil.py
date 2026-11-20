@@ -5,11 +5,20 @@ SMIL evaluation: a static copy of a document with every animation applied at one
 from __future__ import annotations
 
 import math
-import re
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from ..transform.matrix import IDENTITY, Matrix
+from ._constants import (
+    CLOCK_RE,
+    EPSILON,
+    INDEFINITE,
+    NUMBER_RE,
+    SECONDS_PER_HOUR,
+    SECONDS_PER_MINUTE,
+    TIME_SCALE,
+    TIMECOUNT_RE,
+)
 
 if TYPE_CHECKING:
     from ..document import Document
@@ -17,23 +26,14 @@ if TYPE_CHECKING:
 
 __all__ = ["snapshot"]
 
-_TIMECOUNT_RE: Final = re.compile(r"^\s*([+-]?\d*\.?\d+)\s*(ms|s|min|h)?\s*$")
-_CLOCK_RE: Final = re.compile(r"^\s*(?:(\d+):)?(\d{1,2}):(\d{1,2}(?:\.\d+)?)\s*$")
-_SCALE: Final = {"ms": 0.001, "s": 1.0, "min": 60.0, "h": 3600.0, None: 1.0}
-_NUMBER_RE: Final = re.compile(r"[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?")
-SECONDS_PER_MINUTE: Final = 60.0
-SECONDS_PER_HOUR: Final = 3600.0
-INDEFINITE: Final = "indefinite"
-EPSILON: Final = 1e-9
-
 
 def clock(value: object) -> float | None:
     """Seconds of a SMIL clock value (``2s``, ``150ms``, ``1:30``, ``0:01:30.5``), or None."""
     text = str(value)
-    match = _TIMECOUNT_RE.match(text)
+    match = TIMECOUNT_RE.match(text)
     if match:
-        return float(match.group(1)) * _SCALE[match.group(2)]
-    match = _CLOCK_RE.match(text)
+        return float(match.group(1)) * TIME_SCALE[match.group(2)]
+    match = CLOCK_RE.match(text)
     if match:
         hours = float(match.group(1) or 0)
         return hours * SECONDS_PER_HOUR + float(match.group(2)) * SECONDS_PER_MINUTE + float(match.group(3))
@@ -95,7 +95,7 @@ def _values(animation: Element, base: Any) -> list[str]:
 
 
 def _numbers(text: str) -> list[float]:
-    return [float(v) for v in _NUMBER_RE.findall(text)]
+    return [float(v) for v in NUMBER_RE.findall(text)]
 
 
 def _add(a: str, b: str) -> str:
@@ -103,7 +103,7 @@ def _add(a: str, b: str) -> str:
     if len(left) != len(right):
         return b
     sums = iter(x + y for x, y in zip(left, right, strict=True))
-    return _NUMBER_RE.sub(lambda match: f"{next(sums):g}", a)
+    return NUMBER_RE.sub(lambda match: f"{next(sums):g}", a)
 
 
 def _segment(animation: Element, values: list[str], p: float) -> tuple[str, str, float]:
@@ -137,7 +137,7 @@ def _blend(a: str, b: str, fraction: float) -> str:
     left, right = _numbers(a), _numbers(b)
     if left and len(left) == len(right):
         mixed = iter(x + (y - x) * fraction for x, y in zip(left, right, strict=True))
-        return _NUMBER_RE.sub(lambda m: f"{next(mixed):.6g}", a)
+        return NUMBER_RE.sub(lambda m: f"{next(mixed):.6g}", a)
     return a if fraction < 0.5 else b
 
 

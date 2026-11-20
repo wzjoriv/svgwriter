@@ -6,11 +6,12 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Iterator
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Any, Final, TypeVar, overload
+from typing import TYPE_CHECKING, Any, TypeVar, overload
 
 from ._document.ingest import SupportsSVG, _ingest
 from ._document.output import Output
 from ._document.sizing import Sizing
+from ._internal._constants import NON_CONTENT
 from ._internal._typing import AnyPath, Self, Stack
 from .elements._factory import ElementFactory
 from .elements.base import Element
@@ -23,8 +24,6 @@ if TYPE_CHECKING:
     from .io.parser import Strictness
 
 __all__ = ["Document"]
-
-NON_CONTENT: Final = frozenset({"defs", "style", "title", "desc", "metadata"})
 
 
 E = TypeVar("E", bound=Element)
@@ -486,4 +485,3 @@ class Document(Sizing, Output, ElementFactory):
         ('rect', None)
         """
         return self.root.get_element_by_id(element_id)
-

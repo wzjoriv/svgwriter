@@ -234,7 +234,8 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
     >>> len(layout(svg.text("abc", x=0, y=20)))
     3
     """
-    from ..ops.text import ANCHOR_SHIFT, GlyphBox, glyph_shape
+    from ..ops._constants import ANCHOR_SHIFT
+    from ..ops.text import GlyphBox, glyph_shape
 
     if rules is None:
         root = text.root()
