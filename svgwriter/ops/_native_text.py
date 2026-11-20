@@ -150,6 +150,7 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix, *, o
 
 def _draw_color(canvas: skia.Canvas, box: Any, opacity: float, searchable: bool) -> None:
     """Draw the colour glyphs of *box* at its place and angle; only the fill's opacity applies to them."""
+    from .._internal._emoji import draw_glyphs
     from .._internal._flatten import _number
     from .._internal._paints import _paint
 
@@ -161,7 +162,7 @@ def _draw_color(canvas: skia.Canvas, box: Any, opacity: float, searchable: bool)
     color = box.color
     if searchable and not set(color.glyphs) <= set(color.font.textToGlyphs(color.text)):
         _hidden_text(canvas, color, place, paint.getAlphaf() * SEARCHABLE_ALPHA)
-    _glyph_run(canvas, color.font, list(color.glyphs), color.offsets, place, paint)
+    draw_glyphs(canvas, color.font, color.glyphs, color.offsets, place, paint)
 
 
 def _hidden_text(canvas: skia.Canvas, color: Any, place: Matrix, alpha: float) -> None:
@@ -169,22 +170,13 @@ def _hidden_text(canvas: skia.Canvas, color: Any, place: Matrix, alpha: float) -
 
     The single shaped glyph of a skin-tone, keycap or ZWJ emoji maps to no characters in the PDF.
     """
+    from .._internal._emoji import draw_glyphs
+
     glyphs = list(color.font.textToGlyphs(color.text))
     small = color.font.makeWithSize(color.font.getSize() / len(glyphs))
     step = sum(color.font.getWidths(list(color.glyphs))) / len(glyphs)
     dx, dy = color.offsets[0]
-    _glyph_run(canvas, small, glyphs, [(dx + step * i, dy) for i in range(len(glyphs))], place, _solid_alpha(alpha))
-
-
-def _glyph_run(canvas: skia.Canvas, font: Any, glyphs: list[int], offsets: Any, place: Matrix,
-               paint: skia.Paint) -> None:
-    """Draw *glyphs* at *offsets* mapped by *place*: plain positions when unrotated, so a PDF keeps one text line."""
-    builder = skia.TextBlobBuilder()
-    if place.b == 0 and place.a == 1:
-        builder.allocRunPos(font, glyphs, [skia.Point(*place.apply(dx, dy)) for dx, dy in offsets])
-    else:
-        builder.allocRunRSXform(font, glyphs, [skia.RSXform(place.a, place.b, *place.apply(dx, dy)) for dx, dy in offsets])
-    canvas.drawTextBlob(builder.make(), 0, 0, paint)
+    draw_glyphs(canvas, small, glyphs, [(dx + step * i, dy) for i in range(len(glyphs))], place, _solid_alpha(alpha))
 
 
 def _solid_alpha(alpha: float) -> skia.Paint:

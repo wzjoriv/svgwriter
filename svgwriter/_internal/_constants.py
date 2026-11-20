@@ -47,6 +47,7 @@ __all__ = [
     "DOCTYPE",
     "DOT",
     "DVISVGM",
+    "EMOJI_CELL_LEVELS",
     "EMOJI_END",
     "EMOJI_JOINERS",
     "EMOJI_MODIFIERS",
@@ -215,6 +216,7 @@ EMOJI_JOINERS: Final = frozenset({chr(0x200D), chr(0xFE0F), chr(0x20E3)})
 EMOJI_MODIFIERS: Final = (0x1F3FB, 0x1F3FF)
 EMOJI_PROBE: Final = "\U0001f600"
 EMOJI_PIXELS_PER_EM: Final = 72
+EMOJI_CELL_LEVELS: Final = 16
 COLOR_GLYPH_TABLES: Final = ("COLR", "sbix", "CBDT", "SVG ")
 LATIN_EXTENDED_ADDITIONAL: Final = 0x1E00
 DEFAULT_MITER_LIMIT: Final = 4.0
