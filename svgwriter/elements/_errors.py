@@ -8,9 +8,10 @@ import difflib
 from typing import Final
 
 from ..attributes.names import KNOWN_ATTRIBUTES, py_name
+from ._constants import SUGGESTIONS
 
-SUGGESTIONS: Final = 3
 _PY_NAMES: Final = sorted({py_name(n) for n in KNOWN_ATTRIBUTES})
+
 
 class UnknownAttributeError(AttributeError):
     """An attribute that is neither a Python member nor a known SVG attribute.

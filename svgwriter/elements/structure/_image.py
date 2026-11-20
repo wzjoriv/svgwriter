@@ -7,7 +7,7 @@ from __future__ import annotations
 import base64
 import os
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import skia
@@ -21,16 +21,12 @@ from .._mixins import GraphicsElement, XLinkAttributes
 from .._viewport import Positioned, positioned_bbox
 from ..base import Category, ContentModel
 from ._compositing import Compositing
+from ._constants import CHANNEL_MAX, DATA_URI_PREFIX, HREF
 
 if TYPE_CHECKING:
     from ...ops.composite import Operator
 
 __all__ = ["Image", "Pixels"]
-
-CHANNEL_MAX: Final = 255.0
-DATA_URI_PREFIX: Final = "data:"
-HREF: Final = "xlink:href"
-_MIME: Final = {"png": "image/png", "jpeg": "image/jpeg", "webp": "image/webp"}
 
 
 def _normalize(array: np.ndarray) -> np.ndarray:

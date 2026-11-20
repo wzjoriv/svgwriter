@@ -4,11 +4,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, ClassVar, Final, TypeAlias, Union
+from typing import TYPE_CHECKING, Any, ClassVar, TypeAlias, Union
 
 from ..pathdata.data import BBox, PathData
 from ..transform.matrix import Matrix, Point
 from ..transform.transform import TransformLike, as_transform
+from ._constants import NOT_COPIED
 from .base import Element
 
 if TYPE_CHECKING:
@@ -19,7 +20,6 @@ if TYPE_CHECKING:
 __all__ = ["Operand", "PathOperand"]
 
 Operand: TypeAlias = Union["PathOperand", PathData, str]
-NOT_COPIED: Final = frozenset({"id", "transform", "clip-path"})
 
 
 class PathOperand(Element):

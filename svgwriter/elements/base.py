@@ -5,9 +5,8 @@ The ``Element`` base class and the element registry.
 from __future__ import annotations
 
 import difflib
-import re
 from collections.abc import Iterable, Mapping
-from typing import TYPE_CHECKING, Any, ClassVar, Final, Literal, TypeAlias, TypeVar, Union, overload
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, TypeAlias, TypeVar, Union, overload
 
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._ids import next_id
@@ -19,6 +18,14 @@ from ..attributes.values import format_value
 from ..color.color import Color, as_color
 from ._categories import Category, ContentModel
 from ._compose import Composable
+from ._constants import (
+    COLOR_ATTRIBUTES,
+    COLOR_OPACITY,
+    HREF_ATTRIBUTES,
+    INSTANCE_FIELDS,
+    OPEN_PREFIXES,
+    XML_NAME_RE,
+)
 from ._display import Displayable
 from ._errors import UnknownAttributeError, UnknownKeywordError
 from ._query import Queryable
@@ -40,16 +47,6 @@ C = TypeVar("C", "Element", str)
 
 AttrValue = Any
 Child: TypeAlias = Union["Element", str]
-
-HREF_ATTRIBUTES: Final = frozenset({"xlink:href"})
-COLOR_OPACITY: Final = {
-    "fill": "fill-opacity",
-    "stroke": "stroke-opacity",
-    "stop-color": "stop-opacity",
-    "flood-color": "flood-opacity",
-}
-COLOR_ATTRIBUTES: Final = frozenset({*COLOR_OPACITY, "color", "lighting-color"})
-_XML_NAME_RE: Final = re.compile(r"^[A-Za-z_][\w.\-]*$")
 
 
 def _color_column(value: Any) -> list[Color]:
@@ -169,7 +166,7 @@ class Element(Queryable, Displayable, Composable):
 
     def __getattr__(self, name: str) -> AttrValue:
         """Any SVG attribute by its Python name: ``el.stroke_width``, ``el.view_box``."""
-        if name.startswith("__") or name.startswith("_") and not name.endswith("_") or name in _INSTANCE_FIELDS:
+        if name.startswith("__") or name.startswith("_") and not name.endswith("_") or name in INSTANCE_FIELDS:
             raise AttributeError(name)
         key = svg_name(name)
         attributes = self.__dict__.get("attributes", {})
@@ -180,7 +177,7 @@ class Element(Queryable, Displayable, Composable):
         raise UnknownAttributeError(type(self).__name__, name, type(self))
 
     def __setattr__(self, name: str, value: AttrValue) -> None:
-        if name in _INSTANCE_FIELDS or name.startswith("_") and not name.endswith("_") or hasattr(type(self), name):
+        if name in INSTANCE_FIELDS or name.startswith("_") and not name.endswith("_") or hasattr(type(self), name):
             object.__setattr__(self, name, value)
             return
         key = svg_name(name)
@@ -373,7 +370,7 @@ class Element(Queryable, Displayable, Composable):
         if value is None:
             self.attributes.pop("id", None)
             return
-        if not _XML_NAME_RE.match(value):
+        if not XML_NAME_RE.match(value):
             raise ValueError(f"invalid id: {value!r}")
         self.attributes = {"id": value, **{k: v for k, v in self.attributes.items() if k != "id"}}
 
@@ -877,10 +874,6 @@ class Element(Queryable, Displayable, Composable):
 
     def __deepcopy__(self: E, memo: dict[int, object]) -> E:
         return self.clone()
-
-
-OPEN_PREFIXES: Final = ("data-", "aria-")
-_INSTANCE_FIELDS: Final = frozenset({"attributes", "children", "parent"})
 
 
 @format_value.register(Element)

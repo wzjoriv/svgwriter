@@ -7,27 +7,29 @@ from __future__ import annotations
 import math
 import unicodedata
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from ..attributes.cascade import Rule, computed, rules_of
 from ..attributes.length import Length, Unit
+from ._constants import (
+    DEFAULT_FONT_FAMILY,
+    DEFAULT_FONT_SIZE,
+    FONT_SIZE_KEYWORDS,
+    FONT_WEIGHTS,
+    JOINING_RANGES,
+    PERCENT,
+    POSITION_NAMES,
+    REGIONAL_INDICATORS,
+    WHITESPACE_DEFAULT,
+    WHITESPACE_PRESERVE,
+    ZWJ,
+)
 
 if TYPE_CHECKING:
     from ..ops.text import GlyphBox
     from .base import Element
 
 __all__ = ["Char", "collect", "layout", "number_list"]
-
-POSITIONING: Final = ("x", "y", "dx", "dy", "rotate")
-PERCENT: Final = 100.0
-POSITION_NAMES: Final = ("x", "y", "dx", "dy", "rotate")
-DEFAULT_FONT_FAMILY: Final = "sans-serif"
-DEFAULT_FONT_SIZE: Final = 16.0
-FONT_WEIGHTS: Final = {"normal": 400, "bold": 700, "bolder": 700, "lighter": 300}
-FONT_SIZE_KEYWORDS: Final = {"xx-small": 9.0, "x-small": 10.0, "small": 13.0, "medium": 16.0, "large": 18.0,
-                             "x-large": 24.0, "xx-large": 32.0, "smaller": 13.0, "larger": 19.0}
-_PRESERVE: Final = {10: " ", 13: " ", 9: " "}
-_DEFAULT: Final = {10: None, 13: None, 9: " "}
 
 
 @dataclass
@@ -147,7 +149,7 @@ def collect(text: Element) -> list[Char]:
     preserve = str(text.get("xml:space", "default")) == "preserve"
     kept: list[tuple[str, tuple[Element, ...], int, int]] = []
     for char, chain, child, offset in raw:
-        mapped = char.translate(_PRESERVE if preserve else _DEFAULT)
+        mapped = char.translate(WHITESPACE_PRESERVE if preserve else WHITESPACE_DEFAULT)
         if not mapped:
             continue
         if not preserve and mapped == " " and (not kept or kept[-1][0] == " "):
@@ -389,22 +391,12 @@ def _along_paths(chars: list[Char], boxes: list[Any]) -> None:
             box.angle += math.degrees(angle)
 
 
-ZWJ: Final = "‍"
-_JOINING_RANGES: Final = (
-    (0xFE00, 0xFE0F), (0xE0100, 0xE01EF),  # variation selectors
-    (0x1F3FB, 0x1F3FF),  # emoji skin tones
-    (0xE0020, 0xE007F),  # emoji tag sequences
-    (0x20E3, 0x20E3),  # combining keycap
-)
-_REGIONAL: Final = (0x1F1E6, 0x1F1FF)
-
-
 def _joins(previous: str, char: str) -> bool:
     """Whether *char* continues the cluster that *previous* ended."""
     code = ord(char)
     if char == ZWJ or previous == ZWJ or unicodedata.category(char) in ("Mn", "Me", "Mc"):
         return True
-    return any(low <= code <= high for low, high in _JOINING_RANGES)
+    return any(low <= code <= high for low, high in JOINING_RANGES)
 
 
 def cluster_bounds(text: str) -> list[int]:
@@ -422,7 +414,7 @@ def cluster_bounds(text: str) -> list[int]:
     bounds: list[int] = []
     regional_run = 0
     for index, char in enumerate(text):
-        regional = _REGIONAL[0] <= ord(char) <= _REGIONAL[1]
+        regional = REGIONAL_INDICATORS[0] <= ord(char) <= REGIONAL_INDICATORS[1]
         pairs_up = regional and regional_run % 2 == 1
         if index == 0 or not (pairs_up or _joins(text[index - 1], char)):
             bounds.append(index)

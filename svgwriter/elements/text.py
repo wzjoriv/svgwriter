@@ -44,8 +44,6 @@ __all__ = [
 ]
 
 Coordinates: TypeAlias = LengthLike | Sequence[LengthLike]
-DEFAULT_FONT_FAMILY = "sans-serif"
-DEFAULT_FONT_SIZE = 16.0
 
 
 class TextDecoration(enum.Flag):

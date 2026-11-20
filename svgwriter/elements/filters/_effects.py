@@ -6,9 +6,10 @@ from __future__ import annotations
 
 import enum
 from collections.abc import Sequence
-from typing import Any, Final
+from typing import Any
 
 from ..._internal._typing import Self
+from ._constants import COLOR_MATRIX_SIZE, LUMA_BLUE, LUMA_GREEN, LUMA_RED
 from .base import FilterPrimitive, SingleInput, TwoInputs
 
 __all__ = [
@@ -24,11 +25,6 @@ __all__ = [
     "MorphologyOperator",
     "TurbulenceType",
 ]
-
-COLOR_MATRIX_SIZE: Final = 20
-LUMA_RED: Final = 0.2126
-LUMA_GREEN: Final = 0.7152
-LUMA_BLUE: Final = 0.0722
 
 
 class ColorMatrixType(str, enum.Enum):

@@ -4,20 +4,15 @@ Serialization and display shared by every element: text, files, notebook output 
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any
 
 from .._internal._typing import AnyPath
 from ..attributes.protocols import TextSink
 from ..attributes.values import format_value
+from ._constants import INLINE_STYLE, PREVIEW_MIN_PIXELS, PREVIEW_PADDING, PREVIEW_SCALE, REPR_WIDTH
 
 if TYPE_CHECKING:
     pass
-
-PREVIEW_PADDING: Final = 2.0
-PREVIEW_SCALE: Final = 1.0
-PREVIEW_MIN_PIXELS: Final = 200.0
-REPR_WIDTH: Final = 120
-INLINE_STYLE: Final = "display:inline-block;max-width:100%;overflow:auto;line-height:0"
 
 
 class Displayable:
