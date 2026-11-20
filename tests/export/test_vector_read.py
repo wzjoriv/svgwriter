@@ -374,3 +374,20 @@ def test_tikz_foreach_unrolls():
     assert len(paths) == 3 + 5 + 8
     assert [p.bounds().x for p in paths[:3]] == pytest.approx([1.0, 2.0, 3.0])
     assert [t.text_content for t in kinds(doc, "text")] == ["a", "b"]
+
+
+def test_pdf_page_sized_clips_are_dropped() -> None:
+    from svgwriter.export import find_importer
+
+    content = b"q 0 0 100 50 re W n 0 0 1 rg 10 10 20 20 re f Q q 0 0 100 50 re W n 1 0 0 rg 40 10 20 20 re f Q"
+    pdf = pdf_file([content])
+    doc = find_importer("pdf").function(pdf)
+    assert not [e for e in doc.root.iter() if e.tag == "clipPath"]
+    assert len([e for e in doc.root.iter() if e.tag == "path"]) == 2
+
+
+def test_pdf_smaller_clips_are_kept() -> None:
+    from svgwriter.export import find_importer
+
+    doc = find_importer("pdf").function(pdf_file([b"q 0 0 30 30 re W n 1 0 0 rg 0 0 100 50 re f Q"]))
+    assert [e for e in doc.root.iter() if e.tag == "clipPath"]

@@ -10,7 +10,7 @@ from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Any, Final
 
 from ...transform.matrix import Matrix
-from ._constants import BLACK, CAP_NAMES, HAIRLINE, JOIN_NAMES, PAINTS, PDF_MAX_DEPTH
+from ._constants import BLACK, CAP_NAMES, CLIP_TOLERANCE, HAIRLINE, JOIN_NAMES, PAINTS, PDF_MAX_DEPTH
 from ._pdf_content import CONTENT_HANDLERS, draw_image
 from ._pdf_objects import Name, Stream, _decode, _numbers, _operations, _resolve
 from ._pdf_paint import fill_with_pattern, paint_shading
@@ -77,7 +77,8 @@ class _Painter:
         """The current path, ending it; a pending ``W``/``W*`` makes it (part of) the clip first."""
         ops = self.outline.take()
         if self.pending_clip is not None and ops:
-            self.state.clip = _intersect(self.state.clip, ops)
+            clip = _intersect(self.state.clip, ops)
+            self.state.clip = None if _covers(clip, self.page) else clip
         self.pending_clip = None
         return ops
 
@@ -221,6 +222,22 @@ _HANDLERS: Final[dict[str, Callable[[_Painter, list[Any], dict[str, Any]], None]
     "Do": lambda p, o, r: p.form(p.resource(r, "XObject", o[-1]), r),
     **CONTENT_HANDLERS,
 }
+
+
+def _covers(clip: list[Op], page: list[Op]) -> bool:
+    """Whether *clip* is one axis-aligned rectangle containing the whole *page*, so it clips nothing."""
+    kinds = [op for op, _ in clip if op != "Z"]
+    if not page or kinds[:1] != ["M"] or set(kinds[1:]) != {"L"} or len(kinds) not in (4, 5):
+        return False
+    points = [args for op, args in clip if op in ("M", "L")]
+    xs, ys = {round(x, 6) for x, _ in points}, {round(y, 6) for _, y in points}
+    if len(xs) != 2 or len(ys) != 2:
+        return False
+    page_points = [args for op, args in page if op in ("M", "L")]
+    return (min(xs) <= min(x for x, _ in page_points) + CLIP_TOLERANCE
+            and max(xs) >= max(x for x, _ in page_points) - CLIP_TOLERANCE
+            and min(ys) <= min(y for _, y in page_points) + CLIP_TOLERANCE
+            and max(ys) >= max(y for _, y in page_points) - CLIP_TOLERANCE)
 
 
 def _intersect(current: list[Op] | None, ops: list[Op]) -> list[Op]:
