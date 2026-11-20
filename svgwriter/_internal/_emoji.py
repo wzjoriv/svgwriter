@@ -15,10 +15,10 @@ from ._constants import CHANNEL_MAX, EMOJI_CELL_LEVELS, EMOJI_PIXELS_PER_EM
 
 if TYPE_CHECKING:
     from ..document import Document
-    from ._flatten import Item
     from ..elements.structure import Pixels
     from ..ops.text import GlyphBox
     from ..transform.matrix import Matrix
+    from ._flatten import Item
     from ._shaping import ColorGlyphs
 
 __all__ = ["color_glyph_boxes", "color_glyph_cells", "color_glyph_images", "draw_glyphs", "render_color_glyphs"]

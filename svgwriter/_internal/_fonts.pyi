@@ -2,6 +2,8 @@ from typing import Any
 from ..ops.text import FontWeight
 
 __all__ = [
+    "cluster_font",
+    "color_font",
     "font_for",
     "font_size",
     "font_weight",
@@ -19,6 +21,8 @@ def weight_value(value: FontWeight) -> int: ...
 
 registered_typefaces: dict[str, list[Any]]
 
+def color_font(typeface: Any) -> bool: ...
+
 def registered_face(
     family: str,
     weight: int,
@@ -34,6 +38,15 @@ def resolve_font(
 
 def font_for(
     char: str,
+    font_family: str,
+    size: float,
+    weight: FontWeight = 'normal',
+    italic: bool = False,
+    language: str | None = None,
+) -> Any: ...
+
+def cluster_font(
+    cluster: str,
     font_family: str,
     size: float,
     weight: FontWeight = 'normal',

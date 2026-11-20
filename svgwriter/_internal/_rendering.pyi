@@ -23,6 +23,7 @@ def renderable_copy(
     root: Element,
     *,
     keep_text: Callable[[Text], bool] | None = None,
+    color_glyphs: bool = False,
 ) -> Element: ...
 
 def view_matrix(

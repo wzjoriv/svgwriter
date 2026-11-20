@@ -30,4 +30,8 @@ class TextRun:
         width: float,
     ) -> None: ...
 
-def text_runs(document: Document) -> list[TextRun]: ...
+def text_runs(
+    document: Document,
+    *,
+    color_glyphs: bool = True,
+) -> list[TextRun]: ...

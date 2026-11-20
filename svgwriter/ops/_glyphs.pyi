@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Any
+from .._internal._shaping import ColorGlyphs
 from ..pathdata.data import PathData
 from .text import Anchor, FontWeight
 
@@ -15,6 +16,7 @@ class GlyphBox:
     angle: float
     advance: float
     source: Any = None
+    color: ColorGlyphs | None = None
 
     def __init__(
         self,
@@ -25,6 +27,7 @@ class GlyphBox:
         angle: float,
         advance: float,
         source: Any = None,
+        color: ColorGlyphs | None = None,
     ) -> None: ...
     def placed(self) -> PathData: ...
 

@@ -12,4 +12,7 @@ def draw_text(
     text: Text,
     root: Element,
     view: Matrix,
+    *,
+    only_color: bool = False,
+    searchable: bool = False,
 ) -> None: ...

@@ -64,6 +64,7 @@ def flatten(
     *,
     handled: frozenset[str] = ...,
     text: bool = False,
+    color_glyphs: bool = True,
 ) -> Scene: ...
 
 def polylines(data: object, tolerance: float) -> list[tuple[list[Point], bool]]: ...
