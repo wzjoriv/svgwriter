@@ -184,7 +184,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
       </label>
     </div>
@@ -282,7 +282,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
           </label>
         </div>
@@ -294,13 +294,116 @@
 <span class="gp">$ </span>python<span class="w"> </span>scripts/dev.py<span class="w"> </span>svgwriter<span class="w"> </span>conformance<span class="w"> </span>--report<span class="w"> </span>build/conformance/report.md
 </pre></div>
 </div>
-<p>Scripting, DOM, interactivity and <code class="docutils literal notranslate"><span class="pre">foreignObject</span></code> tests are out of scope, as those features are.</p>
 <p><strong>Round-trip fidelity: 429 / 430.</strong> Each file is parsed, written back, and both versions are rendered
 by skia; the pictures must match. The one difference is a namespace test where skia ignores XML
 namespaces and svgwriter’s output is the correct one. Four files skia cannot read are excluded.</p>
-<p><strong>Rendering: 148 / 434</strong> against the reference PNGs. Most misses differ by 1-3 % in the page labels, which
-the suite sets in its own SVG font; the rest are features skia’s renderer lacks (SMIL animation, some
-filters and masks).</p>
+<p><strong>Rendering: 289 / 434 (67 %)</strong> against the reference PNGs. A test passes when at most 1 % of its
+pixels differ. The suite’s <code class="docutils literal notranslate"><span class="pre">$Revision$</span></code> label and <code class="docutils literal notranslate"><span class="pre">DRAFT</span></code> watermark are bookkeeping, often newer than
+the reference PNG, so they are not compared; animated tests are drawn once their animations have
+settled, the state the references show.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Chapter</p></th>
+<th class="head text-right"><p>Passed</p></th>
+<th class="head text-right"><p>Total</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>animate</p></td>
+<td class="text-right"><p>55</p></td>
+<td class="text-right"><p>74</p></td>
+</tr>
+<tr class="row-odd"><td><p>color</p></td>
+<td class="text-right"><p>3</p></td>
+<td class="text-right"><p>6</p></td>
+</tr>
+<tr class="row-even"><td><p>conform</p></td>
+<td class="text-right"><p>1</p></td>
+<td class="text-right"><p>2</p></td>
+</tr>
+<tr class="row-odd"><td><p>coords</p></td>
+<td class="text-right"><p>24</p></td>
+<td class="text-right"><p>28</p></td>
+</tr>
+<tr class="row-even"><td><p>filters</p></td>
+<td class="text-right"><p>18</p></td>
+<td class="text-right"><p>42</p></td>
+</tr>
+<tr class="row-odd"><td><p>fonts</p></td>
+<td class="text-right"><p>3</p></td>
+<td class="text-right"><p>17</p></td>
+</tr>
+<tr class="row-even"><td><p>imp</p></td>
+<td class="text-right"><p>0</p></td>
+<td class="text-right"><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>linking</p></td>
+<td class="text-right"><p>9</p></td>
+<td class="text-right"><p>12</p></td>
+</tr>
+<tr class="row-even"><td><p>masking</p></td>
+<td class="text-right"><p>13</p></td>
+<td class="text-right"><p>17</p></td>
+</tr>
+<tr class="row-odd"><td><p>metadata</p></td>
+<td class="text-right"><p>1</p></td>
+<td class="text-right"><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>painting</p></td>
+<td class="text-right"><p>25</p></td>
+<td class="text-right"><p>31</p></td>
+</tr>
+<tr class="row-odd"><td><p>paths</p></td>
+<td class="text-right"><p>19</p></td>
+<td class="text-right"><p>19</p></td>
+</tr>
+<tr class="row-even"><td><p>pservers</p></td>
+<td class="text-right"><p>22</p></td>
+<td class="text-right"><p>33</p></td>
+</tr>
+<tr class="row-odd"><td><p>render</p></td>
+<td class="text-right"><p>3</p></td>
+<td class="text-right"><p>8</p></td>
+</tr>
+<tr class="row-even"><td><p>shapes</p></td>
+<td class="text-right"><p>22</p></td>
+<td class="text-right"><p>22</p></td>
+</tr>
+<tr class="row-odd"><td><p>struct</p></td>
+<td class="text-right"><p>36</p></td>
+<td class="text-right"><p>48</p></td>
+</tr>
+<tr class="row-even"><td><p>styling</p></td>
+<td class="text-right"><p>7</p></td>
+<td class="text-right"><p>17</p></td>
+</tr>
+<tr class="row-odd"><td><p>text</p></td>
+<td class="text-right"><p>27</p></td>
+<td class="text-right"><p>54</p></td>
+</tr>
+<tr class="row-even"><td><p>types</p></td>
+<td class="text-right"><p>1</p></td>
+<td class="text-right"><p>2</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Many of the remaining misses differ by 1-5 % in text: the suite sets its labels in its own SVG font,
+which svgwriter draws with the nearest installed sans-serif face.</p>
+<section id="out-of-scope">
+<h2>Out of scope<a class="headerlink" href="#out-of-scope" title="Link to this heading">¶</a></h2>
+<p>These parts of SVG 1.1 are not supported, so their tests are skipped or expected to fail:</p>
+<ul class="simple">
+<li><p><strong>Scripting and the SVG DOM</strong>: <code class="docutils literal notranslate"><span class="pre">&lt;script&gt;</span></code>, event attributes and the <code class="docutils literal notranslate"><span class="pre">svgdom</span></code> tests.</p></li>
+<li><p><strong>Interactivity</strong>: event-based animation begins (<code class="docutils literal notranslate"><span class="pre">click</span></code>, <code class="docutils literal notranslate"><span class="pre">mouseover</span></code>), <code class="docutils literal notranslate"><span class="pre">cursor</span></code>, links followed by a
+viewer, and tests whose reference shows the state after a user action.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">foreignObject</span></code></strong> and the <code class="docutils literal notranslate"><span class="pre">extend</span></code> chapter.</p></li>
+<li><p><strong>SVG fonts</strong> (<code class="docutils literal notranslate"><span class="pre">&lt;font&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;glyph&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;font-face&gt;</span></code> with an SVG source, <code class="docutils literal notranslate"><span class="pre">altGlyph</span></code>): text uses installed
+and registered OpenType fonts.</p></li>
+<li><p><strong>Colour profiles</strong> (<code class="docutils literal notranslate"><span class="pre">color-profile</span></code>, ICC colours).</p></li>
+</ul>
+</section>
 </section>
 
         </article>
@@ -346,8 +449,27 @@ filters and masks).</p>
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Conformance</a><ul>
+<li><a class="reference internal" href="#out-of-scope">Out of scope</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

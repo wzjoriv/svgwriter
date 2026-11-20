@@ -287,7 +287,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Final</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">AT_BLOCK_RE</span><span class="p">,</span> <span class="n">COMMENT_RE</span><span class="p">,</span> <span class="n">IMPORTANT</span><span class="p">,</span> <span class="n">RULE_RE</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._selectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">matches_compound</span><span class="p">,</span> <span class="n">specificity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._selectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">matches_from</span><span class="p">,</span> <span class="n">specificity</span><span class="p">,</span> <span class="n">split_selector</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.names</span><span class="w"> </span><span class="kn">import</span> <span class="n">PRESENTATION_ATTRIBUTES</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -398,7 +398,7 @@
 <span class="w">    </span><span class="sd">"""Return whether an element matches a CSS selector.</span>
 
 <span class="sd">    Supports type, ``*``, ``#id``, ``.class``, attribute selectors, ``:first-child``</span>
-<span class="sd">    and the descendant and child (``&gt;``) combinators.</span>
+<span class="sd">    and the descendant, child (``&gt;``), adjacent (``+``) and general (``~``) sibling combinators.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -423,29 +423,8 @@
 <span class="sd">    &gt;&gt;&gt; matches(rect, ".other rect")</span>
 <span class="sd">    False</span>
 <span class="sd">    """</span>
-    <span class="n">parts</span> <span class="o">=</span> <span class="n">selector</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&gt;"</span><span class="p">,</span> <span class="s2">" &gt; "</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">parts</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">matches_compound</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-        <span class="k">return</span> <span class="kc">False</span>
-    <span class="n">node</span><span class="p">:</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">element</span>
-    <span class="n">index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span>
-    <span class="k">while</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">combinator</span> <span class="o">=</span> <span class="s2">" "</span>
-        <span class="k">if</span> <span class="n">parts</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"&gt;"</span><span class="p">:</span>
-            <span class="n">combinator</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="s2">"&gt;"</span><span class="p">,</span> <span class="n">index</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="n">compound</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-        <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">parent</span> <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">combinator</span> <span class="o">==</span> <span class="s2">"&gt;"</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">matches_compound</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">compound</span><span class="p">):</span>
-                <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">while</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">matches_compound</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">compound</span><span class="p">):</span>
-                <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">parent</span>
-            <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">False</span>
-        <span class="n">index</span> <span class="o">-=</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="kc">True</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">split_selector</span><span class="p">(</span><span class="n">selector</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="ow">and</span> <span class="n">matches_from</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">parts</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="rules_of">
