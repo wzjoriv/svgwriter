@@ -1,0 +1,18 @@
+# svgwriter examples
+
+A numbered learning path: each example is a short step-by-step script that builds on the ones before it. Run one with `python examples/<name>.py`, or open the notebook beside it to see every step as a picture. Saved files go to `$SVGWRITER_EXAMPLES_OUT`, or to a temporary folder when it is not set.
+
+| # | Example | Notebook | What it shows | Key APIs |
+|--:|---|---|---|---|
+| 01 | [01_basic_shapes.py](01_basic_shapes.py) | [ipynb](01_basic_shapes.ipynb) | Shapes, gradients, text and nested groups through document shortcuts. | `svg.Document`, `svg.LinearGradient`, `doc.group`, `svg.ellipse` |
+| 02 | [02_transforms_and_layout.py](02_transforms_and_layout.py) | [ipynb](02_transforms_and_layout.ipynb) | Rotate, flip, clip and place shapes, then lay them out by the named points of their bounds. | `rotate`, `flip_x`, `place`, `align`, `bounds`, `BBox.point` |
+| 03 | [03_paths_and_geometry.py](03_paths_and_geometry.py) | [ipynb](03_paths_and_geometry.ipynb) | Path data, arcs and markers; boolean operations; length, tight bounds, points along an outline and hit tests. | `svg.PathBuilder`, `svg.builder`, `union`, `stroked`, `total_length`, `point_at_length`, `contains_point` |
+| 04 | [04_typography.py](04_typography.py) | [ipynb](04_typography.ipynb) | Live text: styled ranges, per-character moves, outlines, cut-outs, and Hindi, Bengali, Urdu, Japanese and Chinese lines. | `svg.text`, `text[a:b].wrap`, `glyphs`, `direction` |
+| 05 | [05_paint_and_filters.py](05_paint_and_filters.py) | [ipynb](05_paint_and_filters.ipynb) | Gradients, patterns, clip paths and masks, then filter primitives for shadows, noise, lighting and color. | `svg.Pattern`, `svg.ClipPath`, `svg.Mask`, `svg.Filter`, `svg.drop_shadow` |
+| 06 | [06_pixels_and_compositing.py](06_pixels_and_compositing.py) | [ipynb](06_pixels_and_compositing.ipynb) | numpy pixels beside vectors, and Porter-Duff operators between pixels, shapes and text. | `svg.Image`, `to_image`, `Pixels.composite`, `Pixels.on_grid` |
+| 07 | [07_formats.py](07_formats.py) | [ipynb](07_formats.ipynb) | One drawing exported to SVG, PNG, PDF, EPS, TikZ, PowerPoint and DXF, then read back. | `doc.save`, `svg.Document.open`, `svg.export.exporters` |
+| 08 | [08_math_and_diagrams.py](08_math_and_diagrams.py) | [ipynb](08_math_and_diagrams.ipynb) | LaTeX formulas as outlines and a Mermaid flowchart imported as native elements. | `svg.latex`, `svg.Document.open` |
+| 09 | [09_animation.py](09_animation.py) | [ipynb](09_animation.ipynb) | Animation presets, the animation elements beneath them, stills, a GIF and async writing. | `element.animate`, `doc.at`, `svg.AnimateTransform`, `write_many_async` |
+| 10 | [10_procedural_animation.py](10_procedural_animation.py) | [ipynb](10_procedural_animation.ipynb) | A scene moved by an `update(doc, seconds)` function and rendered with `python -m svgwriter animate`. | `svg.Document`, `FPS`, `DURATION`, `update` |
+| 11 | [11_interop.py](11_interop.py) | [ipynb](11_interop.ipynb) | Adding matplotlib figures, networkx graphs and objects with `__svgwriter__`, `_repr_svg_` or `_repr_png_`. | `doc.add`, `__svgwriter__`, `_repr_svg_`, `_repr_png_` |
+| 12 | [12_logo.py](12_logo.py) | [ipynb](12_logo.ipynb) | An app logo with light, dark and mono variants, and the SVG, PNG, ICO and ICNS assets made from it. | `svg.rect`, `stroked`, `doc.save(size=, sizes=)` |

@@ -1,6 +1,6 @@
-"""Shapes, gradients, text and nested groups with document shortcuts.
+"""Step 1: shapes, gradients, text and nested groups with document shortcuts.
 
-Run it as ``python basic_shapes.py`` or open ``basic_shapes.ipynb`` to see each step.
+Run it as ``python 01_basic_shapes.py`` or open ``01_basic_shapes.ipynb`` to see each step.
 """
 
 import os
@@ -56,5 +56,5 @@ doc
 # %%
 out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
 out.mkdir(parents=True, exist_ok=True)
-doc.save(out / "basic_shapes.svg")
-print("saved basic_shapes.svg")
+doc.save(out / "01_basic_shapes.svg")
+print("saved 01_basic_shapes.svg")

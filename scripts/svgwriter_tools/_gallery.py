@@ -30,15 +30,15 @@ class Picture(NamedTuple):
 
 
 GALLERY = {
-    "basic_shapes": Picture("basic_shapes", "basic_shapes.svg"),
-    "transforms": Picture("transforms", "transforms.svg"),
-    "boolean_ops": Picture("boolean_ops", "boolean_ops.svg"),
-    "typography": Picture("typography", "typography.svg"),
-    "filter_effects": Picture("filter_effects", "filter_effects.svg"),
-    "paths_and_markers": Picture("paths_and_markers", "paths_pretty.svg"),
-    "animation": Picture("animation", "animation.gif"),
-    "math": Picture("math_and_diagrams", "math.svg"),
-    "flowchart": Picture("math_and_diagrams", "flowchart.svg", background="white", padding=12),
+    "basic_shapes": Picture("01_basic_shapes", "01_basic_shapes.svg"),
+    "transforms": Picture("02_transforms_and_layout", "02_transforms_and_layout.svg"),
+    "boolean_ops": Picture("03_paths_and_geometry", "03_boolean.svg"),
+    "typography": Picture("04_typography", "04_typography.svg"),
+    "filter_effects": Picture("05_paint_and_filters", "05_filters.svg"),
+    "paths_and_markers": Picture("03_paths_and_geometry", "03_paths_pretty.svg"),
+    "animation": Picture("09_animation", "09_animation.gif"),
+    "math": Picture("08_math_and_diagrams", "08_math.svg"),
+    "flowchart": Picture("08_math_and_diagrams", "08_flowchart.svg", background="white", padding=12),
 }
 
 

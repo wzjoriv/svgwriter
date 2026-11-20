@@ -1,7 +1,8 @@
-"""Placement through one transform: rotate, scale, flip and place, plus boolean cut-outs.
+"""Step 2: transforms and layout: rotate, flip and place, then named points and ``align``.
 
 A ring of petals is built from one shape by rotating copies about a shared pivot, then cut and clipped.
-Run it as ``python transforms.py`` or open ``transforms.ipynb`` to see each step.
+A second drawing lays shapes out with named points of their bounds.
+Run it as ``python 02_transforms_and_layout.py`` or open ``02_transforms_and_layout.ipynb`` to see each step.
 """
 
 import os
@@ -64,11 +65,40 @@ doc += window
 doc
 
 # %% [markdown]
+# Every element knows its `bounds()`, a box with named points: `center`, the corners (`top_left`,
+# `bottom_right`, ...) and the edge middles (`top`, `left`, ...). Dots mark them on a card.
+
+# %%
+layout = svg.Document(300, 150)
+layout.rect(0, 0, 300, 150, rx=14, fill="#f8fafc")
+card = layout.rect(60, 40, 180, 80, rx=8, fill="#e0f2fe", stroke="#0369a1", stroke_width=2)
+box = card.bounds()
+print(box.center, box.top_left, box.bottom_right)
+for name in ("top_left", "top", "top_right", "left", "center", "right", "bottom_left", "bottom", "bottom_right"):
+    point = box.point(name)
+    layout.circle(point.x, point.y, 3.5, fill="#0369a1")
+layout
+
+# %% [markdown]
+# `align(target, at, to=...)` moves an element so its point `at` meets the point `to` of the target,
+# and `offset` adds a gap. `place(x, y, at=...)` does the same for a plain coordinate.
+
+# %%
+tab = svg.rect(0, 0, 70, 20, rx=10, fill="#0369a1")
+layout += tab.align(card, "bottom", to="top", offset=(0, -4))
+corner = svg.rect(0, 0, 34, 14, rx=7, fill="#f59e0b")
+layout += corner.align(card, "bottom_right", offset=(-10, -10))
+stamp = svg.circle(0, 0, 9, fill="#be123c").place(box.left + 20, box.center.y, at="center")
+layout += stamp
+layout
+
+# %% [markdown]
 # Save SVG and a 2x PNG. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
 
 # %%
 out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
 out.mkdir(parents=True, exist_ok=True)
-doc.save(out / "transforms.svg")
-doc.save(out / "transforms.png", scale=2)
-print("saved transforms.svg and transforms.png")
+doc.save(out / "02_transforms_and_layout.svg")
+doc.save(out / "02_transforms_and_layout.png", scale=2)
+layout.save(out / "02_layout.svg")
+print("saved 02_transforms_and_layout.svg, .png and 02_layout.svg")

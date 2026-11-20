@@ -1,6 +1,6 @@
-"""LaTeX formulas and a Mermaid flowchart, both drawn without any tool beyond Python.
+"""Step 8: LaTeX formulas and a Mermaid flowchart, both drawn without any tool beyond Python.
 
-Run it as ``python math_and_diagrams.py`` or open ``math_and_diagrams.ipynb`` to see each step.
+Run it as ``python 08_math_and_diagrams.py`` or open ``08_math_and_diagrams.ipynb`` to see each step.
 """
 
 import os
@@ -56,6 +56,6 @@ flow
 # %%
 out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
 out.mkdir(parents=True, exist_ok=True)
-formulas.save(out / "math.svg")
-flow.save(out / "flowchart.svg")
-print("saved math.svg and flowchart.svg")
+formulas.save(out / "08_math.svg")
+flow.save(out / "08_flowchart.svg")
+print("saved 08_math.svg and 08_flowchart.svg")

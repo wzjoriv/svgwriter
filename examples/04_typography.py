@@ -1,6 +1,6 @@
-"""Text as live characters: styled ranges, per-glyph moves and rotations, outlines and cut-outs.
+"""Step 4: typography: styled ranges, per-glyph moves and rotations, outlines, cut-outs and world scripts.
 
-Run it as ``python typography.py`` or open ``typography.ipynb`` to see each step.
+Run it as ``python 04_typography.py`` or open ``04_typography.ipynb`` to see each step.
 """
 
 import math
@@ -57,11 +57,34 @@ doc += outlines
 doc
 
 # %% [markdown]
+# Scripts that need shaping (Devanagari, Bengali, Arabic) and CJK text work with any `font_family`: where the
+# font has no glyph, layout falls back per character to an installed font that has one. `xml_lang` steers
+# the choice for shared CJK characters, and `direction="rtl"` with `text_anchor="end"` sets Urdu from the right.
+
+# %%
+LINES = (
+    ("Hindi", "नमस्ते दुनिया", {}),
+    ("Bengali", "ওহে বিশ্ব, কেমন আছো", {}),
+    ("Urdu", "ہیلو دنیا", {"direction": "rtl", "text_anchor": "end", "x": 380}),
+    ("Japanese", "こんにちは、世界", {"xml_lang": "ja"}),
+    ("Chinese", "你好，世界", {"xml_lang": "zh"}),
+)
+world = svg.Document(WIDTH, 40 + 44 * len(LINES))
+world.rect(0, 0, WIDTH, 40 + 44 * len(LINES), fill="#fffbeb")
+for row, (name, line, options) in enumerate(LINES):
+    baseline = 50 + 44 * row
+    world.text(name, x=20, y=baseline, font_size=13, font_family=SANS, fill="#78716c")
+    options = {"x": 130, **options}
+    world.text(line, y=baseline, font_size=26, font_family=SANS, fill="#1c1917", **options)
+world
+
+# %% [markdown]
 # Save SVG and a 2x PNG. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
 
 # %%
 out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
 out.mkdir(parents=True, exist_ok=True)
-doc.save(out / "typography.svg")
-doc.save(out / "typography.png", scale=2)
-print("saved typography.svg and typography.png")
+doc.save(out / "04_typography.svg")
+doc.save(out / "04_typography.png", scale=2)
+world.save(out / "04_scripts.svg")
+print("saved 04_typography.svg, .png and 04_scripts.svg")
