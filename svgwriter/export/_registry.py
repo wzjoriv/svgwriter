@@ -505,4 +505,4 @@ def load(path: str | os.PathLike[str], format: str | None = None, **options: Any
 
 
 def _load_builtins() -> None:
-    from . import _diagram, _html, _office, _plotter, _raster, _scene, _svg, _vector  # noqa: F401
+    from . import _diagram, _html, _office, _plotter, _raster, _scene, _svg, _text, _vector  # noqa: F401

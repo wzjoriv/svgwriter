@@ -34,6 +34,13 @@ NORMAL_WEIGHT: Final = 400
 BOLD_WEIGHT: Final = 700
 NORMAL_WIDTH: Final = 5
 GENERIC_FAMILIES: Final = frozenset({"serif", "sans-serif", "monospace", "cursive", "fantasy"})
+GENERIC_CANDIDATES: Final = {
+    "serif": ("Times New Roman", "Georgia", "Times", "Liberation Serif", "DejaVu Serif", "Noto Serif"),
+    "monospace": ("Consolas", "Courier New", "Menlo", "Monaco", "Liberation Mono", "DejaVu Sans Mono",
+                  "Noto Sans Mono", "Courier"),
+    "cursive": ("Comic Sans MS", "Segoe Script", "Apple Chancery", "URW Chancery L"),
+    "fantasy": ("Impact", "Papyrus", "Luminari"),
+}
 _ANCHOR_SHIFT: Final = {"start": 0.0, "middle": 0.5, "end": 1.0}
 ANCHOR_SHIFT: Final = _ANCHOR_SHIFT
 FONT_CACHE: Final = 64
@@ -114,6 +121,10 @@ def _font(font_family: str, size: float, weight: FontWeight, italic: bool) -> An
             return skia.Font(face, size)
     typeface = None
     for family in families or [DEFAULT_FAMILY]:
+        for concrete in GENERIC_CANDIDATES.get(family.lower(), ()):
+            match = skia.Typeface(concrete, skia.FontStyle(_weight(weight), NORMAL_WIDTH, slant))
+            if match.getFamilyName().lower() == concrete.lower():
+                return skia.Font(match, size)
         candidate = skia.Typeface(family, skia.FontStyle(_weight(weight), NORMAL_WIDTH, slant))
         if family.lower() in GENERIC_FAMILIES or candidate.getFamilyName().lower() == family.lower():
             typeface = candidate
