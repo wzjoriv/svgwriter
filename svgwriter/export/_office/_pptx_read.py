@@ -17,6 +17,7 @@ from ._constants import (
     LINE_HEIGHT,
     M_NS,
     POINTS_PER_UNIT,
+    PPTX_SIZE_SCALE,
     ROUND_RECT_ADJUST,
 )
 from ._drawingml import read_gradient, read_line_style
@@ -181,12 +182,14 @@ def _text(shape: Any, left: float, top: float) -> Any:
         return None
     frame = shape.text_frame
     group = Group()
+    if not frame.text.strip():
+        return _equation(shape, left, top, group)
     left += (frame.margin_left or 0) / EMU_PER_UNIT
     line_top = top + (frame.margin_top or 0) / EMU_PER_UNIT
     for paragraph in frame.paragraphs:
         font = next((run.font for run in paragraph.runs if run.font.size is not None), None)
         size_units = (font.size.pt if font is not None else DEFAULT_TEXT_PT) / POINTS_PER_UNIT
-        content = paragraph.text or _math_text(paragraph._p)
+        content = paragraph.text
         if content:
             text = Text(content, x=left, y=line_top + size_units * ASCENT,
                         font_size=math.floor(size_units * 100) / 100)
@@ -195,6 +198,20 @@ def _text(shape: Any, left: float, top: float) -> Any:
             group.add(text)
         line_top += size_units * LINE_HEIGHT
     return group if len(group) else None
+
+
+def _equation(shape: Any, left: float, top: float, group: Any) -> Any:
+    """An equation box as its characters centred in the box, at the equation's own size."""
+    from ...elements.text import Text
+
+    body = shape.text_frame._txBody  # noqa: SLF001 - equations are not exposed by python-pptx
+    sizes = [int(node.get("sz")) for node in body.iter(_a("rPr")) if node.get("sz")]
+    size_units = (sizes[0] / PPTX_SIZE_SCALE if sizes else DEFAULT_TEXT_PT) / POINTS_PER_UNIT
+    centre_x = left + shape.width / EMU_PER_UNIT / 2
+    centre_y = top + shape.height / EMU_PER_UNIT / 2
+    group.add(Text(_math_text(body), x=centre_x, y=centre_y + size_units * (ASCENT - LINE_HEIGHT / 2),
+                   font_size=math.floor(size_units * 100) / 100, text_anchor="middle"))
+    return group
 
 
 def _math_text(element: Any) -> str:

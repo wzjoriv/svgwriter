@@ -150,8 +150,10 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
     from ._skia import to_skia
 
     _, opacity = ancestry(image, root)
-    pixels = np.ascontiguousarray(np.clip(np.rint(image.rgba() * CHANNEL_MAX), 0, CHANNEL_MAX).astype(np.uint8))
-    picture = skia.Image.fromarray(pixels, colorType=skia.kRGBA_8888_ColorType, alphaType=skia.kUnpremul_AlphaType)
+    rgba = image.rgba()
+    premultiplied = np.concatenate([rgba[..., :3] * rgba[..., 3:], rgba[..., 3:]], axis=-1)
+    pixels = np.ascontiguousarray(np.clip(np.rint(premultiplied * CHANNEL_MAX), 0, CHANNEL_MAX).astype(np.uint8))
+    picture = skia.Image.fromarray(pixels, colorType=skia.kRGBA_8888_ColorType, alphaType=skia.kPremul_AlphaType)
     canvas.save()
     canvas.concat(_skia_matrix(view))
     for node in _chain(image, root):

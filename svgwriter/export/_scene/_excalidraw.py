@@ -190,24 +190,18 @@ def _common(rng: random.Random, number: int, link: str | None) -> dict[str, Any]
             "link": link, "roughness": 0}
 
 
-def _images(document: Document, rng: random.Random, files: dict[str, Any]) -> list[dict[str, Any]]:
-    """Every embedded image as an Excalidraw ``image`` element, its PNG stored in *files*."""
-    from ..._internal._rendering import page_box
-    from ...elements.structure import Image
+def _image(image: Any, matrix: Any, rng: random.Random, number: int, files: dict[str, Any]) -> dict[str, Any]:
+    """One embedded image as an Excalidraw ``image`` element over its upright page box, its PNG stored in *files*."""
+    from ..._internal._layers import pixel_box
 
-    elements = []
-    for image in [e for e in document.root.iter() if isinstance(e, Image) and e.pixels is not None]:
-        box, _ = page_box(document, image)
-        if box is None:
-            continue
-        key = f"svgw-image{len(files)}"
-        files[key] = {"mimeType": "image/png", "id": key, "created": 0,
-                      "dataURL": "data:image/png;base64," + base64.b64encode(image.encode("png")).decode("ascii")}
-        elements.append({**_common(rng, len(elements), None), "type": "image", "x": box.x, "y": box.y,
-                         "width": box.width, "height": box.height, "angle": 0, "fileId": key, "status": "saved",
-                         "scale": [1, 1], "strokeColor": TRANSPARENT, "backgroundColor": TRANSPARENT,
-                         "fillStyle": "solid", "strokeWidth": 0, "strokeStyle": "solid", "opacity": 100})
-    return elements
+    box = pixel_box(image, matrix)
+    key = f"svgw-image{len(files)}"
+    files[key] = {"mimeType": "image/png", "id": key, "created": 0,
+                  "dataURL": "data:image/png;base64," + base64.b64encode(image.encode("png")).decode("ascii")}
+    return {**_common(rng, number, None), "type": "image", "x": box.x, "y": box.y,
+            "width": box.width, "height": box.height, "angle": 0, "fileId": key, "status": "saved",
+            "scale": [1, 1], "strokeColor": TRANSPARENT, "backgroundColor": TRANSPARENT,
+            "fillStyle": "solid", "strokeWidth": 0, "strokeStyle": "solid", "opacity": 100}
 
 
 def _text(run: Any, rng: random.Random, number: int) -> dict[str, Any]:
@@ -261,9 +255,12 @@ def to_excalidraw(document: Document, *, seed: int = 0) -> str:
 
     rng = random.Random(seed)
     files: dict[str, Any] = {}
-    elements = _images(document, rng, files)
+    elements: list[dict[str, Any]] = []
     scene = flatten(document, handled=frozenset({"image"}), text=True)
-    for item in scene.items:
+    for item in scene.painted():
+        if isinstance(item, tuple):
+            elements.append(_image(*item, rng, len(elements), files))
+            continue
         stroke = item.stroke.hex if item.stroke is not None else TRANSPARENT
         fill = item.fill.hex if item.fill is not None else TRANSPARENT
         opacity = round(OPACITY_SCALE * (item.fill_opacity if item.fill is not None else item.stroke_opacity))

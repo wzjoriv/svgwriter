@@ -14,9 +14,10 @@ if TYPE_CHECKING:
     from ..attributes.viewbox import PreserveAspectRatio
     from ..elements.core import Element
     from ..elements.structure import Image
+    from ..pathdata.data import BBox
     from ..transform.matrix import Matrix
 
-__all__ = ["ancestry", "drawable_order", "fit_box", "image_matrix", "resolve_links"]
+__all__ = ["ancestry", "drawable_order", "fit_box", "image_matrix", "pixel_box", "resolve_links"]
 
 
 def drawable_order(root: Element) -> list[Element]:
@@ -226,3 +227,35 @@ def ancestry(element: Element, root: Element) -> tuple[Matrix, float]:
             break
         node = node.parent
     return matrix, opacity
+
+
+def pixel_box(image: Image, matrix: Matrix) -> BBox:
+    """The upright box covering the pixel grid of *image* placed by *matrix*.
+
+    Parameters
+    ----------
+    image : Image
+        An ``<image>`` element holding embedded pixels.
+    matrix : Matrix
+        Pixel coordinates to page coordinates, as in ``Scene.images``.
+
+    Returns
+    -------
+    BBox
+        The page box of the four corners of the pixel grid.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import svgwriter as svg
+    >>> from svgwriter._internal._layers import image_matrix, pixel_box
+    >>> picture = svg.Image(np.zeros((2, 4, 4)), 10, 20, 8, 4)
+    >>> pixel_box(picture, image_matrix(picture))
+    BBox(x=10.0, y=20.0, width=8.0, height=4.0)
+    """
+    from ..pathdata.data import BBox
+
+    rows, columns = image.shape
+    corners = [matrix.apply(x, y) for x in (0, columns) for y in (0, rows)]
+    xs, ys = [c[0] for c in corners], [c[1] for c in corners]
+    return BBox(min(xs), min(ys), max(xs) - min(xs), max(ys) - min(ys))

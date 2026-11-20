@@ -13,6 +13,7 @@ from ._constants import (
     BASE_ANCHORS,
     DIAGONAL,
     FULL_TURN,
+    GRID_EPSILON,
     INNER_SEP,
     NODE_BASELINE,
     NODE_FONT_SIZE,
@@ -20,6 +21,7 @@ from ._constants import (
     NODE_SHAPES,
     NODE_TEXT_HEIGHT,
     POSITIONS,
+    TIKZ_GRID_STEP,
 )
 from ._reading import Outline
 from ._tikz_nodes import _font, _Place, _plain, _read_node
@@ -70,6 +72,8 @@ class _PathReader:
                 connector = None
             elif body in ("circle", "ellipse"):
                 i = self.ellipse(tokens, i)
+            elif body == "grid":
+                i = self.grid(tokens, i)
             elif body in ("node", "coordinate"):
                 i = self.node(body == "coordinate", tokens, i)
         return self.outline.take()
@@ -247,6 +251,39 @@ class _PathReader:
         self.outline.close()
         self.lifted = True
         return i
+
+    def grid(self, tokens: list[tuple[str, str]], i: int) -> int:
+        """``grid`` from the last point to the next corner: lines at the multiples of ``step`` between them."""
+        options = list(self.inherited)
+        if i < len(tokens) and tokens[i][0] == "opts":
+            options += _options(tokens[i][1])
+            i += 1
+        prefix = tokens[i][1] if i < len(tokens) and tokens[i] in (("op", "+"), ("op", "++")) else None
+        i += prefix is not None
+        if i >= len(tokens) or tokens[i][0] != "coord":
+            raise ValueError("grid without a corner")
+        corner = self.point(tokens[i][1], prefix)
+        step = (dict(options).get("step") or TIKZ_GRID_STEP).strip("()")
+        sx, sy = (abs(v) for v in self.frame.vector(step if "," in step else f"{step},{step}"))
+        origin = self.frame.absolute("0,0")
+        (x0, x1), (y0, y1) = sorted((self.last[0], corner[0])), sorted((self.last[1], corner[1]))
+        for x in _multiples(origin[0], sx, x0, x1):
+            self.outline.move(IDENTITY, x, y0)
+            self.outline.line(IDENTITY, x, y1)
+        for y in _multiples(origin[1], sy, y0, y1):
+            self.outline.move(IDENTITY, x0, y)
+            self.outline.line(IDENTITY, x1, y)
+        self.last, self.lifted = corner, True
+        return i + 1
+
+
+def _multiples(origin: float, step: float, low: float, high: float) -> list[float]:
+    """The values ``origin + k * step`` within ``low..high``, allowing for rounding at both ends."""
+    if step <= 0:
+        return []
+    first = math.ceil((low - origin) / step - GRID_EPSILON)
+    last = math.floor((high - origin) / step + GRID_EPSILON)
+    return [origin + k * step for k in range(first, last + 1)]
 
 
 def _geometry(label: str, keys: dict[str, str | None]) -> tuple[str, float, float]:

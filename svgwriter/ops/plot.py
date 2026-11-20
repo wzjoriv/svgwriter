@@ -56,8 +56,8 @@ def to_matplotlib(item: Element | Document, ax: Any, *, flip: bool = True) -> li
 
     Outlines keep their curves, solid fill and stroke colors, opacity and
     stroke width; each artist stays editable in matplotlib (``set_facecolor``
-    and so on). Gradients and patterns become their first color, as in the
-    other vector exports.
+    and so on). Gradients become their average color and patterns their
+    tiles, as in the other vector exports.
 
     Parameters
     ----------

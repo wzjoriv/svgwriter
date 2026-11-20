@@ -44,6 +44,8 @@ class Shape:
         ``stroke-miterlimit``.
     dashes : tuple of float
         Dash lengths; empty for a solid stroke.
+    fill_paint : Element or None
+        A gradient painting the fill; ``fill`` is then its solid stand-in.
 
     See Also
     --------
@@ -68,6 +70,7 @@ class Shape:
     miter_limit: float = DEFAULT_MITER
     dashes: tuple[float, ...] = field(default=())
     clip: list[Op] | None = None
+    fill_paint: Any = None
 
     @property
     def visible(self) -> bool:
@@ -197,7 +200,8 @@ def _hex(rgb: RGB) -> str:
 
 def _style(shape: Shape) -> dict[str, object]:
     """Path keyword arguments: paints, stroke geometry and opacity."""
-    style: dict[str, object] = {"fill": "none" if shape.fill is None else _hex(shape.fill)}
+    style: dict[str, object] = {"fill": "none" if shape.fill is None else (
+        shape.fill_paint if shape.fill_paint is not None else _hex(shape.fill))}
     if shape.evenodd and shape.fill is not None:
         style["fill_rule"] = "evenodd"
     stroked = shape.stroke is not None and shape.stroke_width > 0

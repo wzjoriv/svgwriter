@@ -175,8 +175,8 @@ def color_glyph_images(document: Document, pixels_per_em: float = EMOJI_PIXELS_P
     Returns
     -------
     list of (Pixels, Matrix)
-        Emoji images in paint order with their placement, like
-        :func:`~svgwriter._internal._patterns.placed_images`.
+        Emoji images in paint order with their placement, like ``Scene.images`` from
+        :func:`~svgwriter._internal._flatten.flatten`.
 
     Examples
     --------

@@ -22,6 +22,7 @@ from ._constants import (
     TIKZ_EMOJI_PIXELS,
     TIKZ_JOINS,
     TIKZ_PRECISION,
+    TIKZ_STANDALONE,
 )
 
 if TYPE_CHECKING:
@@ -179,4 +180,4 @@ def to_tikz(document: Document, *, standalone: bool = False, text: bool = True) 
     ]) + "\n"
     if not standalone:
         return picture
-    return "\\documentclass[tikz]{standalone}\n\\begin{document}\n" + picture + "\\end{document}\n"
+    return TIKZ_STANDALONE + "\\begin{document}\n" + picture + "\\end{document}\n"

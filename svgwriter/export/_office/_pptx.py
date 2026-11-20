@@ -68,7 +68,7 @@ def write_pptx(documents: list[Document]) -> bytes:
     """Write the deck, one slide per document; see :func:`svgwriter.export._office.pptx`."""
     presentation_module = require("pptx")
     from ..._internal._flatten import flatten
-    from ..._internal._rendering import page_box
+    from ..._internal._layers import pixel_box
     from ._layout import split_equations
 
     parts = [split_equations(document) for document in documents]
@@ -78,15 +78,15 @@ def write_pptx(documents: list[Document]) -> bytes:
     scale = _emu_scale(width, height)
     deck = presentation_module.Presentation()
     deck.slide_width, deck.slide_height = round(width * scale), round(height * scale)
-    for document, scene, (_, equations) in zip(documents, scenes, parts, strict=True):
+    for scene, (_, equations) in zip(scenes, parts, strict=True):
         slide = deck.slides.add_slide(deck.slide_layouts[BLANK_LAYOUT])
         place = _Place(scale, (width - scene.width) / 2, (height - scene.height) / 2)
-        for image in _images(document):
-            box, _ = page_box(document, image)
-            if box is not None and image.pixels is not None:
-                slide.shapes.add_picture(io.BytesIO(image.encode("png")), *place.emu(*box))
-        for item in scene.items:
-            _freeform(slide, item, place)
+        for item in scene.painted():
+            if isinstance(item, tuple):
+                image, matrix = item
+                slide.shapes.add_picture(io.BytesIO(image.encode("png")), *place.emu(*pixel_box(image, matrix)))
+            else:
+                _freeform(slide, item, place)
         for run in scene.texts:
             _textbox(slide, run, place)
         for equation in equations:
@@ -161,12 +161,6 @@ def _office_family(family: str) -> str:
     """The first concrete font of a CSS family list, with generic names mapped to common Office fonts."""
     first = family.split(",")[0].strip().strip("'\"")
     return GENERIC_FONTS.get(first.lower(), first)
-
-
-def _images(document: Document) -> list[Any]:
-    from ...elements.structure import Image
-
-    return [element for element in document.root.iter() if isinstance(element, Image)]
 
 
 def _freeform(slide: Any, item: Item, place: _Place) -> None:

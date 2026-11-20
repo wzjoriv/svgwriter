@@ -4,6 +4,7 @@ python scripts/dev.py svgwriter fetch-suite
 python scripts/dev.py svgwriter conformance [--filter shapes] [--report build/conformance.md]
 python scripts/dev.py svgwriter bench [--count 100000]
 python scripts/dev.py svgwriter gallery
+python scripts/dev.py svgwriter formats [--format pdf --format tikz] [--out build/formats]
 """
 
 from __future__ import annotations
@@ -64,3 +65,15 @@ def bench(count: int = typer.Option(100_000, help="Elements in the large-tree be
 
     for timing in run(count, figures):
         typer.echo(f"{timing.name:34} {timing.seconds * 1000:9.1f} ms {timing.per_item_us:10.2f} us/item")
+
+
+@app.command()
+def formats(format: list[str] = typer.Option([], help="Exporter names; every exporter when omitted."),
+            out: Path = typer.Option(Path("build/formats"), help="Where to write the sheets and scores.")) -> None:
+    """Export the feature drawing to every format, render each export and round trip, and score them."""
+    from ._formats import audit, feature_drawing, write_report
+
+    reference, results = audit(feature_drawing(), format or None)
+    for path in write_report(reference, results, out):
+        typer.echo(f"wrote {path}")
+    typer.echo((out / "scores.md").read_text(encoding="utf-8"))

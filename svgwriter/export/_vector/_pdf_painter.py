@@ -156,6 +156,8 @@ def _set_color(attribute: str, count: int | None) -> Callable[[_Painter, list[An
     """A handler setting the fill or stroke colour from *count* operands (any count when None)."""
     def handler(painter: _Painter, operands: list[Any], _: dict[str, Any]) -> None:
         setattr(painter.state, attribute, _color(operands[-count:] if count else operands))
+        if attribute == "fill" and count:
+            painter.state.fill_pattern = None
     return handler
 
 
@@ -166,6 +168,12 @@ def _fill_paint(painter: _Painter, operands: list[Any], resources: dict[str, Any
         return
     painter.state.fill_pattern = None
     painter.state.fill = _color(operands)
+
+
+def _fill_space(state: _State) -> None:
+    """``cs``: a new fill colour space starts at black with no pattern."""
+    state.fill = BLACK
+    state.fill_pattern = None
 
 
 def _paint(op: str) -> Callable[[_Painter, list[Any], dict[str, Any]], None]:
@@ -217,7 +225,7 @@ _HANDLERS: Final[dict[str, Callable[[_Painter, list[Any], dict[str, Any]], None]
     "sc": _set_color("fill", None), "scn": lambda p, o, r: _fill_paint(p, o, r),
     "sh": lambda p, o, r: paint_shading(p, o, r),
     "SC": _set_color("stroke", None), "SCN": _set_color("stroke", None),
-    "cs": lambda p, o, _: setattr(p.state, "fill", BLACK),
+    "cs": lambda p, o, _: _fill_space(p.state),
     "CS": lambda p, o, _: setattr(p.state, "stroke", BLACK),
     "Do": lambda p, o, r: p.form(p.resource(r, "XObject", o[-1]), r),
     **CONTENT_HANDLERS,

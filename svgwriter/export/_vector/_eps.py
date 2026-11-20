@@ -13,7 +13,6 @@ from ..._internal._emoji import color_glyph_images
 from ..._internal._flatten import Item, flatten, to_cubic
 from ..._internal._numbers import format_number
 from ..._internal._paints import Shading
-from ..._internal._patterns import placed_images
 from ...transform.matrix import Matrix
 from ._constants import (
     AXIAL,
@@ -194,9 +193,10 @@ def to_eps(document: Document, *, text: bool = True) -> str:
         "%%EndComments",
         "gsave",
     ]
-    for image, matrix in placed_images(document):
-        lines.append(_image(image, matrix, scene.height))
-    for item in scene.items:
+    for item in scene.painted():
+        if isinstance(item, tuple):
+            lines.append(_image(*item, scene.height))
+            continue
         if not len(item.data):
             continue
         path = _path(item, scene.height)
