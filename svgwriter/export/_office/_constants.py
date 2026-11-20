@@ -7,10 +7,11 @@ from __future__ import annotations
 from typing import Final
 
 __all__ = [
-    "ALPHA_SCALE", "ASCENT", "A_NS", "BLANK_LAYOUT", "DEFAULT_TEXT_PT", "EMU_PER_POINT", "EMU_PER_UNIT",
-    "EXTRA_HINT", "GENERIC_FONTS", "INLINE_GAP", "LINE_HEIGHT", "MARGIN", "PIC", "PICTURE_SCALE",
+    "A14_NS", "ALPHA_SCALE", "ASCENT", "A_NS", "BAR_CHARS", "BLANK_LAYOUT", "DEFAULT_TEXT_PT", "EMU_PER_POINT", "EMU_PER_UNIT",
+    "EQUATION_ID", "EXTRA_HINT", "GENERIC_FONTS", "GROUP_CHARS", "HALF_POINTS_PER_UNIT", "INLINE_GAP", "LINE_HEIGHT", "MARGIN", "MATHML_NS", "MATH_FONT",
+    "MC_NS", "M_NS", "NARY_CHARS", "PIC", "PICTURE_SCALE",
     "POINTS_PER_UNIT", "REL", "ROUND_RECT_ADJUST", "SLIDE_MAX_EMU", "SLIDE_MIN_EMU", "USER_UNITS_PER_INCH",
-    "WP", "WPS"
+    "WP", "WPS", "W_NS"
 ]
 
 EXTRA_HINT: Final = "pip install 'pysvgwriter[office]'"
@@ -36,3 +37,15 @@ ASCENT: Final = 0.9
 GENERIC_FONTS: Final = {"sans-serif": "Arial", "serif": "Times New Roman", "monospace": "Courier New",
                         "system-ui": "Segoe UI", "cursive": "Comic Sans MS"}
 A_NS: Final = "http://schemas.openxmlformats.org/drawingml/2006/main"
+M_NS: Final = "http://schemas.openxmlformats.org/officeDocument/2006/math"
+MATHML_NS: Final = "http://www.w3.org/1998/Math/MathML"
+A14_NS: Final = "http://schemas.microsoft.com/office/drawing/2010/main"
+MC_NS: Final = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+W_NS: Final = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+MATH_FONT: Final = "Cambria Math"
+HALF_POINTS_PER_UNIT: Final = 1.5
+EQUATION_ID: Final = 1000
+NARY_CHARS: Final = frozenset("∑∏∐∫∬∭∮∯∰⋃⋂⋁⋀"
+                              "⨀⨁⨂⨄⨆")
+BAR_CHARS: Final = frozenset("―¯‾_̲")
+GROUP_CHARS: Final = frozenset("⏞⏟")

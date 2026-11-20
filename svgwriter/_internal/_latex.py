@@ -15,6 +15,8 @@ from ._constants import (
     DVISVGM,
     ENGINES,
     LATEX,
+    LATEX_SIZE,
+    LATEX_SOURCE,
     LATEX_TEMPLATE,
     MATHTEXT_SIZE,
     MPL_CLOSE,
@@ -22,6 +24,7 @@ from ._constants import (
     MPL_CURVE4,
     MPL_LINETO,
     MPL_MOVETO,
+    TEX_SIZE,
     ZIAMATH_SIZE,
 )
 from ._tools import DiagramToolError, find_tool, run_tool, svg_document
@@ -55,7 +58,9 @@ def latex(source: str, *, display: bool = False, preamble: str = "", engine: str
     -------
     Group
         The glyph outlines (no fonts needed), in points with the baseline
-        near y = 0; place it with ``place`` or ``align``.
+        near y = 0; place it with ``place`` or ``align``. Its ``data-latex``
+        and ``data-latex-size`` attributes keep the source and font size, so
+        PowerPoint and Word exports can write an editable equation instead.
 
     Raises
     ------
@@ -78,7 +83,8 @@ def latex(source: str, *, display: bool = False, preamble: str = "", engine: str
             if engine in (name, "auto"):
                 result = typeset(source, display)
                 if result is not None:
-                    return result
+                    size = MATHTEXT_SIZE * (DISPLAY_SCALE if display else 1.0) if name == "mathtext" else ZIAMATH_SIZE
+                    return _remember(result, source, size)
         if engine != "auto":
             raise DiagramToolError(f"the {engine} engine is not installed; pip install "
                                    f"{'ziamath' if engine == 'ziamath' else 'matplotlib'}")
@@ -99,6 +105,13 @@ def latex(source: str, *, display: bool = False, preamble: str = "", engine: str
         if element.tag not in ("title", "desc", "metadata"):
             drawing.root.remove(element)
             group.add(element)
+    return _remember(group, source, TEX_SIZE)
+
+
+def _remember(group: Group, source: str, size: float) -> Group:
+    """Record the LaTeX source and its font size on *group*, for exports that write native equations."""
+    group.set(LATEX_SOURCE, source)
+    group.set(LATEX_SIZE, size)
     return group
 
 

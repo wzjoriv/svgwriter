@@ -42,7 +42,9 @@ def pptx(document: Document | Sequence[Document]) -> bytes:
     """A PowerPoint deck with one slide per drawing, as editable shapes.
 
     Every painted outline becomes a freeform shape with its curves, solid
-    fill, outline and transparency; embedded images become pictures.
+    fill, outline and transparency; embedded images become pictures, and
+    formulas made by :func:`svgwriter.latex` become editable equations
+    (outlines when the LaTeX has no Office equivalent).
 
     Parameters
     ----------
@@ -134,7 +136,11 @@ def _picture(document: Document) -> tuple[bytes, float, float]:
 
 @register("docx", extensions=(".docx",))
 def docx(document: Document) -> bytes:
-    """A Word document holding the drawing as a picture at its natural size.
+    """A Word document holding the drawing as a picture at its natural size, with editable equations.
+
+    Formulas made by :func:`svgwriter.latex` become editable Word equations:
+    floating over the picture where they were drawn, or as equation
+    paragraphs when the drawing holds nothing else.
 
     Parameters
     ----------
@@ -157,14 +163,9 @@ def docx(document: Document) -> bytes:
     >>> svg.export.export(svg.Document(40, 20), "docx")[:2]
     b'PK'
     """
-    word = require("docx")
-    shared = require("docx.shared")
-    png, width, height = _picture(document)
-    out = word.Document()
-    out.add_picture(io.BytesIO(png), width=shared.Inches(width), height=shared.Inches(height))
-    buffer = io.BytesIO()
-    out.save(buffer)
-    return buffer.getvalue()
+    from ._docx import write_docx
+
+    return write_docx(document)
 
 
 @register("xlsx", extensions=(".xlsx",))

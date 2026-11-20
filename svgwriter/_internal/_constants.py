@@ -87,6 +87,8 @@ __all__ = [
     "INSTALL_HINT",
     "JOIN_TOLERANCE",
     "LATEX",
+    "LATEX_SIZE",
+    "LATEX_SOURCE",
     "LATEX_TEMPLATE",
     "LATIN_EXTENDED_ADDITIONAL",
     "LINK_CACHE",
@@ -135,6 +137,7 @@ __all__ = [
     "WHITE",
     "XLINK_NS",
     "XML_NS",
+    "TEX_SIZE",
     "ZIAMATH_SIZE",
 ]
 
@@ -307,6 +310,9 @@ LATEX_TEMPLATE: Final = (r"\documentclass[preview,border=0pt]{{standalone}}" "\n
                          r"\usepackage{{amsmath,amssymb}}" "\n"
                          r"\begin{{document}}" "\n{body}\n" r"\end{{document}}" "\n")
 ZIAMATH_SIZE: Final = 10.0
+TEX_SIZE: Final = 10.0
+LATEX_SOURCE: Final = "data-latex"
+LATEX_SIZE: Final = "data-latex-size"
 MATHTEXT_SIZE: Final = 10.0
 DISPLAY_SCALE: Final = 1.2
 MPL_MOVETO: Final = 1

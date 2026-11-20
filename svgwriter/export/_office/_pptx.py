@@ -8,9 +8,11 @@ import io
 import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
+from xml.sax.saxutils import escape
 
 from . import require
 from ._constants import (
+    A14_NS,
     A_NS,
     ALPHA_SCALE,
     ASCENT,
@@ -20,6 +22,9 @@ from ._constants import (
     EMU_PER_UNIT,
     GENERIC_FONTS,
     LINE_HEIGHT,
+    M_NS,
+    MATH_FONT,
+    MC_NS,
     POINTS_PER_UNIT,
     ROUND_RECT_ADJUST,
     SLIDE_MAX_EMU,
@@ -31,6 +36,7 @@ if TYPE_CHECKING:
     from ...color.color import Color
     from ...document import Document
     from ...pathdata.data import PathData
+    from ._layout import Equation
 
 
 def _a(tag: str) -> str:
@@ -65,13 +71,16 @@ def write_pptx(documents: list[Document]) -> bytes:
     """Write the deck, one slide per document; see :func:`svgwriter.export._office.pptx`."""
     presentation_module = require("pptx")
     from ..._internal._flatten import flatten
+    from ._layout import split_equations
 
+    parts = [split_equations(document) for document in documents]
+    documents = [rest for rest, _ in parts]
     scenes = [flatten(document, handled=frozenset({"image"}), text=True) for document in documents]
     width, height = max(scene.width for scene in scenes), max(scene.height for scene in scenes)
     scale = _emu_scale(width, height)
     deck = presentation_module.Presentation()
     deck.slide_width, deck.slide_height = round(width * scale), round(height * scale)
-    for document, scene in zip(documents, scenes, strict=True):
+    for document, scene, (_, equations) in zip(documents, scenes, parts, strict=True):
         slide = deck.slides.add_slide(deck.slide_layouts[BLANK_LAYOUT])
         place = _Place(scale, (width - scene.width) / 2, (height - scene.height) / 2)
         for image in _images(document):
@@ -82,6 +91,8 @@ def write_pptx(documents: list[Document]) -> bytes:
             _freeform(slide, item, place)
         for run in scene.texts:
             _textbox(slide, run, place)
+        for equation in equations:
+            _equation(slide, equation, place)
     buffer = io.BytesIO()
     deck.save(buffer)
     return buffer.getvalue()
@@ -121,6 +132,31 @@ def _textbox(slide: Any, run: Any, place: _Place) -> None:
             fill = font.color._color._xClr  # noqa: SLF001 - python-pptx exposes no text alpha
             alpha = fill.makeelement(_a("alpha"), {"val": str(round(run.opacity * ALPHA_SCALE))})
             fill.append(alpha)
+
+
+def _equation(slide: Any, equation: Equation, place: _Place) -> None:
+    """An editable PowerPoint equation centred in the box of the LaTeX group it replaces."""
+    from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE, PP_ALIGN
+    from pptx.oxml import parse_xml
+
+    from ._omml import latex_to_omml
+
+    size = round(equation.size * place.scale / EMU_PER_POINT * 100)
+    box = slide.shapes.add_textbox(*place.emu(equation.x, equation.y, equation.width, equation.height))
+    box.name = "Equation"
+    frame = box.text_frame
+    frame.margin_left = frame.margin_right = frame.margin_top = frame.margin_bottom = 0
+    frame.word_wrap = False
+    frame.auto_size = MSO_AUTO_SIZE.NONE
+    frame.vertical_anchor = MSO_ANCHOR.MIDDLE
+    paragraph = frame.paragraphs[0]
+    paragraph.alignment = PP_ALIGN.CENTER
+    properties = f'<a:rPr xmlns:a="{A_NS}" lang="en-US" sz="{size}"><a:latin typeface="{MATH_FONT}"/></a:rPr>'
+    math = latex_to_omml(equation.source, properties)
+    paragraph._p.append(parse_xml(
+        f'<mc:AlternateContent xmlns:mc="{MC_NS}" xmlns:a14="{A14_NS}"><mc:Choice Requires="a14"><a14:m>{math}'
+        f'</a14:m></mc:Choice><mc:Fallback><a:r xmlns:a="{A_NS}"><a:rPr lang="en-US" sz="{size}"/>'
+        f"<a:t>{escape(equation.source)}</a:t></a:r></mc:Fallback></mc:AlternateContent>"))
 
 
 def _office_family(family: str) -> str:
@@ -343,7 +379,8 @@ def _text(shape: Any, left: float, top: float) -> Any:
     from ...elements.structure import Group
     from ...elements.text import Text
 
-    if not getattr(shape, "has_text_frame", False) or not shape.text_frame.text.strip():
+    if not getattr(shape, "has_text_frame", False) or not (
+            shape.text_frame.text.strip() or _math_text(shape.text_frame._txBody)):
         return None
     frame = shape.text_frame
     group = Group()
@@ -352,14 +389,20 @@ def _text(shape: Any, left: float, top: float) -> Any:
     for paragraph in frame.paragraphs:
         font = next((run.font for run in paragraph.runs if run.font.size is not None), None)
         size_units = (font.size.pt if font is not None else DEFAULT_TEXT_PT) / POINTS_PER_UNIT
-        if paragraph.text:
-            text = Text(paragraph.text, x=left, y=line_top + size_units * ASCENT,
+        content = paragraph.text or _math_text(paragraph._p)
+        if content:
+            text = Text(content, x=left, y=line_top + size_units * ASCENT,
                         font_size=math.floor(size_units * 100) / 100)
             if font is not None:
                 _text_style(text, font)
             group.add(text)
         line_top += size_units * LINE_HEIGHT
     return group if len(group) else None
+
+
+def _math_text(element: Any) -> str:
+    """The characters of the Office equations under *element*, in reading order, without their layout."""
+    return "".join(node.text or "" for node in element.iter(f"{{{M_NS}}}t"))
 
 
 def _text_style(text: Any, font: Any) -> None:

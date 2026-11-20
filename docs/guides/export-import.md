@@ -146,6 +146,21 @@ mathtext; `engine="tex"`, `"ziamath"` or `"mathtext"` picks one.
   (`svg.Document.open("deck.pptx", slide=2)`) as native SVG elements.
 - `.docx` and `.xlsx` out: the drawing as a picture at its natural size.
 
+Formulas made with `svg.latex` remember their source (the group's `data-latex` attribute), so the
+PowerPoint and Word exports write them as native, editable Office equations instead of outlines.
+The LaTeX goes through MathML (`latex2mathml`) to Office Math: fractions, scripts, roots, sums and
+integrals, accents, bars, limits, `\left`/`\right` delimiters, matrices, text and Greek letters.
+Each equation is centred on the box the formula occupied, in Cambria Math at the drawn size; in Word
+it floats over the picture, or becomes an equation paragraph when the drawing holds nothing else.
+LaTeX with no Office equivalent stays as outlines. Reading a deck back gives an equation's
+characters as plain text, without its layout.
+
+```python
+slide = svg.Document(320, 120)
+slide.add(svg.latex(r"\int_0^1 x^2\,dx = \frac{1}{3}", display=True)).scale(2).place(160, 60)
+slide.save("formula.pptx")      # an editable equation, not shapes
+```
+
 Without the extra these formats raise an `ImportError` that names the install command.
 
 ## HTML pages
