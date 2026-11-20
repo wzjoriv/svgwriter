@@ -159,7 +159,7 @@ class Pixels(Drawable):
         >>> Pixels.decode(png)
         Pixels(2x2, channels=3, opaque=True)
         """
-        from ...export._raster._encoders import decode_pnm, is_pnm
+        from ...export._raster._pnm import decode_pnm, is_pnm
 
         if is_pnm(data):
             return cls.from_array(decode_pnm(data))
@@ -292,7 +292,8 @@ class Pixels(Drawable):
         >>> Pixels.from_array(np.zeros((2, 2, 3))).encode()[1:4]
         b'PNG'
         """
-        from ...export._raster._encoders import ENCODERS, to_uint8
+        from ...export._raster._encoders import ENCODERS
+        from ...export._raster._pixels import to_uint8
         from ...ops.render import encode
 
         encoder = ENCODERS.get(format.lower())

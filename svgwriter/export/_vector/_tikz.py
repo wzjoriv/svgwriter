@@ -9,7 +9,8 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from ..._internal._numbers import format_number
-from .._flatten import Item, Shading, flatten, to_cubic
+from .._flatten import Item, flatten, to_cubic
+from .._paints import Shading
 from ._constants import (
     ANGLE_EPSILON,
     LATEX_SPECIALS,

@@ -11,15 +11,17 @@ from typing import TYPE_CHECKING, Any
 
 from ..attributes.cascade import computed
 from ..attributes.length import Length
-from ..color.color import Color, as_color
+from ..color.color import Color
 from ..pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
 from ..pathdata.data import PathData
-from ..transform.matrix import IDENTITY, Matrix
-from ._constants import DEFAULT_MITER, NONE, PERCENT
+from ._constants import DEFAULT_MITER, NONE
+from ._paints import _paint, _shading
+from ._patterns import _ancestry, _expand_patterns
 
 if TYPE_CHECKING:
     from ..document import Document
     from ..elements.base import Element
+    from ._paints import Shading
 
 __all__ = ["Item", "Scene", "flatten", "to_cubic"]
 
@@ -159,109 +161,12 @@ def to_cubic(data: PathData) -> list[tuple[str, tuple[float, ...]]]:
     return ops
 
 
-def _paint(element: Element, name: str, default: str, rules: list) -> Color | None:
-    from ..elements._geometry import resolve
-
-    value = computed(element, name, default, rules)
-    text = str(value.svg_value() if hasattr(value, "svg_value") else value).strip()
-    if text == NONE:
-        return None
-    if text == "currentColor":
-        text = str(computed(element, "color", "black", rules))
-    if text.startswith("url("):
-        server = resolve(element, value)
-        stops = list(server.iter("stop")) if server is not None else []
-        fallback = text.split(")", 1)[1].strip()
-        if stops:
-            return as_color(str(computed(stops[0], "stop-color", "black", rules)))
-        return as_color(fallback) if fallback and fallback != NONE else None
-    try:
-        return as_color(value if isinstance(value, Color) else text)
-    except (TypeError, ValueError):
-        return None
-
-
-@dataclass
-class Shading:
-    """A gradient fill in gradient space plus the matrix that maps it to the page.
-
-    Attributes
-    ----------
-    kind : {"axial", "radial"}
-        Linear or radial gradient.
-    coords : tuple of float
-        ``(x1, y1, x2, y2)`` for axial, ``(fx, fy, 0, cx, cy, r)`` for radial, in gradient space.
-    stops : list of (float, Color)
-        Offsets in ``0..1`` with their colors (stop opacity folded into nothing; PostScript has none).
-    matrix : Matrix
-        Gradient space to page coordinates (bounding-box units, ``gradientTransform`` and the element's
-        transforms included).
-    """
-
-    kind: str
-    coords: tuple[float, ...]
-    stops: list[tuple[float, Color]]
-    matrix: Matrix
-
-
-def _shading(element: Element, to_page: Matrix, rules: list) -> Shading | None:
-    """The gradient behind ``fill``, when it is a linear or radial gradient with stops."""
-    from ..elements._geometry import resolve
-
-    value = computed(element, "fill", "black", rules)
-    if not str(getattr(value, "svg_value", lambda: value)()).startswith("url("):
-        return None
-    server = resolve(element, value)
-    if server is None or server.tag not in ("linearGradient", "radialGradient"):
-        return None
-    stops = [(min(max(float(Length.parse(stop.get("offset", 0)).value) / (PERCENT if "%" in str(stop.get("offset", ""))
-              else 1.0), 0.0), 1.0), as_color(str(computed(stop, "stop-color", "black", rules))))
-             for stop in server.iter("stop")]
-    if not stops:
-        return None
-    matrix = to_page
-    if str(server.get("gradientUnits", "objectBoundingBox")) != "userSpaceOnUse":
-        box = element.local_bbox()  # type: ignore[attr-defined]
-        if box is None or not box.width or not box.height:
-            return None
-        matrix = matrix @ Matrix(box.width, 0, 0, box.height, box.x, box.y)
-    transform = getattr(server, "t", None)
-    if transform is not None:
-        matrix = matrix @ transform
-
-    def number(name: str, default: float) -> float:
-        raw = server.get(name)
-        if raw is None:
-            return default
-        length = Length.parse(raw)
-        return length.value / PERCENT if length.unit.value == "%" else length.value
-
-    if server.tag == "linearGradient":
-        coords: tuple[float, ...] = (number("x1", 0.0), number("y1", 0.0), number("x2", 1.0), number("y2", 0.0))
-        return Shading("axial", coords, stops, matrix)
-    cx, cy, r = number("cx", 0.5), number("cy", 0.5), number("r", 0.5)
-    return Shading("radial", (number("fx", cx), number("fy", cy), 0.0, cx, cy, r), stops, matrix)
-
-
 def _number(element: Element, name: str, default: float, rules: list) -> float:
     value = computed(element, name, default, rules)
     try:
         return float(Length.parse(value).to_user_units())
     except (TypeError, ValueError):
         return default
-
-
-def _ancestry(leaf: Element, root: Element) -> tuple[Matrix, float]:
-    from ..elements._transformable import Transformable
-
-    matrix, opacity = IDENTITY, 1.0
-    node = leaf.parent
-    while node is not None and node is not root:
-        if isinstance(node, Transformable):
-            matrix = node.t @ matrix
-        opacity *= float(node.get("opacity", 1.0))
-        node = node.parent
-    return matrix, opacity
 
 
 def _hidden(leaf: Element, root: Element) -> bool:
@@ -376,92 +281,3 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
 
         texts = text_runs(document)
     return Scene(width, height, items, skipped, texts)
-
-
-def _expand_patterns(root: Element) -> None:
-    """Replace pattern-filled shapes by their tiles cut to the outline, so vector formats keep patterns."""
-    from ..elements._geometry import PathOperand, replace_in_parent
-    from ..elements.paint import Pattern
-    from ..elements.structure import Group
-    from ..ops._layers import drawable_order
-
-    for leaf in drawable_order(root):
-        pattern = getattr(leaf.attributes.get("fill"), "element", None)
-        if not isinstance(pattern, Pattern) or not isinstance(leaf, PathOperand):
-            continue
-        box = leaf.local_bbox()
-        if box is None:
-            continue
-        try:
-            tiles = _cut_tiles(pattern, box, leaf.local_outline())
-        except ValueError:
-            continue
-        holder = Group(*tiles)
-        holder.t = leaf.t
-        if leaf.get("stroke") not in (None, "none"):
-            outline = leaf.clone()
-            outline.set("fill", "none")
-            outline.discard("transform")
-            holder.add(outline)
-        replace_in_parent(leaf, holder)
-
-
-def _cut_tiles(pattern: Any, box: Any, outline: PathData) -> list[Any]:
-    """Each shape of each tile as a ``<path>`` intersected with *outline* (pattern transform baked in)."""
-    from ..elements._geometry import PathOperand
-    from ..ops.boolean import intersection
-
-    tile = pattern.tile(box)
-    inverse = pattern.t.inverse()
-    corners = [inverse.apply(x, y) for x in (box.x, box.x + box.width) for y in (box.y, box.y + box.height)]
-    xs, ys = [c.x for c in corners], [c.y for c in corners]
-    paths = []
-    for row in range(math.floor((min(ys) - tile.y) / tile.height), math.ceil((max(ys) - tile.y) / tile.height)):
-        for column in range(math.floor((min(xs) - tile.x) / tile.width),
-                            math.ceil((max(xs) - tile.x) / tile.width)):
-            offset = pattern.t @ Matrix.translate(tile.x + column * tile.width, tile.y + row * tile.height)
-            for shape in pattern.iter():
-                if shape is pattern or not isinstance(shape, PathOperand) or len(shape):
-                    continue
-                piece = shape.to_path().transformed(offset)
-                clipped = intersection(piece.d, outline)
-                if len(clipped):
-                    piece.d = clipped
-                    paths.append(piece)
-    return paths
-
-
-def placed_images(document: Document) -> list[tuple[Any, Matrix]]:
-    """Each embedded image with the matrix from its pixel grid to page coordinates (``viewBox`` included).
-
-    Formats that draw images themselves (EPS, PowerPoint) use this; :func:`flatten` leaves images out.
-
-    Parameters
-    ----------
-    document : Document
-        The document.
-
-    Returns
-    -------
-    list of (Image, Matrix)
-        Images in paint order with their placement.
-
-    Examples
-    --------
-    >>> import numpy as np
-    >>> import svgwriter as svg
-    >>> doc = svg.Document(20, 10)
-    >>> _ = doc.add(svg.Image(np.zeros((2, 4, 3)), 5, 0, 8, 4))
-    >>> [matrix.apply(0, 0) for _, matrix in placed_images(doc)]
-    [Point(x=5.0, y=0.0)]
-    """
-    from ..elements.structure import Image
-    from ..ops._layers import _ancestry, image_matrix
-    from ..ops.render import _view, document_size
-
-    with document._sized():
-        width, height = document_size(document)
-        view = _view(document, width, height)
-        images = [element for element in document.root.iter() if isinstance(element, Image)]
-        return [(image, view @ _ancestry(image, document.root)[0] @ image_matrix(image))
-                for image in images if image.pixels is not None]

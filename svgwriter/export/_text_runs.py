@@ -90,7 +90,8 @@ def text_runs(document: Document) -> list[TextRun]:
     from ..elements.text import Text
     from ..ops._layers import _ancestry
     from ..ops.render import _view, document_size
-    from ._flatten import _number, _paint
+    from ._flatten import _number
+    from ._paints import _paint
 
     runs: list[TextRun] = []
     with document._sized():

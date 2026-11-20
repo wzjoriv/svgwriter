@@ -11,7 +11,9 @@ import numpy as np
 
 from ..._internal._numbers import format_number
 from ...transform.matrix import Matrix
-from .._flatten import Item, Shading, flatten, placed_images, to_cubic
+from .._flatten import Item, flatten, to_cubic
+from .._paints import Shading
+from .._patterns import placed_images
 from ._constants import (
     AXIAL,
     BASE_LEVEL,
