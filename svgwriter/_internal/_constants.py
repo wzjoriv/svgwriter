@@ -209,6 +209,7 @@ BOLD_WEIGHT: Final = 700
 DEFAULT_FAMILY: Final = "sans-serif"
 FONT_CACHE: Final = 64
 GENERIC_CANDIDATES: Final = {
+    "sans-serif": ("Arial", "Helvetica", "Liberation Sans", "Arimo", "DejaVu Sans", "Noto Sans"),
     "serif": ("Times New Roman", "Georgia", "Times", "Liberation Serif", "DejaVu Serif", "Noto Serif"),
     "monospace": ("Consolas", "Courier New", "Menlo", "Monaco", "Liberation Mono", "DejaVu Sans Mono",
                   "Noto Sans Mono", "Courier"),
