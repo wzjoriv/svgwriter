@@ -310,12 +310,37 @@ def _shaped_runs(chars: list[Char], lists: Any, fonts: dict[int, tuple[Any, ...]
         while stop < len(chars) and _font_key(chars[stop].chain[0], fonts, rules) == key and not any(
                 lists.value(chars[stop], name) is not None for name in POSITION_NAMES):
             stop += 1
-        run = "".join(char.char for char in chars[start:stop])
-        if needs_shaping(run):
-            for offset, item in enumerate(shape_run(run, *key)):
-                result[start + offset] = item
+        for first, last in _font_segments(chars, start, stop, key):
+            run = "".join(char.char for char in chars[first:last])
+            if needs_shaping(run):
+                for offset, item in enumerate(shape_run(run, *key)):
+                    result[first + offset] = item
         start = stop
     return result
+
+
+def _font_segments(chars: list[Char], start: int, stop: int, key: tuple[Any, ...]) -> list[tuple[int, int]]:
+    """Split ``chars[start:stop]`` where the fallback font changes, so each piece is shaped in a font that has it.
+
+    Spaces and combining marks stay with the character before them.
+    """
+    import unicodedata
+
+    from ..ops.text import font_for
+
+    segments: list[tuple[int, int]] = []
+    current, begin = None, start
+    for index in range(start, stop):
+        char = chars[index].char
+        if char.isspace() or unicodedata.combining(char) or unicodedata.category(char) in ("Mn", "Mc", "Cf"):
+            continue
+        family = font_for(char, *key).getTypeface().getFamilyName()
+        if current is not None and family != current:
+            segments.append((begin, index))
+            begin = index
+        current = family
+    segments.append((begin, stop))
+    return segments
 
 
 def _guide(holder: Element) -> Any:

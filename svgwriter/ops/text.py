@@ -375,7 +375,19 @@ def text_width(
     >>> text_width("Hello") > text_width("Hi") > 0
     True
     """
-    return float(_font(font_family, size, weight, italic).measureText(text))
+    if text.isascii():
+        return float(_font(font_family, size, weight, italic).measureText(text))
+    boxes = _laid_out(text, font_family, size, weight, italic)
+    return float(boxes[-1].x + boxes[-1].advance - boxes[0].x) if boxes else 0.0
+
+
+def _laid_out(text: str, font_family: str, size: float, weight: FontWeight, italic: bool) -> list[Any]:
+    """Glyph boxes from the full text engine (per-character font fallback and shaping included)."""
+    from ..elements.text import Text
+
+    element = Text(text, x=0, y=0, font_family=font_family, font_size=size, xml_space="preserve",
+                   font_weight=None if weight == "normal" else weight, font_style="italic" if italic else None)
+    return element.layout()
 
 
 def text_outline(
@@ -426,15 +438,12 @@ def text_outline(
     >>> len(text_outline("Hi", size=24)) > 0
     True
     """
-    font = _font(font_family, size, weight, italic)
-    glyphs = font.textToGlyphs(text)
-    origin_x = x - _ANCHOR_SHIFT[anchor] * font.measureText(text)
-    combined = skia.Path()
-    for glyph, position in zip(glyphs, font.getPos(glyphs, skia.Point(origin_x, y)), strict=False):
-        outline = font.getPath(glyph)
-        if outline is not None:
-            combined.addPath(outline, position.x(), position.y())
-    return from_skia(combined)
+    boxes = _laid_out(text, font_family, size, weight, italic)
+    if not boxes:
+        return PathData()
+    width = boxes[-1].x + boxes[-1].advance - boxes[0].x
+    shift = Matrix.translate(x - _ANCHOR_SHIFT[anchor] * width, y)
+    return sum((box.placed() for box in boxes), PathData()).transformed(shift)
 
 
 @dataclass

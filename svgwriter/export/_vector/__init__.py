@@ -96,7 +96,7 @@ def tikz(document: Document, *, standalone: bool = False) -> str:
 
 
 @register("eps", extensions=(".eps", ".ps"))
-def eps(document: Document) -> bytes:
+def eps(document: Document, *, text: bool = True) -> bytes:
     """Encapsulated PostScript of the flattened vector content (solid paints; images skipped).
 
     Parameters
@@ -121,7 +121,7 @@ def eps(document: Document) -> bytes:
     """
     from ._eps import to_eps
 
-    return to_eps(document).encode("ascii")
+    return to_eps(document, text=text).encode("ascii")
 
 
 @register_importer("pdf", extensions=(".pdf",))

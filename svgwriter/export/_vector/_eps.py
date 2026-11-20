@@ -93,7 +93,48 @@ def _shfill(shading: Shading, height: float) -> str:
             f"/Function {_function(shading.stops)} >> shfill")
 
 
-def to_eps(document: Document) -> str:
+POSTSCRIPT_FONTS: Final = {
+    ("sans", False, False): "Helvetica", ("sans", True, False): "Helvetica-Bold",
+    ("sans", False, True): "Helvetica-Oblique", ("sans", True, True): "Helvetica-BoldOblique",
+    ("serif", False, False): "Times-Roman", ("serif", True, False): "Times-Bold",
+    ("serif", False, True): "Times-Italic", ("serif", True, True): "Times-BoldItalic",
+    ("mono", False, False): "Courier", ("mono", True, False): "Courier-Bold",
+    ("mono", False, True): "Courier-Oblique", ("mono", True, True): "Courier-BoldOblique",
+}
+MONOSPACE_WORDS: Final = ("mono", "courier", "consolas", "menlo")
+SERIF_WORDS: Final = ("times", "georgia", "garamond")
+PS_ESCAPES: Final = {"\\": "\\\\", "(": "\\(", ")": "\\)"}
+
+
+def _postscript_font(run: Any) -> str:
+    names = run.family.lower()
+    kind = "mono" if any(w in names for w in MONOSPACE_WORDS) else (
+        "serif" if any(w in names for w in SERIF_WORDS) or ("serif" in names and "sans" not in names) else "sans")
+    return POSTSCRIPT_FONTS[(kind, run.bold, run.italic)]
+
+
+def _text(run: Any, height: float) -> str:
+    """A text run as PostScript ``show`` in a standard font, or its glyph outlines when it is not ASCII."""
+    from ...ops.text import text_outline
+
+    flip = Matrix(1, 0, 0, -1, 0, height)
+    color = run.fill.rgb if run.fill is not None else (0.0, 0.0, 0.0)
+    paint = f"{_n(color[0])} {_n(color[1])} {_n(color[2])} setrgbcolor"
+    if run.text.isascii():
+        frame = flip @ run.matrix @ Matrix.scale(1, -1)
+        escaped = "".join(PS_ESCAPES.get(char, char) for char in run.text)
+        return "\n".join([
+            "gsave", f"[{' '.join(_n(v) for v in frame.as_tuple())}] concat", paint,
+            f"/{_postscript_font(run)} findfont {_n(run.size)} scalefont setfont",
+            f"0 0 moveto ({escaped}) show", "grestore",
+        ])
+    outline = text_outline(run.text, run.family, run.size, weight="bold" if run.bold else "normal",
+                           italic=run.italic).transformed(run.matrix)
+    item = Item(outline, run.fill, 1.0, False, None, 1.0, 0.0, "butt", "miter", 4.0, ())
+    return "\n".join([_path(item, height), paint, "fill"])
+
+
+def to_eps(document: Document, *, text: bool = True) -> str:
     """EPS (PostScript level 2) in points, one user unit per point.
 
     The document is flattened first, so gradients become solid colours and images are skipped.
@@ -125,7 +166,7 @@ def to_eps(document: Document) -> str:
     >>> to_eps(doc).splitlines()[:2]
     ['%!PS-Adobe-3.0 EPSF-3.0', '%%BoundingBox: 0 0 10 10']
     """
-    scene = flatten(document, handled=frozenset({"image"}))
+    scene = flatten(document, handled=frozenset({"image"}), text=text)
     level = BASE_LEVEL
     lines = [
         "%!PS-Adobe-3.0 EPSF-3.0",
@@ -155,6 +196,7 @@ def to_eps(document: Document) -> str:
             lines += [path, f"{_n(r)} {_n(g)} {_n(b)} setrgbcolor", f"{_n(item.stroke_width)} setlinewidth",
                       f"{CAPS.get(item.linecap, 0)} setlinecap {JOINS.get(item.linejoin, 0)} setlinejoin",
                       f"{_n(item.miter_limit)} setmiterlimit [{dashes}] 0 setdash", "stroke"]
+    lines += [_text(run, scene.height) for run in scene.texts]
     lines += ["grestore", "showpage", "%%EOF"]
     lines[LEVEL_LINE] = f"%%LanguageLevel: {level}"
     return "\n".join(lines) + "\n"
