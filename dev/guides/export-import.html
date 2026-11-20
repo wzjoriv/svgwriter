@@ -404,7 +404,7 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">.tikz</span></code> <code class="docutils literal notranslate"><span class="pre">.tex</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">standalone=True</span></code> for a compilable document; text kept as <code class="docutils literal notranslate"><span class="pre">\node</span></code>; import reads <code class="docutils literal notranslate"><span class="pre">\draw</span></code>, <code class="docutils literal notranslate"><span class="pre">\fill</span></code>, nodes, <code class="docutils literal notranslate"><span class="pre">\foreach</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">standalone=True</span></code> for a compilable document; text kept as <code class="docutils literal notranslate"><span class="pre">\node</span></code>; import reads <code class="docutils literal notranslate"><span class="pre">\draw</span></code>, <code class="docutils literal notranslate"><span class="pre">\fill</span></code>, nodes, grids, shadings, <code class="docutils literal notranslate"><span class="pre">\foreach</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>DXF</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.dxf</span></code></p></td>
@@ -547,7 +547,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>yes (shading)</p></td>
 <td><p>yes (radial approximate)</p></td>
 <td><p>picture</p></td>
-<td><p>first colour</p></td>
+<td><p>average colour</p></td>
 <td><p>no</p></td>
 </tr>
 <tr class="row-even"><td><p>pattern</p></td>
@@ -733,7 +733,8 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 PowerPoint places pictures by their bounding box, so a rotated or skewed image comes out upright, and
 group opacity is multiplied into each shape’s own transparency. A radial gradient becomes a
 PowerPoint path gradient centred on the gradient’s centre, which matches circles and differs on
-ellipses. Excalidraw writes every outline as a <code class="docutils literal notranslate"><span class="pre">line</span></code> element, with Excalidraw’s own dash pattern.</p>
+ellipses. Excalidraw writes every outline as a <code class="docutils literal notranslate"><span class="pre">line</span></code> element, with Excalidraw’s own dash pattern;
+its elements have no holes, so the inside of a ring or of a letter such as “o” comes out filled.</p>
 </section>
 <section id="text-stays-text">
 <h2>Text stays text<a class="headerlink" href="#text-stays-text" title="Link to this heading">¶</a></h2>
@@ -782,19 +783,19 @@ reader of the file may lack the fonts:</p>
 <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"figure.pdf"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>     <span class="c1"># glyph outlines only</span>
 </pre></div>
 </div>
-<p>PDF, EPS and TikZ read back as filled and stroked <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> elements with solid colours, stroke width,
-dashes, caps, joins and opacity, in points with y pointing down. The PDF reader scans for objects (a
+<p>PDF, EPS and TikZ read back as filled and stroked <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> elements with solid colours or gradients,
+stroke width, dashes, caps, joins and opacity, in points with y pointing down. The PDF reader scans for objects (a
 broken xref table does not matter), inflates <code class="docutils literal notranslate"><span class="pre">/FlateDecode</span></code> streams, follows Form XObjects and <code class="docutils literal notranslate"><span class="pre">gs</span></code>
 alpha, and reads page 1 unless you pass <code class="docutils literal notranslate"><span class="pre">page=</span></code>. Images, clipping paths and text come in as
 <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">clip-path</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;text&gt;</span></code>. Text is decoded through the font’s <code class="docutils literal notranslate"><span class="pre">/ToUnicode</span></code> map, which most
 PDF writers embed. Glyphs placed one at a time are joined back into words, and the font family
 comes from the font’s name. Axial and radial shadings become gradients and tiling patterns become
 <code class="docutils literal notranslate"><span class="pre">&lt;pattern&gt;</span></code>. The EPS reader is a small PostScript interpreter. It handles paths, <code class="docutils literal notranslate"><span class="pre">arc</span></code>, painting,
-colours, line styles, <code class="docutils literal notranslate"><span class="pre">gsave</span></code>/<code class="docutils literal notranslate"><span class="pre">grestore</span></code>, transforms, <code class="docutils literal notranslate"><span class="pre">image</span></code>/<code class="docutils literal notranslate"><span class="pre">colorimage</span></code>, <code class="docutils literal notranslate"><span class="pre">clip</span></code>, <code class="docutils literal notranslate"><span class="pre">show</span></code> with
+colours, line styles, <code class="docutils literal notranslate"><span class="pre">gsave</span></code>/<code class="docutils literal notranslate"><span class="pre">grestore</span></code>, transforms, <code class="docutils literal notranslate"><span class="pre">image</span></code>/<code class="docutils literal notranslate"><span class="pre">colorimage</span></code>, <code class="docutils literal notranslate"><span class="pre">clip</span></code>, <code class="docutils literal notranslate"><span class="pre">shfill</span></code>, <code class="docutils literal notranslate"><span class="pre">show</span></code> with
 <code class="docutils literal notranslate"><span class="pre">findfont</span></code>, and procedures and dictionaries with <code class="docutils literal notranslate"><span class="pre">def</span></code>. It honours <code class="docutils literal notranslate"><span class="pre">%%BoundingBox</span></code> and ignores
 operators it does not know. The TikZ reader takes <code class="docutils literal notranslate"><span class="pre">\draw</span></code>, <code class="docutils literal notranslate"><span class="pre">\fill</span></code>, <code class="docutils literal notranslate"><span class="pre">\filldraw</span></code> and <code class="docutils literal notranslate"><span class="pre">\path</span></code> with
-<code class="docutils literal notranslate"><span class="pre">--</span></code>, <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">controls</span> <span class="pre">..</span></code>, <code class="docutils literal notranslate"><span class="pre">cycle</span></code>, <code class="docutils literal notranslate"><span class="pre">rectangle</span></code> and <code class="docutils literal notranslate"><span class="pre">circle</span></code>. It also reads colours from <code class="docutils literal notranslate"><span class="pre">\definecolor</span></code>
-and xcolor mixes, the common line options, nodes (with shapes and names), <code class="docutils literal notranslate"><span class="pre">\tikzset</span></code> styles,
+<code class="docutils literal notranslate"><span class="pre">--</span></code>, <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">controls</span> <span class="pre">..</span></code>, <code class="docutils literal notranslate"><span class="pre">cycle</span></code>, <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">circle</span></code> and <code class="docutils literal notranslate"><span class="pre">grid</span></code>. It also reads colours from <code class="docutils literal notranslate"><span class="pre">\definecolor</span></code>
+and xcolor mixes, the common line options, shadings (<code class="docutils literal notranslate"><span class="pre">top</span> <span class="pre">color</span></code>, <code class="docutils literal notranslate"><span class="pre">inner</span> <span class="pre">color</span></code> and the like), nodes (with shapes and names), <code class="docutils literal notranslate"><span class="pre">\tikzset</span></code> styles,
 <code class="docutils literal notranslate"><span class="pre">scope</span></code> and <code class="docutils literal notranslate"><span class="pre">\foreach</span></code>. Other macros are not expanded.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">page</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">export</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"figure.pdf"</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">picture</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"figure.tex"</span><span class="p">)</span>
