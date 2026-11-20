@@ -112,9 +112,9 @@ class TestCli:
 def test_examples_run(tmp_path: Path) -> None:
     examples = sorted((ROOT / "examples").glob("*.py"))
     assert len(examples) >= 3
-    env = {**os.environ, "PYTHONPATH": str(ROOT), "SVGWRITER_EXAMPLES_OUT": str(tmp_path)}
+    env = {**os.environ, "PYTHONPATH": str(ROOT)}
     for script in examples:
-        result = subprocess.run([sys.executable, str(script)], cwd=ROOT, env=env, capture_output=True, text=True)
+        result = subprocess.run([sys.executable, str(script)], cwd=tmp_path, env=env, capture_output=True, text=True)
         assert result.returncode == 0, result.stderr
     outputs = sorted(tmp_path.glob("*.svg"))
     assert len(outputs) >= len(examples)

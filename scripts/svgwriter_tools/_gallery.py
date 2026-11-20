@@ -17,7 +17,6 @@ __all__ = ["GALLERY", "GALLERY_DIR", "Picture", "build_gallery"]
 ROOT = Path(__file__).resolve().parents[2]
 GALLERY_DIR = ROOT / "docs" / "_static" / "examples"
 SCALE = 2.0
-OUT_VARIABLE = "SVGWRITER_EXAMPLES_OUT"
 
 
 class Picture(NamedTuple):
@@ -63,7 +62,7 @@ def build_gallery(out: Path = GALLERY_DIR, scale: float = SCALE) -> list[Path]:
     written = []
     ran: set[str] = set()
     with tempfile.TemporaryDirectory(prefix="svgwriter-gallery-") as work:
-        env = {**os.environ, "PYTHONPATH": str(ROOT), OUT_VARIABLE: work}
+        env = {**os.environ, "PYTHONPATH": str(ROOT)}
         for name, picture in GALLERY.items():
             if picture.example not in ran:
                 script = ROOT / "examples" / f"{picture.example}.py"

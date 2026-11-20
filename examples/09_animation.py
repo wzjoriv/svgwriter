@@ -7,8 +7,6 @@ Run it as ``python 09_animation.py`` or open ``09_animation.ipynb``; the SVG ani
 """
 
 import asyncio
-import os
-import tempfile
 from collections.abc import Coroutine
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -109,20 +107,17 @@ def run(coroutine: Coroutine[Any, Any, Any]) -> Any:
         return pool.submit(asyncio.run, coroutine).result()
 
 
-async def write_all(out_dir: Path) -> list[Path]:
-    targets = {out_dir / f"09_spinner_{i}.svg": spinner(1.0 + i) for i in range(VARIANTS)}
+async def write_all() -> list[Path]:
+    targets = {Path(f"09_spinner_{i}.svg"): spinner(1.0 + i) for i in range(VARIANTS)}
     await write_many_async(targets)
     return list(targets)
 
 
 # %% [markdown]
 # Save the animated SVG, a small animated GIF (`fps`, `duration` and `scale` keep it light) and the three
-# spinners. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
+# spinners.
 
 # %%
-out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
-out.mkdir(parents=True, exist_ok=True)
-doc.save(out / "09_animation.svg")
-doc.save(out / "09_animation.gif", fps=12, duration=3.6)
-written = run(write_all(out))
-print("saved 09_animation.svg, 09_animation.gif,", ", ".join(path.name for path in written))
+doc.save("09_animation.svg")
+doc.save("09_animation.gif", fps=12, duration=3.6)
+run(write_all())

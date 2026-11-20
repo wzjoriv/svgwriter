@@ -8,9 +8,6 @@ A scene for ``python -m svgwriter animate``. The script defines a drawing (``doc
 """
 
 import math
-import os
-import tempfile
-from pathlib import Path
 
 import svgwriter as svg
 
@@ -49,13 +46,10 @@ update(doc, DURATION / 4)
 doc
 
 # %% [markdown]
-# Back to the first frame and save it. Set `SVGWRITER_EXAMPLES_OUT` to choose the folder.
+# Back to the first frame and save it.
 # This cell is skipped when `svgwriter animate` loads the script.
 
 # %%
 if __name__ == "__main__":
     update(doc, 0)
-    out = Path(os.environ.get("SVGWRITER_EXAMPLES_OUT") or tempfile.mkdtemp(prefix="svgwriter-"))
-    out.mkdir(parents=True, exist_ok=True)
-    doc.save(out / "10_orbit_frame0.svg")
-    print("saved 10_orbit_frame0.svg")
+    doc.save("10_orbit_frame0.svg")

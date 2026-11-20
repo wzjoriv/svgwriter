@@ -50,3 +50,17 @@ env/
 
 # ---- Generated stubs (stubpy; built by release.yml before packaging) ----
 *.pyi
+
+# ---- Files the examples write when run from examples/ ----
+examples/*.svg
+examples/*.png
+examples/*.gif
+examples/*.pdf
+examples/*.eps
+examples/*.tex
+examples/*.tikz
+examples/*.pptx
+examples/*.dxf
+examples/*.ico
+examples/*.icns
+examples/*.mmd
