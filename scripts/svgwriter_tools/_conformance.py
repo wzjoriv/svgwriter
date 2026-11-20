@@ -13,6 +13,7 @@ from pathlib import Path
 import numpy as np
 
 import svgwriter as svg
+from svgwriter.elements.animation import AnimationElement
 from svgwriter.elements.structure import Pixels
 from svgwriter.ops.render import render_svg
 
@@ -27,6 +28,7 @@ BACKGROUND = "white"
 CHANNEL_MAX = 255
 REVISION_ID = "revision"
 REVISION_MARGIN = 40
+SETTLED_TIME = 100.0
 
 
 @dataclass
@@ -130,7 +132,8 @@ def run_test(path: Path, reference: Path) -> Outcome:
         try:
             if reference.exists():
                 expected = Pixels.decode(reference.read_bytes()).rgba()
-                drawn = _rgb(svg.ops.rasterize(doc, size=(expected.shape[1], expected.shape[0]), background=BACKGROUND))
+                shown = doc.at(SETTLED_TIME) if doc.root.find(AnimationElement) is not None else doc
+                drawn = _rgb(svg.ops.rasterize(shown, size=(expected.shape[1], expected.shape[0]), background=BACKGROUND))
                 expected = _rgb(expected)
                 label = _revision_box(doc, expected.shape)
                 if label is not None:
@@ -167,7 +170,8 @@ def write_report(outcomes: list[Outcome], path: Path) -> None:
              "- **render**: `svgwriter.ops.rasterize` against the W3C reference PNG; bounded by skia's SVG support.",
              f"- A test passes when at most {PASS_MISMATCH:.0%} of pixels differ by more than "
              f"{CHANNEL_TOLERANCE}/255 after a 3x3 blur, within {NEIGHBOURHOOD} px. "
-             "The `$Revision$` label (the file's version, which the reference PNGs often predate) is not compared.",
+             "The `$Revision$` label (the file's version, which the reference PNGs often predate) is not compared. Animated tests are drawn "
+             f"at {SETTLED_TIME:g} s, once their animations have settled, the state the references show.",
              ""]
     for kind in ("roundtrip", "render"):
         scored = [o for o in outcomes if o.status(kind) != "skipped"]
