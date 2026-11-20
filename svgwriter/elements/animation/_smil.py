@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any, Literal
 
 from ..._internal._typing import Self
 from ..core import Child, Element
+from ._easing import EaseLike, apply_ease
 
 if TYPE_CHECKING:
     from ._elements import Accumulate, Additive, CalcMode, Clock
@@ -53,6 +54,7 @@ class _ValueAnimation(Element):
         key_splines: Sequence[tuple[float, float, float, float]] | str | None = None,
         additive: Additive | None = None,
         accumulate: Accumulate | None = None,
+        ease: EaseLike | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
@@ -69,6 +71,8 @@ class _ValueAnimation(Element):
             additive=additive,
             accumulate=accumulate,
         )
+        if ease is not None:
+            apply_ease(self, ease)
 
 
 class FadeShortcut:

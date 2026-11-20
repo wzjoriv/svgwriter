@@ -36,12 +36,48 @@ Every preset takes `dur` and `begin` in seconds, `repeat` (a count or `"indefini
 state unless `freeze=False`. They are plain SMIL, so they play in browsers and in `doc.at(t)`, video,
 animated GIF, APNG and WebP.
 
+## Easing
+
+Every preset, and `Animate`, `AnimateTransform`, `AnimateColor` and `AnimateMotion`, takes `ease=`: a
+timing curve for the whole animation. The named curves are the standard cubic béziers:
+
+| `ease=` | Control points `(x1, y1, x2, y2)` | Feel |
+|---|---|---|
+| `"linear"` (default) | `(0, 0, 1, 1)` | constant speed |
+| `"ease"` | `(0.25, 0.1, 0.25, 1)` | quick start, long gentle stop |
+| `"ease-in"` | `(0.42, 0, 1, 1)` | starts slowly |
+| `"ease-out"` | `(0, 0, 0.58, 1)` | stops slowly |
+| `"ease-in-out"` | `(0.42, 0, 0.58, 1)` | slow at both ends |
+| `"step-start"`, `"step-end"`, `("steps", n)` | | jumps instead of gliding |
+
+```python
+box = doc.rect(10, 10, 20, 20, fill="teal")
+box.animate.move_to(180, 20, dur=1, ease="ease-in-out")
+box.animate.fade_in(0.5, ease=(0.2, 0.9, 0.3, 1.0))         # a custom bézier
+```
+
+Any Python function from time to progress works too, overshoot included:
+
+```python
+def back_out(t):
+    return 1 + 2.7 * (t - 1) ** 3 + 1.7 * (t - 1) ** 2
+
+box.animate.slide_in("left", ease=back_out)
+```
+
+The curve covers the whole timeline, so a preset with several `values` (`bounce`, `shake`, `pulse`,
+`color_cycle`) moves through all of them along the one curve. Béziers are written as SMIL
+`calcMode="spline"` with exact `keySplines` (one piece of the curve per value interval), steps as
+`calcMode="discrete"`, and a function is sampled into 24 to 60 `values` at even times (more where it
+bends more) played linearly; `svg.Ease(curve)(t)` evaluates any of them.
+
 ## Playing SMIL
 
 `doc.at(seconds)` returns a static copy with every animation applied at that moment, so SMIL can be
 inspected, rasterized or exported frame by frame, and `render_animation` plays it without an `update`
 callback. It covers `animate`, `set`, `animateColor`, `animateTransform` and `animateMotion` with clock
-timing, repeats, `fill="freeze"`, `values`/`keyTimes`, discrete mode and `additive="sum"`.
+timing, repeats, `fill="freeze"`, `values`/`keyTimes`, every `calcMode` (discrete, linear, paced and
+spline with `keySplines`), `keyPoints` and `additive="sum"`, so frames match what browsers play.
 
 ```python
 frame = doc.at(1.0)          # the ball halfway along

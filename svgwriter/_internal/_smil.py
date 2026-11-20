@@ -18,13 +18,14 @@ from ._constants import (
     TIME_SCALE,
     TIMECOUNT_RE,
 )
+from ._easing import spline_progress
 
 if TYPE_CHECKING:
     from ..document import Document
     from ..elements.core import Element
     from ..transform.matrix import Matrix
 
-__all__ = ["snapshot"]
+__all__ = ["add_values", "blend", "snapshot"]
 
 
 def clock(value: object) -> float | None:
@@ -90,7 +91,7 @@ def _values(animation: Element, base: Any) -> list[str]:
     if stop is not None:
         return [first, str(stop)]
     if by is not None:
-        return [first, _add(first, str(by))]
+        return [first, add_values(first, str(by))]
     return [first]
 
 
@@ -98,7 +99,7 @@ def _numbers(text: str) -> list[float]:
     return [float(v) for v in NUMBER_RE.findall(text)]
 
 
-def _add(a: str, b: str) -> str:
+def add_values(a: str, b: str) -> str:
     left, right = _numbers(a), _numbers(b)
     if len(left) != len(right):
         return b
@@ -106,32 +107,74 @@ def _add(a: str, b: str) -> str:
     return NUMBER_RE.sub(lambda match: f"{next(sums):g}", a)
 
 
+def _mode(animation: Element) -> str:
+    mode = animation.get("calcMode", "linear")
+    return str(getattr(mode, "value", mode))
+
+
+def _paced_keys(values: list[str]) -> list[float]:
+    """Key times proportional to the distance between neighbouring values (colors in RGB, numbers in space)."""
+    from ..color.color import as_color
+
+    def point(text: str) -> list[float]:
+        try:
+            color = as_color(text)
+        except ValueError:
+            return _numbers(text)
+        return [color.r, color.g, color.b]
+
+    points = [point(v) for v in values]
+    steps = [math.dist(a, b) if len(a) == len(b) else 0.0 for a, b in zip(points, points[1:], strict=False)]
+    total = sum(steps)
+    if total <= EPSILON:
+        return [i / (len(values) - 1) for i in range(len(values))]
+    keys = [0.0]
+    for step in steps:
+        keys.append(keys[-1] + step / total)
+    return keys
+
+
+def _splines(animation: Element) -> list[tuple[float, float, float, float]]:
+    text = animation.get("keySplines")
+    if text is None:
+        return []
+    found = [_numbers(part) for part in str(text).split(";") if part.strip()]
+    return [(s[0], s[1], s[2], s[3]) for s in found if len(s) == 4]
+
+
 def _segment(animation: Element, values: list[str], p: float) -> tuple[str, str, float]:
     """The two neighbouring values and the local fraction between them at progress *p*."""
     if len(values) == 1:
         return values[0], values[0], 0.0
-    discrete = str(animation.get("calcMode", "linear")) == "discrete"
+    mode = _mode(animation)
+    discrete = mode == "discrete"
     times = animation.get("keyTimes")
     keys = [float(v) for v in str(times).split(";")] if times is not None else None
-    if keys is None or len(keys) != len(values):
+    if mode == "paced":
+        keys = _paced_keys(values)
+    elif keys is None or len(keys) != len(values):
         keys = ([i / len(values) for i in range(len(values))] if discrete
                 else [i / (len(values) - 1) for i in range(len(values))])
     index = max(i for i, key in enumerate(keys) if key <= p + EPSILON) if p >= keys[0] else 0
     if discrete or index >= len(values) - 1:
         return values[index], values[index], 0.0
     span = keys[index + 1] - keys[index]
-    return values[index], values[index + 1], (p - keys[index]) / span if span else 0.0
+    fraction = (p - keys[index]) / span if span else 0.0
+    splines = _splines(animation) if mode == "spline" else []
+    if index < len(splines):
+        fraction = spline_progress(splines[index], fraction)
+    return values[index], values[index + 1], fraction
 
 
-def _blend(a: str, b: str, fraction: float) -> str:
+def blend(a: str, b: str, fraction: float) -> str:
     """Interpolate two attribute texts: colors, number lists (units kept), else a discrete switch."""
     from ..color.color import as_color
     from ..ops.interpolate import interpolate
 
-    if fraction <= 0:
+    if fraction == 0:
         return a
     try:
-        return interpolate(as_color(a), as_color(b), fraction).hex  # type: ignore[no-any-return]
+        return interpolate(as_color(a), as_color(b), min(max(fraction, 0.0), 1.0)).hex  # type: ignore[no-any-return]
     except ValueError:
         pass
     left, right = _numbers(a), _numbers(b)
@@ -176,7 +219,7 @@ def _apply(animation: Element, target: Element, p: float, base_t: dict[int, Matr
     if tag == "animateTransform":
         kind = str(animation.get("type", "translate"))
         a, b, fraction = _segment(animation, _values(animation, "0"), p)
-        moved = _transform_matrix(kind, _numbers(_blend(a, b, fraction)))
+        moved = _transform_matrix(kind, _numbers(blend(a, b, fraction)))
         sum_mode = str(animation.get("additive", "replace")) == "sum"
         target.t = (target.t @ moved) if sum_mode else moved  # type: ignore[attr-defined]
         return
@@ -185,9 +228,9 @@ def _apply(animation: Element, target: Element, p: float, base_t: dict[int, Matr
         target.set(name, str(animation.get("to", base)))
         return
     a, b, fraction = _segment(animation, _values(animation, base), p)
-    value = _blend(a, b, fraction)
+    value = blend(a, b, fraction)
     if str(animation.get("additive", "replace")) == "sum" and base is not None:
-        value = _add(str(base), value)
+        value = add_values(str(base), value)
     target.set(name, value)
 
 
@@ -199,6 +242,10 @@ def _motion(animation: Element, target: Element, p: float, base_t: dict[int, Mat
     if data is None:
         return
     length = total_length(data)
+    points = animation.get("keyPoints")
+    if points is not None:
+        a, b, fraction = _segment(animation, [v.strip() for v in str(points).split(";") if v.strip()], p)
+        p = float(blend(a, b, fraction))
     point = point_at_length(data, p * length)
     rotate = str(animation.get("rotate", "0"))
     angle = 0.0
@@ -237,8 +284,9 @@ def snapshot(document: Document, time: float) -> Document:
     and ``<animateMotion>`` (``path``, ``values`` or ``<mpath>``, ``rotate``)
     with plain clock ``begin``/``dur``/``end``, ``repeatCount``, ``repeatDur``,
     ``fill="freeze"``, ``values``/``from``/``to``/``by``, ``keyTimes``,
-    ``calcMode="discrete"`` and ``additive="sum"``. Event-based begins and
-    spline timing are treated as their linear, clock-based equivalents.
+    every ``calcMode`` (``discrete``, ``linear``, ``paced`` with distances
+    between numbers or colors, ``spline`` with ``keySplines``), ``keyPoints``
+    and ``additive="sum"``. Event-based begins are treated as clock-based.
     """
     from ..document import Document
     from ..elements.animation import AnimationElement
