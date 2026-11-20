@@ -50,6 +50,7 @@ COLOR_OPACITY: Final = {
 COLOR_ATTRIBUTES: Final = frozenset({*COLOR_OPACITY, "color", "lighting-color"})
 SUGGESTIONS: Final = 3
 PREVIEW_PADDING: Final = 2.0
+REPR_WIDTH: Final = 120
 PREVIEW_SCALE: Final = 1.0
 PREVIEW_MIN_PIXELS: Final = 200.0
 _XML_NAME_RE: Final = re.compile(r"^[A-Za-z_][\w.\-]*$")
@@ -1017,7 +1018,9 @@ class Element(Composable):
         return self.to_string(xml_declaration=False, pretty=False)
 
     def __repr__(self) -> str:
-        shown = " ".join(f"{k}={format_value(v)!r}" for k, v in list(self.attributes.items())[:3])
+        shown = " ".join(f"{k}={format_value(v)!r}" for k, v in self.attributes.items())
+        if len(shown) > REPR_WIDTH:
+            shown = shown[:REPR_WIDTH].rsplit(" ", 1)[0] + " ..."
         return f"<{type(self).__name__} {self.tag}{' ' + shown if shown else ''}>"
 
 
