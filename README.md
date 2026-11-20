@@ -76,6 +76,10 @@ doc.save("icon.ico", sizes=(16, 32, 48), padding=4)
 svg.Document.open("sketch.excalidraw").save("sketch.svg")
 ```
 
+## Examples
+
+[`examples/`](examples) has runnable scripts for shapes, transforms, typography, boolean operations, filters, markers, pixels and animation; each has a Jupyter notebook next to it that shows the results as pictures.
+
 ## Development
 
 ```
