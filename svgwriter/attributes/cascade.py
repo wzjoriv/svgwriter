@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from ._constants import AT_BLOCK_RE, COMMENT_RE, IMPORTANT, RULE_RE
-from ._selectors import matches_compound, specificity
+from ._selectors import matches_from, specificity, split_selector
 from .names import PRESENTATION_ATTRIBUTES
 
 if TYPE_CHECKING:
@@ -113,7 +113,7 @@ def matches(element: Element, selector: str) -> bool:
     """Return whether an element matches a CSS selector.
 
     Supports type, ``*``, ``#id``, ``.class``, attribute selectors, ``:first-child``
-    and the descendant and child (``>``) combinators.
+    and the descendant, child (``>``), adjacent (``+``) and general (``~``) sibling combinators.
 
     Parameters
     ----------
@@ -138,29 +138,8 @@ def matches(element: Element, selector: str) -> bool:
     >>> matches(rect, ".other rect")
     False
     """
-    parts = selector.replace(">", " > ").split()
-    if not parts or not matches_compound(element, parts[-1]):
-        return False
-    node: Element | None = element
-    index = len(parts) - 2
-    while index >= 0:
-        combinator = " "
-        if parts[index] == ">":
-            combinator, index = ">", index - 1
-        if index < 0:
-            return False
-        compound = parts[index]
-        node = node.parent if node is not None else None
-        if combinator == ">":
-            if node is None or not matches_compound(node, compound):
-                return False
-        else:
-            while node is not None and not matches_compound(node, compound):
-                node = node.parent
-            if node is None:
-                return False
-        index -= 1
-    return True
+    parts = split_selector(selector)
+    return bool(parts) and matches_from(element, parts, len(parts) - 1)
 
 
 def rules_of(root: Element) -> list[Rule]:

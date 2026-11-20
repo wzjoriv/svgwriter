@@ -13,6 +13,7 @@ __all__ = [
     "PERCENT",
     "POSITION_NAMES",
     "REGIONAL_INDICATORS",
+    "SPACING_AND_GLYPHS",
     "WHITESPACE_DEFAULT",
     "WHITESPACE_PRESERVE",
     "ZWJ",
@@ -22,6 +23,7 @@ PERCENT: Final = 100.0
 POSITION_NAMES: Final = ("x", "y", "dx", "dy", "rotate")
 DEFAULT_FONT_FAMILY: Final = "sans-serif"
 DEFAULT_FONT_SIZE: Final = 16.0
+SPACING_AND_GLYPHS: Final = "spacingAndGlyphs"
 WHITESPACE_PRESERVE: Final = {10: " ", 13: " ", 9: " "}
 WHITESPACE_DEFAULT: Final = {10: None, 13: None, 9: " "}
 ZWJ: Final = "‍"

@@ -1,6 +1,7 @@
 import io
 
 import pytest
+import skia
 
 import svgwriter as svg
 from svgwriter._internal import _fonts, _shaping
@@ -74,3 +75,24 @@ def test_missing_glyphs_fall_back_to_a_system_font(char):
 def test_language_hint_is_used_for_fallback():
     text = svg.text("你", x=0, y=20, xml_lang="zh")
     assert text.layout()[0].advance > 0
+
+
+def test_sans_serif_resolves_to_an_installed_candidate():
+    from svgwriter._internal._constants import GENERIC_CANDIDATES
+
+    candidates = GENERIC_CANDIDATES["sans-serif"]
+    installed = [name for name in candidates if skia.Typeface(name).getFamilyName() == name]
+    if not installed:
+        pytest.skip("no sans-serif candidate installed")
+    assert _fonts.resolve_font("sans-serif", 16, "normal", False).getTypeface().getFamilyName() == installed[0]
+
+
+@pytest.mark.parametrize(("adjust", "second_x", "scale"), [("spacing", 130.0, 1.0), ("spacingAndGlyphs", 100.0, 200 / 140)])
+def test_text_length_stretches_to_the_given_advance(adjust, second_x, scale):
+    name = svg.register_font(_box_font("SvgwFitTest"))
+    text = svg.text(svg.tspan("AA", text_length=200, length_adjust=adjust), "A", x=0, y=100, font_family=name,
+                    font_size=100)
+    first, second, third = text.layout()
+    assert second.x == pytest.approx(second_x, abs=0.05)
+    assert first.outline.bbox.width == pytest.approx(60 * scale, rel=1e-3)
+    assert third.x == pytest.approx(200, abs=0.05)

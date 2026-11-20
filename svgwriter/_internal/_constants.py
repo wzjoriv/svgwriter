@@ -11,6 +11,7 @@ import numpy as np
 
 __all__ = [
     "ANCHOR_SHIFT",
+    "ANIMATED_DEFAULTS",
     "ATTRIBUTE_TABLE",
     "BASE_PROFILE",
     "BLINK_VALUES",
@@ -65,6 +66,7 @@ __all__ = [
     "ENGINES",
     "EPSILON",
     "EX_PER_EM",
+    "FEATURE_PREFIX",
     "FONT_CACHE",
     "FONT_SIZE_KEYWORDS",
     "FONT_WEIGHTS",
@@ -136,6 +138,7 @@ __all__ = [
     "PNM_WHITESPACE",
     "PT_PER_INCH",
     "PULSE_SCALE",
+    "RENDER_LANGUAGE",
     "RGBA_CHANNELS",
     "RTL_ANCHORS",
     "SECONDS_PER_HOUR",
@@ -145,6 +148,8 @@ __all__ = [
     "SIDES",
     "STROKE",
     "SVG_NS",
+    "SYNCBASE_RE",
+    "SYNC_DEPTH",
     "SVG_VERSION",
     "SWATCH",
     "TEXT_TABLE",
@@ -153,6 +158,9 @@ __all__ = [
     "TIMEOUT_SECONDS",
     "TIME_SCALE",
     "UINT16_MAX",
+    "USE_GEOMETRY",
+    "USE_NESTING",
+    "VISIBLE_OVERFLOW",
     "WHITE",
     "WRITE_LAG",
     "XLINK_NS",
@@ -209,6 +217,7 @@ BOLD_WEIGHT: Final = 700
 DEFAULT_FAMILY: Final = "sans-serif"
 FONT_CACHE: Final = 64
 GENERIC_CANDIDATES: Final = {
+    "sans-serif": ("Arial", "Helvetica", "Liberation Sans", "Arimo", "DejaVu Sans", "Noto Sans"),
     "serif": ("Times New Roman", "Georgia", "Times", "Liberation Serif", "DejaVu Serif", "Noto Serif"),
     "monospace": ("Consolas", "Courier New", "Menlo", "Monaco", "Liberation Mono", "DejaVu Sans Mono",
                   "Noto Sans Mono", "Courier"),
@@ -361,3 +370,16 @@ MPL_LINETO: Final = 2
 MPL_CURVE3: Final = 3
 MPL_CURVE4: Final = 4
 MPL_CLOSE: Final = 79
+USE_GEOMETRY: Final = frozenset({"x", "y", "width", "height", "xlink:href", "href", "transform", "id"})
+USE_NESTING: Final = 16
+VISIBLE_OVERFLOW: Final = frozenset({"visible", "auto"})
+SYNCBASE_RE: Final = re.compile(r"^\s*([^\s.;+-][^;]*?)\.(begin|end)\s*(?:([+-])\s*(\S.*?))?\s*$")
+SYNC_DEPTH: Final = 32
+ANIMATED_DEFAULTS: Final = {
+    "fill": "black", "stroke": "none", "color": "black", "opacity": "1", "fill-opacity": "1", "stroke-opacity": "1",
+    "stroke-width": "1", "stop-color": "black", "stop-opacity": "1", "flood-color": "black", "flood-opacity": "1",
+    "lighting-color": "white", "x": "0", "y": "0", "cx": "0", "cy": "0", "dx": "0", "dy": "0", "x1": "0",
+    "y1": "0", "x2": "0", "y2": "0", "stroke-dashoffset": "0", "font-size": "16",
+}
+RENDER_LANGUAGE: Final = "en"
+FEATURE_PREFIX: Final = "http://www.w3.org/TR/SVG11/feature#"

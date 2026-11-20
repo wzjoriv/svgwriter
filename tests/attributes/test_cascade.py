@@ -73,3 +73,14 @@ def test_resolve_styles_bakes_css_into_attributes() -> None:
     r.style = {"stroke": "red"}
     resolve_styles(root)
     assert r.get("fill") == "green" and r.get("stroke") == "red" and not r.has("style")
+
+
+@pytest.mark.parametrize(("selector", "expected"), [
+    ("ellipse + circle", ["c1", "c2"]), ("circle + ellipse.b", []), ("g rect + circle", []),
+    ("g > ellipse ~ circle", ["c1", "c2"]), ("svg g circle", ["c0", "c1", "c2"]), ('[class~="b"] + circle', ["c2"]),
+])
+def test_sibling_combinators_and_backtracking(selector, expected):
+    doc = svg.Document.from_string(
+        '<svg xmlns="http://www.w3.org/2000/svg"><g><circle id="c0"/><ellipse class="a"/><circle id="c1"/>'
+        '<ellipse class="a b"/><circle id="c2"/></g></svg>')
+    assert [e.id for e in doc.root.iter("circle") if matches(e, selector)] == expected

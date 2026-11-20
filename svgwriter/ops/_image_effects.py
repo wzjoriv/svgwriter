@@ -101,7 +101,8 @@ def _primitive(primitive: Element, first: Any, second: Any) -> Any:
         operator = str(primitive.get("operator", "over"))
         if operator == "arithmetic":
             k = [float(primitive.get(name, 0)) for name in ("k1", "k2", "k3", "k4")]
-            return skia.ImageFilters.Arithmetic(*k, True, second, first)
+            source = skia.ImageFilters.Offset(0.0, 0.0, None)
+            return skia.ImageFilters.Arithmetic(*k, True, second or source, first or source)
         return skia.ImageFilters.Xfermode(COMPOSITE.get(operator, skia.BlendMode.kSrcOver), second, first)
     if tag == "feMerge":
         layers = [node.get("in") for node in primitive if node.tag == "feMergeNode"]

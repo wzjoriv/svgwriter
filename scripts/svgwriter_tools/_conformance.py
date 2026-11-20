@@ -13,6 +13,7 @@ from pathlib import Path
 import numpy as np
 
 import svgwriter as svg
+from svgwriter.elements.animation import AnimationElement
 from svgwriter.elements.structure import Pixels
 from svgwriter.ops.render import render_svg
 
@@ -25,6 +26,11 @@ NEIGHBOURHOOD = 1
 SUITE_SIZE = (480, 360)
 BACKGROUND = "white"
 CHANNEL_MAX = 255
+REVISION_ID = "revision"
+REVISION_MARGIN = 40
+WATERMARK_ID = "draft-watermark"
+WATERMARK_MARGIN = 2
+SETTLED_TIME = 100.0
 
 
 @dataclass
@@ -66,6 +72,32 @@ def _rgb(pixels: np.ndarray) -> np.ndarray:
     return rgba[..., :3] * alpha + CHANNEL_MAX * (1 - alpha)
 
 
+def _bbox(doc: svg.Document, name: str) -> object | None:
+    label = doc.get_element_by_id(name)
+    try:
+        return label.exact_bbox() if label is not None else None
+    except (TypeError, ValueError):
+        return None
+
+
+def label_boxes(doc: svg.Document, shape: tuple[int, ...]) -> list[tuple[slice, slice]]:
+    """Pixels of the suite's bookkeeping labels, which differ between a test and its PNG.
+
+    The ``$Revision$`` label names the file version and the ``DRAFT`` watermark the review status;
+    the reference PNGs often predate both.
+    """
+    boxes = []
+    box = _bbox(doc, REVISION_ID)
+    if box is not None:
+        rows = slice(max(int(box.y) - REVISION_MARGIN // 4, 0),
+                     min(int(box.y + box.height) + REVISION_MARGIN // 4, shape[0]))
+        boxes.append((rows, slice(0, min(int(box.x + box.width) + REVISION_MARGIN, shape[1]))))
+    box = _bbox(doc, WATERMARK_ID)
+    if box is not None:
+        boxes.append((slice(0, min(int(box.y + box.height) + WATERMARK_MARGIN, shape[0])), slice(0, shape[1])))
+    return boxes
+
+
 def _scope(name: str, data: bytes) -> str | None:
     chapter = name.split("-", 1)[0]
     if chapter in OUT_OF_SCOPE_CHAPTERS:
@@ -95,7 +127,7 @@ def run_test(path: Path, reference: Path) -> Outcome:
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         try:
-            doc = svg.Document.from_string(data)
+            doc = svg.Document.open(path)
             written = doc.to_string()
         except Exception as exc:  # noqa: BLE001
             note = f"{type(exc).__name__}: {exc}"
@@ -114,8 +146,12 @@ def run_test(path: Path, reference: Path) -> Outcome:
         try:
             if reference.exists():
                 expected = Pixels.decode(reference.read_bytes()).rgba()
-                drawn = svg.ops.rasterize(doc, size=(expected.shape[1], expected.shape[0]), background=BACKGROUND)
-                outcome.results["render"] = _grade(mismatch(_rgb(drawn), _rgb(expected)))
+                shown = doc.at(SETTLED_TIME) if doc.root.find(AnimationElement) is not None else doc
+                drawn = _rgb(svg.ops.rasterize(shown, size=(expected.shape[1], expected.shape[0]), background=BACKGROUND))
+                expected = _rgb(expected)
+                for label in label_boxes(doc, expected.shape):
+                    drawn[label] = expected[label]
+                outcome.results["render"] = _grade(mismatch(drawn, expected))
         except Exception as exc:  # noqa: BLE001
             outcome.results["render"] = ("error", 1.0, f"{type(exc).__name__}: {exc}")
     outcome.seconds = time.perf_counter() - start
@@ -146,7 +182,11 @@ def write_report(outcomes: list[Outcome], path: Path) -> None:
              "must match. This is the writer's fidelity score.",
              "- **render**: `svgwriter.ops.rasterize` against the W3C reference PNG; bounded by skia's SVG support.",
              f"- A test passes when at most {PASS_MISMATCH:.0%} of pixels differ by more than "
-             f"{CHANNEL_TOLERANCE}/255 after a 3x3 blur, within {NEIGHBOURHOOD} px.", ""]
+             f"{CHANNEL_TOLERANCE}/255 after a 3x3 blur, within {NEIGHBOURHOOD} px. "
+             "The `$Revision$` label and `DRAFT` watermark (file version and review status, which the reference "
+             "PNGs often predate) are not compared. Animated tests are drawn "
+             f"at {SETTLED_TIME:g} s, once their animations have settled, the state the references show.",
+             ""]
     for kind in ("roundtrip", "render"):
         scored = [o for o in outcomes if o.status(kind) != "skipped"]
         ok = sum(o.status(kind) == "pass" for o in scored)

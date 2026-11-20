@@ -37,3 +37,8 @@ def test_mask_keeps_only_the_masked_part():
     pixels = _render(mask=mask)
     assert pixels[30, 30].tolist() == pytest.approx([1, 0, 0, 1], abs=0.02)
     assert pixels[21, 21, 1] == pytest.approx(1, abs=0.02)
+
+
+def test_arithmetic_composite_defaults_to_the_source_graphic():
+    pixels = _render(filter=svg.Filter(svg.FeComposite(operator="arithmetic", k2=0.5, k3=0.5)))
+    assert pixels[30, 30].tolist() == pytest.approx([1, 0, 0, 1], abs=0.02)

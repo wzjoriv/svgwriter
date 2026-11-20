@@ -1,7 +1,7 @@
 import pytest
 
 import svgwriter as svg
-from svgwriter._internal._smil import clock
+from svgwriter._internal._timing import clock
 
 
 def _ball():
@@ -56,3 +56,23 @@ def test_rendered_frames_play_smil_without_update():
 
     first, last = render_frame(doc, 0.0), render_frame(doc, 2.0)
     assert first[20, 10, 1] < 128 and last[20, 90, 1] < 128 and last[20, 10, 1] > 200
+
+
+SMIL_HEAD = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect id="r" x="0">'
+
+
+@pytest.mark.parametrize(("begin", "at", "x"), [
+    ("indefinite", 9, "0"), ("click", 9, "0"), ("click; 2s", 3, "5"), ("2s; 6s", 5, "0"), ("2s; 6s", 6.5, "5"),
+    ("a.end + 1s", 3.5, "0"), ("a.end + 1s", 4.5, "5"), ("a.begin", 1.5, "5"),
+])
+def test_begin_lists_sync_bases_and_events(begin, at, x):
+    doc = svg.Document.from_string(
+        SMIL_HEAD + '<set id="a" attributeName="y" to="1" begin="1s" dur="2s"/>'
+        f'<set attributeName="x" to="5" begin="{begin}" dur="2s"/></rect></svg>')
+    assert doc.at(at).get_element_by_id("r").get("x") == x
+
+
+def test_animation_from_an_unset_property_starts_at_its_default():
+    doc = svg.Document.from_string(
+        SMIL_HEAD + '<animate attributeName="fill" to="rgb(255,0,0)" dur="2s"/></rect></svg>')
+    assert str(doc.at(1).get_element_by_id("r").get("fill")).replace(" ", "") in ("rgb(128,0,0)", "#800000")
