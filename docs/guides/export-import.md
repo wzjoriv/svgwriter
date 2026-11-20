@@ -23,29 +23,55 @@ print(sorted(svg.export.exporters()))
 | SVG | `.svg` | yes | yes | links, `<a>` and ids preserved; `pretty`, `precision` options |
 | SVGZ | `.svgz` | yes | yes | gzip-compressed SVG |
 | PNG, JPEG, WebP | `.png .jpg .jpeg .webp` | yes | yes | `scale`, `size`, `padding`, `background`, `quality`; imports become an `<image>` |
-| PDF | `.pdf` | yes | yes | vector, via skia; `title`, `author`; reads paths, images, clips and text, `page=` |
-| TikZ | `.tikz .tex` | yes | yes | `standalone=True` for a compilable document; SVG coordinates kept (`x=1pt, y=-1pt`) |
-| EPS | `.eps .ps` | yes | yes | PostScript has no transparency |
+| PDF | `.pdf` | yes | yes | vector, via skia; selectable text; `title`, `author`, `text`; reads paths, images, clips, text and shadings, `page=` |
+| TikZ | `.tikz .tex` | yes | yes | `standalone=True` for a compilable document; text as `\node`; SVG coordinates kept (`x=1pt, y=-1pt`) |
+| EPS | `.eps .ps` | yes | yes | text in the standard fonts; PostScript has no transparency |
 | DXF | `.dxf` | yes | yes | R12 polylines in mm, layer per colour; reads lines, polylines with bulges, circles, arcs, ellipses |
 | HPGL | `.hpgl .plt` | yes | yes | pen plotters and cutters, one pen per colour |
 | G-code | `.gcode .nc .ngc` | yes | yes | `mode="mill"` or `"laser"`, `feed`, `cut_z`, `tolerance` |
 | Excalidraw | `.excalidraw` | yes | yes | imports native shapes, arrows, text, images and groups |
 | ICO, ICNS | `.ico .icns` | yes | yes | PNG entries at `sizes=`, `padding=` |
 
-TikZ, EPS and the polyline formats work from a flattened copy of the drawing: gradients become their
-first colour and images are skipped with a warning.
+TikZ, EPS and the polyline formats work from a flattened copy of the drawing. TikZ writes gradients
+as shadings and EPS as `shfill`; the polyline formats take their first colour. EPS embeds images,
+the others skip them with a warning.
+
+### Text stays text
+
+Every format that can hold text keeps it as text, so it can be selected, searched and edited. Where
+a format cannot hold some text exactly, that text is drawn as its glyph outlines, which look the
+same but are shapes. Only raster formats turn text into pixels.
+
+| format | kept as text | drawn as outlines |
+| --- | --- | --- |
+| SVG, SVGZ, HTML | everything | nothing |
+| PDF | plain-coloured text in scripts that need no shaper (Latin, Greek, Cyrillic, CJK, ...), in an embedded font subset | gradient or pattern paint, filters, masks, shaped scripts (Devanagari, Arabic, ...) |
+| TikZ | everything, as `\node` with size, family, weight, style, colour, opacity and rotation | nothing |
+| EPS | ASCII text in Helvetica, Times or Courier | other characters |
+| PowerPoint | everything, as text boxes with font, size, weight, style, colour, opacity and rotation | nothing |
+
+Pass `text=False` to `pdf`, `tikz` or `eps` to get exact outlines everywhere, for example when the
+reader of the file may lack the fonts:
+
+```python
+doc.save("figure.pdf")                 # selectable text
+doc.save("figure.pdf", text=False)     # glyph outlines only
+```
 
 PDF, EPS and TikZ read back as filled and stroked `<path>` elements with solid colours, stroke width,
 dashes, caps, joins and opacity, in points with y pointing down. The PDF reader scans for objects (a
 broken xref table does not matter), inflates `/FlateDecode` streams, follows Form XObjects and `gs`
-alpha, and reads page 1 unless you pass `page=`; images, clipping paths and text come in as `<image>`,
-`clip-path` and `<text>` (single-byte fonts), while shadings and tiling patterns are skipped. The
-EPS reader is a small PostScript interpreter: paths, `arc`, painting, colours, line styles,
-`gsave`/`grestore`, transforms, and procedures and dictionaries with `def`, honouring
-`%%BoundingBox`; it ignores operators it does not know. The TikZ reader takes `\draw`, `\fill`,
-`\filldraw` and `\path` with `--`, `.. controls ..`, `cycle`, `rectangle` and `circle`, colours from
-`\definecolor` and xcolor mixes, and the common line options; macros, `\foreach`, styles and nodes
-are not expanded.
+alpha, and reads page 1 unless you pass `page=`. Images, clipping paths and text come in as
+`<image>`, `clip-path` and `<text>`. Text is decoded through the font's `/ToUnicode` map, which most
+PDF writers embed. Glyphs placed one at a time are joined back into words, and the font family
+comes from the font's name. Axial and radial shadings become gradients and tiling patterns become
+`<pattern>`. The EPS reader is a small PostScript interpreter. It handles paths, `arc`, painting,
+colours, line styles, `gsave`/`grestore`, transforms, `image`/`colorimage`, `clip`, `show` with
+`findfont`, and procedures and dictionaries with `def`. It honours `%%BoundingBox` and ignores
+operators it does not know. The TikZ reader takes `\draw`, `\fill`, `\filldraw` and `\path` with
+`--`, `.. controls ..`, `cycle`, `rectangle` and `circle`. It also reads colours from `\definecolor`
+and xcolor mixes, the common line options, nodes (with shapes and names), `\tikzset` styles,
+`scope` and `\foreach`. Other macros are not expanded.
 
 ```python
 page = svg.export.load("figure.pdf", page=0)
@@ -96,7 +122,7 @@ mathtext; `engine="tex"`, `"ziamath"` or `"mathtext"` picks one.
 `pip install "svgwriter[office]"` adds PowerPoint, Word and Excel:
 
 - `.pptx` out: one slide sized like the drawing, each outline an editable PowerPoint shape (curves,
-  fill, outline, transparency) and images as pictures. In: shapes, pictures and text boxes of a slide
+  fill, outline, transparency), text as editable text boxes and images as pictures. In: shapes, pictures and text boxes of a slide
   (`svg.Document.open("deck.pptx", slide=2)`) as native SVG elements.
 - `.docx` and `.xlsx` out: the drawing as a picture at its natural size.
 

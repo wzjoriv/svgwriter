@@ -13,6 +13,7 @@ def tikz(
     document: Document,
     *,
     standalone: bool = False,
+    text: bool = True,
 ) -> str: ...
 
 def eps(

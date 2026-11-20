@@ -69,8 +69,8 @@ def pdf(document: Document, *, title: str | None = None, author: str | None = No
 
 
 @register("tikz", extensions=(".tikz", ".tex"), binary=False)
-def tikz(document: Document, *, standalone: bool = False) -> str:
-    """A TikZ picture of the flattened vector content (solid paints; images skipped).
+def tikz(document: Document, *, standalone: bool = False, text: bool = True) -> str:
+    """A TikZ picture of the flattened vector content (gradients as shadings; images skipped).
 
     Parameters
     ----------
@@ -78,6 +78,9 @@ def tikz(document: Document, *, standalone: bool = False) -> str:
         The document to convert.
     standalone : bool, optional
         Wrap the picture in a compilable ``standalone`` LaTeX document. Defaults to False.
+    text : bool, optional
+        Write text as ``\\node`` commands typeset by LaTeX; False draws the exact glyph outlines.
+        Defaults to True.
 
     Returns
     -------
@@ -98,7 +101,7 @@ def tikz(document: Document, *, standalone: bool = False) -> str:
     """
     from ._tikz import to_tikz
 
-    return to_tikz(document, standalone=standalone)
+    return to_tikz(document, standalone=standalone, text=text)
 
 
 @register("eps", extensions=(".eps", ".ps"))
