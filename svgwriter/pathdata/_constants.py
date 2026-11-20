@@ -38,6 +38,7 @@ BOX_POINTS: Final[dict[str, tuple[float, float]]] = {
     "top": (0.5, 0.0), "bottom": (0.5, 1.0), "left": (0.0, 0.5), "right": (1.0, 0.5),
 }
 
+"""Named points of a box as fractions of its width and height, from the top-left corner."""
 NUMBER_RE: Final = re.compile(r"[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?")
 SEPARATORS: Final = " \t\r\n,"
 ARITY: Final = {"M": 2, "L": 2, "H": 1, "V": 1, "C": 6, "S": 4, "Q": 4, "T": 2, "A": 7, "Z": 0}

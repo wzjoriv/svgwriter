@@ -47,9 +47,6 @@ def _short_number(text: str) -> str:
     return text
 
 
-"""Named points of a box as fractions of its width and height, from the top-left corner."""
-
-
 class BBox(NamedTuple):
     """Axis-aligned bounding box.
 
