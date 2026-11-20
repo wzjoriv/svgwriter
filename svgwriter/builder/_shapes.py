@@ -21,11 +21,13 @@ from ._constants import (
     DEFAULT_STAR_POINTS,
     DEFAULT_TEETH,
     FULL_TURN,
+    MIN_SIDES,
     QUARTER_TURN,
     TOOTH_DEPTH_RATIO,
 )
+from ._rounded import rounded_outline
 
-__all__ = ["SHAPES", "arrow", "gear", "shape_factory", "star"]
+__all__ = ["SHAPES", "arrow", "gear", "regular_polygon", "shape_factory", "star"]
 
 E = TypeVar("E", bound=Element)
 
@@ -103,9 +105,11 @@ def star(
     outer: float,
     inner: float | None = None,
     points: int = DEFAULT_STAR_POINTS,
+    *,
+    corner_radius: float = 0,
     **kwargs: Any,
-) -> Polygon:
-    """Build a star polygon with *points* tips, pointing up.
+) -> Polygon | Path:
+    """Build a star with *points* tips, pointing up.
 
     Parameters
     ----------
@@ -117,26 +121,35 @@ def star(
         Radius of the notches. Defaults to half of `outer`.
     points : int, optional
         Number of tips. Defaults to 5.
+    corner_radius : float, optional
+        Radius of the circular fillet at every tip and notch; it shrinks where the star is too small
+        for it. Defaults to 0 (sharp).
     **kwargs
-        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`.
+        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`
+        (:class:`~svgwriter.elements.Path` when rounded).
 
     Returns
     -------
-    Polygon
-        The star.
+    Polygon or Path
+        The star, a polygon unless `corner_radius` rounds it into a path.
 
     See Also
     --------
-    svgwriter.Polygon.regular : A polygon without notches.
+    regular_polygon : A polygon without notches.
 
     Examples
     --------
     >>> from svgwriter.builder import star
     >>> len(star(50, 50, 40).points)
     10
+    >>> round(star(50, 50, 40, corner_radius=4).bbox.height, 1)
+    64.0
     """
     inner = outer * DEFAULT_INNER_RATIO if inner is None else inner
-    return Polygon(_ring(cx, cy, [outer, inner] * points, -QUARTER_TURN), **kwargs)
+    vertices = _ring(cx, cy, [outer, inner] * points, -QUARTER_TURN)
+    if corner_radius > 0:
+        return rounded_outline(vertices, [corner_radius] * len(vertices), **kwargs)
+    return Polygon(vertices, **kwargs)
 
 
 @shape_factory("gear")
@@ -213,6 +226,65 @@ def arrow(x1: float, y1: float, x2: float, y2: float, head: float = DEFAULT_HEAD
         builder.move_to(x2 + head * math.cos(a), y2 + head * math.sin(a)).line_to(x2, y2)
     kwargs.setdefault("fill", "none")
     return Path(builder, **kwargs)
+
+
+@shape_factory("regular_polygon")
+def regular_polygon(
+    cx: float,
+    cy: float,
+    r: float,
+    sides: int,
+    *,
+    rotation: float = 0,
+    corner_radius: float = 0,
+    **kwargs: Any,
+) -> Polygon | Path:
+    """Build a regular polygon with optionally rounded corners.
+
+    Parameters
+    ----------
+    cx, cy : float
+        Center.
+    r : float
+        Distance from the center to each corner before rounding.
+    sides : int
+        Number of sides, at least 3.
+    rotation : float, optional
+        Clockwise rotation in degrees; the first corner is at the top when 0. Defaults to 0.
+    corner_radius : float, optional
+        Radius of the circular fillet at every corner. Defaults to 0 (sharp).
+    **kwargs
+        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`
+        (:class:`~svgwriter.elements.Path` when rounded).
+
+    Returns
+    -------
+    Polygon or Path
+        The polygon, a path when `corner_radius` rounds it.
+
+    Raises
+    ------
+    ValueError
+        If `sides` is below 3.
+
+    See Also
+    --------
+    star : A polygon with notches.
+
+    Examples
+    --------
+    >>> from svgwriter.builder import regular_polygon
+    >>> len(regular_polygon(0, 0, 10, 6).points)
+    6
+    >>> regular_polygon(0, 0, 10, 5, corner_radius=2).tag
+    'path'
+    """
+    if sides < MIN_SIDES:
+        raise ValueError(f"a polygon needs at least {MIN_SIDES} sides, got {sides}")
+    vertices = _ring(cx, cy, [r] * sides, rotation - QUARTER_TURN)
+    if corner_radius > 0:
+        return rounded_outline(vertices, [corner_radius] * sides, **kwargs)
+    return Polygon(vertices, **kwargs)
 
 
 shape_factory("polygon")(Polygon.regular)

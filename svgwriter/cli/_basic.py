@@ -13,7 +13,7 @@ from ..document import Document
 from ..elements.core import Category, Element
 from ..io.parser import Strictness, parse_file
 from ..io.writer import SerializeOptions
-from ._constants import CANVAS_MARGIN, DEFAULT_CANVAS, STROKE_WIDTH
+from ._constants import CANVAS_MARGIN, DEFAULT_CANVAS, DRAW_LAYOUTS, STROKE_WIDTH
 
 __all__ = ["add_basic_commands", "emit", "output_options"]
 
@@ -37,10 +37,13 @@ def _cmd_draw(args: argparse.Namespace) -> int:
     doc = Document(size, size)
     center, radius = size / 2, size * CANVAS_MARGIN
     factory = SHAPES.get(args.shape)
-    if args.shape == "arrow":
-        shape = factory(center - radius, center, center + radius, center, stroke=args.fill, stroke_width=STROKE_WIDTH)
-    else:
+    layout = DRAW_LAYOUTS.get(args.shape)
+    if layout is None:
         shape = factory(center, center, radius, fill=args.fill, stroke=args.stroke)
+    else:
+        lead, options = layout(center, radius)
+        stroked = {"stroke": args.fill, "stroke_width": STROKE_WIDTH} if options.pop("line", False) else {"fill": args.fill, "stroke": args.stroke}
+        shape = factory(*lead, **options, **stroked)
     doc += shape
     emit(doc.root, args)
     return 0
