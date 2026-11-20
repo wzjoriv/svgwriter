@@ -7,7 +7,7 @@ from __future__ import annotations
 import math
 import warnings
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Any, Final
 
 from ..attributes.cascade import computed
 from ..attributes.length import Length
@@ -361,3 +361,39 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset()) -> Sce
         warnings.warn(f"not representable in this format, skipped: {', '.join(sorted(set(reported)))}",
                       stacklevel=3)
     return Scene(width, height, items, skipped)
+
+
+def placed_images(document: Document) -> list[tuple[Any, Matrix]]:
+    """Each embedded image with the matrix from its pixel grid to page coordinates (``viewBox`` included).
+
+    Formats that draw images themselves (EPS, PowerPoint) use this; :func:`flatten` leaves images out.
+
+    Parameters
+    ----------
+    document : Document
+        The document.
+
+    Returns
+    -------
+    list of (Image, Matrix)
+        Images in paint order with their placement.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import svgwriter as svg
+    >>> doc = svg.Document(20, 10)
+    >>> _ = doc.add(svg.Image(np.zeros((2, 4, 3)), 5, 0, 8, 4))
+    >>> [matrix.apply(0, 0) for _, matrix in placed_images(doc)]
+    [Point(x=5.0, y=0.0)]
+    """
+    from ..elements.structure import Image
+    from ..ops._layers import _ancestry, image_matrix
+    from ..ops.render import _view, document_size
+
+    with document._sized():
+        width, height = document_size(document)
+        view = _view(document, width, height)
+        images = [element for element in document.root.iter() if isinstance(element, Image)]
+        return [(image, view @ _ancestry(image, document.root)[0] @ image_matrix(image))
+                for image in images if image.pixels is not None]

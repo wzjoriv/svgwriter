@@ -54,3 +54,10 @@ def test_gradients_become_native_shadings():
     assert eps.count(b"shfill") == 2 and b"%%LanguageLevel: 3" in eps and b"0 0.502 0 setrgbcolor" in eps
     tikz = svg.export.export(_gradients(), "tikz")
     assert "shading=axis" in tikz and "shading=radial" in tikz and "middle color" in tikz
+
+
+def test_eps_draws_images_in_place():
+    doc = svg.Document(*SIZE)
+    doc.add(svg.Image(np.ones((2, 2, 3)) * [1, 0, 0], 10, 10, 20, 20)).rotate(30)
+    eps = svg.export.export(doc, "eps")
+    assert eps.count(b"colorimage") == 1 and b"ff0000ff0000" in eps

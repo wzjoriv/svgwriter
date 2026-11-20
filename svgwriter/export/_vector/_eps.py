@@ -5,11 +5,13 @@ Encapsulated PostScript output from a flattened scene.
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Any, Final
+
+import numpy as np
 
 from ..._internal._numbers import format_number
 from ...transform.matrix import Matrix
-from .._flatten import Item, Shading, flatten, to_cubic
+from .._flatten import Item, Shading, flatten, placed_images, to_cubic
 
 if TYPE_CHECKING:
     from ...color.color import Color
@@ -28,6 +30,8 @@ def _n(value: float) -> str:
 
 BASE_LEVEL: Final = 2
 LEVEL_LINE: Final = 4
+CHANNEL_MAX: Final = 255
+HEX_LINE: Final = 120
 SHADING_LEVEL: Final = 3
 AXIAL: Final = 2
 RADIAL: Final = 3
@@ -41,6 +45,21 @@ def _path(item: Item, height: float) -> str:
         parts.append({"M": f"{coords} moveto", "L": f"{coords} lineto", "C": f"{coords} curveto",
                       "Z": "closepath"}[op])
     return "\n".join(parts)
+
+
+def _image(image: Any, matrix: Matrix, height: float) -> str:
+    """An embedded image as ``colorimage`` in its pixel grid; alpha is composited onto white (EPS has none)."""
+    rgba = image.rgba()
+    rgb = rgba[..., :3] * rgba[..., 3:] + (1.0 - rgba[..., 3:])
+    data = np.clip(np.rint(rgb * CHANNEL_MAX), 0, CHANNEL_MAX).astype(np.uint8).tobytes().hex()
+    rows, columns = rgba.shape[:2]
+    flip = Matrix(1, 0, 0, -1, 0, height) @ matrix
+    lines = [data[i:i + HEX_LINE] for i in range(0, len(data), HEX_LINE)]
+    return "\n".join([
+        "gsave", f"[{' '.join(_n(v) for v in flip.as_tuple())}] concat",
+        f"{columns} {rows} 8 [1 0 0 1 0 0] currentfile /ASCIIHexDecode filter false 3 colorimage",
+        *lines, ">", "grestore",
+    ])
 
 
 def _rgb(color: Color) -> str:
@@ -106,7 +125,7 @@ def to_eps(document: Document) -> str:
     >>> to_eps(doc).splitlines()[:2]
     ['%!PS-Adobe-3.0 EPSF-3.0', '%%BoundingBox: 0 0 10 10']
     """
-    scene = flatten(document)
+    scene = flatten(document, handled=frozenset({"image"}))
     level = BASE_LEVEL
     lines = [
         "%!PS-Adobe-3.0 EPSF-3.0",
@@ -117,6 +136,8 @@ def to_eps(document: Document) -> str:
         "%%EndComments",
         "gsave",
     ]
+    for image, matrix in placed_images(document):
+        lines.append(_image(image, matrix, scene.height))
     for item in scene.items:
         if not len(item.data):
             continue

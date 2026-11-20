@@ -87,11 +87,11 @@ class TestFormats:
         assert text.startswith("%!PS-Adobe-3.0 EPSF-3.0") and "%%BoundingBox: 0 0 40 20" in text
         assert "0 20 moveto" in text and text.rstrip().endswith("%%EOF")
 
-    def test_vector_formats_warn_about_images(self) -> None:
+    def test_formats_without_images_warn_about_them(self) -> None:
         doc = drawing()
         doc += svg.Image(np.zeros((2, 2, 3)))
         with pytest.warns(UserWarning, match="<image>"):
-            doc.export("eps")
+            doc.export("tikz")
 
     def test_flatten_transforms_opacity_and_paint_fallbacks(self) -> None:
         from svgwriter.export._flatten import flatten
