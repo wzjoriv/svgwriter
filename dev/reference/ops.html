@@ -586,10 +586,12 @@ fills correctly without a <code class="docutils literal notranslate"><span class
 RGBA), <a class="reference internal" href="geometry.html#svgwriter.transform.Matrix" title="svgwriter.transform.Matrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">Matrix</span></code></a> (translation, rotation, skew
 and scale separately, so turns stay turns), <code class="xref py py-class docutils literal notranslate"><span class="pre">PathData</span></code>
 and elements. Two elements of the same kind and shape interpolate their
-attributes; anything else is morphed as outlines: both become cubic
-paths with matching subpaths and segment counts. Values that cannot be
-blended (keywords, different strings) switch at <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">0.5</span></code>, as SMIL’s
-discrete mode does.</p>
+attributes; anything else is morphed as outlines: outlines pair with
+outlines and holes with holes (a contour without a partner grows from or
+shrinks to its centre), each pair is resampled to one point count and
+started where the points move least, so in-between shapes do not twist.
+Values that cannot be blended (keywords, different strings) switch at
+<code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">0.5</span></code>, as SMIL’s discrete mode does.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

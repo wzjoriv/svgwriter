@@ -318,21 +318,24 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>Appear / disappear</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">fade_in</span></code>, <code class="docutils literal notranslate"><span class="pre">fade_out</span></code>, <code class="docutils literal notranslate"><span class="pre">draw</span></code> (stroke draws on), <code class="docutils literal notranslate"><span class="pre">wipe(side)</span></code>, <code class="docutils literal notranslate"><span class="pre">typewriter</span></code> (text)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">show(at=)</span></code>, <code class="docutils literal notranslate"><span class="pre">hide(at=)</span></code> (at once), <code class="docutils literal notranslate"><span class="pre">fade_in</span></code>, <code class="docutils literal notranslate"><span class="pre">fade_out</span></code>, <code class="docutils literal notranslate"><span class="pre">draw</span></code> (stroke draws on), <code class="docutils literal notranslate"><span class="pre">wipe(side)</span></code>, <code class="docutils literal notranslate"><span class="pre">typewriter</span></code> (text)</p></td>
 </tr>
-<tr class="row-odd"><td><p>Motion</p></td>
+<tr class="row-odd"><td><p>Create</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create</span></code> (outline draws on, then the fill fades in), <code class="docutils literal notranslate"><span class="pre">uncreate</span></code> (the reverse), <code class="docutils literal notranslate"><span class="pre">write</span></code> (text character by character, a group child by child)</p></td>
+</tr>
+<tr class="row-even"><td><p>Motion</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">slide_in(side)</span></code>, <code class="docutils literal notranslate"><span class="pre">move_to(x,</span> <span class="pre">y)</span></code>, <code class="docutils literal notranslate"><span class="pre">follow(path)</span></code>, <code class="docutils literal notranslate"><span class="pre">bounce</span></code>, <code class="docutils literal notranslate"><span class="pre">shake</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>Scale and turn</p></td>
+<tr class="row-odd"><td><p>Scale and turn</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">grow</span></code>, <code class="docutils literal notranslate"><span class="pre">shrink</span></code>, <code class="docutils literal notranslate"><span class="pre">pulse</span></code>, <code class="docutils literal notranslate"><span class="pre">spin(turns=)</span></code> (about the element’s centre)</p></td>
 </tr>
-<tr class="row-odd"><td><p>Color and any attribute</p></td>
+<tr class="row-even"><td><p>Color and any attribute</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">blink</span></code>, <code class="docutils literal notranslate"><span class="pre">color_cycle(colors)</span></code>, <code class="docutils literal notranslate"><span class="pre">tween(attribute,</span> <span class="pre">start,</span> <span class="pre">end)</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>Shape</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">morph(target)</span></code> (a <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> turning into any shape, segments matched by <code class="docutils literal notranslate"><span class="pre">interpolate</span></code>)</p></td>
+<tr class="row-odd"><td><p>Shape</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">morph(target)</span></code> (a <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> turning into any shape, contours matched by <code class="docutils literal notranslate"><span class="pre">interpolate</span></code>)</p></td>
 </tr>
-<tr class="row-odd"><td><p>Groups</p></td>
+<tr class="row-even"><td><p>Groups</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">stagger(preset,</span> <span class="pre">step=)</span></code> (each child starts <code class="docutils literal notranslate"><span class="pre">step</span></code> seconds after the last)</p></td>
 </tr>
 </tbody>
@@ -341,6 +344,15 @@
 <p>Every preset takes <code class="docutils literal notranslate"><span class="pre">dur</span></code> and <code class="docutils literal notranslate"><span class="pre">begin</span></code> in seconds, <code class="docutils literal notranslate"><span class="pre">repeat</span></code> (a count or <code class="docutils literal notranslate"><span class="pre">&quot;indefinite&quot;</span></code>) and keeps its end
 state unless <code class="docutils literal notranslate"><span class="pre">freeze=False</span></code>. They are plain SMIL, so they play in browsers and in <code class="docutils literal notranslate"><span class="pre">doc.at(t)</span></code>, video,
 animated GIF, APNG and WebP.</p>
+<p><code class="docutils literal notranslate"><span class="pre">create</span></code>, <code class="docutils literal notranslate"><span class="pre">uncreate</span></code> and <code class="docutils literal notranslate"><span class="pre">write</span></code> animate <code class="docutils literal notranslate"><span class="pre">stroke-dasharray</span></code>/<code class="docutils literal notranslate"><span class="pre">stroke-dashoffset</span></code> and <code class="docutils literal notranslate"><span class="pre">fill-opacity</span></code>.
+A shape without a stroke is drawn with its fill color, every contour of a shape draws at once, and
+<code class="docutils literal notranslate"><span class="pre">write</span></code> starts each character a little before the previous one finishes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Hello"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">48</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"tomato"</span><span class="p">)</span>
+<span class="n">title</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">badge</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">)</span>
+<span class="n">badge</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">uncreate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="playing-smil">
 <h2>Playing SMIL<a class="headerlink" href="#playing-smil" title="Link to this heading">¶</a></h2>
@@ -381,7 +393,10 @@ raises <code class="docutils literal notranslate"><span class="pre">FFmpegNotFou
 <p><code class="docutils literal notranslate"><span class="pre">svg.interpolate(a,</span> <span class="pre">b,</span> <span class="pre">t)</span></code> returns the value a fraction <code class="docutils literal notranslate"><span class="pre">t</span></code> of the way from <code class="docutils literal notranslate"><span class="pre">a</span></code> to <code class="docutils literal notranslate"><span class="pre">b</span></code>: numbers, points,
 colors, matrices (rotation, scale and skew blended separately, turning the short way), path data and
 whole elements. Elements of the same kind blend their attributes and transform; different shapes morph
-as outlines (both become cubic paths with matching subpaths), and paint blends along the way.</p>
+as outlines, and paint blends along the way. Outlines pair with outlines and holes with holes, nearest
+first; a contour without a partner grows from (or shrinks to) its centre, so a <code class="docutils literal notranslate"><span class="pre">B</span></code> with two holes can
+become a ring with one. Each pair is resampled to the same number of points, keeping sharp corners, and
+started where the points have least distance to travel, so the in-between shapes do not twist.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Polygon</span><span class="o">.</span><span class="n">regular</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"gold"</span><span class="p">)</span>
 <span class="n">end</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">)</span>
 <span class="n">frames</span> <span class="o">=</span> <span class="p">[</span><span class="n">svg</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">i</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">11</span><span class="p">)]</span>
