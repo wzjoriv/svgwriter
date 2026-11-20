@@ -5,7 +5,6 @@
 [![PyPI](https://img.shields.io/pypi/v/pysvgwriter)](https://pypi.org/project/pysvgwriter/)
 [![Python](https://img.shields.io/pypi/pyversions/pysvgwriter)](https://pypi.org/project/pysvgwriter/)
 [![CPython 3.10-3.15](https://img.shields.io/badge/CPython-3.10%E2%80%933.15-blue)](https://github.com/wzjoriv/svgwriter/actions/workflows/ci.yml)
-[![Free-threaded](https://img.shields.io/badge/free--threaded-3.14t-blue)](https://github.com/wzjoriv/svgwriter/actions/workflows/ci.yml)
 [![Linux · Windows · macOS](https://img.shields.io/badge/OS-Linux%20%C2%B7%20Windows%20%C2%B7%20macOS-blue)](https://github.com/wzjoriv/svgwriter/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
