@@ -3,8 +3,8 @@ name: Tests
 # quick: every pull request / push (lint, stubs generate, the suite on one Python).
 # full: every supported CPython on Linux plus the oldest and newest on Windows / macOS, and coverage;
 # runs on pushes to main, when a maintainer adds the `full-tests` label to a pull request,
-# or when the workflow is started by hand. skia-python ships no wheels for PyPy, free-threaded
-# builds or Pyodide, so those are not tested.
+# or when the workflow is started by hand. skia-python ships no wheels for PyPy,
+# GraalPy or Pyodide, and uharfbuzz none for free-threaded Linux, so those are not tested.
 
 on:
   pull_request:
