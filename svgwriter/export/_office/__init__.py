@@ -201,3 +201,39 @@ def xlsx(document: Document) -> bytes:
     buffer = io.BytesIO()
     book.save(buffer)
     return buffer.getvalue()
+
+
+@register_importer("docx", extensions=(".docx",))
+def read_docx(data: bytes) -> Document:
+    """The pictures and drawn shapes of a Word document as elements.
+
+    Floating (anchored) items keep their page position; inline ones stack
+    down the page in document order. Text is not imported.
+
+    Parameters
+    ----------
+    data : bytes
+        The ``.docx`` file.
+
+    Returns
+    -------
+    Document
+        Images and paths, sized to fit.
+
+    Raises
+    ------
+    OfficeExtraError
+        If ``python-docx`` is not installed.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> doc = svg.Document(40, 20)
+    >>> _ = doc.rect(0, 0, 40, 20, fill="teal")
+    >>> back = svg.export.find_importer("docx").function(svg.export.export(doc, "docx"))
+    >>> [e.tag for e in back]
+    ['image']
+    """
+    from ._docx import read_docx as read
+
+    return read(data)

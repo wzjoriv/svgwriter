@@ -56,3 +56,11 @@ def test_missing_library_explains_the_extra(monkeypatch):
     monkeypatch.setitem(sys.modules, "docx", None)
     with pytest.raises(ImportError, match=r"svgwriter\[office\]"):
         svg.export.export(_doc(), "docx")
+
+
+def test_word_round_trip_brings_the_picture_back():
+    doc = _doc()
+    back = svg.export.find_importer("docx").function(svg.export.export(doc, "docx"))
+    image = next(e for e in back if e.tag == "image")
+    assert (image.width, image.height) == pytest.approx((200, 100), abs=1)
+    assert image.rgba()[20, 30, 3] > 0.9
