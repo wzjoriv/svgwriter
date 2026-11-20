@@ -24,6 +24,11 @@ ALPHA_SCALE: Final = 100000
 POINTS_PER_UNIT: Final = 0.75
 DEFAULT_TEXT_PT: Final = 18.0
 ROUND_RECT_ADJUST: Final = 16667
+EMU_PER_POINT: Final = 12700
+LINE_HEIGHT: Final = 1.2
+ASCENT: Final = 0.9
+GENERIC_FONTS: Final = {"sans-serif": "Arial", "serif": "Times New Roman", "monospace": "Courier New",
+                        "system-ui": "Segoe UI", "cursive": "Comic Sans MS"}
 A_NS: Final = "http://schemas.openxmlformats.org/drawingml/2006/main"
 
 
@@ -47,7 +52,7 @@ def write_pptx(document: Document) -> bytes:
     presentation_module = require("pptx")
     from .._flatten import flatten
 
-    scene = flatten(document, handled=frozenset({"image"}))
+    scene = flatten(document, handled=frozenset({"image"}), text=True)
     scale = _emu_scale(scene.width, scene.height)
     deck = presentation_module.Presentation()
     deck.slide_width, deck.slide_height = round(scene.width * scale), round(scene.height * scale)
@@ -59,9 +64,54 @@ def write_pptx(document: Document) -> bytes:
                                      round(box.width * scale), round(box.height * scale))
     for item in scene.items:
         _freeform(slide, item, scale)
+    for run in scene.texts:
+        _textbox(slide, run, scale)
     buffer = io.BytesIO()
     deck.save(buffer)
     return buffer.getvalue()
+
+
+def _textbox(slide: Any, run: Any, scale: float) -> None:
+    """One text run as an editable, unwrapped text box whose first baseline sits on the run's baseline."""
+    from pptx.dml.color import RGBColor
+    from pptx.enum.text import MSO_AUTO_SIZE
+    from pptx.util import Pt
+
+    matrix = run.matrix
+    stretch = math.sqrt(abs(matrix.determinant))
+    size = run.size * stretch
+    angle = math.degrees(math.atan2(matrix.b, matrix.a))
+    width, height = max(run.width * stretch, 1.0), size * LINE_HEIGHT
+    turn = math.radians(angle)
+    # Top-left of the unrotated box in the run's frame, then its centre on the page (PowerPoint turns about it).
+    top = -size * ASCENT
+    centre_x = matrix.e + math.cos(turn) * width / 2 - math.sin(turn) * (top + height / 2)
+    centre_y = matrix.f + math.sin(turn) * width / 2 + math.cos(turn) * (top + height / 2)
+    box = slide.shapes.add_textbox(round((centre_x - width / 2) * scale), round((centre_y - height / 2) * scale),
+                                   round(width * scale), round(height * scale))
+    box.rotation = angle
+    frame = box.text_frame
+    frame.margin_left = frame.margin_right = frame.margin_top = frame.margin_bottom = 0
+    frame.word_wrap = False
+    frame.auto_size = MSO_AUTO_SIZE.NONE
+    text_run = frame.paragraphs[0].add_run()
+    text_run.text = run.text
+    font = text_run.font
+    font.size = Pt(size * scale / EMU_PER_POINT)
+    font.name = _office_family(run.family)
+    font.bold, font.italic = run.bold, run.italic
+    if run.fill is not None:
+        font.color.rgb = RGBColor(*run.fill.uint8[:3])
+        if run.opacity < 1:
+            fill = font.color._color._xClr  # noqa: SLF001 - python-pptx exposes no text alpha
+            alpha = fill.makeelement(_a("alpha"), {"val": str(round(run.opacity * ALPHA_SCALE))})
+            fill.append(alpha)
+
+
+def _office_family(family: str) -> str:
+    """The first concrete font of a CSS family list, with generic names mapped to common Office fonts."""
+    first = family.split(",")[0].strip().strip("'\"")
+    return GENERIC_FONTS.get(first.lower(), first)
 
 
 def _images(document: Document) -> list[Any]:
@@ -180,6 +230,8 @@ def _read_shape(parent: Any, shape: Any) -> None:
         parent.add(element)
     text = _text(shape, left, top)
     if text is not None:
+        if shape.rotation:
+            text.rotate(shape.rotation, about=(left + width / 2, top + height / 2))
         parent.add(text)
 
 
@@ -206,6 +258,8 @@ def _outline(shape: Any, left: float, top: float, width: float, height: float) -
         stroke = _solid(line.find(_a("solidFill")))
         if stroke is not None:
             path.set("stroke-width", int(line.get("w", EMU_PER_UNIT)) / EMU_PER_UNIT)
+    if fill is None and stroke is None:
+        return None
     path.set("fill", fill if fill is not None else "none")
     if stroke is not None:
         path.set("stroke", stroke)
@@ -267,18 +321,38 @@ def _preset_path(name: str | None, left: float, top: float, width: float, height
 
 
 def _text(shape: Any, left: float, top: float) -> Any:
-    """A text box's paragraphs as one ``<text>`` per line, or None."""
+    """A text box's paragraphs as one ``<text>`` per line, with font, weight, style and colour, or None."""
     from ...elements.structure import Group
     from ...elements.text import Text
 
     if not getattr(shape, "has_text_frame", False) or not shape.text_frame.text.strip():
         return None
+    frame = shape.text_frame
     group = Group()
-    baseline = top
-    for paragraph in shape.text_frame.paragraphs:
-        size = next((run.font.size.pt for run in paragraph.runs if run.font.size is not None), DEFAULT_TEXT_PT)
-        size_units = size / POINTS_PER_UNIT
-        baseline += size_units
+    left += (frame.margin_left or 0) / EMU_PER_UNIT
+    line_top = top + (frame.margin_top or 0) / EMU_PER_UNIT
+    for paragraph in frame.paragraphs:
+        font = next((run.font for run in paragraph.runs if run.font.size is not None), None)
+        size_units = (font.size.pt if font is not None else DEFAULT_TEXT_PT) / POINTS_PER_UNIT
         if paragraph.text:
-            group.add(Text(paragraph.text, x=left, y=baseline, font_size=math.floor(size_units * 100) / 100))
+            text = Text(paragraph.text, x=left, y=line_top + size_units * ASCENT,
+                        font_size=math.floor(size_units * 100) / 100)
+            if font is not None:
+                _text_style(text, font)
+            group.add(text)
+        line_top += size_units * LINE_HEIGHT
     return group if len(group) else None
+
+
+def _text_style(text: Any, font: Any) -> None:
+    """Copy a python-pptx run font's family, weight, style and explicit colour onto *text*."""
+    if font.name:
+        text.set("font-family", font.name)
+    if font.bold:
+        text.set("font-weight", "bold")
+    if font.italic:
+        text.set("font-style", "italic")
+    properties = font._rPr  # noqa: SLF001 - the colour's alpha is not exposed
+    color = _solid(properties.find(_a("solidFill"))) if properties is not None else None
+    if color is not None:
+        text.set("fill", color)

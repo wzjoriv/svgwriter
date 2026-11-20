@@ -43,3 +43,19 @@ def test_mixed_scripts_shape_each_in_its_own_font() -> None:
     whole = len(text_outline(MIXED, "sans-serif", 16))
     parts = sum(len(text_outline(part, "sans-serif", 16)) for part in MIXED.split(" "))
     assert whole == parts
+
+
+def test_pptx_keeps_text_as_editable_boxes() -> None:
+    from svgwriter.export import export, find_importer
+
+    doc = svg.Document(300, 120)
+    doc.text("Hello slide", x=20, y=40, font_size=24, fill="red", font_weight="bold")
+    turned = doc.text("turned", x=150, y=90, font_size=18, font_style="italic")
+    turned.rotate(-20, about=(150, 90))
+    back = find_importer("pptx").function(export(doc, "pptx"))
+    texts = [element for element in back.root.iter() if element.tag == "text"]
+    assert [text.text_content for text in texts] == ["Hello slide", "turned"]
+    assert float(texts[0].get("y")) == 40
+    assert texts[0].get("font-weight") == "bold"
+    assert texts[1].get("font-style") == "italic"
+    assert "path" not in back.to_string()
