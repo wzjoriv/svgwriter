@@ -211,7 +211,7 @@ def shape_run(text: str, font_family: str, size: float, weight: FontWeight = "no
     Raises
     ------
     ImportError
-        If ``uharfbuzz`` (the ``svgwriter[shaping]`` extra) is not installed.
+        If ``uharfbuzz`` (a dependency of svgwriter) is missing from the environment.
 
     Examples
     --------
@@ -221,7 +221,7 @@ def shape_run(text: str, font_family: str, size: float, weight: FontWeight = "no
     """
     hb = _harfbuzz()
     if hb is None:
-        raise ImportError("text shaping needs uharfbuzz; pip install 'svgwriter[shaping]'")
+        raise ImportError("text shaping needs uharfbuzz; pip install uharfbuzz")
     first = next((char for char in text if not char.isspace()), text[:1])
     font = font_for(first, font_family, size, weight, italic, language)
     shaper, units, _, _ = _hb_font(font.getTypeface())
