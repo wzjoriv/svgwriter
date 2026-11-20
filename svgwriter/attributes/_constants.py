@@ -11,6 +11,7 @@ from typing import Final
 __all__ = [
     "ANGLE_RE",
     "AT_BLOCK_RE",
+    "COMBINATORS",
     "COMMENT_RE",
     "COMPOUND_RE",
     "DEGREES_PER",
@@ -68,3 +69,4 @@ PREFIXES: Final = ("xlink", "xml")
 FUNC_IRI_RE: Final = re.compile(r"""^\s*url\(\s*(['"]?)(.*?)\1\s*\)\s*$""")
 
 SEPARATORS: Final = re.compile(r"[\s,]+")
+COMBINATORS: Final = frozenset({">", "+", "~"})
