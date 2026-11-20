@@ -117,7 +117,7 @@ def font_for(char: str, font_family: str, size: float, weight: FontWeight = "nor
     style = skia.FontStyle(weight_value(weight), NORMAL_WIDTH, slant)
     family = font.getTypeface().getFamilyName()
     hints = [language] if language else []
-    fallback = skia.FontMgr().matchFamilyStyleCharacter(family, style, hints, ord(char[0]))
+    fallback = skia.FontMgr.RefDefault().matchFamilyStyleCharacter(family, style, hints, ord(char[0]))
     if fallback is None:
         return font
     return skia.Font(skia.Typeface(fallback.getFamilyName(), style), size)
