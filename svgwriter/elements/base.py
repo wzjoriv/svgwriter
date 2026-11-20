@@ -50,7 +50,8 @@ COLOR_OPACITY: Final = {
 COLOR_ATTRIBUTES: Final = frozenset({*COLOR_OPACITY, "color", "lighting-color"})
 SUGGESTIONS: Final = 3
 PREVIEW_PADDING: Final = 2.0
-PREVIEW_SCALE: Final = 2.0
+PREVIEW_SCALE: Final = 1.0
+PREVIEW_MIN_PIXELS: Final = 200.0
 _XML_NAME_RE: Final = re.compile(r"^[A-Za-z_][\w.\-]*$")
 
 
@@ -976,12 +977,19 @@ class Element(Composable):
         write(self, target, **options)
 
     def _preview(self) -> Any:
-        """A document showing a copy of this element alone, fitted to its bounds (notebook display)."""
+        """A copy of this element alone in a fitted document, enlarged to at least 200 px on its longer side."""
         from ..document import Document
 
         doc = Document()
         doc.add(self.clone())
-        return doc.fit(padding=PREVIEW_PADDING)
+        doc.fit(padding=PREVIEW_PADDING)
+        box = doc.root.view_box
+        longest = max(box.width, box.height) if box is not None else 0.0
+        if 0 < longest < PREVIEW_MIN_PIXELS:
+            zoom = PREVIEW_MIN_PIXELS / longest
+            doc.root.set("width", box.width * zoom)
+            doc.root.set("height", box.height * zoom)
+        return doc
 
     def _repr_svg_(self) -> str:
         """Jupyter display: the element alone in a fitted ``<svg>`` (an ``<svg>`` root shows as itself)."""

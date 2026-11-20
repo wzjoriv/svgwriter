@@ -423,6 +423,6 @@ def test_notebook_display_is_a_fitted_standalone_svg_and_png() -> None:
     grad = svg.LinearGradient.horizontal("gold", "red")
     shape = svg.circle(30, 30, 10, fill=grad)
     text = shape._repr_svg_()
-    assert text.startswith("<svg") and "linearGradient" in text and 'viewBox="18 18 24 24"' in text
+    assert text.startswith("<svg") and "linearGradient" in text and 'viewBox="18 18 24 24"' in text and 'width="200"' in text
     assert shape._repr_png_()[:4] == b"\x89PNG"
     assert shape.parent is None and svg.Svg()._repr_svg_().startswith("<svg")
