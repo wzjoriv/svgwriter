@@ -1,8 +1,7 @@
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import ClassVar
 from ..transform.matrix import Point
-from ._command_forms import CommandForms, XYEnd
+from ._command_forms import PathCommand as PathCommand, XYEnd
 
 __all__ = [
     "ArcTo",
@@ -17,17 +16,6 @@ __all__ = [
     "SmoothQuadTo",
     "VLineTo",
 ]
-
-class PathCommand(CommandForms, ABC):
-    code: ClassVar[str]
-    coordinates: ClassVar[tuple[str, ...]]
-    relative: bool
-
-    @property
-    @abstractmethod
-    def arguments(self) -> tuple[float, ...]: ...
-    @abstractmethod
-    def end_point(self, current: Point, start: Point) -> Point: ...
 
 @dataclass(frozen=True)
 class MoveTo(XYEnd, PathCommand):

@@ -1,9 +1,10 @@
 """
-Letter, absolute form and text shared by every path command.
+The path command base class, with the letter, absolute form and text shared by every command.
 """
 
 from __future__ import annotations
 
+from abc import ABC, abstractmethod
 from dataclasses import fields, replace
 from typing import Any, ClassVar
 
@@ -12,7 +13,7 @@ from .._internal._numbers import format_number
 from .._internal._typing import Self
 from ..transform.matrix import Point
 
-__all__ = ["CommandForms", "XYEnd"]
+__all__ = ["CommandForms", "PathCommand", "XYEnd"]
 
 
 class CommandForms:
@@ -111,3 +112,72 @@ class XYEnd:
     @property
     def arguments(self) -> tuple[float, ...]:
         return _values(self)
+
+
+class PathCommand(CommandForms, ABC):
+    """One segment of path data.
+
+    Base class of the ten SVG path commands. Each command knows its letter, its
+    numeric arguments and where it leaves the pen, and can be converted from
+    relative to absolute form.
+
+    Attributes
+    ----------
+    code : str
+        The uppercase command letter.
+    coordinates : tuple of str
+        Names of the fields that are coordinates (shifted by the current point
+        when relative).
+    relative : bool
+        Whether the command is in its lowercase (relative) form.
+
+    See Also
+    --------
+    PathData : A sequence of commands.
+
+    Examples
+    --------
+    >>> from svgwriter.pathdata import LineTo
+    >>> isinstance(LineTo(1, 2), PathCommand)
+    True
+    """
+
+    code: ClassVar[str]
+    coordinates: ClassVar[tuple[str, ...]] = ()
+    relative: bool
+
+    @property
+    @abstractmethod
+    def arguments(self) -> tuple[float, ...]:
+        """Numbers written after the command letter, in order.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import LineTo
+        >>> LineTo(1, 2).arguments
+        (1.0, 2.0)
+        """
+
+    @abstractmethod
+    def end_point(self, current: Point, start: Point) -> Point:
+        """Return the absolute pen position after this segment.
+
+        Parameters
+        ----------
+        current : Point
+            Pen position before the command.
+        start : Point
+            Start of the current subpath, where ``Z`` returns to.
+
+        Returns
+        -------
+        Point
+            The pen position once the command has been drawn.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import LineTo
+        >>> from svgwriter.transform import Point
+        >>> LineTo(1, 2, relative=True).end_point(Point(10, 10), Point(0, 0))
+        Point(x=11, y=12)
+        """
