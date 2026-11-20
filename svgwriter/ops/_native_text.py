@@ -123,7 +123,8 @@ def _glyph_font(box: Any) -> Any:
     """The skia font that draws *box* as one glyph, or None when it must be an outline."""
     from ..attributes.cascade import computed
     from ..elements._textlayout import _font_size, _font_weight
-    from .text import font_for, needs_shaping
+    from ._fonts import font_for
+    from ._shaping import needs_shaping
 
     if needs_shaping(box.char) or box.source is None:
         return None

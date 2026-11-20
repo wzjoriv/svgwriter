@@ -16,6 +16,7 @@ from ._constants import (
     FONT_CACHE,
     GENERIC_CANDIDATES,
     GENERIC_FAMILIES,
+    GLYPH_CACHE,
     NORMAL_WEIGHT,
     NORMAL_WIDTH,
 )
@@ -23,7 +24,7 @@ from ._constants import (
 if TYPE_CHECKING:
     from .text import FontWeight
 
-__all__ = ["registered_face", "registered_typefaces", "resolve_font", "weight_value"]
+__all__ = ["font_for", "registered_face", "registered_typefaces", "resolve_font", "weight_value"]
 
 
 def weight_value(value: FontWeight) -> int:
@@ -72,3 +73,51 @@ def resolve_font(font_family: str, size: float, weight: FontWeight, italic: bool
             stacklevel=3,
         )
     return skia.Font(typeface, size)
+
+
+@lru_cache(maxsize=GLYPH_CACHE)
+def font_for(char: str, font_family: str, size: float, weight: FontWeight = "normal", italic: bool = False,
+             language: str | None = None) -> Any:
+    """The font for *char*: the requested family when it has the glyph, else a system font that does.
+
+    Like a browser, layout falls back per character, so Devanagari, Bengali,
+    CJK and other scripts render even when the chosen family lacks them.
+
+    Parameters
+    ----------
+    char : str
+        The character (first code point is used).
+    font_family : str
+        CSS font family list.
+    size : float
+        Font size in user units.
+    weight : {"normal", "bold"} or int, optional
+        Font weight. Defaults to "normal".
+    italic : bool, optional
+        Prefer an italic face. Defaults to False.
+    language : str, optional
+        BCP 47 language hint (``"zh"``, ``"ja"``, ...) for choosing among fonts
+        that cover the character. Defaults to None.
+
+    Returns
+    -------
+    skia.Font
+        A font that can draw *char*, or the requested one when nothing can.
+
+    Examples
+    --------
+    >>> from svgwriter.ops._fonts import font_for
+    >>> font_for("A", "sans-serif", 16).getSize()
+    16.0
+    """
+    font = resolve_font(font_family, size, weight, italic)
+    if not char or font.unicharToGlyph(ord(char[0])):
+        return font
+    slant = skia.FontStyle.kItalic_Slant if italic else skia.FontStyle.kUpright_Slant
+    style = skia.FontStyle(weight_value(weight), NORMAL_WIDTH, slant)
+    family = font.getTypeface().getFamilyName()
+    hints = [language] if language else []
+    fallback = skia.FontMgr().matchFamilyStyleCharacter(family, style, hints, ord(char[0]))
+    if fallback is None:
+        return font
+    return skia.Font(skia.Typeface(fallback.getFamilyName(), style), size)
