@@ -1,0 +1,488 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Logos and icons" href="logos.html"><link rel="prev" title="Export and import" href="export-import.html">
+        <link rel="prefetch" href="../_static/logo.svg" as="image">
+
+    <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
+        <title>Animation - svgwriter 1.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f0f0f0;
+  --color-code-foreground: black;
+  --color-brand-primary: #0f766e;
+  --color-brand-content: #0f766e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #5eead4;
+  --color-brand-content: #99f6e4;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #5eead4;
+  --color-brand-content: #99f6e4;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     Development docs for the next release. <a href="https://wzjoriv.github.io/svgwriter/stable/">Stable docs</a>. 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">svgwriter 1.0.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">svgwriter 1.0.0</span>
+  
+</a><div class="sidebar-versions">
+  <span class="sidebar-versions-label">1.0.0</span>
+  <a href="https://wzjoriv.github.io/svgwriter/stable/" class="">stable</a>
+  <a href="https://wzjoriv.github.io/svgwriter/dev/" class="current">dev</a>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Start</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../start/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../start/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry and transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="paths.html">Paths, boolean operations and measurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="text.html">Text</a></li>
+<li class="toctree-l1"><a class="reference internal" href="colors-and-images.html">Colors and images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documents.html">Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rendering.html">Rendering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export-import.html">Export and import</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Animation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logos.html">Logos and icons</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../explanation/design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanation/conformance.html">Conformance</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/document.html">Document</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/elements.html">Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry.html">Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/color.html">Colors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/ops.html">Geometry operations and rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/export.html">Export and import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/io.html">Reading and writing SVG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/attributes.html">Attribute values and styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/video.html">Animation export</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/wzjoriv/svgwriter/blob/main/docs/guides/animation.md?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/wzjoriv/svgwriter/edit/main/docs/guides/animation.md" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="animation">
+<h1>Animation<a class="headerlink" href="#animation" title="Link to this heading">¶</a></h1>
+<section id="smil-in-the-document">
+<h2>SMIL in the document<a class="headerlink" href="#smil-in-the-document" title="Link to this heading">¶</a></h2>
+<p>Every SVG 1.1 animation element is available (<code class="docutils literal notranslate"><span class="pre">animate</span></code>, <code class="docutils literal notranslate"><span class="pre">set</span></code>, <code class="docutils literal notranslate"><span class="pre">animateMotion</span></code>, <code class="docutils literal notranslate"><span class="pre">animateTransform</span></code>,
+<code class="docutils literal notranslate"><span class="pre">animateColor</span></code>) and is written as SMIL for browsers to play:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">ball</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"tomato"</span><span class="p">)</span>
+<span class="n">ball</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Animate</span><span class="p">(</span><span class="n">attribute_name</span><span class="o">=</span><span class="s2">"cx"</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="s2">"2s"</span><span class="p">,</span> <span class="n">repeat_count</span><span class="o">=</span><span class="s2">"indefinite"</span><span class="p">))</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"ball.svg"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="presets">
+<h2>Presets<a class="headerlink" href="#presets" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">element.animate</span></code> adds ready-made SMIL animations and chains:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logo</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">)</span>
+<span class="n">logo</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">fade_in</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">spin</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Group</p></th>
+<th class="head"><p>Presets</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Appear / disappear</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fade_in</span></code>, <code class="docutils literal notranslate"><span class="pre">fade_out</span></code>, <code class="docutils literal notranslate"><span class="pre">draw</span></code> (stroke draws on), <code class="docutils literal notranslate"><span class="pre">wipe(side)</span></code>, <code class="docutils literal notranslate"><span class="pre">typewriter</span></code> (text)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Motion</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">slide_in(side)</span></code>, <code class="docutils literal notranslate"><span class="pre">move_to(x,</span> <span class="pre">y)</span></code>, <code class="docutils literal notranslate"><span class="pre">follow(path)</span></code>, <code class="docutils literal notranslate"><span class="pre">bounce</span></code>, <code class="docutils literal notranslate"><span class="pre">shake</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Scale and turn</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">grow</span></code>, <code class="docutils literal notranslate"><span class="pre">shrink</span></code>, <code class="docutils literal notranslate"><span class="pre">pulse</span></code>, <code class="docutils literal notranslate"><span class="pre">spin(turns=)</span></code> (about the element’s centre)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Color and any attribute</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">blink</span></code>, <code class="docutils literal notranslate"><span class="pre">color_cycle(colors)</span></code>, <code class="docutils literal notranslate"><span class="pre">tween(attribute,</span> <span class="pre">start,</span> <span class="pre">end)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Shape</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">morph(target)</span></code> (a <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> turning into any shape, segments matched by <code class="docutils literal notranslate"><span class="pre">interpolate</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Groups</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">stagger(preset,</span> <span class="pre">step=)</span></code> (each child starts <code class="docutils literal notranslate"><span class="pre">step</span></code> seconds after the last)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Every preset takes <code class="docutils literal notranslate"><span class="pre">dur</span></code> and <code class="docutils literal notranslate"><span class="pre">begin</span></code> in seconds, <code class="docutils literal notranslate"><span class="pre">repeat</span></code> (a count or <code class="docutils literal notranslate"><span class="pre">&quot;indefinite&quot;</span></code>) and keeps its end
+state unless <code class="docutils literal notranslate"><span class="pre">freeze=False</span></code>. They are plain SMIL, so they play in browsers and in <code class="docutils literal notranslate"><span class="pre">doc.at(t)</span></code>, video,
+animated GIF, APNG and WebP.</p>
+</section>
+<section id="playing-smil">
+<h2>Playing SMIL<a class="headerlink" href="#playing-smil" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">doc.at(seconds)</span></code> returns a static copy with every animation applied at that moment, so SMIL can be
+inspected, rasterized or exported frame by frame, and <code class="docutils literal notranslate"><span class="pre">render_animation</span></code> plays it without an <code class="docutils literal notranslate"><span class="pre">update</span></code>
+callback. It covers <code class="docutils literal notranslate"><span class="pre">animate</span></code>, <code class="docutils literal notranslate"><span class="pre">set</span></code>, <code class="docutils literal notranslate"><span class="pre">animateColor</span></code>, <code class="docutils literal notranslate"><span class="pre">animateTransform</span></code> and <code class="docutils literal notranslate"><span class="pre">animateMotion</span></code> with clock
+timing, repeats, <code class="docutils literal notranslate"><span class="pre">fill=&quot;freeze&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">values</span></code>/<code class="docutils literal notranslate"><span class="pre">keyTimes</span></code>, discrete mode and <code class="docutils literal notranslate"><span class="pre">additive=&quot;sum&quot;</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">frame</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>          <span class="c1"># the ball halfway along</span>
+</pre></div>
+</div>
+<p>Saving keeps the animation where the format can play it: <code class="docutils literal notranslate"><span class="pre">.svg</span></code> and <code class="docutils literal notranslate"><span class="pre">.svgz</span></code> keep the SMIL elements,
+and <code class="docutils literal notranslate"><span class="pre">.gif</span></code> becomes an animated GIF of the whole animation (<code class="docutils literal notranslate"><span class="pre">fps=</span></code>, <code class="docutils literal notranslate"><span class="pre">duration=</span></code>, <code class="docutils literal notranslate"><span class="pre">loop=</span></code>; no ffmpeg
+needed); <code class="docutils literal notranslate"><span class="pre">.png</span></code> and <code class="docutils literal notranslate"><span class="pre">.webp</span></code> become APNG and animated WebP with <code class="docutils literal notranslate"><span class="pre">animate=True</span></code>. Other still formats show one moment, chosen with <code class="docutils literal notranslate"><span class="pre">time=</span></code>:
+<code class="docutils literal notranslate"><span class="pre">doc.save(&quot;end.png&quot;,</span> <span class="pre">time=2.0)</span></code>.</p>
+</section>
+<section id="video-through-ffmpeg">
+<h2>Video through ffmpeg<a class="headerlink" href="#video-through-ffmpeg" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">render_animation</span></code> draws frames and pipes them to ffmpeg (mp4, gif, webm, mov, apng). The <code class="docutils literal notranslate"><span class="pre">update</span></code>
+callback changes the document for each frame:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+    <span class="n">ball</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="mi">50</span> <span class="o">+</span> <span class="mi">30</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">seconds</span><span class="p">),</span> <span class="mi">50</span> <span class="o">+</span> <span class="mi">30</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">seconds</span><span class="p">))</span>
+
+<span class="c1"># doc.render_animation("orbit.mp4", fps=30, duration=2, renderer="skia", update=update)</span>
+</pre></div>
+</div>
+<p>The built-in <code class="docutils literal notranslate"><span class="pre">&quot;skia&quot;</span></code> renderer returns raw RGBA frames. Any callable <code class="docutils literal notranslate"><span class="pre">renderer(document,</span> <span class="pre">seconds)</span></code> that
+returns PNG bytes or a uint8 <code class="docutils literal notranslate"><span class="pre">(H,</span> <span class="pre">W,</span> <span class="pre">4)</span></code> array works, as does a <code class="docutils literal notranslate"><span class="pre">&quot;module:function&quot;</span></code> name. Missing ffmpeg
+raises <code class="docutils literal notranslate"><span class="pre">FFmpegNotFoundError</span></code> before any rendering.</p>
+<p>From the command line:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>svgwriter<span class="w"> </span>animate<span class="w"> </span>scene.py<span class="w"> </span>-o<span class="w"> </span>out.mp4<span class="w"> </span>--fps<span class="w"> </span><span class="m">30</span>
+</pre></div>
+</div>
+</section>
+<section id="tweening-and-morphing">
+<h2>Tweening and morphing<a class="headerlink" href="#tweening-and-morphing" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">svg.interpolate(a,</span> <span class="pre">b,</span> <span class="pre">t)</span></code> returns the value a fraction <code class="docutils literal notranslate"><span class="pre">t</span></code> of the way from <code class="docutils literal notranslate"><span class="pre">a</span></code> to <code class="docutils literal notranslate"><span class="pre">b</span></code>: numbers, points,
+colors, matrices (rotation, scale and skew blended separately, turning the short way), path data and
+whole elements. Elements of the same kind blend their attributes and transform; different shapes morph
+as outlines (both become cubic paths with matching subpaths), and paint blends along the way.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Polygon</span><span class="o">.</span><span class="n">regular</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"gold"</span><span class="p">)</span>
+<span class="n">end</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">)</span>
+<span class="n">frames</span> <span class="o">=</span> <span class="p">[</span><span class="n">svg</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">i</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">11</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="n">frames</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fill"</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>In an <code class="docutils literal notranslate"><span class="pre">update</span></code> callback this gives morphs and tweens per frame, for instance
+<code class="docutils literal notranslate"><span class="pre">doc[0]</span> <span class="pre">=</span> <span class="pre">svg.interpolate(start,</span> <span class="pre">end,</span> <span class="pre">time</span> <span class="pre">/</span> <span class="pre">duration)</span></code>.</p>
+</section>
+<section id="video-in">
+<h2>Video in<a class="headerlink" href="#video-in" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">svgwriter.video.Video(path)</span></code> reads a video lazily through ffmpeg: <code class="docutils literal notranslate"><span class="pre">video[i]</span></code> is frame <code class="docutils literal notranslate"><span class="pre">i</span></code> as an
+<code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">video.at(seconds)</span></code> the frame shown at that time, and iterating streams every frame as a
+numpy array. Mix footage with vector animation in <code class="docutils literal notranslate"><span class="pre">update</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.video</span><span class="w"> </span><span class="kn">import</span> <span class="n">Video</span>
+
+<span class="c1"># clip = Video("footage.mp4")</span>
+<span class="c1"># backdrop = doc.add(clip[0])</span>
+<span class="c1"># def update(document, seconds):</span>
+<span class="c1">#     backdrop.color = clip.at(seconds).color</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="logos.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Logos and icons</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="export-import.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Export and import</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Josue N Rivera
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Animation</a><ul>
+<li><a class="reference internal" href="#smil-in-the-document">SMIL in the document</a></li>
+<li><a class="reference internal" href="#presets">Presets</a></li>
+<li><a class="reference internal" href="#playing-smil">Playing SMIL</a></li>
+<li><a class="reference internal" href="#video-through-ffmpeg">Video through ffmpeg</a></li>
+<li><a class="reference internal" href="#tweening-and-morphing">Tweening and morphing</a></li>
+<li><a class="reference internal" href="#video-in">Video in</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=4ebf8126"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>
