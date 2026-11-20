@@ -24,3 +24,4 @@ def test_switch_renders_only_its_first_passing_child():
     body = ('<switch><desc>skipped</desc><rect width="10" height="10" fill="red" systemLanguage="fr"/>'
             '<rect width="10" height="10" fill="lime"/><rect width="10" height="10" fill="blue"/></switch>')
     assert _colour(body) == [0.0, 1.0, 0.0, 1.0]
+

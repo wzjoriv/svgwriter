@@ -26,14 +26,16 @@ __all__ = ["ellipses_as_paths", "expand_image_patterns", "outlined", "page_box",
 
 
 def expand_image_patterns(root: Element) -> None:
-    """Shapes filled with a pattern that holds images become clipped tiles, so the images get drawn."""
+    """Shapes filled with a pattern skia cannot paint (holding images, or with a ``viewBox``) become clipped tiles."""
     from ..elements import PathOperand, Pattern
+    from ._tree import resolve
 
     for leaf in list(root.iter()):
-        pattern = getattr(leaf.attributes.get("fill"), "element", None)
-        if (isinstance(pattern, Pattern) and isinstance(leaf, PathOperand) and leaf.parent is not None
-                and any(e.tag == "image" for e in pattern.iter())):
+        pattern = resolve(leaf, leaf.attributes.get("fill")) if isinstance(leaf, PathOperand) else None
+        if (isinstance(pattern, Pattern) and leaf.parent is not None
+                and (pattern.get("viewBox") is not None or any(e.tag == "image" for e in pattern.iter()))):
             try:
+                leaf.set("fill", pattern)
                 replace_in_parent(leaf, leaf.expand_pattern())
             except (TypeError, ValueError):
                 continue

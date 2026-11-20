@@ -43,3 +43,11 @@ def test_expand_pattern_renders_like_the_fill(transform):
 def test_expand_pattern_needs_a_pattern_fill():
     with pytest.raises(ValueError, match="pattern"):
         svg.rect(0, 0, 1, 1, fill="red").expand_pattern()
+
+
+def test_pattern_view_box_scales_its_content_into_each_tile():
+    body = ('<defs><pattern id="p" patternUnits="userSpaceOnUse" width="10" height="10" viewBox="0 0 100 100">'
+            '<rect width="50" height="100" fill="lime"/></pattern></defs><rect width="10" height="10" fill="url(#p)"/>')
+    pixels = svg.ops.rasterize(svg.Document.from_string('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10">' + body + "</svg>"))
+    assert pixels[5, 2].round(2).tolist() == [0.0, 1.0, 0.0, 1.0]
+    assert pixels[5, 8].round(2).tolist() == [0.0, 0.0, 0.0, 0.0]
