@@ -1,5 +1,5 @@
 """
-Pattern fills cut into plain tiles, and images placed in page space, for flattening.
+Pattern fills cut into plain tiles for flattening.
 """
 
 from __future__ import annotations
@@ -8,12 +8,11 @@ import math
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ..document import Document
     from ..elements.core import Element
     from ..pathdata.data import PathData
     from ..transform.matrix import Matrix
 
-__all__ = ["placed_images"]
+__all__: list[str] = []
 
 
 def _ancestry(leaf: Element, root: Element) -> tuple[Matrix, float]:
@@ -82,39 +81,3 @@ def _cut_tiles(pattern: Any, box: Any, outline: PathData) -> list[Any]:
                     paths.append(piece)
     return paths
 
-
-def placed_images(document: Document) -> list[tuple[Any, Matrix]]:
-    """Each embedded image with the matrix from its pixel grid to page coordinates (``viewBox`` included).
-
-    Formats that draw images themselves (EPS, PowerPoint) use this; :func:`flatten` leaves images out.
-
-    Parameters
-    ----------
-    document : Document
-        The document.
-
-    Returns
-    -------
-    list of (Image, Matrix)
-        Images in paint order with their placement.
-
-    Examples
-    --------
-    >>> import numpy as np
-    >>> import svgwriter as svg
-    >>> doc = svg.Document(20, 10)
-    >>> _ = doc.add(svg.Image(np.zeros((2, 4, 3)), 5, 0, 8, 4))
-    >>> [matrix.apply(0, 0) for _, matrix in placed_images(doc)]
-    [Point(x=5.0, y=0.0)]
-    """
-    from ..elements import Image
-    from ..ops.render import document_size
-    from ._layers import ancestry, image_matrix
-    from ._rendering import view_matrix
-
-    with document._sized():
-        width, height = document_size(document)
-        view = view_matrix(document, width, height)
-        images = [element for element in document.root.iter() if isinstance(element, Image)]
-        return [(image, view @ ancestry(image, document.root)[0] @ image_matrix(image))
-                for image in images if image.pixels is not None]

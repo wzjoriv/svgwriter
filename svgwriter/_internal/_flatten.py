@@ -96,6 +96,9 @@ class Scene:
         Text runs when flattening with ``text=True``; empty otherwise.
     skipped : list of str
         Descriptions of elements that could not be represented.
+    images : list of (int, Image, Matrix)
+        With ``"image"`` in ``handled``: each embedded image, the number of items painted before it and
+        the matrix from its pixel grid to the page, in paint order.
 
     See Also
     --------
@@ -115,6 +118,7 @@ class Scene:
     items: list[Item]
     skipped: list[str]
     texts: list[Any] = field(default_factory=list)
+    images: list[tuple[int, Any, Any]] = field(default_factory=list)
 
 
 def to_cubic(data: PathData) -> list[tuple[str, tuple[float, ...]]]:
@@ -251,9 +255,9 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
     (1, [])
     """
     from ..attributes.cascade import computed, rules_of
-    from ..elements import PathOperand
+    from ..elements import Image, PathOperand
     from ..ops.render import document_size
-    from ._layers import drawable_order
+    from ._layers import ancestry, drawable_order, image_matrix
     from ._rendering import renderable_copy, view_matrix
 
     with document._sized():
@@ -270,8 +274,13 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
     rules = rules_of(root)
     items: list[Item] = []
     skipped: list[str] = []
+    images: list[tuple[int, Any, Any]] = []
     for leaf in drawable_order(root):
         if _hidden(leaf, root):
+            continue
+        if isinstance(leaf, Image) and "image" in handled:
+            if leaf.pixels is not None:
+                images.append((len(items), leaf, view @ ancestry(leaf, root)[0] @ image_matrix(leaf)))
             continue
         if not isinstance(leaf, PathOperand):
             skipped.append(f"<{leaf.tag}>")
@@ -281,10 +290,10 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
         except TypeError as exc:
             skipped.append(str(exc))
             continue
-        ancestry, opacity = _ancestry(leaf, root)
+        inherited, opacity = _ancestry(leaf, root)
         dropped, link = _effects_and_link(leaf, root)
         skipped += dropped
-        matrix = view @ ancestry
+        matrix = view @ inherited
         opacity *= float(leaf.get("opacity", 1.0))
         stretch = math.sqrt(abs((matrix @ leaf.t).determinant)) or 1.0
         dashes = computed(leaf, "stroke-dasharray", NONE, rules)
@@ -315,7 +324,7 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
         from ._text_runs import text_runs
 
         texts = text_runs(document, color_glyphs=color_glyphs)
-    return Scene(width, height, items, skipped, texts)
+    return Scene(width, height, items, skipped, texts, images)
 
 
 def _has_emoji(document: Document) -> bool:

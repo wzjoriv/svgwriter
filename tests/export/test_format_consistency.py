@@ -23,3 +23,13 @@ def test_a_pdf_colour_after_a_pattern_fill_paints_solid_again():
     doc.circle(70, 20, 15, fill="red")
     back = svg.export.find_importer("pdf").function(svg.export.export(doc, "pdf"))
     assert str(list(back)[-1].get("fill")) == "#ff0000"
+
+
+def test_an_eps_image_is_painted_in_document_order():
+    doc = svg.Document(40, 20)
+    doc.rect(0, 0, 40, 20, fill="white")
+    doc.add(svg.Image(np.full((4, 4, 3), 0.0), 10, 5, 10, 10))
+    doc.rect(15, 0, 25, 20, fill="red")
+    text = svg.export.export(doc, "eps").decode()
+    white, image, red = text.index("1 1 1 setrgbcolor"), text.index("colorimage"), text.index("1 0 0 setrgbcolor")
+    assert white < image < red
