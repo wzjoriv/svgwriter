@@ -111,7 +111,7 @@ def run_test(path: Path, reference: Path) -> Outcome:
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         try:
-            doc = svg.Document.from_string(data)
+            doc = svg.Document.open(path)
             written = doc.to_string()
         except Exception as exc:  # noqa: BLE001
             note = f"{type(exc).__name__}: {exc}"
