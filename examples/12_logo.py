@@ -83,7 +83,7 @@ if __name__ == "__main__":
         logo(variant).save(f"logo-{variant}.svg")
     light = logo()
     for size in (16, 32, 48, 64, 128, 256, 512, 1024):
-        light.save(f"logo-{size}.png", size=size, padding=PADDING)
+        light.save(f"logo-{size}.png", pixels=size, padding=PADDING)
     light.save("favicon.ico", padding=PADDING, sizes=(16, 32, 48))
     light.save("logo.icns", padding=PADDING)
-    light.save("apple-touch-icon.png", padding=PADDING, size=180, background=svg.Theme.get("light").palette.primary)
+    light.save("apple-touch-icon.png", padding=PADDING, pixels=180, background=svg.Theme.get("light").palette.primary)

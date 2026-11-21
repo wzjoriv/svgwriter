@@ -211,7 +211,7 @@ def test_exporters_keep_positions(fmt):
         back.root.set("viewBox", "0 0 120 80")
     back.root.set("width", 120)
     back.root.set("height", 80)
-    render = [doc.rasterize(size=(120, 80), background="white")[..., :3] for doc in (original, back)]
+    render = [doc.rasterize(pixels=(120, 80), background="white")[..., :3] for doc in (original, back)]
     assert np.abs(render[0] - render[1]).mean() < 0.03
 
 

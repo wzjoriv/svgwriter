@@ -19,13 +19,13 @@ class TestExactSize:
     def test_square_fit_and_padding(self) -> None:
         wide = svg.Document(40, 10)
         wide.rect(0, 0, 40, 10, fill="red")
-        pixels = wide.rasterize(size=(64, 64))
+        pixels = wide.rasterize(pixels=(64, 64))
         assert pixels.shape == (64, 64, 4) and pixels[0, 32, 3] == 0 and pixels[32, 32, 3] == 1
-        padded = logo().rasterize(size=(100, 100), padding=10)
+        padded = logo().rasterize(pixels=(100, 100), padding=10)
         assert padded[50, 2, 3] == 0 and padded[50, 30, 3] == 1
 
     def test_size_as_int_for_raster_exports(self) -> None:
-        png = logo().export("png", size=48, padding=1)
+        png = logo().export("png", pixels=48, padding=1)
         assert int.from_bytes(png[16:20], "big") == 48 and int.from_bytes(png[20:24], "big") == 48
 
 
@@ -64,4 +64,4 @@ class TestIcons:
 def test_exact_size_has_no_round_off(size: tuple[int, int]) -> None:
     doc = svg.Document(root=svg.Svg(view_box=(0, 0, 480, 360), width="100%", height="100%"))
     doc.rect(0, 0, 480, 360)
-    assert doc.rasterize(size=size).shape[:2] == (size[1], size[0])
+    assert doc.rasterize(pixels=size).shape[:2] == (size[1], size[0])

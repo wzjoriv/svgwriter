@@ -92,7 +92,7 @@ def text_runs(document: Document, *, color_glyphs: bool = True) -> list[TextRun]
     >>> [(run.text, run.size, round(run.matrix.e, 1)) for run in text_runs(doc)]
     [('Hello', 20.0, 10.0)]
     """
-    from ...attributes.cascade import rules_of
+    from ...attributes.rules import rules_of
     from ...elements import Text
     from ...ops.render import page_size
     from .._render._layers import ancestry

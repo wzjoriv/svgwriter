@@ -10,7 +10,7 @@ doc.circle(100, 50, 40, fill="teal")
 
 pixels = doc.rasterize()                          # float32 RGBA in 0..1, shape (100, 200, 4)
 hires = doc.rasterize(scale=4)                    # (400, 800, 4)
-thumb = doc.rasterize(size=(64, 64), padding=10)  # exact size, drawing fitted and centred
+thumb = doc.rasterize(pixels=(64, 64), padding=10)  # exact size, drawing fitted and centred
 flat = doc.rasterize(background="white")
 png = doc.render_png(scale=2)
 ```

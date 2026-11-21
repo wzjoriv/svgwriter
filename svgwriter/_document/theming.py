@@ -7,7 +7,7 @@ from __future__ import annotations
 from collections.abc import Generator
 from contextlib import contextmanager
 
-from ..attributes.cascade import set_class_rules
+from ..attributes.rules import set_class_rules
 from ..layout import settle
 from ..theme.sheet import applied, role_rules
 from ..theme.theme import Theme

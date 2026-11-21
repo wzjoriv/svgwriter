@@ -122,6 +122,16 @@ page = svg.Document(210 * svg.mm, 297 * svg.mm)   # A4; coordinates inside are m
 spin = svg.rect(0, 0, 4, 2) @ svg.turn(0.25)  # angles: deg, rad, grad, turn
 ```
 
+A document sized in a physical unit with a matching `viewBox`, such as `svg.Document(size="a4")` or
+the page above, counts its user units in that unit. Lengths you give there mean the same thing
+everywhere: `rect(width=svg.mm(20))`, `stroke_width=svg.pt(1)`, layout gaps and path tools such as
+`round_corners(svg.mm(3))` all resolve against the page, so the rectangle is written as
+`width="20"` and prints 20 mm wide in browsers and in every export (writing `20mm` there would make
+browsers scale the millimetres a second time). Lengths set on an element before it joins the page
+convert when it is added; attribute text read from an SVG file keeps its SVG meaning. Lengths compare
+by physical size, and a user-unit length equals the plain number: `svg.Length(5) == 5` and
+`svg.inch(1) == svg.mm(25.4)`.
+
 The units are `px`, `pt`, `pc`, `mm`, `q` (quarter millimetres, written `Q`), `cm`, `inch`, `em`, `ex`
 and `percent`, plus `m` and `ft`, which SVG lacks and so are written as millimetres and inches.
 `svg.length(value, unit)` and `svg.angle(value, unit)` take the unit as text, spelled short or in full

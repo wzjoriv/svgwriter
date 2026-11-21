@@ -14,4 +14,7 @@ Lengths, viewBox, styles, CSS cascade and attribute names.
 
 .. automodule:: svgwriter.attributes.cascade
    :members:
+
+.. automodule:: svgwriter.attributes.rules
+   :members:
 ```

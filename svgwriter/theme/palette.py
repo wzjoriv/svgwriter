@@ -50,7 +50,7 @@ class Palette(Mapping[str, Color]):
     >>> p = Palette({"ink": "#000000", "paper": "white", "line": lambda p: p.ink.mix(p.paper, 0.5)})
     >>> p.line.hex
     '#808080'
-    >>> p.replace({"ink": "#ff0000"}).line.hex
+    >>> p.replace(ink="#ff0000").line.hex
     '#ff8080'
     >>> Palette({"ink": "navy", "label": "=readable({palette.ink})"}).label.hex
     '#ffffff'
@@ -117,13 +117,13 @@ class Palette(Mapping[str, Color]):
         """
         return dict(self._sources)
 
-    def replace(self, sources: Mapping[str, PaletteSource]) -> Palette:
+    def replace(self, **sources: PaletteSource) -> Palette:
         """A new palette with some sources replaced or added; derived roles follow.
 
         Parameters
         ----------
-        sources : mapping of str to color or str or callable
-            The roles to replace or add.
+        **sources : color or str or callable
+            The roles to replace or add, by name.
 
         Returns
         -------
@@ -133,7 +133,7 @@ class Palette(Mapping[str, Color]):
         Examples
         --------
         >>> from svgwriter.theme import Palette
-        >>> Palette({"a": "red", "b": "{palette.a}"}).replace({"a": "blue"}).b.hex
+        >>> Palette({"a": "red", "b": "{palette.a}"}).replace(a="blue").b.hex
         '#0000ff'
         """
         return Palette({**self._sources, **sources})

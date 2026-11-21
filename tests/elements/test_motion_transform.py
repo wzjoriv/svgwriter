@@ -4,8 +4,8 @@ from PIL import Image
 import svgwriter as svg
 
 
-def _bounds(doc, time=5.0):
-    box = doc.at(time).root.get_element_by_id("a").bounds()
+def _bounds(doc, seconds=5.0):
+    box = doc.at(seconds).root.get_element_by_id("a").bounds()
     return tuple(round(v, 3) for v in box)
 
 

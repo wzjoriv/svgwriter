@@ -114,7 +114,7 @@ class TestRenderers:
     def test_iter_frames_and_update(self) -> None:
         seen: list[float] = []
         frames = list(video.iter_frames(_doc(), 4, 1, solid_png, update=lambda doc, t: seen.append(t)))
-        assert [f.time for f in frames] == seen == [0, 0.25, 0.5, 0.75]
+        assert [f.seconds for f in frames] == seen == [0, 0.25, 0.5, 0.75]
 
     def test_duration_from_smil(self) -> None:
         doc = _doc()
@@ -269,7 +269,7 @@ class TestAnimateCommand:
 class TestRenderAndOutlineCommands:
     def test_render(self, script: Path, tmp_path: Path) -> None:
         target = tmp_path / "frame.png"
-        assert main(["render", str(script), "Grow", "-o", str(target), "--time", "0.5", "--scale", "2", "--background", "white"]) == 0
+        assert main(["render", str(script), "Grow", "-o", str(target), "--at", "0.5", "--scale", "2", "--background", "white"]) == 0
         assert target.read_bytes().startswith(b"\x89PNG")
 
     def test_render_every_scene_and_svg(self, script: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -290,3 +290,21 @@ class TestRenderAndOutlineCommands:
         doc = svg.Document.open(target)
         path = doc.root.find(svg.Path)
         assert path is not None and path.bounds().x >= 3.9
+
+
+def test_scene_at_combines_behaviors_update_and_smil() -> None:
+    class Mixed(svg.Scene):
+        width, height = 20, 20
+
+        def build(self, doc):
+            self.box = doc.rect(0, 0, 1, 1)
+            self.dot = doc.circle(0, 5, 1)
+            self.dot.append(svg.Animate(attribute_name="cx", from_=0, to=10, dur=2))
+            self.spun = self.attach(doc.rect(5, 5, 2, 2), lambda element, seconds: element.set("x", 5 + seconds))
+
+        def update(self, seconds):
+            self.box.width = 1 + seconds
+
+    moment = Mixed().at(1)
+    box, dot, spun = moment.root[-3:]
+    assert (box.get("width"), float(dot.get("cx")), spun.get("x")) == (2, 5.0, 6)

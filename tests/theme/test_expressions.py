@@ -56,7 +56,7 @@ class TestColors:
         palette = Palette({"ink": "#0f766e", "paper": "white", "label": "=readable({palette.ink})",
                            "edge": "= mix({palette.ink}, {palette.paper}, 0.6, 'oklab')"})
         assert palette.label.hex == "#ffffff"
-        assert palette.replace({"ink": "#fde68a"}).label.hex == "#000000"
+        assert palette.replace(ink="#fde68a").label.hex == "#000000"
         assert palette.edge == svg.Color.parse("#0f766e").mix("white", 0.6, "oklab")
 
     def test_builtin_derived_entries(self) -> None:

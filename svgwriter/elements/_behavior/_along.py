@@ -6,18 +6,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
-from ...attributes.length import Length
+from ..._internal._page import to_page
 from ...transform.matrix import Point
 
 if TYPE_CHECKING:
+    from ...attributes.length import Length
     from ...ops.corners import Corner, CornerFilter, Fillet
     from ..shapes import Path
 
 __all__ = ["AlongPath"]
-
-
-def _distance(value: Length | float) -> float:
-    return value.to_user_units() if isinstance(value, Length) else float(value)
 
 
 class AlongPath:
@@ -170,8 +167,8 @@ class AlongPath:
         if by not in ("fraction", "length"):
             raise ValueError(f"by must be 'fraction' or 'length', got {by!r}")
         total = self.total_length()  # type: ignore[attr-defined]
-        low = _distance(start) * (total if by == "fraction" else 1.0)
-        high = total if end is None else _distance(end) * (total if by == "fraction" else 1.0)
+        low = to_page(start, self) * (total if by == "fraction" else 1.0)
+        high = total if end is None else to_page(end, self) * (total if by == "fraction" else 1.0)
         return self._result(segment(self, low, high))  # type: ignore[arg-type, attr-defined, no-any-return]
 
     def corners(self) -> list[Corner]:
@@ -228,7 +225,7 @@ class AlongPath:
         """
         from ...ops.corners import round_corners
 
-        return self._result(round_corners(self, _distance(radius), where, fillet=fillet))  # type: ignore[arg-type, attr-defined, no-any-return]
+        return self._result(round_corners(self, to_page(radius, self), where, fillet=fillet))  # type: ignore[arg-type, attr-defined, no-any-return]
 
     def round_corner(self, index: int, radius: Length | float, *, fillet: Fillet = "arc") -> Path:
         """A ``<path>`` with the corner at vertex *index* rounded.

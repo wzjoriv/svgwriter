@@ -133,7 +133,7 @@ def color_glyph_boxes(document: Document) -> Iterator[tuple[GlyphBox, Matrix, fl
     >>> list(color_glyph_boxes(doc))
     []
     """
-    from ...attributes.cascade import rules_of
+    from ...attributes.rules import rules_of
     from ...elements import Text
     from ...ops.render import page_size
     from ...transform.matrix import Matrix

@@ -118,7 +118,7 @@ class PixelCompositing:
             raise TypeError(f"cannot draw {type(element).__name__} onto pixels; pass an element or a document")
         canvas = Document(columns, rows)
         canvas.add(source)
-        return type(self).from_array(canvas.rasterize(size=(columns, rows)))
+        return type(self).from_array(canvas.rasterize(pixels=(columns, rows)))
 
     def _pair(self, other: object, operator: str) -> Pixels:
         from ...document import Document

@@ -109,7 +109,7 @@ class Output:
     def _repr_png_(self) -> bytes:
         return self.render_png()
 
-    def rasterize(self, *, scale: float = 1.0, size: tuple[int, int] | int | None = None, padding: float = 0.0,
+    def rasterize(self, *, scale: float = 1.0, pixels: tuple[int, int] | int | None = None, padding: float = 0.0,
                   background: ColorLike | None = None, snapshot: bool = False) -> np.ndarray:
         """Render into a float32 RGBA array (see :func:`svgwriter.ops.rasterize`).
 
@@ -117,7 +117,7 @@ class Output:
         ----------
         scale : float, optional
             Pixels per user unit. Defaults to 1.0.
-        size : (int, int) or int, optional
+        pixels : (int, int) or int, optional
             Output size in pixels as ``(width, height)``, or one int for a square. Defaults to None, which
             uses the document size times `scale`.
         padding : float, optional
@@ -142,13 +142,13 @@ class Output:
         >>> from svgwriter import Document, Rect
         >>> doc = Document()
         >>> _ = doc.circle(0, 0, 10)
-        >>> doc.rasterize(size=(64, 64), padding=2).shape
+        >>> doc.rasterize(pixels=(64, 64), padding=2).shape
         (64, 64, 4)
         """
         from ..ops.render import rasterize
 
         with self._prepared():
-            return rasterize(self, scale=scale, size=size, padding=padding, background=background,
+            return rasterize(self, scale=scale, pixels=pixels, padding=padding, background=background,
                              snapshot=snapshot)
 
     def render_png(self, *, scale: float = 1.0, background: ColorLike | None = None) -> bytes:

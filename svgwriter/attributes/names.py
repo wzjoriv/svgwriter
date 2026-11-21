@@ -7,12 +7,13 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Final
 
-from ._constants import PLAIN_ATTRIBUTES, PREFIXES
+from ._constants import LENGTH_ATTRIBUTES, PLAIN_ATTRIBUTES, PREFIXES
 
 __all__ = [
     "CAMEL_CASE_ATTRIBUTES",
     "KNOWN_ATTRIBUTES",
     "EVENT_ATTRIBUTES",
+    "LENGTH_ATTRIBUTES",
     "PRESENTATION_ATTRIBUTES",
     "UNSUPPORTED_ATTRIBUTES",
     "py_name",

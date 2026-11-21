@@ -22,7 +22,7 @@ from .._internal._constants import (
 )
 from .._internal._enums import Keyword
 from .._internal._numbers import format_number
-from ._constants import LENGTH_RE, LENGTH_SCALES, LENGTH_SPELLINGS
+from ._constants import EQUAL_DIGITS, LENGTH_RE, LENGTH_SCALES, LENGTH_SPELLINGS
 from .quantity import Quantity
 
 if TYPE_CHECKING:
@@ -80,7 +80,7 @@ _ABSOLUTE_PER_INCH: Final = {
 }
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True, slots=True, eq=False)
 class Length:
     """A number with an optional unit.
 
@@ -110,6 +110,8 @@ class Length:
     96.0
     >>> str(Length(1.5, "metres")), str(Length(2, "ft"))
     ('1500mm', '24in')
+    >>> Length(96) == 96, Length(1, "in") == 96, Length(1, "em") == 16
+    (True, True, False)
     """
 
     value: float
@@ -176,18 +178,18 @@ class Length:
     def to_user_units(
         self,
         *,
-        dpi: float = PX_PER_INCH,
+        units_per_inch: float = PX_PER_INCH,
         font_size: float = DEFAULT_FONT_SIZE,
         reference: float | None = None,
     ) -> float:
         """Convert to user units (pixels).
 
-        Absolute units use the dots-per-inch setting; ``em`` and ``ex`` use the font size.
+        Absolute units use `units_per_inch`; ``em`` and ``ex`` use the font size.
 
         Parameters
         ----------
-        dpi : float, optional
-            Pixels per inch for absolute units. Defaults to the library default DPI.
+        units_per_inch : float, optional
+            User units per inch for absolute units. Defaults to 96, as SVG defines.
         font_size : float, optional
             Font size in pixels for ``em`` and ``ex``. Defaults to the library default font size.
         reference : float, optional
@@ -206,7 +208,7 @@ class Length:
         Examples
         --------
         >>> from svgwriter.attributes import Length, Unit
-        >>> Length(1, Unit.IN).to_user_units(dpi=72)
+        >>> Length(1, Unit.IN).to_user_units(units_per_inch=72)
         72.0
         >>> Length(50, Unit.PERCENT).to_user_units(reference=200)
         100.0
@@ -221,7 +223,7 @@ class Length:
             if reference is None:
                 raise ValueError("percentage lengths need a reference length")
             return self.value * reference / 100.0
-        return self.value * dpi / _ABSOLUTE_PER_INCH[self.unit]
+        return self.value * units_per_inch / _ABSOLUTE_PER_INCH[self.unit]
 
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
         """Serialize the length as attribute text.
@@ -360,6 +362,18 @@ class Length:
 
     def __abs__(self) -> Length:
         return Length(abs(self.value), self.unit)
+
+    def __eq__(self, other: object) -> bool:
+        """Equal physical lengths; plain numbers are user units, and relative units only equal themselves."""
+        if isinstance(other, bool) or not isinstance(other, (Length, int, float)):
+            return NotImplemented
+        right = other if isinstance(other, Length) else Length(float(other))
+        if self.absolute and right.absolute:
+            return round(self.to_user_units(), EQUAL_DIGITS) == round(right.to_user_units(), EQUAL_DIGITS)
+        return self.value == right.value and self.unit is right.unit
+
+    def __hash__(self) -> int:
+        return hash(round(self.to_user_units(), EQUAL_DIGITS)) if self.absolute else hash((self.value, self.unit))
 
     def __lt__(self, other: Length | float) -> bool:
         return self.value < self._other(other, "compare").value

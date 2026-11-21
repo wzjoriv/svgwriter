@@ -254,7 +254,7 @@ class Theme(ThemeFiles):
                 merged[role] = source
         if isinstance(fonts, Mapping):
             fonts = self._fonts.replace(**fonts)
-        variant = Theme(name if name is not None else self._name, self._palette.replace(palette or {}),
+        variant = Theme(name if name is not None else self._name, self._palette.replace(**(palette or {})),
                         fonts if fonts is not None else self._fonts, merged)
         if self._name in THEMES and THEMES.get(self._name) is self:
             return variant._from_file(self._name, None)
