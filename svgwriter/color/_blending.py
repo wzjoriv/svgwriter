@@ -10,23 +10,16 @@ from numbers import Real
 from typing import TYPE_CHECKING, Literal, TypeAlias
 
 from .._internal._typing import Opacity
-from ._constants import DEGREES, MIX_SPACES
-from ._spaces import (
-    Triple,
-    linear_to_srgb,
-    oklab_to_oklch,
-    oklab_to_srgb,
-    oklch_to_oklab,
-    srgb_to_linear,
-    srgb_to_oklab,
-)
+from ._channels import ColorChannels
+from ._constants import DEGREES, MIX_SPACES, POLAR_SPACES
+from ._spaces import Triple, convert
 
 if TYPE_CHECKING:
     from .color import Color, ColorLike
 
 __all__ = ["ColorBlending", "MixSpace"]
 
-MixSpace: TypeAlias = Literal["srgb", "linear", "oklab", "oklch"]
+MixSpace: TypeAlias = Literal["srgb", "linear", "display-p3", "lab", "lch", "oklab", "oklch", "xyz"]
 
 
 def _lerp(start: Sequence[float], end: Sequence[float], weight: float) -> Triple:
@@ -34,7 +27,7 @@ def _lerp(start: Sequence[float], end: Sequence[float], weight: float) -> Triple
     return (a, b, c)
 
 
-class ColorBlending:
+class ColorBlending(ColorChannels):
     """Adjustments and operators shared by :class:`~svgwriter.color.Color`."""
 
     def with_alpha(self, alpha: Opacity) -> Color:
@@ -125,15 +118,18 @@ class ColorBlending:
             The color to mix in.
         weight : float, optional
             Share of `other` in the result, from 0 to 1. Defaults to 0.5.
-        space : {"srgb", "linear", "oklab", "oklch"}, optional
-            Where to interpolate: the stored sRGB channels, linear-light sRGB (physically even
-            blending of light), OKLab (perceptually even steps) or OKLCH (OKLab with hue taken the
-            shorter way round, so saturated colors stay saturated). Defaults to ``"srgb"``.
+        space : {"srgb", "linear", "display-p3", "lab", "lch", "oklab", "oklch", "xyz"}, optional
+            Where to interpolate: sRGB channels, linear-light sRGB (physically even blending of
+            light), Display P3, CIE Lab or LCH, OKLab (perceptually even steps), OKLCH (OKLab with
+            hue taken the shorter way round, so saturated colors stay saturated) or CIE XYZ (D65).
+            Defaults to ``"srgb"``.
 
         Returns
         -------
         Color
-            The blended color, clipped to the sRGB gamut; alpha is blended linearly.
+            The blended color; alpha is blended linearly. When either color carries a
+            :attr:`source` (a wide-gamut or non-sRGB color), both are mixed from their exact values
+            and the result keeps the mixed values in `space`, so nothing is clipped until output.
 
         Raises
         ------
@@ -147,25 +143,27 @@ class ColorBlending:
         '#bf0040'
         >>> Color.parse("red").mix("blue", 0.5, space="oklch").hex
         '#ba00c2'
+        >>> p3 = Color.parse("color(display-p3 0 1 0)").mix("white", 0.5, space="display-p3")
+        >>> p3.to_css("display-p3")
+        'color(display-p3 0.5 1 0.5)'
         """
         from .color import Color, as_color
 
         other = as_color(other)
         if space not in MIX_SPACES:
             raise ValueError(f"unknown mixing space {space!r}; expected one of {sorted(MIX_SPACES)}")
+        target = MIX_SPACES[space]
         alpha = self.a + (other.a - self.a) * weight
-        if space == "srgb":
-            r, g, b = _lerp(self.rgb, other.rgb, weight)
-        elif space == "linear":
-            r, g, b = linear_to_srgb(_lerp(srgb_to_linear(self.rgb), srgb_to_linear(other.rgb), weight))
-        elif space == "oklab":
-            r, g, b = oklab_to_srgb(_lerp(srgb_to_oklab(self.rgb), srgb_to_oklab(other.rgb), weight))
-        else:
-            start, end = oklab_to_oklch(srgb_to_oklab(self.rgb)), oklab_to_oklch(srgb_to_oklab(other.rgb))
+        start, end = self.coords(target), other.coords(target)
+        if target in POLAR_SPACES:
             turn = (end[2] - start[2] + DEGREES / 2) % DEGREES - DEGREES / 2
             lightness, chroma, _ = _lerp(start, end, weight)
-            r, g, b = oklab_to_srgb(oklch_to_oklab((lightness, chroma, start[2] + turn * weight)))
-        return Color(*(min(max(c, 0.0), 1.0) for c in (r, g, b)), alpha)
+            mixed: Triple = (lightness, chroma, start[2] + turn * weight)
+        else:
+            mixed = _lerp(start, end, weight)
+        if self.source is None and other.source is None:
+            return Color(*(min(max(c, 0.0), 1.0) for c in convert(mixed, target, "srgb")), alpha)
+        return Color.from_space(target, mixed, alpha)
 
     def scale(self, factor: float) -> Color:
         """Multiply the color channels by a factor.

@@ -157,8 +157,9 @@ print(brand.palette.on_primary.hex, brand.style("badge"))
 
 | Function | Result |
 | --- | --- |
-| `lighten(c, amount)`, `darken(c, amount)` | `c` moved toward white or black; `amount` from 0 to 1 |
-| `mix(a, b, weight?, space?)` | `a` blended toward `b` by `weight` (default 0.5) in `'srgb'` (default), `'linear'`, `'oklab'` or `'oklch'` |
+| `lighten(c, amount)`, `darken(c, amount)` | `c` moved toward white or black in HSL; `amount` from 0 to 1 |
+| `tint(c, amount)`, `shade(c, amount)` | `c` mixed with white or black in OKLab, keeping its hue; `amount` from 0 to 1 |
+| `mix(a, b, weight?, space?)` | `a` blended toward `b` by `weight` (default 0.5) in `'srgb'` (default), `'linear'`, `'display-p3'`, `'lab'`, `'lch'`, `'oklab'`, `'oklch'` or `'xyz'` |
 | `alpha(c, a)` | `c` with opacity `a` |
 | `saturate(c, amount)`, `desaturate(c, amount)` | HSL saturation raised or lowered |
 | `hue_shift(c, degrees)`, `complement(c)` | hue turned by `degrees`, or by 180 |
