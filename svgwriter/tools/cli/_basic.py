@@ -11,11 +11,11 @@ from typing import Any
 
 import click
 
-from ..catalog import preset
-from ..document import Document
-from ..formats.io.parser import Strictness, parse_file
-from ..formats.io.writer import SerializeOptions
-from ..model.elements.core import Category, Element
+from ...catalog import preset
+from ...document import Document
+from ...formats.io.parser import Strictness, parse_file
+from ...formats.io.writer import SerializeOptions
+from ...model.elements.core import Category, Element
 from ._constants import CANVAS_MARGIN, DEFAULT_CANVAS, DRAW_LAYOUTS, SIZE_COLUMN, STROKE_WIDTH
 
 __all__ = ["PRECISION", "add_basic_commands", "emit", "output_options"]
@@ -51,7 +51,7 @@ def emit(root: Element, output: str | None, compact: bool, precision: int) -> No
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.cli._basic import emit
+    >>> from svgwriter.tools.cli._basic import emit
     >>> emit(svg.Svg(), None, compact=True, precision=3)  # doctest: +ELLIPSIS
     <?xml ...?>
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1"/>
@@ -139,7 +139,7 @@ def add_basic_commands(app: click.Group) -> None:
 
     See Also
     --------
-    svgwriter.cli._media.add_media_commands : The commands that need ffmpeg or skia.
+    svgwriter.tools.cli._media.add_media_commands : The commands that need ffmpeg or skia.
     """
     for command in (shapes, sizes, elements, draw, format_file, info):
         app.add_command(command)

@@ -21,65 +21,34 @@ Example
 
 Sub-packages
 ------------
-elements
-    One class per SVG 1.1 element (``structure``, ``shapes``, ``text``,
-    ``fonts``, ``paint``, ``clip``, ``filters``, ``animation``).
-attributes
-    Lengths and units, ``viewBox``, ``preserveAspectRatio``, inline styles
-    and style sheets, IRI references, attribute-name mapping.
-pathdata
-    Path data: commands, parsing, serialization, transforms, arc math,
-    ``PathBuilder`` and node arrays.
-transform
-    Affine matrices and transform lists.
-color
-    Color keywords and syntaxes and the ``<paint>`` type.
-io
-    Serialization options, writers (string, file, stream, async) and the
-    parser.
-builder
-    Composite shapes (star, gear, arrow) and the ``drawing`` decorator.
-patterns, gradients, filters, markers, text_effects
-    Ready-made paints, filters, line markers and text effects (``fill=svg.patterns.stripes()``,
-    ``el.filter = svg.filters.glow()``, ``text[4:9].effect("fire")``).
-preset
-    Presets of your own by kind (``@svg.preset.animation``, ``@svg.preset.shape``, ``@svg.preset.pattern``).
-project
-    Design projects: ``svgwriter.toml``, presets, building and live preview (``Project``).
-layout
-    Stacks and grids that place their children by size (VStack, HStack, Grid).
-theme
-    Palettes, fonts and role styles applied as CSS classes (``Theme``).
-fonts
-    Fonts from drawings: glyphs, icons and kerning written as OTF, TTF, WOFF and WOFF2 (``FontBuilder``).
+model
+    The object model: ``elements``, ``attributes``, ``color``, ``pathdata``,
+    ``transform``, ``layout`` and ``theme`` (``svg.Rect``, ``svg.Theme``).
+catalog
+    Ready-made content: ``builder``, ``patterns``, ``gradients``, ``filters``,
+    ``markers``, ``text_effects``, ``preset`` and ``fonts``
+    (``fill=svg.patterns.stripes()``, ``svg.FontBuilder``).
+formats
+    Files: ``export`` (format registry by name or extension), ``io``
+    (writers and the parser) and ``inkscape``.
+motion
+    ``video``: scenes, frame rendering and encoding with ffmpeg.
+tools
+    ``cli`` (the ``python -m svgwriter`` command line), ``project`` (design
+    projects) and ``widgets`` (notebook panels and sweeps).
 ops
     Boolean operations, text outlines, measurement, rendering and image
     compositing (skia).
-export
-    Format registry by name or extension: vector (SVG, PDF, TikZ, EPS),
-    raster (PNG, JPEG, WebP, BMP, GIF, PPM, ICO, ICNS), plotter (DXF, HPGL,
-    G-code) and Excalidraw; ``svg.export.register`` adds more.
-inkscape
-    Inkscape files: layers, labels, editable stars and arcs, connectors,
-    guides and export hints.
-video
-    Frame rendering through a pluggable renderer and encoding with ffmpeg.
-widgets
-    Controls for drawing functions: notebook panels (``interact``), preview forms and sweeps over time
-    (``sweep``).
-cli
-    The ``python -m svgwriter`` command line.
+
+Every sub-package listed above by name is also an attribute of this
+package (``svg.patterns``, ``svg.export``, ``svg.video``), except ``cli``.
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from . import (
-    ops,
-    project,
-    widgets,
-)
+from . import ops
 from ._document.sizes import PageSize, page_size, size
 from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
@@ -146,8 +115,9 @@ from .ops import (
     text_to_path,
     unregister_interpolator,
 )
-from .project import Project
-from .widgets import interact, sweep
+from .tools import project, widgets
+from .tools.project import Project
+from .tools.widgets import interact, sweep
 
 if TYPE_CHECKING:
     from ._internal._latex import latex

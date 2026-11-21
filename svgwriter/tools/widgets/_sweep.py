@@ -9,15 +9,15 @@ from numbers import Real
 from pathlib import Path
 from typing import Any
 
-from .._internal._codecs._gif import encode_gif_animation
-from .._internal._codecs._rgba import to_uint8
-from .._internal._typing import AnyPath
-from ..model.attributes import Length, ViewBox
-from ..model.color import parse_color
-from ..model.elements.animation import Ease, EaseLike
-from ..model.pathdata import BBox
-from ..motion.video import DEFAULT_FPS, Renderer, Scene, frame_times
-from ..ops import interpolate
+from ..._internal._codecs._gif import encode_gif_animation
+from ..._internal._codecs._rgba import to_uint8
+from ..._internal._typing import AnyPath
+from ...model.attributes import Length, ViewBox
+from ...model.color import parse_color
+from ...model.elements.animation import Ease, EaseLike
+from ...model.pathdata import BBox
+from ...motion.video import DEFAULT_FPS, Renderer, Scene, frame_times
+from ...ops import interpolate
 from ._choices import ColorPicker, Dropdown, MultiSelect, Text, Toggle, hex_color
 from ._constants import BOUNDS_SAMPLES, GIF_SUFFIX, SWEEP_DURATION
 from ._control import Control
@@ -102,7 +102,7 @@ class Sweep(Scene):
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.widgets import Sweep
+    >>> from svgwriter.tools.widgets import Sweep
     >>> grow = Sweep(lambda r: svg.circle(20, 20, r), {"r": lambda p: 2 + 18 * p}, {}, duration=1.0, fps=4)
     >>> grow.values_at(0.5)
     {'r': 11.0}
@@ -241,7 +241,7 @@ def sweep(function: Callable[..., Any], *, dur: float = SWEEP_DURATION, fps: flo
     the other (whole numbers when the parameter is declared with an :class:`IntSlider`); a list steps
     through its items; a slider runs from its ``min`` to its ``max``, options and
     toggles step through their values. Anything else is passed unchanged, and parameters with declared
-    controls (:func:`~svgwriter.widgets.controls`) that are not given keep their starting value.
+    controls (:func:`~svgwriter.tools.widgets.controls`) that are not given keep their starting value.
 
     Parameters
     ----------

@@ -3,7 +3,7 @@
 import pytest
 
 import svgwriter as svg
-from svgwriter.project import PRESETS
+from svgwriter.tools.project import PRESETS
 from tests.ops.test_typeface import _font
 
 CARD = '''

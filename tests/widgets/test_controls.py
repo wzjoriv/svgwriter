@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 import svgwriter as svg
-from svgwriter.widgets import (
+from svgwriter.tools.widgets import (
     Checkbox,
     ColorPicker,
     Dropdown,

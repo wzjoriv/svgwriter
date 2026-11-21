@@ -1,5 +1,5 @@
 """
-Constants for ``svgwriter.cli``: defaults, tables and patterns.
+Constants for ``svgwriter.tools.cli``: defaults, tables and patterns.
 """
 
 from __future__ import annotations

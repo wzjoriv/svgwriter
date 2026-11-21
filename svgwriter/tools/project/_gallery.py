@@ -26,7 +26,7 @@ def _visuals(path: Path) -> list[str]:
         return [f'<img src="{_data_uri(IMAGE_TYPES[suffix], path.read_bytes())}" alt="{html.escape(path.name)}">']
     if suffix in VIDEO_TYPES:
         return [f'<video src="{_data_uri(VIDEO_TYPES[suffix], path.read_bytes())}" autoplay loop muted controls></video>']
-    from ..document import Document
+    from ...document import Document
 
     try:
         with warnings.catch_warnings():
@@ -67,7 +67,7 @@ class Preview:
 
     Examples
     --------
-    >>> from svgwriter.project import Preview
+    >>> from svgwriter.tools.project import Preview
     >>> Preview([])._repr_html_().endswith("<p>No outputs.</p></div>")
     True
     """

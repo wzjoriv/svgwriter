@@ -9,7 +9,7 @@ import pytest
 
 import svgwriter as svg
 from svgwriter._internal._typography._fonts import registered_typefaces
-from svgwriter.project import ProjectError
+from svgwriter.tools.project import ProjectError
 
 from ..conftest import wellformed
 
@@ -244,7 +244,7 @@ class TestPreview:
         import time
         import urllib.request
 
-        from svgwriter.project._server import LiveServer
+        from svgwriter.tools.project._server import LiveServer
 
         project = svg.Project.new(tmp_path / "live")
         server = LiveServer(project.root, lambda values: svg.Project.load(project.root).build(["svg"]), "live", 0)
@@ -274,7 +274,7 @@ class TestPreview:
 class TestCli:
     def test_new_build_presets(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
                                capsys: pytest.CaptureFixture[str]) -> None:
-        from svgwriter.cli import main
+        from svgwriter.tools.cli import main
 
         monkeypatch.chdir(tmp_path)
         assert main(["presets"]) == 0
@@ -288,7 +288,7 @@ class TestCli:
 
     def test_build_outside_a_project(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
                                      capsys: pytest.CaptureFixture[str]) -> None:
-        from svgwriter.cli import main
+        from svgwriter.tools.cli import main
 
         monkeypatch.chdir(tmp_path)
         assert main(["build"]) == 2

@@ -14,7 +14,7 @@ from typing import Any, Final
 
 import tomlkit
 
-from .._internal._registry import Registry
+from ..._internal._registry import Registry
 from ._config import ProjectError, check_size
 from ._constants import (
     BUILTIN_PRESETS,
@@ -179,7 +179,7 @@ def _unstyled(table: Any, key: str, value: object) -> None:
 
 
 def _chosen(files: dict[Path, bytes], size: SizeChoice | None, theme: str | None) -> None:
-    from ..model.theme import THEMES
+    from ...model.theme import THEMES
 
     manifest, theme_file = Path(MANIFEST), Path(THEME_FILE)
     if size is not None:

@@ -27,7 +27,7 @@ class Control:
 
     See Also
     --------
-    svgwriter.widgets.control : Build a control from shorthand such as ``(0, 10)``.
+    svgwriter.tools.widgets.control : Build a control from shorthand such as ``(0, 10)``.
 
     Examples
     --------
@@ -136,7 +136,7 @@ class Control:
         return value
 
     def code(self, value: Any) -> str:
-        """*value* as Python source, for :meth:`Interactive.code <svgwriter.widgets.Interactive.code>`.
+        """*value* as Python source, for :meth:`Interactive.code <svgwriter.tools.widgets.Interactive.code>`.
 
         Parameters
         ----------

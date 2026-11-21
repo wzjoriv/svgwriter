@@ -10,8 +10,8 @@ from collections.abc import Callable, Mapping, Sequence
 from numbers import Real
 from typing import Any, TypeVar
 
-from ..model.attributes import Length
-from ..model.color import Color
+from ...model.attributes import Length
+from ...model.color import Color
 from ._choices import ColorPicker, Dropdown, Segmented, Swatches, Text, Toggle, hex_color
 from ._constants import CONTROLS_ATTRIBUTE, SEGMENTED_MAX, SLIDER_SPAN
 from ._control import Control

@@ -8,7 +8,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
-from ..model.color import Color, parse_color
+from ...model.color import Color, parse_color
 from ._constants import DEFAULT_COLOR
 from ._control import Control
 

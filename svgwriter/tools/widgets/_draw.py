@@ -8,8 +8,8 @@ import inspect
 from collections.abc import Callable, Mapping
 from typing import Any
 
-from ..document import Document
-from ..model.elements.core import Element
+from ...document import Document
+from ...model.elements.core import Element
 
 __all__ = ["arguments", "draw", "morph"]
 

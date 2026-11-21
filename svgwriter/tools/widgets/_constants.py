@@ -1,5 +1,5 @@
 """
-Constants for ``svgwriter.widgets``: control defaults, inference rules, redraw timing and the notebook panel.
+Constants for ``svgwriter.tools.widgets``: control defaults, inference rules, redraw timing and the notebook panel.
 """
 
 from __future__ import annotations

@@ -31,7 +31,7 @@ class Recorder:
 
     See Also
     --------
-    svgwriter.widgets.interact : Takes ``backend=Recorder()``.
+    svgwriter.tools.widgets.interact : Takes ``backend=Recorder()``.
 
     Examples
     --------

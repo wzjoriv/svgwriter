@@ -109,7 +109,7 @@ version = { attr = "svgwriter.__version__" }
 include = ["svgwriter*"]
 
 [tool.setuptools.package-data]
-svgwriter = ["py.typed", "*.pyi", "**/*.pyi", "project/templates/**/*"]
+svgwriter = ["py.typed", "*.pyi", "**/*.pyi", "tools/project/templates/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

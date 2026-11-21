@@ -12,9 +12,9 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
-from .._internal._presets import KINDS
-from ..model.theme import Theme
-from ..motion.video import Scene
+from ..._internal._presets import KINDS
+from ...model.theme import Theme
+from ...motion.video import Scene
 from ._config import ProjectConfig, ProjectError
 from ._constants import DEFAULT_NOTEBOOK_OBJECT, FONT_SUFFIXES, NOTEBOOK_SUFFIX
 
@@ -87,7 +87,7 @@ def load_object(config: ProjectConfig) -> object:
     target, attribute = entry_parts(config)
     where = f"{config.source}: project.entry {config.entry!r}"
     if target.endswith(NOTEBOOK_SUFFIX):
-        raise ProjectError(f"{where}: notebooks run through svgwriter.project, not import")
+        raise ProjectError(f"{where}: notebooks run through svgwriter.tools.project, not import")
     try:
         module = importlib.import_module(target)
     except ModuleNotFoundError as error:
@@ -131,7 +131,7 @@ def load_theme(config: ProjectConfig) -> Theme | None:
 
 def register_fonts(config: ProjectConfig) -> list[str]:
     """Register every font file in the project's font folder once (again when it changes); return the families."""
-    from ..ops import register_font
+    from ...ops import register_font
 
     folder = config.root / config.fonts
     families = []

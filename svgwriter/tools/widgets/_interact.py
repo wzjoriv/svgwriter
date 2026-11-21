@@ -11,8 +11,8 @@ from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import Any, Protocol
 
-from .._internal._typing import AnyPath
-from ..document import Document
+from ..._internal._typing import AnyPath
+from ...document import Document
 from ._constants import DEBOUNCE_SECONDS, RENDER_CACHE
 from ._control import Control
 from ._draw import arguments, draw
@@ -83,7 +83,7 @@ class Interactive:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.widgets import Interactive, Slider
+    >>> from svgwriter.tools.widgets import Interactive, Slider
     >>> class Quiet:
     ...     def panel(self, controls, values, changed): pass
     ...     def draw(self, svg): pass
@@ -315,8 +315,8 @@ def interact(function: Callable[..., Any], *, backend: Backend | None = None, de
     delay : float, optional
         Seconds to wait after the last change before redrawing. Defaults to 0.08.
     **controls : object
-        A :class:`Control` or a shorthand per parameter (see :func:`~svgwriter.widgets.control`),
-        added to those declared with :func:`~svgwriter.widgets.controls`. With none at all, they are
+        A :class:`Control` or a shorthand per parameter (see :func:`~svgwriter.tools.widgets.control`),
+        added to those declared with :func:`~svgwriter.tools.widgets.controls`. With none at all, they are
         inferred from the function's keyword defaults.
 
     Returns

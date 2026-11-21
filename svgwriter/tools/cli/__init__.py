@@ -21,7 +21,7 @@ from collections.abc import Sequence
 
 import click
 
-from .. import __version__
+from ... import __version__
 from ._basic import add_basic_commands
 from ._constants import EXIT_ERROR, EXIT_FAILURE
 from ._media import add_media_commands
@@ -62,7 +62,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     Examples
     --------
-    >>> from svgwriter.cli import main
+    >>> from svgwriter.tools.cli import main
     >>> main(["draw", "star", "--size", "50", "--compact"])  # doctest: +ELLIPSIS
     <?xml ...?>
     <svg ...</svg>0

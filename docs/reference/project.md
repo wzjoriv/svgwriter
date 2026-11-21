@@ -5,13 +5,13 @@ Design projects: the manifest, building, previews and presets. See the {doc}`../
 ```{eval-rst}
 .. autoclass:: svgwriter.Project
    :members:
-.. autoclass:: svgwriter.project.ProjectConfig
-.. autoexception:: svgwriter.project.ProjectError
-.. autoclass:: svgwriter.project.Preview
+.. autoclass:: svgwriter.tools.project.ProjectConfig
+.. autoexception:: svgwriter.tools.project.ProjectError
+.. autoclass:: svgwriter.tools.project.Preview
    :members: paths
-.. autoclass:: svgwriter.project.Preset
-.. autodata:: svgwriter.project.PRESETS
+.. autoclass:: svgwriter.tools.project.Preset
+.. autodata:: svgwriter.tools.project.PRESETS
    :no-value:
-.. autofunction:: svgwriter.project.register_preset
-.. autofunction:: svgwriter.project.unregister_preset
+.. autofunction:: svgwriter.tools.project.register_preset
+.. autofunction:: svgwriter.tools.project.unregister_preset
 ```

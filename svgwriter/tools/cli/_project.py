@@ -1,5 +1,5 @@
 """
-``new``, ``build``, ``presets`` and ``preview``: design projects (see :mod:`svgwriter.project`).
+``new``, ``build``, ``presets`` and ``preview``: design projects (see :mod:`svgwriter.tools.project`).
 """
 
 from __future__ import annotations

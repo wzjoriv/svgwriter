@@ -10,8 +10,8 @@ from typing import Any
 
 import click
 
-from ..model.attributes.length import Length
-from ..model.theme import THEMES
+from ...model.attributes.length import Length
+from ...model.theme import THEMES
 from ..project import PRESETS
 from ._constants import COMMON_SIZES, CUSTOM_SIZE, KEEP_CHOICE, PRESET_COLUMN, SIZE_SEPARATOR
 
@@ -56,7 +56,7 @@ def parse_size(text: str) -> str | list[float | str]:
 
     Examples
     --------
-    >>> from svgwriter.cli._prompts import parse_size
+    >>> from svgwriter.tools.cli._prompts import parse_size
     >>> parse_size("a4"), parse_size("800,50cm")
     ('a4', [800.0, '50cm'])
     """

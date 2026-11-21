@@ -9,8 +9,8 @@ from dataclasses import dataclass
 from numbers import Real
 from typing import Any
 
-from ..model.attributes import Length
-from ..model.attributes.units import length
+from ...model.attributes import Length
+from ...model.attributes.units import length
 from ._constants import SLIDER_STEPS
 from ._control import Control
 

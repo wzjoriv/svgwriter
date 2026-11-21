@@ -9,9 +9,9 @@ from pathlib import Path
 
 import click
 
-from ..document import Document
-from ..motion.video import FFmpegError, FFmpegNotFoundError, Scene, SceneError, load_scenes
-from ..motion.video.animation import DEFAULT_FPS, RENDERERS
+from ...document import Document
+from ...motion.video import FFmpegError, FFmpegNotFoundError, Scene, SceneError, load_scenes
+from ...motion.video.animation import DEFAULT_FPS, RENDERERS
 from ._basic import emit, output_options
 from ._constants import DEFAULT_FONT, DEFAULT_TEXT_SIZE, EXIT_FAILURE, FRAME_FORMAT, TEXT_MARGIN
 
@@ -35,7 +35,7 @@ def fail(message: str) -> click.exceptions.Exit:
 
     Examples
     --------
-    >>> from svgwriter.cli._media import fail
+    >>> from svgwriter.tools.cli._media import fail
     >>> fail("no scenes").exit_code
     1
     """
@@ -117,7 +117,7 @@ def render(source: str, names: tuple[str, ...], output: str | None, seconds: flo
 @output_options
 def outline(text: str, font: str, size: float, fill: str, output: str | None, compact: bool, precision: int) -> None:
     """Write text as glyph outlines."""
-    from ..ops.text import text_to_path
+    from ...ops.text import text_to_path
 
     path = text_to_path(text, font, size, fill=fill)
     box = path.bbox
@@ -136,7 +136,7 @@ def add_media_commands(app: click.Group) -> None:
 
     See Also
     --------
-    svgwriter.cli._basic.add_basic_commands : The commands that need neither ffmpeg nor skia.
+    svgwriter.tools.cli._basic.add_basic_commands : The commands that need neither ffmpeg nor skia.
     """
     for command in (animate, render, outline):
         app.add_command(command)

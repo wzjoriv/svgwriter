@@ -11,9 +11,9 @@ from typing import Any
 
 import tomlkit
 
-from .._document.sizes import PageSize, page_size
-from ..formats.export import exporters
-from ..model.attributes.length import Length
+from ..._document.sizes import PageSize, page_size
+from ...formats.export import exporters
+from ...model.attributes.length import Length
 from ._constants import (
     ANIMATED_FORMATS,
     DEFAULT_ENTRY,
@@ -77,7 +77,7 @@ class ProjectConfig:
     Examples
     --------
     >>> from pathlib import Path
-    >>> from svgwriter.project import ProjectConfig
+    >>> from svgwriter.tools.project import ProjectConfig
     >>> ProjectConfig(Path("."), Path("svgwriter.toml"), "demo").formats
     ('svg', 'png')
     """

@@ -20,7 +20,7 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 | `outline TEXT [--font F] [--size N] [-o FILE]` | Write text as glyph outlines |
 
 ```{eval-rst}
-.. autodata:: svgwriter.cli.app
+.. autodata:: svgwriter.tools.cli.app
    :no-value:
-.. autofunction:: svgwriter.cli.main
+.. autofunction:: svgwriter.tools.cli.main
 ```

@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter.widgets import Sweep
+from svgwriter.tools.widgets import Sweep
 
 
 @svg.widgets.controls(width=(10, 90), color=["#0ea5e9", "#f43f5e"], tall=False)

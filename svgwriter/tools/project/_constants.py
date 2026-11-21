@@ -1,5 +1,5 @@
 """
-Constants for ``svgwriter.project``: file names, manifest keys, defaults and the preview page.
+Constants for ``svgwriter.tools.project``: file names, manifest keys, defaults and the preview page.
 """
 
 from __future__ import annotations

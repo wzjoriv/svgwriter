@@ -10,7 +10,7 @@ from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
 
-from ..motion.video import Scene
+from ...motion.video import Scene
 from ..widgets import Control, controls_of
 from ._build import write_outputs
 from ._config import ProjectConfig, check_formats, read_config
@@ -46,7 +46,7 @@ class Project:
 
     See Also
     --------
-    svgwriter.project.register_preset : Add a starter folder for :meth:`new`.
+    svgwriter.tools.project.register_preset : Add a starter folder for :meth:`new`.
 
     Notes
     -----
@@ -111,7 +111,7 @@ class Project:
         path : str or os.PathLike
             The new folder; it must not exist or be empty.
         preset : str, optional
-            A name from :data:`svgwriter.project.PRESETS`. Defaults to ``"blank"``.
+            A name from :data:`svgwriter.tools.project.PRESETS`. Defaults to ``"blank"``.
         notebook : bool, optional
             Write ``main.ipynb`` instead of ``main.py``. Defaults to False.
         name : str, optional
@@ -168,7 +168,7 @@ class Project:
         formats : sequence of str, optional
             Formats to write. Defaults to None, the ``[outputs] formats`` of the manifest.
         values : mapping, optional
-            Values for the controls the entry declares (:func:`svgwriter.widgets.controls`), by parameter
+            Values for the controls the entry declares (:func:`svgwriter.tools.widgets.controls`), by parameter
             name. Defaults to None, their starting values.
 
         Returns
@@ -213,7 +213,7 @@ class Project:
             return write_outputs(self.config, items_of(self.config, entry), theme, chosen, values)
 
     def controls(self) -> dict[str, Control]:
-        """The controls the entry's page functions declare with :func:`svgwriter.widgets.controls`.
+        """The controls the entry's page functions declare with :func:`svgwriter.tools.widgets.controls`.
 
         ``svgwriter preview`` shows them as a form above the outputs; ``svgwriter build`` uses their starting
         values. Notebook entries declare none here.
@@ -276,7 +276,7 @@ class Project:
 
         The project is rebuilt whenever one of its files changes, and the page reloads itself; a failed build
         shows its traceback under the last outputs that worked. Controls the entry declares
-        (:func:`svgwriter.widgets.controls`) appear as a form above the outputs, which rebuild as they change.
+        (:func:`svgwriter.tools.widgets.controls`) appear as a form above the outputs, which rebuild as they change.
 
         Parameters
         ----------
