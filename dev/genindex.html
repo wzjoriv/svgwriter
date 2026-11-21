@@ -226,6 +226,7 @@
 <li class="toctree-l1"><a class="reference internal" href="guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -248,6 +249,7 @@
 <li class="toctree-l2"><a class="reference internal" href="reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/builder.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/theme.html">Themes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/video.html">Animation export</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/cli.html">Command line</a></li>
@@ -363,6 +365,8 @@
         <li><a href="reference/ops.html#svgwriter.ops.Corner.angle">angle (Corner attribute)</a>
 
         <ul>
+          <li><a href="reference/inkscape.html#svgwriter.inkscape.Guide.angle">(Guide attribute)</a>
+</li>
           <li><a href="reference/attributes.html#svgwriter.attributes.Quantity.angle">(Quantity attribute)</a>, <a href="reference/attributes.html#svgwriter.attributes.quantity.Quantity.angle">[1]</a>
 </li>
           <li><a href="reference/geometry.html#svgwriter.transform.Rotate.angle">(Rotate attribute)</a>
@@ -370,6 +374,8 @@
           <li><a href="reference/geometry.html#svgwriter.transform.SkewX.angle">(SkewX attribute)</a>
 </li>
           <li><a href="reference/geometry.html#svgwriter.transform.SkewY.angle">(SkewY attribute)</a>
+</li>
+          <li><a href="reference/inkscape.html#svgwriter.inkscape.Star.angle">(Star property)</a>
 </li>
         </ul></li>
         <li><a href="reference/attributes.html#svgwriter.attributes.units.angle">angle() (in module svgwriter.attributes.units)</a>
@@ -406,6 +412,8 @@
 </li>
         <li><a href="reference/theme.html#svgwriter.theme.sheet.applied">applied() (in module svgwriter.theme.sheet)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/geometry.html#svgwriter.transform.Matrix.apply">apply() (Matrix method)</a>
 
         <ul>
@@ -414,9 +422,9 @@
           <li><a href="reference/geometry.html#svgwriter.transform.Transform.apply">(Transform method)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/geometry.html#svgwriter.transform.Matrix.apply_points">apply_points() (Matrix method)</a>
+</li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Arc">Arc (class in svgwriter.inkscape)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.arc_to">arc_to() (PathBuilder method)</a>
 </li>
@@ -588,6 +596,8 @@
           <li><a href="reference/video.html#svgwriter.video.Scene.build">(Scene method)</a>
 </li>
         </ul></li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.by_label">by_label() (in module svgwriter.inkscape)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -758,18 +768,20 @@
           <li><a href="reference/geometry.html#svgwriter.pathdata.VLineTo.code">(VLineTo attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.elements.filters.Filter.collect">collect() (Filter method)</a>
 </li>
         <li><a href="reference/color.html#svgwriter.color.Color">Color (class in svgwriter.color)</a>
 </li>
-        <li><a href="reference/elements.html#svgwriter.elements.structure.Image.color">color (Image property)</a>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Guide.color">color (Guide attribute)</a>
 
         <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Image.color">(Image property)</a>
+</li>
           <li><a href="reference/elements.html#svgwriter.elements.structure.Pixels.color">(Pixels property)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.Motion.color_cycle">color_cycle() (Motion method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.ColorMatrixType">ColorMatrixType (class in svgwriter.elements.filters)</a>
@@ -794,6 +806,14 @@
           <li><a href="reference/attributes.html#svgwriter.attributes.cascade.computed">(in module svgwriter.attributes.cascade)</a>
 </li>
         </ul></li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.connect">connect() (in module svgwriter.inkscape)</a>
+</li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Connection">Connection (class in svgwriter.inkscape)</a>
+</li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.connection">connection() (in module svgwriter.inkscape)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Path.connects">connects (Path property)</a>
+</li>
         <li><a href="reference/ops.html#svgwriter.ops.contains">contains() (in module svgwriter.ops)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.text.AltGlyph.content">content (AltGlyph attribute)</a>
@@ -880,8 +900,14 @@
 </li>
         <li><a href="reference/geometry.html#svgwriter.pathdata.PathData.count">count() (PathData method)</a>
 </li>
-        <li><a href="reference/elements.html#svgwriter.Motion.create">create() (Motion method)</a>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Arc.create">create() (Arc class method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.Motion.create">(Motion method)</a>
 </li>
+          <li><a href="reference/inkscape.html#svgwriter.inkscape.Star.create">(Star class method)</a>
+</li>
+        </ul></li>
         <li><a href="reference/builder.html#svgwriter.builder.cross">cross() (in module svgwriter.builder)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.structure.StyleElement.css">css (StyleElement property)</a>
@@ -1044,6 +1070,8 @@
 </li>
         <li><a href="reference/builder.html#svgwriter.builder.dot">dot() (in module svgwriter.builder)</a>
 </li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.ExportHints.dpi">dpi (ExportHints attribute)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.Motion.draw">draw() (Motion method)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.draw_graph">draw_graph() (in module svgwriter.ops)</a>
@@ -1096,6 +1124,12 @@
         </ul></li>
         <li><a href="reference/io.html#svgwriter.io.SerializeOptions.encoding">encoding (SerializeOptions attribute)</a>
 </li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Arc.end">end (Arc property)</a>
+
+        <ul>
+          <li><a href="reference/inkscape.html#svgwriter.inkscape.Connection.end">(Connection attribute)</a>
+</li>
+        </ul></li>
         <li><a href="reference/geometry.html#svgwriter.pathdata.ClosePath.end_point">end_point() (ClosePath method)</a>
 
         <ul>
@@ -1130,9 +1164,15 @@
           <li><a href="reference/export.html#svgwriter.export.export">(in module svgwriter.export)</a>
 </li>
         </ul></li>
+        <li><a href="reference/document.html#svgwriter.Document.export_hints">export_hints (Document property)</a>
+</li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.export_hints">export_hints() (in module svgwriter.inkscape)</a>
+</li>
         <li><a href="reference/export.html#svgwriter.export.Exporter">Exporter (class in svgwriter.export)</a>
 </li>
         <li><a href="reference/export.html#svgwriter.export.exporters">exporters() (in module svgwriter.export)</a>
+</li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.ExportHints">ExportHints (class in svgwriter.inkscape)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.Element.extend">extend() (Element method)</a>
 
@@ -1236,6 +1276,8 @@
 </li>
         <li><a href="reference/video.html#svgwriter.video.FFmpegNotFoundError">FFmpegNotFoundError</a>
 </li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.ExportHints.filename">filename (ExportHints attribute)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.StandardInput.FILL_PAINT">FILL_PAINT (StandardInput attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.Filter">Filter (class in svgwriter.elements.filters)</a>
@@ -1255,6 +1297,8 @@
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/document.html#svgwriter.Document.fit">fit() (Document method)</a>
+</li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Star.flatsided">flatsided (Star property)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.PathOperand.flatten_clip">flatten_clip() (PathOperand method)</a>
 </li>
@@ -1408,8 +1452,6 @@
           <li><a href="reference/elements.html#svgwriter.elements.structure.Use.geometry_attributes">(Use attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.elements.Element.get">get() (Element method)</a>
 
         <ul>
@@ -1418,6 +1460,8 @@
           <li><a href="reference/theme.html#svgwriter.theme.Theme.get">(Theme static method)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/document.html#svgwriter.Document.get_element_by_id">get_element_by_id() (Document method)</a>
 
         <ul>
@@ -1445,6 +1489,14 @@
         <li><a href="reference/elements.html#svgwriter.elements.structure.Group">Group (class in svgwriter.elements.structure)</a>
 </li>
         <li><a href="reference/layout.html#svgwriter.layout.Spacer.grow">grow (Spacer property)</a>
+</li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Guide">Guide (class in svgwriter.inkscape)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.guide">guide() (Document method)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.guides">guides (Document property)</a>
+</li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.guides">guides() (in module svgwriter.inkscape)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -1476,18 +1528,22 @@
         </ul></li>
         <li><a href="reference/color.html#svgwriter.color.Color.hex">hex (Color property)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.Motion.hide">hide() (Motion method)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.elements.text.HKern">HKern (class in svgwriter.elements.text)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.pathdata.HLineTo">HLineTo (class in svgwriter.pathdata)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.Element.home">home (Element property)</a>
 </li>
-        <li><a href="reference/elements.html#svgwriter.elements.paint.LinearGradient.horizontal">horizontal() (LinearGradient class method)</a>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Guide.horizontal">horizontal() (Guide class method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.LinearGradient.horizontal">(LinearGradient class method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.horizontal_to">horizontal_to() (PathBuilder method)</a>
 </li>
         <li><a href="reference/video.html#svgwriter.video.behaviors.hover">hover() (in module svgwriter.video.behaviors)</a>
@@ -1548,6 +1604,8 @@
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.cascade.INHERITED">INHERITED (in module svgwriter.attributes.cascade)</a>
 </li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Star.inner">inner (Star property)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.elements.Element.insert">insert() (Element method)</a>
 </li>
     </ul></td>
@@ -1579,6 +1637,8 @@
         <li><a href="reference/color.html#svgwriter.color.Color.is_dark">is_dark (Color property)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.transform.Matrix.is_identity">is_identity (Matrix property)</a>
+</li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.is_layer">is_layer() (in module svgwriter.inkscape)</a>
 </li>
         <li><a href="reference/color.html#svgwriter.color.Color.is_light">is_light (Color property)</a>
 </li>
@@ -1637,6 +1697,10 @@
 </li>
         </ul></li>
     </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Arc.kind">kind (Arc property)</a>
+</li>
+    </ul></td>
   </tr></table>
 </section>
 
@@ -1644,9 +1708,21 @@
   <h2>L</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.label">label (Element property)</a>
+
+        <ul>
+          <li><a href="reference/inkscape.html#svgwriter.inkscape.Guide.label">(Guide attribute)</a>
+</li>
+        </ul></li>
         <li><a href="reference/document.html#svgwriter.PageSize.landscape">landscape (PageSize property)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.large_arc">large_arc (ArcTo attribute)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.layer">layer() (Document method)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.layers">layers (Document property)</a>
+</li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.layers">layers() (in module svgwriter.inkscape)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.left">left (BBox property)</a>
 </li>
@@ -1706,6 +1782,8 @@
 </li>
         <li><a href="reference/geometry.html#svgwriter.pathdata.LineTo">LineTo (class in svgwriter.pathdata)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/builder.html#svgwriter.preset.list">list() (in module svgwriter.preset)</a>
 </li>
         <li><a href="reference/export.html#svgwriter.export.load">load() (in module svgwriter.export)</a>
@@ -1714,8 +1792,6 @@
           <li><a href="reference/project.html#svgwriter.Project.load">(Project class method)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/video.html#svgwriter.video.load_scenes">load_scenes() (in module svgwriter.video)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.IRI.local">local() (IRI class method)</a>
@@ -1772,6 +1848,8 @@
           <li><a href="reference/elements.html#svgwriter.elements.structure.Switch.local_outline">(Switch method)</a>
 </li>
         </ul></li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Guide.locked">locked (Guide attribute)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.elements.Element.lookup">lookup() (Element class method)</a>
 
         <ul>
@@ -1870,6 +1948,8 @@
 </li>
           <li><a href="reference/export.html#module-svgwriter.export">svgwriter.export</a>
 </li>
+          <li><a href="reference/inkscape.html#module-svgwriter.inkscape">svgwriter.inkscape</a>
+</li>
           <li><a href="reference/io.html#module-svgwriter.io">svgwriter.io</a>
 </li>
           <li><a href="reference/layout.html#module-svgwriter.layout">svgwriter.layout</a>
@@ -1939,6 +2019,8 @@
           <li><a href="reference/ops.html#svgwriter.ops.Typeface.name">(Typeface property)</a>
 </li>
         </ul></li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.namedview">namedview() (in module svgwriter.inkscape)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.elements.Element.namespace">namespace (Element attribute)</a>
 </li>
         <li><a href="reference/io.html#svgwriter.io.SerializeOptions.namespaces">namespaces (SerializeOptions attribute)</a>
@@ -1950,6 +2032,8 @@
         <li><a href="reference/elements.html#svgwriter.elements.animation.Restart.NEVER">NEVER (Restart attribute)</a>
 </li>
         <li><a href="reference/project.html#svgwriter.Project.new">new() (Project class method)</a>
+</li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.new_layer">new_layer() (in module svgwriter.inkscape)</a>
 </li>
         <li><a href="reference/io.html#svgwriter.io.SerializeOptions.newline">newline (SerializeOptions attribute)</a>
 </li>
@@ -2003,13 +2087,15 @@
         </ul></li>
         <li><a href="reference/document.html#svgwriter.Document.open_all">open_all() (Document class method)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/project.html#svgwriter.project.ProjectConfig.options">options (ProjectConfig attribute)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/attributes.html#svgwriter.attributes.cascade.Rule.order">order (Rule attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.CompositeOperator.OUT">OUT (CompositeOperator attribute)</a>
+</li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Star.outer">outer (Star property)</a>
 </li>
         <li><a href="reference/builder.html#svgwriter.builder.outline">outline() (in module svgwriter.builder)</a>
 
@@ -2237,6 +2323,12 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.Channel.RED">RED (Channel attribute)</a>
 </li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Arc.redraw">redraw() (Arc method)</a>
+
+        <ul>
+          <li><a href="reference/inkscape.html#svgwriter.inkscape.Star.redraw">(Star method)</a>
+</li>
+        </ul></li>
         <li><a href="reference/export.html#svgwriter.export.register">register() (in module svgwriter.export)</a>
 
         <ul>
@@ -2381,6 +2473,8 @@
         </ul></li>
         <li><a href="reference/ops.html#svgwriter.ops.round_corners">round_corners() (in module svgwriter.ops)</a>
 </li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Star.rounded">rounded (Star property)</a>
+</li>
         <li><a href="reference/layout.html#svgwriter.layout.Grid.rows">rows (Grid property)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.cascade.Rule">Rule (class in svgwriter.attributes.cascade)</a>
@@ -2389,9 +2483,11 @@
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.cascade.rules_of">rules_of() (in module svgwriter.attributes.cascade)</a>
 </li>
-        <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.rx">rx (ArcTo attribute)</a>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Arc.rx">rx (Arc property)</a>
 
         <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.rx">(ArcTo attribute)</a>
+</li>
           <li><a href="reference/geometry.html#svgwriter.pathdata.CenterArc.rx">(CenterArc attribute)</a>
 </li>
           <li><a href="reference/elements.html#svgwriter.elements.shapes.Ellipse.rx">(Ellipse attribute)</a>
@@ -2399,9 +2495,11 @@
           <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect.rx">(Rect attribute)</a>
 </li>
         </ul></li>
-        <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.ry">ry (ArcTo attribute)</a>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Arc.ry">ry (Arc property)</a>
 
         <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.ry">(ArcTo attribute)</a>
+</li>
           <li><a href="reference/geometry.html#svgwriter.pathdata.CenterArc.ry">(CenterArc attribute)</a>
 </li>
           <li><a href="reference/elements.html#svgwriter.elements.shapes.Ellipse.ry">(Ellipse attribute)</a>
@@ -2471,6 +2569,10 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.Element.set">set() (Element method)</a>
 </li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.set_export_hints">set_export_hints() (in module svgwriter.inkscape)</a>
+</li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.set_guides">set_guides() (in module svgwriter.inkscape)</a>
+</li>
         <li><a href="reference/layout.html#svgwriter.layout.settle">settle() (in module svgwriter.layout)</a>
 </li>
         <li><a href="reference/color.html#svgwriter.color.Color.shade">shade() (Color method)</a>
@@ -2485,9 +2587,21 @@
           <li><a href="reference/video.html#svgwriter.video.RGBAArray.shape">(RGBAArray property)</a>
 </li>
         </ul></li>
-        <li><a href="reference/builder.html#svgwriter.preset.shape">shape() (in module svgwriter.preset)</a>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.shape">shape() (in module svgwriter.inkscape)</a>
+
+        <ul>
+          <li><a href="reference/builder.html#svgwriter.preset.shape">(in module svgwriter.preset)</a>
 </li>
+        </ul></li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Arc.shape_type">shape_type (Arc attribute)</a>
+
+        <ul>
+          <li><a href="reference/inkscape.html#svgwriter.inkscape.Star.shape_type">(Star attribute)</a>
+</li>
+        </ul></li>
         <li><a href="reference/elements.html#svgwriter.Motion.show">show() (Motion method)</a>
+</li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Star.sides">sides (Star property)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.transform.Transform.simplified">simplified() (Transform method)</a>
 </li>
@@ -2512,6 +2626,8 @@
         <li><a href="reference/builder.html#svgwriter.preset.size">size() (in module svgwriter.preset)</a>
 </li>
         <li><a href="reference/theme.html#svgwriter.theme.Fonts.sizes">sizes (Fonts attribute)</a>
+</li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Star.skew">skew (Star property)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.animation.TransformType.SKEW_X">SKEW_X (TransformType attribute)</a>
 </li>
@@ -2579,8 +2695,16 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.StandardInput">StandardInput (class in svgwriter.elements.filters)</a>
 </li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Star">Star (class in svgwriter.inkscape)</a>
+</li>
         <li><a href="reference/builder.html#svgwriter.builder.star">star() (in module svgwriter.builder)</a>
 </li>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Arc.start">start (Arc property)</a>
+
+        <ul>
+          <li><a href="reference/inkscape.html#svgwriter.inkscape.Connection.start">(Connection attribute)</a>
+</li>
+        </ul></li>
         <li><a href="reference/geometry.html#svgwriter.pathdata.CenterArc.start_angle">start_angle (CenterArc attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.paint.Stop">Stop (class in svgwriter.elements.paint)</a>
@@ -2589,6 +2713,8 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.StandardInput.STROKE_PAINT">STROKE_PAINT (StandardInput attribute)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/ops.html#svgwriter.ops.stroke_to_path">stroke_to_path() (in module svgwriter.ops)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.Style">Style (class in svgwriter.attributes)</a>
@@ -2601,8 +2727,6 @@
           <li><a href="reference/theme.html#svgwriter.theme.Theme.style">(Theme method)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.elements.structure.StyleElement">StyleElement (class in svgwriter.elements.structure)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.Face.styles">styles (Face property)</a>
@@ -2754,6 +2878,13 @@
 
         <ul>
           <li><a href="reference/export.html#module-svgwriter.export">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.inkscape
+
+        <ul>
+          <li><a href="reference/inkscape.html#module-svgwriter.inkscape">module</a>
 </li>
         </ul></li>
         <li>
@@ -3228,8 +3359,12 @@
           <li><a href="reference/attributes.html#svgwriter.attributes.LengthUnit.unit">(LengthUnit attribute)</a>, <a href="reference/attributes.html#svgwriter.attributes.units.LengthUnit.unit">[1]</a>
 </li>
         </ul></li>
-        <li><a href="reference/document.html#svgwriter.PageSize.units">units (PageSize attribute)</a>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.ExportHints.units">units (ExportHints attribute)</a>
+
+        <ul>
+          <li><a href="reference/document.html#svgwriter.PageSize.units">(PageSize attribute)</a>
 </li>
+        </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/ops.html#svgwriter.ops.FaceMetrics.units_per_em">units_per_em (FaceMetrics attribute)</a>
@@ -3280,12 +3415,16 @@
         </ul></li>
         <li><a href="reference/ops.html#svgwriter.ops.Face.variable">variable (Face property)</a>
 </li>
-        <li><a href="reference/elements.html#svgwriter.elements.paint.LinearGradient.vertical">vertical() (LinearGradient class method)</a>
+        <li><a href="reference/inkscape.html#svgwriter.inkscape.Guide.vertical">vertical() (Guide class method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.LinearGradient.vertical">(LinearGradient class method)</a>
 </li>
-        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.vertical_to">vertical_to() (PathBuilder method)</a>
-</li>
+        </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.vertical_to">vertical_to() (PathBuilder method)</a>
+</li>
         <li><a href="reference/video.html#svgwriter.video.Video">Video (class in svgwriter.video)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.structure.View">View (class in svgwriter.elements.structure)</a>
@@ -3379,6 +3518,8 @@
 </li>
           <li><a href="reference/geometry.html#svgwriter.pathdata.CurveTo.x">(CurveTo attribute)</a>
 </li>
+          <li><a href="reference/inkscape.html#svgwriter.inkscape.Guide.x">(Guide attribute)</a>
+</li>
           <li><a href="reference/geometry.html#svgwriter.pathdata.HLineTo.x">(HLineTo attribute)</a>
 </li>
           <li><a href="reference/geometry.html#svgwriter.pathdata.LineTo.x">(LineTo attribute)</a>
@@ -3458,6 +3599,8 @@
           <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.y">(BBox attribute)</a>
 </li>
           <li><a href="reference/geometry.html#svgwriter.pathdata.CurveTo.y">(CurveTo attribute)</a>
+</li>
+          <li><a href="reference/inkscape.html#svgwriter.inkscape.Guide.y">(Guide attribute)</a>
 </li>
           <li><a href="reference/geometry.html#svgwriter.pathdata.LineTo.y">(LineTo attribute)</a>
 </li>

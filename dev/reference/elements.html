@@ -228,6 +228,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -250,6 +251,7 @@
 <li class="toctree-l2"><a class="reference internal" href="attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="builder.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="theme.html">Themes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video.html">Animation export</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html">Command line</a></li>
@@ -809,6 +811,23 @@ Defaults to infinity.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">tag</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">iter</span><span class="p">()]</span>
 <span class="go">['g', 'circle', 'rect']</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="svgwriter.elements.Element.label">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">label</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><a class="headerlink" href="#svgwriter.elements.Element.label" title="Link to this definition">¶</a></dt>
+<dd><p>A readable name for the element, stored as <code class="docutils literal notranslate"><span class="pre">inkscape:label</span></code>, or None.</p>
+<p>Inkscape shows it in its Layers and Objects panels, and
+<code class="docutils literal notranslate"><span class="pre">doc[&quot;name&quot;]</span></code> finds an element by label when no id matches.
+Assigning None removes it.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">"Logo"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">"inkscape:label"</span><span class="p">]</span>
+<span class="go">('Logo', 'Logo')</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -2226,6 +2245,25 @@ built fluently: <code class="docutils literal notranslate"><span class="pre">pat
 <span class="go">'width'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">width</span>
 <span class="go">3.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="svgwriter.elements.shapes.Path.connects">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">connects</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="inkscape.html#svgwriter.inkscape.Connection" title="svgwriter.inkscape.Connection"><span class="pre">Connection</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><a class="headerlink" href="#svgwriter.elements.shapes.Path.connects" title="Link to this definition">¶</a></dt>
+<dd><p>The objects this path joins as an Inkscape connector, or None for a plain path.</p>
+<p>Assign <code class="docutils literal notranslate"><span class="pre">(start,</span> <span class="pre">end)</span></code> to attach the path to two elements
+(<code class="docutils literal notranslate"><span class="pre">inkscape:connection-start</span></code> and <code class="docutils literal notranslate"><span class="pre">-end</span></code>; it is redrawn as a straight
+line between their centres), or None to detach it.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wire</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">stroke</span><span class="o">=</span><span class="s2">"black"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wire</span><span class="o">.</span><span class="n">connects</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wire</span><span class="o">.</span><span class="n">connects</span><span class="o">.</span><span class="n">start</span> <span class="ow">is</span> <span class="n">a</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">wire</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+<span class="go">(True, 'M10 20 L90 20')</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -7790,6 +7828,7 @@ rewritten to the matched start shape, which looks the same.</p>
 <li><a class="reference internal" href="#svgwriter.elements.Element.insert"><code class="docutils literal notranslate"><span class="pre">Element.insert()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.iri"><code class="docutils literal notranslate"><span class="pre">Element.iri</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.iter"><code class="docutils literal notranslate"><span class="pre">Element.iter()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.elements.Element.label"><code class="docutils literal notranslate"><span class="pre">Element.label</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.lookup"><code class="docutils literal notranslate"><span class="pre">Element.lookup()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.many"><code class="docutils literal notranslate"><span class="pre">Element.many()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.registered"><code class="docutils literal notranslate"><span class="pre">Element.registered()</span></code></a></li>
@@ -7874,6 +7913,7 @@ rewritten to the matched start shape, which looks the same.</p>
 <li><a class="reference internal" href="#svgwriter.elements.shapes.Path"><code class="docutils literal notranslate"><span class="pre">Path</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.elements.shapes.Path.geometry_attributes"><code class="docutils literal notranslate"><span class="pre">Path.geometry_attributes</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.shapes.Path.path_length"><code class="docutils literal notranslate"><span class="pre">Path.path_length</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.elements.shapes.Path.connects"><code class="docutils literal notranslate"><span class="pre">Path.connects</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.shapes.Path.d"><code class="docutils literal notranslate"><span class="pre">Path.d</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.shapes.Path.nodes"><code class="docutils literal notranslate"><span class="pre">Path.nodes</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.shapes.Path.from_points"><code class="docutils literal notranslate"><span class="pre">Path.from_points()</span></code></a></li>

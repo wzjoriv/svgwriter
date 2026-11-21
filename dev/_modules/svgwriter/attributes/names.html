@@ -227,6 +227,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -249,6 +250,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/builder.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/theme.html">Themes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/video.html">Animation export</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/cli.html">Command line</a></li>
@@ -408,7 +410,7 @@
         <span class="k">return</span> <span class="n">name</span>
     <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">PREFIXES</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">"_"</span><span class="p">):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'_'</span><span class="p">,</span><span class="w"> </span><span class="s1">'-'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
     <span class="n">compact</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"_"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">compact</span> <span class="ow">in</span> <span class="n">_CAMEL_LOOKUP</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_CAMEL_LOOKUP</span><span class="p">[</span><span class="n">compact</span><span class="p">]</span>
