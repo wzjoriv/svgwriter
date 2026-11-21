@@ -69,3 +69,14 @@ def test_exports_place_the_laid_out_shapes_alike(theme):
     accent = svg.Theme.get(theme).palette.accent
     assert tuple(pixels[40, 45, :3]) == pytest.approx(accent.rgb, abs=1 / 255)
     assert tuple(pixels[25, 10]) == pytest.approx(tuple(background), abs=1e-6)
+
+
+def test_bounds_before_output_agree_with_the_output():
+    doc, stack = card()
+    title = stack[1]
+    height = title.bounds().height
+    doc.theme = doc.theme.replace(fonts={"sizes": {"title": 48}})
+    assert title.bounds().height > height
+    written = svg.parse(doc.to_string()).find(svg.Rect)
+    box = stack.background.bounds()
+    assert (float(written.get("width")), float(written.get("height"))) == pytest.approx((box.width, box.height), abs=1e-3)
