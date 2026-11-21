@@ -10,7 +10,15 @@ from contextvars import ContextVar
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
-from ._constants import AT_BLOCK_RE, COMMENT_RE, CSS_DIMENSION_RE, IMPORTANT, MARKER_LONGHANDS, ROOT_RULES, RULE_RE
+from ._constants import (
+    AT_BLOCK_RE,
+    COMMENT_RE,
+    CSS_DIMENSION_RE,
+    IMPORTANT,
+    MARKER_LONGHANDS,
+    ROOT_RULES,
+    RULE_RE,
+)
 from ._selectors import matches_from, specificity, split_selector
 from .names import PRESENTATION_ATTRIBUTES
 
