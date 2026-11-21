@@ -294,7 +294,7 @@
         <article role="main" id="furo-main-content">
           <section id="command-line">
 <h1>Command line<a class="headerlink" href="#command-line" title="Link to this heading">¶</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">svgwriter</span></code> (also <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">svgwriter</span></code>) runs these commands; <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">COMMAND</span> <span class="pre">--help</span></code> lists the
+<p><code class="docutils literal notranslate"><span class="pre">svgwriter</span></code> (also <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">svgwriter</span></code>) is a <a class="reference external" href="https://click.palletsprojects.com">click</a> group that runs these commands; <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">COMMAND</span> <span class="pre">--help</span></code> lists the
 options of each. Errors are one line on stderr; the exit status is 0 on success, 1 when a command
 fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or an invalid project.</p>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -318,7 +318,7 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 <td><p>List project presets</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sizes</span></code></p></td>
-<td><p>List named canvas sizes</p></td>
+<td><p>List named canvas sizes (<code class="docutils literal notranslate"><span class="pre">svg.preset.list(&quot;size&quot;)</span></code>)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">shapes</span></code>, <code class="docutils literal notranslate"><span class="pre">elements</span></code></p></td>
 <td><p>List shape presets and element classes</p></td>
@@ -347,7 +347,12 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 <dl class="py data">
 <dt class="sig sig-object py" id="svgwriter.cli.app">
 <span class="sig-name descname"><span class="pre">app</span></span><a class="headerlink" href="#svgwriter.cli.app" title="Link to this definition">¶</a></dt>
-<dd><p>The <code class="docutils literal notranslate"><span class="pre">svgwriter</span></code> application; <code class="docutils literal notranslate"><span class="pre">app.command()</span></code> adds a command.</p>
+<dd><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">click.Group</span></code>; <code class="docutils literal notranslate"><span class="pre">app.add_command(command)</span></code> adds a command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The <code class="docutils literal notranslate"><span class="pre">svgwriter</span></code> application</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

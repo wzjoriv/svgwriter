@@ -398,9 +398,10 @@ name, and <code class="docutils literal notranslate"><span class="pre">svg.prese
 </section>
 <section id="module-svgwriter.preset">
 <span id="preset-functions"></span><h2>Preset functions<a class="headerlink" href="#module-svgwriter.preset" title="Link to this heading">¶</a></h2>
-<p>Presets of your own, by kind: animations and shapes, each registered by a decorator and found by name.</p>
-<p>Every kind has the same API: a decorator that registers a function (<code class="docutils literal notranslate"><span class="pre">name=</span></code>, <code class="docutils literal notranslate"><span class="pre">replace=</span></code>), and
-<code class="docutils literal notranslate"><span class="pre">list(kind)</span></code>, <code class="docutils literal notranslate"><span class="pre">get(kind,</span> <span class="pre">name)</span></code> and <code class="docutils literal notranslate"><span class="pre">unregister(kind,</span> <span class="pre">name)</span></code>. A taken name raises an error naming its
+<p>Presets of your own, by kind: animations, shapes and canvas sizes, each registered by a decorator and found by name.</p>
+<p>Animations and shapes register by decorator (<code class="docutils literal notranslate"><span class="pre">name=</span></code>, <code class="docutils literal notranslate"><span class="pre">replace=</span></code>) and sizes by a call
+(<code class="docutils literal notranslate"><span class="pre">svg.preset.size(name,</span> <span class="pre">width,</span> <span class="pre">height)</span></code>); every kind has <code class="docutils literal notranslate"><span class="pre">list(kind)</span></code>, <code class="docutils literal notranslate"><span class="pre">get(kind,</span> <span class="pre">name)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">unregister(kind,</span> <span class="pre">name)</span></code>. A taken name raises an error naming its
 owner, built-in presets included; <code class="docutils literal notranslate"><span class="pre">replace=True</span></code> replaces one on purpose.</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
@@ -480,12 +481,12 @@ chaining (returning None is accepted). Given when used as a bare decorator.</p><
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>kind</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – <code class="docutils literal notranslate"><span class="pre">&quot;animation&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;shape&quot;</span></code>.</p></li>
+<li><p><strong>kind</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – <code class="docutils literal notranslate"><span class="pre">&quot;animation&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;shape&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;size&quot;</span></code>.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The preset name.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>callable</em> – A shape factory, or an animation function <code class="docutils literal notranslate"><span class="pre">f(motion,</span> <span class="pre">...)</span></code> for <a class="reference internal" href="elements.html#svgwriter.Motion.apply" title="svgwriter.Motion.apply"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Motion.apply</span></code></a>.</p>
+<dd class="field-even"><p><em>callable</em> – A shape factory, a <a class="reference internal" href="document.html#svgwriter.PageSize" title="svgwriter.PageSize"><code class="xref py py-class docutils literal notranslate"><span class="pre">PageSize</span></code></a>, or an animation function <code class="docutils literal notranslate"><span class="pre">f(motion,</span> <span class="pre">...)</span></code> for <a class="reference internal" href="elements.html#svgwriter.Motion.apply" title="svgwriter.Motion.apply"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Motion.apply</span></code></a>.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -512,7 +513,7 @@ chaining (returning None is accepted). Given when used as a bare decorator.</p><
 <dd><p>The names of every preset of <em>kind</em>: built-in ones first, then the ones registered since.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>kind</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – <code class="docutils literal notranslate"><span class="pre">&quot;animation&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;shape&quot;</span></code>.</p>
+<dd class="field-odd"><p><strong>kind</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – <code class="docutils literal notranslate"><span class="pre">&quot;animation&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;shape&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;size&quot;</span></code>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>list of str</em> – The names.</p>
@@ -581,13 +582,60 @@ the palette’s primary color); None leaves them unthemed.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.preset.size">
+<span class="sig-name descname"><span class="pre">size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.length.Length"><span class="pre">Length</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.length.Length"><span class="pre">Length</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="document.html#svgwriter.PageSize" title="svgwriter._document.sizes.PageSize"><span class="pre">PageSize</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/preset/_size.html#size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.preset.size" title="Link to this definition">¶</a></dt>
+<dd><p>Register a named canvas size for <code class="docutils literal notranslate"><span class="pre">Document(size=name)</span></code>, <code class="docutils literal notranslate"><span class="pre">Scene.size</span></code> and project files.</p>
+<p>Sizes with a physical unit (<code class="docutils literal notranslate"><span class="pre">&quot;210mm&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.inch(11)</span></code>) make documents whose <code class="docutils literal notranslate"><span class="pre">viewBox</span></code> counts
+in that unit, so drawing coordinates are millimetres or inches; plain numbers are pixels. Every
+name also works with <code class="docutils literal notranslate"><span class="pre">-landscape</span></code> and <code class="docutils literal notranslate"><span class="pre">-portrait</span></code> appended, and appears as an attribute of
+<a class="reference internal" href="document.html#svgwriter.size" title="svgwriter.size"><code class="xref py py-data docutils literal notranslate"><span class="pre">svgwriter.size</span></code></a> with the name turned into an identifier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name, such as <code class="docutils literal notranslate"><span class="pre">&quot;poster-50x70&quot;</span></code>.</p></li>
+<li><p><strong>width</strong> (<a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.Length"><em>Length</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The size: a <code class="xref py py-class docutils literal notranslate"><span class="pre">Length</span></code>, length text such as <code class="docutils literal notranslate"><span class="pre">&quot;50cm&quot;</span></code>, or pixels.</p></li>
+<li><p><strong>height</strong> (<a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.Length"><em>Length</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The size: a <code class="xref py py-class docutils literal notranslate"><span class="pre">Length</span></code>, length text such as <code class="docutils literal notranslate"><span class="pre">&quot;50cm&quot;</span></code>, or pixels.</p></li>
+<li><p><strong>replace</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – Replace a size already registered under the name, a built-in one included. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>PageSize</em> – The registered size.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If <cite>name</cite> is taken and <cite>replace</cite> is False, or the two lengths have different units.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.preset.get" title="svgwriter.preset.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.preset.get</span></code></a></dt><dd><p>Look a size up by name (<code class="docutils literal notranslate"><span class="pre">get(&quot;size&quot;,</span> <span class="pre">name)</span></code>).</p>
+</dd>
+<dt><a class="reference internal" href="#svgwriter.preset.list" title="svgwriter.preset.list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.preset.list</span></code></a></dt><dd><p>Every size (<code class="docutils literal notranslate"><span class="pre">list(&quot;size&quot;)</span></code>).</p>
+</dd>
+<dt><a class="reference internal" href="#svgwriter.preset.unregister" title="svgwriter.preset.unregister"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.preset.unregister</span></code></a></dt><dd><p>Remove it again (<code class="docutils literal notranslate"><span class="pre">unregister(&quot;size&quot;,</span> <span class="pre">name)</span></code>).</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="s2">"poster-50x70"</span><span class="p">,</span> <span class="s2">"50cm"</span><span class="p">,</span> <span class="s2">"70cm"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">poster_50x70</span><span class="o">.</span><span class="n">landscape</span><span class="o">.</span><span class="n">width</span>
+<span class="go">70.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">"poster-50x70-landscape"</span><span class="p">)</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"viewBox"</span><span class="p">)</span><span class="o">.</span><span class="n">width</span>
+<span class="go">70.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"size"</span><span class="p">,</span> <span class="s2">"poster-50x70"</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="svgwriter.preset.unregister">
 <span class="sig-name descname"><span class="pre">unregister</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/preset/_kinds.html#unregister"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.preset.unregister" title="Link to this definition">¶</a></dt>
 <dd><p>Remove a preset registered with a <a class="reference internal" href="#module-svgwriter.preset" title="svgwriter.preset"><code class="xref py py-mod docutils literal notranslate"><span class="pre">svgwriter.preset</span></code></a> decorator; a replaced built-in comes back.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>kind</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – <code class="docutils literal notranslate"><span class="pre">&quot;animation&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;shape&quot;</span></code>.</p></li>
+<li><p><strong>kind</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – <code class="docutils literal notranslate"><span class="pre">&quot;animation&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;shape&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;size&quot;</span></code>.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The registered name.</p></li>
 </ul>
 </dd>
@@ -1271,6 +1319,7 @@ the crest; sawtooth starts at the trough and ramps up. Defaults to <code class="
 <li><a class="reference internal" href="#svgwriter.preset.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.preset.list"><code class="docutils literal notranslate"><span class="pre">list()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.preset.shape"><code class="docutils literal notranslate"><span class="pre">shape()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.preset.size"><code class="docutils literal notranslate"><span class="pre">size()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.preset.unregister"><code class="docutils literal notranslate"><span class="pre">unregister()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.builder.arrow"><code class="docutils literal notranslate"><span class="pre">arrow()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.builder.arrow_marker"><code class="docutils literal notranslate"><span class="pre">arrow_marker()</span></code></a></li>

@@ -288,102 +288,173 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">difflib</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Final</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Registry</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span><span class="p">,</span> <span class="n">LengthLike</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">BUILTIN_SIZES</span><span class="p">,</span> <span class="n">LANDSCAPE_SUFFIX</span><span class="p">,</span> <span class="n">PORTRAIT_SUFFIX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._presets</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIZES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span><span class="p">,</span> <span class="n">LengthLike</span><span class="p">,</span> <span class="n">Unit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">BUILTIN_SIZES</span><span class="p">,</span> <span class="n">IDENTIFIER_SEPARATORS</span><span class="p">,</span> <span class="n">LANDSCAPE_SUFFIX</span><span class="p">,</span> <span class="n">PORTRAIT_SUFFIX</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"SIZES"</span><span class="p">,</span> <span class="s2">"page_size"</span><span class="p">,</span> <span class="s2">"register_size"</span><span class="p">,</span> <span class="s2">"unregister_size"</span><span class="p">]</span>
-
-<span class="n">SIZES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Registry</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Length</span><span class="p">,</span> <span class="n">Length</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Registry</span><span class="p">(</span><span class="s2">"size"</span><span class="p">)</span>
-<span class="sd">"""Every named size as ``name -&gt; (width, height)``: ``SIZES.names()`` lists them, ``page_size`` looks one up."""</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"PageSize"</span><span class="p">,</span> <span class="s2">"page_size"</span><span class="p">,</span> <span class="s2">"size"</span><span class="p">]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_length</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">LengthLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Length</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Length</span><span class="p">)</span> <span class="k">else</span> <span class="n">Length</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">Length</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="register_size">
-<a class="viewcode-back" href="../../../reference/document.html#svgwriter.register_size">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">register_size</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">LengthLike</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="n">LengthLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Add a named canvas size for ``Document(size=name)``, ``Scene.size`` and project files.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_identifier</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">IDENTIFIER_SEPARATORS</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">"_"</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"_"</span><span class="p">)</span>
 
-<span class="sd">    Sizes with a physical unit (``"210mm"``, ``svg.inch(11)``) make documents whose ``viewBox`` counts</span>
-<span class="sd">    in that unit, so drawing coordinates are millimetres or inches; plain numbers are pixels. Every</span>
-<span class="sd">    name also works with ``-landscape`` and ``-portrait`` appended.</span>
+
+<div class="viewcode-block" id="PageSize">
+<a class="viewcode-back" href="../../../reference/document.html#svgwriter.PageSize">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PageSize</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A canvas size: a width and a height counted in one unit.</span>
+
+<span class="sd">    Look the built-in ones up as attributes of :data:`svgwriter.size` (``svg.size.a4``), add your own</span>
+<span class="sd">    with :func:`svgwriter.preset.size`, and pass either to ``Document(size=...)``, ``Scene.size`` or a</span>
+<span class="sd">    project's ``size``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    name : str</span>
-<span class="sd">        The name, such as ``"poster-50x70"``.</span>
-<span class="sd">    width, height : Length, float or str</span>
-<span class="sd">        The size: a :class:`~svgwriter.Length`, length text such as ``"50cm"``, or pixels.</span>
-
-<span class="sd">    Raises</span>
-<span class="sd">    ------</span>
-<span class="sd">    ValueError</span>
-<span class="sd">        If *name* is taken, or the two lengths have different units.</span>
+<span class="sd">    width, height : float</span>
+<span class="sd">        The two sides, in `units`.</span>
+<span class="sd">    units : Unit, optional</span>
+<span class="sd">        The unit both sides are counted in. Defaults to ``Unit.NONE``, user units (pixels).</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    unregister_size : Remove it again.</span>
-<span class="sd">    page_size : Look a size up.</span>
-<span class="sd">    SIZES : Every registered size.</span>
+<span class="sd">    svgwriter.size : The built-in sizes by name.</span>
+<span class="sd">    svgwriter.preset.size : Register a size under a name.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; svg.register_size("poster-50x70", "50cm", "70cm")</span>
-<span class="sd">    &gt;&gt;&gt; svg.Document(size="poster-50x70-landscape").root.get("viewBox").width</span>
-<span class="sd">    70.0</span>
-<span class="sd">    &gt;&gt;&gt; svg.unregister_size("poster-50x70")</span>
+<span class="sd">    &gt;&gt;&gt; a4 = svg.size.a4</span>
+<span class="sd">    &gt;&gt;&gt; a4</span>
+<span class="sd">    PageSize(width=210.0, height=297.0, units=&lt;Unit.MM: 'mm'&gt;)</span>
+<span class="sd">    &gt;&gt;&gt; str(a4.landscape), a4.landscape.portrait == a4</span>
+<span class="sd">    ('297mm x 210mm', True)</span>
+<span class="sd">    &gt;&gt;&gt; svg.Document(size=a4.landscape).root.get("viewBox").width</span>
+<span class="sd">    297.0</span>
 <span class="sd">    """</span>
-    <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">_length</span><span class="p">(</span><span class="n">width</span><span class="p">),</span> <span class="n">_length</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">first</span><span class="o">.</span><span class="n">unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">second</span><span class="o">.</span><span class="n">unit</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"size </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">: width and height need one unit, not </span><span class="si">{</span><span class="n">first</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">second</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-    <span class="n">SIZES</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">))</span></div>
+
+    <span class="n">width</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">height</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">units</span><span class="p">:</span> <span class="n">Unit</span> <span class="o">=</span> <span class="n">Unit</span><span class="o">.</span><span class="n">NONE</span>
+
+<div class="viewcode-block" id="PageSize.of">
+<a class="viewcode-back" href="../../../reference/document.html#svgwriter.PageSize.of">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">of</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">LengthLike</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="n">LengthLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PageSize</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""A size from two lengths of one unit.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        width, height : Length, float or str</span>
+<span class="sd">            A :class:`~svgwriter.Length`, length text such as ``"50cm"``, or pixels.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PageSize</span>
+<span class="sd">            The size.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the two lengths have different units.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">        &gt;&gt;&gt; svg.PageSize.of("50cm", "70cm")</span>
+<span class="sd">        PageSize(width=50.0, height=70.0, units=&lt;Unit.CM: 'cm'&gt;)</span>
+<span class="sd">        """</span>
+        <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">_length</span><span class="p">(</span><span class="n">width</span><span class="p">),</span> <span class="n">_length</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">first</span><span class="o">.</span><span class="n">unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">second</span><span class="o">.</span><span class="n">unit</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"width and height need one unit, not </span><span class="si">{</span><span class="n">first</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">second</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">first</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">second</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">first</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lengths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Length</span><span class="p">,</span> <span class="n">Length</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""``(width, height)`` as :class:`~svgwriter.Length` values."""</span>
+        <span class="k">return</span> <span class="n">Length</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">),</span> <span class="n">Length</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">landscape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PageSize</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The same size with the long side across."""</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="k">else</span> <span class="n">PageSize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">portrait</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PageSize</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The same size with the long side down."""</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="k">else</span> <span class="n">PageSize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lengths</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">width</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="n">height</span><span class="si">}</span><span class="s2">"</span></div>
 
 
 
-<div class="viewcode-block" id="unregister_size">
-<a class="viewcode-back" href="../../../reference/document.html#svgwriter.unregister_size">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">unregister_size</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Remove a size added with :func:`register_size`.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_Sizes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The registered sizes as attributes: ``svg.size.a4``, ``svg.size.slide_16_9``, ``svg.size.&lt;your own&gt;``."""</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    name : str</span>
-<span class="sd">        The registered name.</span>
+    <span class="n">a0</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">a1</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">a2</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">a3</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">a4</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">a5</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">a6</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">letter</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">legal</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">tabloid</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">business_card</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">slide_16_9</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">slide_4_3</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">video_720p</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">video_1080p</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">instagram_post</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">instagram_portrait</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">instagram_story</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">og_image</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">youtube_thumbnail</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">favicon</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">apple_touch_icon</span><span class="p">:</span> <span class="n">PageSize</span>
+    <span class="n">icon</span><span class="p">:</span> <span class="n">PageSize</span>
 
-<span class="sd">    Raises</span>
-<span class="sd">    ------</span>
-<span class="sd">    KeyError</span>
-<span class="sd">        If no size has that name.</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PageSize</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">registered</span> <span class="ow">in</span> <span class="n">SIZES</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_identifier</span><span class="p">(</span><span class="n">registered</span><span class="p">)</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">SIZES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">registered</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"no size </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">; svg.preset.list(</span><span class="se">\"</span><span class="s2">size</span><span class="se">\"</span><span class="s2">) lists every size"</span><span class="p">)</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; svg.register_size("square", 100, 100)</span>
-<span class="sd">    &gt;&gt;&gt; svg.unregister_size("square")</span>
-<span class="sd">    &gt;&gt;&gt; "square" in svg.SIZES</span>
-<span class="sd">    False</span>
-<span class="sd">    """</span>
-    <span class="n">SIZES</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_identifier</span><span class="p">(</span><span class="n">registered</span><span class="p">)</span> <span class="k">for</span> <span class="n">registered</span> <span class="ow">in</span> <span class="n">SIZES</span><span class="p">]</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"size(</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span><span class="si">}</span><span class="s2">)"</span>
+
+
+<span class="n">size</span> <span class="o">=</span> <span class="n">_Sizes</span><span class="p">()</span>
+<span class="sd">"""The registered sizes as attributes, names turned into identifiers (``"slide-16:9"`` is ``size.slide_16_9``).</span>
+
+<span class="sd">Every attribute is a :class:`PageSize`; sizes added with :func:`svgwriter.preset.size` appear here too.</span>
+<span class="sd">"""</span>
 
 
 <div class="viewcode-block" id="page_size">
 <a class="viewcode-back" href="../../../reference/document.html#svgwriter.page_size">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">page_size</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Length</span><span class="p">,</span> <span class="n">Length</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""The width and height registered as *name*, turned for a ``-landscape`` or ``-portrait`` suffix.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">page_size</span><span class="p">(</span><span class="n">size</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">PageSize</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Length</span><span class="p">,</span> <span class="n">Length</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""The width and height of a size, turned for a ``-landscape`` or ``-portrait`` suffix.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    name : str</span>
-<span class="sd">        A name from :data:`SIZES` (``"a4"``, ``"letter"``, ``"slide-16:9"``, ``"instagram-story"``,</span>
-<span class="sd">        ...), optionally followed by ``-landscape`` (long side across) or ``-portrait`` (long side down).</span>
+<span class="sd">    size : str or PageSize</span>
+<span class="sd">        A :class:`PageSize`, or a name from ``svg.preset.list("size")`` (``"a4"``, ``"letter"``,</span>
+<span class="sd">        ``"slide-16:9"``, ``"instagram-story"``, ...), optionally followed by ``-landscape`` (long side</span>
+<span class="sd">        across) or ``-portrait`` (long side down).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -397,7 +468,7 @@
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    register_size : Add a size.</span>
+<span class="sd">    svgwriter.preset.size : Add a size.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -407,25 +478,25 @@
 <span class="sd">    &gt;&gt;&gt; svg.page_size("a44")</span>
 <span class="sd">    Traceback (most recent call last):</span>
 <span class="sd">    ...</span>
-<span class="sd">    ValueError: unknown size 'a44'; did you mean 'a4'? (svg.SIZES.names() lists every size)</span>
+<span class="sd">    ValueError: unknown size 'a44'; did you mean 'a4'? (svg.preset.list("size") lists every size)</span>
 <span class="sd">    """</span>
-    <span class="n">base</span><span class="p">,</span> <span class="n">turn</span> <span class="o">=</span> <span class="n">name</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">PageSize</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">size</span><span class="o">.</span><span class="n">lengths</span>
+    <span class="n">base</span><span class="p">,</span> <span class="n">turn</span> <span class="o">=</span> <span class="n">size</span><span class="p">,</span> <span class="kc">None</span>
     <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="n">LANDSCAPE_SUFFIX</span><span class="p">,</span> <span class="n">PORTRAIT_SUFFIX</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SIZES</span> <span class="ow">and</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">suffix</span><span class="p">):</span>
-            <span class="n">base</span><span class="p">,</span> <span class="n">turn</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">removesuffix</span><span class="p">(</span><span class="n">suffix</span><span class="p">),</span> <span class="n">suffix</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SIZES</span> <span class="ow">and</span> <span class="n">size</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">suffix</span><span class="p">):</span>
+            <span class="n">base</span><span class="p">,</span> <span class="n">turn</span> <span class="o">=</span> <span class="n">size</span><span class="o">.</span><span class="n">removesuffix</span><span class="p">(</span><span class="n">suffix</span><span class="p">),</span> <span class="n">suffix</span>
     <span class="k">if</span> <span class="n">base</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SIZES</span><span class="p">:</span>
-        <span class="n">close</span> <span class="o">=</span> <span class="n">difflib</span><span class="o">.</span><span class="n">get_close_matches</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">SIZES</span><span class="o">.</span><span class="n">names</span><span class="p">(),</span> <span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-        <span class="n">hint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"; did you mean </span><span class="si">{</span><span class="s1">' or '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">repr</span><span class="p">,</span><span class="w"> </span><span class="n">close</span><span class="p">))</span><span class="si">}</span><span class="s2">?"</span> <span class="k">if</span> <span class="n">close</span> <span class="k">else</span> <span class="s2">""</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unknown size </span><span class="si">{</span><span class="n">name</span><span class="si">!r}{</span><span class="n">hint</span><span class="si">}</span><span class="s2"> (svg.SIZES.names() lists every size)"</span><span class="p">)</span>
-    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">SIZES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">turn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">width</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;</span> <span class="n">height</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">turn</span> <span class="o">==</span> <span class="n">LANDSCAPE_SUFFIX</span><span class="p">):</span>
-        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span>
-    <span class="k">return</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">SIZES</span><span class="o">.</span><span class="n">unknown</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">turn</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">base</span><span class="p">)</span><span class="si">}</span><span class="s2"> (svg.preset.list(</span><span class="se">\"</span><span class="s2">size</span><span class="se">\"</span><span class="s2">) lists every size)"</span><span class="p">)</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">SIZES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">turn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">landscape</span> <span class="k">if</span> <span class="n">turn</span> <span class="o">==</span> <span class="n">LANDSCAPE_SUFFIX</span> <span class="k">else</span> <span class="n">page</span><span class="o">.</span><span class="n">portrait</span>
+    <span class="k">return</span> <span class="n">page</span><span class="o">.</span><span class="n">lengths</span></div>
 
 
 
 <span class="k">for</span> <span class="n">_name</span><span class="p">,</span> <span class="p">(</span><span class="n">_width</span><span class="p">,</span> <span class="n">_height</span><span class="p">)</span> <span class="ow">in</span> <span class="n">BUILTIN_SIZES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">register_size</span><span class="p">(</span><span class="n">_name</span><span class="p">,</span> <span class="n">_width</span><span class="p">,</span> <span class="n">_height</span><span class="p">)</span>
+    <span class="n">SIZES</span><span class="o">.</span><span class="n">add_builtin</span><span class="p">(</span><span class="n">_name</span><span class="p">,</span> <span class="n">PageSize</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">_width</span><span class="p">,</span> <span class="n">_height</span><span class="p">))</span>
 </pre></div>
         </article>
       </div>

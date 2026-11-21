@@ -295,7 +295,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.access</span><span class="w"> </span><span class="kn">import</span> <span class="n">Access</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.ingest</span><span class="w"> </span><span class="kn">import</span> <span class="n">SupportsSVG</span><span class="p">,</span> <span class="n">to_element</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.output</span><span class="w"> </span><span class="kn">import</span> <span class="n">Output</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._document.sizes</span><span class="w"> </span><span class="kn">import</span> <span class="n">page_size</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._document.sizes</span><span class="w"> </span><span class="kn">import</span> <span class="n">PageSize</span><span class="p">,</span> <span class="n">page_size</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.sizing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sizing</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.theming</span><span class="w"> </span><span class="kn">import</span> <span class="n">Theming</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._internal._tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">attach_cursor</span>
@@ -330,9 +330,9 @@
 <span class="sd">    width, height : float or Length, optional</span>
 <span class="sd">        Canvas size; a matching ``viewBox`` is added unless one is given.</span>
 <span class="sd">        Defaults to None, which sizes the canvas from the content on output.</span>
-<span class="sd">    size : str, optional</span>
-<span class="sd">        A named size instead of `width` and `height`: ``"a4"``, ``"letter"``,</span>
-<span class="sd">        ``"slide-16:9"``, ``"instagram-post"``, ... (see :data:`~svgwriter.SIZES`), with</span>
+<span class="sd">    size : str or PageSize, optional</span>
+<span class="sd">        A :class:`~svgwriter.PageSize` (``svg.size.a4``), or a named size instead of `width` and `height`: ``"a4"``, ``"letter"``,</span>
+<span class="sd">        ``"slide-16:9"``, ``"instagram-post"``, ... (see :data:`~svgwriter.size`), with</span>
 <span class="sd">        ``-landscape`` or ``-portrait`` appended to turn it. Paper sizes are in millimetres or</span>
 <span class="sd">        inches, so the ``viewBox`` counts in those units. Defaults to None.</span>
 <span class="sd">    root : Svg, optional</span>
@@ -353,7 +353,7 @@
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    svgwriter.elements.Svg : The root element wrapped by a document.</span>
-<span class="sd">    svgwriter.register_size : Add a named size.</span>
+<span class="sd">    svgwriter.preset.size : Add a named size.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -381,7 +381,7 @@
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Length</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Length</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-                 <span class="n">size</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">Svg</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">theme</span><span class="p">:</span> <span class="n">Theme</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">size</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">PageSize</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">Svg</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">theme</span><span class="p">:</span> <span class="n">Theme</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">height</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
