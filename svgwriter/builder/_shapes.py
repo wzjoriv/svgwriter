@@ -25,6 +25,7 @@ from ._constants import (
     QUARTER_TURN,
     TOOTH_DEPTH_RATIO,
 )
+from ._roles import with_role
 from ._rounded import rounded_outline
 
 __all__ = ["SHAPES", "arrow", "gear", "regular_polygon", "shape_factory", "star"]
@@ -34,10 +35,12 @@ E = TypeVar("E", bound=Element)
 SHAPES: Final[Registry[Callable[..., Element]]] = Registry("shape")
 
 
-def shape_factory(name: str) -> Callable[[Callable[P, E]], Callable[P, E]]:
+def shape_factory(name: str, role: str | None = "shape") -> Callable[[Callable[P, E]], Callable[P, E]]:
     """Register a function returning an element under *name*.
 
-    The wrapper checks the return type, so plugins fail loudly. Registered
+    The wrapper checks the return type, so plugins fail loudly, and marks the
+    element with a theme *role*; presentation keywords the caller passes move
+    into the inline style so they keep priority over the role. Registered
     shapes are listed by ``python -m svgwriter shapes`` and drawn by
     ``python -m svgwriter draw``.
 
@@ -45,6 +48,9 @@ def shape_factory(name: str) -> Callable[[Callable[P, E]], Callable[P, E]]:
     ----------
     name : str
         The name to register the shape under.
+    role : str or None, optional
+        Theme role of the shapes built (see :class:`~svgwriter.Theme`). Defaults to ``"shape"``
+        (filled with the palette's primary color); None leaves them unthemed.
 
     Returns
     -------
@@ -70,8 +76,8 @@ def shape_factory(name: str) -> Callable[[Callable[P, E]], Callable[P, E]]:
     >>> @shape_factory("disc")
     ... def disc(cx, cy, r, **kwargs):
     ...     return Circle(cx, cy, r, **kwargs)
-    >>> disc(0, 0, 2).tag
-    'circle'
+    >>> str(disc(0, 0, 2, stroke="red"))
+    '<circle cx="0" cy="0" r="2" style="stroke:red" class="role-shape"/>'
     >>> _ = SHAPES.remove("disc")
     """
 
@@ -81,7 +87,7 @@ def shape_factory(name: str) -> Callable[[Callable[P, E]], Callable[P, E]]:
             result = func(*args, **kwargs)
             if not isinstance(result, Element):
                 raise TypeError(f"shape {name!r} returned {type(result).__name__}")
-            return result
+            return with_role(result, role, kwargs)
 
         SHAPES.add(name, wrapper)
         return wrapper
@@ -187,7 +193,7 @@ def gear(cx: float, cy: float, radius: float, teeth: int = DEFAULT_TEETH, **kwar
     return Polygon(_ring(cx, cy, radii, 0.0), **kwargs)
 
 
-@shape_factory("arrow")
+@shape_factory("arrow", role="arrow.line")
 def arrow(x1: float, y1: float, x2: float, y2: float, head: float = DEFAULT_HEAD_SIZE, **kwargs: Any) -> Path:
     """Build a line with an open arrowhead at ``(x2, y2)``.
 
@@ -216,7 +222,7 @@ def arrow(x1: float, y1: float, x2: float, y2: float, head: float = DEFAULT_HEAD
     --------
     >>> from svgwriter.builder import arrow
     >>> arrow(0, 0, 10, 0).to_string(xml_declaration=False, pretty=False)
-    '<path d="M0 0 L10 0 M1.3397 5 L10 0 M1.3397 -5 L10 0" fill="none"/>'
+    '<path d="M0 0 L10 0 M1.3397 5 L10 0 M1.3397 -5 L10 0" fill="none" class="role-arrow-line"/>'
     """
     angle = math.atan2(y2 - y1, x2 - x1)
     spread = math.radians(ARROW_HEAD_ANGLE)

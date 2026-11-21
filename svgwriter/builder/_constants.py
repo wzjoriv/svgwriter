@@ -21,6 +21,7 @@ __all__ = [
     "DEFAULT_STAR_POINTS",
     "DEFAULT_TEETH",
     "DOT_RADIUS",
+    "FALLBACK_INK",
     "FILTER_EXTENT",
     "FILTER_MARGIN",
     "FULL_TURN",
@@ -49,6 +50,7 @@ MIN_SIDES: Final = 3
 
 DASH_PATTERN: Final = (4, 2)
 DOT_RADIUS: Final = 2
+FALLBACK_INK: Final = "black"
 
 FULL_TURN: Final = 360.0
 
