@@ -1,5 +1,5 @@
 """
-Writing a project's outputs: pages through the exporters, scenes as GIF frames, video through ffmpeg.
+Writing a project's outputs: pages through the exporters, scenes as GIF frames or baked SMIL, video through ffmpeg.
 
 Still formats (PDF, PNG, ...) show a page once its animations have ended; ``time = 0`` in the format's
 options shows the start instead.
@@ -19,7 +19,7 @@ from ..export import exporters, save
 from ..theme import Theme
 from ..video import Scene, animation_duration, frame_times
 from ._config import ProjectConfig
-from ._constants import ANIMATED_FORMATS, DEFAULT_GIF_FPS, KEEPS_ANIMATION, VIDEO_FORMATS
+from ._constants import ANIMATED_FORMATS, BAKED_FORMATS, DEFAULT_GIF_FPS, KEEPS_ANIMATION, VIDEO_FORMATS
 from ._entry import Item
 
 __all__ = ["write_outputs"]
@@ -57,7 +57,7 @@ def _gif(scene: Scene, options: Mapping[str, Any]) -> bytes | None:
     raster = {key: options[key] for key in ("scale", "background") if key in options}
     frames = []
     for seconds in frame_times(fps, float(length)):
-        scene.update(seconds)
+        scene._advance(scene.document, seconds)
         frames.append(to_uint8(scene.document.at(seconds).rasterize(**raster)))
     return encode_gif_animation(frames, fps, loop=int(options.get("loop", 0)))
 
@@ -71,7 +71,11 @@ def _write_scene(scene: Scene, target: Path, format: str, options: Mapping[str, 
         if data is not None:
             target.write_bytes(data)
             return target
-    scene.update(0.0)
+    duration = options.get("duration")
+    if format in BAKED_FORMATS and (duration or scene.duration or animation_duration(scene.document)):
+        baked = scene.bake(options.get("fps"), duration=duration)
+        return save(baked, target, format, **{k: v for k, v in options.items() if k not in ("fps", "duration")})
+    scene._advance(scene.document, 0.0)
     return save(scene.document, target, format, **options)
 
 
