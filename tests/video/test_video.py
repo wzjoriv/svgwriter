@@ -109,6 +109,7 @@ class TestRenderers:
 
         assert video.resolve_renderer("test-solid") is render
         assert svg.register_renderer is video.register_renderer
+        video.unregister_renderer("test-solid")
 
     def test_iter_frames_and_update(self) -> None:
         seen: list[float] = []
