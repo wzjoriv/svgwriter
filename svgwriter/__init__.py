@@ -94,7 +94,7 @@ from .io.writer import SerializeOptions, to_string, write
 from .ops import interpolate, register_font, text_to_path
 from .pathdata import BBox, PathBuilder, PathData
 from .transform import Matrix, Point, Transform
-from .video import FFmpegNotFoundError, register_renderer
+from .video import FFmpegNotFoundError, Scene, register_renderer
 
 if TYPE_CHECKING:
     from ._internal._latex import latex
@@ -140,6 +140,7 @@ __all__ = [
     "Point",
     "SVGParseError",
     "SHAPES",
+    "Scene",
     "Align",
     "Color",
     "Document",
