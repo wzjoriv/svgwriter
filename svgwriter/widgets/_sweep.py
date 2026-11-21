@@ -183,7 +183,7 @@ class Sweep(Scene):
         >>> grow = svg.sweep(lambda r: svg.circle(20, 20, r), r=(2, 20), dur=1)
         >>> grow.update(1.0)
         >>> grow.document.root[0].get("r")
-        20
+        20.0
         """
         values = self.values_at(seconds)
         key = [(name, repr(value)) for name, value in values.items()]
@@ -282,7 +282,7 @@ def sweep(function: Callable[..., Any], *, dur: float = SWEEP_DURATION, fps: flo
     [10.0, 50.0, 90.0]
     >>> growing.save("bar.svg")  # doctest: +SKIP
     """
-    declared = controls_of(function)
+    declared = controls_of(function, infer=False)
     tracks, fixed = {}, {}
     for key, control in declared.items():
         if key not in params:
