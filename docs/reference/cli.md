@@ -1,6 +1,6 @@
 # Command line
 
-`svgwriter` (also `python -m svgwriter`) runs these commands; `svgwriter COMMAND --help` lists the
+`svgwriter` (also `python -m svgwriter`) is a [click](https://click.palletsprojects.com) group that runs these commands; `svgwriter COMMAND --help` lists the
 options of each. Errors are one line on stderr; the exit status is 0 on success, 1 when a command
 fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or an invalid project.
 
@@ -10,7 +10,7 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 | `build [--format F ...] [--path DIR]` | Write the project's outputs (all of `[outputs] formats`, or the ones given) |
 | `preview [--port N] [--no-open] [--path DIR]` | Serve the outputs on a local page that rebuilds and reloads on save |
 | `presets` | List project presets |
-| `sizes` | List named canvas sizes |
+| `sizes` | List named canvas sizes (`svg.preset.list("size")`) |
 | `shapes`, `elements` | List shape presets and element classes |
 | `draw SHAPE [--size N] [--fill C] [-o FILE]` | Write a shape preset as SVG |
 | `format INPUT [-o FILE] [--compact] [--precision N]` | Parse an SVG file and write it back out |

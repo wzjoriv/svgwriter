@@ -8,7 +8,7 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar
 
-from .._document.sizes import page_size
+from .._document.sizes import PageSize, page_size
 from .._internal._scenes import adopt
 from .._internal._typing import AnyPath
 from ._constants import BAKE_DOCUMENTS, SCENE_FORMAT, SCENE_HEIGHT, SCENE_RENDERER, SCENE_WIDTH
@@ -44,9 +44,9 @@ class Scene(SceneMotion):
     ----------
     width, height : float
         Size of the document handed to :meth:`build`. Default 640 by 360.
-    size : str or None
-        A named size instead (``"video-1080p"``, ``"instagram-story"``, ... see
-        :data:`~svgwriter.SIZES`); it sets `width` and `height`. Default None.
+    size : str, PageSize or None
+        A named size instead (``"video-1080p"``, ``svg.size.instagram_story``, ... see
+        :data:`~svgwriter.size`); it sets `width` and `height`. Default None.
     fps : float
         Frames per second. Default 30.0.
     duration : float or None
@@ -92,7 +92,7 @@ class Scene(SceneMotion):
 
     width: ClassVar[float] = SCENE_WIDTH
     height: ClassVar[float] = SCENE_HEIGHT
-    size: ClassVar[str | None] = None
+    size: ClassVar[str | PageSize | None] = None
     fps: ClassVar[float] = DEFAULT_FPS
     duration: ClassVar[float | None] = None
     renderer: ClassVar[Renderer | str] = SCENE_RENDERER

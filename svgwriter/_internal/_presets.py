@@ -10,7 +10,7 @@ from typing import Any, Final
 
 from ._constants import SUGGESTIONS
 
-__all__ = ["ANIMATIONS", "BEHAVIORS", "KINDS", "SHAPES", "PresetRegistry", "owner_of"]
+__all__ = ["ANIMATIONS", "BEHAVIORS", "KINDS", "SHAPES", "SIZES", "PresetRegistry", "owner_of"]
 
 Preset = Callable[..., Any]
 
@@ -92,4 +92,5 @@ class PresetRegistry:
 ANIMATIONS: Final = PresetRegistry("animation")
 BEHAVIORS: Final = PresetRegistry("behavior")
 SHAPES: Final = PresetRegistry("shape")
-KINDS: Final = {"animation": ANIMATIONS, "behavior": BEHAVIORS, "shape": SHAPES}
+SIZES: Final = PresetRegistry("size")
+KINDS: Final = {"animation": ANIMATIONS, "behavior": BEHAVIORS, "shape": SHAPES, "size": SIZES}

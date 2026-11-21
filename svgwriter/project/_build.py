@@ -12,6 +12,7 @@ from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
 
+from .._document.sizes import PageSize
 from .._internal._gif import encode_gif_animation
 from .._internal._rgba import to_uint8
 from ..document import Document
@@ -31,7 +32,7 @@ def _extension(format: str) -> str:
 
 
 def _page(config: ProjectConfig, function: Any) -> Document:
-    if isinstance(config.size, str):
+    if isinstance(config.size, (str, PageSize)):
         doc = Document(size=config.size)
     elif config.size is not None:
         doc = Document(*config.size)
