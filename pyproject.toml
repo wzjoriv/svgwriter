@@ -64,13 +64,16 @@ math = [
 color = [
     "python-lcms2>=0.3.1",
 ]
+widget = [
+    "ipywidgets>=8",
+]
 notebook = [
     "nbformat>=5",
     "nbclient>=0.7",
     "ipykernel>=6",
 ]
 test = [
-    "pysvgwriter[office,plot,graph,math]",
+    "pysvgwriter[office,plot,graph,math,widget]",
     "pytest>=7",
     "ezdxf>=1.0",
     "pillow>=10",
