@@ -71,7 +71,7 @@ def find_ffmpeg(executable: str | None = None) -> str:
     """
     found = find_executable(executable or FFMPEG)
     if found is None:
-        raise missing("ffmpeg", f"{executable or FFMPEG!r} was not found; video (nothing was rendered)",
+        raise missing("ffmpeg", f"{executable or FFMPEG!r} was not found. Nothing was rendered. Video export",
                       FFmpegNotFoundError)
     return found
 
