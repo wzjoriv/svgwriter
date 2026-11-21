@@ -406,7 +406,7 @@ can describe its own picture this way:</p>
 <span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Network</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">]))</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">add</span></code> also takes objects from other libraries: matplotlib figures (<code class="docutils literal notranslate"><span class="pre">savefig</span></code>), anything with
+<p><code class="docutils literal notranslate"><span class="pre">add</span></code> also takes objects from other libraries: matplotlib figures (<code class="docutils literal notranslate"><span class="pre">savefig</span></code>), ziaplot plots, anything with
 <code class="docutils literal notranslate"><span class="pre">_repr_svg_</span></code> (parsed into elements), anything with only <code class="docutils literal notranslate"><span class="pre">_repr_png_</span></code> or <code class="docutils literal notranslate"><span class="pre">_repr_jpeg_</span></code> (an <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code>),
 and numpy pixel arrays.</p>
 </section>
@@ -420,7 +420,7 @@ and stay editable there. With <code class="docutils literal notranslate"><span c
 <h2>Graphs<a class="headerlink" href="#graphs" title="Link to this heading">¶</a></h2>
 <p>networkx, python-igraph and rustworkx graphs draw themselves: <code class="docutils literal notranslate"><span class="pre">doc.add(G)</span></code>, or
 <code class="docutils literal notranslate"><span class="pre">svgwriter.ops.draw_graph(G,</span> <span class="pre">layout=&quot;circular&quot;,</span> <span class="pre">node_radius=8)</span></code> for options. Install the library
-with its extra: <code class="docutils literal notranslate"><span class="pre">pysvgwriter[graph]</span></code> (networkx), <code class="docutils literal notranslate"><span class="pre">pysvgwriter[igraph]</span></code> or <code class="docutils literal notranslate"><span class="pre">pysvgwriter[rustworkx]</span></code>.
+with <code class="docutils literal notranslate"><span class="pre">pysvgwriter[graph]</span></code> (all three), or install just the one you use.
 Nodes are circles with ids <code class="docutils literal notranslate"><span class="pre">node-&lt;name&gt;</span></code>, edges are lines (arcs when a directed edge runs both ways)
 with arrowheads for directed graphs, and node or edge attributes (<code class="docutils literal notranslate"><span class="pre">fill</span></code>, <code class="docutils literal notranslate"><span class="pre">radius</span></code>, <code class="docutils literal notranslate"><span class="pre">label</span></code>,
 <code class="docutils literal notranslate"><span class="pre">stroke</span></code>, <code class="docutils literal notranslate"><span class="pre">width</span></code>) style single items; <code class="docutils literal notranslate"><span class="pre">edge_labels=True</span></code> writes each edge’s <code class="docutils literal notranslate"><span class="pre">label</span></code> or <code class="docutils literal notranslate"><span class="pre">weight</span></code>.</p>
