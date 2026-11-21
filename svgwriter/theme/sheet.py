@@ -8,14 +8,14 @@ from collections.abc import Generator
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
-from ._constants import ROLE_CLASS_PREFIX, STYLE_ID
+from ._constants import ROLE_CLASS_PREFIX, SHEET_THEME_NAME, STYLE_ID
 from ._errors import ThemeError
-from .theme import Theme
+from .theme import THEMES, Theme
 
 if TYPE_CHECKING:
     from ..elements.core import Element
 
-__all__ = ["STYLE_ID", "applied", "used_roles"]
+__all__ = ["STYLE_ID", "applied", "sheet_theme", "used_roles"]
 
 
 def used_roles(theme: Theme, root: Element) -> list[str]:
@@ -110,3 +110,51 @@ def applied(theme: Theme, root: Element) -> Generator[None, None, None]:
         yield
     finally:
         root.remove(sheet)
+
+
+def sheet_theme(root: Element) -> Theme | None:
+    """The theme that wrote the theme sheet of a parsed tree, so reopening a file keeps its look.
+
+    A registered theme that writes exactly that sheet is returned; otherwise the current theme
+    with the sheet's role styles, named ``"document"``.
+
+    Parameters
+    ----------
+    root : Element
+        The root ``<svg>``.
+
+    Returns
+    -------
+    Theme or None
+        The theme, or None when the tree has no theme sheet.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.theme.sheet import sheet_theme
+    >>> doc = svg.Document(10, 10, theme="dark")
+    >>> _ = doc.circle(5, 5, 2).as_role("dot")
+    >>> sheet_theme(svg.parse(doc.to_string())).name
+    'dark'
+    >>> sheet_theme(svg.Svg()) is None
+    True
+    """
+    from ..attributes.cascade import parse_css
+    from ..elements.structure import StyleElement
+
+    sheet = root.get_element_by_id(STYLE_ID)
+    if not isinstance(sheet, StyleElement):
+        return None
+    css = sheet.css
+    for name in THEMES.names():
+        theme = THEMES.get(name)
+        try:
+            roles = used_roles(theme, root)
+        except ThemeError:
+            continue
+        if theme.css(roles).css() == css:
+            return theme
+    prefix = "." + ROLE_CLASS_PREFIX
+    roles = {rule.selector.removeprefix(prefix).replace("-", "."): {key: value for key, value, _ in rule.declarations}
+             for rule in parse_css(css) if rule.selector.startswith(prefix)}
+    return Theme.current().replace(name=SHEET_THEME_NAME, roles=roles)

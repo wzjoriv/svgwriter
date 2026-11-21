@@ -19,6 +19,7 @@ from ._internal._tree import attach_cursor
 from ._internal._typing import AnyPath, Stack
 from .elements.core import Element, ElementFactory
 from .elements.structure import Defs, Desc, Group, Svg, Title
+from .theme.sheet import sheet_theme
 from .theme.theme import Theme
 
 if TYPE_CHECKING:
@@ -53,8 +54,9 @@ class Document(Sizing, Theming, Typography, Output, Access, ElementFactory):
     root : Svg, optional
         Use an existing root instead of creating one. Defaults to None.
     theme : Theme or str, optional
-        Styles elements marked with ``as_role``. Defaults to None, which takes
-        :meth:`Theme.current() <svgwriter.Theme.current>` (``"light"`` outside a ``with theme:`` block).
+        Styles elements marked with ``as_role``. Defaults to None, which keeps the theme that wrote
+        the theme sheet of an existing `root`, else takes :meth:`Theme.current() <svgwriter.Theme.current>`
+        (``"light"`` outside a ``with theme:`` block).
     **kwargs
         Forwarded to :class:`~svgwriter.elements.Svg`.
 
@@ -108,7 +110,7 @@ class Document(Sizing, Theming, Typography, Output, Access, ElementFactory):
             else:
                 root = Svg(width=width, height=height, **kwargs)
         self.root = root
-        self.theme = Theme.of(theme)
+        self.theme = Theme.of(theme) if theme is not None else sheet_theme(root) or Theme.current()
         self._stack: Stack[Element] = Stack([root])
         attach_cursor(root, self._stack)
 
@@ -131,7 +133,8 @@ class Document(Sizing, Theming, Typography, Output, Access, ElementFactory):
             How SVG treats unknown elements and unsupported attributes. Defaults to
             ``Strictness.LENIENT``. SVG only.
         **options : Any
-            Options of the importer (for example ``theme=`` for Mermaid).
+            Options of the importer (for example ``theme=`` for Mermaid). SVG takes only ``theme=``, the
+            theme to restyle the document with (by default the one that wrote it is kept).
 
         Returns
         -------
@@ -145,7 +148,8 @@ class Document(Sizing, Theming, Typography, Output, Access, ElementFactory):
         ValueError
             If the root element is not ``<svg>``, or *format* is not a registered importer.
         TypeError
-            If *strictness* is given for a format other than SVG.
+            If *strictness* is given for a format other than SVG, or SVG is given an option other
+            than ``theme``.
 
         See Also
         --------
@@ -173,10 +177,13 @@ class Document(Sizing, Theming, Typography, Output, Access, ElementFactory):
                 importer = find_importer(f"text.{format.lstrip('.')}")
             data = text.encode("utf-8") if isinstance(text, str) else text
             return importer.function(data, **options)  # type: ignore[no-any-return]
+        theme = options.pop("theme", None)
+        if options:
+            raise TypeError(f"SVG takes no option {', '.join(map(repr, sorted(options)))}; only theme=")
         root = parse(text, strictness=strictness or Strictness.LENIENT)
         if not isinstance(root, Svg):
             raise ValueError(f"root element is <{root.tag}>, not <svg>")
-        return cls(root=root)
+        return cls(root=root, theme=theme)
 
     @classmethod
     @contextmanager
