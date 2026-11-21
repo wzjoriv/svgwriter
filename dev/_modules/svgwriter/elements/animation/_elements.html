@@ -294,159 +294,27 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">TypeAlias</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">Keyword</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...pathdata.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathBuilder</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathData</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._behavior</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConditionalAttributes</span><span class="p">,</span> <span class="n">CoreAttributes</span><span class="p">,</span> <span class="n">ExternalResourcesAttribute</span><span class="p">,</span> <span class="n">XLinkAttributes</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Category</span><span class="p">,</span> <span class="n">Child</span><span class="p">,</span> <span class="n">ContentModel</span><span class="p">,</span> <span class="n">Element</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._easing</span><span class="w"> </span><span class="kn">import</span> <span class="n">EaseLike</span><span class="p">,</span> <span class="n">apply_ease</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._keywords</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnimationFill</span><span class="p">,</span> <span class="n">Restart</span><span class="p">,</span> <span class="n">TransformType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._smil</span><span class="w"> </span><span class="kn">import</span> <span class="n">FadeShortcut</span><span class="p">,</span> <span class="n">SpinShortcut</span><span class="p">,</span> <span class="n">_AttributeTarget</span><span class="p">,</span> <span class="n">_clock</span><span class="p">,</span> <span class="n">_list</span><span class="p">,</span> <span class="n">_ValueAnimation</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">"Accumulate"</span><span class="p">,</span>
-    <span class="s2">"Additive"</span><span class="p">,</span>
     <span class="s2">"Animate"</span><span class="p">,</span>
     <span class="s2">"AnimateColor"</span><span class="p">,</span>
     <span class="s2">"AnimateMotion"</span><span class="p">,</span>
     <span class="s2">"AnimateTransform"</span><span class="p">,</span>
     <span class="s2">"AnimationElement"</span><span class="p">,</span>
-    <span class="s2">"AnimationFill"</span><span class="p">,</span>
-    <span class="s2">"CalcMode"</span><span class="p">,</span>
     <span class="s2">"Clock"</span><span class="p">,</span>
     <span class="s2">"MPath"</span><span class="p">,</span>
-    <span class="s2">"Restart"</span><span class="p">,</span>
     <span class="s2">"Set"</span><span class="p">,</span>
-    <span class="s2">"TransformType"</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="n">Clock</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span>
 <span class="n">RepeatCount</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"indefinite"</span><span class="p">]</span>
-
-
-<div class="viewcode-block" id="Restart">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.Restart">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Restart</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""The ``restart`` attribute: when an animation may begin again.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    AnimationElement : Takes ``restart`` as an argument.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; Restart.NEVER.value</span>
-<span class="sd">    'never'</span>
-<span class="sd">    """</span>
-
-    <span class="n">ALWAYS</span> <span class="o">=</span> <span class="s2">"always"</span>
-    <span class="n">WHEN_NOT_ACTIVE</span> <span class="o">=</span> <span class="s2">"whenNotActive"</span>
-    <span class="n">NEVER</span> <span class="o">=</span> <span class="s2">"never"</span></div>
-
-
-
-<div class="viewcode-block" id="AnimationFill">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.AnimationFill">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">AnimationFill</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""The animation ``fill`` attribute: the state after the active duration (not paint).</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    AnimationElement : Takes ``fill`` as an argument.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; AnimationFill.FREEZE.value</span>
-<span class="sd">    'freeze'</span>
-<span class="sd">    """</span>
-
-    <span class="n">FREEZE</span> <span class="o">=</span> <span class="s2">"freeze"</span>
-    <span class="n">REMOVE</span> <span class="o">=</span> <span class="s2">"remove"</span></div>
-
-
-
-<div class="viewcode-block" id="CalcMode">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.CalcMode">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">CalcMode</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""The ``calcMode`` attribute: how values are interpolated.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    Animate : Takes ``calc_mode`` as an argument.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; CalcMode.SPLINE.value</span>
-<span class="sd">    'spline'</span>
-<span class="sd">    """</span>
-
-    <span class="n">DISCRETE</span> <span class="o">=</span> <span class="s2">"discrete"</span>
-    <span class="n">LINEAR</span> <span class="o">=</span> <span class="s2">"linear"</span>
-    <span class="n">PACED</span> <span class="o">=</span> <span class="s2">"paced"</span>
-    <span class="n">SPLINE</span> <span class="o">=</span> <span class="s2">"spline"</span></div>
-
-
-
-<div class="viewcode-block" id="Additive">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.Additive">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Additive</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""The ``additive`` attribute: replace the underlying value or add to it.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    Accumulate : Repeat-iteration counterpart.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; Additive.SUM.value</span>
-<span class="sd">    'sum'</span>
-<span class="sd">    """</span>
-
-    <span class="n">REPLACE</span> <span class="o">=</span> <span class="s2">"replace"</span>
-    <span class="n">SUM</span> <span class="o">=</span> <span class="s2">"sum"</span></div>
-
-
-
-<div class="viewcode-block" id="Accumulate">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.Accumulate">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Accumulate</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""The ``accumulate`` attribute: whether repeats build on the previous end value.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    Additive : Controls combination with the underlying value.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; Accumulate.NONE.value</span>
-<span class="sd">    'none'</span>
-<span class="sd">    """</span>
-
-    <span class="n">NONE</span> <span class="o">=</span> <span class="s2">"none"</span>
-    <span class="n">SUM</span> <span class="o">=</span> <span class="s2">"sum"</span></div>
-
-
-
-<div class="viewcode-block" id="TransformType">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.TransformType">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">TransformType</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""The ``type`` of an ``animateTransform``.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    AnimateTransform : Takes the type as its first argument.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; TransformType.SKEW_X.value</span>
-<span class="sd">    'skewX'</span>
-<span class="sd">    """</span>
-
-    <span class="n">TRANSLATE</span> <span class="o">=</span> <span class="s2">"translate"</span>
-    <span class="n">SCALE</span> <span class="o">=</span> <span class="s2">"scale"</span>
-    <span class="n">ROTATE</span> <span class="o">=</span> <span class="s2">"rotate"</span>
-    <span class="n">SKEW_X</span> <span class="o">=</span> <span class="s2">"skewX"</span>
-    <span class="n">SKEW_Y</span> <span class="o">=</span> <span class="s2">"skewY"</span></div>
-
 
 
 <div class="viewcode-block" id="AnimationElement">

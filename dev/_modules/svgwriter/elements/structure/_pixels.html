@@ -452,7 +452,7 @@
 <span class="sd">        &gt;&gt;&gt; Pixels.decode(png)</span>
 <span class="sd">        Pixels(2x2, channels=3, opaque=True)</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._pnm</span><span class="w"> </span><span class="kn">import</span> <span class="n">decode_pnm</span><span class="p">,</span> <span class="n">is_pnm</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._codecs._pnm</span><span class="w"> </span><span class="kn">import</span> <span class="n">decode_pnm</span><span class="p">,</span> <span class="n">is_pnm</span>
 
         <span class="k">if</span> <span class="n">is_pnm</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">decode_pnm</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
@@ -582,8 +582,8 @@
 <span class="sd">        &gt;&gt;&gt; Pixels.from_array(np.zeros((2, 2, 3))).encode()[1:4]</span>
 <span class="sd">        b'PNG'</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._encoders</span><span class="w"> </span><span class="kn">import</span> <span class="n">ENCODERS</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._rgba</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_uint8</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._codecs._encoders</span><span class="w"> </span><span class="kn">import</span> <span class="n">ENCODERS</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._codecs._rgba</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_uint8</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">...ops.render</span><span class="w"> </span><span class="kn">import</span> <span class="n">encode</span>
 
         <span class="n">encoder</span> <span class="o">=</span> <span class="n">ENCODERS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">format</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
@@ -670,9 +670,9 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_profiled_rgba</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._icc</span><span class="w"> </span><span class="kn">import</span> <span class="n">hint_missing</span><span class="p">,</span> <span class="n">load_profile</span><span class="p">,</span> <span class="n">pixels_to_srgb</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._icc_constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">AUTO_PROFILE</span><span class="p">,</span> <span class="n">SRGB_PROFILE</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._icc_embedded</span><span class="w"> </span><span class="kn">import</span> <span class="n">embedded_profile</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._color._icc</span><span class="w"> </span><span class="kn">import</span> <span class="n">hint_missing</span><span class="p">,</span> <span class="n">load_profile</span><span class="p">,</span> <span class="n">pixels_to_srgb</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._color._icc_constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">AUTO_PROFILE</span><span class="p">,</span> <span class="n">SRGB_PROFILE</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._color._icc_embedded</span><span class="w"> </span><span class="kn">import</span> <span class="n">embedded_profile</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">SRGB_PROFILE</span><span class="p">:</span>

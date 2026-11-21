@@ -295,6 +295,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TypeAlias</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._animation._easing</span><span class="w"> </span><span class="kn">import</span> <span class="n">spline_at</span><span class="p">,</span> <span class="n">spline_param</span><span class="p">,</span> <span class="n">spline_progress</span><span class="p">,</span> <span class="n">split_spline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._animation._smil</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_values</span><span class="p">,</span> <span class="n">blend</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">EASE_BEND_SAMPLES</span><span class="p">,</span>
     <span class="n">EASE_BISECTIONS</span><span class="p">,</span>
@@ -303,8 +305,6 @@
     <span class="n">EASE_SAMPLES</span><span class="p">,</span>
     <span class="n">EPSILON</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._easing</span><span class="w"> </span><span class="kn">import</span> <span class="n">spline_at</span><span class="p">,</span> <span class="n">spline_param</span><span class="p">,</span> <span class="n">spline_progress</span><span class="p">,</span> <span class="n">split_spline</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._smil</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_values</span><span class="p">,</span> <span class="n">blend</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
