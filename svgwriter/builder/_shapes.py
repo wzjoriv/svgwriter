@@ -37,7 +37,7 @@ def _ring(cx: float, cy: float, radii: list[float], rotation: float) -> list[tup
     return points
 
 
-@shape("star")
+@shape
 def star(
     cx: float,
     cy: float,
@@ -91,7 +91,7 @@ def star(
     return Polygon(vertices, **kwargs)
 
 
-@shape("gear")
+@shape
 def gear(cx: float, cy: float, radius: float, teeth: int = DEFAULT_TEETH, **kwargs: Any) -> Polygon:
     """Build a gear outline with square-ish teeth.
 
@@ -126,7 +126,7 @@ def gear(cx: float, cy: float, radius: float, teeth: int = DEFAULT_TEETH, **kwar
     return Polygon(_ring(cx, cy, radii, 0.0), **kwargs)
 
 
-@shape("arrow", role="arrow.line")
+@shape(role="arrow.line")
 def arrow(x1: float, y1: float, x2: float, y2: float, head: float = DEFAULT_HEAD_SIZE, **kwargs: Any) -> Path:
     """Build a line with an open arrowhead at ``(x2, y2)``.
 
@@ -167,7 +167,7 @@ def arrow(x1: float, y1: float, x2: float, y2: float, head: float = DEFAULT_HEAD
     return Path(builder, **kwargs)
 
 
-@shape("regular_polygon")
+@shape
 def regular_polygon(
     cx: float,
     cy: float,
@@ -226,4 +226,4 @@ def regular_polygon(
     return Polygon(vertices, **kwargs)
 
 
-shape("polygon")(Polygon.regular)
+shape(Polygon.regular, name="polygon")

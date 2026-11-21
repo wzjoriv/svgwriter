@@ -46,7 +46,7 @@ class TestRegistry:
         assert builder.arrow(0, 0, 10, 0).classes == ["role-arrow-line"]
 
     def test_unthemed_plugin(self) -> None:
-        @svg.preset.shape("test-plain", role=None)
+        @svg.preset.shape(name="test-plain", role=None)
         def plain(**kwargs: object) -> svg.Rect:
             return svg.Rect(0, 0, 1, 1, **kwargs)
 
@@ -56,11 +56,11 @@ class TestRegistry:
             svg.preset.unregister("shape", "test-plain")
 
     def test_plugin_registration_and_validation(self) -> None:
-        @svg.preset.shape("test-bad")
+        @svg.preset.shape(name="test-bad")
         def bad() -> svg.Element:
             return "nope"  # type: ignore[return-value]
 
-        @svg.preset.shape("test-ok")
+        @svg.preset.shape(name="test-ok")
         def ok(size: float, **kwargs: object) -> svg.Rect:
             return svg.Rect.square(size, **kwargs)
 
@@ -70,7 +70,7 @@ class TestRegistry:
             with pytest.raises(TypeError):
                 bad()
             with pytest.raises(ValueError, match="already registered by .*ok; pass replace=True"):
-                svg.preset.shape("test-ok")(ok)
+                svg.preset.shape(name="test-ok")(ok)
             with pytest.raises(KeyError, match="unknown shape 'nothing'"):
                 svg.preset.get("shape", "nothing")
         finally:
@@ -80,9 +80,9 @@ class TestRegistry:
     def test_replace_builtin_and_restore(self) -> None:
         original = svg.preset.get("shape", "star")
         with pytest.raises(ValueError, match=r"star \(built in\)"):
-            svg.preset.shape("star")(svg.Rect.square)
+            svg.preset.shape(name="star")(svg.Rect.square)
 
-        @svg.preset.shape("star", replace=True)
+        @svg.preset.shape(name="star", replace=True)
         def square_star(cx: float, cy: float, r: float, **kwargs: object) -> svg.Rect:
             return svg.Rect(cx - r, cy - r, 2 * r, 2 * r, **kwargs)
 

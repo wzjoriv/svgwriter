@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import functools
 from collections.abc import Callable
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, TypeVar, overload
 
 from .._internal._presets import SHAPES
 from .._internal._roles import with_role
@@ -20,8 +20,19 @@ __all__ = ["shape"]
 E = TypeVar("E", bound="Element")
 
 
-def shape(name: str, role: str | None = "shape", *, replace: bool = False) -> Callable[[Callable[P, E]], Callable[P, E]]:
-    """Register a function returning an element as the shape preset *name*.
+@overload
+def shape(function: Callable[P, E], /, *, name: str | None = None, role: str | None = "shape",
+          replace: bool = False) -> Callable[P, E]: ...
+
+
+@overload
+def shape(*, name: str | None = None, role: str | None = "shape",
+          replace: bool = False) -> Callable[[Callable[P, E]], Callable[P, E]]: ...
+
+
+def shape(function: Callable[P, E] | None = None, /, *, name: str | None = None, role: str | None = "shape",
+          replace: bool = False) -> Callable[P, E] | Callable[[Callable[P, E]], Callable[P, E]]:
+    """Register a function returning an element as a shape preset.
 
     The wrapper checks the return type, so plugins fail loudly, and marks the element with a theme *role*;
     presentation keywords the caller passes move into the inline style so they keep priority over the role.
@@ -29,8 +40,10 @@ def shape(name: str, role: str | None = "shape", *, replace: bool = False) -> Ca
 
     Parameters
     ----------
-    name : str
-        The name to register the shape under.
+    function : callable, optional
+        The function, returning an element. Given when used as a bare decorator.
+    name : str, optional
+        The shape name. Defaults to None, which takes the function's name.
     role : str or None, optional
         Theme role of the shapes built (see :class:`~svgwriter.Theme`). Defaults to ``"shape"`` (filled with
         the palette's primary color); None leaves them unthemed.
@@ -40,12 +53,12 @@ def shape(name: str, role: str | None = "shape", *, replace: bool = False) -> Ca
     Returns
     -------
     callable
-        A decorator that registers the function and returns the checking wrapper.
+        The checking wrapper, or a decorator that registers the function and returns that wrapper.
 
     Raises
     ------
     ValueError
-        If `name` is taken and `replace` is False; the message names the owner.
+        If the name is taken and `replace` is False; the message names the owner.
     TypeError
         When the decorated function is called and does not return an element.
 
@@ -57,12 +70,12 @@ def shape(name: str, role: str | None = "shape", *, replace: bool = False) -> Ca
     Examples
     --------
     >>> import svgwriter as svg
-    >>> @svg.preset.shape("disc")
+    >>> @svg.preset.shape
     ... def disc(cx, cy, r, **kwargs):
     ...     return svg.Circle(cx, cy, r, **kwargs)
     >>> str(disc(0, 0, 2, stroke="red"))
     '<circle cx="0" cy="0" r="2" style="stroke:red" class="role-shape"/>'
-    >>> svg.preset.shape("star")(disc)  # doctest: +ELLIPSIS
+    >>> svg.preset.shape(name="star")(disc)  # doctest: +ELLIPSIS
     Traceback (most recent call last):
     ...
     ValueError: shape 'star' is already registered by svgwriter.builder._shapes.star (built in); pass replace=True ...
@@ -72,14 +85,16 @@ def shape(name: str, role: str | None = "shape", *, replace: bool = False) -> Ca
     def decorate(func: Callable[P, E]) -> Callable[P, E]:
         from ..elements.core import Element
 
+        label = name or func.__name__
+
         @functools.wraps(func)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> E:
             result = func(*args, **kwargs)
             if not isinstance(result, Element):
-                raise TypeError(f"shape {name!r} returned {type(result).__name__}")
+                raise TypeError(f"shape {label!r} returned {type(result).__name__}")
             return with_role(result, role, kwargs)
 
-        SHAPES.add(name, wrapper, replace=replace)
+        SHAPES.add(label, wrapper, replace=replace)
         return wrapper
 
-    return decorate
+    return decorate if function is None else decorate(function)
