@@ -13,7 +13,7 @@ from .._constants import CONTAINERS, NONE, PRIMITIVE_PREFIX, VISIBILITY
 from .._tree import replace_in_parent
 from ._conditions import apply_conditions
 from ._instances import expand_uses
-from ._keywords import resolve_keywords
+from ._keywords import resolve_colors, resolve_keywords
 from ._layers import ancestry, drawable_order
 from ._links import resolve_links
 from ._markers import expand_markers
@@ -196,6 +196,7 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     expand_uses(copy)
     resolve_profiles(copy)
     resolve_keywords(copy)
+    resolve_colors(copy)
     resolve_servers(copy)
     linear_rgb_stops(copy)
     flatten_viewports(copy)
