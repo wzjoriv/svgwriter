@@ -89,17 +89,79 @@ it can:
 `to_path()`, `text_outline()` and boolean operations use outlines, so emoji are left out of them. With
 no colour emoji font installed, emoji fall back to whatever font has the characters.
 
-## Font files
+## Typography
 
-Fonts are found by family name among the installed fonts. To use a font file without installing it,
-register it; layout, measurement, outlines and rendering then use it:
+`font_family` takes names of installed fonts. For a family you ship with the drawing, or to measure and
+embed one, make an `svg.Typeface`: a font family made of faces (regular, bold, italic, condensed, or one
+variable font covering a whole range). It works like a CSS `@font-face` family.
+
+```python
+import svgwriter as svg
+
+sans = svg.Typeface("sans-serif")      # an installed family; generic names pick an installed one
+# inter = svg.Typeface.from_files("Inter-Regular.ttf", "Inter-Bold.ttf", "Inter-Italic.ttf")
+# brand = svg.Typeface.from_folder("assets/fonts", "Inter")
+# custom = svg.Typeface("Brand", {(400, "normal"): "brand.ttf", (700, "italic"): "brand-heavy.ttf"})
+
+doc = svg.Document(240, 60)
+doc.text("Regular", x=10, y=25, font_family=sans, font_size=18)
+doc.text("Bold italic", x=10, y=50, font=sans, font_size=18, font_weight="bold", font_style="italic")
+```
+
+`from_files` reads each face's family, weight (OS/2 weight class), style and width from the file; a
+mapping of `(weight, style)` to files states them instead. A variable font covers its `wght`, `wdth`
+and `slnt` ranges, listed in `face.axes`. Faces loaded from files are registered at once, so layout,
+measurement, outlines and rendering use them without installing anything.
+
+Text picks a face with the CSS font matching rules: the style first (italic, then oblique, then
+upright), then the nearest weight, looking heavier for weights above 500, lighter below 400, and up to
+500 first in between. A variable face is set to the exact weight asked for.
+
+```python
+bold = sans.face(weight=700)
+metrics = bold.metrics.at(18)           # ascent, descent, x_height, cap_height at size 18
+width = bold.measure("Total", 18)       # shaped advance width
+sans.measure("Total", 18, weight=700) == width
+```
+
+Measure with the face, then draw with the family: `measure` uses the same shaping and fallback as layout.
+
+### Embedding fonts
+
+An SVG file names its fonts; viewers without them substitute others. `doc.embed_fonts()` adds a
+`<style>` with an `@font-face` rule per face the text actually uses, the font file inside as a data URI,
+so browsers draw the file with its own fonts. `doc.used_faces()` lists those faces and
+`typeface.css()` gives the rules of a whole family.
+
+```python
+doc.embed_fonts(sans)
+```
+
+Embed only fonts whose licence allows it. For output that needs no fonts at all, convert text to
+outlines with `text.to_path()`.
+
+### Themes and projects
+
+A theme's `fonts.family` and `fonts.monospace` take a `Typeface`, and in a theme file a family name or
+a list of font files relative to the file:
+
+```toml
+[fonts]
+family = ["fonts/Inter-Regular.ttf", "fonts/Inter-Bold.ttf"]
+```
+
+Projects register every file in `assets/fonts` when they build, so those families are usable by name.
+
+### Registering single files
+
+`svg.register_font(path)` is the low-level call under `Typeface`: it registers one file under its
+family name (or `family=`), with optional `weight=` and `style=` descriptors, and returns the name.
 
 ```python
 # family = svg.register_font("Inter-Regular.ttf")   # returns the family name stored in the file
 # svg.text("Hello", x=0, y=40, font_family=family, font_size=32).to_path()
 ```
 
-Register each style file (regular, bold, italic); the closest weight and slant is chosen. For a
-document that looks the same everywhere, convert text to outlines with `text.to_path()`: browsers no
-longer support SVG 1.1 `<font>` elements, so outlines are the portable form.
-
+`svg.Typeface` is not `svg.Font`. `svg.Font` is the SVG 1.1 `<font>` element, which defines glyphs as
+paths inside the document; browsers no longer draw SVG fonts, so svgwriter keeps the element for reading
+and writing such files. A `Typeface` is a real font family (TrueType or OpenType files) that text is set in.

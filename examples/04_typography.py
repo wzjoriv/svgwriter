@@ -82,9 +82,32 @@ for row, (name, line, options) in enumerate(LINES):
 world
 
 # %% [markdown]
+# ## Typefaces
+#
+# A `Typeface` is a font family of faces. Text set in it gets the face that CSS font matching picks for its
+# weight, `measure` gives shaped widths for laying words out, and each face reports its metrics: here the
+# baseline, x-height and cap height of the bold face.
+
+# %%
+sans = svg.Typeface("sans-serif")
+faces = svg.Document(WIDTH, 130)
+faces.rect(0, 0, WIDTH, 130, fill="#fffbeb")
+x = 20
+for weight in (300, 400, 700, 900):
+    label = f"Aa {weight}"
+    faces.text(label, x=x, y=45, font_family=sans, font_size=22, font_weight=weight, fill="#1c1917")
+    x += sans.measure(label, 22, weight=weight) + 18
+metrics = sans.face(weight=700).metrics.at(44)
+for height, color in ((0, "#78716c"), (metrics.x_height, "#0f766e"), (metrics.cap_height, "#be123c")):
+    faces.line(20, 110 - height, 400, 110 - height, stroke=color, stroke_width=0.75)
+faces.text("Hxg", x=20, y=110, font_family=sans, font_size=44, font_weight=700, fill="#1c1917")
+faces
+
+# %% [markdown]
 # Save SVG and a 2x PNG.
 
 # %%
 doc.save("04_typography.svg")
 doc.save("04_typography.png", scale=2)
 world.save("04_scripts.svg")
+faces.save("04_typefaces.svg")
