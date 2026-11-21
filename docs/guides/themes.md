@@ -80,8 +80,15 @@ and `surface`; titles, which are large, meet 3:1. `svg.Theme.get(name)` returns 
 too faint for caption text, the theme uses a lighter grey from the same palette.
 
 Palette roles: `background`, `foreground`, `surface`, `border`, `muted`, `primary`, `on_primary` (ink on
-`primary`), `secondary`, `accent`, `success`, `warning`, `error`, `shadow`. `border` and `muted` are mixed from
-`foreground` and `background` unless given, and `shadow` is a translucent `foreground`.
+`primary`), `secondary`, `accent`, `success`, `warning`, `error`, `shadow`. Unless a theme gives them, four
+are [expressions](#expressions) over the others:
+
+| Role | Default |
+| --- | --- |
+| `border` | `=mix({palette.foreground}, {palette.background}, 0.7)` |
+| `muted` | `=mix({palette.foreground}, {palette.background}, 0.25)` |
+| `shadow` | `=alpha({palette.foreground}, 0.2)` |
+| `on_primary` | `=readable({palette.primary}, {palette.background}, {palette.foreground})` |
 
 ## Variants
 
@@ -106,8 +113,100 @@ print(brand.style("box"), brand.style("badge"))
 ```
 
 A role value may also be a reference, `"{palette.primary}"` or `"{fonts.sizes.title}"`, alone or inside
-text (`"1px solid {palette.border}"`). Unknown roles and references and reference cycles raise
-`svg.theme.ThemeError` with the path of the value.
+text (`"1px solid {palette.border}"`), or an expression starting with `=`. Unknown roles and references and reference cycles
+raise `svg.theme.ThemeError` with the path of the value.
+
+## Expressions
+
+An expression starts with `=`, like a spreadsheet formula: `"=readable({palette.primary})"`,
+`"={fonts.sizes.text} * 1.5"` (spaces after the `=` are fine). A text value without the `=` is never
+evaluated: a color, a lone reference such as `"{palette.primary}"`, or CSS text with its references filled
+in, so `"1px solid {palette.border}"`, `"12px/1.5 serif"` and `"-0.02em"` stay exactly as written.
+
+Palette entries and role values can compute from other values this way, in Python and in theme files alike.
+Derived values follow their sources: replacing `primary` changes everything computed from it.
+
+```python
+import svgwriter as svg
+
+brand = svg.Theme.get("light").replace(
+    palette={
+        "primary": "#7c3aed",
+        "on_primary": "=readable({palette.primary})",
+        "accent": "=mix({palette.primary}, {palette.background}, 0.4, 'oklch')",
+    },
+    roles={"badge": {
+        "fill": "=lighten({palette.accent}, 0.2)",
+        "font-size": "={fonts.sizes.text} * 1.5",
+        "opacity": "=if(is_dark({palette.background}), 0.9, 0.7)",
+    }},
+)
+print(brand.palette.on_primary.hex, brand.style("badge"))
+```
+
+| Kind | Forms |
+| --- | --- |
+| Colors | anything `svg.Color.parse` reads: names (`navy`), hex (`#0f766e`), `rgb()`, `hsl()`, `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()`, `color()`, `device-cmyk()` |
+| Numbers | `12`, `0.5`, `.5`, optionally with `px` (`2px`); no exponents |
+| Text | `'oklch'` or `"oklch"`, without escapes |
+| Conditions | `true`, `false` |
+| References | `{palette.primary}`, `{fonts.family}`, `{fonts.sizes.title}`, `{fonts.weights.bold}` |
+| Arithmetic | `+`, `-`, `*`, `/` and unary `-` on numbers, with parentheses |
+| Comparisons | `<`, `<=`, `>`, `>=` on numbers; `==`, `!=` on values of one kind; not chained |
+| Logic | `and`, `or`, `not` on conditions |
+
+| Function | Result |
+| --- | --- |
+| `lighten(c, amount)`, `darken(c, amount)` | `c` moved toward white or black; `amount` from 0 to 1 |
+| `mix(a, b, weight?, space?)` | `a` blended toward `b` by `weight` (default 0.5) in `'srgb'` (default), `'linear'`, `'oklab'` or `'oklch'` |
+| `alpha(c, a)` | `c` with opacity `a` |
+| `saturate(c, amount)`, `desaturate(c, amount)` | HSL saturation raised or lowered |
+| `hue_shift(c, degrees)`, `complement(c)` | hue turned by `degrees`, or by 180 |
+| `grayscale(c)`, `invert(c)` | grey of the same luminance; inverted channels |
+| `luminance(c)` | WCAG relative luminance, 0 to 1 |
+| `contrast(a, b)` | WCAG contrast ratio, 1 to 21 |
+| `is_dark(c)`, `is_light(c)` | a condition |
+| `readable(bg, a?, b?)` | of `a` and `b` (default black and white), the one with more contrast on `bg` |
+| `min(x, ...)`, `max(x, ...)` | the smallest or largest number |
+| `clamp(x, low, high)` | `x` kept within `low` and `high` |
+| `round(x, digits?)` | `x` rounded to 0 (default) to 6 digits |
+| `if(condition, then, else)` | `then` or `else`; only the chosen one is evaluated |
+
+A palette entry must come out as a color; a role value as a color, number or text (a condition alone is
+an error: choose with `if`). Saving a theme writes expressions back as given, `=` included.
+
+```toml
+[palette]
+primary = "#38bdf8"
+on_primary = "=readable({palette.primary})"
+border = "=mix({palette.foreground}, {palette.background}, 0.6, 'oklab')"
+
+[roles.badge]
+fill = "{palette.primary}"
+stroke = "=darken({palette.primary}, 0.3)"
+stroke-width = "=max(1, {fonts.sizes.text} / 10)"
+```
+
+### Safety
+
+Nothing in an expression, or anywhere in a theme file, runs Python. Expressions are read by a dedicated
+tokenizer and parser and evaluated over a fixed table of the functions above, each mapped to one
+`svg.Color` method or arithmetic helper; there is no `eval`, `exec` or `compile`, no attribute access,
+no imports and no string formatting, and names in a file are never looked up as Python names. Text without
+`=` is never evaluated at all. After `=`, anything outside the language is an error: names that are not
+functions from the table (`=__import__('os')`, `=eval(...)`, `=a.b()`), unsupported operators (`**`, `%`)
+and exponents (`9e999`). Limits keep evaluation small:
+
+| Limit | Value |
+| --- | --- |
+| Expression length | 512 characters |
+| Nesting of parentheses, calls and unary operators | 32 levels |
+| Chain of palette references | 16 levels; cycles are errors |
+| Size of any number, written or computed | 1,000,000 |
+| Arguments of `min` and `max` | 16 |
+
+Every error is a `ThemeError` that names the key, and the file when one was loaded, with a short reason:
+`night.toml: palette.accent: lighten(): argument 2 must be between 0 and 1, got 5`.
 
 ## Using a theme
 
@@ -129,7 +228,8 @@ print(figure.theme.name, svg.Theme.current().name)
 ## Theme files
 
 `theme.save(path)` writes TOML and `svg.Theme.load(path)` reads it. A file extends a registered theme
-(`light` unless `extends` says otherwise) and holds only literals and references; nothing in it runs.
+(`light` unless `extends` says otherwise) and holds only literals, references and
+[expressions](#expressions); nothing in it runs.
 
 ```toml
 name = "night"
@@ -138,6 +238,7 @@ extends = "dark"
 [palette]
 primary = "#38bdf8"
 accent = "{palette.primary}"
+on_primary = "=readable({palette.primary})"
 
 [fonts.sizes]
 title = 26
@@ -149,5 +250,27 @@ fill = "{palette.primary}"
 fill = "{palette.accent}"
 ```
 
-Saving writes every value resolved, so a saved file is a snapshot: entries that were functions are
-written as the colors they produced. Reading TOML on Python 3.10 needs `tomli`.
+Values are text (colors, CSS, references or `=` expressions), numbers, or color arrays: `[r, g, b]` or
+`[r, g, b, a]`, either all floats from 0 to 1 or all integers from 0 to 255 (a mix is an error). Font
+sizes and weights are numbers.
+
+`save` writes what differs from the theme it `extends`: a variant made with `replace` on a registered theme
+extends that theme, so `svg.Theme.get("dark").replace(name="night").save(path)` writes two lines. References
+and expressions are written as given, so they stay live; only values given as Python functions are written
+as the colors and numbers they produce (a role given as a function is written as the properties it returns,
+which a reader merges over the extended role). A theme read from a file remembers the file: saving it, or a
+`replace` variant of it, edits that text, so comments, blank lines and key order stay, and only edited or
+new keys change. A theme built directly with `svg.Theme(...)` is written in full.
+
+```python
+import svgwriter as svg
+
+night = svg.Theme.from_toml("""
+# Night, for slides
+extends = "dark"
+
+[palette]
+primary = "#38bdf8"   # sky blue
+""")
+print(night.replace(palette={"accent": "{palette.primary}"}).to_toml())
+```

@@ -1,5 +1,5 @@
 """
-``Palette``: named color roles, each a literal, a reference or a function of the palette.
+``Palette``: named color roles, each a literal, a reference, an expression or a function of the palette.
 """
 
 from __future__ import annotations
@@ -8,42 +8,32 @@ from collections.abc import Callable, Iterator, Mapping
 from typing import TypeAlias
 
 from ..color.color import Color, ColorLike, as_color
-from ._constants import REFERENCE_RE
+from ._constants import MAX_REFERENCE_DEPTH, REFERENCE_RE
+from ._errors import ThemeError
+from ._expression import evaluate, is_expression
 
-__all__ = ["Palette", "PaletteSource", "ThemeError"]
-
-
-class ThemeError(ValueError):
-    """A theme that cannot be resolved: an unknown role or reference, a cycle, or a malformed value.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> try:
-    ...     svg.theme.Palette({"a": "{palette.b}"})
-    ... except svg.theme.ThemeError as error:
-    ...     print(error)
-    palette.a: unknown reference {palette.b}
-    """
+__all__ = ["Palette", "PaletteSource"]
 
 
 PaletteSource: TypeAlias = "ColorLike | Callable[[Palette], ColorLike]"
 
 
 class Palette(Mapping[str, Color]):
-    """Immutable color roles, resolved once from literals, references and functions.
+    """Immutable color roles, resolved once from literals, references, expressions and functions.
 
     Parameters
     ----------
     sources : mapping of str to color or str or callable
         Each role's source: a color (``"#0f766e"``, ``"navy"``, a :class:`~svgwriter.Color`), a
-        reference to another role written ``"{palette.name}"``, or a function that receives this
-        palette and returns a color (``lambda p: p.foreground.mix(p.background, 0.3)``).
+        reference to another role written ``"{palette.name}"``, an expression marked
+        with a leading ``=`` such as ``"=lighten({palette.primary}, 0.2)"`` (see the Themes guide), or a function that receives
+        this palette and returns a color (``lambda p: p.foreground.mix(p.background, 0.3)``).
 
     Raises
     ------
     ThemeError
-        If a reference names a missing role, references form a cycle, or a value is not a color.
+        If a reference names a missing role, references form a cycle or nest too deeply, an
+        expression is malformed, or a value is not a color.
 
     See Also
     --------
@@ -62,6 +52,8 @@ class Palette(Mapping[str, Color]):
     '#808080'
     >>> p.replace({"ink": "#ff0000"}).line.hex
     '#ff8080'
+    >>> Palette({"ink": "navy", "label": "=readable({palette.ink})"}).label.hex
+    '#ffffff'
     """
 
     __slots__ = ("_resolving", "_sources", "_values")
@@ -81,6 +73,8 @@ class Palette(Mapping[str, Color]):
             raise ThemeError(f"reference cycle: {cycle}")
         if name not in self._sources:
             raise ThemeError(f"unknown palette role {name!r}")
+        if len(self._resolving) >= MAX_REFERENCE_DEPTH:
+            raise ThemeError(f"palette.{name}: references nest deeper than {MAX_REFERENCE_DEPTH} levels")
         self._resolving.append(name)
         try:
             self._values[name] = self._evaluate(name, self._sources[name])
@@ -88,19 +82,24 @@ class Palette(Mapping[str, Color]):
             self._resolving.pop()
         return self._values[name]
 
+    def _reference(self, name: str, path: str) -> Color:
+        section, _, key = path.partition(".")
+        if section != "palette" or key not in self._sources:
+            raise ThemeError(f"palette.{name}: unknown reference {{{path}}}")
+        return self._resolve(key)
+
     def _evaluate(self, name: str, source: PaletteSource) -> Color:
         if callable(source):
             try:
                 return as_color(source(self))
             except AttributeError as error:
                 raise ThemeError(f"palette.{name}: {error}") from None
-        if isinstance(source, str):
-            match = REFERENCE_RE.fullmatch(source.strip())
-            if match is not None:
-                section, _, key = match.group(1).partition(".")
-                if section != "palette" or key not in self._sources:
-                    raise ThemeError(f"palette.{name}: unknown reference {source}")
-                return self._resolve(key)
+        if isinstance(source, str) and (whole := REFERENCE_RE.fullmatch(source.strip())) is not None:
+            return self._reference(name, whole.group(1))
+        if isinstance(source, str) and is_expression(source):
+            source = evaluate(source, lambda path: self._reference(name, path), f"palette.{name}")  # type: ignore[assignment]
+            if isinstance(source, bool) or not isinstance(source, (str, Color)):
+                raise ThemeError(f"palette.{name}: expected a color, got {source!r}")
         try:
             return as_color(source)
         except (TypeError, ValueError) as error:

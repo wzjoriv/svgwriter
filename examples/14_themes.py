@@ -1,7 +1,7 @@
 """# Themes
 
-One drawing in every built-in theme, a variant of a theme, a theme read from a file, and a theme made
-the default for a block of code.
+One drawing in every built-in theme, a variant computed with `=` expressions, a theme read from TOML and
+saved back with its comments, and a theme made the default for a block of code.
 
 Run it as ``python 14_themes.py`` or open ``14_themes.ipynb`` to see each step.
 """
@@ -80,35 +80,47 @@ sheet()
 
 # %% [markdown]
 # `replace` builds a variant: palette entries, fonts and role properties merge into the base theme.
-# Palette entries may be functions of the palette, so derived colors follow their sources.
+# A value that starts with `=` is an expression, like a spreadsheet formula: derived colors and sizes
+# follow their sources. Text without `=` is never evaluated, so plain colors, `{palette.name}`
+# references and CSS such as `"1px solid {palette.border}"` stay as written.
 
 # %%
 brand = svg.Theme.get("dark").replace(
     name="brand",
-    palette={"primary": "#f472b6", "surface": lambda p: p.background.lighten(0.08)},
+    palette={
+        "primary": "#f472b6",
+        "on_primary": "=readable({palette.primary})",
+        "surface": "=lighten({palette.background}, 0.08)",
+        "accent": "=mix({palette.primary}, {palette.background}, 0.4, 'oklch')",
+    },
     fonts={"family": "Georgia, serif"},
-    roles={"box": {"stroke": "{palette.primary}", "stroke-width": 2}},
+    roles={"box": {"stroke": "{palette.primary}", "stroke-width": "=max(2, {fonts.sizes.text} / 8)"}},
 )
 card(brand)
 
 # %% [markdown]
-# Themes are saved and read as TOML. Values are literals or `{palette.name}` / `{fonts.sizes.name}`
-# references, and a file extends a registered theme.
+# Themes are saved and read as TOML, and a file extends a registered theme. A theme read from a file
+# remembers it: saving a variant edits that text, so comments, layout, references and expressions stay,
+# and only the edited keys change.
 
 # %%
-NIGHT = """
+NIGHT = """# Night: sky blue on the dark theme
 name = "night"
 extends = "dark"
 
 [palette]
-primary = "#38bdf8"
+primary = "#38bdf8"   # sky
+on_primary = "=readable({palette.primary})"
 accent = "{palette.primary}"
 
 [roles.title]
 fill = "{palette.primary}"
+font-size = "={fonts.sizes.title} * 1.1"
 """
 night = svg.Theme.from_toml(NIGHT)
-card(night)
+dusk = night.replace(name="dusk", palette={"primary": "#f59e0b"})
+print(dusk.to_toml())
+card(dusk)
 
 # %% [markdown]
 # `with theme:` makes a theme the default for documents created inside the block.

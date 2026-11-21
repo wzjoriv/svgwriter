@@ -12,11 +12,12 @@ from typing import Any, Final, TypeAlias
 from .._internal._registry import Registry
 from ..attributes.style import Style, StyleLike, StyleSheet
 from ._constants import DEFAULT_THEME, ROLE_CLASS_PREFIX
+from ._errors import ThemeError
 from ._files import ThemeFiles
 from ._resolve import check_role_name, resolve_role
 from ._roles import DERIVED_PALETTE, STANDARD_ROLES
 from .fonts import Fonts
-from .palette import Palette, PaletteSource, ThemeError
+from .palette import Palette, PaletteSource
 
 __all__ = ["THEMES", "RoleSource", "Theme"]
 
@@ -35,14 +36,15 @@ class Theme(ThemeFiles):
     name : str
         A short name, used by :meth:`get` once registered and written to theme files.
     palette : Palette or mapping
-        Color roles (see :class:`Palette`). ``border`` and ``muted`` are derived from
-        ``foreground`` and ``background`` unless given.
+        Color roles (see :class:`Palette`). ``border``, ``muted`` and ``shadow`` are derived from
+        ``foreground`` and ``background``, and ``on_primary`` from ``primary``, unless given.
     fonts : Fonts, optional
         Families, sizes and weights. Defaults to ``Fonts()``.
     roles : mapping of str to style or callable, optional
         Extra or replaced role styles, merged over the standard roles. Each is a mapping of CSS
         properties (values may be literals, ``"{palette.name}"``/``"{fonts.sizes.name}"``
-        references or functions of the theme) or a function of the theme returning one.
+        references, expressions such as ``"={fonts.sizes.text} * 1.5"`` or functions of the theme) or a
+        function of the theme returning one.
         Defaults to None.
 
     Raises
@@ -74,7 +76,7 @@ class Theme(ThemeFiles):
     'brand'
     """
 
-    __slots__ = ("_fonts", "_name", "_palette", "_roles", "_styles")
+    __slots__ = ("_document", "_extends", "_fonts", "_name", "_palette", "_roles", "_styles")
 
     def __init__(self, name: str, palette: Palette | Mapping[str, PaletteSource], fonts: Fonts | None = None,
                  roles: Mapping[str, RoleSource] | None = None) -> None:
@@ -85,6 +87,13 @@ class Theme(ThemeFiles):
         merged = {check_role_name(k): v for k, v in {**STANDARD_ROLES, **(roles or {})}.items()}
         object.__setattr__(self, "_roles", MappingProxyType(merged))
         object.__setattr__(self, "_styles", {k: resolve_role(self, k, v) for k, v in merged.items()})
+        object.__setattr__(self, "_extends", None)
+        object.__setattr__(self, "_document", None)
+
+    def _from_file(self, extends: str | None, document: str | None) -> Theme:
+        object.__setattr__(self, "_extends", extends)
+        object.__setattr__(self, "_document", document)
+        return self
 
     def __setattr__(self, name: str, value: object) -> None:
         raise AttributeError("Theme is immutable; use replace()")
@@ -103,6 +112,20 @@ class Theme(ThemeFiles):
     def fonts(self) -> Fonts:
         """Font families, sizes and weights."""
         return self._fonts
+
+    @property
+    def extends(self) -> str | None:
+        """The registered theme this one is a variant of, or None; files write it as ``extends``.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Theme.get("dark").replace(name="night").extends
+        'dark'
+        >>> svg.Theme.get("dark").extends is None
+        True
+        """
+        return self._extends
 
     @property
     def roles(self) -> Mapping[str, RoleSource]:
@@ -193,6 +216,9 @@ class Theme(ThemeFiles):
                 fonts: Fonts | Mapping[str, Any] | None = None, roles: Mapping[str, RoleSource] | None = None) -> Theme:
         """A variant: palette entries, font values and role properties merge into this theme's.
 
+        A variant of a registered theme extends it; a variant of anything else keeps what that
+        theme extends and the file it was read from, so :meth:`save` writes only what changed.
+
         Parameters
         ----------
         name : str, optional
@@ -227,8 +253,11 @@ class Theme(ThemeFiles):
                 merged[role] = source
         if isinstance(fonts, Mapping):
             fonts = self._fonts.replace(**fonts)
-        return Theme(name if name is not None else self._name, self._palette.replace(palette or {}),
-                     fonts if fonts is not None else self._fonts, merged)
+        variant = Theme(name if name is not None else self._name, self._palette.replace(palette or {}),
+                        fonts if fonts is not None else self._fonts, merged)
+        if self._name in THEMES and THEMES.get(self._name) is self:
+            return variant._from_file(self._name, None)
+        return variant._from_file(self._extends, self._document)
 
     @staticmethod
     def get(name: str) -> Theme:

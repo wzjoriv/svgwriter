@@ -9,7 +9,7 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from ._constants import ROLE_CLASS_PREFIX, STYLE_ID
-from .palette import ThemeError
+from ._errors import ThemeError
 from .theme import Theme
 
 if TYPE_CHECKING:

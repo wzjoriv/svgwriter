@@ -1,5 +1,5 @@
 """
-Resolve role sources (mappings, functions and ``{section.name}`` references) into styles.
+Resolve role sources (mappings, functions, ``{section.name}`` references and expressions) into styles.
 """
 
 from __future__ import annotations
@@ -10,12 +10,13 @@ from typing import TYPE_CHECKING
 from ..attributes.style import Style
 from ..color.color import Color
 from ._constants import LENGTH_PROPERTIES, OPACITY_PROPERTIES, REFERENCE_RE, ROLE_NAME_RE
-from .palette import ThemeError
+from ._errors import ThemeError
+from ._expression import evaluate, is_expression
 
 if TYPE_CHECKING:
     from .theme import RoleSource, Theme
 
-__all__ = ["check_role_name", "resolve_role"]
+__all__ = ["check_role_name", "resolve_role", "resolve_value"]
 
 
 def check_role_name(name: str) -> str:
@@ -39,7 +40,8 @@ def _reference(theme: Theme, where: str, path: str) -> object:
     raise ThemeError(f"{where}: unknown reference {{{path}}}; use {{palette.name}} or {{fonts.name}}")
 
 
-def _value(theme: Theme, where: str, value: object) -> object:
+def resolve_value(theme: Theme, where: str, value: object) -> object:
+    """Resolve one role property value: call a function, evaluate an expression or fill in references."""
     if callable(value):
         try:
             value = value(theme)
@@ -50,6 +52,11 @@ def _value(theme: Theme, where: str, value: object) -> object:
     whole = REFERENCE_RE.fullmatch(value.strip())
     if whole is not None:
         return _reference(theme, where, whole.group(1))
+    if is_expression(value):
+        result = evaluate(value, lambda path: _reference(theme, where, path), where)
+        if isinstance(result, bool):
+            raise ThemeError(f"{where}: a condition is not a CSS value; choose one with if(...)")
+        return result
     return REFERENCE_RE.sub(lambda m: _text(_reference(theme, where, m.group(1))), value)
 
 
@@ -69,7 +76,7 @@ def resolve_role(theme: Theme, name: str, source: RoleSource) -> Style:
         raise ThemeError(f"{where}: expected a mapping of CSS properties, got {type(source).__name__}")
     style = Style()
     for prop, raw in Style(source).items():
-        value = _value(theme, f"{where}.{prop}", raw)
+        value = resolve_value(theme, f"{where}.{prop}", raw)
         if isinstance(value, bool) or not isinstance(value, (str, int, float, Color)):
             raise ThemeError(f"{where}.{prop}: unsupported value {value!r}")
         if prop in LENGTH_PROPERTIES and isinstance(value, (int, float)):
