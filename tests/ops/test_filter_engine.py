@@ -122,3 +122,14 @@ def test_fe_convolve_matrix_bias_lifts_only_painted_pixels() -> None:
         '<g filter="url(#f)"><rect width="50" height="100" fill="black"/></g></svg>')
     pixels = doc.rasterize()
     assert np.allclose(pixels[50, 25], WHITE, atol=0.02) and pixels[50, 75, 3] == pytest.approx(0.0)
+
+
+def test_filters_built_in_python_read_their_enum_keywords() -> None:
+    doc = svg.Document(100, 100)
+    doc.define(svg.rect(0, 0, 100, 100, fill="lime", id="r"))
+    image = svg.FeImage("#r")
+    clip = svg.FeComposite(svg.CompositeOperator.IN, in_=image, in2=svg.StandardInput.SOURCE_ALPHA)
+    effect = doc.define(svg.Filter(image, clip, x=0, y=0, width=1, height=1))
+    doc.circle(50, 50, 20, fill="red", filter=effect)
+    pixels = doc.rasterize(background="white")
+    assert np.allclose(pixels[50, 50], LIME, atol=0.02) and np.allclose(pixels[5, 5], WHITE, atol=0.02)

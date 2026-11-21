@@ -4,11 +4,11 @@
 
 from __future__ import annotations
 
-import enum
 from dataclasses import dataclass
 from typing import NamedTuple
 
 from .._internal._constants import DEFAULT_PRECISION
+from .._internal._enums import Keyword
 from .._internal._numbers import format_number
 from ._constants import SEPARATORS
 
@@ -110,7 +110,7 @@ class ViewBox(NamedTuple):
         return " ".join(format_number(v, precision) for v in self)
 
 
-class Align(str, enum.Enum):
+class Align(Keyword):
     """Alignment values of ``preserveAspectRatio``.
 
     ``CENTER`` is an alias of ``X_MID_Y_MID``, the default.
@@ -139,7 +139,7 @@ class Align(str, enum.Enum):
     CENTER = "xMidYMid"
 
 
-class MeetOrSlice(str, enum.Enum):
+class MeetOrSlice(Keyword):
     """Whether the viewBox is scaled to fit entirely or to cover the viewport.
 
     See Also

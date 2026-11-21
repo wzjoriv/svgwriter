@@ -7,10 +7,10 @@ the rest with ``super().__init__(*args, **kwargs)``.
 
 from __future__ import annotations
 
-import enum
 from collections.abc import Sequence
 from typing import Any
 
+from ..._internal._enums import Keyword
 from ..._internal._typing import FillRule, LineCap, LineJoin, Opacity
 from ...attributes.descriptors import Attr, LengthAttr
 from ...attributes.length import LengthLike
@@ -34,7 +34,7 @@ __all__ = [
 ]
 
 
-class XmlSpace(str, enum.Enum):
+class XmlSpace(Keyword):
     """Values of ``xml:space``: whether whitespace is collapsed or kept.
 
     Examples
