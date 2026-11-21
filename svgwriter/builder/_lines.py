@@ -33,7 +33,7 @@ def _steps(origin: float, extent: float, count: int | None, spacing: float | Non
     return [origin + spacing * index for index in range(total + 1)]
 
 
-@shape("grid", role="grid")
+@shape(role="grid")
 def grid(
     x: float,
     y: float,
@@ -103,7 +103,7 @@ def grid(
     return Path(builder, **kwargs)
 
 
-@shape("spiral", role="line")
+@shape(role="line")
 def spiral(cx: float, cy: float, *, turns: float, start_radius: float, end_radius: float, **kwargs: Any) -> Path:
     """Build an Archimedean spiral from smooth cubic segments.
 
@@ -239,7 +239,7 @@ def _polyline(
         index += 1
 
 
-@shape("wave", role="line")
+@shape(role="line")
 def wave(
     x: float,
     y: float,

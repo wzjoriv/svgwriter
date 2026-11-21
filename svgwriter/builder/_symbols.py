@@ -22,7 +22,7 @@ from ._rounded import rounded_outline
 __all__ = ["callout", "cross", "heart"]
 
 
-@shape("heart")
+@shape
 def heart(cx: float, cy: float, size: float, **kwargs: Any) -> Path:
     """Build a heart made of cubic curves, point down.
 
@@ -66,7 +66,7 @@ def heart(cx: float, cy: float, size: float, **kwargs: Any) -> Path:
     return Path(builder, **kwargs)
 
 
-@shape("callout", role="box")
+@shape(role="box")
 def callout(
     x: float,
     y: float,
@@ -132,7 +132,7 @@ def callout(
     return rounded_outline(points, radii, **kwargs)
 
 
-@shape("cross")
+@shape
 def cross(cx: float, cy: float, size: float, *, thickness: float | None = None, **kwargs: Any) -> Polygon:
     """Build a plus sign.
 

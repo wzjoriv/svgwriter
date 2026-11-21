@@ -83,7 +83,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 | SMIL animation | yes | one frame | one frame | one frame | one frame | slide effects, both ways | one frame | one frame | one frame | one frame |
 | links | yes | no | yes | no | no | on shapes | no | no | yes | no |
 
-"one frame" is the drawing at t = 0, or at `time=`; `render_animation` writes animated GIF and video.
+"one frame" is the drawing at t = 0, or at `seconds=`; `render_animation` writes animated GIF and video.
 
 PowerPoint keeps SMIL as slide effects that start with the slide, each at its own `begin` (no clicks
 needed), and reading a deck turns them back into `element.animate` presets:

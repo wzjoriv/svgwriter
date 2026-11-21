@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from ..elements.core import Element
     from ..pathdata.data import PathData
 
-__all__ = ["attach_cursor", "clip_outline", "cursor_of", "element_list", "replace_in_parent", "resolve"]
+__all__ = ["attach_cursor", "clip_outline", "cursor_of", "element_list", "replace_in_parent", "resolve", "settle_parent"]
 
 
 def resolve(element: Element, value: Any) -> Element | None:
@@ -215,3 +215,26 @@ def element_list(items: Element | str | Iterable[Element]) -> list[Element | str
         if not isinstance(item, Element):
             raise TypeError(f"expected elements, got {type(item).__name__}")
     return flat  # type: ignore[return-value]
+
+
+def settle_parent(element: Element) -> None:
+    """Let the layout group holding *element* place its children, so its geometry is current.
+
+    Parameters
+    ----------
+    element : Element
+        Any element; nothing happens unless its parent is a layout group.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter._internal._tree import settle_parent
+    >>> a, b = svg.rect(0, 0, 4, 4), svg.rect(0, 0, 4, 4)
+    >>> _ = svg.HStack(a, b, gap=1)
+    >>> settle_parent(b)
+    >>> b.t.apply(0, 0)
+    Point(x=5.0, y=0.0)
+    """
+    parent = element.parent
+    if parent is not None and parent.arranges_children:
+        parent.arrange()  # type: ignore[attr-defined]

@@ -68,12 +68,12 @@ class Output:
         """Jupyter display as inline SVG, so text in the drawing stays selectable and copyable."""
         return f'<div style="{INLINE_STYLE}">{self._repr_svg_()}</div>'
 
-    def at(self, time: float) -> Document:
-        """A static copy with every SMIL animation applied at *time* seconds (and removed).
+    def at(self, seconds: float) -> Document:
+        """A static copy with every SMIL animation applied at *seconds* (and removed).
 
         Parameters
         ----------
-        time : float
+        seconds : float
             Seconds since the document began.
 
         Returns
@@ -104,7 +104,7 @@ class Output:
         """
         from .._internal._animation._smil import snapshot
 
-        return snapshot(self, time)
+        return snapshot(self, seconds)
 
     def _repr_png_(self) -> bytes:
         return self.render_png()

@@ -46,7 +46,7 @@ def test_time_applies_to_every_page():
     doc = svg.Document(100, 20)
     ball = doc.circle(10, 10, 5, fill="red")
     ball.append(svg.Animate(attribute_name="cx", from_=10, to=90, dur=2))
-    back = svg.export.find_importer("pdf").function(svg.export.export([doc, doc], "pdf", time=1.0), page=None)
+    back = svg.export.find_importer("pdf").function(svg.export.export([doc, doc], "pdf", seconds=1.0), page=None)
     assert all(page[0].bounds().x == pytest.approx(45, abs=1) for page in back)
 
 

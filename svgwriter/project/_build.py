@@ -1,7 +1,7 @@
 """
 Writing a project's outputs: pages through the exporters, scenes as GIF frames or baked SMIL, video through ffmpeg.
 
-Still formats (PDF, PNG, ...) show a page once its animations have ended; ``time = 0`` in the format's
+Still formats (PDF, PNG, ...) show a page once its animations have ended; ``seconds = 0`` in the format's
 options shows the start instead.
 """
 
@@ -97,7 +97,7 @@ def _settled(page: Document) -> Document:
 def _write_pages(pages: Sequence[Document], targets: list[Path], format: str, options: Mapping[str, Any]) -> list[Path]:
     if format in VIDEO_FORMATS:
         return [_write_scene(Scene(page), target, format, options) for page, target in zip(pages, targets, strict=True)]
-    if format not in KEEPS_ANIMATION and "time" not in options:
+    if format not in KEEPS_ANIMATION and "seconds" not in options:
         pages = [_settled(page) for page in pages]
     exporter = exporters().get(format)
     if len(pages) > 1 and exporter is not None and exporter.multipage:

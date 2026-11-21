@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, ClassVar, TypeAlias, Union
 
-from ..._internal._tree import clip_outline
+from ..._internal._tree import clip_outline, settle_parent
 from ...pathdata.data import PathData
 from ...transform.transform import TransformLike, as_transform
 from ..core import Element
@@ -87,6 +87,7 @@ class PathOperand(BooleanOps, Measurement, AlongPath, Element):
         >>> str(svg.rect(0, 0, 4, 3).translate(1, 1).outline())
         'M1 1 L5 1 L5 4 L1 4 Z'
         """
+        settle_parent(self)
         data = self.local_outline()
         clip = clip_outline(self)
         if clip is not None:

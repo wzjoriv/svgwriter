@@ -53,6 +53,7 @@ __all__ = [
     "SHADOW_ALPHA",
     "ROLE_CLASS_PREFIX",
     "ROLE_NAME_RE",
+    "SHEET_THEME_NAME",
     "STYLE_ID",
     "THIN_LINE_WIDTH",
 ]
@@ -60,6 +61,8 @@ __all__ = [
 DEFAULT_THEME: Final = "light"
 ROLE_CLASS_PREFIX: Final = "role-"
 STYLE_ID: Final = "svgwriter-theme"
+SHEET_THEME_NAME: Final = "document"
+"""Name of the theme rebuilt from a parsed theme sheet that no registered theme writes."""
 ROLE_NAME_RE: Final = re.compile(r"[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*")
 REFERENCE_RE: Final = re.compile(r"\{([a-z_][a-z0-9_]*(?:\.[a-z0-9_]+)+)\}")
 FILE_KEYS: Final = frozenset({"name", "extends", "palette", "fonts", "roles"})

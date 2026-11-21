@@ -68,7 +68,7 @@ class Attr(Generic[T]):
     def __get__(self, obj: Element | None, owner: type | None = None) -> Attr[T] | T | None:
         if obj is None:
             return self
-        raw = obj.attributes.get(self.key)
+        raw = obj.get(self.key)
         if raw is None:
             return self.default
         if self.convert is not None and isinstance(raw, str):
@@ -120,7 +120,7 @@ class LengthAttr(Attr["float | Length"]):
     def __get__(self, obj: Element | None, owner: type | None = None) -> Any:
         if obj is None:
             return self
-        raw = obj.attributes.get(self.key)
+        raw = obj.get(self.key)
         if raw is None:
             return self.default
         from .length import Length, Unit
