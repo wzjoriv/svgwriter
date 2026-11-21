@@ -1,14 +1,13 @@
 """
-Paint order, linked-image loading and image placement shared by the renderer and the exporters.
+Paint order, viewports and image placement shared by the renderer and the exporters.
 """
 
 from __future__ import annotations
 
-from functools import lru_cache
-from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
-from ._constants import CONTAINERS, LINK_CACHE, NOT_RENDERED
+from ._constants import CONTAINERS, NOT_RENDERED, VIEWPORT_FALLBACK
 
 if TYPE_CHECKING:
     from ..attributes.viewbox import PreserveAspectRatio
@@ -17,10 +16,10 @@ if TYPE_CHECKING:
     from ..pathdata.data import BBox
     from ..transform.matrix import Matrix
 
-__all__ = ["ancestry", "drawable_order", "fit_box", "image_matrix", "pixel_box", "resolve_links"]
+__all__ = ["ancestry", "drawable_order", "fit_box", "image_matrix", "image_viewport", "pixel_box", "viewport_extent"]
 
 
-def drawable_order(root: Element) -> list[Element]:
+def drawable_order(root: Element, atomic: Callable[[Element], bool] | None = None) -> list[Element]:
     """Rendered leaf elements in paint order (containers and definitions skipped).
 
     Walks the tree depth first, descending into ``svg``, ``g``, ``a`` and ``switch`` and
@@ -30,6 +29,8 @@ def drawable_order(root: Element) -> list[Element]:
     ----------
     root : Element
         The element whose descendants are listed.
+    atomic : callable, optional
+        Containers it accepts are listed as one leaf instead of being entered. Defaults to None.
 
     Returns
     -------
@@ -56,7 +57,7 @@ def drawable_order(root: Element) -> list[Element]:
         for child in node:
             if child.tag in NOT_RENDERED:
                 continue
-            if child.tag in CONTAINERS:
+            if child.tag in CONTAINERS and not (atomic is not None and atomic(child)):
                 visit(child)
             else:
                 order.append(child)
@@ -68,97 +69,43 @@ def drawable_order(root: Element) -> list[Element]:
     return order
 
 
-def _base_uri(element: Element) -> str:
-    """The URI that relative references inside *element* resolve against (``xml:base`` honoured)."""
-    import os
-    from urllib.parse import urljoin
-
-    chain = []
-    node: Element | None = element
-    while node is not None:
-        chain.append(node)
-        node = node.parent
-    source = getattr(chain[-1], "_source_path", None)
-    base = Path(source).resolve().as_uri() if source else Path(os.getcwd()).resolve().as_uri() + "/"
-    for node in reversed(chain):
-        extra = node.attributes.get("xml:base")
-        if extra:
-            base = urljoin(base, str(extra))
-    return base
-
-
-_LOADING: set[str] = set()
-
-
-@lru_cache(maxsize=LINK_CACHE)
-def _load(path: str, mtime: float, width: float, height: float) -> Any:
-    from ..elements.structure import Pixels
-
-    if path.lower().endswith((".svg", ".svgz")):
-        from ..export import load
-
-        if path in _LOADING:
-            raise ValueError(f"{path} links back to itself")
-        _LOADING.add(path)
-        try:
-            document = load(path)
-            columns, rows = max(1, round(width)), max(1, round(height))
-            return Pixels.from_array(document.rasterize(size=(columns, rows)))
-        finally:
-            _LOADING.discard(path)
-    return Pixels.decode(Path(path).read_bytes())
-
-
-def resolve_links(root: Element) -> None:
-    """Embed the pixels of ``<image>`` elements that link to local files.
-
-    Works in place, so call it on a render copy. Relative links resolve against the document's
-    source path and ``xml:base``. Remote URLs are not fetched; unreadable files are left as
-    links and not drawn.
+def viewport_extent(element: Element) -> tuple[float, float]:
+    """The width and height of the viewport *element* sits in, which percentages resolve against.
 
     Parameters
     ----------
-    root : Element
-        The tree whose ``<image>`` elements are resolved.
+    element : Element
+        Any element in a tree.
 
-    See Also
-    --------
-    svgwriter.ops._layers.layers : Split a resolved tree into vector runs and embedded images.
+    Returns
+    -------
+    tuple of (float, float)
+        The nearest ``<svg>`` ancestor's ``viewBox`` size, else its absolute ``width`` and
+        ``height``, else the next viewport up; 300 by 300 when none is sized.
 
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._layers import resolve_links
-    >>> doc = svg.Document(10, 10)
-    >>> resolve_links(doc.root)
+    >>> from svgwriter._internal._layers import viewport_extent
+    >>> doc = svg.Document(40, 30)
+    >>> viewport_extent(doc.rect(0, 0, 1, 1))
+    (40.0, 30.0)
     """
-    from urllib.parse import unquote, urljoin, urlparse
-    from urllib.request import url2pathname
+    from ..attributes.length import Length, Unit
+    from ..attributes.viewbox import ViewBox
 
-    from ..elements.structure import Image
-
-    for image in [e for e in root.iter() if isinstance(e, Image) and e.pixels is None]:
-        href = image.attributes.get("xlink:href")
-        if href is None:
-            continue
-        target = urlparse(urljoin(_base_uri(image), str(href)))
-        if target.scheme != "file":
-            continue
-        path = url2pathname(unquote(target.path))
-        try:
-            pixels = _load(path, Path(path).stat().st_mtime, _length(image.get("width")), _length(image.get("height")))
-        except (OSError, ValueError):
-            continue
-        image.attributes["xlink:href"] = pixels
-
-
-def _length(value: object) -> float:
-    from ..attributes.length import Length
-
-    try:
-        return Length.parse(value).to_user_units() if value is not None else 0.0
-    except ValueError:
-        return 0.0
+    node = element.parent
+    while node is not None:
+        if node.tag == "svg":
+            box = node.get("viewBox")
+            box = box if isinstance(box, ViewBox) or box is None else ViewBox.parse(str(box))
+            if box is not None and box.width and box.height:
+                return float(box.width), float(box.height)
+            sizes = [node.get(name) for name in ("width", "height")]
+            if all(size is not None and Length.parse(size).unit is not Unit.PERCENT for size in sizes):
+                return float(Length.parse(sizes[0]).to_user_units()), float(Length.parse(sizes[1]).to_user_units())
+        node = node.parent
+    return VIEWPORT_FALLBACK, VIEWPORT_FALLBACK
 
 
 def _number(value: object, default: float = 0.0) -> float:
@@ -217,6 +164,34 @@ def image_matrix(image: Image) -> Matrix:
     )
     fit = fit_box(_number(image.get("width"), columns), _number(image.get("height"), rows), columns, rows, ratio)
     return Matrix.translate(_number(image.get("x")), _number(image.get("y"))) @ fit
+
+
+def image_viewport(image: Image) -> BBox | None:
+    """The ``x``/``y``/``width``/``height`` box of *image* in user units, or None without a size.
+
+    Parameters
+    ----------
+    image : Image
+        An ``<image>`` element.
+
+    Returns
+    -------
+    BBox or None
+        The viewport its picture is fitted into and clipped to.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter._internal._layers import image_viewport
+    >>> image_viewport(svg.Image("a.png", 1, 2, 3, 4))
+    BBox(x=1.0, y=2.0, width=3.0, height=4.0)
+    """
+    from ..pathdata.data import BBox
+
+    if image.get("width") is None or image.get("height") is None:
+        return None
+    return BBox(_number(image.get("x")), _number(image.get("y")), _number(image.get("width")),
+                _number(image.get("height")))
 
 
 def ancestry(element: Element, root: Element) -> tuple[Matrix, float]:

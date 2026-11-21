@@ -8,7 +8,15 @@ from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ._constants import LINK_CACHE, PERCENT, USE_GEOMETRY, USE_NESTING, VISIBLE_OVERFLOW
+from ._constants import (
+    EXTERNAL_ID_PREFIX,
+    LINK_CACHE,
+    PERCENT,
+    URL_REFERENCE_RE,
+    USE_GEOMETRY,
+    USE_NESTING,
+    VISIBLE_OVERFLOW,
+)
 
 if TYPE_CHECKING:
     from ..elements.core import Element
@@ -23,7 +31,8 @@ def expand_uses(root: Element) -> None:
     carries its transform followed by the ``x``/``y`` offset. A ``<symbol>`` (or nested ``<svg>``)
     target is fitted into the ``<use>``'s ``width`` and ``height`` through its ``viewBox`` and
     clipped to that viewport unless its ``overflow`` is visible. Uses whose references form a cycle
-    are removed, as SVG makes them errors; uses that cannot be resolved are left alone.
+    are removed, as SVG makes them errors; uses that cannot be resolved are left alone. An
+    instance from another file brings copies of the resources it references there.
 
     Parameters
     ----------
@@ -90,12 +99,12 @@ def _external(use: Element) -> Element | None:
     from urllib.parse import unquote, urldefrag, urljoin, urlparse
     from urllib.request import url2pathname
 
-    from ._layers import _base_uri
+    from ._links import base_uri
 
     href = use.attributes.get("xlink:href", use.attributes.get("href"))
     if href is None or str(href).startswith("#"):
         return None
-    address, fragment = urldefrag(urljoin(_base_uri(use), str(href)))
+    address, fragment = urldefrag(urljoin(base_uri(use), str(href)))
     target = urlparse(address)
     if target.scheme != "file" or not fragment:
         return None
@@ -140,7 +149,43 @@ def _replace(use: Element, target: Element, root: Element, serial: int) -> None:
             group.add(part)
     else:
         group.add(_instance(target))
+    source = target.root()
+    if source is not root.root():
+        resources = _imported([child for child in group if not isinstance(child, str)], source, serial)
+        if resources is not None:
+            group.insert(0, resources)
     replace_in_parent(use, group)
+
+
+def _imported(instances: list[Element], source: Element, serial: int) -> Element | None:
+    """Copies of what *instances* reference in their own (external) document, renamed, in a ``<defs>``.
+
+    References inside *instances* and inside the copied resources are rewritten to the new ids,
+    so an external gradient, pattern, clip path, mask, filter or marker keeps its meaning.
+    """
+    from ..elements import Defs
+
+    prefix = f"{EXTERNAL_ID_PREFIX}{serial}-"
+    taken: dict[str, Element] = {}
+    pending = list(instances)
+    while pending:
+        for element in list(pending.pop().iter()):
+            for name, value in list(element.attributes.items()):
+                text = str(value.svg_value() if hasattr(value, "svg_value") else value)
+                names = URL_REFERENCE_RE.findall(text)
+                if name == "xlink:href" and text.startswith("#"):
+                    names.append(text[1:])
+                for reference in names:
+                    if reference not in taken:
+                        found = source.get_element_by_id(reference)
+                        if found is None:
+                            continue
+                        taken[reference] = found.clone()
+                        taken[reference].attributes["id"] = prefix + reference
+                        pending.append(taken[reference])
+                    text = text.replace(f"#{reference}", f"#{prefix}{reference}")
+                    element.attributes[name] = text
+    return Defs(*taken.values()) if taken else None
 
 
 def _instance(target: Element) -> Element:
@@ -173,18 +218,22 @@ def _viewport(use: Element, target: Element, root: Element, serial: int) -> list
     content.attributes.update((k, v) for k, v in target.attributes.items()
                               if k not in USE_GEOMETRY and k not in ("viewBox", "preserveAspectRatio", "overflow"))
     content.t = matrix  # type: ignore[attr-defined]
-    if str(target.get("overflow", "hidden")) in VISIBLE_OVERFLOW or not (width and height):
-        return [content]
-    clip = ClipPath(Rect(0, 0, width, height), id=f"svgwriter-use-viewport-{serial}")
     holder = Group(content)
+    if target.tag == "svg":
+        holder.attributes["transform"] = (f"translate({_size(use, target, 'x', view.width if view else 0.0, own=True)} "
+                                          f"{_size(use, target, 'y', view.height if view else 0.0, own=True)})")
+    if str(target.get("overflow", "hidden")) in VISIBLE_OVERFLOW or not (width and height):
+        return [holder]
+    clip = ClipPath(Rect(0, 0, width, height), id=f"svgwriter-use-viewport-{serial}")
     holder.attributes["clip-path"] = f"url(#{clip.id})"
     return [clip, holder]
 
 
-def _size(use: Element, target: Element, name: str, viewport: float) -> float:
+def _size(use: Element, target: Element, name: str, viewport: float, *, own: bool = False) -> float:
+    """A ``<use>`` viewport length, the ``<use>``'s value winning unless *own* asks for the target's."""
     from ..attributes.length import Length, Unit
 
-    value = use.get(name)
+    value = None if own else use.get(name)
     value = target.get(name) if value is None else value
     if value is None:
         return viewport

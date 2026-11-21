@@ -9,10 +9,17 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 from ._conditions import apply_conditions
+from ._constants import CONTAINERS, NONE, PRIMITIVE_PREFIX, VISIBILITY
 from ._instances import expand_uses
-from ._layers import ancestry, drawable_order, resolve_links
+from ._keywords import resolve_keywords
+from ._layers import ancestry, drawable_order
+from ._links import resolve_links
 from ._markers import expand_markers
+from ._servers import resolve_servers
+from ._stops import linear_rgb_stops
+from ._tiles import user_space_patterns
 from ._tree import replace_in_parent
+from ._viewports import flatten_viewports
 
 if TYPE_CHECKING:
     from ..attributes.viewbox import ViewBox
@@ -22,7 +29,19 @@ if TYPE_CHECKING:
     from ..pathdata.data import BBox
     from ..transform.matrix import Matrix
 
-__all__ = ["ellipses_as_paths", "expand_image_patterns", "outlined", "page_box", "renderable_copy", "view_matrix"]
+__all__ = [
+    "drop_foreign",
+    "ellipses_as_paths",
+    "leaf_visibility",
+    "expand_image_patterns",
+    "outlined",
+    "page_box",
+    "renderable_copy",
+    "unfilled_lines",
+    "unfiltered_masks",
+    "view_matrix",
+    "void_filters",
+]
 
 
 def expand_image_patterns(root: Element) -> None:
@@ -54,6 +73,50 @@ def ellipses_as_paths(root: Element) -> None:
         index = parent.children.index(ellipse)
         parent.remove(ellipse)
         parent.insert(index, path)
+
+
+def unfilled_lines(root: Element) -> None:
+    """Give every ``<line>`` ``fill="none"``: a line has no interior, but skia paints its fill as a hairline."""
+    for line in [e for e in root.iter() if e.tag == "line"]:
+        line.attributes["fill"] = NONE
+
+
+def unfiltered_masks(root: Element) -> None:
+    """Drop ``filter`` from every ``<mask>``: a mask is not rendered itself, so no filter applies to it."""
+    for mask in [e for e in root.iter() if e.tag == "mask"]:
+        mask.attributes.pop("filter", None)
+
+
+def drop_foreign(root: Element) -> None:
+    """Remove elements from other XML namespaces: they are not SVG, so nothing of them renders."""
+    for element in [e for e in root.iter() if getattr(e, "namespace", None) is not None]:
+        if element.parent is not None:
+            element.parent.remove(element)
+
+
+def void_filters(root: Element) -> None:
+    """Hide elements whose ``filter`` names no ``<filter>`` or one without primitives: they render nothing."""
+    from ._tree import resolve
+
+    for element in list(root.iter()):
+        value = element.attributes.get("filter")
+        if value is None or str(value).strip() == NONE:
+            continue
+        target = resolve(element, value)
+        if target is None or target.tag != "filter" or not any(
+                not isinstance(child, str) and child.tag.startswith(PRIMITIVE_PREFIX) for child in target):
+            element.attributes["display"] = NONE
+
+
+def leaf_visibility(root: Element) -> None:
+    """Move ``visibility`` from containers onto their children, which may override it (skia hides them all)."""
+    for element in root.iter():
+        if element.tag not in CONTAINERS or VISIBILITY not in element.attributes:
+            continue
+        value = element.attributes.pop(VISIBILITY)
+        for child in element:
+            if not isinstance(child, str):
+                child.attributes.setdefault(VISIBILITY, value)
 
 
 def outlined(text: Text) -> Element:
@@ -103,12 +166,22 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     from ..elements import Text
 
     copy = root.clone()
+    drop_foreign(copy)
     resolve_styles(copy)
     apply_conditions(copy)
     expand_uses(copy)
+    resolve_keywords(copy)
+    resolve_servers(copy)
+    linear_rgb_stops(copy)
+    flatten_viewports(copy)
     resolve_links(copy)
     ellipses_as_paths(copy)
+    unfilled_lines(copy)
+    unfiltered_masks(copy)
+    leaf_visibility(copy)
+    void_filters(copy)
     expand_image_patterns(copy)
+    user_space_patterns(copy)
     expand_markers(copy)
     if isinstance(copy, Text):
         if keep_text is not None and keep_text(copy):

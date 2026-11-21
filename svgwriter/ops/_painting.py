@@ -138,6 +138,7 @@ def paint_tree(
     """
     from ..elements.text import Text
     from ..io.writer import to_string
+    from ._filtered import draw_filtered, needs_engine
     from ._native_text import draw_text
     from ._native_text import native_text as drawable
 
@@ -146,15 +147,17 @@ def paint_tree(
         root.attributes["width"], root.attributes["height"] = width, height
     if view_box is not None:
         root.attributes["viewBox"] = view_box
-    parts = layers(root)
+    parts = layers(root, needs_engine)
     for run, item in parts:
         if run or len(parts) == 1:
-            for leaf in hidden(root, run) if len(parts) > 1 else ():
+            for leaf in hidden(root, run, needs_engine) if len(parts) > 1 else ():
                 leaf.attributes[DISPLAY] = "none"
             paint_svg(canvas, wrap(to_string(root, xml_declaration=False, pretty=False)), width, height)
-            for leaf in hidden(root, run) if len(parts) > 1 else ():
+            for leaf in hidden(root, run, needs_engine) if len(parts) > 1 else ():
                 leaf.attributes.pop(DISPLAY, None)
-        if isinstance(item, Text):
+        if item is not None and needs_engine(item):
+            draw_filtered(canvas, item, root, wrap, (width, height), view)
+        elif isinstance(item, Text):
             draw_text(canvas, item, root, view, only_color=not (native_text and drawable(item)),
                       searchable=native_text)
         elif item is not None:

@@ -63,6 +63,15 @@ __all__ = [
     "SEARCHABLE_ALPHA",
     "SERIAL_LIMIT",
     "SOURCE_ALPHA",
+    "FILTER_REGION_DEFAULT",
+    "ENGINE_PRIMITIVES",
+    "CHANNELS",
+    "LINEAR_RGB",
+    "COLOR_MIXING",
+    "FRAMED",
+    "CONVOLVE_ORDER",
+    "EDGE_MODES",
+    "PICTURE_BOUNDS",
     "SOURCE_GRAPHIC",
 ]
 
@@ -76,6 +85,17 @@ BLEND: Final = {"normal": skia.BlendMode.kSrcOver, "multiply": skia.BlendMode.kM
 COMPOSITE: Final = {"over": skia.BlendMode.kSrcOver, "in": skia.BlendMode.kSrcIn, "out": skia.BlendMode.kSrcOut,
                     "atop": skia.BlendMode.kSrcATop, "xor": skia.BlendMode.kXor}
 MASK_CANVAS: Final = 1e6
+PICTURE_BOUNDS: Final = 1e6
+FILTER_REGION_DEFAULT: Final = (-0.1, 1.2)
+ENGINE_PRIMITIVES: Final = frozenset({"feImage", "feTile", "feConvolveMatrix"})
+CHANNELS: Final = {"R": skia.ColorChannel.kR, "G": skia.ColorChannel.kG, "B": skia.ColorChannel.kB,
+                   "A": skia.ColorChannel.kA}
+LINEAR_RGB: Final = "linearRGB"
+CONVOLVE_ORDER: Final = 3
+EDGE_MODES: Final = {"duplicate": skia.TileMode.kClamp, "wrap": skia.TileMode.kRepeat, "none": skia.TileMode.kDecal}
+FRAMED: Final = frozenset({"feImage", "feTile", "feDisplacementMap"})
+COLOR_MIXING: Final = frozenset({"feBlend", "feComposite", "feMerge", "feGaussianBlur", "feColorMatrix",
+                                 "feComponentTransfer", "feMorphology", "feConvolveMatrix"})
 
 CHANNEL_MAX: Final = 255
 

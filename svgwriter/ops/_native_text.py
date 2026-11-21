@@ -111,15 +111,15 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix, *, o
     from .._internal._layers import ancestry
     from .._internal._tree import clip_outline
     from ..elements import Transformable
-    from ._layers import _chain, _skia_matrix
+    from ._layers import _chain, skia_matrix
     from ._skia import to_skia
 
     _, opacity = ancestry(text, root)
     canvas.save()
-    canvas.concat(_skia_matrix(view))
+    canvas.concat(skia_matrix(view))
     for node in _chain(text, root):
         if isinstance(node, Transformable):
-            canvas.concat(_skia_matrix(node.t))
+            canvas.concat(skia_matrix(node.t))
         clip = clip_outline(node)
         if clip is not None:
             canvas.clipPath(to_skia(clip), doAntiAlias=True)

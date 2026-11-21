@@ -1,5 +1,5 @@
 """
-Filters and masks for images drawn outside skia's SVG pass, mapped onto skia's own image filters.
+Filter primitives as skia image filters, and masks, for content drawn outside skia's SVG pass.
 """
 
 from __future__ import annotations
@@ -10,12 +10,12 @@ from typing import TYPE_CHECKING, Any
 
 import skia
 
-from ._constants import ALPHA_ONLY, BLEND, COMPOSITE, LUMA, MASK_CANVAS, SOURCE_ALPHA, SOURCE_GRAPHIC
+from ._constants import BLEND, CHANNEL_MAX, COMPOSITE, CONVOLVE_ORDER, EDGE_MODES, LUMA, MASK_CANVAS
 
 if TYPE_CHECKING:
     from ..elements.core import Element
 
-__all__ = ["image_filter", "paint_mask"]
+__all__ = ["paint_mask", "primitive_filter"]
 
 
 def _numbers(value: object) -> list[float]:
@@ -74,11 +74,37 @@ def _flood(primitive: Element) -> Any:
                                                                  skia.BlendMode.kSrc), None)
 
 
-Builder = Callable[[Any, Any, Any], Any]
+def _convolve(primitive: Element, first: Any) -> Any:
+    """``feConvolveMatrix``: the kernel turned 180 degrees (skia correlates), normalised; skia biases in 0..255."""
+    order = [int(v) for v in _numbers(primitive.get("order"))] or [CONVOLVE_ORDER]
+    columns, rows = order[0], order[-1]
+    kernel = _numbers(primitive.get("kernelMatrix"))
+    if len(kernel) != columns * rows:
+        return first
+    divisor = float(primitive.get("divisor", 0) or 0) or sum(kernel) or 1.0
+    target = (int(primitive.get("targetX", columns // 2)), int(primitive.get("targetY", rows // 2)))
+    mode = EDGE_MODES.get(str(primitive.get("edgeMode", "duplicate")), skia.TileMode.kClamp)
+    keep_alpha = str(primitive.get("preserveAlpha", "false")) == "true"
+    return skia.ImageFilters.MatrixConvolution(
+        skia.ISize(columns, rows), kernel[::-1], 1.0 / divisor, float(primitive.get("bias", 0)) * CHANNEL_MAX,
+        skia.IPoint(columns - 1 - target[0], rows - 1 - target[1]), mode, not keep_alpha, first)
 
 
-def _primitive(primitive: Element, first: Any, second: Any) -> Any:
-    """One ``fe*`` element as a skia image filter reading *first* (and *second*); unsupported ones pass through."""
+def primitive_filter(primitive: Element, first: Any, second: Any) -> Any:
+    """One ``fe*`` element as a skia image filter reading *first* (and *second*).
+
+    Parameters
+    ----------
+    primitive : Element
+        The primitive.
+    first, second : skia.ImageFilter or None
+        Its ``in`` and ``in2`` inputs (None is the layer being filtered).
+
+    Returns
+    -------
+    skia.ImageFilter or tuple
+        The filter, ``("merge", names)`` for ``feMerge``, or *first* for primitives it cannot build.
+    """
     tag = primitive.tag
     if tag == "feGaussianBlur":
         sx, *rest = _numbers(primitive.get("stdDeviation", 0)) or [0.0]
@@ -104,36 +130,12 @@ def _primitive(primitive: Element, first: Any, second: Any) -> Any:
             source = skia.ImageFilters.Offset(0.0, 0.0, None)
             return skia.ImageFilters.Arithmetic(*k, True, second or source, first or source)
         return skia.ImageFilters.Xfermode(COMPOSITE.get(operator, skia.BlendMode.kSrcOver), second, first)
+    if tag == "feConvolveMatrix":
+        return _convolve(primitive, first)
     if tag == "feMerge":
         layers = [node.get("in") for node in primitive if node.tag == "feMergeNode"]
         return ("merge", layers)
     return first
-
-
-def image_filter(filter_element: Element) -> Any:
-    """The ``<filter>`` as one skia image filter for drawing an image; None when it has no primitives."""
-    from ..elements.filters.base import FilterPrimitive
-
-    results: dict[str, Any] = {SOURCE_GRAPHIC: None}
-    results[SOURCE_ALPHA] = skia.ImageFilters.ColorFilter(skia.ColorFilters.Matrix(ALPHA_ONLY), None)
-    previous: Any = None
-    built = False
-    for primitive in filter_element:
-        if not isinstance(primitive, FilterPrimitive):
-            continue
-
-        def resolve(name: object, default: Any) -> Any:
-            return default if name is None else results.get(str(name), default)
-
-        first = resolve(primitive.get("in"), previous)
-        second = resolve(primitive.get("in2"), None)
-        made = _primitive(primitive, first, second)
-        if isinstance(made, tuple):
-            made = skia.ImageFilters.Merge([resolve(name, previous) for name in made[1]])
-        previous, built = made, True
-        if primitive.get("result") is not None:
-            results[str(primitive.get("result"))] = made
-    return previous if built else None
 
 
 def paint_mask(canvas: skia.Canvas, mask: Element, paint_svg: Callable[[skia.Canvas, str, float, float], None]) -> None:

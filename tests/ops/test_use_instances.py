@@ -46,3 +46,20 @@ def test_image_linking_back_to_its_own_file_is_skipped(tmp_path):
                     '<image xlink:href="loop.svg" x="50" y="50" width="40" height="40"/></svg>', encoding="utf-8")
     pixels = svg.Document.open(page).rasterize()
     assert pixels[5, 5].round(2).tolist() == [0.0, 1.0, 0.0, 1.0]
+
+
+def test_used_svg_keeps_its_own_position():
+    body = ('<defs><svg id="s" x="50" y="0" width="50" height="50"><rect width="100%" height="100%" fill="lime"/>'
+            '</svg></defs><use xlink:href="#s"/>')
+    assert _pixel(body, (75, 25), (25, 25)) == [[0.0, 1.0, 0.0, 1.0], [0.0, 0.0, 0.0, 0.0]]
+
+
+def test_external_instance_keeps_its_own_documents_resources(tmp_path):
+    (tmp_path / "lib.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg"><linearGradient id="g"><stop stop-color="lime"/></linearGradient>'
+        '<rect id="r" width="50" height="50" fill="url(#g)"/></svg>', encoding="utf-8")
+    (tmp_path / "doc.svg").write_text(
+        HEAD + '<linearGradient id="g"><stop stop-color="red"/></linearGradient>'
+        '<use xlink:href="lib.svg#r"/></svg>', encoding="utf-8")
+    pixels = svg.ops.rasterize(svg.Document.open(tmp_path / "doc.svg"))
+    assert pixels[25, 25].round(2).tolist() == [0.0, 1.0, 0.0, 1.0]

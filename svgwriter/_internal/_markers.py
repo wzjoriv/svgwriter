@@ -7,7 +7,16 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING, Any
 
-from ._constants import MARKER_DEFAULT_SIZE, MARKER_PROPERTIES
+from ._constants import (
+    MARKABLE,
+    MARKER_CLIP_ID,
+    MARKER_DEFAULT_SIZE,
+    MARKER_FREE,
+    MARKER_PROPERTIES,
+    MARKER_SHORTHAND,
+    URL_OPEN,
+    VISIBLE_OVERFLOW,
+)
 
 if TYPE_CHECKING:
     from ..elements.core import Element
@@ -83,31 +92,79 @@ def _bisect(incoming: float, outgoing: float) -> float:
     return incoming + turn / 2
 
 
-def _placement(marker: Element, x: float, y: float, angle: float, stroke_width: float) -> Matrix:
-    """Marker content space to the shape's space at one vertex."""
+def _number(marker: Element, name: str, default: float) -> float:
     from ..attributes.length import Length
-    from ..attributes.viewbox import ViewBox
-    from ..transform.matrix import Matrix
 
-    def number(name: str, default: float) -> float:
-        value = marker.get(name)
-        return float(Length.parse(value).to_user_units()) if value is not None else default
+    value = marker.get(name)
+    return float(Length.parse(value).to_user_units()) if value is not None else default
+
+
+def _content_matrix(marker: Element) -> Matrix:
+    """The marker's ``viewBox`` mapped into its ``markerWidth`` by ``markerHeight`` viewport."""
+    from ..attributes.viewbox import PreserveAspectRatio, ViewBox
+    from ..transform.matrix import IDENTITY, Matrix
+    from ._layers import fit_box
+
+    box = marker.get("viewBox")
+    if box is not None and not isinstance(box, ViewBox):
+        box = ViewBox.parse(str(box))
+    if box is None or not box.width or not box.height:
+        return IDENTITY
+    ratio = marker.get("preserveAspectRatio")
+    ratio = ratio if isinstance(ratio, PreserveAspectRatio) else (
+        PreserveAspectRatio.parse(str(ratio)) if ratio is not None else PreserveAspectRatio())
+    return fit_box(_number(marker, "markerWidth", MARKER_DEFAULT_SIZE),
+                   _number(marker, "markerHeight", MARKER_DEFAULT_SIZE),
+                   box.width, box.height, ratio) @ Matrix.translate(-box.min_x, -box.min_y)
+
+
+def _placement(marker: Element, x: float, y: float, angle: float, stroke_width: float) -> Matrix:
+    """The marker viewport's space to the shape's space at one vertex, ``refX``/``refY`` on the vertex."""
+    from ..transform.matrix import Matrix
 
     matrix = Matrix.translate(x, y) @ Matrix.rotate(angle)
     if str(marker.get("markerUnits") or "strokeWidth") == "strokeWidth":
         matrix = matrix @ Matrix.scale(stroke_width)
-    box = marker.get("viewBox")
-    if box is not None and not isinstance(box, ViewBox):
-        box = ViewBox.parse(str(box))
-    if box is not None and box.width and box.height:
-        fit = min(number("markerWidth", MARKER_DEFAULT_SIZE) / box.width,
-                  number("markerHeight", MARKER_DEFAULT_SIZE) / box.height)
-        matrix = matrix @ Matrix.scale(fit)
-    return matrix @ Matrix.translate(-number("refX", 0.0), -number("refY", 0.0))
+    ref_x, ref_y = _content_matrix(marker).apply(_number(marker, "refX", 0.0), _number(marker, "refY", 0.0))
+    return matrix @ Matrix.translate(-ref_x, -ref_y)
+
+
+def _instance(marker: Element, rules: list, serial: int) -> list[Element]:
+    """The marker's content in its viewport, inheriting from the marker and clipped unless overflow shows it."""
+    from ..attributes.cascade import INHERITED, computed
+    from ..elements import ClipPath, Group, Rect
+
+    content = Group(*(child.clone() for child in marker))
+    for name in INHERITED - {*MARKER_PROPERTIES, MARKER_SHORTHAND}:
+        value = computed(marker, name, None, rules)
+        if value is not None:
+            content.attributes[name] = value
+    content.t = _content_matrix(marker)  # type: ignore[attr-defined]
+    if str(computed(marker, "overflow", "hidden", rules)) in VISIBLE_OVERFLOW:
+        return [content]
+    clip = ClipPath(Rect(0, 0, _number(marker, "markerWidth", MARKER_DEFAULT_SIZE),
+                         _number(marker, "markerHeight", MARKER_DEFAULT_SIZE)), id=f"{MARKER_CLIP_ID}{serial}")
+    holder = Group(content)
+    holder.attributes["clip-path"] = f"url(#{clip.id})"
+    return [clip, holder]
+
+
+def _marker_of(shape: Element, name: str, rules: list, ids: dict[str, Element]) -> Element | None:
+    """The ``<marker>`` that property *name* puts on *shape*."""
+    from ..attributes.cascade import computed
+    from ..elements import Marker
+
+    value = computed(shape, name, None, rules)
+    marker = getattr(value, "element", None) or ids.get(str(value or "").strip()[len(URL_OPEN):-1])
+    return marker if isinstance(marker, Marker) else None
 
 
 def expand_markers(root: Element) -> None:
     """Replace the markers on paths, lines, polylines and polygons by placed copies of their content.
+
+    Marker properties inherit (the ``marker`` shorthand is CSS only, so it is expanded by
+    :func:`~svgwriter.attributes.cascade.resolve_styles` and ignored as an attribute), the content inherits from the ``<marker>`` (not the shape), and
+    the content is clipped to the marker viewport unless its ``overflow`` shows it.
 
     Parameters
     ----------
@@ -119,7 +176,7 @@ def expand_markers(root: Element) -> None:
     >>> import svgwriter as svg
     >>> from svgwriter._internal._markers import expand_markers
     >>> doc = svg.Document(100, 20)
-    >>> tip = doc.define(svg.Marker(svg.circle(0, 0, 2), orient="auto"))
+    >>> tip = doc.define(svg.Marker(svg.circle(0, 0, 2), orient="auto", overflow="visible"))
     >>> _ = doc.path("M10 10 L90 10", stroke="black", marker_end=tip)
     >>> copy = doc.root.clone()
     >>> expand_markers(copy)
@@ -128,26 +185,28 @@ def expand_markers(root: Element) -> None:
     """
     from ..attributes.cascade import computed, rules_of
     from ..attributes.length import Length
-    from ..elements import Group, Marker
+    from ..elements import Group
 
     rules = rules_of(root)
     ids = {str(e.get("id")): e for e in root.iter() if e.get("id")}
-    shapes = [e for e in root.iter() if e.tag in ("path", "line", "polyline", "polygon")
-              and any(e.get(name) is not None for name in MARKER_PROPERTIES)
-              and not any(a.tag in ("marker", "defs", "clipPath", "mask", "pattern", "symbol") for a in _ancestors(e))]
+    shapes = [e for e in root.iter() if e.tag in MARKABLE and not any(a.tag in MARKER_FREE for a in _ancestors(e))]
+    serial = 0
     for shape in shapes:
+        markers = [_marker_of(shape, name, rules, ids) for name in MARKER_PROPERTIES]
+        if not any(markers):
+            continue
+        for name in (*MARKER_PROPERTIES, MARKER_SHORTHAND):
+            shape.attributes.pop(name, None)
         points = vertices(shape.local_outline())  # type: ignore[attr-defined]
-        width = computed(shape, "stroke-width", 1.0, rules)
         try:
-            stroke_width = float(Length.parse(width).to_user_units())
+            stroke_width = float(Length.parse(computed(shape, "stroke-width", 1.0, rules)).to_user_units())
         except (TypeError, ValueError):
             stroke_width = 1.0
         placed = Group()
         placed.t = shape.t  # type: ignore[attr-defined]
-        for name, chosen in zip(MARKER_PROPERTIES, (points[:1], points[1:-1], points[-1:]), strict=True):
-            value = shape.attributes.pop(name, None)
-            marker = getattr(value, "element", None) or ids.get(str(value or "").strip()[5:-1])
-            if not isinstance(marker, Marker) or not points:
+        for name, marker, chosen in zip(MARKER_PROPERTIES, markers, (points[:1], points[1:-1], points[-1:]),
+                                        strict=True):
+            if marker is None:
                 continue
             for x, y, incoming, outgoing in chosen:
                 orient = str(marker.get("orient") or "0")
@@ -157,7 +216,8 @@ def expand_markers(root: Element) -> None:
                     angle += 180 if orient == "auto-start-reverse" and name == "marker-start" else 0
                 else:
                     angle = float(orient.removesuffix("deg"))
-                copy = Group(*(child.clone() for child in marker))
+                serial += 1
+                copy = Group(*_instance(marker, rules, serial))
                 copy.t = _placement(marker, x, y, angle, stroke_width)
                 placed.add(copy)
         parent = shape.parent

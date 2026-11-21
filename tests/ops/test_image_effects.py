@@ -15,9 +15,10 @@ def test_plain_image_is_unchanged():
     assert pixels[30, 30].tolist() == pytest.approx([1, 0, 0, 1]) and pixels[5, 5, 1] == pytest.approx(1)
 
 
-def test_blur_spreads_beyond_the_image():
+def test_blur_spreads_beyond_the_image_up_to_the_filter_region():
     pixels = _render(filter=svg.Filter(svg.FeGaussianBlur(4)))
-    assert pixels[30, 17, 1] < 0.95
+    assert pixels[30, 19, 1] < 0.95
+    assert pixels[30, 17, 1] == pytest.approx(1)
 
 
 def test_saturate_zero_turns_gray():
@@ -29,7 +30,7 @@ def test_saturate_zero_turns_gray():
 def test_offset_and_merge_graph():
     shadow = svg.FeOffset(5, 5, in_="SourceAlpha")
     pixels = _render(filter=svg.Filter(svg.FeMerge(shadow, "SourceGraphic")))
-    assert pixels[43, 43, :3].sum() < 0.3
+    assert pixels[41, 41, :3].sum() < 0.3
 
 
 def test_mask_keeps_only_the_masked_part():

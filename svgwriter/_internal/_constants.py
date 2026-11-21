@@ -109,10 +109,46 @@ __all__ = [
     "LATEX_TEMPLATE",
     "LATIN_EXTENDED_ADDITIONAL",
     "LINK_CACHE",
+    "VIEWPORT_AXES",
+    "TILE_OFFSETS",
+    "TILE_COPY_SUFFIX",
+    "USER_SPACE",
+    "BASE64_SUFFIX",
+    "GZIP_MAGIC",
+    "SVG_DATA_URI",
+    "DATA_URI",
+    "VISIBILITY",
+    "LINKED_OVERSAMPLE",
+    "EXTERNAL_ID_PREFIX",
+    "NESTED_VIEWPORT_ID",
+    "LINEAR_RGB",
+    "LINEAR_STOP_STEPS",
+    "SRGB_GAMMA",
+    "SRGB_LINEAR_SLOPE",
+    "SRGB_OFFSET",
+    "SRGB_THRESHOLD",
+    "URL_REFERENCE_RE",
+    "PRIMITIVE_PREFIX",
+    "VIEWPORT_FALLBACK",
     "LUMA",
     "MAC_FALLBACK_FAMILIES",
     "MARKER_DEFAULT_SIZE",
     "MARKER_PROPERTIES",
+    "MARKER_SHORTHAND",
+    "MARKER_CLIP_ID",
+    "MARKABLE",
+    "MARKER_FREE",
+    "URL_OPEN",
+    "COLOR_PROPERTIES",
+    "CURRENT_COLOR",
+    "INHERIT",
+    "GRADIENT_TAGS",
+    "PAINT_PROPERTIES",
+    "SERVER_ATTRIBUTES",
+    "XLINK_HREF",
+    "OBJECT_BOUNDING_BOX",
+    "SERVER_UNITS",
+    "URL_PREFIX",
     "MATHTEXT_SIZE",
     "MAX_SEGMENTS",
     "MERMAID",
@@ -251,6 +287,27 @@ NOT_RENDERED: Final = frozenset({"defs", "clipPath", "mask", "pattern", "marker"
                                  "radialGradient", "filter", "title", "desc", "metadata", "style", "font",
                                  "font-face", "glyph", "missing-glyph"})
 LINK_CACHE: Final = 64
+VIEWPORT_FALLBACK: Final = 300.0
+SVG_DATA_URI: Final = "data:image/svg+xml"
+DATA_URI: Final = "data:"
+VISIBILITY: Final = "visibility"
+LINKED_OVERSAMPLE: Final = 2.0
+EXTERNAL_ID_PREFIX: Final = "svgwriter-external-"
+NESTED_VIEWPORT_ID: Final = "svgwriter-svg-viewport-"
+LINEAR_RGB: Final = "linearRGB"
+LINEAR_STOP_STEPS: Final = 16
+SRGB_GAMMA: Final = 2.4
+SRGB_LINEAR_SLOPE: Final = 12.92
+SRGB_OFFSET: Final = 0.055
+SRGB_THRESHOLD: Final = 0.04045
+URL_REFERENCE_RE: Final = re.compile(r"url\(\s*['\"]?#([^)'\"\s]+)")
+PRIMITIVE_PREFIX: Final = "fe"
+BASE64_SUFFIX: Final = ";base64"
+GZIP_MAGIC: Final = b"\x1f\x8b"
+VIEWPORT_AXES: Final = {"x": 0, "y": 1, "width": 0, "height": 1}
+TILE_OFFSETS: Final = frozenset({"x", "y"})
+TILE_COPY_SUFFIX: Final = "-svgwriter-tile-"
+USER_SPACE: Final = "userSpaceOnUse"
 
 CLOCK_RE: Final = re.compile(r"^\s*(?:(\d+):)?(\d{1,2}):(\d{1,2}(?:\.\d+)?)\s*$")
 EPSILON: Final = 1e-9
@@ -265,6 +322,27 @@ NONE: Final = "none"
 DROPPED_EFFECTS: Final = {"mask": ("mask",), "filter": ("filter",)}
 MARKER_PROPERTIES: Final = ("marker-start", "marker-mid", "marker-end")
 MARKER_DEFAULT_SIZE: Final = 3.0
+MARKER_SHORTHAND: Final = "marker"
+MARKER_CLIP_ID: Final = "svgwriter-marker-viewport-"
+MARKABLE: Final = frozenset({"path", "line", "polyline", "polygon"})
+MARKER_FREE: Final = frozenset({"marker", "defs", "clipPath", "mask", "pattern", "symbol"})
+URL_OPEN: Final = "url(#"
+CURRENT_COLOR: Final = "currentColor"
+INHERIT: Final = "inherit"
+XLINK_HREF: Final = "xlink:href"
+GRADIENT_TAGS: Final = frozenset({"linearGradient", "radialGradient"})
+PAINT_PROPERTIES: Final = ("fill", "stroke")
+_GRADIENT_COMMON: Final = ("gradientUnits", "gradientTransform", "spreadMethod")
+SERVER_ATTRIBUTES: Final = {
+    "linearGradient": (*_GRADIENT_COMMON, "x1", "y1", "x2", "y2"),
+    "radialGradient": (*_GRADIENT_COMMON, "cx", "cy", "r", "fx", "fy"),
+    "pattern": ("patternUnits", "patternContentUnits", "patternTransform", "x", "y", "width", "height", "viewBox",
+                "preserveAspectRatio"),
+}
+OBJECT_BOUNDING_BOX: Final = "objectBoundingBox"
+URL_PREFIX: Final = "url("
+SERVER_UNITS: Final = {"linearGradient": "gradientUnits", "radialGradient": "gradientUnits", "pattern": "patternUnits"}
+COLOR_PROPERTIES: Final = frozenset({"fill", "stroke", "stop-color", "flood-color", "lighting-color"})
 PERCENT: Final = 100.0
 DEFAULT_SIZE: Final = 16.0
 JOIN_TOLERANCE: Final = 0.01
