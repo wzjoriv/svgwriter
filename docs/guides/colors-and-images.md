@@ -59,6 +59,30 @@ c.readable()                           # black or white, whichever has more cont
 which is what palettes expect. For perceptually even steps mix in OKLCH instead:
 `c.mix("white", 0.2, space="oklch")`. `space="linear"` mixes light as it adds physically.
 
+## Colour profiles
+
+SVG 1.1 colours are sRGB, optionally followed by an `icc-color(...)` in an ICC profile declared with
+`<color-profile>`. With the {doc}`color extra <../start/installation>` installed, rendering converts
+them through the profile; otherwise the sRGB colour before `icc-color` is drawn:
+
+```python
+doc = svg.Document(100, 100)
+doc.add(svg.ColorProfile("print", "press.icc", rendering_intent="relative-colorimetric"))
+ink = svg.Color.parse("#2b6cb0").with_icc("icc-color(print, 0.9, 0.4, 0, 0.1)")
+doc.rect(10, 10, 80, 80, fill=ink)
+```
+
+`icc-color` works in `fill`, `stroke`, `stop-color`, `flood-color` and `lighting-color`. The profile's
+`xlink:href` may be a path (relative to the document), a `file:` URL or a `data:` URI. Images use the
+`color-profile` property: `auto` (the default) applies the profile embedded in a PNG (`iCCP`) or JPEG
+(`APP2`), `sRGB` reads the stored values as sRGB, and a profile name or `url(#id)` assigns one:
+
+```python
+doc.add(svg.Image("scan.png", 0, 0, 100, 100, color_profile="print"))
+```
+
+`Pixels.decode(data, profile=..., intent=...)` does the same for raw image bytes.
+
 ## Images are numpy arrays
 
 `svg.Image(array)` embeds pixels. They are stored as `color`, a float32 `(H, W, 3)` array (or

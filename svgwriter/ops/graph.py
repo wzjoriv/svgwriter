@@ -1,11 +1,11 @@
 """
-Graphs (networkx) drawn as editable SVG: nodes as circles, edges as lines or arcs, arrows and labels.
+Graphs (networkx, igraph, rustworkx) drawn as editable SVG: nodes as circles, edges as lines or arcs, arrows and labels.
 """
 
 from __future__ import annotations
 
 import math
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Hashable, Mapping, Sequence
 from typing import TYPE_CHECKING, Any
 
 from ._constants import (
@@ -13,41 +13,63 @@ from ._constants import (
     ARROW_SPREAD,
     EDGE_STROKE,
     EDGE_WIDTH,
-    EXTRA_HINT,
     GRAPH_SIZE,
+    LABEL_BASELINE,
     LABEL_SIZE,
-    LAYOUTS,
     MARGIN,
+    MUTUAL_BEND,
     NODE_FILL,
     NODE_RADIUS,
     NODE_STROKE,
 )
+from ._graph_adapters import ADAPTERS, GraphAdapter, adapter_for
 
 if TYPE_CHECKING:
     from ..elements.structure import Group
 
 __all__ = ["draw_graph", "is_graph"]
 
+Layout = str | Mapping[Any, Any] | Sequence[Any] | Callable[..., Any]
+
 
 def is_graph(value: object) -> bool:
-    """Whether *value* is a networkx graph (checked without importing networkx)."""
-    return type(value).__module__.startswith("networkx") and hasattr(value, "adj") and hasattr(value, "nodes")
+    """Whether *value* is a networkx, igraph or rustworkx graph, checked without importing any of them.
+
+    Parameters
+    ----------
+    value : object
+        Anything.
+
+    Returns
+    -------
+    bool
+        True for a graph :func:`draw_graph` can draw.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.ops.graph.is_graph({"a": ["b"]})
+    False
+    """
+    return adapter_for(value) is not None
 
 
-def _layout(graph: Any, layout: str | Mapping[Any, Any] | Callable[..., Any], seed: int) -> dict[Any, tuple[float, float]]:
-    try:
-        import networkx as nx
-    except ImportError as error:
-        raise ImportError(f"drawing graphs needs networkx; {EXTRA_HINT}") from error
-    if isinstance(layout, Mapping):
-        return {node: (float(x), float(y)) for node, (x, y) in layout.items()}
-    if callable(layout):
-        return {node: (float(x), float(y)) for node, (x, y) in layout(graph).items()}
-    if layout not in LAYOUTS:
-        raise ValueError(f"unknown layout {layout!r}; use one of {', '.join(LAYOUTS)}, a function or positions")
-    function = getattr(nx, f"{layout}_layout")
-    kwargs = {"seed": seed} if layout in ("spring", "random") else {}
-    return {node: (float(x), float(y)) for node, (x, y) in function(graph, **kwargs).items()}
+def _points(raw: Any, keys: list[Hashable]) -> dict[Hashable, tuple[float, float]]:
+    """Positions from a mapping ``{node: (x, y)}`` or a sequence of points in node order."""
+    pairs = raw.items() if hasattr(raw, "items") else zip(keys, getattr(raw, "coords", raw), strict=False)
+    positions = {node: (float(point[0]), float(point[1])) for node, point in pairs}
+    missing = [node for node in keys if node not in positions]
+    if missing:
+        raise ValueError(f"the layout has no position for node(s) {', '.join(map(repr, missing[:3]))}")
+    return positions
+
+
+def _layout(adapter: GraphAdapter, graph: Any, keys: list[Hashable], layout: Layout,
+            seed: int) -> dict[Hashable, tuple[float, float]]:
+    if isinstance(layout, str):
+        adapter.check(layout)
+        return _points(adapter.layout(graph, layout, seed), keys)
+    return _points(layout(graph) if callable(layout) else layout, keys)
 
 
 def _fit(positions: dict[Any, tuple[float, float]], size: float) -> dict[Any, tuple[float, float]]:
@@ -63,29 +85,42 @@ def _attribute(data: Mapping[str, Any], key: str, default: Any) -> Any:
     return default if value is None else value
 
 
-def draw_graph(graph: Any, *, layout: str | Mapping[Any, Any] | Callable[..., Any] = "spring", size: float = GRAPH_SIZE,
-               labels: bool = True, node_radius: float = NODE_RADIUS, node_fill: Any = NODE_FILL,
+def draw_graph(graph: Any, *, layout: Layout = "spring", size: float = GRAPH_SIZE, labels: bool = True,
+               edge_labels: bool = False, node_radius: float = NODE_RADIUS, node_fill: Any = NODE_FILL,
                edge_stroke: Any = EDGE_STROKE, edge_width: float = EDGE_WIDTH, seed: int = 0) -> Group:
-    """Draw a networkx graph as SVG elements you can restyle afterwards.
+    """Draw a networkx, igraph or rustworkx graph as SVG elements you can restyle afterwards.
 
     Nodes become ``<circle>`` elements (id ``node-<name>``), edges ``<line>``
     elements, or arcs when an edge runs both ways in a directed graph, with
     arrowheads for directed graphs, and labels ``<text>``. Per-node and
     per-edge attributes override the defaults: ``fill``, ``radius``,
-    ``label``, ``stroke``, ``width``.
+    ``label``, ``stroke``, ``width``; an edge's ``label`` (or else its
+    ``weight``) is written at its middle when *edge_labels*.
+
+    Each library's own attributes are read: networkx node and edge data,
+    igraph vertex and edge attributes (vertices keyed by ``name`` when set,
+    else by index), and rustworkx payloads (a dict holds attributes; any
+    other node payload is its label, any other edge payload its weight).
 
     Parameters
     ----------
-    graph : networkx.Graph
-        Any networkx graph (directed or not, multigraphs drawn as simple edges).
-    layout : str, mapping or callable, optional
-        A networkx layout name (``"spring"``, ``"circular"``, ``"kamada_kawai"``,
-        ...), ready positions ``{node: (x, y)}``, or a function ``f(graph)``
-        returning them. Defaults to "spring".
+    graph : networkx.Graph, igraph.Graph, rustworkx.PyGraph or rustworkx.PyDiGraph
+        Directed or not; multigraphs are drawn as simple edges.
+    layout : str, mapping, sequence or callable, optional
+        A layout of the graph's own library: ``"spring"``, ``"circular"``,
+        ``"kamada_kawai"`` and ``"random"`` work for all three, plus that
+        library's others (networkx ``"spectral"``, igraph ``"sugiyama"``,
+        rustworkx ``"spiral"``, ...). Or ready positions: ``{node: (x, y)}``,
+        a library's own result (an igraph ``Layout``, a rustworkx
+        ``Pos2DMapping``) or points in node order; or a function
+        ``f(graph)`` returning any of these. Defaults to "spring".
     size : float, optional
         Side of the square the layout is fitted into. Defaults to 400.
     labels : bool, optional
         Write node names (or their ``label`` attribute). Defaults to True.
+    edge_labels : bool, optional
+        Write each edge's ``label`` or ``weight`` attribute at its middle.
+        Defaults to False.
     node_radius, node_fill, edge_stroke, edge_width : optional
         Default node and edge style.
     seed : int, optional
@@ -98,38 +133,62 @@ def draw_graph(graph: Any, *, layout: str | Mapping[Any, Any] | Callable[..., An
 
     Raises
     ------
-    ImportError
-        If networkx is not installed (``pip install 'pysvgwriter[graph]'``).
+    TypeError
+        If *graph* is not a graph of a supported library.
     ValueError
-        If the layout name is unknown.
+        If the layout name is unknown to the graph's library, or positions
+        are missing for some nodes.
+
+    See Also
+    --------
+    svgwriter.Document.add : Takes graphs directly, drawn with the defaults.
+
+    Notes
+    -----
+    Install a library with its extra: ``pysvgwriter[graph]`` (networkx),
+    ``pysvgwriter[igraph]`` or ``pysvgwriter[rustworkx]``.
 
     Examples
     --------
     >>> import svgwriter as svg
-    >>> # import networkx as nx; doc = svg.Document(); doc.add(nx.karate_club_graph()); doc.fit()
+    >>> import networkx as nx  # doctest: +SKIP
+    >>> picture = svg.ops.draw_graph(nx.path_graph(3), layout="circular")  # doctest: +SKIP
+    >>> len([c for c in picture[1] if c.tag == "circle"])  # doctest: +SKIP
+    3
     """
     from ..elements.structure import Group
     from ..elements.text import Text
 
-    positions = _fit(_layout(graph, layout, seed), size) if len(graph) else {}
-    directed = graph.is_directed()
+    adapter = adapter_for(graph)
+    if adapter is None:
+        names = ", ".join(a.library for a in ADAPTERS)
+        raise TypeError(f"draw_graph takes a {names} graph, not {type(graph).__name__}")
+    data = adapter.read(graph)
+    keys = list(data.nodes)
+    positions = _fit(_layout(adapter, graph, keys, layout, seed), size) if keys else {}
+    pairs = {(source, target) for source, target, _ in data.edges}
     picture = Group(class_="graph")
     edges = picture.group(class_="edges", stroke=edge_stroke, stroke_width=edge_width, fill="none")
     nodes = picture.group(class_="nodes", stroke=NODE_STROKE)
-    radii = {node: float(_attribute(data, "radius", node_radius)) for node, data in graph.nodes(data=True)}
-    for source, target, data in graph.edges(data=True):
+    radii = {node: float(_attribute(attrs, "radius", node_radius)) for node, attrs in data.nodes.items()}
+    for source, target, attrs in data.edges:
         if source == target:
             continue
         (x1, y1), (x2, y2) = positions[source], positions[target]
-        style = {"stroke": data.get("stroke"), "stroke_width": data.get("width")}
-        bend = directed and graph.has_edge(target, source)
-        _edge(edges, (x1, y1), (x2, y2), radii[source], radii[target], directed, bend, style)
-    for node, data in graph.nodes(data=True):
+        style = {"stroke": attrs.get("stroke"), "stroke_width": attrs.get("width")}
+        bend = data.directed and (target, source) in pairs
+        _edge(edges, (x1, y1), (x2, y2), radii[source], radii[target], data.directed, bend, style)
+        text = attrs.get("label", attrs.get("weight")) if edge_labels else None
+        if text is not None:
+            edges.add(Text(f"{text:g}" if isinstance(text, float) else str(text), x=(x1 + x2) / 2,
+                           y=(y1 + y2) / 2, font_size=LABEL_SIZE, text_anchor="middle", stroke="none",
+                           fill=NODE_STROKE, class_="edge-label"))
+    for node, attrs in data.nodes.items():
         x, y = positions[node]
-        nodes.circle(x, y, radii[node], fill=_attribute(data, "fill", node_fill), id=f"node-{node}")
+        nodes.circle(x, y, radii[node], fill=_attribute(attrs, "fill", node_fill), id=f"node-{node}")
         if labels:
-            nodes.add(Text(str(_attribute(data, "label", node)), x=x, y=y + LABEL_SIZE * 0.35, font_size=LABEL_SIZE,
-                           text_anchor="middle", stroke="none", fill=NODE_STROKE))
+            nodes.add(Text(str(_attribute(attrs, "label", node)), x=x, y=y + LABEL_SIZE * LABEL_BASELINE,
+                           font_size=LABEL_SIZE, text_anchor="middle", stroke="none", fill=NODE_STROKE))
     return picture
 
 
@@ -143,7 +202,7 @@ def _edge(group: Group, start: tuple[float, float], end: tuple[float, float], st
     b = (x2 - ux * end_radius, y2 - uy * end_radius)
     extra = {k: v for k, v in style.items() if v is not None}
     if bend:
-        offset = length * 0.15
+        offset = length * MUTUAL_BEND
         control = ((a[0] + b[0]) / 2 - uy * offset, (a[1] + b[1]) / 2 + ux * offset)
         group.path(**extra).move_to(*a).quad_to(*control, *b)
         direction = (b[0] - control[0], b[1] - control[1])

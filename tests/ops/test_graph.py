@@ -30,3 +30,14 @@ def test_documents_accept_graphs_and_drawings_are_reproducible():
     doc.add(nx.karate_club_graph())
     assert len(list(doc.root.iter("circle"))) == 34
     assert str(svg.ops.draw_graph(nx.karate_club_graph())) == str(svg.ops.draw_graph(nx.karate_club_graph()))
+
+
+def test_edge_labels_show_weights_and_unknown_objects_are_refused():
+    graph = nx.Graph()
+    graph.add_edge("a", "b", weight=2.5)
+    picture = svg.ops.draw_graph(graph, edge_labels=True)
+    assert [t.text_content for t in picture[0] if t.tag == "text"] == ["2.5"]
+    with pytest.raises(TypeError, match="networkx, igraph, rustworkx graph, not dict"):
+        svg.ops.draw_graph({"a": ["b"]})
+    with pytest.raises(ValueError, match="no position for node"):
+        svg.ops.draw_graph(graph, layout={"a": (0, 0)})

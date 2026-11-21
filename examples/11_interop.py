@@ -53,7 +53,8 @@ doc
 
 # %% [markdown]
 # A networkx graph is drawn as circles, lines and labels (`layout=` and the node and edge attributes
-# restyle it; `svgwriter.ops.draw_graph` takes the same options). It comes in 400 units wide, so it is scaled down.
+# restyle it; `svgwriter.ops.draw_graph` takes the same options). python-igraph and rustworkx graphs
+# are added the same way, with their own attributes and layouts. It comes in 400 units wide, so it is scaled down.
 
 # %%
 if importlib.util.find_spec("networkx") is not None:

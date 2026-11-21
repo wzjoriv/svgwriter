@@ -31,19 +31,22 @@ __all__ = [
     "EDGE_WIDTH",
     "EFFECTS",
     "EVENODD",
-    "EXTRA_HINT",
     "FORMATS",
     "FULL_TURN",
     "GEOMETRY_SKIP",
     "GLYPH_CACHE",
+    "GRAPH_LAYOUTS",
     "GRAPH_SIZE",
+    "GRAPH_TYPES",
+    "IGRAPH_LAYOUT_NAMES",
     "HALF_TURN",
     "JOINS",
+    "LABEL_BASELINE",
     "LABEL_SIZE",
-    "LAYOUTS",
     "LINETO",
     "LUMA",
     "MARGIN",
+    "MUTUAL_BEND",
     "MASK_CANVAS",
     "MEASURE_PRECISION",
     "MISSING_GLYPH",
@@ -88,6 +91,7 @@ __all__ = [
     "OPACITY",
     "DISPLACEMENT",
     "COVERAGE_WHITE",
+    "SEEDED_LAYOUTS",
 ]
 
 SOURCE_GRAPHIC: Final = "SourceGraphic"
@@ -140,7 +144,6 @@ EVENODD: Final = "evenodd"
 
 ARITHMETIC_TERMS: Final = 4
 
-EXTRA_HINT: Final = "pip install 'pysvgwriter[graph]'"
 GRAPH_SIZE: Final = 400.0
 MARGIN: Final = 30.0
 NODE_RADIUS: Final = 12.0
@@ -151,7 +154,17 @@ EDGE_WIDTH: Final = 1.5
 LABEL_SIZE: Final = 11.0
 ARROW_LENGTH: Final = 9.0
 ARROW_SPREAD: Final = 25.0
-LAYOUTS: Final = ("spring", "kamada_kawai", "circular", "shell", "spectral", "planar", "random", "spiral")
+GRAPH_LAYOUTS: Final = {
+    "networkx": ("spring", "kamada_kawai", "circular", "shell", "spectral", "planar", "random", "spiral"),
+    "igraph": ("spring", "circular", "kamada_kawai", "fruchterman_reingold", "drl", "graphopt", "grid", "random",
+               "reingold_tilford", "reingold_tilford_circular", "star", "sugiyama", "mds", "lgl", "davidson_harel"),
+    "rustworkx": ("spring", "kamada_kawai", "circular", "shell", "spiral", "random"),
+}
+GRAPH_TYPES: Final = {"networkx": ("adj", "nodes"), "igraph": ("vs", "es"), "rustworkx": ("node_indices", "weighted_edge_list")}
+IGRAPH_LAYOUT_NAMES: Final = {"spring": "fruchterman_reingold", "circular": "circle"}
+SEEDED_LAYOUTS: Final = ("spring", "random")
+LABEL_BASELINE: Final = 0.35
+MUTUAL_BEND: Final = 0.15
 
 HALF_TURN: Final = 180.0
 FULL_TURN: Final = 360.0

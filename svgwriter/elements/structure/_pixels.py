@@ -121,16 +121,24 @@ class Pixels(PixelCompositing, Drawable):
         return cls(np.ascontiguousarray(color), _compact_alpha(embedded))
 
     @classmethod
-    def decode(cls, data: bytes) -> Pixels:
+    def decode(cls, data: bytes, *, profile: bytes | str | None = None, intent: str | None = None) -> Pixels:
         """Decode encoded image bytes into sRGB.
 
         Embedded colour information (ICC profile, PNG ``gAMA``/``cHRM``) is applied, so the
-        pixels look as the file intends.
+        pixels look as the file intends. ICC profiles go through LittleCMS when the optional
+        ``color`` extra is installed.
 
         Parameters
         ----------
         data : bytes
             PNG, JPEG, WebP, GIF, BMP or PNM file contents.
+        profile : bytes or str, optional
+            The ``color-profile`` of the image: ICC profile bytes that replace any embedded
+            profile, ``"sRGB"`` to read the stored values as sRGB, or ``"auto"`` (the default,
+            also None) to use the embedded profile.
+        intent : str, optional
+            SVG ``rendering-intent`` for a profile conversion, such as ``"relative-colorimetric"``.
+            Defaults to perceptual.
 
         Returns
         -------
@@ -140,7 +148,7 @@ class Pixels(PixelCompositing, Drawable):
         Raises
         ------
         ValueError
-            If the data is damaged or in an unknown format.
+            If the data is damaged or in an unknown format, or `profile` is an unknown keyword.
 
         Examples
         --------
@@ -154,20 +162,7 @@ class Pixels(PixelCompositing, Drawable):
 
         if is_pnm(data):
             return cls.from_array(decode_pnm(data))
-        encoded = skia.Data.MakeWithCopy(data)
-        try:
-            codec = skia.Codec.MakeFromData(encoded)
-        except RuntimeError:
-            codec = None
-        if codec is None:
-            raise ValueError("could not decode the image data: unknown or damaged format")
-        size = codec.getInfo()
-        info = skia.ImageInfo.Make(size.width(), size.height(), skia.kRGBA_8888_ColorType, skia.kUnpremul_AlphaType,
-                                   skia.ColorSpace.MakeSRGB())
-        rgba = np.zeros((size.height(), size.width(), 4), np.uint8)
-        if codec.getPixels(info, rgba, info.minRowBytes()) != skia.Codec.Result.kSuccess:
-            raise ValueError("could not decode the image data")
-        return cls.from_array(rgba)
+        return cls.from_array(_profiled_rgba(data, profile, intent))
 
     def _load(self) -> None:
         if self._color is None:
@@ -347,6 +342,44 @@ class Pixels(PixelCompositing, Drawable):
     def __repr__(self) -> str:
         rows, columns = self.shape
         return f"Pixels({rows}x{columns}, channels={self.color.shape[2]}, opaque={np.isscalar(self.alpha)})"
+
+
+def _skia_rgba(data: bytes, *, managed: bool) -> np.ndarray:
+    encoded = skia.Data.MakeWithCopy(data)
+    try:
+        codec = skia.Codec.MakeFromData(encoded)
+    except RuntimeError:
+        codec = None
+    if codec is None:
+        raise ValueError("could not decode the image data: unknown or damaged format")
+    size = codec.getInfo()
+    info = skia.ImageInfo.Make(size.width(), size.height(), skia.kRGBA_8888_ColorType, skia.kUnpremul_AlphaType,
+                               skia.ColorSpace.MakeSRGB() if managed else None)
+    rgba = np.zeros((size.height(), size.width(), 4), np.uint8)
+    if codec.getPixels(info, rgba, info.minRowBytes()) != skia.Codec.Result.kSuccess:
+        raise ValueError("could not decode the image data")
+    return rgba
+
+
+def _profiled_rgba(data: bytes, profile: bytes | str | None, intent: str | None) -> np.ndarray:
+    from ..._internal._icc import hint_missing, load_profile, pixels_to_srgb
+    from ..._internal._icc_constants import AUTO_PROFILE, SRGB_PROFILE
+    from ..._internal._icc_embedded import embedded_profile
+
+    if isinstance(profile, str):
+        if profile.strip().lower() == SRGB_PROFILE:
+            return _skia_rgba(data, managed=False)
+        if profile.strip().lower() != AUTO_PROFILE:
+            raise ValueError(f"profile must be ICC bytes, 'sRGB' or 'auto', got {profile!r}")
+        profile = None
+    source = profile if profile is not None else embedded_profile(data)
+    parsed = load_profile(source) if source is not None else None
+    if parsed is None:
+        if profile is not None:
+            hint_missing()
+        return _skia_rgba(data, managed=True)
+    converted = pixels_to_srgb(parsed, _skia_rgba(data, managed=False), intent)
+    return converted if converted is not None else _skia_rgba(data, managed=True)
 
 
 def _compact_alpha(alpha: np.ndarray | None) -> np.ndarray | float:
