@@ -292,34 +292,35 @@
         <article role="main" id="furo-main-content">
           <h1>Source code for svgwriter.elements.animation._elements</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">SMIL animation elements.</span>
+<span class="sd">The animation base and ``animate`` and ``set``.</span>
 <span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">TypeAlias</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">TypeAlias</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">...pathdata.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathBuilder</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">...pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathData</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._behavior</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConditionalAttributes</span><span class="p">,</span> <span class="n">CoreAttributes</span><span class="p">,</span> <span class="n">ExternalResourcesAttribute</span><span class="p">,</span> <span class="n">XLinkAttributes</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Category</span><span class="p">,</span> <span class="n">Child</span><span class="p">,</span> <span class="n">ContentModel</span><span class="p">,</span> <span class="n">Element</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._easing</span><span class="w"> </span><span class="kn">import</span> <span class="n">EaseLike</span><span class="p">,</span> <span class="n">apply_ease</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._keywords</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnimationFill</span><span class="p">,</span> <span class="n">Restart</span><span class="p">,</span> <span class="n">TransformType</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._smil</span><span class="w"> </span><span class="kn">import</span> <span class="n">FadeShortcut</span><span class="p">,</span> <span class="n">SpinShortcut</span><span class="p">,</span> <span class="n">_AttributeTarget</span><span class="p">,</span> <span class="n">_clock</span><span class="p">,</span> <span class="n">_list</span><span class="p">,</span> <span class="n">_ValueAnimation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Category</span><span class="p">,</span> <span class="n">Child</span><span class="p">,</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._easing</span><span class="w"> </span><span class="kn">import</span> <span class="n">EaseLike</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._keywords</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnimationFill</span><span class="p">,</span> <span class="n">Restart</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._smil</span><span class="w"> </span><span class="kn">import</span> <span class="n">FadeShortcut</span><span class="p">,</span> <span class="n">_AttributeTarget</span><span class="p">,</span> <span class="n">_clock</span><span class="p">,</span> <span class="n">_ValueAnimation</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">"Animate"</span><span class="p">,</span>
-    <span class="s2">"AnimateColor"</span><span class="p">,</span>
-    <span class="s2">"AnimateMotion"</span><span class="p">,</span>
-    <span class="s2">"AnimateTransform"</span><span class="p">,</span>
-    <span class="s2">"AnimationElement"</span><span class="p">,</span>
-    <span class="s2">"Clock"</span><span class="p">,</span>
-    <span class="s2">"MPath"</span><span class="p">,</span>
-    <span class="s2">"Set"</span><span class="p">,</span>
-<span class="p">]</span>
+<span class="c1"># region generated by `python scripts/dev.py svgwriter signatures write`: names used by the signatures</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.._behavior</span><span class="w"> </span><span class="kn">import</span> <span class="n">XmlSpace</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AttrValue</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">._keywords</span><span class="w"> </span><span class="kn">import</span> <span class="n">Accumulate</span><span class="p">,</span> <span class="n">Additive</span><span class="p">,</span> <span class="n">CalcMode</span>
+<span class="c1"># endregion</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Animate"</span><span class="p">,</span> <span class="s2">"AnimationElement"</span><span class="p">,</span> <span class="s2">"Clock"</span><span class="p">,</span> <span class="s2">"RepeatCount"</span><span class="p">,</span> <span class="s2">"Set"</span><span class="p">]</span>
+
 
 <span class="n">Clock</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span>
+
+
 <span class="n">RepeatCount</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"indefinite"</span><span class="p">]</span>
 
 
@@ -381,7 +382,7 @@
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assign</span><span class="p">(</span>
             <span class="n">begin</span><span class="o">=</span><span class="n">_clock</span><span class="p">(</span><span class="n">begin</span><span class="p">),</span>
             <span class="n">dur</span><span class="o">=</span><span class="n">_clock</span><span class="p">(</span><span class="n">dur</span><span class="p">),</span>
             <span class="n">end</span><span class="o">=</span><span class="n">_clock</span><span class="p">(</span><span class="n">end</span><span class="p">),</span>
@@ -443,8 +444,112 @@
 <span class="sd">    '&lt;animate attributeName="opacity" from="1" to="0" dur="2s"/&gt;'</span>
 <span class="sd">    &gt;&gt;&gt; str(Animate(attribute_name="x", from_=0, to=90, dur=1, ease="ease-in-out"))</span>
 <span class="sd">    '&lt;animate attributeName="x" from="0" to="90" calcMode="spline" keyTimes="0;1" keySplines="0.42 0 0.58 1" dur="1s"/&gt;'</span>
-<span class="sd">    """</span></div>
+<span class="sd">    """</span>
 
+    <span class="c1"># region generated by `python scripts/dev.py svgwriter signatures write`</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Child</span><span class="p">,</span>
+        <span class="n">begin</span><span class="p">:</span> <span class="n">Clock</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dur</span><span class="p">:</span> <span class="n">Clock</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">end</span><span class="p">:</span> <span class="n">Clock</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="nb">min</span><span class="p">:</span> <span class="n">Clock</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="nb">max</span><span class="p">:</span> <span class="n">Clock</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">restart</span><span class="p">:</span> <span class="n">Restart</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">repeat_count</span><span class="p">:</span> <span class="n">RepeatCount</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">repeat_dur</span><span class="p">:</span> <span class="n">Clock</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fill</span><span class="p">:</span> <span class="n">AnimationFill</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">values</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">from_</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">to</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">by</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">calc_mode</span><span class="p">:</span> <span class="n">CalcMode</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">key_times</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">key_splines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">additive</span><span class="p">:</span> <span class="n">Additive</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">accumulate</span><span class="p">:</span> <span class="n">Accumulate</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ease</span><span class="p">:</span> <span class="n">EaseLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">attribute_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">attribute_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"CSS"</span><span class="p">,</span> <span class="s2">"XML"</span><span class="p">,</span> <span class="s2">"auto"</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">href</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xlink_title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xlink_show</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xlink_actuate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xlink_role</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xlink_arcrole</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">required_features</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">required_extensions</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">system_language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">external_resources_required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_base</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_space</span><span class="p">:</span> <span class="n">XmlSpace</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">attrs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AttrValue</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a ``&lt;animate&gt;`` element.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *args, begin, dur, end, min, max, restart, repeat_count, repeat_dur, fill, values, from_, to, by, calc_mode, key_times, key_splines, additive, accumulate, ease, attribute_name, attribute_type</span>
+<span class="sd">            See the class docstring.</span>
+<span class="sd">        href, xlink_title, xlink_show, xlink_actuate, xlink_role, xlink_arcrole, required_features, required_extensions, system_language, external_resources_required, xml_base, xml_lang, xml_space, id, attrs</span>
+<span class="sd">            The attribute groups of :class:`~svgwriter.XLinkAttributes`, :class:`~svgwriter.ConditionalAttributes`, :class:`~svgwriter.ExternalResourcesAttribute`, :class:`~svgwriter.CoreAttributes`, :class:`~svgwriter.Element`. Defaults to None (unset).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Any other SVG attribute in Python spelling, including namespaced and open ones</span>
+<span class="sd">            (``inkscape_label``, ``data_*``).</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">begin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"begin"</span><span class="p">]</span> <span class="o">=</span> <span class="n">begin</span>
+        <span class="k">if</span> <span class="n">dur</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"dur"</span><span class="p">]</span> <span class="o">=</span> <span class="n">dur</span>
+        <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"end"</span><span class="p">]</span> <span class="o">=</span> <span class="n">end</span>
+        <span class="k">if</span> <span class="nb">min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"min"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span>
+        <span class="k">if</span> <span class="nb">max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"max"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span>
+        <span class="k">if</span> <span class="n">restart</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"restart"</span><span class="p">]</span> <span class="o">=</span> <span class="n">restart</span>
+        <span class="k">if</span> <span class="n">repeat_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"repeat_count"</span><span class="p">]</span> <span class="o">=</span> <span class="n">repeat_count</span>
+        <span class="k">if</span> <span class="n">repeat_dur</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"repeat_dur"</span><span class="p">]</span> <span class="o">=</span> <span class="n">repeat_dur</span>
+        <span class="k">if</span> <span class="n">fill</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"fill"</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill</span>
+        <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"values"</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+        <span class="k">if</span> <span class="n">from_</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"from_"</span><span class="p">]</span> <span class="o">=</span> <span class="n">from_</span>
+        <span class="k">if</span> <span class="n">to</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"to"</span><span class="p">]</span> <span class="o">=</span> <span class="n">to</span>
+        <span class="k">if</span> <span class="n">by</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"by"</span><span class="p">]</span> <span class="o">=</span> <span class="n">by</span>
+        <span class="k">if</span> <span class="n">calc_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"calc_mode"</span><span class="p">]</span> <span class="o">=</span> <span class="n">calc_mode</span>
+        <span class="k">if</span> <span class="n">key_times</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"key_times"</span><span class="p">]</span> <span class="o">=</span> <span class="n">key_times</span>
+        <span class="k">if</span> <span class="n">key_splines</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"key_splines"</span><span class="p">]</span> <span class="o">=</span> <span class="n">key_splines</span>
+        <span class="k">if</span> <span class="n">additive</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"additive"</span><span class="p">]</span> <span class="o">=</span> <span class="n">additive</span>
+        <span class="k">if</span> <span class="n">accumulate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"accumulate"</span><span class="p">]</span> <span class="o">=</span> <span class="n">accumulate</span>
+        <span class="k">if</span> <span class="n">ease</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"ease"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ease</span>
+        <span class="k">if</span> <span class="n">attribute_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"attribute_name"</span><span class="p">]</span> <span class="o">=</span> <span class="n">attribute_name</span>
+        <span class="k">if</span> <span class="n">attribute_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"attribute_type"</span><span class="p">]</span> <span class="o">=</span> <span class="n">attribute_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forward_common</span><span class="p">(</span>
+            <span class="n">kwargs</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">xml_base</span><span class="p">,</span> <span class="n">xml_lang</span><span class="p">,</span> <span class="n">xml_space</span><span class="p">,</span> <span class="n">required_features</span><span class="p">,</span> <span class="n">required_extensions</span><span class="p">,</span>
+            <span class="n">system_language</span><span class="p">,</span> <span class="n">external_resources_required</span><span class="p">,</span> <span class="n">href</span><span class="p">,</span> <span class="n">xlink_title</span><span class="p">,</span> <span class="n">xlink_show</span><span class="p">,</span> <span class="n">xlink_actuate</span><span class="p">,</span> <span class="n">xlink_role</span><span class="p">,</span>
+            <span class="n">xlink_arcrole</span>
+        <span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="c1"># endregion</span>
 
 
 <div class="viewcode-block" id="Set">
@@ -471,143 +576,79 @@
 <span class="sd">    '&lt;set attributeName="visibility" begin="2s" to="hidden"/&gt;'</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">to</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">attribute_name</span><span class="o">=</span><span class="n">attribute_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="n">to</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="AnimateColor">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.AnimateColor">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">AnimateColor</span><span class="p">(</span><span class="n">AnimationElement</span><span class="p">,</span> <span class="n">_ValueAnimation</span><span class="p">,</span> <span class="n">_AttributeTarget</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"animateColor"</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;animateColor&gt;``: color interpolation (deprecated in later SVG).</span>
-
-<span class="sd">    Takes the same parameters as :class:`Animate`.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    Animate : Preferred, as it also interpolates colors.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; str(AnimateColor(attribute_name="fill", from_="red", to="blue"))</span>
-<span class="sd">    '&lt;animateColor attributeName="fill" from="red" to="blue"/&gt;'</span>
-<span class="sd">    """</span></div>
-
-
-
-<div class="viewcode-block" id="AnimateTransform">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.AnimateTransform">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">AnimateTransform</span><span class="p">(</span><span class="n">SpinShortcut</span><span class="p">,</span> <span class="n">AnimationElement</span><span class="p">,</span> <span class="n">_ValueAnimation</span><span class="p">,</span> <span class="n">_AttributeTarget</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"animateTransform"</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;animateTransform&gt;``: animate the ``transform`` attribute.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    type : TransformType, optional</span>
-<span class="sd">        Kind of transform. Defaults to ``TransformType.TRANSLATE``.</span>
-<span class="sd">    **kwargs</span>
-<span class="sd">        Everything :class:`Animate` takes; ``attribute_name`` defaults to</span>
-<span class="sd">        ``"transform"``.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    Animate : Animate any other attribute.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; AnimateTransform(TransformType.SCALE, from_=1, to=2, dur=1).get("type")</span>
-<span class="sd">    &lt;TransformType.SCALE: 'scale'&gt;</span>
-<span class="sd">    """</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">TransformType</span> <span class="o">=</span> <span class="n">TransformType</span><span class="o">.</span><span class="n">TRANSLATE</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"attribute_name"</span><span class="p">,</span> <span class="s2">"transform"</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="MPath">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.MPath">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">MPath</span><span class="p">(</span><span class="n">XLinkAttributes</span><span class="p">,</span> <span class="n">ExternalResourcesAttribute</span><span class="p">,</span> <span class="n">CoreAttributes</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"mpath"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">Category</span><span class="o">.</span><span class="n">ANIMATION</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;mpath&gt;``: the motion path of ``animateMotion`` by reference.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    href : str or Element, optional</span>
-<span class="sd">        The path element, or its IRI.</span>
-<span class="sd">    **kwargs</span>
-<span class="sd">        Presentation, core and other SVG attributes in Python spelling.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    AnimateMotion : The element that contains it.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; p = svg.Path("M0 0L10 10", id="track")</span>
-<span class="sd">    &gt;&gt;&gt; 'href="#track"' in str(MPath(p))</span>
-<span class="sd">    True</span>
-<span class="sd">    """</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">href</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">href</span><span class="o">=</span><span class="n">href</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="AnimateMotion">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.AnimateMotion">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">AnimateMotion</span><span class="p">(</span><span class="n">AnimationElement</span><span class="p">,</span> <span class="n">_ValueAnimation</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"animateMotion"</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">ContentModel</span><span class="o">.</span><span class="n">ELEMENTS</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;animateMotion&gt;``: move an element along a path.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    *children : MPath</span>
-<span class="sd">        An optional ``mpath`` naming the path by reference.</span>
-<span class="sd">    path : PathData or PathBuilder or str, optional</span>
-<span class="sd">        The motion path.</span>
-<span class="sd">    key_points : sequence of float or str, optional</span>
-<span class="sd">        Progress along the path at each ``key_times`` entry.</span>
-<span class="sd">    rotate : float or {"auto", "auto-reverse"}, optional</span>
-<span class="sd">        Orientation along the path.</span>
-<span class="sd">    origin : str, optional</span>
-<span class="sd">        The motion origin.</span>
-<span class="sd">    ease : str, tuple, callable or Ease, optional</span>
-<span class="sd">        Timing curve along the path (or through ``values``); see</span>
-<span class="sd">        :class:`Ease`. Along a path it is written with ``keyPoints``.</span>
-<span class="sd">    **kwargs</span>
-<span class="sd">        Timing (see :class:`AnimationElement`), values attributes, core and</span>
-<span class="sd">        other SVG attributes.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    MPath : Reference a path instead of inlining it.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; str(AnimateMotion(path="M0 0L10 10", dur=2, rotate="auto"))</span>
-<span class="sd">    '&lt;animateMotion dur="2s" path="M0 0 L10 10" rotate="auto"/&gt;'</span>
-<span class="sd">    """</span>
-
+    <span class="c1"># region generated by `python scripts/dev.py svgwriter signatures write`</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">children</span><span class="p">:</span> <span class="n">Child</span><span class="p">,</span>
-        <span class="n">path</span><span class="p">:</span> <span class="n">PathData</span> <span class="o">|</span> <span class="n">PathBuilder</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">key_points</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">rotate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"auto"</span><span class="p">,</span> <span class="s2">"auto-reverse"</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">origin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">ease</span><span class="p">:</span> <span class="n">EaseLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">attribute_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">to</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">begin</span><span class="p">:</span> <span class="n">Clock</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dur</span><span class="p">:</span> <span class="n">Clock</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">end</span><span class="p">:</span> <span class="n">Clock</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="nb">min</span><span class="p">:</span> <span class="n">Clock</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="nb">max</span><span class="p">:</span> <span class="n">Clock</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">restart</span><span class="p">:</span> <span class="n">Restart</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">repeat_count</span><span class="p">:</span> <span class="n">RepeatCount</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">repeat_dur</span><span class="p">:</span> <span class="n">Clock</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fill</span><span class="p">:</span> <span class="n">AnimationFill</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">attribute_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"CSS"</span><span class="p">,</span> <span class="s2">"XML"</span><span class="p">,</span> <span class="s2">"auto"</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">href</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xlink_title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xlink_show</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xlink_actuate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xlink_role</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xlink_arcrole</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">required_features</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">required_extensions</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">system_language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">external_resources_required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_base</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_space</span><span class="p">:</span> <span class="n">XmlSpace</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">attrs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AttrValue</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">children</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">PathBuilder</span><span class="p">):</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">PathData</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">key_points</span><span class="o">=</span><span class="n">_list</span><span class="p">(</span><span class="n">key_points</span><span class="p">),</span> <span class="n">rotate</span><span class="o">=</span><span class="n">rotate</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ease</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">listed</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"values"</span><span class="p">,</span> <span class="s2">"from"</span><span class="p">,</span> <span class="s2">"to"</span><span class="p">,</span> <span class="s2">"by"</span><span class="p">))</span>
-            <span class="n">apply_ease</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ease</span><span class="p">,</span> <span class="s2">"values"</span> <span class="k">if</span> <span class="n">listed</span> <span class="k">else</span> <span class="s2">"keyPoints"</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">"""Create a ``&lt;set&gt;`` element.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        attribute_name, to, begin, dur, end, min, max, restart, repeat_count, repeat_dur, fill, attribute_type</span>
+<span class="sd">            See the class docstring.</span>
+<span class="sd">        href, xlink_title, xlink_show, xlink_actuate, xlink_role, xlink_arcrole, required_features, required_extensions, system_language, external_resources_required, xml_base, xml_lang, xml_space, id, attrs</span>
+<span class="sd">            The attribute groups of :class:`~svgwriter.XLinkAttributes`, :class:`~svgwriter.ConditionalAttributes`, :class:`~svgwriter.ExternalResourcesAttribute`, :class:`~svgwriter.CoreAttributes`, :class:`~svgwriter.Element`. Defaults to None (unset).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Any other SVG attribute in Python spelling, including namespaced and open ones</span>
+<span class="sd">            (``inkscape_label``, ``data_*``).</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">begin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"begin"</span><span class="p">]</span> <span class="o">=</span> <span class="n">begin</span>
+        <span class="k">if</span> <span class="n">dur</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"dur"</span><span class="p">]</span> <span class="o">=</span> <span class="n">dur</span>
+        <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"end"</span><span class="p">]</span> <span class="o">=</span> <span class="n">end</span>
+        <span class="k">if</span> <span class="nb">min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"min"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span>
+        <span class="k">if</span> <span class="nb">max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"max"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span>
+        <span class="k">if</span> <span class="n">restart</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"restart"</span><span class="p">]</span> <span class="o">=</span> <span class="n">restart</span>
+        <span class="k">if</span> <span class="n">repeat_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"repeat_count"</span><span class="p">]</span> <span class="o">=</span> <span class="n">repeat_count</span>
+        <span class="k">if</span> <span class="n">repeat_dur</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"repeat_dur"</span><span class="p">]</span> <span class="o">=</span> <span class="n">repeat_dur</span>
+        <span class="k">if</span> <span class="n">fill</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"fill"</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill</span>
+        <span class="k">if</span> <span class="n">attribute_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"attribute_type"</span><span class="p">]</span> <span class="o">=</span> <span class="n">attribute_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forward_common</span><span class="p">(</span>
+            <span class="n">kwargs</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">xml_base</span><span class="p">,</span> <span class="n">xml_lang</span><span class="p">,</span> <span class="n">xml_space</span><span class="p">,</span> <span class="n">required_features</span><span class="p">,</span> <span class="n">required_extensions</span><span class="p">,</span>
+            <span class="n">system_language</span><span class="p">,</span> <span class="n">external_resources_required</span><span class="p">,</span> <span class="n">href</span><span class="p">,</span> <span class="n">xlink_title</span><span class="p">,</span> <span class="n">xlink_show</span><span class="p">,</span> <span class="n">xlink_actuate</span><span class="p">,</span> <span class="n">xlink_role</span><span class="p">,</span>
+            <span class="n">xlink_arcrole</span>
+        <span class="p">)</span>
+        <span class="c1"># endregion</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">attribute_name</span><span class="o">=</span><span class="n">attribute_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assign</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="n">to</span><span class="p">)</span></div>
 
 </pre></div>
         </article>

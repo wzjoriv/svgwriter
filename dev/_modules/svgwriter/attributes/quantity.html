@@ -308,7 +308,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_PRECISION</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_number</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ANGLE_ATTRIBUTES</span><span class="p">,</span> <span class="n">EQUAL_DIGITS</span><span class="p">,</span> <span class="n">LENGTH_ATTRIBUTES</span><span class="p">,</span> <span class="n">SUPERSCRIPTS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ANGLE_ATTRIBUTES</span><span class="p">,</span> <span class="n">EQUAL_DIGITS</span><span class="p">,</span> <span class="n">LENGTH_ATTRIBUTES</span><span class="p">,</span> <span class="n">PLAIN_VALUE_TYPES</span><span class="p">,</span> <span class="n">SUPERSCRIPTS</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.angle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span>
@@ -581,6 +581,8 @@
 <span class="sd">    ...</span>
 <span class="sd">    TypeError: width needs a length, got length²</span>
 <span class="sd">    """</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">PLAIN_VALUE_TYPES</span><span class="p">:</span>
+        <span class="k">return</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.angle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span>
 

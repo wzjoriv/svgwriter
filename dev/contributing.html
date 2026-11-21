@@ -315,6 +315,7 @@
 <span class="gp">$ </span>python<span class="w"> </span>scripts/dev.py<span class="w"> </span>svgwriter<span class="w"> </span>conformance<span class="w">    </span><span class="c1"># W3C SVG 1.1 suite (after: svgwriter fetch-suite)</span>
 <span class="gp">$ </span>python<span class="w"> </span>scripts/dev.py<span class="w"> </span>svgwriter<span class="w"> </span>bench<span class="w">          </span><span class="c1"># timing of the hot paths</span>
 <span class="gp">$ </span>python<span class="w"> </span>scripts/dev.py<span class="w"> </span>svgwriter<span class="w"> </span>formats<span class="w">        </span><span class="c1"># every export and round trip side by side, scored (build/formats)</span>
+<span class="gp">$ </span>python<span class="w"> </span>scripts/dev.py<span class="w"> </span>svgwriter<span class="w"> </span>signatures<span class="w"> </span>write<span class="w">  </span><span class="c1"># regenerate the element constructors (CI runs: signatures check)</span>
 <span class="gp">$ </span>python<span class="w"> </span>scripts/dev.py<span class="w"> </span>notebooks<span class="w"> </span>build<span class="w">          </span><span class="c1"># example notebooks from their cell scripts</span>
 </pre></div>
 </div>
@@ -326,6 +327,10 @@ inside their own package. Public names are re-exported with an explicit <code cl
 <li><p>NumPy-style docstrings with type hints, and runnable examples for public functions.</p></li>
 <li><p>Named constants live in <code class="docutils literal notranslate"><span class="pre">_constants.py</span></code> modules.</p></li>
 <li><p>Each change has tests next to the code it touches (<code class="docutils literal notranslate"><span class="pre">tests/</span></code> mirrors the package).</p></li>
+<li><p>Element classes get a generated <code class="docutils literal notranslate"><span class="pre">__init__</span></code> that lists every attribute they take, between
+<code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">region</span> <span class="pre">generated</span></code> and <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">endregion</span></code> markers. Change an attribute group’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code> (or
+<code class="docutils literal notranslate"><span class="pre">PresentationKeywords</span></code>), then run <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">signatures</span> <span class="pre">write</span></code>; a class’s own construction code goes
+after the <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">endregion</span></code> line inside its <code class="docutils literal notranslate"><span class="pre">__init__</span></code>.</p></li>
 <li><p>One branch per change; pull requests describe the user-visible change and how it was checked.</p></li>
 </ul>
 </section>

@@ -310,7 +310,8 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">...pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">BBox</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">...transform.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">._text</span><span class="w"> </span><span class="kn">import</span> <span class="n">Text</span><span class="p">,</span> <span class="n">TSpan</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">._spans</span><span class="w"> </span><span class="kn">import</span> <span class="n">TSpan</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">._text</span><span class="w"> </span><span class="kn">import</span> <span class="n">Text</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Character"</span><span class="p">,</span> <span class="s2">"CharacterRange"</span><span class="p">]</span>
 
@@ -537,7 +538,7 @@
 <span class="sd">        &gt;&gt;&gt; str(t[0:5].wrap(font_weight="bold"))</span>
 <span class="sd">        '&lt;tspan font-weight="bold"&gt;Hello&lt;/tspan&gt;'</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">._text</span><span class="w"> </span><span class="kn">import</span> <span class="n">TSpan</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">._spans</span><span class="w"> </span><span class="kn">import</span> <span class="n">TSpan</span>
 
         <span class="n">chars</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">chars</span><span class="p">:</span>

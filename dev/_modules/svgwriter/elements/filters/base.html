@@ -292,7 +292,7 @@
         <article role="main" id="furo-main-content">
           <h1>Source code for svgwriter.elements.filters.base</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">``&lt;filter&gt;`` and the shared filter-primitive base classes.</span>
+<span class="sd">Filter primitive bases and how primitives name their inputs.</span>
 <span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
@@ -300,25 +300,14 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TypeAlias</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">Keyword</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Self</span><span class="p">,</span> <span class="n">Units</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._behavior</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">CoreAttributes</span><span class="p">,</span>
-    <span class="n">ExternalResourcesAttribute</span><span class="p">,</span>
     <span class="n">Positioned</span><span class="p">,</span>
     <span class="n">PresentationAttributes</span><span class="p">,</span>
-    <span class="n">XLinkAttributes</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Category</span><span class="p">,</span> <span class="n">Child</span><span class="p">,</span> <span class="n">Container</span><span class="p">,</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Category</span><span class="p">,</span> <span class="n">Child</span><span class="p">,</span> <span class="n">Element</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">"Filter"</span><span class="p">,</span>
-    <span class="s2">"FilterInput"</span><span class="p">,</span>
-    <span class="s2">"FilterPrimitive"</span><span class="p">,</span>
-    <span class="s2">"SingleInput"</span><span class="p">,</span>
-    <span class="s2">"StandardInput"</span><span class="p">,</span>
-    <span class="s2">"TwoInputs"</span><span class="p">,</span>
-    <span class="s2">"resolve_input"</span><span class="p">,</span>
-<span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"FilterInput"</span><span class="p">,</span> <span class="s2">"FilterPrimitive"</span><span class="p">,</span> <span class="s2">"SingleInput"</span><span class="p">,</span> <span class="s2">"StandardInput"</span><span class="p">,</span> <span class="s2">"TwoInputs"</span><span class="p">,</span> <span class="s2">"remember_source"</span><span class="p">,</span> <span class="s2">"resolve_input"</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="StandardInput">
@@ -406,7 +395,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Child</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assign</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -531,124 +520,6 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Child</span><span class="p">,</span> <span class="n">in2</span><span class="p">:</span> <span class="n">FilterInput</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input</span><span class="p">(</span><span class="s2">"in2"</span><span class="p">,</span> <span class="n">in2</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="Filter">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.filters.Filter">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Filter</span><span class="p">(</span>
-    <span class="n">XLinkAttributes</span><span class="p">,</span>
-    <span class="n">Positioned</span><span class="p">,</span>
-    <span class="n">PresentationAttributes</span><span class="p">,</span>
-    <span class="n">ExternalResourcesAttribute</span><span class="p">,</span>
-    <span class="n">CoreAttributes</span><span class="p">,</span>
-    <span class="n">Container</span><span class="p">[</span><span class="n">Element</span><span class="p">],</span>
-    <span class="n">tag</span><span class="o">=</span><span class="s2">"filter"</span><span class="p">,</span>
-    <span class="n">category</span><span class="o">=</span><span class="n">Category</span><span class="o">.</span><span class="n">CONTAINER</span><span class="p">,</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;filter&gt;``: a graph of filter primitives.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    *primitives : FilterPrimitive</span>
-<span class="sd">        The primitives, in evaluation order.</span>
-<span class="sd">    filter_units, primitive_units : {"userSpaceOnUse", "objectBoundingBox"}, optional</span>
-<span class="sd">        Coordinate systems for the region and the primitives.</span>
-<span class="sd">    filter_res : float or (float, float), optional</span>
-<span class="sd">        Intermediate image resolution.</span>
-<span class="sd">    **kwargs</span>
-<span class="sd">        Region (``x``, ``y``, ``width``, ``height``), ``href`` and</span>
-<span class="sd">        presentation/core attributes in Python spelling.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    FilterPrimitive : Base of the elements a filter contains.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; str(svg.Filter(svg.FeGaussianBlur(std_deviation=1), id="soft"))</span>
-<span class="sd">    '&lt;filter id="soft"&gt;&lt;feGaussianBlur stdDeviation="1"/&gt;&lt;/filter&gt;'</span>
-<span class="sd">    """</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">primitives</span><span class="p">:</span> <span class="n">Child</span><span class="p">,</span>
-        <span class="n">filter_units</span><span class="p">:</span> <span class="n">Units</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">primitive_units</span><span class="p">:</span> <span class="n">Units</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">filter_res</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">primitives</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">filter_units</span><span class="o">=</span><span class="n">filter_units</span><span class="p">,</span> <span class="n">primitive_units</span><span class="o">=</span><span class="n">primitive_units</span><span class="p">,</span> <span class="n">filter_res</span><span class="o">=</span><span class="n">filter_res</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
-
-<div class="viewcode-block" id="Filter.collect">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.filters.Filter.collect">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Insert every detached primitive the filter's primitives read, before its first reader.</span>
-
-<span class="sd">        ``Filter(merge)`` is then enough: the blur and offset that feed the</span>
-<span class="sd">        merge come along in dependency order.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Filter</span>
-<span class="sd">            This filter, for chaining.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">        &gt;&gt;&gt; blur = svg.FeGaussianBlur(3, in_="SourceAlpha")</span>
-<span class="sd">        &gt;&gt;&gt; shadow = svg.FeOffset(2, 2, in_=blur)</span>
-<span class="sd">        &gt;&gt;&gt; f = svg.Filter(svg.FeMerge(shadow, "SourceGraphic"))</span>
-<span class="sd">        &gt;&gt;&gt; [p.tag for p in f.primitives]</span>
-<span class="sd">        ['feGaussianBlur', 'feOffset', 'feMerge']</span>
-<span class="sd">        """</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">):</span>
-            <span class="n">child</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-            <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="s2">"sources"</span><span class="p">,</span> <span class="nb">list</span><span class="p">)()</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span>
-                <span class="n">child</span><span class="p">,</span> <span class="n">FilterPrimitive</span><span class="p">)</span> <span class="k">else</span> <span class="p">[]</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">missing</span><span class="p">:</span>
-                <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">continue</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">missing</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
-
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Filter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Filter</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""``f1 &gt;&gt; f2``: one filter applying *f1*, then *f2* to its result.</span>
-
-<span class="sd">        SVG 1.1 allows a single ``filter`` per element, so this is how effects</span>
-<span class="sd">        stack: copies of *f2*'s primitives read *f1*'s output wherever they</span>
-<span class="sd">        read ``SourceGraphic`` (explicitly or as the first primitive).</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Filter</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">NotImplemented</span>
-        <span class="n">first</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">primitives</span><span class="p">]</span>
-        <span class="n">second</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">primitives</span><span class="p">]</span>
-        <span class="n">last</span> <span class="o">=</span> <span class="n">first</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">result</span> <span class="k">if</span> <span class="n">first</span> <span class="k">else</span> <span class="n">StandardInput</span><span class="o">.</span><span class="n">SOURCE_GRAPHIC</span><span class="o">.</span><span class="n">value</span>
-        <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">primitive</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">second</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="p">(</span><span class="n">primitive</span><span class="p">,</span> <span class="o">*</span><span class="n">primitive</span><span class="o">.</span><span class="n">iter</span><span class="p">()):</span>
-                <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"in"</span><span class="p">,</span> <span class="s2">"in2"</span><span class="p">):</span>
-                    <span class="n">value</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="n">StandardInput</span><span class="o">.</span><span class="n">SOURCE_GRAPHIC</span><span class="o">.</span><span class="n">value</span> <span class="ow">or</span> <span class="p">(</span>
-                            <span class="n">position</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">"in"</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">SingleInput</span><span class="p">)):</span>
-                        <span class="n">node</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">last</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Filter</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="p">,</span> <span class="o">*</span><span class="n">second</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">primitives</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilterPrimitive</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""The filter-primitive children in evaluation order.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">        &gt;&gt;&gt; svg.Filter(svg.FeOffset(), svg.FeTile()).primitives</span>
-<span class="sd">        [&lt;FeOffset feOffset dx='0' dy='0'&gt;, &lt;FeTile feTile&gt;]</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">FilterPrimitive</span><span class="p">)]</span></div>
 
 </pre></div>
         </article>
