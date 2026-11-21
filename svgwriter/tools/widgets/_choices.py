@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from ...model.color import Color, parse_color
-from ._constants import DEFAULT_COLOR
+from ._constants import DEFAULT_COLOR, SEGMENTED_WRAP
 from ._control import Control
 
 __all__ = ["Checkbox", "ColorPicker", "Dropdown", "MultiSelect", "Segmented", "Swatches", "Text", "Toggle",
@@ -196,7 +196,16 @@ class Segmented(Dropdown):
     >>> import svgwriter as svg
     >>> svg.widgets.Segmented(["♠", "♥"]).from_form(1)
     '♥'
+
+    Notes
+    -----
+    Backends show up to six options as buttons and more than that as a dropdown, see ``compact``.
     """
+
+    @property
+    def compact(self) -> bool:
+        """Whether the options are few enough to show as a row of buttons."""
+        return len(self.labels) <= SEGMENTED_WRAP
 
 
 @dataclass(frozen=True)
