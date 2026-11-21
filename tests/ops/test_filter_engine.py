@@ -113,3 +113,12 @@ def test_fe_displacement_map_reads_its_map_in_the_interpolation_space(space: str
                   '<feImage xlink:href="#t" result="t"/><feDisplacementMap in="t" in2="m" scale="40" '
                   'xChannelSelector="R" yChannelSelector="G"/></filter><rect width="100" height="100" filter="url(#f)"/>')
     assert np.allclose(pixels[57, 57], WHITE if moved else LIME, atol=0.05)
+
+
+def test_fe_convolve_matrix_bias_lifts_only_painted_pixels() -> None:
+    doc = svg.Document.from_string(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="f" filterUnits="userSpaceOnUse" '
+        'x="0" y="0" width="100" height="100"><feConvolveMatrix kernelMatrix="0 0 0 0 1 0 0 0 0" bias="1"/></filter>'
+        '<g filter="url(#f)"><rect width="50" height="100" fill="black"/></g></svg>')
+    pixels = doc.rasterize()
+    assert np.allclose(pixels[50, 25], WHITE, atol=0.02) and pixels[50, 75, 3] == pytest.approx(0.0)

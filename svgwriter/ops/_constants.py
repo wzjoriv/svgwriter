@@ -87,6 +87,7 @@ __all__ = [
     "NEW_BACKGROUND",
     "OPACITY",
     "DISPLACEMENT",
+    "COVERAGE_WHITE",
 ]
 
 SOURCE_GRAPHIC: Final = "SourceGraphic"
@@ -100,6 +101,7 @@ STANDARD_INPUTS: Final = frozenset({BACKGROUND_IMAGE, BACKGROUND_ALPHA, FILL_PAI
 ENABLE_BACKGROUND: Final = "enable-background"
 NEW_BACKGROUND: Final = "new"
 ALPHA_ONLY: Final = [0.0] * 15 + [0.0, 0.0, 0.0, 1.0, 0.0]
+COVERAGE_WHITE: Final = [0.0, 0.0, 0.0, 0.0, 1.0] * 3 + [0.0, 0.0, 0.0, 1.0, 0.0]
 LUMA: Final = (0.2125, 0.7154, 0.0721)
 BLEND: Final = {"normal": skia.BlendMode.kSrcOver, "multiply": skia.BlendMode.kMultiply,
                 "screen": skia.BlendMode.kScreen, "darken": skia.BlendMode.kDarken,
