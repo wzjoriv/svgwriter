@@ -140,7 +140,7 @@ svg.Document.open("sketch.excalidraw").save("sketch.svg")
 
 ## Examples
 
-[`examples/`](https://github.com/wzjoriv/svgwriter/tree/main/examples) is a fifteen-step learning path, from shapes to formats, animation, scenes, interop, a logo, themes and PowerPoint; each step is a runnable script with a Jupyter notebook next to it that shows the results as pictures (see its [README](https://github.com/wzjoriv/svgwriter/blob/main/examples/README.md)). All pictures below are rendered by svgwriter.
+[`examples/`](https://github.com/wzjoriv/svgwriter/tree/main/examples) is an eighteen-step learning path, from shapes to formats, animation, scenes, interop, a logo, themes and PowerPoint; each step is a runnable script with a Jupyter notebook next to it that shows the results as pictures (see its [README](https://github.com/wzjoriv/svgwriter/blob/main/examples/README.md)). All pictures below are rendered by svgwriter.
 
 [![One drawing in every built-in theme](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/themes.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/14_themes.ipynb)
 
