@@ -1,0 +1,2841 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#"><link rel="search" title="Search" href="search.html">
+        <link rel="prefetch" href="_static/logo.svg" as="image">
+
+    <link rel="shortcut icon" href="_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 --><title>Index - svgwriter 1.3.0</title>
+<link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=a55abf10" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f0f0f0;
+  --color-code-foreground: black;
+  --color-brand-primary: #0f766e;
+  --color-brand-content: #0f766e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #5eead4;
+  --color-brand-content: #99f6e4;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #5eead4;
+  --color-brand-content: #99f6e4;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">svgwriter 1.3.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">svgwriter 1.3.0</span>
+  
+</a><div class="sidebar-versions">
+  <span class="sidebar-versions-label">1.3.0</span>
+  <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
+  <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
+</div><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Start</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="start/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guides/geometry.html">Geometry and transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/paths.html">Paths, boolean operations and measurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/text.html">Text</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/colors-and-images.html">Colors and images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/documents.html">Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/rendering.html">Rendering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/export-import.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/animation.html">Animation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/logos.html">Logos and icons</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="explanation/design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="explanation/conformance.html">Conformance</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="reference/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="reference/document.html">Document</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/elements.html">Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/geometry.html">Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/color.html">Colors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/ops.html">Geometry operations and rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/export.html">Export and import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/io.html">Reading and writing SVG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/attributes.html">Attribute values and styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/video.html">Animation export</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          
+<section class="genindex-section">
+  <h1 id="index">Index</h1>
+  <div class="genindex-jumpbox"><a href="#_"><strong>_</strong></a> | <a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#K"><strong>K</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a> | <a href="#X"><strong>X</strong></a> | <a href="#Y"><strong>Y</strong></a></div>
+</section>
+<section id="_" class="genindex-section">
+  <h2>_</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/document.html#svgwriter.Document.__getitem__">__getitem__() (Document method)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.__iadd__">__iadd__() (Document method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/document.html#svgwriter.Document.__iter__">__iter__() (Document method)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.__len__">__len__() (Document method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="A" class="genindex-section">
+  <h2>A</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.Channel.A">A (Channel attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.A">(class in svgwriter.elements.structure)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/color.html#svgwriter.color.Color.a">a (Color attribute)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.transform.Matrix.a">(Matrix attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Length.absolute">absolute (Length property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.Accumulate">Accumulate (class in svgwriter.elements.animation)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.add">add() (Document method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.Additive">Additive (class in svgwriter.elements.animation)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Align">Align (class in svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.PreserveAspectRatio.align">align (PreserveAspectRatio attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.Channel.ALPHA">ALPHA (Channel attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Image.alpha">alpha (Image property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Pixels.alpha">(Pixels property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.AltGlyph">AltGlyph (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.AltGlyphDef">AltGlyphDef (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.AltGlyphItem">AltGlyphItem (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.Restart.ALWAYS">ALWAYS (Restart attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.Character.angle">angle (Character property)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Angle">Angle (class in svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Rotate.angle">angle (Rotate attribute)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.transform.SkewX.angle">(SkewX attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.SkewY.angle">(SkewY attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.AngleUnit">AngleUnit (class in svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.Animate">Animate (class in svgwriter.elements.animation)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.animate">animate (Element property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.AnimateColor">AnimateColor (class in svgwriter.elements.animation)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.AnimateMotion">AnimateMotion (class in svgwriter.elements.animation)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.AnimateTransform">AnimateTransform (class in svgwriter.elements.animation)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.animation_duration">animation_duration() (in module svgwriter.video)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.AnimationElement">AnimationElement (class in svgwriter.elements.animation)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.AnimationFill">AnimationFill (class in svgwriter.elements.animation)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.append">append() (Element method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.apply">apply() (Matrix method)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.transform.Transform.apply">(Transform method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.apply_points">apply_points() (Matrix method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.arc_to">arc_to() (PathBuilder method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo">ArcTo (class in svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Circle.area">area (Circle property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Polygon.area">(Polygon property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.arguments">arguments (ArcTo property)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.ClosePath.arguments">(ClosePath property)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.HLineTo.arguments">(HLineTo property)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.MatrixOp.arguments">(MatrixOp property)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.PathCommand.arguments">(PathCommand property)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Rotate.arguments">(Rotate property)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Scale.arguments">(Scale property)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.SkewX.arguments">(SkewX property)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.SkewY.arguments">(SkewY property)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.TransformOp.arguments">(TransformOp property)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Translate.arguments">(Translate property)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.VLineTo.arguments">(VLineTo property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.CompositeOperator.ARITHMETIC">ARITHMETIC (CompositeOperator attribute)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.Video.array_at">array_at() (Video method)</a>
+</li>
+        <li><a href="reference/builder.html#svgwriter.builder.arrow">arrow() (in module svgwriter.builder)</a>
+</li>
+        <li><a href="reference/builder.html#svgwriter.builder.arrow_marker">arrow_marker() (in module svgwriter.builder)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.as_color">as_color() (in module svgwriter.color)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.as_transform">as_transform() (in module svgwriter.transform)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.as_tuple">as_tuple() (Matrix method)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.ViewBox.aspect_ratio">aspect_ratio (ViewBox property)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.at">at() (Document method)</a>
+
+        <ul>
+          <li><a href="reference/video.html#svgwriter.video.Video.at">(Video method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.CompositeOperator.ATOP">ATOP (CompositeOperator attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Attr">Attr (class in svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.auto_size">auto_size (Document property)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="B" class="genindex-section">
+  <h2>B</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.Channel.B">B (Channel attribute)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.b">b (Color attribute)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.transform.Matrix.b">(Matrix attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.StandardInput.BACKGROUND_ALPHA">BACKGROUND_ALPHA (StandardInput attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.StandardInput.BACKGROUND_IMAGE">BACKGROUND_IMAGE (StandardInput attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Circle.bbox">bbox (Circle property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox">BBox (class in svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Ellipse.bbox">bbox (Ellipse property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Line.bbox">(Line property)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Path.bbox">(Path property)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.PathData.bbox">(PathData property)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Polyline.bbox">(Polyline property)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect.bbox">(Rect property)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Shape.bbox">(Shape property)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/export.html#svgwriter.export.Exporter.binary">binary (Exporter attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.BlendMode">BlendMode (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.TextDecoration.BLINK">BLINK (TextDecoration attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.Channel.BLUE">BLUE (Channel attribute)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.BooleanOp">BooleanOp (class in svgwriter.ops)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.bottom">bottom (BBox property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.bottom_center">bottom_center (BBox property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.bottom_left">bottom_left (BBox property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.bottom_right">bottom_right (BBox property)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.bounds">bounds() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.build">build() (PathBuilder method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="C" class="genindex-section">
+  <h2>C</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.c">c (Matrix attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.CalcMode">CalcMode (class in svgwriter.elements.animation)</a>
+</li>
+        <li><a href="reference/builder.html#svgwriter.builder.callout">callout() (in module svgwriter.builder)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.A.category">category (A attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.text.AltGlyph.category">(AltGlyph attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.AltGlyphDef.category">(AltGlyphDef attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.AltGlyphItem.category">(AltGlyphItem attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.animation.AnimationElement.category">(AnimationElement attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.ClipPath.category">(ClipPath attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Defs.category">(Defs attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.Element.category">(Element attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.Filter.category">(Filter attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FilterPrimitive.category">(FilterPrimitive attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.Font.category">(Font attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.FontFace.category">(FontFace attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.FontFaceFormat.category">(FontFaceFormat attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.FontFaceName.category">(FontFaceName attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.FontFaceSrc.category">(FontFaceSrc attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.FontFaceUri.category">(FontFaceUri attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.GlyphRef.category">(GlyphRef attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.Gradient.category">(Gradient attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Group.category">(Group attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Image.category">(Image attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.LightSource.category">(LightSource attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.Marker.category">(Marker attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.Mask.category">(Mask attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Metadata.category">(Metadata attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.animation.MPath.category">(MPath attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.Pattern.category">(Pattern attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Shape.category">(Shape attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.Stop.category">(Stop attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Svg.category">(Svg attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Switch.category">(Switch attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Symbol.category">(Symbol attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.Text.category">(Text attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.TextPath.category">(TextPath attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.TRef.category">(TRef attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.TSpan.category">(TSpan attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Use.category">(Use attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Align.CENTER">CENTER (Align attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.center">center (BBox property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.center_left">center_left (BBox property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.center_right">center_right (BBox property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.CenterArc">CenterArc (class in svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.Channel">Channel (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.Character.char">char (Character property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.Character">Character (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.CharacterRange">CharacterRange (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Circle">Circle (class in svgwriter.elements.shapes)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.circle">circle() (PathBuilder method)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.clamp">clamp() (in module svgwriter.color)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.clear">clear() (Element method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements._behavior.Convertible.clip">clip() (Convertible method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements._behavior.Convertible.clip_region">clip_region (Convertible property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.paint.ClipPath">ClipPath (class in svgwriter.elements.paint)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.clone">clone() (Element method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Pixels.clone">(Pixels method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.close">close() (PathBuilder method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.ClosePath">ClosePath (class in svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Unit.CM">CM (Unit attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.code">code (ArcTo attribute)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.ClosePath.code">(ClosePath attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.CurveTo.code">(CurveTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.HLineTo.code">(HLineTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.LineTo.code">(LineTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.MoveTo.code">(MoveTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.PathCommand.code">(PathCommand attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.QuadTo.code">(QuadTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.SmoothCurveTo.code">(SmoothCurveTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.SmoothQuadTo.code">(SmoothQuadTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.VLineTo.code">(VLineTo attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.Filter.collect">collect() (Filter method)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color">Color (class in svgwriter.color)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Image.color">color (Image property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Pixels.color">(Pixels property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.ColorMatrixType">ColorMatrixType (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.ColorProfile">ColorProfile (class in svgwriter.elements.structure)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.combine">combine() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/io.html#svgwriter.io.SerializeOptions.compact_paths">compact_paths (SerializeOptions attribute)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.composite_rgba">composite_rgba() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.CompositeOperator">CompositeOperator (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.computed">computed() (Element method)</a>
+
+        <ul>
+          <li><a href="reference/attributes.html#svgwriter.attributes.cascade.computed">(in module svgwriter.attributes.cascade)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/ops.html#svgwriter.ops.contains">contains() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.AltGlyph.content">content (AltGlyph attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.animation.AnimateMotion.content">(AnimateMotion attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.ColorProfile.content">(ColorProfile attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.Element.content">(Element attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeFunc.content">(FeFunc attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeMergeNode.content">(FeMergeNode attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.FontFaceFormat.content">(FontFaceFormat attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.FontFaceName.content">(FontFaceName attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.GlyphRef.content">(GlyphRef attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Image.content">(Image attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.LightSource.content">(LightSource attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Metadata.content">(Metadata attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.StyleElement.content">(StyleElement attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.Text.content">(Text attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.TextPath.content">(TextPath attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.TSpan.content">(TSpan attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.View.content">(View attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/document.html#svgwriter.Document.content_bounds">content_bounds() (Document method)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Attr.convert">convert (Attr attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements._behavior.Convertible">Convertible (class in svgwriter.elements._behavior)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.coordinates">coordinates (ArcTo attribute)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.CurveTo.coordinates">(CurveTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.HLineTo.coordinates">(HLineTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.LineTo.coordinates">(LineTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.MoveTo.coordinates">(MoveTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.PathCommand.coordinates">(PathCommand attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.QuadTo.coordinates">(QuadTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.SmoothCurveTo.coordinates">(SmoothCurveTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.SmoothQuadTo.coordinates">(SmoothQuadTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.VLineTo.coordinates">(VLineTo attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.copy">copy() (Element method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect.corner_radii">corner_radii() (Rect method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathData.count">count() (PathData method)</a>
+</li>
+        <li><a href="reference/builder.html#svgwriter.builder.cross">cross() (in module svgwriter.builder)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.StyleElement.css">css (StyleElement property)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.StyleSheet.css">css() (StyleSheet method)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.current">current (Document property)</a>
+
+        <ul>
+          <li><a href="reference/attributes.html#svgwriter.attributes.IRI.current">(IRI property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/color.html#svgwriter.color.PaintKeyword.CURRENT_COLOR">CURRENT_COLOR (PaintKeyword attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.current_point">current_point (PathBuilder property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.curve_to">curve_to() (PathBuilder method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.CurveTo">CurveTo (class in svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.CenterArc.cx">cx (CenterArc attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Circle.cx">(Circle attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Ellipse.cx">(Ellipse attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Rotate.cx">(Rotate attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.CenterArc.cy">cy (CenterArc attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Circle.cy">(Circle attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Ellipse.cy">(Ellipse attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Rotate.cy">(Rotate attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="D" class="genindex-section">
+  <h2>D</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.d">d (Matrix attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Path.d">(Path property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.BlendMode.DARKEN">DARKEN (BlendMode attribute)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.darken">darken() (Color method)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.Frame.data">data (Frame attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.Rule.declarations">declarations (Rule attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Pixels.decode">decode() (Pixels class method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.decompose">decompose() (Matrix method)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Attr.default">default (Attr attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.PreserveAspectRatio.defer">defer (PreserveAspectRatio attribute)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.define">define() (Document method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Defs">Defs (class in svgwriter.elements.structure)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.defs">defs (Document property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Svg.defs">defs() (Svg method)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Angle.degrees">degrees (Angle property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Desc">Desc (class in svgwriter.elements.structure)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.describe">describe() (Document method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/export.html#svgwriter.export.Exporter.description">description (Exporter attribute)</a>
+
+        <ul>
+          <li><a href="reference/export.html#svgwriter.export.Importer.description">(Importer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.determinant">determinant (Matrix property)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.BooleanOp.DIFFERENCE">DIFFERENCE (BooleanOp attribute)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.difference">difference() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.MorphologyOperator.DILATE">DILATE (MorphologyOperator attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeDistantLight.directional">directional (FeDistantLight property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FePointLight.directional">(FePointLight property)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.LightSource.directional">(LightSource property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.discard">discard() (Element method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.CalcMode.DISCRETE">DISCRETE (CalcMode attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.TransferType.DISCRETE">(TransferType attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/io.html#svgwriter.io.SerializeOptions.doctype">doctype (SerializeOptions attribute)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document">Document (class in svgwriter)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.draw_graph">draw_graph() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/builder.html#svgwriter.builder.drawing">drawing() (in module svgwriter.builder)</a>
+</li>
+        <li><a href="reference/builder.html#svgwriter.builder.drop_shadow">drop_shadow() (in module svgwriter.builder)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.EdgeMode.DUPLICATE">DUPLICATE (EdgeMode attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="E" class="genindex-section">
+  <h2>E</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.e">e (Matrix attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.Ease">Ease (class in svgwriter.elements.animation)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.EdgeMode">EdgeMode (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element">Element (class in svgwriter.elements)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.IRI.element">element (IRI attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Ellipse">Ellipse (class in svgwriter.elements.shapes)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Unit.EM">EM (Unit attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Image.encode">encode() (Image method)</a>
+
+        <ul>
+          <li><a href="reference/ops.html#svgwriter.ops.encode">(in module svgwriter.ops)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Pixels.encode">(Pixels method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/io.html#svgwriter.io.SerializeOptions.encoding">encoding (SerializeOptions attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.ClosePath.end_point">end_point() (ClosePath method)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.HLineTo.end_point">(HLineTo method)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.PathCommand.end_point">(PathCommand method)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.VLineTo.end_point">(VLineTo method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.endpoint_to_center">endpoint_to_center() (in module svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.ensure_id">ensure_id() (Element method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.MorphologyOperator.ERODE">ERODE (MorphologyOperator attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeFunc.evaluate">evaluate() (FeFunc method)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Unit.EX">EX (Unit attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.PathOperand.expand_pattern">expand_pattern() (PathOperand method)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.export">export() (Document method)</a>
+
+        <ul>
+          <li><a href="reference/export.html#svgwriter.export.export">(in module svgwriter.export)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/export.html#svgwriter.export.Exporter">Exporter (class in svgwriter.export)</a>
+</li>
+        <li><a href="reference/export.html#svgwriter.export.exporters">exporters() (in module svgwriter.export)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.extend">extend() (Element method)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.extend">(PathBuilder method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/export.html#svgwriter.export.Exporter.extensions">extensions (Exporter attribute)</a>
+
+        <ul>
+          <li><a href="reference/export.html#svgwriter.export.Importer.extensions">(Importer attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="F" class="genindex-section">
+  <h2>F</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.f">f (Matrix attribute)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.PaintRef.fallback">fallback (PaintRef attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeBlend">FeBlend (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeColorMatrix">FeColorMatrix (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeComponentTransfer">FeComponentTransfer (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeComposite">FeComposite (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeConvolveMatrix">FeConvolveMatrix (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeDiffuseLighting">FeDiffuseLighting (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeDisplacementMap">FeDisplacementMap (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeDistantLight">FeDistantLight (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeFlood">FeFlood (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeFunc">FeFunc (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeFuncA">FeFuncA (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeFuncB">FeFuncB (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeFuncG">FeFuncG (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeFuncR">FeFuncR (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeGaussianBlur">FeGaussianBlur (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeImage">FeImage (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeMerge">FeMerge (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeMergeNode">FeMergeNode (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeMorphology">FeMorphology (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeOffset">FeOffset (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FePointLight">FePointLight (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeSpecularLighting">FeSpecularLighting (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeSpotLight">FeSpotLight (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeTile">FeTile (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeTurbulence">FeTurbulence (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.FFmpegError">FFmpegError</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.FFmpegNotFoundError">FFmpegNotFoundError</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.StandardInput.FILL_PAINT">FILL_PAINT (StandardInput attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.Filter">Filter (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FilterPrimitive">FilterPrimitive (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.find">find() (Element method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.find_all">find_all() (Element method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/export.html#svgwriter.export.find_exporter">find_exporter() (in module svgwriter.export)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.find_ffmpeg">find_ffmpeg() (in module svgwriter.video)</a>
+</li>
+        <li><a href="reference/export.html#svgwriter.export.find_importer">find_importer() (in module svgwriter.export)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.fit">fit() (Document method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.PathOperand.flatten_clip">flatten_clip() (PathOperand method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.flip_x">flip_x() (Matrix class method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.flip_y">flip_y() (Matrix class method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.Font">Font (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.FontFace">FontFace (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.FontFaceFormat">FontFaceFormat (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.FontFaceName">FontFaceName (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.FontFaceSrc">FontFaceSrc (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.FontFaceUri">FontFaceUri (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.format_value">format_value() (in module svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.TurbulenceType.FRACTAL_NOISE">FRACTAL_NOISE (TurbulenceType attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.IRI.fragment">fragment (IRI property)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.Frame">Frame (class in svgwriter.video)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.Video.frame">frame() (Video method)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.frame_times">frame_times() (in module svgwriter.video)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.AnimationFill.FREEZE">FREEZE (AnimationFill attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.from_array">from_array() (Matrix class method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Pixels.from_array">(Pixels class method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.from_attributes">from_attributes() (Element class method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Circle.from_bbox">from_bbox() (Circle class method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Ellipse.from_bbox">(Ellipse class method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/color.html#svgwriter.color.Color.from_hsl">from_hsl() (Color class method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.from_points">from_points() (BBox class method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Path.from_points">(Path class method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/ops.html#svgwriter.ops.from_skia">from_skia() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.from_string">from_string() (Document class method)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.from_uint8">from_uint8() (Color class method)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.FuncIRI">FuncIRI (class in svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/export.html#svgwriter.export.Exporter.function">function (Exporter attribute)</a>
+
+        <ul>
+          <li><a href="reference/export.html#svgwriter.export.Importer.function">(Importer attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="G" class="genindex-section">
+  <h2>G</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.Channel.G">G (Channel attribute)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.g">g (Color attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.TransferType.GAMMA">GAMMA (TransferType attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeFunc.gamma">gamma() (FeFunc class method)</a>
+</li>
+        <li><a href="reference/builder.html#svgwriter.builder.gear">gear() (in module svgwriter.builder)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Circle.geometry_attributes">geometry_attributes (Circle attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Ellipse.geometry_attributes">(Ellipse attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Line.geometry_attributes">(Line attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Path.geometry_attributes">(Path attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.PathOperand.geometry_attributes">(PathOperand attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Polyline.geometry_attributes">(Polyline attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect.geometry_attributes">(Rect attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.Text.geometry_attributes">(Text attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Use.geometry_attributes">(Use attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.get">get() (Element method)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.get_element_by_id">get_element_by_id() (Document method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.Element.get_element_by_id">(Element method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/builder.html#svgwriter.builder.glow">glow() (in module svgwriter.builder)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.Glyph">Glyph (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.GlyphRef">GlyphRef (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.paint.Gradient">Gradient (class in svgwriter.elements.paint)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.Channel.GREEN">GREEN (Channel attribute)</a>
+</li>
+        <li><a href="reference/builder.html#svgwriter.builder.grid">grid() (in module svgwriter.builder)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Group">Group (class in svgwriter.elements.structure)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="H" class="genindex-section">
+  <h2>H</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.has">has() (Element method)</a>
+</li>
+        <li><a href="reference/builder.html#svgwriter.builder.heart">heart() (in module svgwriter.builder)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.height">height (BBox attribute)</a>
+
+        <ul>
+          <li><a href="reference/video.html#svgwriter.video.Frame.height">(Frame attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect.height">(Rect attribute)</a>
+</li>
+          <li><a href="reference/attributes.html#svgwriter.attributes.ViewBox.height">(ViewBox attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/color.html#svgwriter.color.Color.hex">hex (Color property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.HKern">HKern (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.HLineTo">HLineTo (class in svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.paint.LinearGradient.horizontal">horizontal() (LinearGradient class method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.horizontal_to">horizontal_to() (PathBuilder method)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.hsl">hsl (Color property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.ColorMatrixType.HUE_ROTATE">HUE_ROTATE (ColorMatrixType attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="I" class="genindex-section">
+  <h2>I</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/color.html#svgwriter.color.Color.icc">icc (Color attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.id">id (Element property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.TransferType.IDENTITY">IDENTITY (TransferType attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Image">Image (class in svgwriter.elements.structure)</a>
+</li>
+        <li><a href="reference/export.html#svgwriter.export.Importer">Importer (class in svgwriter.export)</a>
+</li>
+        <li><a href="reference/export.html#svgwriter.export.importers">importers() (in module svgwriter.export)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.CompositeOperator.IN">IN (CompositeOperator attribute)</a>
+
+        <ul>
+          <li><a href="reference/attributes.html#svgwriter.attributes.Unit.IN">(Unit attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Unit.INCH">INCH (Unit attribute)</a>
+</li>
+        <li><a href="reference/io.html#svgwriter.io.SerializeOptions.indent">indent (SerializeOptions attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.Character.index">index (Character property)</a>
+
+        <ul>
+          <li><a href="reference/video.html#svgwriter.video.Frame.index">(Frame attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathData.index">index() (PathData method)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.PaintKeyword.INHERIT">INHERIT (PaintKeyword attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.INHERITED">INHERITED (in module svgwriter.attributes.cascade)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.insert">insert() (Element method)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.interpolate">interpolate() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.BooleanOp.INTERSECTION">INTERSECTION (BooleanOp attribute)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.intersection">intersection() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.inverse">inverse() (Matrix method)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.transform.Transform.inverse">(Transform method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.IRI">IRI (class in svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.iri">iri (Element property)</a>
+
+        <ul>
+          <li><a href="reference/color.html#svgwriter.color.PaintRef.iri">(PaintRef attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.is_identity">is_identity (Matrix property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.isclose">isclose() (Matrix method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.iter">iter() (Element method)</a>
+</li>
+        <li><a href="reference/io.html#svgwriter.io.iter_chunks">iter_chunks() (in module svgwriter.io)</a>
+
+        <ul>
+          <li><a href="reference/io.html#svgwriter.io.Writer.iter_chunks">(Writer method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.iter_commands">iter_commands() (in module svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.iter_frames">iter_frames() (in module svgwriter.video)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="K" class="genindex-section">
+  <h2>K</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Attr.key">key (Attr property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.MatrixOp.keyword">keyword (MatrixOp attribute)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.transform.Rotate.keyword">(Rotate attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Scale.keyword">(Scale attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.SkewX.keyword">(SkewX attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.SkewY.keyword">(SkewY attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.TransformOp.keyword">(TransformOp attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Translate.keyword">(Translate attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="L" class="genindex-section">
+  <h2>L</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.large_arc">large_arc (ArcTo attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.left">left (BBox property)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Length">Length (class in svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Line.length">length (Line property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathCommand.letter">letter (PathCommand property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeDistantLight.light_vector">light_vector() (FeDistantLight method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FePointLight.light_vector">(FePointLight method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.LightSource.light_vector">(LightSource method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.BlendMode.LIGHTEN">LIGHTEN (BlendMode attribute)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.lighten">lighten() (Color method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.LightSource">LightSource (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Line">Line (class in svgwriter.elements.shapes)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.TextDecoration.LINE_THROUGH">LINE_THROUGH (TextDecoration attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.line_to">line_to() (PathBuilder method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.CalcMode.LINEAR">LINEAR (CalcMode attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.Ease.linear">linear (Ease property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.TransferType.LINEAR">LINEAR (TransferType attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeFunc.linear">linear() (FeFunc class method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.paint.LinearGradient">LinearGradient (class in svgwriter.elements.paint)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.LineTo">LineTo (class in svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/export.html#svgwriter.export.load">load() (in module svgwriter.export)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.IRI.local">local() (IRI class method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.A.local_bbox">local_bbox() (A method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.ClipPath.local_bbox">(ClipPath method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Group.local_bbox">(Group method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Image.local_bbox">(Image method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.LinearGradient.local_bbox">(LinearGradient method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.Pattern.local_bbox">(Pattern method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.RadialGradient.local_bbox">(RadialGradient method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Shape.local_bbox">(Shape method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Switch.local_bbox">(Switch method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.Transformable.local_bbox">(Transformable method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.A.local_outline">local_outline() (A method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Circle.local_outline">(Circle method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.ClipPath.local_outline">(ClipPath method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Ellipse.local_outline">(Ellipse method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Group.local_outline">(Group method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Line.local_outline">(Line method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Path.local_outline">(Path method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.PathOperand.local_outline">(PathOperand method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Polygon.local_outline">(Polygon method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Polyline.local_outline">(Polyline method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect.local_outline">(Rect method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Switch.local_outline">(Switch method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.lookup">lookup() (Element class method)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.luminance">luminance (Color property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.ColorMatrixType.LUMINANCE_TO_ALPHA">LUMINANCE_TO_ALPHA (ColorMatrixType attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="M" class="genindex-section">
+  <h2>M</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.many">many() (Element class method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.paint.Marker">Marker (class in svgwriter.elements.paint)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.paint.Mask">Mask (class in svgwriter.elements.paint)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix">Matrix (class in svgwriter.transform)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.ColorMatrixType.MATRIX">MATRIX (ColorMatrixType attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.MatrixOp.matrix">matrix (MatrixOp attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Transform.matrix">matrix() (Transform method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.MatrixOp">MatrixOp (class in svgwriter.transform)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.MeetOrSlice.MEET">MEET (MeetOrSlice attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.PreserveAspectRatio.meet_or_slice">meet_or_slice (PreserveAspectRatio attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.MeetOrSlice">MeetOrSlice (class in svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Metadata">Metadata (class in svgwriter.elements.structure)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.ViewBox.min_x">min_x (ViewBox attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.ViewBox.min_y">min_y (ViewBox attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.MissingGlyph">MissingGlyph (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.mix">mix() (Color method)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Unit.MM">MM (Unit attribute)</a>
+</li>
+        <li>
+    module
+
+        <ul>
+          <li><a href="reference/attributes.html#module-svgwriter.attributes">svgwriter.attributes</a>
+</li>
+          <li><a href="reference/attributes.html#module-svgwriter.attributes.cascade">svgwriter.attributes.cascade</a>
+</li>
+          <li><a href="reference/builder.html#module-svgwriter.builder">svgwriter.builder</a>
+</li>
+          <li><a href="reference/color.html#module-svgwriter.color">svgwriter.color</a>
+</li>
+          <li><a href="reference/elements.html#module-svgwriter.elements.animation">svgwriter.elements.animation</a>
+</li>
+          <li><a href="reference/elements.html#module-svgwriter.elements.filters">svgwriter.elements.filters</a>
+</li>
+          <li><a href="reference/elements.html#module-svgwriter.elements.paint">svgwriter.elements.paint</a>
+</li>
+          <li><a href="reference/elements.html#module-svgwriter.elements.shapes">svgwriter.elements.shapes</a>
+</li>
+          <li><a href="reference/elements.html#module-svgwriter.elements.structure">svgwriter.elements.structure</a>
+</li>
+          <li><a href="reference/elements.html#module-svgwriter.elements.text">svgwriter.elements.text</a>
+</li>
+          <li><a href="reference/export.html#module-svgwriter.export">svgwriter.export</a>
+</li>
+          <li><a href="reference/io.html#module-svgwriter.io">svgwriter.io</a>
+</li>
+          <li><a href="reference/ops.html#module-svgwriter.ops">svgwriter.ops</a>
+</li>
+          <li><a href="reference/geometry.html#module-svgwriter.pathdata">svgwriter.pathdata</a>
+</li>
+          <li><a href="reference/geometry.html#module-svgwriter.transform">svgwriter.transform</a>
+</li>
+          <li><a href="reference/video.html#module-svgwriter.video">svgwriter.video</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.MorphologyOperator">MorphologyOperator (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.move_to">move_to() (PathBuilder method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.MoveTo">MoveTo (class in svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.MPath">MPath (class in svgwriter.elements.animation)</a>
+</li>
+        <li><a href="reference/export.html#svgwriter.export.Exporter.multipage">multipage (Exporter attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.BlendMode.MULTIPLY">MULTIPLY (BlendMode attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Attr.name">name (Attr attribute)</a>
+
+        <ul>
+          <li><a href="reference/color.html#svgwriter.color.Color.name">(Color attribute)</a>
+</li>
+          <li><a href="reference/export.html#svgwriter.export.Exporter.name">(Exporter attribute)</a>
+</li>
+          <li><a href="reference/export.html#svgwriter.export.Importer.name">(Importer attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.namespace">namespace (Element attribute)</a>
+</li>
+        <li><a href="reference/io.html#svgwriter.io.SerializeOptions.namespaces">namespaces (SerializeOptions attribute)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.nest">nest() (Document method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.Restart.NEVER">NEVER (Restart attribute)</a>
+</li>
+        <li><a href="reference/io.html#svgwriter.io.SerializeOptions.newline">newline (SerializeOptions attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Path.nodes">nodes (Path property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathData.nodes">nodes() (PathData method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.Accumulate.NONE">NONE (Accumulate attribute)</a>
+
+        <ul>
+          <li><a href="reference/attributes.html#svgwriter.attributes.Align.NONE">(Align attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.EdgeMode.NONE">(EdgeMode attribute)</a>
+</li>
+          <li><a href="reference/color.html#svgwriter.color.PaintKeyword.NONE">(PaintKeyword attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.TextDecoration.NONE">(TextDecoration attribute)</a>
+</li>
+          <li><a href="reference/attributes.html#svgwriter.attributes.Unit.NONE">(Unit attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.BlendMode.NORMAL">NORMAL (BlendMode attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathData.normalized">normalized() (PathData method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="O" class="genindex-section">
+  <h2>O</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/color.html#svgwriter.color.Color.opaque">opaque (Color property)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.open">open() (Document class method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Image.open">(Image class method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/document.html#svgwriter.Document.open_all">open_all() (Document class method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.Rule.order">order (Rule attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.CompositeOperator.OUT">OUT (CompositeOperator attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.PathOperand.outline">outline() (PathOperand method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.CompositeOperator.OVER">OVER (CompositeOperator attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.TextDecoration.OVERLINE">OVERLINE (TextDecoration attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="P" class="genindex-section">
+  <h2>P</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.CalcMode.PACED">PACED (CalcMode attribute)</a>
+</li>
+        <li><a href="reference/export.html#svgwriter.export.Importer.page_option">page_option (Importer attribute)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.PaintKeyword">PaintKeyword (class in svgwriter.color)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.PaintRef">PaintRef (class in svgwriter.color)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Angle.parse">parse() (Angle class method)</a>
+
+        <ul>
+          <li><a href="reference/color.html#svgwriter.color.Color.parse">(Color class method)</a>
+</li>
+          <li><a href="reference/attributes.html#svgwriter.attributes.Length.parse">(Length class method)</a>
+</li>
+          <li><a href="reference/attributes.html#svgwriter.attributes.PreserveAspectRatio.parse">(PreserveAspectRatio class method)</a>
+</li>
+          <li><a href="reference/attributes.html#svgwriter.attributes.Style.parse">(Style static method)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Transform.parse">(Transform class method)</a>
+</li>
+          <li><a href="reference/attributes.html#svgwriter.attributes.ViewBox.parse">(ViewBox class method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/color.html#svgwriter.color.parse_color">parse_color() (in module svgwriter.color)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.parse_css">parse_css() (in module svgwriter.attributes.cascade)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.parse_func_iri">parse_func_iri() (in module svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.parse_paint">parse_paint() (in module svgwriter.color)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.parse_path">parse_path() (in module svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.parse_transform">parse_transform() (in module svgwriter.transform)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Path">Path (class in svgwriter.elements.shapes)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Path.path_length">path_length (Path attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder">PathBuilder (class in svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathCommand">PathCommand (class in svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathData">PathData (class in svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.PathOperand">PathOperand (class in svgwriter.elements)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathSyntaxError">PathSyntaxError</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.paint.Pattern">Pattern (class in svgwriter.elements.paint)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Unit.PC">PC (Unit attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Unit.PERCENT">PERCENT (Unit attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Unit.PIXEL">PIXEL (Unit attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Pixels">Pixels (class in svgwriter.elements.structure)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Image.pixels">pixels (Image property)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.Frame.png">png (Frame attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Point">Point (class in svgwriter.transform)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.point">point() (BBox method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.CenterArc.point_at">point_at() (CenterArc method)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.point_at_length">point_at_length() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Polyline.points">points (Polyline property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathData.points">points() (PathData method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Polygon">Polygon (class in svgwriter.elements.shapes)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Polyline">Polyline (class in svgwriter.elements.shapes)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.Character.position">position (Character property)</a>
+</li>
+        <li><a href="reference/io.html#svgwriter.io.SerializeOptions.precision">precision (SerializeOptions attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Style.presentation_only">presentation_only() (Style method)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.PreserveAspectRatio">PreserveAspectRatio (class in svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/io.html#svgwriter.io.SerializeOptions.pretty">pretty (SerializeOptions attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.Filter.primitives">primitives (Filter property)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Unit.PT">PT (Unit attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Unit.PX">PX (Unit attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.py_name">py_name() (in module svgwriter.attributes)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Q" class="genindex-section">
+  <h2>Q</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.quad_to">quad_to() (PathBuilder method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.QuadTo">QuadTo (class in svgwriter.pathdata)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="R" class="genindex-section">
+  <h2>R</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.Channel.R">R (Channel attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Circle.r">r (Circle attribute)</a>
+
+        <ul>
+          <li><a href="reference/color.html#svgwriter.color.Color.r">(Color attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.paint.RadialGradient">RadialGradient (class in svgwriter.elements.paint)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Angle.radians">radians (Angle property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements._behavior.Convertible.rasterize">rasterize() (Convertible method)</a>
+
+        <ul>
+          <li><a href="reference/document.html#svgwriter.Document.rasterize">(Document method)</a>
+</li>
+          <li><a href="reference/ops.html#svgwriter.ops.rasterize">(in module svgwriter.ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/ops.html#svgwriter.ops.rasterize_many">rasterize_many() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect">Rect (class in svgwriter.elements.shapes)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.Channel.RED">RED (Channel attribute)</a>
+</li>
+        <li><a href="reference/export.html#svgwriter.export.register">register() (in module svgwriter.export)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.register_font">register_font() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/export.html#svgwriter.export.register_importer">register_importer() (in module svgwriter.export)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.register_renderer">register_renderer() (in module svgwriter.video)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.registered">registered() (Element class method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Polyline.regular">regular() (Polyline class method)</a>
+</li>
+        <li><a href="reference/builder.html#svgwriter.builder.regular_polygon">regular_polygon() (in module svgwriter.builder)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.regular_polygon">(PathBuilder method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.relative">relative (ArcTo attribute)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.ClosePath.relative">(ClosePath attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.CurveTo.relative">(CurveTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.HLineTo.relative">(HLineTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.LineTo.relative">(LineTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.MoveTo.relative">(MoveTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.PathCommand.relative">(PathCommand attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.QuadTo.relative">(QuadTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.SmoothCurveTo.relative">(SmoothCurveTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.SmoothQuadTo.relative">(SmoothQuadTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.VLineTo.relative">(VLineTo attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.AnimationFill.REMOVE">REMOVE (AnimationFill attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.remove">remove() (Element method)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.render_animation">render_animation() (Document method)</a>
+
+        <ul>
+          <li><a href="reference/video.html#svgwriter.video.render_animation">(in module svgwriter.video)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements._behavior.Convertible.render_bounds">render_bounds() (Convertible method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/ops.html#svgwriter.ops.render_frame">render_frame() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.render_png">render_png() (Document method)</a>
+
+        <ul>
+          <li><a href="reference/ops.html#svgwriter.ops.render_png">(in module svgwriter.ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/ops.html#svgwriter.ops.render_svg">render_svg() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.Additive.REPLACE">REPLACE (Additive attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.resolve_input">resolve_input() (in module svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.resolve_operator">resolve_operator() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.resolve_renderer">resolve_renderer() (in module svgwriter.video)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.resolve_styles">resolve_styles() (in module svgwriter.attributes.cascade)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.Restart">Restart (class in svgwriter.elements.animation)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FilterPrimitive.result">result (FilterPrimitive property)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.BooleanOp.REVERSE_DIFFERENCE">REVERSE_DIFFERENCE (BooleanOp attribute)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.rgb">rgb (Color property)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.rgba">rgba (Color property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Image.rgba">rgba() (Image method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Pixels.rgba">(Pixels method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/video.html#svgwriter.video.RGBAArray">RGBAArray (class in svgwriter.video)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.right">right (BBox property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.root">root() (Element method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Rotate">Rotate (class in svgwriter.transform)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.TransformType.ROTATE">ROTATE (TransformType attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.rotate">rotate() (Matrix class method)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.transform.Transform.rotate">(Transform method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.rotation">rotation (ArcTo attribute)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.CenterArc.rotation">(CenterArc attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.Rule">Rule (class in svgwriter.attributes.cascade)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.StyleSheet.rule">rule() (StyleSheet method)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.rules_of">rules_of() (in module svgwriter.attributes.cascade)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.rx">rx (ArcTo attribute)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.CenterArc.rx">(CenterArc attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Ellipse.rx">(Ellipse attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect.rx">(Rect attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.ry">ry (ArcTo attribute)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.CenterArc.ry">(CenterArc attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Ellipse.ry">(Ellipse attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect.ry">(Rect attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="S" class="genindex-section">
+  <h2>S</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.CenterArc.sample">sample() (CenterArc method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.ColorMatrixType.SATURATE">SATURATE (ColorMatrixType attribute)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.save">save() (Document method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.Element.save">(Element method)</a>
+</li>
+          <li><a href="reference/export.html#svgwriter.export.save">(in module svgwriter.export)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/document.html#svgwriter.Document.save_async">save_async() (Document method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Scale">Scale (class in svgwriter.transform)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.TransformType.SCALE">SCALE (TransformType attribute)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.scale">scale() (Color method)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.transform.Matrix.scale">(Matrix class method)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Transform.scale">(Transform method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.BlendMode.SCREEN">SCREEN (BlendMode attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.Rule.selector">selector (Rule attribute)</a>
+</li>
+        <li><a href="reference/io.html#svgwriter.io.SerializeOptions">SerializeOptions (class in svgwriter.io)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.Set">Set (class in svgwriter.elements.animation)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.set">set() (Element method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.shapes.Shape">Shape (class in svgwriter.elements.shapes)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Image.shape">shape (Image property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Pixels.shape">(Pixels property)</a>
+</li>
+          <li><a href="reference/video.html#svgwriter.video.RGBAArray.shape">(RGBAArray property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/builder.html#svgwriter.builder.shape_factory">shape_factory() (in module svgwriter.builder)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Transform.simplified">simplified() (Transform method)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.simplify">simplify() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.SingleInput">SingleInput (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.TransformType.SKEW_X">SKEW_X (TransformType attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.skew_x">skew_x() (Matrix class method)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.transform.Transform.skew_x">(Transform method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.TransformType.SKEW_Y">SKEW_Y (TransformType attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.skew_y">skew_y() (Matrix class method)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.transform.Transform.skew_y">(Transform method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.transform.SkewX">SkewX (class in svgwriter.transform)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.SkewY">SkewY (class in svgwriter.transform)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.MeetOrSlice.SLICE">SLICE (MeetOrSlice attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.Ease.smil">smil() (Ease method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.smooth_curve_to">smooth_curve_to() (PathBuilder method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.smooth_quad_to">smooth_quad_to() (PathBuilder method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.SmoothCurveTo">SmoothCurveTo (class in svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.SmoothQuadTo">SmoothQuadTo (class in svgwriter.pathdata)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.StandardInput.SOURCE_ALPHA">SOURCE_ALPHA (StandardInput attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.StandardInput.SOURCE_GRAPHIC">SOURCE_GRAPHIC (StandardInput attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FilterPrimitive.sources">sources() (FilterPrimitive method)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.Rule.specificity">specificity (Rule attribute)</a>
+</li>
+        <li><a href="reference/builder.html#svgwriter.builder.spiral">spiral() (in module svgwriter.builder)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.CalcMode.SPLINE">SPLINE (CalcMode attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.StandardInput">StandardInput (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/builder.html#svgwriter.builder.star">star() (in module svgwriter.builder)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.CenterArc.start_angle">start_angle (CenterArc attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.paint.Stop">Stop (class in svgwriter.elements.paint)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.StandardInput.STROKE_PAINT">STROKE_PAINT (StandardInput attribute)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.stroke_to_path">stroke_to_path() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Style">Style (class in svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.style">style() (Document method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.StyleElement">StyleElement (class in svgwriter.elements.structure)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.StyleSheet">StyleSheet (class in svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathData.subpaths">subpaths() (PathData method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.Accumulate.SUM">SUM (Accumulate attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.animation.Additive.SUM">(Additive attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.SupportsSVG">SupportsSVG (class in svgwriter.attributes)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Attr.svg">svg (Attr attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Svg">Svg (class in svgwriter.elements.structure)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.svg_name">svg_name() (in module svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Angle.svg_value">svg_value() (Angle method)</a>
+
+        <ul>
+          <li><a href="reference/color.html#svgwriter.color.Color.svg_value">(Color method)</a>
+</li>
+          <li><a href="reference/attributes.html#svgwriter.attributes.FuncIRI.svg_value">(FuncIRI method)</a>
+</li>
+          <li><a href="reference/attributes.html#svgwriter.attributes.IRI.svg_value">(IRI method)</a>
+</li>
+          <li><a href="reference/attributes.html#svgwriter.attributes.Length.svg_value">(Length method)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Matrix.svg_value">(Matrix method)</a>
+</li>
+          <li><a href="reference/color.html#svgwriter.color.PaintRef.svg_value">(PaintRef method)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.PathCommand.svg_value">(PathCommand method)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.PathData.svg_value">(PathData method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Pixels.svg_value">(Pixels method)</a>
+</li>
+          <li><a href="reference/attributes.html#svgwriter.attributes.PreserveAspectRatio.svg_value">(PreserveAspectRatio method)</a>
+</li>
+          <li><a href="reference/attributes.html#svgwriter.attributes.Style.svg_value">(Style method)</a>
+</li>
+          <li><a href="reference/attributes.html#svgwriter.attributes.SupportsSVG.svg_value">(SupportsSVG method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.TextDecoration.svg_value">(TextDecoration method)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Transform.svg_value">(Transform method)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.TransformOp.svg_value">(TransformOp method)</a>
+</li>
+          <li><a href="reference/attributes.html#svgwriter.attributes.ViewBox.svg_value">(ViewBox method)</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.attributes
+
+        <ul>
+          <li><a href="reference/attributes.html#module-svgwriter.attributes">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.attributes.cascade
+
+        <ul>
+          <li><a href="reference/attributes.html#module-svgwriter.attributes.cascade">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.builder
+
+        <ul>
+          <li><a href="reference/builder.html#module-svgwriter.builder">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.color
+
+        <ul>
+          <li><a href="reference/color.html#module-svgwriter.color">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.elements.animation
+
+        <ul>
+          <li><a href="reference/elements.html#module-svgwriter.elements.animation">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.elements.filters
+
+        <ul>
+          <li><a href="reference/elements.html#module-svgwriter.elements.filters">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.elements.paint
+
+        <ul>
+          <li><a href="reference/elements.html#module-svgwriter.elements.paint">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.elements.shapes
+
+        <ul>
+          <li><a href="reference/elements.html#module-svgwriter.elements.shapes">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.elements.structure
+
+        <ul>
+          <li><a href="reference/elements.html#module-svgwriter.elements.structure">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.elements.text
+
+        <ul>
+          <li><a href="reference/elements.html#module-svgwriter.elements.text">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.export
+
+        <ul>
+          <li><a href="reference/export.html#module-svgwriter.export">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.io
+
+        <ul>
+          <li><a href="reference/io.html#module-svgwriter.io">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.ops
+
+        <ul>
+          <li><a href="reference/ops.html#module-svgwriter.ops">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.pathdata
+
+        <ul>
+          <li><a href="reference/geometry.html#module-svgwriter.pathdata">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.transform
+
+        <ul>
+          <li><a href="reference/geometry.html#module-svgwriter.transform">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.video
+
+        <ul>
+          <li><a href="reference/video.html#module-svgwriter.video">module</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.sweep">sweep (ArcTo attribute)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.CenterArc.sweep">(CenterArc attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Switch">Switch (class in svgwriter.elements.structure)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Scale.sx">sx (Scale attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Scale.sy">sy (Scale attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Symbol">Symbol (class in svgwriter.elements.structure)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="T" class="genindex-section">
+  <h2>T</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.elements.Transformable.t">t (Transformable property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.TransferType.TABLE">TABLE (TransferType attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.FeFunc.table">table() (FeFunc class method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.A.tag">tag (A attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.text.AltGlyph.tag">(AltGlyph attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.AltGlyphDef.tag">(AltGlyphDef attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.AltGlyphItem.tag">(AltGlyphItem attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.animation.Animate.tag">(Animate attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.animation.AnimateColor.tag">(AnimateColor attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.animation.AnimateMotion.tag">(AnimateMotion attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.animation.AnimateTransform.tag">(AnimateTransform attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Circle.tag">(Circle attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.ClipPath.tag">(ClipPath attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.ColorProfile.tag">(ColorProfile attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Defs.tag">(Defs attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Desc.tag">(Desc attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.Element.tag">(Element attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Ellipse.tag">(Ellipse attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeBlend.tag">(FeBlend attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeColorMatrix.tag">(FeColorMatrix attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeComponentTransfer.tag">(FeComponentTransfer attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeComposite.tag">(FeComposite attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeConvolveMatrix.tag">(FeConvolveMatrix attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeDiffuseLighting.tag">(FeDiffuseLighting attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeDisplacementMap.tag">(FeDisplacementMap attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeDistantLight.tag">(FeDistantLight attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeFlood.tag">(FeFlood attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeFuncA.tag">(FeFuncA attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeFuncB.tag">(FeFuncB attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeFuncG.tag">(FeFuncG attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeFuncR.tag">(FeFuncR attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeGaussianBlur.tag">(FeGaussianBlur attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeImage.tag">(FeImage attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeMerge.tag">(FeMerge attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeMergeNode.tag">(FeMergeNode attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeMorphology.tag">(FeMorphology attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeOffset.tag">(FeOffset attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FePointLight.tag">(FePointLight attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeSpecularLighting.tag">(FeSpecularLighting attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeSpotLight.tag">(FeSpotLight attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeTile.tag">(FeTile attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeTurbulence.tag">(FeTurbulence attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.Filter.tag">(Filter attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.Font.tag">(Font attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.FontFace.tag">(FontFace attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.FontFaceFormat.tag">(FontFaceFormat attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.FontFaceName.tag">(FontFaceName attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.FontFaceSrc.tag">(FontFaceSrc attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.FontFaceUri.tag">(FontFaceUri attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.Glyph.tag">(Glyph attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.GlyphRef.tag">(GlyphRef attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Group.tag">(Group attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.HKern.tag">(HKern attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Image.tag">(Image attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Line.tag">(Line attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.LinearGradient.tag">(LinearGradient attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.Marker.tag">(Marker attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.Mask.tag">(Mask attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Metadata.tag">(Metadata attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.MissingGlyph.tag">(MissingGlyph attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.animation.MPath.tag">(MPath attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Path.tag">(Path attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.Pattern.tag">(Pattern attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Polygon.tag">(Polygon attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Polyline.tag">(Polyline attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.RadialGradient.tag">(RadialGradient attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect.tag">(Rect attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.animation.Set.tag">(Set attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.Stop.tag">(Stop attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.StyleElement.tag">(StyleElement attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Svg.tag">(Svg attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Switch.tag">(Switch attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Symbol.tag">(Symbol attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.Text.tag">(Text attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.TextPath.tag">(TextPath attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Title.tag">(Title attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.TRef.tag">(TRef attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.TSpan.tag">(TSpan attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.Use.tag">(Use attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.structure.View.tag">(View attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.text.VKern.tag">(VKern attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/ops.html#svgwriter.ops.tangent_at_length">tangent_at_length() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.IRI.target">target (IRI attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.Text">Text (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.text_content">text_content (Element property)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.text_outline">text_outline() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.text_to_path">text_to_path() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.text_width">text_width() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.TextDecoration">TextDecoration (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.TextPath">TextPath (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.TextSink">TextSink (class in svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.Frame.time">time (Frame attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.Ease.time_of">time_of() (Ease method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Title">Title (class in svgwriter.elements.structure)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.title">title() (Document method)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Angle.to">to() (Angle method)</a>
+
+        <ul>
+          <li><a href="reference/attributes.html#svgwriter.attributes.Length.to">(Length method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathCommand.to_absolute">to_absolute() (PathCommand method)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.PathData.to_absolute">(PathData method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/color.html#svgwriter.color.Color.to_css">to_css() (Color method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.to_element">to_element() (PathBuilder method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements._behavior.Convertible.to_group">to_group() (Convertible method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements._behavior.Convertible.to_image">to_image() (Convertible method)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.to_matplotlib">to_matplotlib() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.MatrixOp.to_matrix">to_matrix() (MatrixOp method)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.transform.Rotate.to_matrix">(Rotate method)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Scale.to_matrix">(Scale method)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.SkewX.to_matrix">(SkewX method)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.SkewY.to_matrix">(SkewY method)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Transform.to_matrix">(Transform method)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.TransformOp.to_matrix">(TransformOp method)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Translate.to_matrix">(Translate method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements._behavior.Convertible.to_path">to_path() (Convertible method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.PathOperand.to_path">(PathOperand method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/ops.html#svgwriter.ops.to_skia">to_skia() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.to_string">to_string() (Document method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.Element.to_string">(Element method)</a>
+</li>
+          <li><a href="reference/io.html#svgwriter.io.to_string">(in module svgwriter.io)</a>
+</li>
+          <li><a href="reference/io.html#svgwriter.io.Writer.to_string">(Writer method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Length.to_user_units">to_user_units() (Length method)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.RGBAArray.tobytes">tobytes() (RGBAArray method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.top">top (BBox property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.top_center">top_center (BBox property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.top_left">top_left (BBox property)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.top_right">top_right (BBox property)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.total_length">total_length() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.TransferType">TransferType (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Transform">Transform (class in svgwriter.transform)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Transformable.transform">transform (Transformable property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.paint.Gradient.transform_attribute">transform_attribute (Gradient attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.paint.Pattern.transform_attribute">(Pattern attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.Transformable.transform_attribute">(Transformable attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.Transformable">Transformable (class in svgwriter.elements)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathData.transformed">transformed() (PathData method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.PathOperand.transformed">(PathOperand method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.transform.TransformOp">TransformOp (class in svgwriter.transform)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.TransformType">TransformType (class in svgwriter.elements.animation)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Translate">Translate (class in svgwriter.transform)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.TransformType.TRANSLATE">TRANSLATE (TransformType attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Matrix.translate">translate() (Matrix class method)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.transform.Transform.translate">(Transform method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.TRef">TRef (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.TSpan">TSpan (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.TurbulenceType.TURBULENCE">TURBULENCE (TurbulenceType attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.TurbulenceType">TurbulenceType (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.TwoInputs">TwoInputs (class in svgwriter.elements.filters)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Translate.tx">tx (Translate attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.transform.Translate.ty">ty (Translate attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="U" class="genindex-section">
+  <h2>U</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/color.html#svgwriter.color.Color.uint8">uint8 (Color property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements._behavior.Convertible.unclip">unclip() (Convertible method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.TextDecoration.UNDERLINE">UNDERLINE (TextDecoration attribute)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.BooleanOp.UNION">UNION (BooleanOp attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.union">union() (BBox method)</a>
+
+        <ul>
+          <li><a href="reference/ops.html#svgwriter.ops.union">(in module svgwriter.ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Angle.unit">unit (Angle attribute)</a>
+
+        <ul>
+          <li><a href="reference/attributes.html#svgwriter.attributes.AngleUnit.unit">(AngleUnit attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Unit">Unit (class in svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Length.unit">unit (Length attribute)</a>
+</li>
+        <li><a href="reference/export.html#svgwriter.export.unregister">unregister() (in module svgwriter.export)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.unregister_renderer">unregister_renderer() (in module svgwriter.video)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.update">update() (Element method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.Element.url">url (Element property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Use">Use (class in svgwriter.elements.structure)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Unit.USER">USER (Unit attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="V" class="genindex-section">
+  <h2>V</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Angle.value">value (Angle attribute)</a>
+
+        <ul>
+          <li><a href="reference/attributes.html#svgwriter.attributes.Length.value">(Length attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.elements.paint.LinearGradient.vertical">vertical() (LinearGradient class method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.vertical_to">vertical_to() (PathBuilder method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/video.html#svgwriter.video.Video">Video (class in svgwriter.video)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.View">View (class in svgwriter.elements.structure)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.ViewBox">ViewBox (class in svgwriter.attributes)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.text.VKern">VKern (class in svgwriter.elements.text)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.VLineTo">VLineTo (class in svgwriter.pathdata)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="W" class="genindex-section">
+  <h2>W</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathData.walk">walk() (PathData method)</a>
+</li>
+        <li><a href="reference/builder.html#svgwriter.builder.wave">wave() (in module svgwriter.builder)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.animation.Restart.WHEN_NOT_ACTIVE">WHEN_NOT_ACTIVE (Restart attribute)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.width">width (BBox attribute)</a>
+
+        <ul>
+          <li><a href="reference/video.html#svgwriter.video.Frame.width">(Frame attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect.width">(Rect attribute)</a>
+</li>
+          <li><a href="reference/attributes.html#svgwriter.attributes.ViewBox.width">(ViewBox attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/color.html#svgwriter.color.Color.with_alpha">with_alpha() (Color method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/color.html#svgwriter.color.Color.with_icc">with_icc() (Color method)</a>
+</li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.PathData.with_nodes">with_nodes() (PathData method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.structure.Svg.with_size">with_size() (Svg class method)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.elements.filters.EdgeMode.WRAP">WRAP (EdgeMode attribute)</a>
+</li>
+        <li><a href="reference/io.html#svgwriter.io.write">write() (in module svgwriter.io)</a>
+
+        <ul>
+          <li><a href="reference/attributes.html#svgwriter.attributes.TextSink.write">(TextSink method)</a>
+</li>
+          <li><a href="reference/io.html#svgwriter.io.Writer.write">(Writer method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/io.html#svgwriter.io.Writer">Writer (class in svgwriter.io)</a>
+</li>
+        <li><a href="reference/document.html#svgwriter.Document.writing">writing() (Document class method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="X" class="genindex-section">
+  <h2>X</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.x">x (ArcTo attribute)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.x">(BBox attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.CurveTo.x">(CurveTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.HLineTo.x">(HLineTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.LineTo.x">(LineTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.MoveTo.x">(MoveTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Point.x">(Point attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.QuadTo.x">(QuadTo attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect.x">(Rect attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.SmoothCurveTo.x">(SmoothCurveTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.SmoothQuadTo.x">(SmoothQuadTo attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.CurveTo.x1">x1 (CurveTo attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Line.x1">(Line attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.QuadTo.x1">(QuadTo attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.CurveTo.x2">x2 (CurveTo attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Line.x2">(Line attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.SmoothCurveTo.x2">(SmoothCurveTo attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Align.X_MAX_Y_MAX">X_MAX_Y_MAX (Align attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Align.X_MAX_Y_MID">X_MAX_Y_MID (Align attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Align.X_MAX_Y_MIN">X_MAX_Y_MIN (Align attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Align.X_MID_Y_MAX">X_MID_Y_MAX (Align attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Align.X_MID_Y_MID">X_MID_Y_MID (Align attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Align.X_MID_Y_MIN">X_MID_Y_MIN (Align attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Align.X_MIN_Y_MAX">X_MIN_Y_MAX (Align attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Align.X_MIN_Y_MID">X_MIN_Y_MID (Align attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.Align.X_MIN_Y_MIN">X_MIN_Y_MIN (Align attribute)</a>
+</li>
+        <li><a href="reference/io.html#svgwriter.io.SerializeOptions.xml_declaration">xml_declaration (SerializeOptions attribute)</a>
+</li>
+        <li><a href="reference/ops.html#svgwriter.ops.BooleanOp.XOR">XOR (BooleanOp attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.CompositeOperator.XOR">(CompositeOperator attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/ops.html#svgwriter.ops.xor">xor() (in module svgwriter.ops)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Y" class="genindex-section">
+  <h2>Y</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.ArcTo.y">y (ArcTo attribute)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.BBox.y">(BBox attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.CurveTo.y">(CurveTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.LineTo.y">(LineTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.MoveTo.y">(MoveTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.transform.Point.y">(Point attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.QuadTo.y">(QuadTo attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect.y">(Rect attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.SmoothCurveTo.y">(SmoothCurveTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.SmoothQuadTo.y">(SmoothQuadTo attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.VLineTo.y">(VLineTo attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.CurveTo.y1">y1 (CurveTo attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Line.y1">(Line attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.QuadTo.y1">(QuadTo attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/geometry.html#svgwriter.pathdata.CurveTo.y2">y2 (CurveTo attribute)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.shapes.Line.y2">(Line attribute)</a>
+</li>
+          <li><a href="reference/geometry.html#svgwriter.pathdata.SmoothCurveTo.y2">(SmoothCurveTo attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Josue N Rivera
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=e3eff1ea"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

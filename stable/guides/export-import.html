@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Export and import - svgwriter 1.2.0</title>
+        <title>Export and import - svgwriter 1.3.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 1.2.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 1.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.2.0</span>
+  <span class="sidebar-brand-text">svgwriter 1.3.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.2.0</span>
+  <span class="sidebar-versions-label">1.3.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -442,7 +442,7 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">.docx</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
-<td><p>needs <code class="docutils literal notranslate"><span class="pre">pysvgwriter[office]</span></code>; export is a picture, import reads pictures and drawn shapes (no text); <code class="docutils literal notranslate"><span class="pre">svg.latex</span></code> formulas become editable equations</p></td>
+<td><p>needs <code class="docutils literal notranslate"><span class="pre">pysvgwriter[office]</span></code>; editable shapes, pictures and text boxes out; import lays out paragraphs, headings, lists and styled runs as <code class="docutils literal notranslate"><span class="pre">&lt;text&gt;</span></code> with pictures in flow; <code class="docutils literal notranslate"><span class="pre">svg.latex</span></code> formulas become editable equations</p></td>
 </tr>
 <tr class="row-even"><td><p>Excel</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.xlsx</span></code></p></td>
@@ -501,7 +501,7 @@
 </tbody>
 </table>
 </div>
-<p>TikZ, EPS, PowerPoint, Excalidraw and the polyline formats work from a flattened copy of the
+<p>TikZ, EPS, PowerPoint, Word, Excalidraw and the polyline formats work from a flattened copy of the
 drawing: transforms, clipping, patterns and markers are worked into the shapes themselves. Masks and
 filters cannot be, so these formats skip them with a warning.</p>
 <section id="what-each-format-keeps">
@@ -518,13 +518,15 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <th class="head"><p>EPS</p></th>
 <th class="head"><p>TikZ</p></th>
 <th class="head"><p>PowerPoint</p></th>
-<th class="head"><p>Word, Excel</p></th>
+<th class="head"><p>Word</p></th>
+<th class="head"><p>Excel</p></th>
 <th class="head"><p>Excalidraw</p></th>
 <th class="head"><p>DXF, HPGL, G-code</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>solid fill</p></td>
+<td><p>yes</p></td>
 <td><p>yes</p></td>
 <td><p>yes</p></td>
 <td><p>yes</p></td>
@@ -542,6 +544,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>yes (<code class="docutils literal notranslate"><span class="pre">shfill</span></code>)</p></td>
 <td><p>yes (shading)</p></td>
 <td><p>yes (radial approximate)</p></td>
+<td><p>yes (radial approximate)</p></td>
 <td><p>picture</p></td>
 <td><p>average colour</p></td>
 <td><p>no</p></td>
@@ -553,11 +556,13 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>shapes</p></td>
 <td><p>shapes</p></td>
 <td><p>shapes</p></td>
+<td><p>shapes</p></td>
 <td><p>picture</p></td>
 <td><p>shapes</p></td>
 <td><p>outlines</p></td>
 </tr>
 <tr class="row-odd"><td><p>stroke width</p></td>
+<td><p>yes</p></td>
 <td><p>yes</p></td>
 <td><p>yes</p></td>
 <td><p>yes</p></td>
@@ -575,11 +580,13 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>yes</p></td>
 <td><p>yes</p></td>
 <td><p>yes</p></td>
+<td><p>yes</p></td>
 <td><p>picture</p></td>
 <td><p>dashed style</p></td>
 <td><p>no</p></td>
 </tr>
 <tr class="row-odd"><td><p>caps, joins</p></td>
+<td><p>yes</p></td>
 <td><p>yes</p></td>
 <td><p>yes</p></td>
 <td><p>yes</p></td>
@@ -597,6 +604,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>no</p></td>
 <td><p>yes</p></td>
 <td><p>yes</p></td>
+<td><p>yes</p></td>
 <td><p>picture</p></td>
 <td><p>one per element</p></td>
 <td><p>no</p></td>
@@ -608,6 +616,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>no</p></td>
 <td><p>per shape</p></td>
 <td><p>per shape</p></td>
+<td><p>per shape</p></td>
 <td><p>picture</p></td>
 <td><p>per element</p></td>
 <td><p>no</p></td>
@@ -616,6 +625,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>yes</p></td>
 <td><p>yes</p></td>
 <td><p>yes</p></td>
+<td><p>shapes</p></td>
 <td><p>shapes</p></td>
 <td><p>shapes</p></td>
 <td><p>shapes</p></td>
@@ -630,6 +640,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>skipped</p></td>
 <td><p>skipped</p></td>
 <td><p>skipped</p></td>
+<td><p>skipped</p></td>
 <td><p>picture</p></td>
 <td><p>skipped</p></td>
 <td><p>skipped</p></td>
@@ -638,6 +649,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>yes</p></td>
 <td><p>yes</p></td>
 <td><p>yes (pixels)</p></td>
+<td><p>skipped</p></td>
 <td><p>skipped</p></td>
 <td><p>skipped</p></td>
 <td><p>skipped</p></td>
@@ -652,6 +664,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>text or outlines</p></td>
 <td><p>text</p></td>
 <td><p>text boxes</p></td>
+<td><p>text boxes</p></td>
 <td><p>picture</p></td>
 <td><p>text</p></td>
 <td><p>outlines</p></td>
@@ -662,6 +675,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>yes</p></td>
 <td><p>yes</p></td>
 <td><p>skipped</p></td>
+<td><p>pictures</p></td>
 <td><p>pictures</p></td>
 <td><p>picture</p></td>
 <td><p>yes</p></td>
@@ -674,12 +688,14 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>applied</p></td>
 <td><p>applied</p></td>
 <td><p>applied</p></td>
+<td><p>applied</p></td>
 <td><p>picture</p></td>
 <td><p>applied</p></td>
 <td><p>applied</p></td>
 </tr>
 <tr class="row-even"><td><p>markers</p></td>
 <td><p>yes</p></td>
+<td><p>shapes</p></td>
 <td><p>shapes</p></td>
 <td><p>shapes</p></td>
 <td><p>shapes</p></td>
@@ -696,12 +712,14 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>outlines</p></td>
 <td><p>outlines</p></td>
 <td><p>equations</p></td>
-<td><p>equations (Word)</p></td>
+<td><p>equations</p></td>
+<td><p>picture</p></td>
 <td><p>outlines</p></td>
 <td><p>outlines</p></td>
 </tr>
 <tr class="row-even"><td><p>SMIL animation</p></td>
 <td><p>yes</p></td>
+<td><p>one frame</p></td>
 <td><p>one frame</p></td>
 <td><p>one frame</p></td>
 <td><p>one frame</p></td>
@@ -719,6 +737,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>no</p></td>
 <td><p>on shapes</p></td>
 <td><p>no</p></td>
+<td><p>no</p></td>
 <td><p>yes</p></td>
 <td><p>no</p></td>
 </tr>
@@ -726,7 +745,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 </table>
 </div>
 <p>“one frame” is the drawing at t = 0, or at <code class="docutils literal notranslate"><span class="pre">time=</span></code>; <code class="docutils literal notranslate"><span class="pre">render_animation</span></code> writes animated GIF and video.
-PowerPoint places pictures by their bounding box, so a rotated or skewed image comes out upright, and
+PowerPoint and Word place pictures by their bounding box, so a rotated or skewed image comes out upright, and
 group opacity is multiplied into each shape’s own transparency. A radial gradient becomes a
 PowerPoint path gradient centred on the gradient’s centre, which matches circles and differs on
 ellipses. Excalidraw writes every outline as a <code class="docutils literal notranslate"><span class="pre">line</span></code> element, with Excalidraw’s own dash pattern;
@@ -862,14 +881,20 @@ mathtext; <code class="docutils literal notranslate"><span class="pre">engine=&q
 (curves, solid or gradient fill, outline with dashes, caps and joins, transparency, hyperlink), text
 as editable text boxes and images as pictures. In: shapes, pictures and text boxes of a slide
 (<code class="docutils literal notranslate"><span class="pre">svg.Document.open(&quot;deck.pptx&quot;,</span> <span class="pre">slide=2)</span></code>) as native SVG elements, with the same paints and links.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.docx</span></code> and <code class="docutils literal notranslate"><span class="pre">.xlsx</span></code> out: the drawing as a picture at its natural size.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.docx</span></code> out: the drawing as native Word shapes floating in one paragraph as tall as the drawing,
+with the same outlines, paints, text boxes and pictures as the PowerPoint export. In: paragraphs,
+headings (<code class="docutils literal notranslate"><span class="pre">Title</span></code>, <code class="docutils literal notranslate"><span class="pre">Heading</span> <span class="pre">1</span></code>-<code class="docutils literal notranslate"><span class="pre">6</span></code>), bulleted and numbered lists and line breaks laid out top to
+bottom like Markdown, with each run’s bold, italics, underline, strike-through, size, colour and
+font as a styled <code class="docutils literal notranslate"><span class="pre">&lt;tspan&gt;</span></code>. Inline pictures and shapes take their place in the flow; floating ones
+keep their position, and their text boxes come back as text. Table cells are read as paragraphs.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.xlsx</span></code> out: the drawing as a picture at its natural size.</p></li>
 </ul>
 <p>Formulas made with <code class="docutils literal notranslate"><span class="pre">svg.latex</span></code> remember their source (the group’s <code class="docutils literal notranslate"><span class="pre">data-latex</span></code> attribute), so the
 PowerPoint and Word exports write them as native, editable Office equations instead of outlines.
 The LaTeX goes through MathML (<code class="docutils literal notranslate"><span class="pre">latex2mathml</span></code>) to Office Math: fractions, scripts, roots, sums and
 integrals, accents, bars, limits, <code class="docutils literal notranslate"><span class="pre">\left</span></code>/<code class="docutils literal notranslate"><span class="pre">\right</span></code> delimiters, matrices, text and Greek letters.
 Each equation is centred on the box the formula occupied, in Cambria Math at the drawn size; in Word
-it floats over the picture, or becomes an equation paragraph when the drawing holds nothing else.
+it floats over the shapes, or becomes an equation paragraph when the drawing holds nothing else.
 LaTeX with no Office equivalent stays as outlines. Reading a deck back gives an equation’s
 characters as plain text, without its layout.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">slide</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">320</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
@@ -965,7 +990,7 @@ interaction is attached by the page, by element id:</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=872021ae"></script>
+</div><script src="../_static/documentation_options.js?v=e3eff1ea"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
