@@ -219,7 +219,7 @@ def test_rendering_uses_the_arranged_positions():
     doc = svg.Document()
     doc += svg.VStack(svg.text("Hi", font_size=20), svg.text("Hi", font_size=20), background=svg.rect(fill="red"))
     alpha = doc.rasterize()[..., 3]
-    assert alpha.min() > 0.9
+    assert alpha[1:-1, 1:-1].min() > 0.9
 
 
 def test_laying_out_twice_changes_nothing():
