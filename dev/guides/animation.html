@@ -494,8 +494,8 @@ spline with <code class="docutils literal notranslate"><span class="pre">keySpli
 </div>
 <p>Saving keeps the animation where the format can play it: <code class="docutils literal notranslate"><span class="pre">.svg</span></code> and <code class="docutils literal notranslate"><span class="pre">.svgz</span></code> keep the SMIL elements,
 and <code class="docutils literal notranslate"><span class="pre">.gif</span></code> becomes an animated GIF of the whole animation (<code class="docutils literal notranslate"><span class="pre">fps=</span></code>, <code class="docutils literal notranslate"><span class="pre">duration=</span></code>, <code class="docutils literal notranslate"><span class="pre">loop=</span></code>; no ffmpeg
-needed); <code class="docutils literal notranslate"><span class="pre">.png</span></code> and <code class="docutils literal notranslate"><span class="pre">.webp</span></code> become APNG and animated WebP with <code class="docutils literal notranslate"><span class="pre">animate=True</span></code>. Other still formats show one moment, chosen with <code class="docutils literal notranslate"><span class="pre">time=</span></code>:
-<code class="docutils literal notranslate"><span class="pre">doc.save(&quot;end.png&quot;,</span> <span class="pre">time=2.0)</span></code>.</p>
+needed); <code class="docutils literal notranslate"><span class="pre">.png</span></code> and <code class="docutils literal notranslate"><span class="pre">.webp</span></code> become APNG and animated WebP with <code class="docutils literal notranslate"><span class="pre">animate=True</span></code>. Other still formats show one moment, chosen with <code class="docutils literal notranslate"><span class="pre">seconds=</span></code>:
+<code class="docutils literal notranslate"><span class="pre">doc.save(&quot;end.png&quot;,</span> <span class="pre">seconds=2.0)</span></code>.</p>
 </section>
 <section id="python-updates-and-smil-together">
 <h2>Python updates and SMIL together<a class="headerlink" href="#python-updates-and-smil-together" title="Link to this heading">¶</a></h2>

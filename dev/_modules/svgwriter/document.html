@@ -309,6 +309,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyPath</span><span class="p">,</span> <span class="n">Stack</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">ElementFactory</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.elements.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Defs</span><span class="p">,</span> <span class="n">Desc</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="n">Svg</span><span class="p">,</span> <span class="n">Title</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.theme.sheet</span><span class="w"> </span><span class="kn">import</span> <span class="n">sheet_theme</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.theme.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Theme</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -345,8 +346,9 @@
 <span class="sd">    root : Svg, optional</span>
 <span class="sd">        Use an existing root instead of creating one. Defaults to None.</span>
 <span class="sd">    theme : Theme or str, optional</span>
-<span class="sd">        Styles elements marked with ``as_role``. Defaults to None, which takes</span>
-<span class="sd">        :meth:`Theme.current() &lt;svgwriter.Theme.current&gt;` (``"light"`` outside a ``with theme:`` block).</span>
+<span class="sd">        Styles elements marked with ``as_role``. Defaults to None, which keeps the theme that wrote</span>
+<span class="sd">        the theme sheet of an existing `root`, else takes :meth:`Theme.current() &lt;svgwriter.Theme.current&gt;`</span>
+<span class="sd">        (``"light"`` outside a ``with theme:`` block).</span>
 <span class="sd">    **kwargs</span>
 <span class="sd">        Forwarded to :class:`~svgwriter.elements.Svg`.</span>
 
@@ -400,7 +402,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">root</span> <span class="o">=</span> <span class="n">Svg</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">root</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">Theme</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">Theme</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span> <span class="k">if</span> <span class="n">theme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">sheet_theme</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="ow">or</span> <span class="n">Theme</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">:</span> <span class="n">Stack</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="n">Stack</span><span class="p">([</span><span class="n">root</span><span class="p">])</span>
         <span class="n">attach_cursor</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">)</span>
 
@@ -425,7 +427,8 @@
 <span class="sd">            How SVG treats unknown elements and unsupported attributes. Defaults to</span>
 <span class="sd">            ``Strictness.LENIENT``. SVG only.</span>
 <span class="sd">        **options : Any</span>
-<span class="sd">            Options of the importer (for example ``theme=`` for Mermaid).</span>
+<span class="sd">            Options of the importer (for example ``theme=`` for Mermaid). SVG takes only ``theme=``, the</span>
+<span class="sd">            theme to restyle the document with (by default the one that wrote it is kept).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -439,7 +442,8 @@
 <span class="sd">        ValueError</span>
 <span class="sd">            If the root element is not ``&lt;svg&gt;``, or *format* is not a registered importer.</span>
 <span class="sd">        TypeError</span>
-<span class="sd">            If *strictness* is given for a format other than SVG.</span>
+<span class="sd">            If *strictness* is given for a format other than SVG, or SVG is given an option other</span>
+<span class="sd">            than ``theme``.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -467,10 +471,13 @@
                 <span class="n">importer</span> <span class="o">=</span> <span class="n">find_importer</span><span class="p">(</span><span class="sa">f</span><span class="s2">"text.</span><span class="si">{</span><span class="nb">format</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">text</span>
             <span class="k">return</span> <span class="n">importer</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>  <span class="c1"># type: ignore[no-any-return]</span>
+        <span class="n">theme</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"theme"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">options</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"SVG takes no option </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">repr</span><span class="p">,</span><span class="w"> </span><span class="nb">sorted</span><span class="p">(</span><span class="n">options</span><span class="p">)))</span><span class="si">}</span><span class="s2">; only theme="</span><span class="p">)</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">strictness</span><span class="o">=</span><span class="n">strictness</span> <span class="ow">or</span> <span class="n">Strictness</span><span class="o">.</span><span class="n">LENIENT</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">Svg</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"root element is &lt;</span><span class="si">{</span><span class="n">root</span><span class="o">.</span><span class="n">tag</span><span class="si">}</span><span class="s2">&gt;, not &lt;svg&gt;"</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="n">theme</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Document.writing">

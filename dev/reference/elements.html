@@ -683,6 +683,8 @@ the child but not yet placed are collected into the root <code class="docutils l
 <dt class="sig sig-object py" id="svgwriter.elements.Element.get">
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a></span></span><a class="headerlink" href="#svgwriter.elements.Element.get" title="Link to this definition">¶</a></dt>
 <dd><p>Return an attribute value, or <em>default</em> if it is not set.</p>
+<p>A presentation property declared in the inline <code class="docutils literal notranslate"><span class="pre">style</span></code> is read from there, as it overrides
+the attribute.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -699,6 +701,8 @@ the child but not yet placed are collected into the root <code class="docutils l
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">stroke_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"stroke_width"</span><span class="p">),</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fill"</span><span class="p">,</span> <span class="s2">"none"</span><span class="p">)</span>
 <span class="go">(2, 'none')</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">"fill:blue"</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fill"</span><span class="p">)</span>
+<span class="go">'blue'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -978,7 +982,9 @@ one color, a list of colors or an <code class="docutils literal notranslate"><sp
 <dd><p>Set one attribute; <code class="docutils literal notranslate"><span class="pre">None</span></code> removes it.</p>
 <p>Attributes in other namespaces use Clark notation: <code class="docutils literal notranslate"><span class="pre">&quot;{uri}name&quot;</span></code>.
 Colors with alpha are split into the color and its <code class="docutils literal notranslate"><span class="pre">*-opacity</span></code>
-attribute, and elements are replaced by references to them.</p>
+attribute, and elements are replaced by references to them. A
+presentation property the inline <code class="docutils literal notranslate"><span class="pre">style</span></code> already declares (as
+Inkscape writes them) is changed there, where it takes effect.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1009,6 +1015,10 @@ attribute, and elements are replaced by references to them.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"stroke_width"</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">"stroke-width"</span><span class="p">]</span>
 <span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">styled</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">"fill:#ff0000"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">styled</span><span class="o">.</span><span class="n">fill</span> <span class="o">=</span> <span class="s2">"blue"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">styled</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">"style"</span><span class="p">],</span> <span class="n">styled</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">"fill"</span><span class="p">)</span>
+<span class="go">(Style({'fill': 'blue'}), False)</span>
 </pre></div>
 </div>
 </dd></dl>

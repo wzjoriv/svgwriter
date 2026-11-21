@@ -162,8 +162,8 @@ frame = doc.at(1.0)          # the ball halfway along
 
 Saving keeps the animation where the format can play it: `.svg` and `.svgz` keep the SMIL elements,
 and `.gif` becomes an animated GIF of the whole animation (`fps=`, `duration=`, `loop=`; no ffmpeg
-needed); `.png` and `.webp` become APNG and animated WebP with `animate=True`. Other still formats show one moment, chosen with `time=`:
-`doc.save("end.png", time=2.0)`.
+needed); `.png` and `.webp` become APNG and animated WebP with `animate=True`. Other still formats show one moment, chosen with `seconds=`:
+`doc.save("end.png", seconds=2.0)`.
 
 ## Python updates and SMIL together
 

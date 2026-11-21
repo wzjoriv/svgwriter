@@ -308,7 +308,7 @@
 
 <div class="viewcode-block" id="export">
 <a class="viewcode-back" href="../../../reference/export.html#svgwriter.export.export">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
            <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Convert *document* to *format* (a name or extension); returns ``bytes`` or ``str``.</span>
 
@@ -319,7 +319,7 @@
 <span class="sd">        (``"pdf"``: one page each; ``"pptx"``: one slide each).</span>
 <span class="sd">    format : str</span>
 <span class="sd">        A registered format name or an extension such as ``".pdf"``.</span>
-<span class="sd">    time : float, optional</span>
+<span class="sd">    seconds : float, optional</span>
 <span class="sd">        Export the SMIL animation frame at this many seconds (see</span>
 <span class="sd">        :meth:`Document.at`) instead of the document as written. Defaults to</span>
 <span class="sd">        None, which keeps animations (formats without animation show t = 0).</span>
@@ -352,26 +352,26 @@
 <span class="sd">    2</span>
 <span class="sd">    """</span>
     <span class="n">exporter</span> <span class="o">=</span> <span class="n">find_exporter</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">exporter</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">time</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">exporter</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span></div>
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">:</span> <span class="n">Exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""The document (or list of documents) to hand to *exporter*, at *time* when given."""</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">:</span> <span class="n">Exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The document (or list of documents) to hand to *exporter*, at *seconds* when given."""</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">document</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"no documents to export"</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">exporter</span><span class="o">.</span><span class="n">multipage</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"the </span><span class="si">{</span><span class="n">exporter</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> format holds one document; "</span>
                              <span class="sa">f</span><span class="s2">"export several to a multi-page format such as pdf or pptx"</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">page</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">page</span> <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">document</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">document</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">document</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">page</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span> <span class="k">if</span> <span class="n">seconds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">page</span> <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">document</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">document</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span> <span class="k">if</span> <span class="n">seconds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">document</span>
 
 
 <div class="viewcode-block" id="save">
 <a class="viewcode-back" href="../../../reference/export.html#svgwriter.export.save">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-         <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+         <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Write *document* to *path*, choosing the format from *format* or the file extension.</span>
 
 <span class="sd">    Parameters</span>
@@ -383,7 +383,7 @@
 <span class="sd">        Destination file.</span>
 <span class="sd">    format : str, optional</span>
 <span class="sd">        Format name overriding the extension. Defaults to None.</span>
-<span class="sd">    time : float, optional</span>
+<span class="sd">    seconds : float, optional</span>
 <span class="sd">        Save the SMIL animation frame at this many seconds instead of the</span>
 <span class="sd">        animated document. Defaults to None.</span>
 <span class="sd">    **options</span>
@@ -416,7 +416,7 @@
 <span class="sd">    True</span>
 <span class="sd">    """</span>
     <span class="n">exporter</span> <span class="o">=</span> <span class="n">find_exporter</span><span class="p">(</span><span class="nb">format</span> <span class="ow">or</span> <span class="n">path</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">exporter</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">time</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">exporter</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
     <span class="n">target</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
         <span class="n">target</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>

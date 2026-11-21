@@ -800,6 +800,56 @@ restored on exit. Nothing is written when no role is used and no sheet exists.</
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.theme.sheet.role_rules">
+<span class="sig-name descname"><span class="pre">role_rules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><span class="pre">Theme</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="attributes.html#svgwriter.attributes.cascade.Rule" title="svgwriter.attributes.cascade.Rule"><span class="pre">Rule</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/theme/sheet.html#role_rules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.sheet.role_rules" title="Link to this definition">¶</a></dt>
+<dd><p>The theme’s role styles as parsed style rules, by the class name each one matches.</p>
+<p>A document attaches them to its root, so styles looked up before output (layout measuring text,
+<code class="docutils literal notranslate"><span class="pre">computed</span></code>) see the theme the output will write.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>theme</strong> (<a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><em>Theme</em></a>) – The theme.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>dict of str to list of Rule</em> – The rules of each <code class="docutils literal notranslate"><span class="pre">role-</span></code> class.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.theme.sheet</span><span class="w"> </span><span class="kn">import</span> <span class="n">role_rules</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">role_rules</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mono"</span><span class="p">))[</span><span class="s2">"role-dot"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">declarations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">('fill', '#000000', False)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.theme.sheet.sheet_theme">
+<span class="sig-name descname"><span class="pre">sheet_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><span class="pre">Element</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><span class="pre">Theme</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/theme/sheet.html#sheet_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.sheet.sheet_theme" title="Link to this definition">¶</a></dt>
+<dd><p>The theme that wrote the theme sheet of a parsed tree, so reopening a file keeps its look.</p>
+<p>A registered theme that writes exactly that sheet is returned; otherwise the current theme
+with the sheet’s role styles, named <code class="docutils literal notranslate"><span class="pre">&quot;document&quot;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>root</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – The root <code class="docutils literal notranslate"><span class="pre">&lt;svg&gt;</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Theme or None</em> – The theme, or None when the tree has no theme sheet.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.theme.sheet</span><span class="w"> </span><span class="kn">import</span> <span class="n">sheet_theme</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="s2">"dark"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"dot"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet_theme</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">to_string</span><span class="p">()))</span><span class="o">.</span><span class="n">name</span>
+<span class="go">'dark'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet_theme</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Svg</span><span class="p">())</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="svgwriter.theme.sheet.used_roles">
 <span class="sig-name descname"><span class="pre">used_roles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><span class="pre">Theme</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><span class="pre">Element</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/theme/sheet.html#used_roles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.sheet.used_roles" title="Link to this definition">¶</a></dt>
 <dd><p>The roles of <em>theme</em> that elements under <em>root</em> carry, in theme order.</p>
@@ -917,6 +967,8 @@ restored on exit. Nothing is written when no role is used and no sheet exists.</
 </li>
 <li><a class="reference internal" href="#svgwriter.theme.ThemeError"><code class="docutils literal notranslate"><span class="pre">ThemeError</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.theme.sheet.applied"><code class="docutils literal notranslate"><span class="pre">applied()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.sheet.role_rules"><code class="docutils literal notranslate"><span class="pre">role_rules()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.sheet.sheet_theme"><code class="docutils literal notranslate"><span class="pre">sheet_theme()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.theme.sheet.used_roles"><code class="docutils literal notranslate"><span class="pre">used_roles()</span></code></a></li>
 </ul>
 </li>

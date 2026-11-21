@@ -325,6 +325,7 @@
 <span class="n">C</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">"C"</span><span class="p">,</span> <span class="s2">"Element"</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
 
 <span class="n">AttrValue</span> <span class="o">=</span> <span class="n">Any</span>
+<span class="n">_ABSENT</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
 <span class="n">Child</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="s2">"Element"</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
 
 
@@ -418,9 +419,10 @@
         <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"__"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"_"</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"_"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">INSTANCE_FIELDS</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="n">key</span> <span class="o">=</span> <span class="n">svg_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"attributes"</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">attributes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">"attributes"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">_ABSENT</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_ABSENT</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">value</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">KNOWN_ATTRIBUTES</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">raise</span> <span class="n">UnknownAttributeError</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>

@@ -39,17 +39,17 @@ head are `outline`, `line`, `dot` and `arrow.head`. Presentation keywords you pa
 
 ## Your own presets
 
-A shape preset is a function that returns an element. Decorating it with `svg.preset.shape(name)`
-registers it beside the built-in shapes (the list behind `svgwriter shapes`), and checks at call time
+A shape preset is a function that returns an element. Decorating it with `@svg.preset.shape`
+registers it under the function's name (or `name=`) beside the built-in shapes (the list behind `svgwriter shapes`), and checks at call time
 that it really returns an element. A taken name raises `ValueError` naming the function that owns it,
-built-in shapes included; `replace=True` replaces one on purpose. `svg.preset.shape(name, role="shape")`
+built-in shapes included; `replace=True` replaces one on purpose. `svg.preset.shape(role="shape")`
 gives the built elements a theme role; `role=None` leaves them unthemed.
 
 ```python
 import svgwriter as svg
 
 
-@svg.preset.shape("badge")
+@svg.preset.shape
 def badge(cx: float, cy: float, r: float, **kwargs: object) -> svg.Group:
     ring = svg.Circle(cx, cy, r, fill="none", stroke="black")
     dot = svg.Circle(cx, cy, r / 3, **kwargs)
