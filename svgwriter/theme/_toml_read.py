@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import math
 from collections.abc import Mapping
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import tomlkit
@@ -84,7 +85,20 @@ def _table(where: str, value: object) -> dict[str, Any]:
     return dict(value)
 
 
-def _fonts(table: Mapping[str, Any]) -> dict[str, Any]:
+def _family(where: str, value: object, folder: Path | None) -> object:
+    """A family name, or a list of font files (relative to the theme file) loaded as a typeface."""
+    if not isinstance(value, list):
+        return _text(where, value)
+    from ..ops.typeface import Typeface
+
+    paths = [(folder or Path()) / _text(where, item) for item in value]
+    try:
+        return Typeface.from_files(*paths)
+    except (OSError, ValueError) as error:
+        raise ThemeError(f"{where}: {error}") from None
+
+
+def _fonts(table: Mapping[str, Any], folder: Path | None = None) -> dict[str, Any]:
     unknown = sorted(set(table) - FILE_FONT_KEYS)
     if unknown:
         raise ThemeError(f"unknown font keys {unknown}; expected {sorted(FILE_FONT_KEYS)}")
@@ -97,7 +111,7 @@ def _fonts(table: Mapping[str, Any]) -> dict[str, Any]:
                 if not isinstance(entry, (int, float)):
                     raise ThemeError(f"fonts.{key}.{name}: expected a number, got {entry!r}")
         else:
-            fonts[key] = _text(f"fonts.{key}", value)
+            fonts[key] = _family(f"fonts.{key}", value, folder)
     return fonts
 
 
@@ -117,8 +131,8 @@ def read_roles(table: Mapping[str, Any], prefix: str = "") -> dict[str, dict[str
     return roles
 
 
-def theme_from_toml(text: str) -> Theme:
-    """Build a theme from TOML text; see :meth:`Theme.from_toml`."""
+def theme_from_toml(text: str, folder: Path | None = None) -> Theme:
+    """Build a theme from TOML text; see :meth:`Theme.from_toml`. Font files resolve against *folder*."""
     from .theme import Theme
 
     data = parse_document(text).unwrap()
@@ -132,6 +146,6 @@ def theme_from_toml(text: str) -> Theme:
         raise ThemeError(f"extends: unknown theme {base_name!r}") from None
     palette = {k: read_value(f"palette.{k}", v) for k, v in _table("palette", data.get("palette", {})).items()}
     theme = base.replace(name=_text("name", data.get("name", base.name)), palette=palette,
-                         fonts=_fonts(_table("fonts", data.get("fonts", {}))),
+                         fonts=_fonts(_table("fonts", data.get("fonts", {})), folder),
                          roles=read_roles(_table("roles", data.get("roles", {}))))
     return theme._from_file(base_name, text)

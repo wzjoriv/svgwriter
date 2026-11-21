@@ -4,12 +4,14 @@ Constants for ``svgwriter.ops``: defaults, tables and patterns.
 
 from __future__ import annotations
 
+import re
 from typing import Final
 
 import skia
 
 __all__ = [
     "ALPHA_ONLY",
+    "ARC_HANDLE",
     "ARITHMETIC_TERMS",
     "ARROW_LENGTH",
     "ARROW_SPREAD",
@@ -22,6 +24,7 @@ __all__ = [
     "CONIC_SUBDIVISION",
     "CURVE4",
     "DEFAULT_FAMILY",
+    "FAMILY_IDENTIFIER",
     "DEFAULT_FONT_SIZE",
     "DEFAULT_QUALITY",
     "DEFAULT_STROKE_WIDTH",
@@ -56,7 +59,10 @@ __all__ = [
     "MORPH_MIN_POINTS",
     "MORPH_SPACING",
     "MOVETO",
+    "CORNER_TOLERANCE",
+    "LENGTH_SEARCH_STEPS",
     "NODE_FILL",
+    "OPEN_BOOLEAN_WARNING",
     "NODE_RADIUS",
     "NODE_STROKE",
     "NO_DECORATION",
@@ -178,6 +184,13 @@ MORPH_CORNER: Final = 0.35
 
 DEFAULT_STROKE_WIDTH: Final = 1.0
 MEASURE_PRECISION: Final = 16.0
+CORNER_TOLERANCE: Final = 0.01
+ARC_HANDLE: Final = 4 / 3
+LENGTH_SEARCH_STEPS: Final = 48
+OPEN_BOOLEAN_WARNING: Final = (
+    "the {name} is empty: boolean operations combine filled areas, and an open path (no Z) "
+    "such as a line encloses none; close it with Z, or call .stroked() to turn the line into an area"
+)
 CAPS: Final = {"butt": "kButt_Cap", "round": "kRound_Cap", "square": "kSquare_Cap"}
 JOINS: Final = {"miter": "kMiter_Join", "round": "kRound_Join", "bevel": "kBevel_Join"}
 
@@ -199,3 +212,4 @@ FORMATS: Final = {"png": skia.kPNG, "jpeg": skia.kJPEG, "jpg": skia.kJPEG, "webp
 
 DEFAULT_FAMILY: Final = "sans-serif"
 GLYPH_CACHE: Final = 8192
+FAMILY_IDENTIFIER: Final = re.compile(r"[A-Za-z_][\w-]*(?: [A-Za-z_][\w-]*)*")

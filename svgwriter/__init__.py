@@ -78,6 +78,7 @@ from .attributes import (
     Length,
     MeetOrSlice,
     PreserveAspectRatio,
+    Quantity,
     Style,
     StyleSheet,
     Unit,
@@ -85,15 +86,19 @@ from .attributes import (
     cm,
     deg,
     em,
+    ft,
     grad,
     inch,
+    m,
     mm,
     percent,
     pt,
     px,
+    q,
     rad,
     turn,
 )
+from .attributes.units import angle, length
 from .builder import drawing, drop_shadow
 from .color import Color, PaintKeyword, parse_color, parse_paint
 from .document import Document
@@ -101,7 +106,15 @@ from .elements import *  # noqa: F403
 from .elements import __all__ as _elements_all
 from .io.writer import SerializeOptions, to_string, write
 from .layout import Grid, HStack, Spacer, VStack
-from .ops import interpolate, register_font, register_interpolator, text_to_path, unregister_interpolator
+from .ops import (
+    Typeface,
+    distribute,
+    interpolate,
+    register_font,
+    register_interpolator,
+    text_to_path,
+    unregister_interpolator,
+)
 from .pathdata import BBox, PathBuilder, PathData
 from .project import Project
 from .theme import THEMES, Theme
@@ -164,6 +177,7 @@ __all__ = [
     "PathBuilder",
     "PathData",
     "PreserveAspectRatio",
+    "Quantity",
     "SerializeOptions",
     "Strictness",
     "Style",
@@ -171,6 +185,7 @@ __all__ = [
     "THEMES",
     "Theme",
     "Transform",
+    "Typeface",
     "Unit",
     "ViewBox",
     "__author__",
@@ -180,12 +195,18 @@ __all__ = [
     "drop_shadow",
     "em",
     "inch",
+    "ft",
+    "m",
+    "q",
+    "length",
+    "angle",
     "Angle",
     "deg",
     "grad",
     "rad",
     "turn",
     "mm",
+    "distribute",
     "interpolate",
     "page_size",
     "latex",

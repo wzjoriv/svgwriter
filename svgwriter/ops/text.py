@@ -11,6 +11,8 @@ from typing import TYPE_CHECKING, Any, Literal
 import skia
 
 from .._internal._constants import ANCHOR_SHIFT
+from .._internal._font_match import FontStyle, describe
+from .._internal._font_names import family_names
 from .._internal._fonts import font_for, registered_typefaces, resolve_font
 from ..pathdata.data import PathData
 from ..transform.matrix import Matrix
@@ -30,12 +32,16 @@ Anchor = Literal["start", "middle", "end"]
 FontWeight = int | Literal["normal", "bold"]
 
 
-def register_font(source: str | os.PathLike[str] | bytes, family: str | None = None) -> str:
+def register_font(source: str | os.PathLike[str] | bytes, family: str | None = None, *,
+                  weight: float | tuple[float, float] | None = None, style: FontStyle | None = None) -> str:
     """Make a TrueType/OpenType font file usable by name in ``font_family``.
 
     Text layout, measurement, outlines and rendering then use it, without
     installing it on the system. Register each style file (regular, bold,
-    italic) of a family; the closest weight and slant is chosen.
+    italic) of a family; text picks among them with the CSS font matching
+    rules, and variable fonts are set to the requested weight. This is the
+    low-level call under :class:`~svgwriter.ops.Typeface`, which registers
+    a whole family at once.
 
     Parameters
     ----------
@@ -43,7 +49,13 @@ def register_font(source: str | os.PathLike[str] | bytes, family: str | None = N
         A ``.ttf``/``.otf``/``.ttc`` file or its contents.
     family : str, optional
         Name to register under. Defaults to None, which uses the family name
-        stored in the font.
+        stored in the font (typographic family first, then WWS, then legacy).
+    weight : float or (float, float), optional
+        The weight (or variable range) the face stands for, as the
+        ``font-weight`` descriptor of ``@font-face``. Defaults to None, which
+        reads it from the font (OS/2 weight class or ``wght`` axis).
+    style : {"normal", "italic", "oblique"}, optional
+        The style the face stands for. Defaults to None, which reads it from the font.
 
     Returns
     -------
@@ -67,8 +79,10 @@ def register_font(source: str | os.PathLike[str] | bytes, family: str | None = N
         typeface = skia.Typeface.MakeFromFile(os.fspath(source))
     if typeface is None:
         raise ValueError(f"cannot read a font from {source if not isinstance(source, bytes) else 'the data'!r}")
-    name = family or typeface.getFamilyName()
-    registered_typefaces.setdefault(name.lower(), []).append(typeface)
+    names = family_names(typeface)
+    name = family or names[0]
+    registered_typefaces.setdefault(name.lower(), []).append(
+        (typeface, describe(typeface, weight, style, subfamily=names[1])))
     resolve_font.cache_clear()
     font_for.cache_clear()
     glyph_shape.cache_clear()

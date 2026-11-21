@@ -49,6 +49,7 @@ guides/projects
 
 explanation/design
 explanation/conformance
+contributing
 ```
 
 ```{toctree}

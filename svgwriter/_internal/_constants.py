@@ -136,6 +136,7 @@ __all__ = [
     "PERCENT",
     "PT_PER_INCH",
     "PX_PER_INCH",
+    "Q_PER_INCH",
     "PX_PER_PT",
     "PULSE_SCALE",
     "RENDER_LANGUAGE",
@@ -190,6 +191,7 @@ PX_PER_PT: Final = PX_PER_INCH / PT_PER_INCH
 PC_PER_INCH: Final = 6.0
 MM_PER_INCH: Final = 25.4
 CM_PER_INCH: Final = 2.54
+Q_PER_INCH: Final = MM_PER_INCH * 4
 
 SWATCH: Final = 40.0
 GRID: Final = 4

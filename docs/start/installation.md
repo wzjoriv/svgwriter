@@ -32,11 +32,4 @@ Optional external program:
 - **ffmpeg** on `PATH` for {doc}`video export <../guides/animation>`. Without it, `render_animation` raises
   `FFmpegNotFoundError` before doing any work.
 
-For development:
-
-```console
-$ pip install -e ".[dev,test]"
-$ python scripts/dev.py test          # tests
-$ python scripts/dev.py check         # lint, tests, docs
-$ python scripts/dev.py docs          # build these docs
-```
+For a development install, see {doc}`../contributing`.
