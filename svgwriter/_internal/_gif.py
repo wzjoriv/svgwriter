@@ -9,7 +9,7 @@ from collections.abc import Sequence
 
 import numpy as np
 
-from ._constants import (
+from ._codec_constants import (
     GIF_APPLICATION,
     GIF_APPLICATION_SIZE,
     GIF_BLOCK_SIZE,
