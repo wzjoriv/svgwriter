@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Document - svgwriter 2.0.0</title>
+        <title>Document - svgwriter 2.1.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.0.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.1.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.0.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.1.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.0.0</span>
+  <span class="sidebar-versions-label">2.1.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -213,6 +213,7 @@
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../guides/geometry.html">Geometry and transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/colors-and-images.html">Colors and images</a></li>
@@ -229,6 +230,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../explanation/design.html">Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explanation/conformance.html">Conformance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
@@ -236,6 +238,7 @@
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Document</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elements.html">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layout.html">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ops.html">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="export.html">Export and import</a></li>
@@ -294,7 +297,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="svgwriter.Document">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.Length"><span class="pre">Length</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.Length"><span class="pre">Length</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.PageSize" title="svgwriter.PageSize"><span class="pre">PageSize</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.structure.Svg" title="svgwriter.elements.structure.Svg"><span class="pre">Svg</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="theme.html#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><span class="pre">Theme</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/document.html#Document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Sizing</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Theming</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Output</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Access</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ElementFactory</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Sizing</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Theming</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Typography</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Output</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Access</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ElementFactory</span></code></p>
 <p>An SVG document under construction.</p>
 <p>Shortcut methods (<code class="docutils literal notranslate"><span class="pre">doc.circle(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">doc.linear_gradient(...)</span></code>)
 build an element, add it and return it; definitions go into <code class="docutils literal notranslate"><span class="pre">&lt;defs&gt;</span></code>.
@@ -418,7 +421,7 @@ explicitly.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.Document.writing">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">writing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnyPath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.Document" title="svgwriter.Document"><span class="pre">Document</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/document.html#Document.writing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document.writing" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">writing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnyPath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.Document" title="svgwriter.Document"><span class="pre">Document</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/document.html#Document.writing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document.writing" title="Link to this definition">¶</a></dt>
 <dd><p>Build a document and save it to <em>path</em> when the block exits.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -724,6 +727,42 @@ and spline timing are treated as their clock-based, linear equivalents.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"A blue square"</span><span class="p">)</span><span class="o">.</span><span class="n">children</span>
 <span class="go">['A blue square']</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.Document.embed_fonts">
+<span class="sig-name descname"><span class="pre">embed_fonts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">typefaces</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ops.html#svgwriter.ops.Typeface" title="svgwriter.ops.Typeface"><span class="pre">Typeface</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.structure.StyleElement" title="svgwriter.elements.structure.StyleElement"><span class="pre">StyleElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#svgwriter.Document.embed_fonts" title="Link to this definition">¶</a></dt>
+<dd><p>Add <code class="docutils literal notranslate"><span class="pre">&#64;font-face</span></code> rules carrying the used fonts, so the SVG file shows them anywhere.</p>
+<p>Only the faces the text actually uses are written, each once, as base64
+data URIs in a <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> at the top of the document. Call it once,
+after the text is in place.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*typefaces</strong> (<a class="reference internal" href="ops.html#svgwriter.ops.Typeface" title="svgwriter.ops.Typeface"><em>Typeface</em></a>) – The families to embed. Defaults to every <code class="xref py py-class docutils literal notranslate"><span class="pre">Typeface</span></code>
+made in this session.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>StyleElement or None</em> – The new <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code>, or None when no text uses the typefaces.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.Document.used_faces" title="svgwriter.Document.used_faces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">used_faces</span></code></a></dt><dd><p>The faces that would be written.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Typeface.css</span></code></dt><dd><p>The rules of one family.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sans</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Typeface</span><span class="p">(</span><span class="s2">"sans-serif"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Hi"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">sans</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">"@font-face"</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">embed_fonts</span><span class="p">(</span><span class="n">sans</span><span class="p">)</span><span class="o">.</span><span class="n">css</span>
+<span class="go">True</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1099,6 +1138,40 @@ extension of <cite>target</cite>, or SVG for streams.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.Document.used_faces">
+<span class="sig-name descname"><span class="pre">used_faces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">typefaces</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ops.html#svgwriter.ops.Typeface" title="svgwriter.ops.Typeface"><span class="pre">Typeface</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="ops.html#svgwriter.ops.Face" title="svgwriter.ops.Face"><span class="pre">Face</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#svgwriter.Document.used_faces" title="Link to this definition">¶</a></dt>
+<dd><p>The faces the document’s text uses, one per font file.</p>
+<p>Every text element’s <code class="docutils literal notranslate"><span class="pre">font-family</span></code> list (style sheets and theme roles
+included) is matched against the typefaces, and CSS font matching
+picks the face for its <code class="docutils literal notranslate"><span class="pre">font-weight</span></code> and <code class="docutils literal notranslate"><span class="pre">font-style</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*typefaces</strong> (<a class="reference internal" href="ops.html#svgwriter.ops.Typeface" title="svgwriter.ops.Typeface"><em>Typeface</em></a>) – The families to look for. Defaults to every <code class="xref py py-class docutils literal notranslate"><span class="pre">Typeface</span></code>
+made in this session.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>list of Face</em> – The faces in first-use order; variable faces keep their whole range.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.Document.embed_fonts" title="svgwriter.Document.embed_fonts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">embed_fonts</span></code></a></dt><dd><p>Write these faces into the document.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">serif</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Typeface</span><span class="p">(</span><span class="s2">"serif"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Hi"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">font_family</span><span class="o">=</span><span class="n">serif</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">used_faces</span><span class="p">(</span><span class="n">serif</span><span class="p">))</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.Document.style">
 <span class="sig-name descname"><span class="pre">style</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">css</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="attributes.html#svgwriter.attributes.StyleSheet" title="svgwriter.attributes.StyleSheet"><span class="pre">StyleSheet</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.structure.StyleElement" title="svgwriter.elements.structure.StyleElement"><span class="pre">StyleElement</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/document.html#Document.style"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document.style" title="Link to this definition">¶</a></dt>
 <dd><p>Add a <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> sheet near the top of the document.</p>
@@ -1123,7 +1196,7 @@ extension of <cite>target</cite>, or SVG for streams.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.Document.nest">
-<span class="sig-name descname"><span class="pre">nest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">E</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.15)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">E</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/document.html#Document.nest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document.nest" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">nest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">E</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.15)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">E</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/document.html#Document.nest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document.nest" title="Link to this definition">¶</a></dt>
 <dd><p>Add <em>element</em> and make it the insertion point inside the block.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1379,6 +1452,7 @@ across) or <code class="docutils literal notranslate"><span class="pre">-portrai
 <li><a class="reference internal" href="#svgwriter.Document.auto_size"><code class="docutils literal notranslate"><span class="pre">Document.auto_size</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.content_bounds"><code class="docutils literal notranslate"><span class="pre">Document.content_bounds()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.describe"><code class="docutils literal notranslate"><span class="pre">Document.describe()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.Document.embed_fonts"><code class="docutils literal notranslate"><span class="pre">Document.embed_fonts()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.export"><code class="docutils literal notranslate"><span class="pre">Document.export()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.fit"><code class="docutils literal notranslate"><span class="pre">Document.fit()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.get_element_by_id"><code class="docutils literal notranslate"><span class="pre">Document.get_element_by_id()</span></code></a></li>
@@ -1390,6 +1464,7 @@ across) or <code class="docutils literal notranslate"><span class="pre">-portrai
 <li><a class="reference internal" href="#svgwriter.Document.save"><code class="docutils literal notranslate"><span class="pre">Document.save()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.save_async"><code class="docutils literal notranslate"><span class="pre">Document.save_async()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.to_string"><code class="docutils literal notranslate"><span class="pre">Document.to_string()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.Document.used_faces"><code class="docutils literal notranslate"><span class="pre">Document.used_faces()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.style"><code class="docutils literal notranslate"><span class="pre">Document.style()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.nest"><code class="docutils literal notranslate"><span class="pre">Document.nest()</span></code></a></li>
 </ul>
@@ -1420,7 +1495,7 @@ across) or <code class="docutils literal notranslate"><span class="pre">-portrai
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=79f5c508"></script>
+</div><script src="../_static/documentation_options.js?v=1d3a154c"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

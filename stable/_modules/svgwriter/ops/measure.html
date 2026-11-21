@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.ops.measure - svgwriter 2.0.0</title>
+        <title>svgwriter.ops.measure - svgwriter 2.1.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">svgwriter 2.0.0</div></a>
+      <a href="../../../index.html"><div class="brand">svgwriter 2.1.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.0.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.1.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.0.0</span>
+  <span class="sidebar-versions-label">2.1.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -212,6 +212,7 @@
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/geometry.html">Geometry and transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/colors-and-images.html">Colors and images</a></li>
@@ -228,6 +229,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../explanation/design.html">Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../explanation/conformance.html">Conformance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
@@ -235,6 +237,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/document.html">Document</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/elements.html">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/geometry.html">Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/layout.html">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/ops.html">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/export.html">Export and import</a></li>
@@ -300,6 +303,7 @@
     <span class="s2">"bounds"</span><span class="p">,</span>
     <span class="s2">"contains"</span><span class="p">,</span>
     <span class="s2">"point_at_length"</span><span class="p">,</span>
+    <span class="s2">"segment"</span><span class="p">,</span>
     <span class="s2">"stroke_to_path"</span><span class="p">,</span>
     <span class="s2">"tangent_at_length"</span><span class="p">,</span>
     <span class="s2">"total_length"</span><span class="p">,</span>
@@ -505,6 +509,61 @@
 
 
 
+<div class="viewcode-block" id="segment">
+<a class="viewcode-back" href="../../../reference/ops.html#svgwriter.ops.segment">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">segment</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PathData</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The part of the outline between two distances from its start.</span>
+
+<span class="sd">    Subpaths are walked in order, as for :func:`total_length`; a stretch that</span>
+<span class="sd">    spans several subpaths keeps them as separate pieces.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    item : shape, text, PathData or str</span>
+<span class="sd">        The outline to cut.</span>
+<span class="sd">    start, end : float</span>
+<span class="sd">        Distances from the start in user units, clamped to ``0..total_length``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    PathData</span>
+<span class="sd">        The piece of the outline (lines, quadratics and cubics).</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If *end* comes before *start*.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    point_at_length : One point instead of a stretch.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from svgwriter.ops import segment</span>
+<span class="sd">    &gt;&gt;&gt; str(segment("M0 0 L10 0 L10 10", 5, 15))</span>
+<span class="sd">    'M5 0 L10 0 L10 5'</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">end</span> <span class="o">&lt;</span> <span class="n">start</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"the end (</span><span class="si">{</span><span class="n">end</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">) comes before the start (</span><span class="si">{</span><span class="n">start</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">_skia_path</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="n">measure</span> <span class="o">=</span> <span class="n">skia</span><span class="o">.</span><span class="n">PathMeasure</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">MEASURE_PRECISION</span><span class="p">)</span>
+    <span class="n">result</span><span class="p">,</span> <span class="n">walked</span> <span class="o">=</span> <span class="n">skia</span><span class="o">.</span><span class="n">Path</span><span class="p">(),</span> <span class="mf">0.0</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">measure</span><span class="o">.</span><span class="n">getLength</span><span class="p">()</span>
+        <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">start</span> <span class="o">-</span> <span class="n">walked</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">walked</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">low</span> <span class="o">&lt;=</span> <span class="n">high</span> <span class="ow">and</span> <span class="n">length</span><span class="p">:</span>
+            <span class="n">piece</span> <span class="o">=</span> <span class="n">skia</span><span class="o">.</span><span class="n">Path</span><span class="p">()</span>
+            <span class="n">measure</span><span class="o">.</span><span class="n">getSegment</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">piece</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">measure</span><span class="o">.</span><span class="n">isClosed</span><span class="p">()</span> <span class="ow">and</span> <span class="n">high</span> <span class="o">-</span> <span class="n">low</span> <span class="o">&gt;=</span> <span class="n">length</span><span class="p">:</span>
+                <span class="n">piece</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">addPath</span><span class="p">(</span><span class="n">piece</span><span class="p">)</span>
+        <span class="n">walked</span> <span class="o">+=</span> <span class="n">length</span>
+        <span class="k">if</span> <span class="n">walked</span> <span class="o">&gt;=</span> <span class="n">end</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">measure</span><span class="o">.</span><span class="n">nextContour</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">from_skia</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+
+
 <div class="viewcode-block" id="stroke_to_path">
 <a class="viewcode-back" href="../../../reference/ops.html#svgwriter.ops.stroke_to_path">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">stroke_to_path</span><span class="p">(</span>
@@ -591,7 +650,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=79f5c508"></script>
+</div><script src="../../../_static/documentation_options.js?v=1d3a154c"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

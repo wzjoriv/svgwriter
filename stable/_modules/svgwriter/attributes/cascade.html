@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.attributes.cascade - svgwriter 2.0.0</title>
+        <title>svgwriter.attributes.cascade - svgwriter 2.1.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">svgwriter 2.0.0</div></a>
+      <a href="../../../index.html"><div class="brand">svgwriter 2.1.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.0.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.1.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.0.0</span>
+  <span class="sidebar-versions-label">2.1.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -212,6 +212,7 @@
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/geometry.html">Geometry and transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/colors-and-images.html">Colors and images</a></li>
@@ -228,6 +229,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../explanation/design.html">Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../explanation/conformance.html">Conformance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
@@ -235,6 +237,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/document.html">Document</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/elements.html">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/geometry.html">Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/layout.html">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/ops.html">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/export.html">Export and import</a></li>
@@ -284,6 +287,9 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextvars</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContextVar</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Final</span>
 
@@ -294,7 +300,9 @@
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"INHERITED"</span><span class="p">,</span> <span class="s2">"Rule"</span><span class="p">,</span> <span class="s2">"computed"</span><span class="p">,</span> <span class="s2">"parse_css"</span><span class="p">,</span> <span class="s2">"resolve_styles"</span><span class="p">,</span> <span class="s2">"rules_of"</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"INHERITED"</span><span class="p">,</span> <span class="s2">"Rule"</span><span class="p">,</span> <span class="s2">"computed"</span><span class="p">,</span> <span class="s2">"frozen_rules"</span><span class="p">,</span> <span class="s2">"parse_css"</span><span class="p">,</span> <span class="s2">"resolve_styles"</span><span class="p">,</span> <span class="s2">"rules_of"</span><span class="p">]</span>
+
+<span class="n">_FROZEN</span><span class="p">:</span> <span class="n">ContextVar</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">"svgwriter_frozen_rules"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
 <span class="n">INHERITED</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span>
     <span class="s2">"clip-rule"</span><span class="p">,</span> <span class="s2">"color"</span><span class="p">,</span> <span class="s2">"color-interpolation"</span><span class="p">,</span> <span class="s2">"color-interpolation-filters"</span><span class="p">,</span> <span class="s2">"color-profile"</span><span class="p">,</span> <span class="s2">"color-rendering"</span><span class="p">,</span>
@@ -428,6 +436,38 @@
     <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="ow">and</span> <span class="n">matches_from</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">parts</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
 
+<div class="viewcode-block" id="frozen_rules">
+<a class="viewcode-back" href="../../../reference/attributes.html#svgwriter.attributes.cascade.frozen_rules">[docs]</a>
+<span class="nd">@contextmanager</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">frozen_rules</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Collect each tree's style rules once for the block, for many lookups while no ``&lt;style&gt;`` changes.</span>
+
+<span class="sd">    Joins an enclosing block, so nesting is free.</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">    &gt;&gt;&gt; from svgwriter.attributes.cascade import frozen_rules, rules_of</span>
+<span class="sd">    &gt;&gt;&gt; doc = svg.parse('&lt;svg xmlns="http://www.w3.org/2000/svg"&gt;&lt;style&gt;.a{fill:red}&lt;/style&gt;&lt;/svg&gt;')</span>
+<span class="sd">    &gt;&gt;&gt; with frozen_rules():</span>
+<span class="sd">    ...     rules_of(doc) is rules_of(doc)</span>
+<span class="sd">    True</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">_FROZEN</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">yield</span>
+        <span class="k">return</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">_FROZEN</span><span class="o">.</span><span class="n">set</span><span class="p">({})</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">_FROZEN</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">token</span><span class="p">)</span></div>
+
+
+
 <div class="viewcode-block" id="rules_of">
 <a class="viewcode-back" href="../../../reference/attributes.html#svgwriter.attributes.cascade.rules_of">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">rules_of</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]:</span>
@@ -455,10 +495,15 @@
 <span class="sd">    &gt;&gt;&gt; [rule.selector for rule in rules_of(doc)]</span>
 <span class="sd">    ['.a']</span>
 <span class="sd">    """</span>
+    <span class="n">cache</span> <span class="o">=</span> <span class="n">_FROZEN</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">cache</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">id</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="ow">in</span> <span class="n">cache</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cache</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">root</span><span class="p">)]</span>
     <span class="n">rules</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">style</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s2">"style"</span><span class="p">):</span>
         <span class="n">css</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">style</span><span class="o">.</span><span class="n">children</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span>
         <span class="n">rules</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parse_css</span><span class="p">(</span><span class="n">css</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">rules</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">cache</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cache</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">root</span><span class="p">)]</span> <span class="o">=</span> <span class="n">rules</span>
     <span class="k">return</span> <span class="n">rules</span></div>
 
 
@@ -684,7 +729,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=79f5c508"></script>
+</div><script src="../../../_static/documentation_options.js?v=1d3a154c"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

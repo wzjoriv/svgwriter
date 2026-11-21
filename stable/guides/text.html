@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Text - svgwriter 2.0.0</title>
+        <title>Text - svgwriter 2.1.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.0.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.1.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.0.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.1.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.0.0</span>
+  <span class="sidebar-versions-label">2.1.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -213,6 +213,7 @@
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry and transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="colors-and-images.html">Colors and images</a></li>
@@ -229,6 +230,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../explanation/design.html">Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explanation/conformance.html">Conformance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
@@ -236,6 +238,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/document.html">Document</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/elements.html">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/geometry.html">Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/layout.html">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/ops.html">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/export.html">Export and import</a></li>
@@ -393,17 +396,75 @@ it can:</p>
 <p><code class="docutils literal notranslate"><span class="pre">to_path()</span></code>, <code class="docutils literal notranslate"><span class="pre">text_outline()</span></code> and boolean operations use outlines, so emoji are left out of them. With
 no colour emoji font installed, emoji fall back to whatever font has the characters.</p>
 </section>
-<section id="font-files">
-<h2>Font files<a class="headerlink" href="#font-files" title="Link to this heading">¶</a></h2>
-<p>Fonts are found by family name among the installed fonts. To use a font file without installing it,
-register it; layout, measurement, outlines and rendering then use it:</p>
+<section id="typography">
+<h2>Typography<a class="headerlink" href="#typography" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">font_family</span></code> takes names of installed fonts. For a family you ship with the drawing, or to measure and
+embed one, make an <code class="docutils literal notranslate"><span class="pre">svg.Typeface</span></code>: a font family made of faces (regular, bold, italic, condensed, or one
+variable font covering a whole range). It works like a CSS <code class="docutils literal notranslate"><span class="pre">&#64;font-face</span></code> family.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+
+<span class="n">sans</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Typeface</span><span class="p">(</span><span class="s2">"sans-serif"</span><span class="p">)</span>      <span class="c1"># an installed family; generic names pick an installed one</span>
+<span class="c1"># inter = svg.Typeface.from_files("Inter-Regular.ttf", "Inter-Bold.ttf", "Inter-Italic.ttf")</span>
+<span class="c1"># brand = svg.Typeface.from_folder("assets/fonts", "Inter")</span>
+<span class="c1"># custom = svg.Typeface("Brand", {(400, "normal"): "brand.ttf", (700, "italic"): "brand-heavy.ttf"})</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Regular"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">font_family</span><span class="o">=</span><span class="n">sans</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Bold italic"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">sans</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">font_weight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">,</span> <span class="n">font_style</span><span class="o">=</span><span class="s2">"italic"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">from_files</span></code> reads each face’s family, weight (OS/2 weight class), style and width from inside the
+file, never from its name: the typographic family comes first, so “Inter SemiBold” files join “Inter”,
+and <code class="docutils literal notranslate"><span class="pre">face.subfamily</span></code> keeps the style name (“SemiBold Italic”). Sources may be paths, bytes, binary
+streams or <code class="docutils literal notranslate"><span class="pre">data:</span></code> URIs; collections (<code class="docutils literal notranslate"><span class="pre">.ttc</span></code>) add every face. A mapping of <code class="docutils literal notranslate"><span class="pre">(weight,</span> <span class="pre">style)</span></code> to files
+states the descriptors instead. A variable font covers its <code class="docutils literal notranslate"><span class="pre">wght</span></code>, <code class="docutils literal notranslate"><span class="pre">wdth</span></code>
+and <code class="docutils literal notranslate"><span class="pre">slnt</span></code> ranges, listed in <code class="docutils literal notranslate"><span class="pre">face.axes</span></code>. Faces loaded from files are registered at once, so layout,
+measurement, outlines and rendering use them without installing anything.</p>
+<p>Text picks a face with the CSS font matching rules: the style first (italic, then oblique, then
+upright), then the nearest weight, looking heavier for weights above 500, lighter below 400, and up to
+500 first in between. A variable face is set to the exact weight asked for.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bold</span> <span class="o">=</span> <span class="n">sans</span><span class="o">.</span><span class="n">face</span><span class="p">(</span><span class="n">weight</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
+<span class="n">metrics</span> <span class="o">=</span> <span class="n">bold</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mi">18</span><span class="p">)</span>           <span class="c1"># ascent, descent, x_height, cap_height at size 18</span>
+<span class="n">width</span> <span class="o">=</span> <span class="n">bold</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="s2">"Total"</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span>       <span class="c1"># shaped advance width</span>
+<span class="n">sans</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="s2">"Total"</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span> <span class="o">==</span> <span class="n">width</span>
+</pre></div>
+</div>
+<p>Measure with the face, then draw with the family: <code class="docutils literal notranslate"><span class="pre">measure</span></code> uses the same shaping and fallback as layout.</p>
+<section id="embedding-fonts">
+<h3>Embedding fonts<a class="headerlink" href="#embedding-fonts" title="Link to this heading">¶</a></h3>
+<p>An SVG file names its fonts; viewers without them substitute others. <code class="docutils literal notranslate"><span class="pre">doc.embed_fonts()</span></code> adds a
+<code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> with an <code class="docutils literal notranslate"><span class="pre">&#64;font-face</span></code> rule per face the text actually uses, the font file inside as a data URI,
+so browsers draw the file with its own fonts. <code class="docutils literal notranslate"><span class="pre">doc.used_faces()</span></code> lists those faces and
+<code class="docutils literal notranslate"><span class="pre">typeface.css()</span></code> gives the rules of a whole family; <code class="docutils literal notranslate"><span class="pre">typeface.css(embed=False)</span></code> refers to the fonts
+instead (<code class="docutils literal notranslate"><span class="pre">local(...)</span></code> for installed faces, the file path for file faces), for SVG kept next to its fonts.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span><span class="o">.</span><span class="n">embed_fonts</span><span class="p">(</span><span class="n">sans</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Embed only fonts whose licence allows it. For output that needs no fonts at all, convert text to
+outlines with <code class="docutils literal notranslate"><span class="pre">text.to_path()</span></code>.</p>
+</section>
+<section id="themes-and-projects">
+<h3>Themes and projects<a class="headerlink" href="#themes-and-projects" title="Link to this heading">¶</a></h3>
+<p>A theme’s <code class="docutils literal notranslate"><span class="pre">fonts.family</span></code> and <code class="docutils literal notranslate"><span class="pre">fonts.monospace</span></code> take a <code class="docutils literal notranslate"><span class="pre">Typeface</span></code>, and in a theme file a family name or
+a list of font files relative to the file:</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[fonts]</span>
+<span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"fonts/Inter-Regular.ttf"</span><span class="p">,</span><span class="w"> </span><span class="s2">"fonts/Inter-Bold.ttf"</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Projects register every file in <code class="docutils literal notranslate"><span class="pre">assets/fonts</span></code> when they build, so those families are usable by name.</p>
+</section>
+<section id="registering-single-files">
+<h3>Registering single files<a class="headerlink" href="#registering-single-files" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">svg.register_font(path)</span></code> is the low-level call under <code class="docutils literal notranslate"><span class="pre">Typeface</span></code>: it registers one file under its
+family name (or <code class="docutils literal notranslate"><span class="pre">family=</span></code>), with optional <code class="docutils literal notranslate"><span class="pre">weight=</span></code> and <code class="docutils literal notranslate"><span class="pre">style=</span></code> descriptors, and returns the name.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># family = svg.register_font("Inter-Regular.ttf")   # returns the family name stored in the file</span>
 <span class="c1"># svg.text("Hello", x=0, y=40, font_family=family, font_size=32).to_path()</span>
 </pre></div>
 </div>
-<p>Register each style file (regular, bold, italic); the closest weight and slant is chosen. For a
-document that looks the same everywhere, convert text to outlines with <code class="docutils literal notranslate"><span class="pre">text.to_path()</span></code>: browsers no
-longer support SVG 1.1 <code class="docutils literal notranslate"><span class="pre">&lt;font&gt;</span></code> elements, so outlines are the portable form.</p>
+<p><code class="docutils literal notranslate"><span class="pre">svg.Typeface</span></code> is not <code class="docutils literal notranslate"><span class="pre">svg.Font</span></code>. <code class="docutils literal notranslate"><span class="pre">svg.Font</span></code> is the SVG 1.1 <code class="docutils literal notranslate"><span class="pre">&lt;font&gt;</span></code> element, which defines glyphs as
+paths inside the document; browsers no longer draw SVG fonts, so svgwriter keeps the element for reading
+and writing such files. A <code class="docutils literal notranslate"><span class="pre">Typeface</span></code> is a real font family (TrueType or OpenType files) that text is set in.</p>
+</section>
 </section>
 </section>
 
@@ -468,7 +529,12 @@ longer support SVG 1.1 <code class="docutils literal notranslate"><span class="p
 <li><a class="reference internal" href="#outlines-and-measurement">Outlines and measurement</a></li>
 <li><a class="reference internal" href="#fonts-and-scripts">Fonts and scripts</a></li>
 <li><a class="reference internal" href="#emoji">Emoji</a></li>
-<li><a class="reference internal" href="#font-files">Font files</a></li>
+<li><a class="reference internal" href="#typography">Typography</a><ul>
+<li><a class="reference internal" href="#embedding-fonts">Embedding fonts</a></li>
+<li><a class="reference internal" href="#themes-and-projects">Themes and projects</a></li>
+<li><a class="reference internal" href="#registering-single-files">Registering single files</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -480,7 +546,7 @@ longer support SVG 1.1 <code class="docutils literal notranslate"><span class="p
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=79f5c508"></script>
+</div><script src="../_static/documentation_options.js?v=1d3a154c"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

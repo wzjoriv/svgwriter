@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.ops.boolean - svgwriter 2.0.0</title>
+        <title>svgwriter.ops.boolean - svgwriter 2.1.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">svgwriter 2.0.0</div></a>
+      <a href="../../../index.html"><div class="brand">svgwriter 2.1.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.0.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.1.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.0.0</span>
+  <span class="sidebar-versions-label">2.1.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -212,6 +212,7 @@
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/geometry.html">Geometry and transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/colors-and-images.html">Colors and images</a></li>
@@ -228,6 +229,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../explanation/design.html">Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../explanation/conformance.html">Conformance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
@@ -235,6 +237,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/document.html">Document</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/elements.html">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/geometry.html">Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/layout.html">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/ops.html">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/export.html">Export and import</a></li>
@@ -285,13 +288,25 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">enum</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">skia</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">..pathdata.commands</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClosePath</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathData</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPEN_BOOLEAN_WARNING</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._skia</span><span class="w"> </span><span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">from_skia</span><span class="p">,</span> <span class="n">geometry_data</span><span class="p">,</span> <span class="n">to_skia</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"BooleanOp"</span><span class="p">,</span> <span class="s2">"combine"</span><span class="p">,</span> <span class="s2">"difference"</span><span class="p">,</span> <span class="s2">"intersection"</span><span class="p">,</span> <span class="s2">"simplify"</span><span class="p">,</span> <span class="s2">"union"</span><span class="p">,</span> <span class="s2">"xor"</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_checked</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">PathData</span><span class="p">,</span> <span class="n">operands</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">PathData</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PathData</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""*result*, warning when it is empty because an operand is an open path with no area."""</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">piece</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">piece</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ClosePath</span><span class="p">)</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">operands</span> <span class="k">for</span> <span class="n">piece</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">subpaths</span><span class="p">()</span>
+    <span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">OPEN_BOOLEAN_WARNING</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">),</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
 
 
 <div class="viewcode-block" id="BooleanOp">
@@ -324,6 +339,9 @@
 
 <span class="sd">    The result has no self-intersections; the named helpers :func:`union`,</span>
 <span class="sd">    :func:`intersection`, :func:`difference` and :func:`xor` call this.</span>
+<span class="sd">    Boolean operations work on filled areas: an open path counts as closed by</span>
+<span class="sd">    a straight line, so a lone line or polyline with no area adds nothing.</span>
+<span class="sd">    When that leaves the result empty a warning says so.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -358,7 +376,7 @@
     <span class="n">result</span> <span class="o">=</span> <span class="n">skia</span><span class="o">.</span><span class="n">Op</span><span class="p">(</span><span class="n">to_skia</span><span class="p">(</span><span class="n">a_data</span><span class="p">,</span> <span class="n">evenodd</span><span class="o">=</span><span class="n">a_evenodd</span><span class="p">),</span> <span class="n">to_skia</span><span class="p">(</span><span class="n">b_data</span><span class="p">,</span> <span class="n">evenodd</span><span class="o">=</span><span class="n">b_evenodd</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">skia</span><span class="o">.</span><span class="n">PathOp</span><span class="p">,</span> <span class="n">op</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"skia could not compute the </span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2"> of these outlines"</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">from_skia</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_checked</span><span class="p">(</span><span class="n">from_skia</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="p">[</span><span class="n">a_data</span><span class="p">,</span> <span class="n">b_data</span><span class="p">],</span> <span class="n">op</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span></div>
 
 
 
@@ -401,13 +419,15 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">others</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">simplify</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
     <span class="n">builder</span> <span class="o">=</span> <span class="n">skia</span><span class="o">.</span><span class="n">OpBuilder</span><span class="p">()</span>
+    <span class="n">operands</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
         <span class="n">data</span><span class="p">,</span> <span class="n">evenodd</span> <span class="o">=</span> <span class="n">geometry_data</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="n">operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="n">builder</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">to_skia</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">evenodd</span><span class="o">=</span><span class="n">evenodd</span><span class="p">),</span> <span class="n">skia</span><span class="o">.</span><span class="n">PathOp</span><span class="o">.</span><span class="n">kUnion_PathOp</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"skia could not compute the union of these outlines"</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">from_skia</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_checked</span><span class="p">(</span><span class="n">from_skia</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="n">operands</span><span class="p">,</span> <span class="s2">"union"</span><span class="p">)</span></div>
 
 
 
@@ -572,7 +592,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=79f5c508"></script>
+</div><script src="../../../_static/documentation_options.js?v=1d3a154c"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
