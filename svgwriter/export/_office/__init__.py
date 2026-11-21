@@ -63,10 +63,19 @@ def pptx(document: Document | Sequence[Document]) -> bytes:
     OfficeExtraError
         If ``python-pptx`` is not installed.
 
+    Warns
+    -----
+    UserWarning
+        Once, listing the SMIL animations PowerPoint cannot play.
+
     Notes
     -----
     Patterns become their tiles, as in the other vector exports; pictures keep
-    their place among the shapes.
+    their place among the shapes. SMIL animations become slide effects that
+    start with the slide at their own ``begin``: fades, show and hide, motion
+    (translations and paths), rotation, scale and fill or stroke colour
+    changes, with duration, repeats and an approximated ease. Shapes with an
+    entrance effect are drawn visible, as PowerPoint hides them until it plays.
 
     Examples
     --------
@@ -90,7 +99,10 @@ def read_pptx(data: bytes, *, slide: int | None = 0) -> Document | list[Document
 
     Freeform and preset shapes (rectangles, rounded rectangles, ellipses,
     lines) become paths with their solid fill and outline, pictures become
-    images and text boxes become text.
+    images and text boxes become text, and slide effects (fades, appear and
+    disappear, motion paths, spins, grow and shrink, colour changes) become
+    ``element.animate`` presets timed from the start of the slide, click
+    steps following one another.
 
     Parameters
     ----------

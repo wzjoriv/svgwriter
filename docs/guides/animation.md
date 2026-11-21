@@ -44,6 +44,20 @@ about `el.anchor` (the bounding-box centre unless set), and `about=(x, y)` takes
 coordinates (local ones with `local=True`). `move_by` measures along the parent's axes unless
 `local=True`.
 
+`about=` also takes a name, read on the element's own box so it moves and resizes with the element:
+`"center"`, `"top"`, `"bottom"`, `"left"`, `"right"`, `"top_left"`, `"top_right"`, `"bottom_left"`,
+`"bottom_right"` (the names of `BBox.point`), `"origin"` for the local `(0, 0)` and, on text,
+`"baseline"` for the start of the first baseline. The same names set the anchor itself, so every later
+transform and preset pivots there; an unknown name raises `ValueError` listing the valid ones:
+
+```python
+door = svg.rect(20, 20, 30, 60, fill="sienna")
+door.animate.rotate(-30, about="left")        # swings on its hinge
+needle = svg.rect(48, 20, 4, 40, fill="crimson", anchor="bottom")
+needle.rotate(45)                              # turns about its base
+needle.animate.spin(4, repeat="indefinite")    # and so does the animation
+```
+
 ```python
 card = svg.rect(20, 20, 60, 30, fill="slateblue")
 card.animate.rotate(90).scale(1.5, begin=1).skew(x=20, begin=2).move_by(40, 0, begin=3)
@@ -111,6 +125,37 @@ Saving keeps the animation where the format can play it: `.svg` and `.svgz` keep
 and `.gif` becomes an animated GIF of the whole animation (`fps=`, `duration=`, `loop=`; no ffmpeg
 needed); `.png` and `.webp` become APNG and animated WebP with `animate=True`. Other still formats show one moment, chosen with `time=`:
 `doc.save("end.png", time=2.0)`.
+
+## Python updates and SMIL together
+
+A scene or `render_animation` can drive the same drawing from Python (`update`) and from SMIL. For each
+frame at time `t`:
+
+1. `update(t)` runs first and changes the document;
+2. SMIL is then applied at `t` on a copy of the result (`doc.at(t)`), and that copy is drawn.
+
+Python and SMIL on different attributes simply combine. On the same attribute SMIL wins, since it is
+applied last, unless the animation has `additive="sum"`, which adds to whatever `update` set (every
+transform preset is additive, so `update` can move an element that a preset is spinning). The
+duration defaults to the end of the last SMIL animation. An `.svg` file keeps only the SMIL, as Python
+does not run in a browser; video, GIF, APNG and WebP exports include both.
+
+```python
+class Drift(svg.Scene):
+    width, height, fps = 120, 120, 24     # duration: 2 s, the last SMIL end
+
+    def build(self, doc):
+        self.dot = doc.circle(60, 60, 10, fill="gold")
+        self.dot.animate.fade_in(0.5).tween("r", 10, 30, 2)
+
+    def update(self, seconds):
+        self.dot.cx = 30 + 30 * seconds   # Python moves it
+        self.dot.r = 5                    # ignored: the r tween wins
+
+drift = Drift()
+drift.update(1.0)
+frame = drift.document.at(1.0)            # cx 60 from Python, r 20 from SMIL, fully faded in
+```
 
 ## Video through ffmpeg
 
