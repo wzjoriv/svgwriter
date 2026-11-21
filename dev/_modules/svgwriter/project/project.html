@@ -228,6 +228,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/themes.html">Themes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -252,6 +253,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/cli.html">Command line</a></li>
 </ul>
@@ -294,9 +296,12 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">..video</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scene</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..widgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">Control</span><span class="p">,</span> <span class="n">controls_of</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._build</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_outputs</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectConfig</span><span class="p">,</span> <span class="n">check_formats</span><span class="p">,</span> <span class="n">read_config</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_PORT</span><span class="p">,</span> <span class="n">NOTEBOOK_SUFFIX</span>
@@ -446,7 +451,7 @@
 
 <div class="viewcode-block" id="Project.build">
 <a class="viewcode-back" href="../../../reference/project.html#svgwriter.Project.build">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">formats</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">formats</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Draw the project and write its outputs into the output folder.</span>
 
 <span class="sd">        Fonts in the font folder are registered first, the theme applies to every page and scene, and the</span>
@@ -456,6 +461,9 @@
 <span class="sd">        ----------</span>
 <span class="sd">        formats : sequence of str, optional</span>
 <span class="sd">            Formats to write. Defaults to None, the ``[outputs] formats`` of the manifest.</span>
+<span class="sd">        values : mapping, optional</span>
+<span class="sd">            Values for the controls the entry declares (:func:`svgwriter.widgets.controls`), by parameter</span>
+<span class="sd">            name. Defaults to None, their starting values.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -492,9 +500,45 @@
             <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">run_notebook</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">/</span> <span class="n">target</span><span class="p">,</span> <span class="n">chosen</span><span class="p">)</span>
             <span class="k">with</span> <span class="n">working_directory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">write_outputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">items_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span> <span class="n">theme</span><span class="p">,</span> <span class="n">chosen</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">write_outputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">items_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span> <span class="n">theme</span><span class="p">,</span> <span class="n">chosen</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">project_scope</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">),</span> <span class="n">working_directory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">write_outputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">items_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">load_object</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)),</span> <span class="n">theme</span><span class="p">,</span> <span class="n">chosen</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">write_outputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">items_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">load_object</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)),</span> <span class="n">theme</span><span class="p">,</span> <span class="n">chosen</span><span class="p">,</span>
+                                 <span class="n">values</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Project.controls">
+<a class="viewcode-back" href="../../../reference/project.html#svgwriter.Project.controls">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">controls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Control</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""The controls the entry's page functions declare with :func:`svgwriter.widgets.controls`.</span>
+
+<span class="sd">        ``svgwriter preview`` shows them as a form above the outputs; ``svgwriter build`` uses their starting</span>
+<span class="sd">        values. Notebook entries declare none here.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict of str to Control</span>
+<span class="sd">            One control per parameter name, across the entry's functions.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ProjectError</span>
+<span class="sd">            If the entry cannot be found.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg, tempfile</span>
+<span class="sd">        &gt;&gt;&gt; with tempfile.TemporaryDirectory() as folder:</span>
+<span class="sd">        ...     print(svg.Project.new(f"{folder}/card").controls())</span>
+<span class="sd">        {}</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">entry_parts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">NOTEBOOK_SUFFIX</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{}</span>
+        <span class="n">found</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Control</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">with</span> <span class="n">project_scope</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">),</span> <span class="n">working_directory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">load_object</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="n">Scene</span><span class="p">,</span> <span class="nb">type</span><span class="p">)):</span>
+                    <span class="n">found</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">controls_of</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">infer</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">found</span></div>
 
 
 <div class="viewcode-block" id="Project.preview">
@@ -533,7 +577,8 @@
 <span class="w">        </span><span class="sd">"""Serve a live preview at ``http://127.0.0.1:&lt;port&gt;`` until interrupted (Ctrl+C).</span>
 
 <span class="sd">        The project is rebuilt whenever one of its files changes, and the page reloads itself; a failed build</span>
-<span class="sd">        shows its traceback on the page until the next save.</span>
+<span class="sd">        shows its traceback under the last outputs that worked. Controls the entry declares</span>
+<span class="sd">        (:func:`svgwriter.widgets.controls`) appear as a form above the outputs, which rebuild as they change.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -553,7 +598,8 @@
 <span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">._server</span><span class="w"> </span><span class="kn">import</span> <span class="n">LiveServer</span>
 
-        <span class="n">LiveServer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">Project</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">open_browser</span><span class="p">)</span></div>
+        <span class="n">LiveServer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">values</span><span class="p">:</span> <span class="n">Project</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span>
+                   <span class="n">controls</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Project</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">controls</span><span class="p">())</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">open_browser</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

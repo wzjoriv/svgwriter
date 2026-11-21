@@ -41,6 +41,7 @@ guides/animation
 guides/logos
 guides/themes
 guides/inkscape
+guides/widgets
 guides/projects
 ```
 

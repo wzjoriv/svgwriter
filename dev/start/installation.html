@@ -229,6 +229,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/themes.html">Themes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -253,6 +254,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli.html">Command line</a></li>
 </ul>
@@ -319,6 +321,12 @@ embedded or assigned profiles are converted to sRGB through LittleCMS
 </div>
 <p>Without it, <code class="docutils literal notranslate"><span class="pre">icc-color(...)</span></code> draws its sRGB fallback colour and images are drawn as their decoder
 delivers them; a one-time warning says profiles were skipped.</p>
+</li>
+<li><p><strong>widget</strong> for <a class="reference internal" href="../guides/widgets.html"><span class="doc">notebook panels</span></a> (<code class="docutils literal notranslate"><span class="pre">svg.interact</span></code>) through ipywidgets:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"pysvgwriter[widget]"</span>
+</pre></div>
+</div>
+<p>Controls, sweeps and the controls of <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">preview</span></code> work without it.</p>
 </li>
 </ul>
 <p>Optional external program:</p>

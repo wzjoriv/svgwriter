@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Design" href="../explanation/design.html"><link rel="prev" title="Inkscape" href="inkscape.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Design" href="../explanation/design.html"><link rel="prev" title="Widgets" href="widgets.html">
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
@@ -229,6 +229,7 @@
 <li class="toctree-l1"><a class="reference internal" href="logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -253,6 +254,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli.html">Command line</a></li>
 </ul>
@@ -518,8 +520,11 @@ so they follow <code class="docutils literal notranslate"><span class="pre">them
 <h2>Live preview<a class="headerlink" href="#live-preview" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">preview</span></code> serves <code class="docutils literal notranslate"><span class="pre">http://127.0.0.1:8000/</span></code> (<code class="docutils literal notranslate"><span class="pre">--port</span></code> to change it, <code class="docutils literal notranslate"><span class="pre">--no-open</span></code> to skip the
 browser). It polls the project’s files twice a second; when one changes it rebuilds, and the page
-reloads itself. A failed build shows its traceback on the page until the next save fixes it. It uses
-only the standard library.</p>
+reloads itself. A failed build shows its traceback under the last outputs that worked until the next
+save fixes it. It uses only the standard library.</p>
+<p>An entry that declares controls with <code class="docutils literal notranslate"><span class="pre">&#64;svg.widgets.controls</span></code> gets a form above the outputs: sliders,
+buttons, colour pickers and switches as plain HTML inputs. Each change rebuilds the project with the new
+values and swaps the outputs in place; <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">build</span></code> uses the starting values. See <a class="reference internal" href="widgets.html"><span class="doc">Widgets</span></a>.</p>
 </section>
 </section>
 
@@ -537,14 +542,14 @@ only the standard library.</p>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="inkscape.html">
+          <a class="prev-page" href="widgets.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Inkscape</div>
+                <div class="title">Widgets</div>
                 
               </div>
             </a>
