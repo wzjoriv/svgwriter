@@ -131,7 +131,7 @@ class Theme(ThemeFiles):
         --------
         >>> import svgwriter as svg
         >>> str(svg.Theme.get("light").style("line"))
-        'fill:none;stroke:#1f2933;stroke-width:2px'
+        'fill:none;stroke:#0f766e;stroke-width:2px'
         """
         if role not in self._styles:
             raise ThemeError(f"theme {self._name!r} has no role {role!r}")
@@ -181,7 +181,7 @@ class Theme(ThemeFiles):
         --------
         >>> import svgwriter as svg
         >>> svg.Theme.get("mono").css(["dot"]).css()
-        '.role-dot { fill:#000000;stroke:none }'
+        '.role-dot { fill:#000000;stroke:#000000;stroke-width:1px }'
         """
         wanted = set(self._styles) if roles is None else set(roles)
         missing = sorted(wanted - set(self._styles))
@@ -216,7 +216,7 @@ class Theme(ThemeFiles):
         >>> light = svg.Theme.get("light")
         >>> bold = light.replace(roles={"line": {"stroke-width": 4}}, fonts={"sizes": {"text": 16}})
         >>> str(bold.style("line")), bold.fonts.sizes["text"]
-        ('fill:none;stroke:#1f2933;stroke-width:4px', 16)
+        ('fill:none;stroke:#0f766e;stroke-width:4px', 16)
         """
         merged = dict(self._roles)
         for role, source in (roles or {}).items():
@@ -237,7 +237,7 @@ class Theme(ThemeFiles):
         Parameters
         ----------
         name : str
-            ``"light"``, ``"dark"``, ``"paper"``, ``"print"``, ``"mono"`` or one added to :data:`THEMES`.
+            A registered name: ``"light"``, ``"dark"``, ``"print"``, ... (see :data:`THEMES`).
 
         Returns
         -------
@@ -318,8 +318,11 @@ class Theme(ThemeFiles):
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Theme):
             return NotImplemented
-        return (self._name, self._palette, self._fonts.to_dict(), {k: str(v) for k, v in self._styles.items()}) == (
-            other._name, other._palette, other._fonts.to_dict(), {k: str(v) for k, v in other._styles.items()})
+        return (self._name, self._palette, self._fonts.to_dict(), self._style_texts()) == (
+            other._name, other._palette, other._fonts.to_dict(), other._style_texts())
+
+    def _style_texts(self) -> dict[str, dict[str, str]]:
+        return {role: {k: str(v) for k, v in style.items()} for role, style in self._styles.items()}
 
     __hash__ = None  # type: ignore[assignment]
 

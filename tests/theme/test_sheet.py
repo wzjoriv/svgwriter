@@ -87,4 +87,4 @@ class TestRenderers:
         data = _themed().export("pptx")
         shapes = Presentation(io.BytesIO(data)).slides[0].shapes  # type: ignore[arg-type]
         fills = {str(s.fill.fore_color.rgb) for s in shapes if s.fill.type is not None}
-        assert {"111827", "1F2937", "E5E7EB"} <= fills
+        assert {"111827", "1F2937", "B45309"} <= fills

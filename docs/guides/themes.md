@@ -46,21 +46,42 @@ rest of the `shape` role.
 | `background`, `surface` | filled with `background` / `surface` |
 | `box` | `surface` fill, thin `border` stroke |
 | `shape`, `accent` | filled with `primary` / `accent` (registered builder shapes default to `shape`) |
+| `shadow` | filled with `shadow`; draw it offset behind a shape |
 | `outline`, `grid` | unfilled, thin `border` stroke |
-| `line`, `arrow.line` | unfilled, `foreground` stroke |
-| `dot`, `arrow.head` | filled with `foreground` |
-| `text`, `title`, `subtitle`, `caption`, `code`, `label` | text fill, family, size and weight from the fonts |
+| `line` | unfilled, `primary` stroke |
+| `arrow.line`, `arrow.head` | `foreground` stroke / fill |
+| `dot` | filled with `accent`, thin `primary` ring |
+| `text`, `code` | `foreground` text |
+| `title` | bold `primary` text |
+| `subtitle`, `caption` | `muted` text |
+| `label` | bold `on_primary` text, for text on a `shape` |
 | `success`, `warning`, `error` | filled with the status colors |
 
 ## Built-in themes
 
-`light` (the default), `dark`, `paper` (warm, low contrast), `print` (black on white with strong
-colors, for papers) and `mono` (black and white only). `svg.Theme.get(name)` returns one;
+| Theme | Character |
+| --- | --- |
+| `light` | the default: slate text, teal titles and shapes, amber dots |
+| `dark` | light text on near-black, mint titles |
+| `paper` | warm cream ground, brown ink |
+| `print` | for papers: serif fonts, dark grey text, ink-blue emphasis, orange second colour, no shadow |
+| `mono` | black and white only, black borders and hard shadows |
+| `noir` | dark paper: warm off-white on charcoal, pale blue accent, faint light shadow |
+| `brutalist` | yellow ground, black 2px borders and hard shadows, electric blue, heavy weights |
+| `dracula`, `alucard` | the Dracula palette, dark and light |
+| `one-dark`, `one-light` | the One palettes, dark and light |
+
+Body and caption text in every built-in theme meets WCAG AA contrast (4.5:1) against both `background`
+and `surface`; titles, which are large, meet 3:1. `svg.Theme.get(name)` returns one;
 `svg.THEMES.names()` lists them, and `svg.THEMES.add(name, theme)` registers your own.
 
+`dracula` and `alucard` follow the Dracula palette (MIT licensed, draculatheme.com); `one-dark` and
+`one-light` follow Atom's One Dark and One Light themes (MIT licensed). Where an official comment grey is
+too faint for caption text, the theme uses a lighter grey from the same palette.
+
 Palette roles: `background`, `foreground`, `surface`, `border`, `muted`, `primary`, `on_primary` (ink on
-`primary`), `secondary`, `accent`, `success`, `warning`, `error`. `border` and `muted` are derived from
-`foreground` and `background` unless given.
+`primary`), `secondary`, `accent`, `success`, `warning`, `error`, `shadow`. `border` and `muted` are mixed from
+`foreground` and `background` unless given, and `shadow` is a translucent `foreground`.
 
 ## Variants
 

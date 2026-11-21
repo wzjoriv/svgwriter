@@ -1,16 +1,19 @@
 """
-The built-in themes: light (the default), dark, paper, print and mono.
+The built-in themes: light (the default), dark, paper, print, mono, noir, brutalist, dracula, alucard,
+one-dark and one-light.
 """
 
 from __future__ import annotations
 
-from ._constants import BUILTIN_PALETTES
+from ._constants import BUILTIN_THEMES
+from .fonts import Fonts
 from .theme import THEMES, Theme
 
 __all__ = ["register_builtins"]
 
 
 def register_builtins() -> None:
-    """Register one theme per built-in palette, all sharing the standard roles and fonts."""
-    for name, palette in BUILTIN_PALETTES.items():
-        THEMES.add(name, Theme(name, palette))
+    """Register every built-in theme: its palette, font changes and role changes over the standard ones."""
+    for name, spec in BUILTIN_THEMES.items():
+        base = Theme(name, spec["palette"], Fonts().replace(**spec.get("fonts", {})))
+        THEMES.add(name, base.replace(roles=spec.get("roles", {})))

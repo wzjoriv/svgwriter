@@ -74,7 +74,7 @@ def resolve_role(theme: Theme, name: str, source: RoleSource) -> Style:
             raise ThemeError(f"{where}.{prop}: unsupported value {value!r}")
         if prop in LENGTH_PROPERTIES and isinstance(value, (int, float)):
             value = f"{value:g}px"
+        style[prop] = value
         if isinstance(value, Color) and value.a < 1 and prop in OPACITY_PROPERTIES:
             style[OPACITY_PROPERTIES[prop]] = value.a
-        style[prop] = value
     return style

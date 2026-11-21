@@ -89,7 +89,7 @@ def dot(cx: float, cy: float, r: float = DOT_RADIUS, **kwargs: Any) -> Circle:
     >>> import svgwriter as svg
     >>> doc = svg.Document(10, 10, theme="dark")
     >>> doc += svg.builder.dot(5, 5)
-    >>> ".role-dot { fill:#e5e7eb" in doc.to_string()
+    >>> ".role-dot { fill:#b45309" in doc.to_string()
     True
     """
     return with_role(Circle(cx, cy, r, **kwargs), "dot", kwargs)
