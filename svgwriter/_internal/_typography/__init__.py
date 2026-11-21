@@ -1,5 +1,5 @@
 """
-Font lookup, sfnt naming, text shaping, colour-glyph emoji and text-run flattening.
+Font lookup, sfnt naming, text shaping and colour-glyph emoji.
 """
 
 from __future__ import annotations

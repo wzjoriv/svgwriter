@@ -150,8 +150,8 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix, *, o
 
 def _draw_color(canvas: skia.Canvas, box: Any, opacity: float, searchable: bool) -> None:
     """Draw the colour glyphs of *box* at its place and angle; only the fill's opacity applies to them."""
-    from .._internal._flatten import _number
-    from .._internal._paints import _paint
+    from .._internal._flat._flatten import _number
+    from .._internal._flat._paints import _paint
     from .._internal._typography._emoji import draw_glyphs
 
     if _paint(box.source, "fill", "black", []) is None:
@@ -256,8 +256,8 @@ def _natural(boxes: list[Any], font: Any) -> bool:
 
 def _paints(source: Element, opacity: float) -> tuple[skia.Paint | None, skia.Paint | None]:
     """Fill and stroke paints for *source* (None where it is unpainted)."""
-    from .._internal._flatten import _number
-    from .._internal._paints import _paint
+    from .._internal._flat._flatten import _number
+    from .._internal._flat._paints import _paint
     from ..attributes.cascade import computed
 
     fill_paint = stroke_paint = None

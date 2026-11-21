@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from ...elements.structure import Pixels
     from ...ops.text import GlyphBox
     from ...transform.matrix import Matrix
-    from .._flatten import Item
+    from .._flat._flatten import Item
     from ._shaping import ColorGlyphs
 
 __all__ = ["color_glyph_boxes", "color_glyph_cells", "color_glyph_images", "draw_glyphs", "render_color_glyphs"]
@@ -137,8 +137,8 @@ def color_glyph_boxes(document: Document) -> Iterator[tuple[GlyphBox, Matrix, fl
     from ...elements import Text
     from ...ops.render import page_size
     from ...transform.matrix import Matrix
-    from .._flatten import _hidden, _number
-    from .._paints import _paint
+    from .._flat._flatten import _hidden, _number
+    from .._flat._paints import _paint
     from .._render._layers import ancestry, drawable_order
     from .._render._rendering import view_matrix
 
@@ -176,7 +176,7 @@ def color_glyph_images(document: Document, pixels_per_em: float = EMOJI_PIXELS_P
     -------
     list of (Pixels, Matrix)
         Emoji images in paint order with their placement, like ``Scene.images`` from
-        :func:`~svgwriter._internal._flatten.flatten`.
+        :func:`~svgwriter._internal._flat._flatten.flatten`.
 
     Examples
     --------
@@ -220,7 +220,7 @@ def color_glyph_cells(document: Document, pixels_per_em: float) -> list[Item]:
     """
     from ...color.color import Color
     from ...pathdata import PathBuilder
-    from .._flatten import Item
+    from .._flat._flatten import Item
 
     items: list[Item] = []
     step = EMOJI_CELL_LEVELS - 1

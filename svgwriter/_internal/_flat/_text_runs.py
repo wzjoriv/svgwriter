@@ -59,7 +59,7 @@ class TextRun:
 
 def _font(source: Element, rules: list[Any]) -> tuple[str, float, bool, bool]:
     from ...attributes.cascade import computed
-    from ._fonts import font_size, font_weight
+    from .._typography._fonts import font_size, font_weight
 
     family = str(computed(source, "font-family", "sans-serif", rules))
     size = font_size(computed(source, "font-size", DEFAULT_SIZE, rules))
@@ -95,10 +95,10 @@ def text_runs(document: Document, *, color_glyphs: bool = True) -> list[TextRun]
     from ...attributes.cascade import rules_of
     from ...elements import Text
     from ...ops.render import page_size
-    from .._flatten import _number
-    from .._paints import _paint
     from .._render._layers import ancestry
     from .._render._rendering import view_matrix
+    from ._flatten import _number
+    from ._paints import _paint
 
     runs: list[TextRun] = []
     with document._prepared():

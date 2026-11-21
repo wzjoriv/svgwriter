@@ -131,7 +131,7 @@ def _transform(animation: Element, values: list[str], frame: Matrix) -> dict[str
 
 
 def _motion(animation: Element, frame: Matrix) -> dict[str, Any] | None:
-    from ..._internal._flatten import polylines
+    from ..._internal._flat._flatten import polylines
     from ...pathdata.data import PathData
 
     path = animation.get("path")

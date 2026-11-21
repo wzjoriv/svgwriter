@@ -9,9 +9,9 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from ..._internal._constants import PX_PER_INCH
-from ..._internal._flatten import Item, flatten, to_cubic
+from ..._internal._flat._flatten import Item, flatten, to_cubic
+from ..._internal._flat._paints import Shading
 from ..._internal._numbers import format_number
-from ..._internal._paints import Shading
 from ..._internal._typography._emoji import color_glyph_cells
 from ._constants import (
     ANGLE_EPSILON,

@@ -9,17 +9,17 @@ import warnings
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
-from ._constants import DEFAULT_MITER, DROPPED_EFFECTS, MAX_SEGMENTS, NONE
+from .._constants import DEFAULT_MITER, DROPPED_EFFECTS, MAX_SEGMENTS, NONE
 from ._paints import _paint, _shading
 from ._patterns import _ancestry, _expand_patterns
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from ..color.color import Color
-    from ..document import Document
-    from ..elements.core import Element
-    from ..pathdata.data import PathData
+    from ...color.color import Color
+    from ...document import Document
+    from ...elements.core import Element
+    from ...pathdata.data import PathData
     from ._paints import Shading
 
 __all__ = ["Item", "Point", "Scene", "flatten", "polylines", "to_cubic"]
@@ -64,7 +64,7 @@ class Item:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._flatten import flatten
+    >>> from svgwriter._internal._flat._flatten import flatten
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, fill="red")
     >>> item = flatten(doc).items[0]
@@ -113,7 +113,7 @@ class Scene:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._flatten import flatten
+    >>> from svgwriter._internal._flat._flatten import flatten
     >>> scene = flatten(svg.Document(10, 5))
     >>> (scene.width, scene.height, scene.items)
     (10.0, 5.0, [])
@@ -158,12 +158,12 @@ def to_cubic(data: PathData) -> list[tuple[str, tuple[float, ...]]]:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._flatten import to_cubic
+    >>> from svgwriter._internal._flat._flatten import to_cubic
     >>> to_cubic(svg.PathData("M0 0 L10 0 Z"))
     [('M', (0.0, 0.0)), ('L', (10.0, 0.0)), ('Z', ())]
     """
-    from ..ops import from_skia, to_skia
-    from ..pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
+    from ...ops import from_skia, to_skia
+    from ...pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
 
     ops: list[tuple[str, tuple[float, ...]]] = []
     current = (0.0, 0.0)
@@ -188,8 +188,8 @@ def to_cubic(data: PathData) -> list[tuple[str, tuple[float, ...]]]:
 
 
 def _number(element: Element, name: str, default: float, rules: list) -> float:
-    from ..attributes.cascade import computed
-    from ..attributes.length import Length
+    from ...attributes.cascade import computed
+    from ...attributes.length import Length
 
     value = computed(element, name, default, rules)
     try:
@@ -199,7 +199,7 @@ def _number(element: Element, name: str, default: float, rules: list) -> float:
 
 
 def _hidden(leaf: Element, root: Element) -> bool:
-    from ..attributes.cascade import computed
+    from ...attributes.cascade import computed
 
     node: Element | None = leaf
     while node is not None and node is not root:
@@ -264,18 +264,18 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._flatten import flatten
+    >>> from svgwriter._internal._flat._flatten import flatten
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, fill="red")
     >>> scene = flatten(doc)
     >>> len(scene.items), scene.skipped
     (1, [])
     """
-    from ..attributes.cascade import computed, rules_of
-    from ..elements import Image, PathOperand
-    from ..ops.render import page_size
-    from ._render._layers import ancestry, drawable_order, image_matrix
-    from ._render._rendering import renderable_copy, view_matrix
+    from ...attributes.cascade import computed, rules_of
+    from ...elements import Image, PathOperand
+    from ...ops.render import page_size
+    from .._render._layers import ancestry, drawable_order, image_matrix
+    from .._render._rendering import renderable_copy, view_matrix
 
     with document._prepared():
         width, height = page_size(document)
@@ -339,14 +339,14 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
                       stacklevel=3)
     texts = []
     if text:
-        from ._typography._text_runs import text_runs
+        from ._text_runs import text_runs
 
         texts = text_runs(document, color_glyphs=color_glyphs)
     return Scene(width, height, items, skipped, texts, images)
 
 
 def _has_emoji(document: Document) -> bool:
-    from ._typography._emoji import color_glyph_boxes
+    from .._typography._emoji import color_glyph_boxes
 
     return next(color_glyph_boxes(document), None) is not None
 
@@ -370,7 +370,7 @@ def polylines(data: object, tolerance: float) -> list[tuple[list[Point], bool]]:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._flatten import polylines
+    >>> from svgwriter._internal._flat._flatten import polylines
     >>> polylines(svg.PathData("M0 0 L10 0 L10 10 Z"), 0.1)
     [([(0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 0.0)], True)]
     """

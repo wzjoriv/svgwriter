@@ -29,7 +29,7 @@ from ._drawingml import gradient_xml, line_style
 from ._pptx import _geometry_xml, _office_family, text_box
 
 if TYPE_CHECKING:
-    from ..._internal._flatten import Item
+    from ..._internal._flat._flatten import Item
     from ...color.color import Color
     from ...document import Document
     from ._layout import Equation
@@ -45,7 +45,7 @@ def write_docx(document: Document) -> bytes:
     word = require("docx")
     from docx.oxml import parse_xml
 
-    from ..._internal._flatten import flatten
+    from ..._internal._flat._flatten import flatten
     from ..._internal._render._layers import pixel_box
     from ._layout import split_equations
 

@@ -30,7 +30,7 @@ from ._constants import (
 from ._drawingml import gradient_xml, line_style
 
 if TYPE_CHECKING:
-    from ..._internal._flatten import Item
+    from ..._internal._flat._flatten import Item
     from ...color.color import Color
     from ...document import Document
     from ...pathdata.data import PathData
@@ -68,7 +68,7 @@ class _Place:
 def write_pptx(documents: list[Document]) -> bytes:
     """Write the deck, one slide per document; see :func:`svgwriter.export._office.pptx`."""
     presentation_module = require("pptx")
-    from ..._internal._flatten import flatten
+    from ..._internal._flat._flatten import flatten
     from ..._internal._render._layers import pixel_box
     from ._layout import split_equations
     from ._pptx_anim import slide_animations
@@ -151,7 +151,7 @@ def text_box(run: Any) -> tuple[float, float, float, float, float, float]:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._flatten import flatten
+    >>> from svgwriter._internal._flat._flatten import flatten
     >>> from svgwriter.export._office._pptx import text_box
     >>> doc = svg.Document(100, 40)
     >>> _ = doc.text("Hi", x=10, y=30, font_size=20)

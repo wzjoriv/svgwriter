@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter._internal._flatten import polylines
+from svgwriter._internal._flat._flatten import polylines
 from svgwriter.builder import star
 
 

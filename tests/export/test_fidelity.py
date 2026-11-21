@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter._internal._flatten import flatten
+from svgwriter._internal._flat._flatten import flatten
 
 A = "{http://schemas.openxmlformats.org/drawingml/2006/main}"
 

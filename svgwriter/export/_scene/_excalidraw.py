@@ -251,7 +251,7 @@ def to_excalidraw(document: Document, *, seed: int = 0) -> str:
     >>> to_excalidraw(doc, seed=1) == to_excalidraw(doc, seed=1)
     True
     """
-    from ..._internal._flatten import flatten, polylines
+    from ..._internal._flat._flatten import flatten, polylines
 
     rng = random.Random(seed)
     files: dict[str, Any] = {}
