@@ -1,5 +1,5 @@
 """
-Office files through the optional ``pysvgwriter[office]`` extra: PowerPoint shapes out and in, Word and Excel pictures out.
+Office files through the optional ``pysvgwriter[office]`` extra: PowerPoint and Word shapes and text out and in, Excel pictures out.
 """
 
 from __future__ import annotations
@@ -136,11 +136,15 @@ def _picture(document: Document) -> tuple[bytes, float, float]:
 
 @register("docx", extensions=(".docx",))
 def docx(document: Document) -> bytes:
-    """A Word document holding the drawing as a picture at its natural size, with editable equations.
+    """A Word document holding the drawing as native, editable Word shapes at its natural size.
 
-    Formulas made by :func:`svgwriter.latex` become editable Word equations:
-    floating over the picture where they were drawn, or as equation
-    paragraphs when the drawing holds nothing else.
+    Every painted outline becomes a floating freeform shape with its curves,
+    solid or gradient fill, outline and transparency; images become
+    pictures and text runs become borderless text boxes. They float in one
+    paragraph whose line is as tall as the drawing, so text after it
+    starts below. Formulas made by :func:`svgwriter.latex` become editable
+    Word equations where they were drawn, or equation paragraphs when the
+    drawing holds nothing else.
 
     Parameters
     ----------
@@ -157,11 +161,21 @@ def docx(document: Document) -> bytes:
     OfficeExtraError
         If ``python-docx`` is not installed.
 
+    Notes
+    -----
+    The drawing is flattened as for PowerPoint: patterns, clipping and
+    markers are drawn into the shapes, masks and filters are skipped, and
+    pictures are placed by their upright bounding box.
+
     Examples
     --------
+    >>> import io, zipfile
     >>> import svgwriter as svg
-    >>> svg.export.export(svg.Document(40, 20), "docx")[:2]
-    b'PK'
+    >>> doc = svg.Document(40, 20)
+    >>> _ = doc.rect(0, 0, 40, 20, fill="teal")
+    >>> data = svg.export.export(doc, "docx")
+    >>> b"<wps:wsp>" in zipfile.ZipFile(io.BytesIO(data)).read("word/document.xml")
+    True
     """
     from ._docx import write_docx
 
@@ -207,10 +221,16 @@ def xlsx(document: Document) -> bytes:
 
 @register_importer("docx", extensions=(".docx",))
 def read_docx(data: bytes) -> Document:
-    """The pictures and drawn shapes of a Word document as elements.
+    """A Word document as live text laid out top to bottom, with its pictures and drawn shapes.
 
-    Floating (anchored) items keep their page position; inline ones stack
-    down the page in document order. Text is not imported.
+    Paragraphs become ``<text>`` lines stacked like the Markdown importer:
+    ``Title`` and ``Heading 1``-``6`` paragraphs are bold at the heading
+    sizes, bulleted and numbered list paragraphs get a bullet or their
+    number indented by list level, and line breaks start new lines. Each
+    run's bold, italics, underline, strike-through, size, colour and font
+    become a styled ``<tspan>``. Inline pictures and shapes take their
+    place in the flow; floating (anchored) ones keep their offset, and
+    the text of floating text boxes comes back where the box sat.
 
     Parameters
     ----------
@@ -220,12 +240,18 @@ def read_docx(data: bytes) -> Document:
     Returns
     -------
     Document
-        Images and paths, sized to fit.
+        A group of text and inline figures plus the floating items, sized to fit.
 
     Raises
     ------
     OfficeExtraError
         If ``python-docx`` is not installed.
+
+    Notes
+    -----
+    Lines are not re-wrapped, and tables are read cell by cell as
+    paragraphs. Styles are read from the paragraph's own style name and
+    the run's direct formatting, not from the style definitions.
 
     Examples
     --------
@@ -234,8 +260,8 @@ def read_docx(data: bytes) -> Document:
     >>> _ = doc.rect(0, 0, 40, 20, fill="teal")
     >>> back = svg.export.find_importer("docx").function(svg.export.export(doc, "docx"))
     >>> [e.tag for e in back]
-    ['image']
+    ['path']
     """
-    from ._docx import read_docx as read
+    from ._docx_read import read_docx as read
 
     return read(data)

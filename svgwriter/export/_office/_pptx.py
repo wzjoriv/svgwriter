@@ -102,17 +102,8 @@ def _textbox(slide: Any, run: Any, place: _Place) -> None:
     from pptx.enum.text import MSO_AUTO_SIZE
     from pptx.util import Pt
 
-    matrix = run.matrix
-    stretch = math.sqrt(abs(matrix.determinant))
-    size = run.size * stretch
-    angle = math.degrees(math.atan2(matrix.b, matrix.a))
-    width, height = max(run.width * stretch, 1.0), size * LINE_HEIGHT
-    turn = math.radians(angle)
-    # Top-left of the unrotated box in the run's frame, then its centre on the page (PowerPoint turns about it).
-    top = -size * ASCENT
-    centre_x = matrix.e + math.cos(turn) * width / 2 - math.sin(turn) * (top + height / 2)
-    centre_y = matrix.f + math.sin(turn) * width / 2 + math.cos(turn) * (top + height / 2)
-    box = slide.shapes.add_textbox(*place.emu(centre_x - width / 2, centre_y - height / 2, width, height))
+    left, top, width, height, angle, size = text_box(run)
+    box = slide.shapes.add_textbox(*place.emu(left, top, width, height))
     box.rotation = angle
     frame = box.text_frame
     frame.margin_left = frame.margin_right = frame.margin_top = frame.margin_bottom = 0
@@ -130,6 +121,43 @@ def _textbox(slide: Any, run: Any, place: _Place) -> None:
             fill = font.color._color._xClr  # noqa: SLF001 - python-pptx exposes no text alpha
             alpha = fill.makeelement(_a("alpha"), {"val": str(round(run.opacity * ALPHA_SCALE))})
             fill.append(alpha)
+
+
+def text_box(run: Any) -> tuple[float, float, float, float, float, float]:
+    """The unrotated box of a text run whose first baseline sits on the run's baseline, turned about its centre.
+
+    Parameters
+    ----------
+    run : TextRun
+        A run from a flattened scene.
+
+    Returns
+    -------
+    tuple of float
+        Left, top, width and height of the box before rotation, the rotation
+        in degrees and the font size, all in page user units.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter._internal._flatten import flatten
+    >>> from svgwriter.export._office._pptx import text_box
+    >>> doc = svg.Document(100, 40)
+    >>> _ = doc.text("Hi", x=10, y=30, font_size=20)
+    >>> left, top, width, height, angle, size = text_box(flatten(doc, text=True).texts[0])
+    >>> (left, round(top, 1), angle, size)
+    (10.0, 12.0, 0.0, 20.0)
+    """
+    matrix = run.matrix
+    stretch = math.sqrt(abs(matrix.determinant))
+    size = run.size * stretch
+    angle = math.degrees(math.atan2(matrix.b, matrix.a))
+    width, height = max(run.width * stretch, 1.0), size * LINE_HEIGHT
+    turn = math.radians(angle)
+    top = -size * ASCENT
+    centre_x = matrix.e + math.cos(turn) * width / 2 - math.sin(turn) * (top + height / 2)
+    centre_y = matrix.f + math.sin(turn) * width / 2 + math.cos(turn) * (top + height / 2)
+    return centre_x - width / 2, centre_y - height / 2, width, height, angle, size
 
 
 def _equation(slide: Any, equation: Equation, place: _Place) -> None:

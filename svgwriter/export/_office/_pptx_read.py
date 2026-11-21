@@ -84,11 +84,36 @@ def _link(shape: Any) -> str | None:
 
 def _outline(shape: Any, left: float, top: float, width: float, height: float) -> Any:
     """A preset or custom shape as a ``<path>`` with its fill and outline, or None."""
+    properties = getattr(shape._element, "spPr", None)
+    return outline(properties, left, top, width, height) if properties is not None else None
+
+
+def outline(properties: Any, left: float, top: float, width: float, height: float) -> Any:
+    """The geometry of a DrawingML ``spPr`` as a ``<path>`` with its solid or gradient fill and outline.
+
+    Parameters
+    ----------
+    properties : lxml element
+        The shape properties holding a preset or custom geometry.
+    left, top, width, height : float
+        The shape's box on the page, in user units.
+
+    Returns
+    -------
+    Path or None
+        None when the geometry is unknown or nothing is painted.
+
+    Examples
+    --------
+    >>> from lxml import etree
+    >>> from svgwriter.export._office._pptx_read import outline
+    >>> sp = etree.fromstring('<p:spPr xmlns:p="urn:p" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+    ...     '<a:prstGeom prst="rect"/><a:solidFill><a:srgbClr val="FF0000"/></a:solidFill></p:spPr>')
+    >>> outline(sp, 0, 0, 10, 5).get("fill").hex
+    '#ff0000'
+    """
     from ...elements.shapes import Path
 
-    properties = getattr(shape._element, "spPr", None)
-    if properties is None:
-        return None
     custom, preset = properties.find(_a("custGeom")), properties.find(_a("prstGeom"))
     if custom is not None:
         data = _custom_path(custom, left, top, width, height)

@@ -141,7 +141,7 @@ def test_pptx_falls_back_to_outlines_when_the_source_does_not_convert():
     assert shapes and all(s.name != "Equation" for s in shapes)
 
 
-def test_docx_floats_equations_over_the_picture():
+def test_docx_floats_equations_over_the_shapes():
     docx = pytest.importorskip("docx")
     data = svg.export.export(_formula_doc(), "docx")
     docx.Document(io.BytesIO(data))
@@ -150,11 +150,14 @@ def test_docx_floats_equations_over_the_picture():
     assert len(paras) == 1
     _check(paras[0])
     wp = "{http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing}"
-    assert len(body.findall(f".//{wp}inline")) == 1 and len(body.findall(f".//{wp}anchor")) == 1
-    offset = body.find(f".//{wp}positionH/{wp}posOffset")
-    assert int(offset.text) / 9525 == pytest.approx(150 - 0.5 * int(body.find(f".//{wp}anchor/{wp}extent").get("cx"))
+    anchors = body.findall(f".//{wp}anchor")
+    assert not body.findall(f".//{wp}inline") and len(anchors) == 2
+    equation = next(a for a in anchors if a.find(f"{wp}docPr").get("name").startswith("Equation"))
+    offset = equation.find(f"{wp}positionH/{wp}posOffset")
+    assert int(offset.text) / 9525 == pytest.approx(150 - 0.5 * int(equation.find(f"{wp}extent").get("cx"))
                                                     / 9525, abs=1)
-    assert [e.tag for e in svg.export.find_importer("docx").function(data)] == ["image"]
+    back = svg.export.find_importer("docx").function(data)
+    assert [e.tag for e in back] == ["path", "g"] and "x" in back[1][0].text_content
 
 
 def test_docx_with_only_a_formula_writes_an_equation_paragraph():
