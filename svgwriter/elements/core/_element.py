@@ -36,6 +36,7 @@ T = TypeVar("T")
 C = TypeVar("C", "Element", str)
 
 AttrValue = Any
+_ABSENT: Any = object()
 Child: TypeAlias = Union["Element", str]
 
 
@@ -127,9 +128,10 @@ class Element(Construction, AttributeAccess, TreeEditing, Queryable, Displayable
         if name.startswith("__") or name.startswith("_") and not name.endswith("_") or name in INSTANCE_FIELDS:
             raise AttributeError(name)
         key = svg_name(name)
-        attributes = self.__dict__.get("attributes", {})
-        if key in attributes:
-            return attributes[key]
+        if "attributes" in self.__dict__:
+            value = self.get(key, _ABSENT)
+            if value is not _ABSENT:
+                return value
         if key in KNOWN_ATTRIBUTES:
             return None
         raise UnknownAttributeError(type(self).__name__, name, type(self))
