@@ -1,5 +1,5 @@
 """
-Constants of the raster codecs: PNM, GIF and BMP layouts and limits.
+Constants of the raster codecs: PNM, GIF, BMP and TIFF layouts and limits.
 """
 
 from __future__ import annotations
@@ -46,6 +46,18 @@ __all__ = [
     "PNM_COMMENT",
     "PNM_MAGIC",
     "PNM_WHITESPACE",
+    "TIFF_ALPHA_UNASSOCIATED",
+    "TIFF_COMPRESSION_DEFLATE",
+    "TIFF_ENTRY",
+    "TIFF_HEADER",
+    "TIFF_INK_CMYK",
+    "TIFF_INLINE",
+    "TIFF_PHOTOMETRIC",
+    "TIFF_PLANAR_CHUNKY",
+    "TIFF_RESOLUTION_DENOMINATOR",
+    "TIFF_TAGS",
+    "TIFF_TYPES",
+    "TIFF_UNIT_INCH",
     "UINT16_MAX",
     "WHITE",
 ]
@@ -88,3 +100,23 @@ BMP_MAGIC: Final = b"BM"
 BMP_MASKS: Final = (0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000)
 BMP_PIXELS_PER_METER: Final = 2835
 BMP_V4_HEADER_SIZE: Final = 108
+
+TIFF_HEADER: Final = b"II*" + bytes(1)
+"""Little-endian byte order and the TIFF magic number; the first IFD offset follows."""
+TIFF_ENTRY: Final = 12
+TIFF_INLINE: Final = 4
+"""Bytes of value an IFD entry holds itself; longer values go after the IFD."""
+TIFF_TYPES: Final = {"short": (3, "H"), "long": (4, "I"), "rational": (5, "I"), "undefined": (7, "B")}
+"""Field types by name: the TIFF type code and the ``struct`` format of one component."""
+TIFF_TAGS: Final = {
+    "width": 256, "height": 257, "bits": 258, "compression": 259, "photometric": 262, "strip_offsets": 273,
+    "samples": 277, "rows_per_strip": 278, "strip_bytes": 279, "x_resolution": 282, "y_resolution": 283,
+    "planar": 284, "resolution_unit": 296, "ink_set": 332, "extra_samples": 338, "icc": 34675,
+}
+TIFF_COMPRESSION_DEFLATE: Final = 8
+TIFF_PHOTOMETRIC: Final = {"RGB": 2, "CMYK": 5}
+TIFF_PLANAR_CHUNKY: Final = 1
+TIFF_UNIT_INCH: Final = 2
+TIFF_INK_CMYK: Final = 1
+TIFF_ALPHA_UNASSOCIATED: Final = 2
+TIFF_RESOLUTION_DENOMINATOR: Final = 1000

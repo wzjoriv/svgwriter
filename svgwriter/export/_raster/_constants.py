@@ -20,6 +20,7 @@ __all__ = [
     "ICNS_HEADER",
     "ICNS_SIZES",
     "ICNS_TYPES",
+    "ICC_FORMATS",
     "ICO_ENTRY",
     "ICO_HEADER",
     "ICO_MAX",
@@ -36,6 +37,8 @@ __all__ = [
 ]
 
 DEFAULT_QUALITY: Final = 90
+ICC_FORMATS: Final = ("png", "jpeg")
+"""Raster formats whose ``icc=`` option converts the pixels and embeds the profile."""
 DEFAULT_GIF_FPS: Final = 12.0
 PNG_SIGNATURE: Final = b"\x89PNG\r\n\x1a\n"
 CHUNK_HEADER: Final = 8

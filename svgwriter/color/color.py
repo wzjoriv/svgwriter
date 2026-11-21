@@ -12,13 +12,12 @@ from typing import Any, TypeAlias
 
 import numpy as np
 
-from .._internal._constants import COLOR_ALIASES, DEFAULT_PRECISION
+from .._internal._constants import COLOR_ALIASES
 from .._internal._drawable import Drawable, color_swatch
-from .._internal._numbers import format_number
 from .._internal._typing import N
 from ._adjust import ColorAdjustments
 from ._blending import ColorBlending
-from ._channels import ColorChannels
+from ._channels import Source
 from ._constants import (
     CHANNEL_MAX,
     DEGREES,
@@ -27,8 +26,12 @@ from ._constants import (
     HEX_SHORT,
     ICC_RE,
 )
+from ._css import ColorText
+from ._difference import ColorDifference
 from ._named import NAMED_COLORS
 from ._parsing import color_function
+from ._spaces import Triple, convert
+from ._tones import ColorTones
 
 __all__ = ["Color", "ColorLike", "as_color", "clamp", "parse_color"]
 
@@ -60,7 +63,7 @@ def clamp(value: N, low: N, high: N) -> N:
 
 
 @dataclass(frozen=True)
-class Color(ColorChannels, ColorBlending, ColorAdjustments, Drawable):
+class Color(ColorText, ColorBlending, ColorAdjustments, ColorTones, ColorDifference, Drawable):
     """An sRGB color with straight alpha; every channel is a float in ``0..1``.
 
     Colors are immutable, support ``+`` (even mix), ``*`` and ``/`` (scaling),
@@ -77,6 +80,9 @@ class Color(ColorChannels, ColorBlending, ColorAdjustments, Drawable):
     name : str, optional
         Keyword written instead of hex (set when parsed from a name); ignored
         when comparing. Defaults to None.
+    source : tuple of (str, tuple of float), optional
+        The colour space and unclipped channels the color was given in, as set by
+        :meth:`from_space`, CSS Color 4 text and mixing; None for plain sRGB. Defaults to None.
 
     Raises
     ------
@@ -92,7 +98,13 @@ class Color(ColorChannels, ColorBlending, ColorAdjustments, Drawable):
     -----
     Everything that takes a color also takes a :data:`ColorLike`: a name or
     CSS string, a ``Color``, or a 3/4-tuple of floats in ``0..1`` (as in
-    matplotlib). Use :meth:`from_uint8` for ``0..255`` values. SVG 1.1 has
+    matplotlib). Use :meth:`from_uint8` for ``0..255`` values.
+
+    ``r``, ``g`` and ``b`` are always sRGB, clipped to its gamut, and drive :attr:`hex`, :attr:`rgba`
+    and SVG output. A color given in another space (``oklch(...)``, ``color(display-p3 ...)``)
+    also keeps that space and its exact values in :attr:`source`: :meth:`coords`, :meth:`mix`,
+    :meth:`tint`, :meth:`delta` and :meth:`to_css` work from them, so wide-gamut colors are not
+    clipped before they are mixed. SVG 1.1 has
     no alpha in colors, so a translucent ``fill``/``stroke``/``stop-color``/
     ``flood-color`` also writes the matching ``*-opacity`` attribute.
 
@@ -117,6 +129,7 @@ class Color(ColorChannels, ColorBlending, ColorAdjustments, Drawable):
     a: float = 1.0
     icc: str | None = None
     name: str | None = field(default=None, compare=False)
+    source: Source | None = field(default=None, kw_only=True, repr=False)
 
     def __post_init__(self) -> None:
         for label, value in zip("rgba", (self.r, self.g, self.b, self.a), strict=True):
@@ -180,6 +193,49 @@ class Color(ColorChannels, ColorBlending, ColorAdjustments, Drawable):
         return cls(*(clamp(int(c), 0, CHANNEL_MAX) / CHANNEL_MAX for c in (r, g, b, a)))
 
     @classmethod
+    def from_space(cls, space: str, coords: Sequence[float], alpha: float = 1.0) -> Color:
+        """Build a color from channels in any colour space, keeping them exactly.
+
+        Parameters
+        ----------
+        space : str
+            ``"srgb"``, ``"srgb-linear"``, ``"display-p3"``, ``"a98-rgb"``, ``"rec2020"``,
+            ``"xyz-d65"``, ``"xyz-d50"``, ``"lab"``, ``"lch"``, ``"oklab"`` or ``"oklch"``.
+        coords : sequence of float
+            The three channels in `space`; any values, even outside the sRGB gamut.
+        alpha : float, optional
+            Opacity in ``0..1``. Defaults to 1.0.
+
+        Returns
+        -------
+        Color
+            The color: ``r``, ``g`` and ``b`` hold its sRGB value clipped to the gamut and
+            :attr:`source` keeps `space` and `coords` (None for an in-gamut sRGB color).
+
+        Raises
+        ------
+        ValueError
+            If `space` is unknown or `alpha` is outside ``0..1``.
+
+        See Also
+        --------
+        coords : Read the channels back in any space.
+
+        Examples
+        --------
+        >>> from svgwriter.color import Color
+        >>> p3 = Color.from_space("display-p3", (0, 1, 0))
+        >>> p3.hex, p3.space, p3.in_gamut
+        ('#00ff00', 'display-p3', False)
+        >>> Color.from_space("oklch", (0.628, 0.2577, 29.23)).hex
+        '#ff0000'
+        """
+        values: Triple = (float(coords[0]), float(coords[1]), float(coords[2]))
+        r, g, b = (min(max(c, 0.0), 1.0) for c in convert(values, space, "srgb"))
+        exact = space == "srgb" and (r, g, b) == values
+        return cls(r, g, b, alpha, source=None if exact else (space, values))
+
+    @classmethod
     def from_hsl(cls, hue: float, saturation: float, lightness: float, alpha: float = 1.0) -> Color:
         """Build a color from hue, saturation and lightness.
 
@@ -213,79 +269,9 @@ class Color(ColorChannels, ColorBlending, ColorAdjustments, Drawable):
         """Return ``[r, g, b, a]`` as floats in ``0..1`` for NumPy."""
         return np.array(self.rgba, dtype=dtype or np.float64)
 
-    def with_icc(self, spec: str) -> Color:
-        """Return the color with an ICC specification attached.
-
-        Parameters
-        ----------
-        spec : str
-            An ``icc-color(...)`` specification, written after the sRGB fallback.
-
-        Returns
-        -------
-        Color
-            A copy carrying the specification.
-
-        Examples
-        --------
-        >>> from svgwriter.color import Color
-        >>> Color.parse("red").with_icc("icc-color(profile, 1)").svg_value()
-        'red icc-color(profile, 1)'
-        """
-        return replace(self, icc=spec)
-
-    def to_css(self) -> str:
-        """Return CSS text for the color.
-
-        Returns
-        -------
-        str
-            The name or hex when opaque, ``rgba(...)`` otherwise.
-
-        Examples
-        --------
-        >>> from svgwriter.color import Color
-        >>> Color.parse("red").to_css()
-        'red'
-        >>> Color(1, 0, 0, 0.5).to_css()
-        'rgba(255, 0, 0, 0.5)'
-        """
-        if self.a == 1.0:
-            return self.name or self.hex
-        r, g, b, _ = self.uint8
-        return f"rgba({r}, {g}, {b}, {format_number(self.a, DEFAULT_PRECISION)})"
-
     def __svgwriter__(self) -> Any:
         """A swatch of this color over a checkerboard (``doc.add(color)``, notebook display)."""
         return color_swatch(self)
-
-    def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
-        """Return SVG 1.1 color text.
-
-        The name or ``#rrggbb`` is written; alpha is not part of the text and
-        is emitted separately as an opacity attribute.
-
-        Parameters
-        ----------
-        precision : int, optional
-            Unused; accepted for a uniform interface. Defaults to the library default precision.
-
-        Returns
-        -------
-        str
-            The color text, followed by any ICC specification.
-
-        Examples
-        --------
-        >>> from svgwriter.color import Color
-        >>> Color(1, 0, 0, 0.5).svg_value()
-        '#ff0000'
-        """
-        text = self.name if self.name and self.a == 1.0 else self.opaque.hex
-        return f"{text} {self.icc}" if self.icc else text
-
-    def __str__(self) -> str:
-        return self.svg_value()
 
 
 ColorLike: TypeAlias = Color | str | Sequence[float]

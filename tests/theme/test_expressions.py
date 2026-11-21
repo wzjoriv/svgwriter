@@ -33,6 +33,8 @@ class TestColors:
     @pytest.mark.parametrize(("expression", "expected"), [
         ("lighten(#204060, 0.2)", svg.Color.parse("#204060").lighten(0.2)),
         ("darken(navy, 0.5)", svg.Color.parse("navy").darken(0.5)),
+        ("tint(#0f766e, 0.3)", svg.Color.parse("#0f766e").tint(0.3)),
+        ("shade(#0f766e, 0.3)", svg.Color.parse("#0f766e").shade(0.3)),
         ("mix(red, blue)", svg.Color.parse("red").mix("blue")),
         ("mix(red, blue, 0.25, 'oklch')", svg.Color.parse("red").mix("blue", 0.25, "oklch")),
         ('mix(red, blue, 0.25, "oklab")', svg.Color.parse("red").mix("blue", 0.25, "oklab")),

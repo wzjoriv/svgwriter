@@ -8,7 +8,17 @@ import colorsys
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
-from ._constants import ANGLE_UNITS, CHANNEL_MAX, COLOR_SPACES, DEGREES, PERCENT_MAX, PERCENT_REFERENCE
+from ._constants import (
+    ANGLE_UNITS,
+    CHANNEL_MAX,
+    COLOR_SPACES,
+    CSS_FUNCTIONS,
+    CSS_SPACE_NAMES,
+    DEGREES,
+    PERCENT_MAX,
+    PERCENT_REFERENCE,
+    POLAR_SPACES,
+)
 from ._spaces import (
     RGB_SPACES,
     Triple,
@@ -21,6 +31,7 @@ from ._spaces import (
 )
 
 if TYPE_CHECKING:
+    from ._channels import Source
     from .color import Color
 
 __all__ = ["color_function"]
@@ -80,14 +91,18 @@ def _hsl(hue: float, saturation: float, lightness: float) -> Triple:
     return colorsys.hls_to_rgb((hue % DEGREES) / DEGREES, min(max(lightness, 0.0), 1.0), min(max(saturation, 0.0), 1.0))
 
 
-def _lab_like(kind: str, polar: bool, convert: Callable[[Triple], Triple]) -> Callable[[list[str], str], Triple]:
+def _lab_values(kind: str, t: list[str], text: str) -> Triple:
+    """The channels of a lab-like function: percentages scaled per channel, a hue for the polar ones."""
     scale = PERCENT_REFERENCE[kind]
+    lightness, second = _number(t[0], scale[0], text), _number(t[1], scale[1], text)
+    third = _hue(t[2], text) if kind in POLAR_SPACES else _number(t[2], scale[2], text)
+    return (lightness, second, third)
 
+
+def _lab_like(kind: str, convert: Callable[[Triple], Triple]) -> Callable[[list[str], str], Triple]:
     def build(t: list[str], text: str) -> Triple:
-        lightness, second = _number(t[0], scale[0], text), _number(t[1], scale[1], text)
-        third = _hue(t[2], text) if polar else _number(t[2], scale[2], text)
-        values = (lightness, second, third)
-        return convert(lch_to_lab(values) if polar else values)
+        values = _lab_values(kind, t, text)
+        return convert(lch_to_lab(values) if kind in POLAR_SPACES else values)
 
     return build
 
@@ -97,8 +112,8 @@ FUNCTIONS: dict[str, tuple[int, Callable[[list[str], str], Triple]]] = {
     "hsl": (3, _cylinder(_hsl)), "hsla": (3, _cylinder(_hsl)),
     "hsv": (3, _cylinder(hsv_to_srgb)), "hsva": (3, _cylinder(hsv_to_srgb)),
     "hwb": (3, _cylinder(hwb_to_srgb)),
-    "lab": (3, _lab_like("lab", False, lab_to_srgb)), "lch": (3, _lab_like("lch", True, lab_to_srgb)),
-    "oklab": (3, _lab_like("oklab", False, oklab_to_srgb)), "oklch": (3, _lab_like("oklch", True, oklab_to_srgb)),
+    "lab": (3, _lab_like("lab", lab_to_srgb)), "lch": (3, _lab_like("lch", lab_to_srgb)),
+    "oklab": (3, _lab_like("oklab", oklab_to_srgb)), "oklch": (3, _lab_like("oklch", oklab_to_srgb)),
     "device-cmyk": (4, lambda t, text: cmyk_to_srgb(*(_number(c, 1.0, text) for c in t))),
 }
 
@@ -119,7 +134,8 @@ def color_function(kind: str, body: str, text: str) -> Color:
     Returns
     -------
     Color
-        The color in sRGB; channels outside the gamut are clipped to ``0..1``.
+        The color in sRGB, channels outside the gamut clipped to ``0..1``; lab-like functions and
+        ``color()`` also keep their space and exact channels as the color's ``source``.
 
     Raises
     ------
@@ -133,12 +149,17 @@ def color_function(kind: str, body: str, text: str) -> Color:
         if space not in COLOR_SPACES:
             raise ValueError(f"unknown color space {space!r} in {text!r}; expected one of {sorted(COLOR_SPACES)}")
         tokens, alpha = _split(rest, text, 3)
-        rgb = RGB_SPACES[space]([_number(c, 1.0, text) for c in tokens])
+        a, b, c = (_number(token, 1.0, text) for token in tokens)
+        rgb = RGB_SPACES[space]((a, b, c))
+        source: Source | None = (CSS_SPACE_NAMES.get(space, space), (a, b, c))
     else:
         size, convert = FUNCTIONS[kind]
         tokens, alpha = _split(body, text, size)
         if kind in LEGACY_UNIFORM and "," in body and len({t.endswith("%") for t in tokens}) != 1:
             raise ValueError(f"mixed number and percent channels: {text!r}")
         rgb = convert(tokens, text)
+        source = (kind, _lab_values(kind, tokens, text)) if kind in CSS_FUNCTIONS else None
     r, g, b = (min(max(c, 0.0), 1.0) for c in rgb)
-    return Color(r, g, b, _alpha(alpha, text))
+    if source is not None and source[0] == "srgb" and source[1] == (r, g, b):
+        source = None
+    return Color(r, g, b, _alpha(alpha, text), source=source)

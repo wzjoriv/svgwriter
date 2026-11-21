@@ -102,6 +102,8 @@ class Function:
 FUNCTIONS: Final[Mapping[str, Function]] = MappingProxyType({
     "lighten": Function(2, 2, lambda a: _color(a, 0).lighten(_fraction(a, 1))),
     "darken": Function(2, 2, lambda a: _color(a, 0).darken(_fraction(a, 1))),
+    "tint": Function(2, 2, lambda a: _color(a, 0).tint(_fraction(a, 1))),
+    "shade": Function(2, 2, lambda a: _color(a, 0).shade(_fraction(a, 1))),
     "mix": Function(2, 4, _mix),
     "alpha": Function(2, 2, lambda a: _color(a, 0).with_alpha(_fraction(a, 1))),
     "saturate": Function(2, 2, lambda a: _color(a, 0).saturate(_fraction(a, 1))),

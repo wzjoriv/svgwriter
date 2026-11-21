@@ -84,3 +84,29 @@ def test_a_foreign_eps_point_reads_as_four_thirds_of_a_user_unit():
 def test_a_foreign_tikz_centimetre_reads_as_its_user_units():
     doc = find_importer("tikz").function(rb"\begin{tikzpicture}\fill (0,0) rectangle (2.54,1);\end{tikzpicture}")
     assert doc[0].bounds().width == pytest.approx(96)
+
+
+def pixels() -> svg.Document:
+    doc = svg.Document(144, 72)
+    doc.rect(0, 0, 72, 36, fill="red", stroke="black", stroke_width=2)
+    return doc
+
+
+def test_px_per_inch_72_makes_a_pixel_page_one_point_per_unit():
+    assert media_boxes(pixels().export("pdf", px_per_inch=72)) == [pytest.approx((144, 72))]
+    assert media_boxes(pixels().export("pdf")) == [pytest.approx((108, 54))]
+    text = pixels().export("eps", px_per_inch=72).decode()
+    assert "%%HiResBoundingBox: 0 0 144 72" in text and "\n1 1 scale\n" in text
+    picture = pixels().export("tikz", px_per_inch=72)
+    assert "[x=1bp, y=-1bp]" in picture and "line width=2bp" in picture
+
+
+@pytest.mark.parametrize("name", ["pdf", "eps", "tikz"])
+def test_px_per_inch_keeps_physical_sizes(name):
+    assert a4().export(name, px_per_inch=72) == a4().export(name)
+
+
+@pytest.mark.parametrize("name", ["pdf", "eps", "tikz"])
+def test_px_per_inch_must_be_positive(name):
+    with pytest.raises(ValueError, match="px_per_inch must be above 0"):
+        pixels().export(name, px_per_inch=0)
