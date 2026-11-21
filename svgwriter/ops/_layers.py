@@ -137,7 +137,7 @@ def hidden(root: Element, keep: list[Element], atomic: Callable[[Element], bool]
 
 
 def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -> None:
-    """Paint *image* with its transforms, opacity, aspect ratio and clip.
+    """Paint *image* with its transforms, opacity, aspect ratio, clip and mask (filters: ``draw_filtered``).
 
     Parameters
     ----------
@@ -155,7 +155,7 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
     layers : Decide which images are drawn separately.
     """
     from ..elements import Transformable
-    from ._image_effects import image_filter, paint_mask
+    from ._image_effects import paint_mask
     from ._skia import to_skia
 
     _, opacity = ancestry(image, root)
@@ -171,11 +171,8 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
         clip = clip_outline(node)
         if clip is not None:
             canvas.clipPath(to_skia(clip), doAntiAlias=True)
-    effects, mask = referenced(image, "filter"), referenced(image, "mask")
-    layer = skia.Paint()
-    if effects is not None:
-        layer.setImageFilter(image_filter(effects))
-    canvas.saveLayer(None, layer)
+    mask = referenced(image, "mask")
+    canvas.saveLayer(None, skia.Paint())
     m = image_matrix(image)
     canvas.save()
     canvas.concat(skia.Matrix.MakeAll(m.a, m.c, m.e, m.b, m.d, m.f, 0, 0, 1))

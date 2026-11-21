@@ -1,5 +1,5 @@
 """
-Filtered elements drawn around skia's SVG renderer, for filters it cannot run (``feImage``, ``feTile``).
+Filtered elements drawn around skia's SVG renderer, for filters it cannot run.
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ __all__ = ["draw_filtered", "needs_engine"]
 
 
 def needs_engine(element: Element) -> bool:
-    """Whether *element*'s filter uses a primitive skia's SVG renderer cannot run.
+    """Whether *element*'s filter must run outside skia's SVG renderer.
 
     Parameters
     ----------
@@ -32,7 +32,8 @@ def needs_engine(element: Element) -> bool:
     Returns
     -------
     bool
-        True when the filter holds ``feImage`` or ``feTile``.
+        True for a filtered embedded image, which that renderer cannot draw, and for a filter
+        holding ``feImage``, ``feTile`` or ``feConvolveMatrix``.
 
     Examples
     --------
@@ -41,15 +42,19 @@ def needs_engine(element: Element) -> bool:
     >>> needs_engine(svg.Rect())
     False
     """
+    from ..elements.structure import Image
+
     effects = referenced(element, "filter") if element.get("filter") is not None else None
-    return effects is not None and any(getattr(child, "tag", None) in ENGINE_PRIMITIVES for child in effects)
+    if effects is None:
+        return False
+    return (isinstance(element, Image) and element.pixels is not None) or any(
+        getattr(child, "tag", None) in ENGINE_PRIMITIVES for child in effects)
 
 
-def _painted(root: Element, wrap: Callable[[str], str], keep: list[Element], extra: Element | None = None) -> str:
-    """*root* serialized with only *keep* (and *extra*, appended at the top level) visible."""
+def _painted(root: Element, wrap: Callable[[str], str], others: list[Element], extra: Element | None = None) -> str:
+    """*root* serialized with *others* hidden (and *extra* appended at the top level)."""
     from ..io.writer import to_string
 
-    others = hidden(root, keep, atomic=needs_engine)
     for leaf in others:
         leaf.attributes[DISPLAY] = "none"
     if extra is not None:
@@ -84,11 +89,11 @@ def draw_filtered(canvas: skia.Canvas, element: Element, root: Element, wrap: Ca
 
     See Also
     --------
-    svgwriter.ops._image_effects.image_filter : The filter graph.
+    svgwriter.ops._filter_graph.image_filter : The filter graph.
     """
     from ..elements.structure import Image
     from ._filter_frame import Frame, filter_region
-    from ._image_effects import image_filter
+    from ._filter_graph import image_filter
 
     effects = referenced(element, "filter")
     if effects is None:
@@ -112,11 +117,12 @@ def draw_filtered(canvas: skia.Canvas, element: Element, root: Element, wrap: Ca
         recording.concat(inverse)
         copy = target.clone()
         copy.attributes.pop("id", None)
-        paint_svg(recording, _painted(root, wrap, [], copy), width, height)
+        paint_svg(recording, _painted(root, wrap, hidden(root, [], atomic=needs_engine), copy), width, height)
         return recorder.finishRecordingAsPicture()
 
     bounding = str(effects.get("primitiveUnits", "userSpaceOnUse")) == "objectBoundingBox"
     graph = image_filter(effects, Frame(box, region, viewport, bounding, element_source))
+    others = hidden(root, [element], atomic=needs_engine)
     saved = {name: element.attributes.pop(name) for name in ("filter", "opacity") if name in element.attributes}
     try:
         canvas.save()
@@ -130,7 +136,7 @@ def draw_filtered(canvas: skia.Canvas, element: Element, root: Element, wrap: Ca
         if isinstance(element, Image) and element.pixels is not None:
             draw_image(canvas, element, root, view)
         else:
-            paint_svg(canvas, _painted(root, wrap, [element]), width, height)
+            paint_svg(canvas, _painted(root, wrap, others), width, height)
         canvas.restore()
         canvas.restore()
     finally:

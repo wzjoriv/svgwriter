@@ -61,3 +61,25 @@ def test_filtered_image_is_the_source_graphic() -> None:
                   ' result="i"/><feComposite in="SourceGraphic" in2="i" operator="over"/></filter>'
                   f'<image width="100" height="100" xlink:href="{png_uri((1, 0, 0))}" filter="url(#f)"/>')
     assert np.allclose(pixels[50, 50], RED, atol=0.02)
+
+
+@pytest.mark.parametrize("definition, reference", [("", "url(#missing)"), ('<filter id="f"/>', "url(#f)"),
+                                                   ('<rect id="f"/>', "url(#f)")])
+def test_element_with_an_unusable_filter_is_not_drawn(definition: str, reference: str) -> None:
+    pixels = draw(f'<defs>{definition}</defs><rect width="100" height="100" fill="red" filter="{reference}"/>')
+    assert np.allclose(pixels[50, 50], WHITE, atol=0.02)
+
+
+def test_fe_convolve_matrix_runs_on_a_group_and_applies_its_bias() -> None:
+    body = ('<filter id="f" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">'
+            '<feConvolveMatrix kernelMatrix="0 0 0 0 1 0 0 0 0" bias="{bias}"/></filter>'
+            '<g filter="url(#f)"><rect width="100" height="100" fill="black"/></g>')
+    assert np.allclose(draw(body.format(bias=0))[50, 50], (0, 0, 0, 1), atol=0.02)
+    assert np.allclose(draw(body.format(bias=0.5))[50, 50], (0.5, 0.5, 0.5, 1), atol=0.02)
+
+
+def test_filtered_image_runs_through_the_engine() -> None:
+    pixels = draw('<filter id="f" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">'
+                  '<feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 1  0 0 0 0 0  0 0 0 1 0"/></filter>'
+                  f'<image width="100" height="100" xlink:href="{png_uri((1, 0, 0))}" filter="url(#f)"/>')
+    assert np.allclose(pixels[50, 50], LIME, atol=0.02)
