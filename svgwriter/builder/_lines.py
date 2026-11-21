@@ -9,6 +9,7 @@ from typing import Any
 
 from ..elements.shapes import Path
 from ..pathdata.builder import PathBuilder
+from ..preset import shape
 from ._constants import (
     FULL_TURN,
     ROUNDING_EPSILON,
@@ -18,7 +19,6 @@ from ._constants import (
     WAVE_CYCLES,
     WAVE_KINDS,
 )
-from ._shapes import shape_factory
 
 __all__ = ["grid", "spiral", "wave"]
 
@@ -33,7 +33,7 @@ def _steps(origin: float, extent: float, count: int | None, spacing: float | Non
     return [origin + spacing * index for index in range(total + 1)]
 
 
-@shape_factory("grid", role="grid")
+@shape("grid", role="grid")
 def grid(
     x: float,
     y: float,
@@ -103,7 +103,7 @@ def grid(
     return Path(builder, **kwargs)
 
 
-@shape_factory("spiral", role="line")
+@shape("spiral", role="line")
 def spiral(cx: float, cy: float, *, turns: float, start_radius: float, end_radius: float, **kwargs: Any) -> Path:
     """Build an Archimedean spiral from smooth cubic segments.
 
@@ -239,7 +239,7 @@ def _polyline(
         index += 1
 
 
-@shape_factory("wave", role="line")
+@shape("wave", role="line")
 def wave(
     x: float,
     y: float,

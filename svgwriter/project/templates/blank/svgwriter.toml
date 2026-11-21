@@ -1,0 +1,10 @@
+# The project: `svgwriter build` writes every output below into output/, `svgwriter preview` shows them live.
+[project]
+name = "{{ project_name }}"
+entry = "main:build"      # module:function that draws into a document of this size and theme
+size = [800, 600]         # a name such as "a4" or "instagram-post" (`svgwriter sizes`), or [width, height]
+theme = "theme.toml"      # a theme file, or a built-in theme name such as "dark"
+
+[outputs]
+formats = ["svg", "png"]
+png = { scale = 2 }       # options for one format

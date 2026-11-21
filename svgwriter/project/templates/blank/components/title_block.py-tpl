@@ -1,0 +1,11 @@
+"""A title with a subtitle under it."""
+
+import svgwriter as svg
+
+
+def title_block(title: str, subtitle: str, *, x: float, y: float, gap: float = 36) -> svg.Group:
+    """The title at (x, y) and the subtitle *gap* below it, left-aligned."""
+    group = svg.Group()
+    group += svg.text(title, x=x, y=y).as_role("title")
+    group += svg.text(subtitle, x=x, y=y + gap).as_role("subtitle")
+    return group

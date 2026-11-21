@@ -1,0 +1,5 @@
+"""Reusable pieces of the drawing: functions that return groups, styled by the theme's roles."""
+
+from .title_block import title_block
+
+__all__ = ["title_block"]

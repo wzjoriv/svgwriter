@@ -8,6 +8,7 @@ import functools
 from collections.abc import Callable
 from typing import Any, Concatenate
 
+from .._internal._roles import with_role
 from .._internal._typing import Opacity, P
 from ..color.color import Color
 from ..document import Document
@@ -33,7 +34,6 @@ from ._constants import (
     FILTER_MARGIN,
     MARKER_SIZE,
 )
-from ._roles import with_role
 
 __all__ = ["arrow_marker", "drawing", "drop_shadow", "glow"]
 

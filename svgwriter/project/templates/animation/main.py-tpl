@@ -1,0 +1,42 @@
+"""# {{ project_name }}
+
+An animation as a `Scene` class: `build` draws it once, SMIL presets move parts of it, and `update` changes
+it on every frame from Python.
+"""
+
+# %%
+import svgwriter as svg
+from animations import bob
+from components import title_block
+
+# %% [markdown]
+# The dots bob one after another through this project's `bob` preset, found by name in `stagger`; the bar
+# grows in `update`.
+
+# %%
+class Intro(svg.Scene):
+    """Title, bobbing dots and a progress bar."""
+
+    size = "video-720p"
+    fps = 24
+    duration = 3.0
+
+    def build(self, doc: svg.Document) -> None:
+        doc.rect(0, 0, self.width, self.height).as_role("background")
+        title = title_block("{{ project_name }}", "An svgwriter animation", x=96, y=200, gap=60)
+        doc += title
+        title.animate.fade_in(0.8)
+        dots = svg.Group()
+        for index in range(5):
+            dots += svg.builder.dot(96 + index * 60, 420, 16)
+        doc += dots
+        dots.animate.stagger("bob", step=0.15, height=40, dur=1.2)
+        self.bar = doc.rect(96, 560, 0, 12, rx=6).as_role("shape")
+
+    def update(self, seconds: float) -> None:
+        self.bar.width = (self.width - 192) * seconds / self.duration
+
+
+# %%
+if __name__ == "__main__":
+    print(*svg.Project.load().build(), sep="\n")

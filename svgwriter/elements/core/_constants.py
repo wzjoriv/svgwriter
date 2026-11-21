@@ -18,7 +18,6 @@ __all__ = [
     "PREVIEW_PADDING",
     "PREVIEW_SCALE",
     "REPR_WIDTH",
-    "SUGGESTIONS",
     "XML_NAME_RE",
 ]
 
@@ -33,7 +32,6 @@ COLOR_ATTRIBUTES: Final = frozenset({*COLOR_OPACITY, "color", "lighting-color"})
 XML_NAME_RE: Final = re.compile(r"^[A-Za-z_][\w.\-]*$")
 OPEN_PREFIXES: Final = ("data-", "aria-")
 INSTANCE_FIELDS: Final = frozenset({"attributes", "children", "parent"})
-SUGGESTIONS: Final = 3
 
 PREVIEW_PADDING: Final = 2.0
 PREVIEW_SCALE: Final = 1.0

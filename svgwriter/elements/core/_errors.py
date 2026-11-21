@@ -7,8 +7,8 @@ from __future__ import annotations
 import difflib
 from typing import Final
 
+from ..._internal._constants import SUGGESTIONS
 from ...attributes.names import KNOWN_ATTRIBUTES, py_name
-from ._constants import SUGGESTIONS
 
 _PY_NAMES: Final = sorted({py_name(n) for n in KNOWN_ATTRIBUTES})
 

@@ -8,6 +8,7 @@ from typing import Any
 
 from ..elements.shapes import Path, Polygon
 from ..pathdata.builder import PathBuilder
+from ..preset import shape
 from ._constants import (
     CALLOUT_RADIUS,
     CALLOUT_TAIL_RATIO,
@@ -17,12 +18,11 @@ from ._constants import (
     HEART_NOTCH,
 )
 from ._rounded import rounded_outline
-from ._shapes import shape_factory
 
 __all__ = ["callout", "cross", "heart"]
 
 
-@shape_factory("heart")
+@shape("heart")
 def heart(cx: float, cy: float, size: float, **kwargs: Any) -> Path:
     """Build a heart made of cubic curves, point down.
 
@@ -66,7 +66,7 @@ def heart(cx: float, cy: float, size: float, **kwargs: Any) -> Path:
     return Path(builder, **kwargs)
 
 
-@shape_factory("callout", role="box")
+@shape("callout", role="box")
 def callout(
     x: float,
     y: float,
@@ -132,7 +132,7 @@ def callout(
     return rounded_outline(points, radii, **kwargs)
 
 
-@shape_factory("cross")
+@shape("cross")
 def cross(cx: float, cy: float, size: float, *, thickness: float | None = None, **kwargs: Any) -> Polygon:
     """Build a plus sign.
 

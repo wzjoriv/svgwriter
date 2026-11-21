@@ -6,14 +6,14 @@ what the element classes do not provide.
 
 from __future__ import annotations
 
+from .._internal._presets import SHAPES
 from ._effects import arrow_marker, drawing, drop_shadow, glow
 from ._functions import dashed_line, dot, outline
 from ._lines import grid, spiral, wave
-from ._shapes import SHAPES, arrow, gear, regular_polygon, shape_factory, star
+from ._shapes import arrow, gear, regular_polygon, star
 from ._symbols import callout, cross, heart
 
 __all__ = [
-    "SHAPES",
     "arrow",
     "arrow_marker",
     "callout",
@@ -28,8 +28,9 @@ __all__ = [
     "heart",
     "outline",
     "regular_polygon",
-    "shape_factory",
     "spiral",
     "star",
     "wave",
 ]
+
+SHAPES.seal()
