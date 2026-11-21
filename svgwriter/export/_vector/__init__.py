@@ -14,7 +14,7 @@ from .._registry import register, register_importer
 from ._constants import PDF_LINK_KEY
 
 if TYPE_CHECKING:
-    from ..._internal._icc_output import IccLike
+    from ..._internal._color._icc_output import IccLike
     from ...document import Document
 
 
@@ -100,7 +100,7 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     data = exact_media_boxes(bytes(stream.detachAsData()), sizes)
     if icc is None:
         return data
-    from ..._internal._icc_output import output_profile
+    from ..._internal._color._icc_output import output_profile
     from ._pdf_intent import with_output_intent
 
     return with_output_intent(data, output_profile(icc))

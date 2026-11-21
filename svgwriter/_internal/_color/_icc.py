@@ -27,7 +27,7 @@ def lcms_available() -> bool:
 
     Examples
     --------
-    >>> from svgwriter._internal._icc import lcms_available
+    >>> from svgwriter._internal._color._icc import lcms_available
     >>> isinstance(lcms_available(), bool)
     True
     """
@@ -43,7 +43,7 @@ def hint_missing() -> None:
 
     Examples
     --------
-    >>> from svgwriter._internal._icc import hint_missing, lcms_available
+    >>> from svgwriter._internal._color._icc import hint_missing, lcms_available
     >>> if lcms_available():
     ...     hint_missing()
     """
@@ -69,7 +69,7 @@ def load_profile(data: bytes) -> Any:
 
     Examples
     --------
-    >>> from svgwriter._internal._icc import load_profile
+    >>> from svgwriter._internal._color._icc import load_profile
     >>> load_profile(b"not a profile") is None
     True
     """
@@ -106,7 +106,7 @@ def color_to_srgb(profile: Any, components: list[float], intent: str | None = No
 
     Examples
     --------
-    >>> from svgwriter._internal._icc import color_to_srgb, lcms_available
+    >>> from svgwriter._internal._color._icc import color_to_srgb, lcms_available
     >>> if lcms_available():
     ...     from lcms2 import Profile
     ...     print([round(c, 2) for c in color_to_srgb(Profile.srgb(), [1, 0, 0])])
@@ -146,7 +146,7 @@ def pixels_to_srgb(profile: Any, rgba: np.ndarray, intent: str | None = None) ->
     Examples
     --------
     >>> import numpy as np
-    >>> from svgwriter._internal._icc import lcms_available, pixels_to_srgb
+    >>> from svgwriter._internal._color._icc import lcms_available, pixels_to_srgb
     >>> if lcms_available():
     ...     from lcms2 import Profile
     ...     print(pixels_to_srgb(Profile.srgb(), np.full((1, 1, 4), 200, np.uint8)).tolist())

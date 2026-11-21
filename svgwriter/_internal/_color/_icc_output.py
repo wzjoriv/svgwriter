@@ -66,8 +66,8 @@ def output_profile(icc: str | bytes) -> OutputProfile:
 
     Examples
     --------
-    >>> from svgwriter._internal._icc import lcms_available
-    >>> from svgwriter._internal._icc_output import output_profile
+    >>> from svgwriter._internal._color._icc import lcms_available
+    >>> from svgwriter._internal._color._icc_output import output_profile
     >>> output_profile("display-p3").space if lcms_available() else "RGB"
     'RGB'
     """
@@ -115,8 +115,8 @@ def to_profile(rgba: np.ndarray, target: OutputProfile) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from svgwriter._internal._icc import lcms_available
-    >>> from svgwriter._internal._icc_output import output_profile, to_profile
+    >>> from svgwriter._internal._color._icc import lcms_available
+    >>> from svgwriter._internal._color._icc_output import output_profile, to_profile
     >>> red = np.array([[[255, 0, 0, 255]]], np.uint8)
     >>> to_profile(red, output_profile("display-p3")).tolist() if lcms_available() else [[[234, 51, 35, 255]]]
     [[[234, 51, 35, 255]]]

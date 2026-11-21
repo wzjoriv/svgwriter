@@ -20,7 +20,7 @@ from ._constants import (
 )
 
 if TYPE_CHECKING:
-    from ..._internal._icc_output import OutputProfile
+    from ..._internal._color._icc_output import OutputProfile
 
 __all__ = ["with_output_intent"]
 
@@ -69,7 +69,7 @@ def with_output_intent(data: bytes, target: OutputProfile) -> bytes:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._icc import lcms_available
+    >>> from svgwriter._internal._color._icc import lcms_available
     >>> data = svg.export.export(svg.Document(4, 4), "pdf", icc="srgb") if lcms_available() else b"/OutputIntents"
     >>> b"/OutputIntents" in data
     True

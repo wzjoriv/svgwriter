@@ -362,9 +362,9 @@ def _skia_rgba(data: bytes, *, managed: bool) -> np.ndarray:
 
 
 def _profiled_rgba(data: bytes, profile: bytes | str | None, intent: str | None) -> np.ndarray:
-    from ..._internal._icc import hint_missing, load_profile, pixels_to_srgb
-    from ..._internal._icc_constants import AUTO_PROFILE, SRGB_PROFILE
-    from ..._internal._icc_embedded import embedded_profile
+    from ..._internal._color._icc import hint_missing, load_profile, pixels_to_srgb
+    from ..._internal._color._icc_constants import AUTO_PROFILE, SRGB_PROFILE
+    from ..._internal._color._icc_embedded import embedded_profile
 
     if isinstance(profile, str):
         if profile.strip().lower() == SRGB_PROFILE:

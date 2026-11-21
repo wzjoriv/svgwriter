@@ -77,7 +77,7 @@ def embedded_profile(data: bytes) -> bytes | None:
 
     Examples
     --------
-    >>> from svgwriter._internal._icc_embedded import embedded_profile
+    >>> from svgwriter._internal._color._icc_embedded import embedded_profile
     >>> embedded_profile(b"plain bytes") is None
     True
     """
@@ -143,7 +143,7 @@ def embed_profile(data: bytes, profile: bytes) -> bytes:
     --------
     >>> import numpy as np
     >>> from svgwriter.ops import encode
-    >>> from svgwriter._internal._icc_embedded import embed_profile, embedded_profile
+    >>> from svgwriter._internal._color._icc_embedded import embed_profile, embedded_profile
     >>> png = encode(np.ones((1, 1, 4)))
     >>> embedded_profile(embed_profile(png, b"profile bytes"))
     b'profile bytes'

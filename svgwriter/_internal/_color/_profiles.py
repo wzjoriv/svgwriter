@@ -6,11 +6,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ._constants import BASE64_SUFFIX, DATA_URI
+from .._constants import BASE64_SUFFIX, DATA_URI
 from ._icc_constants import AUTO_PROFILE, COLOR_PROFILE, ICC_COLOR_RE, ICC_PAINTS, SRGB_PROFILE
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
+    from ...elements.core import Element
 
 __all__ = ["ProfileRef", "href_bytes", "profile_table", "resolve_profiles"]
 
@@ -40,7 +40,7 @@ def href_bytes(element: Element, href: str) -> bytes | None:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._profiles import href_bytes
+    >>> from svgwriter._internal._color._profiles import href_bytes
     >>> href_bytes(svg.Group(), "data:,abc")
     b'abc'
     """
@@ -50,7 +50,7 @@ def href_bytes(element: Element, href: str) -> bytes | None:
     from urllib.parse import unquote, unquote_to_bytes, urljoin, urlparse
     from urllib.request import url2pathname
 
-    from ._links import base_uri
+    from .._links import base_uri
 
     if href.startswith(DATA_URI):
         header, _, payload = href.partition(",")
@@ -83,7 +83,7 @@ def profile_table(root: Element) -> dict[str, ProfileRef]:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._profiles import profile_table
+    >>> from svgwriter._internal._color._profiles import profile_table
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.add(svg.ColorProfile("print", "data:,", id="p"))
     >>> sorted(profile_table(doc.root))
@@ -111,7 +111,7 @@ def _lookup(table: dict[str, ProfileRef], name: str) -> ProfileRef | None:
 
 
 def _converted(text: str, table: dict[str, ProfileRef]) -> str | None:
-    from ..color.color import Color
+    from ...color.color import Color
     from ._icc import color_to_srgb, hint_missing, load_profile
 
     match = ICC_COLOR_RE.match(text)
@@ -134,8 +134,8 @@ def _converted(text: str, table: dict[str, ProfileRef]) -> str | None:
 
 
 def _profiled_image(image: Element, table: dict[str, ProfileRef]) -> Any:
-    from ..attributes.cascade import computed
-    from ..elements.structure import Pixels
+    from ...attributes.cascade import computed
+    from ...elements.structure import Pixels
 
     setting = str(computed(image, COLOR_PROFILE, AUTO_PROFILE, []) or AUTO_PROFILE).strip()
     href = image.attributes.get("xlink:href")
@@ -174,14 +174,14 @@ def resolve_profiles(root: Element) -> None:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._profiles import resolve_profiles
+    >>> from svgwriter._internal._color._profiles import resolve_profiles
     >>> doc = svg.Document(10, 10)
     >>> rect = doc.rect(0, 0, 5, 5, fill="red icc-color(missing, 0.5)")
     >>> resolve_profiles(doc.root)
     >>> str(rect.get("fill"))
     'red'
     """
-    from ..elements.structure import Image
+    from ...elements.structure import Image
 
     table = profile_table(root)
     for element in root.iter():

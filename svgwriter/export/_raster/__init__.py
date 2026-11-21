@@ -14,7 +14,7 @@ from ._constants import DEFAULT_GIF_FPS, DEFAULT_QUALITY, ICC_FORMATS
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from ..._internal._icc_output import IccLike
+    from ..._internal._color._icc_output import IccLike
     from ...color.color import ColorLike
     from ...document import Document
 
@@ -47,8 +47,8 @@ def _profiled(frames: list[Any], icc: IccLike | None, encoder: Callable[[list[An
     """Encode sRGB *frames*, first converted to the *icc* profile, with the profile embedded."""
     if icc is None:
         return encoder(frames)
-    from ..._internal._icc_embedded import embed_profile
-    from ..._internal._icc_output import output_profile, to_profile
+    from ..._internal._color._icc_embedded import embed_profile
+    from ..._internal._color._icc_output import output_profile, to_profile
 
     target = output_profile(icc)
     if target.space != "RGB":
@@ -58,7 +58,7 @@ def _profiled(frames: list[Any], icc: IccLike | None, encoder: Callable[[list[An
 
 def _is_srgb(icc: IccLike) -> bool:
     """Whether *icc* names sRGB, so the rendered pixels are written as they are."""
-    from ..._internal._icc_output import output_profile
+    from ..._internal._color._icc_output import output_profile
 
     return output_profile(icc).srgb
 

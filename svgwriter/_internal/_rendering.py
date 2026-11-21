@@ -8,6 +8,7 @@ import math
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
+from ._color._profiles import resolve_profiles
 from ._conditions import apply_conditions
 from ._constants import CONTAINERS, NONE, PRIMITIVE_PREFIX, VISIBILITY
 from ._instances import expand_uses
@@ -15,7 +16,6 @@ from ._keywords import resolve_keywords
 from ._layers import ancestry, drawable_order
 from ._links import resolve_links
 from ._markers import expand_markers
-from ._profiles import resolve_profiles
 from ._servers import resolve_servers
 from ._stops import linear_rgb_stops
 from ._tiles import user_space_patterns
