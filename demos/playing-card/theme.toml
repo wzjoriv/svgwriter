@@ -1,0 +1,20 @@
+# The card's look: the table colour, the ink of the two suit colours and the index font.
+name = "playing-card"
+extends = "light"
+
+[palette]
+background = "#0f2a1d"     # the felt behind the card
+surface = "#fbfaf6"        # the card stock
+foreground = "#1c1917"     # black suits
+error = "#c2192f"          # red suits
+accent = "#d4a017"
+
+[fonts]
+family = "Georgia, 'Times New Roman', serif"
+
+[fonts.sizes]
+title = 26                 # the corner rank
+text = 18                  # the corner suit
+
+[roles.felt]
+fill = "{palette.background}"

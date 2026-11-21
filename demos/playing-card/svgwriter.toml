@@ -1,0 +1,11 @@
+# The playing card: `svgwriter preview` shows the controls beside the card, `svgwriter build` writes the
+# card at its starting values and the sweep animation.
+[project]
+name = "playing-card"
+entry = "main:outputs"    # the card page and the sweep scene
+theme = "theme.toml"
+
+[outputs]
+formats = ["svg", "png", "pdf", "gif"]
+png = { scale = 2 }
+gif = { fps = 12 }
