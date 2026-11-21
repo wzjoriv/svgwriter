@@ -57,12 +57,16 @@ graph = [
 math = [
     "ziamath>=0.11",
 ]
+color = [
+    "python-lcms2>=0.2.3",
+]
 test = [
     "pysvgwriter[office,plot,graph,math]",
     "pytest>=7",
     "ezdxf>=1.0",
     "pillow>=10",
     "fonttools>=4.40",
+    "python-lcms2>=0.2.3; python_version < '3.15'",
 ]
 dev = [
     "pysvgwriter[test,docs]",
