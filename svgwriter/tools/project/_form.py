@@ -80,7 +80,7 @@ def _input(name: str, control: Control, value: Any) -> tuple[str, str]:
         return "index", _radios(name, control, value, control.chips)
     if isinstance(control, MultiSelect):
         return "indices", _options(name, control, {control.index(item) for item in value}, multiple=True)
-    if isinstance(control, Segmented):
+    if isinstance(control, Segmented) and control.compact:
         return "index", _radios(name, control, value)
     if isinstance(control, Dropdown):
         return "index", _options(name, control, {control.index(value)}, multiple=False)

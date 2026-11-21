@@ -19,7 +19,6 @@ from ._constants import (
     LABEL_WIDTH,
     PANEL_SUMMARY,
     READOUT_WIDTH,
-    SEGMENTED_WRAP,
     SWATCH_SIZE,
 )
 from ._control import Control
@@ -80,7 +79,7 @@ def _input(w: Any, control: Control, value: Any, send: Callable[[Any], None]) ->
         if isinstance(control, MultiSelect):
             widget = w.SelectMultiple(options=options, value=tuple(control.index(item) for item in value))
             return _observe(widget, lambda raw: send(list(raw)))
-        if isinstance(control, Segmented) and len(options) <= SEGMENTED_WRAP:
+        if isinstance(control, Segmented) and control.compact:
             widget = shown = w.ToggleButtons(options=options, value=control.index(value),
                                              style={"button_width": "auto"})
         else:

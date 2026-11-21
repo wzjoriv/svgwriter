@@ -8,7 +8,6 @@ import pytest
 
 import svgwriter as svg
 from svgwriter.tools.widgets import Interactive, Recorder, Slider
-from svgwriter.tools.widgets._constants import SEGMENTED_WRAP
 
 
 def badge(radius=10, color="#0ea5e9", label="Hi"):
@@ -163,7 +162,7 @@ def test_notebook_backend_widgets() -> None:
         _ipywidgets._input(_ipywidgets._widgets(), svg.widgets.Control(), None, print)
 
 
-@pytest.mark.parametrize(("count", "kind"), [(SEGMENTED_WRAP, "ToggleButtons"), (SEGMENTED_WRAP + 1, "Dropdown")])
+@pytest.mark.parametrize(("count", "kind"), [(6, "ToggleButtons"), (7, "Dropdown")])
 def test_segmented_layout_by_option_count(count: int, kind: str) -> None:
     pytest.importorskip("ipywidgets")
     from svgwriter.tools.widgets import _ipywidgets
