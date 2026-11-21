@@ -142,7 +142,7 @@ def color_glyph_boxes(document: Document) -> Iterator[tuple[GlyphBox, Matrix, fl
     from ._paints import _paint
     from ._rendering import view_matrix
 
-    with document._sized():
+    with document._prepared():
         width, height = document_size(document)
         view = view_matrix(document, width, height)
         root = document.root

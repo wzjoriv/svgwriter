@@ -235,7 +235,7 @@ def snapshot(document: Document, time: float) -> Document:
 
     root = document.root.clone()
     root.__dict__["_source_path"] = document.root.__dict__.get("_source_path")
-    copy = Document(root=root)
+    copy = Document(root=root, theme=document.theme)
     animations = list(root.find_all(AnimationElement))
     base_t: dict[int, Matrix] = {}
     for animation in animations:

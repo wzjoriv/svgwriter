@@ -273,7 +273,7 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
     from ._layers import ancestry, drawable_order, image_matrix
     from ._rendering import renderable_copy, view_matrix
 
-    with document._sized():
+    with document._prepared():
         width, height = document_size(document)
         view = view_matrix(document, width, height)
         source = document.root

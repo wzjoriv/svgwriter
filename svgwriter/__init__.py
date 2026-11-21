@@ -39,6 +39,8 @@ io
     parser.
 builder
     Composite shapes (star, gear, arrow) and effects (shadow, glow).
+theme
+    Palettes, fonts and role styles applied as CSS classes (``Theme``).
 ops
     Boolean operations, text outlines, measurement, rendering and image
     compositing (skia).
@@ -56,7 +58,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from . import export, ops, video
+from . import export, ops, theme, video
 from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
 from .aliases import filter as filter  # noqa: A004, E402
@@ -93,6 +95,7 @@ from .elements import __all__ as _elements_all
 from .io.writer import SerializeOptions, to_string, write
 from .ops import interpolate, register_font, register_interpolator, text_to_path, unregister_interpolator
 from .pathdata import BBox, PathBuilder, PathData
+from .theme import THEMES, Theme
 from .transform import Matrix, Point, Transform
 from .video import FFmpegNotFoundError, Scene, register_renderer
 
@@ -156,6 +159,8 @@ __all__ = [
     "Strictness",
     "Style",
     "StyleSheet",
+    "THEMES",
+    "Theme",
     "Transform",
     "Unit",
     "ViewBox",
@@ -188,6 +193,7 @@ __all__ = [
     "register_renderer",
     "shape_factory",
     "text_to_path",
+    "theme",
     "unregister_interpolator",
     "to_string",
     "video",

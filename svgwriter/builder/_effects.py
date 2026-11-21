@@ -28,10 +28,12 @@ from ._constants import (
     DEFAULT_BLUR,
     DEFAULT_SHADOW_OFFSET,
     DEFAULT_SHADOW_OPACITY,
+    FALLBACK_INK,
     FILTER_EXTENT,
     FILTER_MARGIN,
     MARKER_SIZE,
 )
+from ._roles import with_role
 
 __all__ = ["arrow_marker", "drawing", "drop_shadow", "glow"]
 
@@ -127,7 +129,7 @@ def glow(radius: float = DEFAULT_BLUR, **kwargs: Any) -> Filter:
     return Filter(blurred, FeMerge(blurred, StandardInput.SOURCE_GRAPHIC), **kwargs)
 
 
-def arrow_marker(color: Color | str = "black", size: float = MARKER_SIZE, **kwargs: Any) -> Marker:
+def arrow_marker(color: Color | str | None = None, size: float = MARKER_SIZE, **kwargs: Any) -> Marker:
     """Build a filled triangular arrowhead for ``marker-end``.
 
     The marker orients itself along the line it decorates.
@@ -135,7 +137,8 @@ def arrow_marker(color: Color | str = "black", size: float = MARKER_SIZE, **kwar
     Parameters
     ----------
     color : Color or str, optional
-        Fill of the arrowhead. Defaults to ``"black"``.
+        Fill of the arrowhead. Defaults to None, which gives the head the theme role ``"arrow.head"``
+        (black when written without a document theme).
     size : float, optional
         Width and height of the marker. Defaults to 10.0.
     **kwargs
@@ -156,10 +159,11 @@ def arrow_marker(color: Color | str = "black", size: float = MARKER_SIZE, **kwar
     >>> arrow_marker("red", 4).to_string(xml_declaration=False, pretty=False)
     '<marker viewBox="0 0 4 4" refX="4" refY="2" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 L4 2 L0 4 Z" fill="red"/></marker>'
     """
-    head = PathBuilder().move_to(0, 0).line_to(size, size / 2).line_to(0, size).close()
+    outline = PathBuilder().move_to(0, 0).line_to(size, size / 2).line_to(0, size).close()
+    head = Path(outline, fill=color) if color is not None else with_role(Path(outline), "arrow.head", (), {"fill": FALLBACK_INK})
     kwargs.setdefault("orient", "auto")
     return Marker(
-        Path(head, fill=color),
+        head,
         ref_x=size,
         ref_y=size / 2,
         marker_width=size,

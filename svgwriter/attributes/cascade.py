@@ -321,7 +321,8 @@ def resolve_styles(root: Element) -> None:
 
     The tree is modified in place: matching rule declarations and inline
     ``style`` values are written as attributes and the ``style`` attribute is
-    removed. Renderers that ignore CSS then see the same result. The CSS-only ``marker``
+    removed; ``<style>`` sheets, now folded in, are removed too, so later lookups do not apply
+    their rules a second time over inline values. Renderers that ignore CSS then see the same result. The CSS-only ``marker``
     shorthand becomes ``marker-start``, ``marker-mid`` and ``marker-end``, and CSS units, which
     are case-insensitive (``20PX``), are written in the lower case attributes require.
 
@@ -353,3 +354,6 @@ def resolve_styles(root: Element) -> None:
             if name in PRESENTATION_ATTRIBUTES or name in ("transform",):
                 dimension = CSS_DIMENSION_RE.match(str(value))
                 element.attributes[name] = (dimension[1] + dimension[2].lower()) if dimension else value
+    for sheet in list(root.iter("style")):
+        if sheet.parent is not None:
+            sheet.parent.remove(sheet)

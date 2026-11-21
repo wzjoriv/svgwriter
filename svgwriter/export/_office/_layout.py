@@ -74,7 +74,7 @@ def split_equations(document: Document) -> tuple[Document, list[Equation]]:
     from ...document import Document
     from ._omml import latex_to_omml
 
-    copy = Document(root=document.root.clone())
+    copy = Document(root=document.root.clone(), theme=document.theme)
     equations: list[Equation] = []
     for group in [element for element in copy.root.iter() if element.get(LATEX_SOURCE) is not None]:
         if any(ancestor.get(LATEX_SOURCE) is not None for ancestor in _ancestors(group)):

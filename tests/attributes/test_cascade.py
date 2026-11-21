@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 import svgwriter as svg
-from svgwriter.attributes.cascade import matches, parse_css, resolve_styles
+from svgwriter.attributes.cascade import computed, matches, parse_css, resolve_styles
 
 
 def tree() -> tuple[svg.Svg, svg.Group, svg.Rect]:
@@ -84,3 +84,11 @@ def test_sibling_combinators_and_backtracking(selector, expected):
         '<svg xmlns="http://www.w3.org/2000/svg"><g><circle id="c0"/><ellipse class="a"/><circle id="c1"/>'
         '<ellipse class="a b"/><circle id="c2"/></g></svg>')
     assert [e.id for e in doc.root.iter("circle") if matches(e, selector)] == expected
+
+
+def test_resolved_sheets_are_removed_so_inline_values_keep_winning():
+    root = svg.Svg(svg.StyleElement(".a { fill: blue }"), svg.Rect(class_="a", style="fill:red"))
+    resolve_styles(root)
+    rect = root.find(svg.Rect)
+    assert rect.get("fill") == "red" and root.find(svg.StyleElement) is None
+    assert computed(rect, "fill") == "red"

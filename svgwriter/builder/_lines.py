@@ -33,7 +33,7 @@ def _steps(origin: float, extent: float, count: int | None, spacing: float | Non
     return [origin + spacing * index for index in range(total + 1)]
 
 
-@shape_factory("grid")
+@shape_factory("grid", role="grid")
 def grid(
     x: float,
     y: float,
@@ -82,7 +82,7 @@ def grid(
     --------
     >>> from svgwriter.builder import grid
     >>> str(grid(0, 0, 20, 10, rows=1, cols=2))
-    '<path d="M0 0 L20 0 M0 10 L20 10 M0 0 L0 10 M10 0 L10 10 M20 0 L20 10" fill="none"/>'
+    '<path d="M0 0 L20 0 M0 10 L20 10 M0 0 L0 10 M10 0 L10 10 M20 0 L20 10" fill="none" class="role-grid"/>'
     >>> int(grid(0, 0, 20, 20, spacing=5).bbox.width)
     20
     """
@@ -103,7 +103,7 @@ def grid(
     return Path(builder, **kwargs)
 
 
-@shape_factory("spiral")
+@shape_factory("spiral", role="line")
 def spiral(cx: float, cy: float, *, turns: float, start_radius: float, end_radius: float, **kwargs: Any) -> Path:
     """Build an Archimedean spiral from smooth cubic segments.
 
@@ -239,7 +239,7 @@ def _polyline(
         index += 1
 
 
-@shape_factory("wave")
+@shape_factory("wave", role="line")
 def wave(
     x: float,
     y: float,

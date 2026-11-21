@@ -63,7 +63,7 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
         metadata.fAuthor = author
     pdf_document = skia.PDF.MakeDocument(stream, metadata)
     for page in document if isinstance(document, Sequence) else [document]:
-        with page._sized():
+        with page._prepared():
             width, height = document_size(page)
             canvas = pdf_document.beginPage(width, height)
             paint_tree(canvas, page.root, lambda text: text, width, height,

@@ -12,10 +12,12 @@ from ._document.access import Access
 from ._document.ingest import SupportsSVG, to_element
 from ._document.output import Output
 from ._document.sizing import Sizing
+from ._document.theming import Theming
 from ._internal._tree import attach_cursor
 from ._internal._typing import AnyPath, Stack
 from .elements.core import Element, ElementFactory
 from .elements.structure import Defs, Desc, Group, Svg, Title
+from .theme.theme import Theme
 
 if TYPE_CHECKING:
     from .attributes.style import StyleSheet
@@ -28,7 +30,7 @@ __all__ = ["Document"]
 E = TypeVar("E", bound=Element)
 
 
-class Document(Sizing, Output, Access, ElementFactory):
+class Document(Sizing, Theming, Output, Access, ElementFactory):
     """An SVG document under construction.
 
     Shortcut methods (``doc.circle(...)``, ``doc.linear_gradient(...)``)
@@ -42,6 +44,9 @@ class Document(Sizing, Output, Access, ElementFactory):
         Defaults to None, which sizes the canvas from the content on output.
     root : Svg, optional
         Use an existing root instead of creating one. Defaults to None.
+    theme : Theme or str, optional
+        Styles elements marked with ``as_role``. Defaults to None, which takes
+        :meth:`Theme.current() <svgwriter.Theme.current>` (``"light"`` outside a ``with theme:`` block).
     **kwargs
         Forwarded to :class:`~svgwriter.elements.Svg`.
 
@@ -71,13 +76,15 @@ class Document(Sizing, Output, Access, ElementFactory):
     'rect'
     """
 
-    def __init__(self, width: float | None = None, height: float | None = None, *, root: Svg | None = None, **kwargs: Any) -> None:
+    def __init__(self, width: float | None = None, height: float | None = None, *, root: Svg | None = None,
+                 theme: Theme | str | None = None, **kwargs: Any) -> None:
         if root is None:
             if width is not None and height is not None:
                 root = Svg.with_size(width, height, **kwargs)
             else:
                 root = Svg(width=width, height=height, **kwargs)
         self.root = root
+        self.theme = Theme.of(theme)
         self._stack: Stack[Element] = Stack([root])
         attach_cursor(root, self._stack)
 

@@ -30,7 +30,11 @@ badge = builder.regular_polygon(180, 85, 14, 6, corner_radius=3, fill="gold")
 cutout = badge - builder.cross(180, 85, 14)
 ```
 
-`grid`, `spiral` and `wave` return open paths with `fill="none"`, so give them a `stroke`.
+Presets carry a [theme role](../guides/themes.md), so they follow the document theme: registered shapes
+are `shape` (filled with the palette's primary color), `callout` is `box`, `arrow` is `arrow.line`, `grid`
+is `grid`, `spiral` and `wave` are `line`; `outline`, `dashed_line`, `dot` and the default `arrow_marker`
+head are `outline`, `line`, `dot` and `arrow.head`. Presentation keywords you pass go into the inline
+`style`, so they win over the role. `grid`, `spiral` and `wave` return open paths with `fill="none"`.
 `wave` takes `kind="sine"` (smooth cubic segments), `"square"`, `"triangle"` or `"sawtooth"`.
 
 ## Your own presets
@@ -38,6 +42,8 @@ cutout = badge - builder.cross(180, 85, 14)
 A preset is a function that returns an element. Decorating it with `shape_factory(name)` registers it
 in `SHAPES`, the registry behind `python -m svgwriter shapes`, and checks at call time that it really
 returns an element. The name must be unique; registering it twice raises `ValueError`.
+`shape_factory(name, role="shape")` gives the built elements a theme role; `role=None` leaves them
+unthemed.
 
 ```python
 import svgwriter as svg

@@ -116,6 +116,45 @@ class StyleMethods:
         merged = self.classes + [n for n in names if n not in self.classes]
         self.attributes["class"] = " ".join(merged)
 
+    @chainable
+    def as_role(self, *roles: str) -> None:
+        """Mark this element with theme roles; the document's theme styles it through CSS classes.
+
+        Presentation attributes already set move into the inline ``style`` so they keep priority over
+        the role, as CSS rules otherwise override attributes. Attributes set later are overridden.
+
+        Parameters
+        ----------
+        *roles : str
+            Role names such as ``"box"``, ``"title"`` or ``"arrow.head"``.
+
+        Raises
+        ------
+        ThemeError
+            If a role name is malformed.
+
+        See Also
+        --------
+        svgwriter.Theme : Defines the role styles.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> box = svg.rect(0, 0, 10, 10, stroke="red").as_role("box")
+        >>> box.classes, box.style["stroke"]
+        (['role-box'], 'red')
+        >>> doc = svg.Document(10, 10, theme="dark")
+        >>> doc += box
+        >>> ".role-box" in doc.to_string()
+        True
+        """
+        from ...theme.theme import Theme
+
+        names = [Theme.class_name(role) for role in roles]
+        if isinstance(self, PresentationMethods):
+            self.to_css()
+        self.add_class(*names)
+
     @property
     def style(self) -> Style:
         """A copy of the ``style`` attribute; assign to change it.

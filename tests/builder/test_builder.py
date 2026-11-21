@@ -8,11 +8,23 @@ from tests.conftest import wellformed
 
 
 class TestPresets:
-    def test_partials(self) -> None:
+    def test_presets(self) -> None:
         assert builder.outline(0, 0, 5, 5).get("fill") == "none"
+        assert builder.outline(0, 0, 5, 5, stroke="red").style["stroke"] == "red"
         assert builder.dashed_line(0, 0, 5, 5).get("stroke-dasharray") == (4, 2)
         assert 'stroke-dasharray="4 2"' in str(builder.dashed_line(0, 0, 1, 1))
-        assert builder.dot(3, 4).get("r") == 2 and builder.dot.func is svg.Circle
+        assert builder.dashed_line(0, 0, 1, 1, stroke_dasharray="1").style["stroke-dasharray"] == "1"
+        assert builder.dot(3, 4).get("r") == 2 and builder.dot(3, 4).classes == ["role-dot"]
+
+    def test_presets_follow_the_document_theme(self) -> None:
+        for name in ("light", "dark"):
+            doc = svg.Document(20, 20, theme=name)
+            doc += [builder.outline(1, 1, 18, 18), builder.dashed_line(0, 10, 20, 10), builder.dot(10, 10)]
+            doc += builder.star(10, 10, 5, stroke="red")
+            text = doc.to_string()
+            theme = svg.Theme.get(name)
+            for role in ("outline", "line", "dot", "shape"):
+                assert str(theme.css([role])) in text
 
     def test_duplicates_of_the_aliases_are_gone(self) -> None:
         for name in ("rect", "circle", "document", "linear_gradient"):
@@ -24,13 +36,24 @@ class TestRegistry:
         assert {"star", "polygon", "gear", "arrow"} <= set(svg.SHAPES.names())
         star = svg.SHAPES.get("star")(50, 50, 40, fill="gold")
         assert len(star.points) == 10
-        assert star.get("fill") == "gold"
+        assert star.style["fill"] == "gold" and star.classes == ["role-shape"]
         assert builder.star.__name__ == "star"
         assert builder.star.__wrapped__ is not None  # type: ignore[attr-defined]
         assert len(svg.SHAPES.get("polygon")(0, 0, 5, sides=5).points) == 5
         assert len(svg.Polygon.regular(0, 0, 5).points) == 6
         assert len(builder.gear(0, 0, 10, teeth=8).points) == 32
         assert builder.arrow(0, 0, 10, 0).get("fill") == "none"
+        assert builder.arrow(0, 0, 10, 0).classes == ["role-arrow-line"]
+
+    def test_unthemed_plugin(self) -> None:
+        @svg.shape_factory("test-plain", role=None)
+        def plain(**kwargs: object) -> svg.Rect:
+            return svg.Rect(0, 0, 1, 1, **kwargs)
+
+        try:
+            assert plain(fill="red").get("fill") == "red" and plain().classes == []
+        finally:
+            svg.SHAPES.remove("test-plain")
 
     def test_plugin_registration_and_validation(self) -> None:
         @svg.shape_factory("test-bad")
@@ -76,3 +99,14 @@ class TestEffects:
         assert doc.root.id == "pic"
         assert doc.root.find(svg.Circle).get("r") == 8  # type: ignore[union-attr]
         assert picture.__name__ == "picture"
+
+
+class TestThemedMarker:
+    def test_default_head_follows_the_theme(self) -> None:
+        marker = svg.builder.arrow_marker()
+        head = marker[0]
+        assert head.classes == ["role-arrow-head"] and head.get("fill") == "black"
+        doc = svg.Document(20, 20, theme="dark")
+        doc.define(marker)
+        assert ".role-arrow-head { fill:#e5e7eb" in doc.to_string()
+        assert svg.builder.arrow_marker("red")[0].classes == []

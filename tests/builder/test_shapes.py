@@ -19,7 +19,7 @@ class TestRegularPolygon:
     def test_sharp_polygon_is_a_polygon(self) -> None:
         hexagon = builder.regular_polygon(10, 20, 5, 6, fill="red")
         assert hexagon.tag == "polygon" and len(hexagon.points) == 6
-        assert hexagon.get("fill") == "red"
+        assert hexagon.style["fill"] == "red"
         assert hexagon.bbox.y == pytest.approx(15)
 
     def test_rotation_moves_the_first_corner(self) -> None:
@@ -31,7 +31,7 @@ class TestRegularPolygon:
         sharp = builder.regular_polygon(0, 0, 20, 5)
         rounded = builder.regular_polygon(0, 0, 20, 5, corner_radius=6, stroke="black")
         valid(rounded)
-        assert rounded.tag == "path" and rounded.get("stroke") == "black"
+        assert rounded.tag == "path" and rounded.style["stroke"] == "black"
         assert rounded.bbox.height < sharp.bbox.height
         assert str(rounded.d).count("A") == 5
 
@@ -58,7 +58,7 @@ class TestStarCorners:
     def test_rounded_star_is_a_closed_path(self) -> None:
         star = builder.star(0, 0, 40, corner_radius=5, fill="gold")
         valid(star)
-        assert star.tag == "path" and star.get("fill") == "gold"
+        assert star.tag == "path" and star.style["fill"] == "gold"
         assert str(star.d).count("A") == 10
         assert str(star.d).endswith("Z")
         assert star.bbox.height < builder.star(0, 0, 40).bbox.height
@@ -82,7 +82,7 @@ class TestHeart:
         valid(heart)
         assert str(heart.d).count("C") == 6
         assert str(heart.d).endswith("Z")
-        assert heart.get("fill") == "red"
+        assert heart.style["fill"] == "red"
 
     def test_transforms_and_booleans(self) -> None:
         left, right = builder.heart(0, 0, 40), builder.heart(30, 0, 40)
@@ -125,7 +125,7 @@ class TestCross:
         sign = builder.cross(10, 20, 30, fill="green")
         assert sign.tag == "polygon" and len(sign.points) == 12
         assert (sign.bbox.x, sign.bbox.y, sign.bbox.width, sign.bbox.height) == pytest.approx((-5, 5, 30, 30))
-        assert sign.get("fill") == "green"
+        assert sign.style["fill"] == "green"
 
     def test_thickness(self) -> None:
         thin = builder.cross(0, 0, 40, thickness=4)
@@ -147,7 +147,7 @@ class TestGrid:
         text = str(sheet.d)
         assert text.count("M") == 3 + 5
         assert (sheet.bbox.x, sheet.bbox.y, sheet.bbox.width, sheet.bbox.height) == (5, 5, 20, 10)
-        assert sheet.get("fill") == "none" and sheet.get("stroke") == "gray"
+        assert sheet.get("fill") == "none" and sheet.style["stroke"] == "gray"
 
     def test_spacing(self) -> None:
         sheet = builder.grid(0, 0, 50, 30, spacing=10)

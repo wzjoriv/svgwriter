@@ -66,7 +66,7 @@ def heart(cx: float, cy: float, size: float, **kwargs: Any) -> Path:
     return Path(builder, **kwargs)
 
 
-@shape_factory("callout")
+@shape_factory("callout", role="box")
 def callout(
     x: float,
     y: float,

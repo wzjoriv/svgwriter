@@ -15,6 +15,7 @@ dependencies = [
     "skia-python>=87",
     "numpy>=1.24",
     "uharfbuzz>=0.40",
+    "tomli>=2; python_version < \"3.11\"",
 ]
 keywords = ["svg", "vector", "graphics", "drawing", "animation"]
 classifiers = [
@@ -149,5 +150,5 @@ drop = ["image/png", "text/html"]
 
 [tool.devkit.logo]
 source = "examples.12_logo:logo"
-variants = { dark = { theme = "dark" }, mono = { mono = true } }
+variants = { dark = { theme = "dark" }, mono = { theme = "mono" } }
 output = "docs/_static/logo"
