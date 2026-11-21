@@ -83,3 +83,15 @@ def test_filtered_image_runs_through_the_engine() -> None:
                   '<feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 1  0 0 0 0 0  0 0 0 1 0"/></filter>'
                   f'<image width="100" height="100" xlink:href="{png_uri((1, 0, 0))}" filter="url(#f)"/>')
     assert np.allclose(pixels[50, 50], LIME, atol=0.02)
+
+
+@pytest.mark.parametrize("primitive, lime, white", [
+    ('<feOffset dx="0.25" dy="0.25"/>', (65, 65), (25, 25)),
+    ('<feMorphology operator="dilate" radius="0.25"/>', (15, 15), (5, 5)),
+    ('<feGaussianBlur stdDeviation="0.25"/>', (40, 68), (40, 97)),
+])
+def test_bounding_box_primitive_units_scale_primitive_lengths(primitive: str, lime: tuple[int, int],
+                                                              white: tuple[int, int]) -> None:
+    pixels = draw('<filter id="f" primitiveUnits="objectBoundingBox" x="-1" y="-1" width="3" height="3">'
+                  f'{primitive}</filter><rect x="20" y="20" width="40" height="40" fill="lime" filter="url(#f)"/>')
+    assert pixels[lime][0] < 0.9 and np.allclose(pixels[white], WHITE, atol=0.02)

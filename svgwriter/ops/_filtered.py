@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 
 import skia
 
+from .._internal._constants import OBJECT_BOUNDING_BOX, USER_SPACE
 from .._internal._layers import ancestry, viewport_extent
 from ._canvas import paint_svg
 from ._constants import ENGINE_PRIMITIVES, PICTURE_BOUNDS
@@ -32,8 +33,8 @@ def needs_engine(element: Element) -> bool:
     Returns
     -------
     bool
-        True for a filtered embedded image, which that renderer cannot draw, and for a filter
-        holding ``feImage``, ``feTile`` or ``feConvolveMatrix``.
+        True for a filtered embedded image, which that renderer cannot draw, for a filter in
+        bounding-box ``primitiveUnits`` and for one holding a primitive it cannot run.
 
     Examples
     --------
@@ -47,7 +48,8 @@ def needs_engine(element: Element) -> bool:
     effects = referenced(element, "filter") if element.get("filter") is not None else None
     if effects is None:
         return False
-    return (isinstance(element, Image) and element.pixels is not None) or any(
+    return (isinstance(element, Image) and element.pixels is not None) or str(
+        effects.get("primitiveUnits", USER_SPACE)) == OBJECT_BOUNDING_BOX or any(
         getattr(child, "tag", None) in ENGINE_PRIMITIVES for child in effects)
 
 
@@ -117,7 +119,7 @@ def draw_filtered(canvas: skia.Canvas, element: Element, root: Element, wrap: Ca
         paint_svg(recording, _painted(root, wrap, hidden(root, [], atomic=needs_engine), copy), width, height)
         return recorder.finishRecordingAsPicture()
 
-    bounding = str(effects.get("primitiveUnits", "userSpaceOnUse")) == "objectBoundingBox"
+    bounding = str(effects.get("primitiveUnits", USER_SPACE)) == OBJECT_BOUNDING_BOX
     graph = image_filter(effects, Frame(box, region, viewport, bounding, element_source))
     others = hidden(root, [element], atomic=needs_engine)
     saved = {name: element.attributes.pop(name) for name in ("filter", "opacity") if name in element.attributes}

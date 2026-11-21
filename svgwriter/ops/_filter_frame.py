@@ -109,6 +109,13 @@ class Frame:
     bounding: bool
     element_source: Callable[[Element], Any]
 
+    @property
+    def scale(self) -> tuple[float, float]:
+        """User units per primitive unit along x and y: the box size in bounding-box units, else 1."""
+        if self.bounding and self.box is not None:
+            return (self.box.width, self.box.height)
+        return (1.0, 1.0)
+
     def subregion(self, primitive: Element, default: skia.Rect) -> skia.Rect:
         """The primitive subregion of *primitive*, clipped to the filter region.
 

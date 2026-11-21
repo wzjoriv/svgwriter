@@ -99,7 +99,7 @@ def image_filter(filter_element: Element, frame: Frame) -> Any:
         elif primitive.tag in FRAMED:
             made = _framed(primitive, first, second, frame, area, source_area)
         else:
-            made = primitive_filter(primitive, first, second)
+            made = primitive_filter(primitive, first, second, frame.scale)
         if isinstance(made, tuple):
             made = skia.ImageFilters.Merge([_linear(resolve(name, previous)) if linear else resolve(name, previous)
                                             for name in made[1]])
