@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from .._internal._constants import DEFAULT_FONT_SIZE
 from .._internal._typography._fonts import font_size, font_weight, resolve_font
 from ..elements import Transformable
 from ..elements.core import Element
@@ -60,7 +61,7 @@ def text_box(text: Element) -> BBox | None:
         source = glyph.source if glyph.source is not None else text
         if id(source) not in metrics:
             font = resolve_font(str(source.computed("font-family", "sans-serif")),
-                                font_size(source.computed("font-size", None)),
+                                font_size(source.computed("font-size", DEFAULT_FONT_SIZE)),
                                 font_weight(source.computed("font-weight", "normal")),
                                 str(source.computed("font-style", "")) in ("italic", "oblique"))
             measured = font.getMetrics()
