@@ -10,13 +10,13 @@ from typing import Any, Final, TypeAlias, overload
 
 from .._internal._constants import (
     CM_PER_INCH,
-    DEFAULT_DPI,
     DEFAULT_FONT_SIZE,
     DEFAULT_PRECISION,
     EX_PER_EM,
     MM_PER_INCH,
     PC_PER_INCH,
     PT_PER_INCH,
+    PX_PER_INCH,
 )
 from .._internal._enums import Keyword
 from .._internal._numbers import format_number
@@ -159,7 +159,7 @@ class Length:
     def to_user_units(
         self,
         *,
-        dpi: float = DEFAULT_DPI,
+        dpi: float = PX_PER_INCH,
         font_size: float = DEFAULT_FONT_SIZE,
         reference: float | None = None,
     ) -> float:
@@ -270,7 +270,7 @@ class Length:
                              "relative units need a font size or reference length")
         pixels = self.to_user_units()
         per_inch = _ABSOLUTE_PER_INCH.get(target)
-        return Length(pixels if per_inch is None else pixels / DEFAULT_DPI * per_inch, target)
+        return Length(pixels if per_inch is None else pixels / PX_PER_INCH * per_inch, target)
 
     def _other(self, other: object, operation: str) -> Length:
         """*other* as a length in this length's unit, for addition and comparison."""

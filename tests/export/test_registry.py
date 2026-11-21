@@ -84,7 +84,7 @@ class TestFormats:
 
     def test_eps_header_and_flip(self) -> None:
         text = drawing().export("eps").decode()
-        assert text.startswith("%!PS-Adobe-3.0 EPSF-3.0") and "%%BoundingBox: 0 0 40 20" in text
+        assert text.startswith("%!PS-Adobe-3.0 EPSF-3.0") and "%%BoundingBox: 0 0 30 15" in text
         assert "0 20 moveto" in text and text.rstrip().endswith("%%EOF")
 
     def test_formats_without_images_warn_about_them(self) -> None:

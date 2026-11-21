@@ -94,7 +94,7 @@ def text_runs(document: Document, *, color_glyphs: bool = True) -> list[TextRun]
     """
     from ..attributes.cascade import rules_of
     from ..elements import Text
-    from ..ops.render import document_size
+    from ..ops.render import page_size
     from ._flatten import _number
     from ._layers import ancestry
     from ._paints import _paint
@@ -102,7 +102,7 @@ def text_runs(document: Document, *, color_glyphs: bool = True) -> list[TextRun]
 
     runs: list[TextRun] = []
     with document._prepared():
-        width, height = document_size(document)
+        width, height = page_size(document)
         view = view_matrix(document, width, height)
         root = document.root
         rules = rules_of(root)

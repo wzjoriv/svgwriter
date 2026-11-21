@@ -17,6 +17,8 @@ from ._constants import (
     LATEX_SPECIALS,
     LINE_SPREAD,
     MONOSPACE_WORDS,
+    PX_PER_BP,
+    PX_PER_TEX_PT,
     SERIF_WORDS,
     TIKZ_CAPS,
     TIKZ_EMOJI_PIXELS,
@@ -68,7 +70,7 @@ def _family(family: str) -> str:
 def _node(run: Any, color: Callable[[Color], str]) -> str:
     """A text run as a ``\\node`` anchored at its baseline start, sized, coloured and turned like the SVG."""
     matrix = run.matrix
-    size = run.size * math.sqrt(abs(matrix.determinant))
+    size = run.size * math.sqrt(abs(matrix.determinant)) / PX_PER_TEX_PT
     angle = math.degrees(math.atan2(matrix.b, matrix.a))
     font = f"\\fontsize{{{_n(size)}}}{{{_n(size * LINE_SPREAD)}}}\\selectfont"
     font += _family(run.family)
@@ -100,7 +102,7 @@ def _shading_options(shading: Shading, color: Callable[[Color], str]) -> list[st
 
 
 def to_tikz(document: Document, *, standalone: bool = False, text: bool = True) -> str:
-    """A ``tikzpicture`` in the document's user units (1 unit = 1 pt, y down as in SVG).
+    """A ``tikzpicture`` at the document's physical size: 1 user unit = 0.75 bp (96 per inch), y down as in SVG.
 
     The document is flattened first: gradients become TikZ shadings and images are skipped. Text is
     written as ``\\node`` commands typeset by LaTeX (``text=False`` writes glyph outlines instead).
@@ -158,12 +160,12 @@ def to_tikz(document: Document, *, standalone: bool = False, text: bool = True) 
             if item.evenodd:
                 options.append("even odd rule")
         if item.stroke is not None and item.stroke_width > 0:
-            options += [f"draw={color(item.stroke)}", f"line width={_n(item.stroke_width)}pt",
+            options += [f"draw={color(item.stroke)}", f"line width={_n(item.stroke_width / PX_PER_BP)}bp",
                         f"line cap={TIKZ_CAPS.get(item.linecap, 'butt')}", f"line join={TIKZ_JOINS.get(item.linejoin, 'miter')}"]
             if item.stroke_opacity < 1:
                 options.append(f"draw opacity={_n(item.stroke_opacity)}")
             if item.dashes:
-                pattern = " ".join(f"{'on' if i % 2 == 0 else 'off'} {_n(d)}pt"
+                pattern = " ".join(f"{'on' if i % 2 == 0 else 'off'} {_n(d / PX_PER_BP)}bp"
                                    for i, d in enumerate(item.dashes * (2 if len(item.dashes) % 2 else 1)))
                 options.append(f"dash pattern={pattern}")
         if not options:
@@ -173,7 +175,7 @@ def to_tikz(document: Document, *, standalone: bool = False, text: bool = True) 
     definitions = [f"\\definecolor{{{name}}}{{RGB}}{{{r},{g},{b}}}" for (r, g, b), name in colors.items()]
     picture = "\n".join([
         *definitions,
-        "\\begin{tikzpicture}[x=1pt, y=-1pt]",
+        f"\\begin{{tikzpicture}}[x={_n(1 / PX_PER_BP)}bp, y={_n(-1 / PX_PER_BP)}bp]",
         f"  \\useasboundingbox (0,0) rectangle ({_n(scene.width)},{_n(scene.height)});",
         *body,
         "\\end{tikzpicture}",

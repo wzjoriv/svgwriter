@@ -121,7 +121,7 @@ doc = svg.Document(200, 150)
 doc.add(Network([3, 5, 2]))
 ```
 
-`add` also takes objects from other libraries: matplotlib figures (`savefig`), anything with
+`add` also takes objects from other libraries: matplotlib figures (`savefig`), ziaplot plots, anything with
 `_repr_svg_` (parsed into elements), anything with only `_repr_png_` or `_repr_jpeg_` (an `<image>`),
 and numpy pixel arrays.
 
@@ -135,7 +135,7 @@ and stay editable there. With `doc.add(fig)` in the other direction, figures and
 
 networkx, python-igraph and rustworkx graphs draw themselves: `doc.add(G)`, or
 `svgwriter.ops.draw_graph(G, layout="circular", node_radius=8)` for options. Install the library
-with its extra: `pysvgwriter[graph]` (networkx), `pysvgwriter[igraph]` or `pysvgwriter[rustworkx]`.
+with `pysvgwriter[graph]` (all three), or install just the one you use.
 Nodes are circles with ids `node-<name>`, edges are lines (arcs when a directed edge runs both ways)
 with arrowheads for directed graphs, and node or edge attributes (`fill`, `radius`, `label`,
 `stroke`, `width`) style single items; `edge_labels=True` writes each edge's `label` or `weight`.

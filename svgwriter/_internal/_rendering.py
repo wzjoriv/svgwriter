@@ -268,11 +268,11 @@ def page_box(document: Document, element: Element) -> tuple[BBox | None, float]:
     >>> page_box(doc, box)
     (BBox(x=2.0, y=2.0, width=8.0, height=8.0), 2.0)
     """
-    from ..ops.render import document_size
+    from ..ops.render import page_size
     from ..pathdata.data import BBox
 
     with document._prepared():
-        width, height = document_size(document)
+        width, height = page_size(document)
         matrix = view_matrix(document, width, height) @ ancestry(element, document.root)[0]
     box = element.local_bbox()  # type: ignore[attr-defined]
     scale = math.sqrt(abs(matrix.determinant))

@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from ..._internal._constants import PX_PER_PT
 from ...transform.matrix import Matrix
 from ._constants import ENCRYPT_RE, HEADER_WINDOW, PDF_HEADER
 from ._pdf_objects import _content, _inherited, _media_box, _objects, _pages
@@ -31,7 +32,8 @@ def read_pdf(data: bytes, *, page: int = 0) -> Document:
     Returns
     -------
     Document
-        A document the size of the page's ``MediaBox`` in points, y pointing down.
+        A document the size of the page's ``MediaBox`` in user units, 96 per inch
+        (4/3 per point), y pointing down.
 
     Raises
     ------
@@ -77,12 +79,12 @@ def read_pdf(data: bytes, *, page: int = 0) -> Document:
         raise ValueError(f"page {page} out of range: the PDF file has {len(pages)} page(s)")
     leaf = pages[page]
     x0, y0, x1, y1 = _media_box(objects, leaf)
-    painter = _Painter(objects, Matrix(1.0, 0.0, 0.0, -1.0, -x0, y1))
-    width, height = x1 - x0, y1 - y0
+    painter = _Painter(objects, Matrix(PX_PER_PT, 0.0, 0.0, -PX_PER_PT, -x0 * PX_PER_PT, y1 * PX_PER_PT))
+    width, height = (x1 - x0) * PX_PER_PT, (y1 - y0) * PX_PER_PT
     painter.page = [("M", (0.0, 0.0)), ("L", (width, 0.0)), ("L", (width, height)), ("L", (0.0, height)), ("Z", ())]
     resources = _inherited(objects, leaf, "Resources")
     painter.run(_content(objects, leaf), resources if isinstance(resources, dict) else {})
-    return to_document(painter.shapes, (0.0, 0.0, x1 - x0, y1 - y0))
+    return to_document(painter.shapes, (0.0, 0.0, width, height))
 
 
 def page_count(data: bytes) -> int:

@@ -26,7 +26,6 @@ __all__ = [
     "COMPLEX_SCRIPT_START",
     "CONTAINERS",
     "CREATE_DRAW_SHARE",
-    "DEFAULT_DPI",
     "DEFAULT_DURATION",
     "DEFAULT_FAMILY",
     "DEFAULT_FONT_SIZE",
@@ -136,6 +135,8 @@ __all__ = [
     "PC_PER_INCH",
     "PERCENT",
     "PT_PER_INCH",
+    "PX_PER_INCH",
+    "PX_PER_PT",
     "PULSE_SCALE",
     "RENDER_LANGUAGE",
     "RGBA_CHANNELS",
@@ -181,10 +182,11 @@ DEFAULT_PRECISION: Final = 4
 DEFAULT_INDENT: Final = "  "
 INDEFINITE: Final = "indefinite"
 
-DEFAULT_DPI: Final = 96.0
+PX_PER_INCH: Final = 96.0
 DEFAULT_FONT_SIZE: Final = 16.0
 EX_PER_EM: Final = 0.5
 PT_PER_INCH: Final = 72.0
+PX_PER_PT: Final = PX_PER_INCH / PT_PER_INCH
 PC_PER_INCH: Final = 6.0
 MM_PER_INCH: Final = 25.4
 CM_PER_INCH: Final = 2.54

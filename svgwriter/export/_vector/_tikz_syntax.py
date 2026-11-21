@@ -94,14 +94,20 @@ def _style_table(text: str, picture: str) -> dict[str, list[Pair]]:
 
 
 def _dimension(text: str) -> tuple[float, bool]:
-    """A length in points and whether it carried a unit."""
+    """A length in user units and whether it carried a unit; a bare number is returned as written."""
     match = DIMENSION_RE.match(text)
     if match is None:
         raise ValueError(f"not a TikZ dimension: {text!r}")
     value, unit = float(match.group(1)), match.group(2)
     if unit is not None and unit not in UNITS:
         raise ValueError(f"unknown TeX unit: {unit!r}")
-    return value * UNITS.get(unit or "pt", 1.0), unit is not None
+    return (value if unit is None else value * UNITS[unit]), unit is not None
+
+
+def _measure(text: str) -> float:
+    """A length in user units, a bare number read as TeX points like TikZ's length options."""
+    value, has_unit = _dimension(text)
+    return value if has_unit else value * UNITS["pt"]
 
 
 def _tokens(text: str) -> list[tuple[str, str]]:
@@ -123,9 +129,9 @@ def _tokens(text: str) -> list[tuple[str, str]]:
 
 
 def _length(keys: dict[str, str | None], name: str, default: float) -> float:
-    """The length option *name* in points, *default* when absent or unreadable."""
+    """The length option *name* in user units, *default* when absent or unreadable."""
     value = keys.get(name)
     try:
-        return default if value is None else _dimension(value)[0]
+        return default if value is None else _measure(value)
     except ValueError:
         return default

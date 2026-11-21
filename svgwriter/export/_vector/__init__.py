@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 
 import skia
 
+from ..._internal._constants import PX_PER_PT
 from .._registry import register, register_importer
 from ._constants import PDF_LINK_KEY
 
@@ -20,6 +21,9 @@ if TYPE_CHECKING:
 def pdf(document: Document | Sequence[Document], *, title: str | None = None, author: str | None = None,
         text: bool = True) -> bytes:
     """Vector PDF drawn by skia: shapes stay vector, text stays selectable, images are embedded.
+
+    Pages have the document's physical size: a user unit (CSS pixel) is 3/4 of a point, 96 per
+    inch, so a ``210mm`` by ``297mm`` document prints as an A4 page.
 
     Text painted with plain colours is written as real text in an embedded font subset, so it can
     be selected, searched and copied. Links (``<a href>``) become clickable areas. Text with a gradient or pattern paint, a filter or a mask,
@@ -53,7 +57,8 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     b'%PDF-'
     """
     from ..._internal._rendering import view_matrix
-    from ...ops.render import document_size, paint_tree
+    from ...ops.render import page_size, paint_tree
+    from ._pdf_boxes import exact_media_boxes, page_points
 
     stream = skia.DynamicMemoryWStream()
     metadata = skia.PDF.Metadata()
@@ -62,16 +67,19 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     if author:
         metadata.fAuthor = author
     pdf_document = skia.PDF.MakeDocument(stream, metadata)
+    sizes: list[tuple[float, float]] = []
     for page in document if isinstance(document, Sequence) else [document]:
         with page._prepared():
-            width, height = document_size(page)
-            canvas = pdf_document.beginPage(width, height)
+            width, height = page_size(page)
+            sizes.append((width / PX_PER_PT, height / PX_PER_PT))
+            canvas = pdf_document.beginPage(*page_points(*sizes[-1]))
+            canvas.scale(1 / PX_PER_PT, 1 / PX_PER_PT)
             paint_tree(canvas, page.root, lambda text: text, width, height,
                        view=view_matrix(page, width, height), viewport=True, native_text=text)
         _links(canvas, page)
         pdf_document.endPage()
     pdf_document.close()
-    return bytes(stream.detachAsData())
+    return exact_media_boxes(bytes(stream.detachAsData()), sizes)
 
 
 def _links(canvas: skia.Canvas, page: Document) -> None:
@@ -164,7 +172,7 @@ def read_pdf(data: bytes, *, page: int | None = 0) -> Document | list[Document]:
     Returns
     -------
     Document or list of Document
-        A document the size of the page in points, y pointing down; a list
+        A document the size of the page in user units (96 per inch, so 4/3 per point), y pointing down; a list
         with one per page when *page* is None.
 
     Raises
@@ -213,7 +221,7 @@ def read_tikz(data: bytes) -> Document:
     Returns
     -------
     Document
-        The drawing in points, y pointing down.
+        The drawing in user units (96 per inch), y pointing down.
 
     Raises
     ------
@@ -258,7 +266,7 @@ def read_eps(data: bytes) -> Document:
     Returns
     -------
     Document
-        The drawing in points, y pointing down, sized to its bounding box.
+        The drawing in user units (4/3 per point), y pointing down, sized to its bounding box.
 
     Raises
     ------
