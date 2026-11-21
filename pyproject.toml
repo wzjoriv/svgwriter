@@ -86,7 +86,7 @@ test = [
 ]
 dev = [
     "pysvgwriter[test,docs,notebook]",
-    "stubpy",
+    "stubpy>=0.13",
     "typer>=0.12",
     "pytest-cov",
     "ruff>=0.6",
@@ -135,6 +135,9 @@ tools = ["svgwriter_tools:app"]
 [tool.devkit.stub]
 targets = ["svgwriter"]
 output = "."
+
+[tool.stubpy]
+prune = true
 
 [tool.devkit.version]
 file = "svgwriter/__init__.py"
