@@ -10,16 +10,16 @@ from typing import TYPE_CHECKING
 
 import skia
 
-from .._internal._constants import OBJECT_BOUNDING_BOX, USER_SPACE
-from .._internal._render._layers import ancestry, drawable_order, viewport_extent
-from ._canvas import paint_svg
-from ._constants import ENGINE_PRIMITIVES, OPACITY, PICTURE_BOUNDS, STANDARD_INPUTS
+from ..._internal._constants import OBJECT_BOUNDING_BOX, USER_SPACE
+from ..._internal._render._layers import ancestry, drawable_order, viewport_extent
+from .._canvas import paint_svg
+from .._constants import ENGINE_PRIMITIVES, OPACITY, PICTURE_BOUNDS, STANDARD_INPUTS
+from .._layers import concealed, draw_image, hidden, referenced, skia_matrix
 from ._filter_inputs import background_layer, standard_inputs
-from ._layers import concealed, draw_image, hidden, referenced, skia_matrix
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
-    from ..transform.matrix import Matrix
+    from ...elements.core import Element
+    from ...transform.matrix import Matrix
 
 __all__ = ["draw_filtered", "needs_engine"]
 
@@ -41,11 +41,11 @@ def needs_engine(element: Element) -> bool:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.ops._filtered import needs_engine
+    >>> from svgwriter.ops._filters._filtered import needs_engine
     >>> needs_engine(svg.Rect())
     False
     """
-    from ..elements.structure import Image
+    from ...elements.structure import Image
 
     effects = referenced(element, "filter") if element.get("filter") is not None else None
     if effects is None:
@@ -58,7 +58,7 @@ def needs_engine(element: Element) -> bool:
 
 def _painted(root: Element, wrap: Callable[[str], str], others: list[Element], extra: Element | None = None) -> str:
     """*root* serialized with *others* hidden (and *extra* appended at the top level)."""
-    from ..io.writer import to_string
+    from ...io.writer import to_string
 
     if extra is not None:
         root.add(extra)
@@ -103,9 +103,9 @@ def draw_filtered(canvas: skia.Canvas, element: Element, root: Element, wrap: Ca
 
     See Also
     --------
-    svgwriter.ops._filter_graph.image_filter : The filter graph.
+    svgwriter.ops._filters._filter_graph.image_filter : The filter graph.
     """
-    from ..elements.structure import Image
+    from ...elements.structure import Image
     from ._filter_frame import Frame, filter_region
     from ._filter_graph import image_filter
 

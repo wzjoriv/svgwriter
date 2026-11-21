@@ -197,7 +197,7 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
     layers : Decide which images are drawn separately.
     """
     from ..elements import Transformable
-    from ._image_effects import paint_mask
+    from ._filters._image_effects import paint_mask
     from ._skia import to_skia
 
     _, opacity = ancestry(image, root)
