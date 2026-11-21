@@ -17,4 +17,6 @@ attributes
 builder
 theme
 video
+project
+cli
 ```

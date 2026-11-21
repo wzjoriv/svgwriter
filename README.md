@@ -47,7 +47,9 @@ pixels = doc.rasterize(scale=2)                          # numpy float32 RGBA, s
 | Themes | `svg.Theme` palettes, fonts and role styles; `el.as_role("box")` marks elements, the document writes one CSS rule per role so the SVG stays restylable; `light`, `dark`, `paper`, `print`, `mono` built in; `theme.replace(...)` variants, TOML theme files, `with theme:` defaults |
 | Rendering | skia: `rasterize(size=..., padding=...)` to numpy, embedded and linked images, text, CSS `<style>`; deterministic output |
 | Export / import | A registry by name or extension: more than 30 formats from SVG and PNG to PDF, TikZ, DXF, G-code, PowerPoint, Graphviz and Mermaid (see [Export and import](#export-and-import)); `svg.export.register(...)` adds more |
-| Animation | SMIL elements; `doc.render_animation("out.mp4", update=...)` through ffmpeg; `svg.Scene` classes, several per file, rendered by `svgwriter animate`; `svg.interpolate(a, b, t)` tweens numbers, colors, transforms and morphs any two shapes |
+| Projects | `svgwriter new my-poster --preset poster` starts a design folder (`svgwriter.toml`, theme, components, animations, assets); `svgwriter build` writes every output and `svgwriter preview` reloads a browser page on save; `blank`, `poster`, `slides` and `animation` presets build out of the box, as scripts or notebooks |
+| Sizes and units | `svg.Document(size="a4")`, `"letter"`, `"slide-16:9"`, `"instagram-story"`, ... with real units, so the drawing counts in mm or inches; `svg.mm`, `svg.inch`, `svg.pt` lengths and `svg.deg`, `svg.turn` angles |
+| Animation | SMIL elements; `el.animate` presets plus your own as typed functions (`@svg.preset.animation`, `el.animate.apply(fn, ...)`); `doc.render_animation("out.mp4", update=...)` through ffmpeg; `svg.Scene` classes, several per file, rendered by `svgwriter animate`; `svg.interpolate(a, b, t)` tweens numbers, colors, transforms and morphs any two shapes |
 
 ## Geometry in one minute
 
