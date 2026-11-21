@@ -107,8 +107,9 @@ exactly the range. The text has to be in a document or group first, so the copy 
 ## Exporting
 
 Every preset renders to PNG and the raster formats through skia, and animated ones to GIF and video.
-PDF and other vector formats rasterize filtered elements; PowerPoint keeps what it can draw natively and
-warns about animations it cannot play.
+PDF keeps patterns, gradients, markers and text and draws filtered elements as images. PowerPoint keeps
+patterns, gradients, markers and the text itself, and skips filters and the filter animations with a
+warning naming them.
 
 ## Presets of your own
 
