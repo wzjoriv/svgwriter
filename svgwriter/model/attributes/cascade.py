@@ -4,16 +4,21 @@ CSS style sheets and computed values: parsing, selector matching and inheritance
 
 from __future__ import annotations
 
+from collections.abc import Iterable
+from functools import lru_cache
 from typing import TYPE_CHECKING, Final
 
 from ._constants import (
     CSS_DIMENSION_RE,
+    INLINE_CACHE_SIZE,
     MARKER_LONGHANDS,
     ROOT_RULES,
+    STYLE_MEMO,
 )
-from ._selectors import matches_from, split_selector
+from ._selectors import compile_selector, matches_selector
 from .names import PRESENTATION_ATTRIBUTES
-from .rules import Rule, rules_of
+from .rules import Rule, RuleSet, rule_set, rules_of
+from .style import Style
 
 if TYPE_CHECKING:
     from ..elements.core import Element
@@ -62,11 +67,10 @@ def matches(element: Element, selector: str) -> bool:
     >>> matches(rect, ".other rect")
     False
     """
-    parts = split_selector(selector)
-    return bool(parts) and matches_from(element, parts, len(parts) - 1)
+    return matches_selector(element, compile_selector(selector))
 
 
-def css_declarations(element: Element, rules: list[Rule]) -> dict[str, str]:
+def css_declarations(element: Element, rules: Iterable[Rule]) -> dict[str, str]:
     """Return the declarations from style rules that apply to an element.
 
     Conflicts are resolved by ``!important``, then specificity, then source order.
@@ -75,7 +79,7 @@ def css_declarations(element: Element, rules: list[Rule]) -> dict[str, str]:
     ----------
     element : Element
         The element to style.
-    rules : list of Rule
+    rules : iterable of Rule
         Candidate rules, as from `rules_of`.
 
     Returns
@@ -93,28 +97,60 @@ def css_declarations(element: Element, rules: list[Rule]) -> dict[str, str]:
     >>> css_declarations(rect, rules)
     {'fill': 'blue'}
     """
+    return dict(_declarations(element, rule_set(rules)))
+
+
+_NONE: Final[dict[str, str]] = {}
+
+
+def _declarations(element: Element, rules: RuleSet) -> dict[str, str]:
+    """The matched declarations, shared and read-only; memoised on the element while nothing they depend on changes."""
+    if not rules:
+        return _NONE
+    attributes = element.attributes
+    ident = attributes.get("id")
+    ident = None if ident is None else str(ident)
+    classes = str(attributes.get("class", ""))
+    key = (element.tag, ident, classes, *(_text(attributes.get(name)) for name in rules.attribute_names))
+    memo = element.__dict__.get(STYLE_MEMO)
+    if memo is not None and memo[0] is rules and memo[1] == key:
+        return memo[2]  # type: ignore[no-any-return]
+    candidates = rules.candidates(element.tag, ident, dict.fromkeys(classes.split()))
     winners: dict[str, tuple[tuple[bool, tuple[int, int, int], int], str]] = {}
-    for rule in rules:
-        if not matches(element, rule.selector):
+    local = True
+    for _, rule, selector in candidates:
+        local = local and selector.local
+        if not matches_selector(element, selector):
             continue
         for name, value, important in rule.declarations:
             rank = (important, rule.specificity, rule.order)
             if name not in winners or rank >= winners[name][0]:
                 winners[name] = (rank, value)
-    return {name: value for name, (_, value) in winners.items()}
+    found = {name: value for name, (_, value) in winners.items()}
+    if local:
+        object.__setattr__(element, STYLE_MEMO, (rules, key, found))
+    return found
+
+
+def _text(value: object) -> str | None:
+    return None if value is None else str(value)
 
 
 def _inline(element: Element) -> dict[str, str]:
     raw = element.attributes.get("style")
     if raw is None:
-        return {}
+        return _NONE
     if hasattr(raw, "items"):
         return {str(k): str(v) for k, v in raw.items()}
-    return {k.strip().lower(): v.strip() for k, sep, v in
-            (item.partition(":") for item in str(raw).split(";")) if sep}
+    return _parse_inline(str(raw))
 
 
-def specified(element: Element, name: str, rules: list[Rule] | None = None) -> object | None:
+@lru_cache(maxsize=INLINE_CACHE_SIZE)
+def _parse_inline(raw: str) -> dict[str, str]:
+    return {k.strip().lower(): v.strip() for k, sep, v in (item.partition(":") for item in raw.split(";")) if sep}
+
+
+def specified(element: Element, name: str, rules: Iterable[Rule] | None = None) -> object | None:
     """Return the value set directly on an element.
 
     Looks at the inline ``style`` first, then matching style rules, then the
@@ -126,7 +162,7 @@ def specified(element: Element, name: str, rules: list[Rule] | None = None) -> o
         The element to inspect.
     name : str
         CSS property name, such as ``"fill"``.
-    rules : list of Rule, optional
+    rules : iterable of Rule, optional
         Style rules to consult; collected from the element's document when omitted. Defaults to None.
 
     Returns
@@ -147,18 +183,23 @@ def specified(element: Element, name: str, rules: list[Rule] | None = None) -> o
     >>> specified(svg.Rect(), "fill") is None
     True
     """
-    inline = _inline(element)
-    if name in inline:
-        return inline[name]
+    raw = element.attributes.get("style")
+    if isinstance(raw, Style) and "_" not in name:
+        if name in raw:
+            return str(raw[name])
+    elif raw is not None:
+        inline = _inline(element)
+        if name in inline:
+            return inline[name]
     if rules is None:
         rules = rules_of(element.root())
-    sheet = css_declarations(element, rules) if rules else {}
+    sheet = _declarations(element, rule_set(rules))
     if name in sheet:
         return sheet[name]
     return element.attributes.get(name)
 
 
-def computed(element: Element, name: str, default: object = None, rules: list[Rule] | None = None) -> object:
+def computed(element: Element, name: str, default: object = None, rules: Iterable[Rule] | None = None) -> object:
     """Return the computed value of a property.
 
     The value is the one specified on the element, else inherited from the
@@ -173,7 +214,7 @@ def computed(element: Element, name: str, default: object = None, rules: list[Ru
         CSS property name, such as ``"fill"``.
     default : object, optional
         Returned when no value applies. Defaults to None.
-    rules : list of Rule, optional
+    rules : iterable of Rule, optional
         Style rules to consult; collected from the element's document when omitted. Defaults to None.
 
     Returns
@@ -196,8 +237,7 @@ def computed(element: Element, name: str, default: object = None, rules: list[Ru
     >>> computed(rect, "opacity", "1")
     '1'
     """
-    if rules is None:
-        rules = rules_of(element.root())
+    rules = rules_of(element.root()) if rules is None else rule_set(rules)
     node: Element | None = element
     while node is not None:
         value = specified(node, name, rules)
@@ -235,8 +275,7 @@ def resolve_styles(root: Element) -> None:
     """
     rules = rules_of(root)
     for element in root.iter():
-        values = css_declarations(element, rules) if rules else {}
-        values.update(_inline(element))
+        values = {**_declarations(element, rules), **_inline(element)}
         if "marker" in values:
             shorthand = values.pop("marker")
             values = {**dict.fromkeys(MARKER_LONGHANDS, shorthand), **values}
