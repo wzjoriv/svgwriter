@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any, TypeVar, overload
 
@@ -180,7 +180,7 @@ class Document(Sizing, Theming, Typography, Output, Access, ElementFactory):
 
     @classmethod
     @contextmanager
-    def writing(cls, path: AnyPath, width: float, height: float, **kwargs: Any) -> Iterator[Document]:
+    def writing(cls, path: AnyPath, width: float, height: float, **kwargs: Any) -> Generator[Document, None, None]:
         """Build a document and save it to *path* when the block exits.
 
         Parameters
@@ -405,7 +405,7 @@ class Document(Sizing, Theming, Typography, Output, Access, ElementFactory):
         return self.root.insert(1 if self.root.children and isinstance(self.root.children[0], Title) else 0, StyleElement(css, **kwargs))
 
     @contextmanager
-    def nest(self, element: E) -> Iterator[E]:
+    def nest(self, element: E) -> Generator[E, None, None]:
         """Add *element* and make it the insertion point inside the block.
 
         Parameters

@@ -4,7 +4,7 @@ Small serialization helpers: attribute order, namespaces, inline content and tex
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from typing import IO, Any
 
@@ -40,7 +40,7 @@ def uses_xlink(element: Element) -> bool:
 
 
 @contextmanager
-def open_text(path: AnyPath, encoding: str) -> Iterator[IO[str]]:
+def open_text(path: AnyPath, encoding: str) -> Generator[IO[str], None, None]:
     """Open *path* for writing text with LF line endings."""
     with open(path, "w", encoding=encoding, newline="\n") as handle:
         yield handle

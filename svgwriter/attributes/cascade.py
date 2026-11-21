@@ -4,7 +4,7 @@ CSS style sheets and computed values: parsing, selector matching and inheritance
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
@@ -148,7 +148,7 @@ def matches(element: Element, selector: str) -> bool:
 
 
 @contextmanager
-def frozen_rules() -> Iterator[None]:
+def frozen_rules() -> Generator[None, None, None]:
     """Collect each tree's style rules once for the block, for many lookups while no ``<style>`` changes.
 
     Joins an enclosing block, so nesting is free.

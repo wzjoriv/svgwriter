@@ -17,7 +17,7 @@ Grammar, loosest binding first::
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from functools import lru_cache
@@ -129,7 +129,7 @@ class _Parser:
         return token
 
     @contextmanager
-    def _nested(self) -> Iterator[None]:
+    def _nested(self) -> Generator[None, None, None]:
         self._depth += 1
         if self._depth > MAX_EXPRESSION_DEPTH:
             raise ExpressionError(f"nested deeper than {MAX_EXPRESSION_DEPTH} levels")
