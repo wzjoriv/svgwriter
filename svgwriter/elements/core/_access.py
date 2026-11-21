@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any, overload
 
 from ..._internal._constants import INKSCAPE_LABEL
 from ..._internal._ids import next_id
+from ..._internal._page import page_length, page_unit
 from ..._internal._registry import chainable
 from ..._internal._typing import ElementId
 from ...attributes.length import Length, Unit
@@ -239,8 +240,6 @@ class AttributeAccess:
         >>> styled.attributes["style"], styled.has("fill")
         (Style({'fill': 'blue'}), False)
         """
-        from ._element import Element
-
         key = name if name.startswith("{") else svg_name(name)
         if key in UNSUPPORTED_ATTRIBUTES:
             raise ValueError(
@@ -258,14 +257,14 @@ class AttributeAccess:
             if not (key == "fill" and self.category is Category.ANIMATION):
                 _check_paint(key, value)
                 value = _standard_name(value)
-        elif key in COLOR_ATTRIBUTES and not isinstance(value, Element) and not hasattr(value, "svg_value"):
+        elif key in COLOR_ATTRIBUTES and not isinstance(value, AttributeAccess) and not hasattr(value, "svg_value"):
             value = as_color(value)
         if isinstance(value, Color) and value.a < 1.0 and key in COLOR_ATTRIBUTES:
             if key not in COLOR_OPACITY:
                 raise ValueError(f"{key} has no opacity in SVG 1.1; use an opaque color")
             self._store(COLOR_OPACITY[key], value.a)
             value = value.opaque
-        if isinstance(value, Element):
+        if isinstance(value, AttributeAccess):  # only elements mix in AttributeAccess
             value = value.iri if key in HREF_ATTRIBUTES else value.url
         elif isinstance(value, FuncIRI) and key in HREF_ATTRIBUTES:
             value = IRI(value.target, value.element)
@@ -275,8 +274,6 @@ class AttributeAccess:
 
     def _page_value(self, key: str, value: AttrValue) -> AttrValue:
         """A length attribute given in Python, in user units of the page this element is on."""
-        from ..._internal._page import page_length, page_unit
-
         if key not in LENGTH_ATTRIBUTES:
             return value
         if isinstance(value, str):

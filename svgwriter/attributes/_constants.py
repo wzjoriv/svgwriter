@@ -66,6 +66,8 @@ LENGTH_ATTRIBUTES: Final = frozenset({
     "width", "height", "stroke-width", "stroke-dashoffset", "font-size", "letter-spacing",
     "word-spacing", "textLength", "startOffset", "markerWidth", "markerHeight", "refX", "refY",
 })
+PLAIN_VALUE_TYPES: Final = frozenset({str, int, float, bool})
+"""Value types that carry no dimension, so no attribute refuses them."""
 SUPERSCRIPTS: Final = str.maketrans("-0123456789", "⁻⁰¹²³⁴⁵⁶⁷⁸⁹")
 
 COMMENT_RE: Final = re.compile(r"/\*.*?\*/", re.S)
