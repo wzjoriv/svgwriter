@@ -18,9 +18,39 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 | `animate SCENE [NAMES ...] [--format F] [--fps N] [-o FILE]` | Render scenes through ffmpeg |
 | `render SCENE [NAMES ...] [--at SECONDS] [--scale S] [-o FILE]` | Rasterize scenes or an SVG file to PNG |
 | `outline TEXT [--font F] [--size N] [-o FILE]` | Write text as glyph outlines |
+| `doctor [--json]` | Show what works on this machine, what is missing and how to install it on this OS |
+
+## `svgwriter doctor`
+
+`svgwriter doctor` checks the optional libraries (skia, harfbuzz, lcms2, fontTools, ipywidgets,
+matplotlib, ...) and external programs (ffmpeg, LaTeX with dvisvgm, the Mermaid CLI, Graphviz, PlantUML,
+D2, Inkscape), and prints one line for each: its version when present, otherwise what it is for and the
+command that installs it on this OS and Linux distribution (`apt`, `dnf`, `pacman`, `zypper`, `brew` or
+`winget`). The last line counts the installed font families and names what `sans-serif`, `serif`,
+`monospace` and emoji resolve to; on Linux with few fonts or no emoji font it adds the distribution's
+font packages.
+
+```console
+$ svgwriter doctor
+svgwriter 2.4.0 on Python 3.13.3, Windows 11 (windows, winget)
+  ok   skia         144.1
+  ok   harfbuzz     0.57.0
+  ...
+  --   graphviz     missing (Graphviz DOT diagrams): winget install Graphviz.Graphviz
+fonts: 326 families; sans-serif -> Arial, serif -> Times New Roman, monospace -> Consolas, emoji -> Segoe UI Emoji
+```
+
+`--json` prints the same report as JSON (`python`, `system`, `system_packages`, `capabilities`,
+`fonts`). From Python, `svg.capabilities()` returns the capability part as a read-only mapping of name
+to a record with `available`, `version`, `path`, `purpose` and `hint`; it is checked once and cached
+(`svg.capabilities(refresh=True)` checks again).
+
+Each program can also be named by an environment variable, `SVGWRITER_<NAME>` (`SVGWRITER_FFMPEG`,
+`SVGWRITER_DOT`, `SVGWRITER_MMDC`, `SVGWRITER_LATEX`, `SVGWRITER_DVISVGM`, ...), which wins over `PATH`.
 
 ```{eval-rst}
 .. autodata:: svgwriter.tools.cli.app
    :no-value:
 .. autofunction:: svgwriter.tools.cli.main
+.. autofunction:: svgwriter.capabilities
 ```
