@@ -72,7 +72,7 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     >>> svg.export.export(svg.Document(4, 4), "pdf", title="demo")[:5]
     b'%PDF-'
     """
-    from ..._internal._rendering import view_matrix
+    from ..._internal._render._rendering import view_matrix
     from ...ops.render import page_size, paint_tree
     from ._pdf_boxes import exact_media_boxes, page_points
     from ._units import unit_scale
@@ -108,7 +108,7 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
 
 def _links(canvas: skia.Canvas, page: Document) -> None:
     """A clickable URL area over every ``<a href>`` of *page*."""
-    from ..._internal._rendering import page_box
+    from ..._internal._render._rendering import page_box
 
     for anchor in [element for element in page.root.iter() if element.tag == "a"]:
         target = str(anchor.get("href") or anchor.get("xlink:href") or "")

@@ -274,8 +274,8 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
     from ..attributes.cascade import computed, rules_of
     from ..elements import Image, PathOperand
     from ..ops.render import page_size
-    from ._layers import ancestry, drawable_order, image_matrix
-    from ._rendering import renderable_copy, view_matrix
+    from ._render._layers import ancestry, drawable_order, image_matrix
+    from ._render._rendering import renderable_copy, view_matrix
 
     with document._prepared():
         width, height = page_size(document)

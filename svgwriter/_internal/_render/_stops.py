@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ._constants import (
+from .._constants import (
     LINEAR_RGB,
     LINEAR_STOP_STEPS,
     PERCENT,
@@ -17,7 +17,7 @@ from ._constants import (
 )
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
+    from ...elements.core import Element
 
 __all__ = ["linear_rgb_stops"]
 
@@ -54,7 +54,7 @@ def linear_rgb_stops(root: Element) -> None:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._stops import linear_rgb_stops
+    >>> from svgwriter._internal._render._stops import linear_rgb_stops
     >>> doc = svg.Document.from_string(
     ...     '<svg xmlns="http://www.w3.org/2000/svg"><linearGradient id="g" color-interpolation="linearRGB">'
     ...     '<stop offset="0" stop-color="black"/><stop offset="1" stop-color="white"/></linearGradient></svg>')
@@ -62,9 +62,9 @@ def linear_rgb_stops(root: Element) -> None:
     >>> len(list(doc.get_element_by_id("g").iter("stop")))
     17
     """
-    from ..attributes.cascade import computed
-    from ..color.color import Color, as_color
-    from ..elements.paint import Stop
+    from ...attributes.cascade import computed
+    from ...color.color import Color, as_color
+    from ...elements.paint import Stop
 
     for gradient in [e for e in root.iter() if e.tag in ("linearGradient", "radialGradient")]:
         if str(computed(gradient, "color-interpolation", "sRGB", [])) != LINEAR_RGB:

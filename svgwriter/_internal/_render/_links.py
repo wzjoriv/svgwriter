@@ -8,7 +8,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from ._constants import (
+from .._constants import (
     BASE64_SUFFIX,
     DATA_URI,
     GZIP_MAGIC,
@@ -21,8 +21,8 @@ from ._constants import (
 from ._layers import ancestry, viewport_extent
 
 if TYPE_CHECKING:
-    from ..document import Document
-    from ..elements.core import Element
+    from ...document import Document
+    from ...elements.core import Element
 
 __all__ = ["base_uri", "resolve_links"]
 
@@ -51,10 +51,10 @@ _LOADING: set[str] = set()
 
 @lru_cache(maxsize=LINK_CACHE)
 def _load(path: str, mtime: float, width: float, height: float, ratio: str, density: float) -> Any:
-    from ..elements.structure import Pixels
+    from ...elements.structure import Pixels
 
     if path.lower().endswith((".svg", ".svgz")):
-        from ..export import load
+        from ...export import load
 
         _LOADING.add(path)
         try:
@@ -71,7 +71,7 @@ def _rasterized(document: Document, width: float, height: float, ratio: str, den
     document without a ``viewBox`` is drawn unscaled and clipped to the viewport. *density* is
     pixels per user unit.
     """
-    from ..elements.structure import Pixels
+    from ...elements.structure import Pixels
 
     root = document.root
     if root.get("viewBox") is None:
@@ -123,15 +123,15 @@ def resolve_links(root: Element) -> None:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._links import resolve_links
+    >>> from svgwriter._internal._render._links import resolve_links
     >>> doc = svg.Document(10, 10)
     >>> resolve_links(doc.root)
     """
     from urllib.parse import unquote, urljoin, urlparse
     from urllib.request import url2pathname
 
-    from ..document import Document
-    from ..elements.structure import Image, Pixels
+    from ...document import Document
+    from ...elements.structure import Image, Pixels
 
     effects = [e for e in root.iter() if e.tag == "feImage" and isinstance(e.attributes.get("xlink:href"), str)
                and not str(e.attributes["xlink:href"]).startswith("#")]
@@ -179,7 +179,7 @@ def resolve_links(root: Element) -> None:
 
 def _absolute_geometry(image: Element) -> None:
     """Rewrite percentage ``x``/``y``/``width``/``height`` of *image* as user units of its viewport."""
-    from ..attributes.length import Length, Unit
+    from ...attributes.length import Length, Unit
 
     extent = None
     for name, axis in VIEWPORT_AXES.items():
@@ -198,7 +198,7 @@ def _ratio(image: Element) -> str:
 
 
 def _length(value: object) -> float:
-    from ..attributes.length import Length
+    from ...attributes.length import Length
 
     try:
         return Length.parse(value).to_user_units() if value is not None else 0.0

@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any
 
 import skia
 
-from .._internal._rendering import renderable_copy
+from .._internal._render._rendering import renderable_copy
 from ..transform.matrix import IDENTITY, Matrix
 from ._canvas import make_surface, paint_svg, read_pixels
 from ._layers import concealed, draw_image, hidden, layers

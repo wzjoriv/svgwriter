@@ -50,7 +50,7 @@ def href_bytes(element: Element, href: str) -> bytes | None:
     from urllib.parse import unquote, unquote_to_bytes, urljoin, urlparse
     from urllib.request import url2pathname
 
-    from .._links import base_uri
+    from .._render._links import base_uri
 
     if href.startswith(DATA_URI):
         header, _, payload = href.partition(",")

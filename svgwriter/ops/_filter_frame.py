@@ -155,7 +155,7 @@ class Frame:
 
 
 def _fitted(columns: int, rows: int, area: skia.Rect, ratio_text: object) -> skia.Rect:
-    from .._internal._layers import fit_box
+    from .._internal._render._layers import fit_box
     from ..attributes.viewbox import PreserveAspectRatio
 
     ratio = ratio_text if isinstance(ratio_text, PreserveAspectRatio) else (

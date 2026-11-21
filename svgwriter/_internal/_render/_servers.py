@@ -7,7 +7,7 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING
 
-from ._constants import (
+from .._constants import (
     GRADIENT_TAGS,
     NONE,
     OBJECT_BOUNDING_BOX,
@@ -18,10 +18,10 @@ from ._constants import (
     URL_PREFIX,
     XLINK_HREF,
 )
-from ._tree import resolve
+from .._tree import resolve
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
+    from ...elements.core import Element
 
 __all__ = ["resolve_servers"]
 
@@ -48,7 +48,7 @@ def _merge(server: Element, done: set[int], chain: set[int]) -> None:
 
 
 def _fraction(value: object, default: float) -> tuple[float, bool]:
-    from ..attributes.length import Length, Unit
+    from ...attributes.length import Length, Unit
 
     if value is None:
         return default, False
@@ -90,7 +90,7 @@ def resolve_servers(root: Element) -> None:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._servers import resolve_servers
+    >>> from svgwriter._internal._render._servers import resolve_servers
     >>> doc = svg.Document.from_string(
     ...     '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">'
     ...     '<linearGradient id="a" x2="0"><stop offset="0"/></linearGradient>'
@@ -129,7 +129,7 @@ def resolve_servers(root: Element) -> None:
 
 def _empty_tile(server: Element) -> bool:
     """Whether *server* is a pattern whose tile has no area, which disables the paint."""
-    from ..attributes.length import Length
+    from ...attributes.length import Length
 
     if server.tag != "pattern":
         return False

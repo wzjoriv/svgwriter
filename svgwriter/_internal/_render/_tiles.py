@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ._constants import (
+from .._constants import (
     OBJECT_BOUNDING_BOX,
     PAINT_PROPERTIES,
     PERCENT,
@@ -15,18 +15,18 @@ from ._constants import (
     USER_SPACE,
     VIEWPORT_AXES,
 )
-from ._tree import resolve
+from .._tree import resolve
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
-    from ..pathdata.data import BBox
+    from ...elements.core import Element
+    from ...pathdata.data import BBox
 
 __all__ = ["user_space_patterns"]
 
 
 def _tile(pattern: Element, box: BBox | None, extent: tuple[float, float]) -> list[float] | None:
     """``x``, ``y``, ``width``, ``height`` of the tile in user units, or None without a box to scale by."""
-    from ..attributes.length import Length, Unit
+    from ...attributes.length import Length, Unit
 
     bounding = str(pattern.get("patternUnits", OBJECT_BOUNDING_BOX)) == OBJECT_BOUNDING_BOX
     if bounding and box is None:
@@ -46,7 +46,7 @@ def _tile(pattern: Element, box: BBox | None, extent: tuple[float, float]) -> li
 
 
 def _rewrite(pattern: Element, tile: list[float], box: BBox | None) -> None:
-    from ..elements import Group
+    from ...elements import Group
 
     x, y, width, height = tile
     content_box = str(pattern.get("patternContentUnits", USER_SPACE)) == OBJECT_BOUNDING_BOX
@@ -83,7 +83,7 @@ def user_space_patterns(root: Element) -> None:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._tiles import user_space_patterns
+    >>> from svgwriter._internal._render._tiles import user_space_patterns
     >>> doc = svg.Document.from_string(
     ...     '<svg xmlns="http://www.w3.org/2000/svg"><pattern id="p" width=".5" height=".5"/>'
     ...     '<rect x="10" width="20" height="20" fill="url(#p)"/></svg>')

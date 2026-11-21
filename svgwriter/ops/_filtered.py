@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 import skia
 
 from .._internal._constants import OBJECT_BOUNDING_BOX, USER_SPACE
-from .._internal._layers import ancestry, drawable_order, viewport_extent
+from .._internal._render._layers import ancestry, drawable_order, viewport_extent
 from ._canvas import paint_svg
 from ._constants import ENGINE_PRIMITIVES, OPACITY, PICTURE_BOUNDS, STANDARD_INPUTS
 from ._filter_inputs import background_layer, standard_inputs

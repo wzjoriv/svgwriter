@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any, Final
 import numpy as np
 import skia
 
-from .._internal._rendering import view_matrix
+from .._internal._render._rendering import view_matrix
 from ..attributes.length import Length, Unit
 from ..attributes.viewbox import ViewBox
 from ._canvas import make_surface, paint_svg, read_pixels

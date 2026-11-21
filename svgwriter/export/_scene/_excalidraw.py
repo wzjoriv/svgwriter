@@ -192,7 +192,7 @@ def _common(rng: random.Random, number: int, link: str | None) -> dict[str, Any]
 
 def _image(image: Any, matrix: Any, rng: random.Random, number: int, files: dict[str, Any]) -> dict[str, Any]:
     """One embedded image as an Excalidraw ``image`` element over its upright page box, its PNG stored in *files*."""
-    from ..._internal._layers import pixel_box
+    from ..._internal._render._layers import pixel_box
 
     box = pixel_box(image, matrix)
     key = f"svgw-image{len(files)}"

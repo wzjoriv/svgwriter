@@ -96,9 +96,9 @@ def text_runs(document: Document, *, color_glyphs: bool = True) -> list[TextRun]
     from ...elements import Text
     from ...ops.render import page_size
     from .._flatten import _number
-    from .._layers import ancestry
     from .._paints import _paint
-    from .._rendering import view_matrix
+    from .._render._layers import ancestry
+    from .._render._rendering import view_matrix
 
     runs: list[TextRun] = []
     with document._prepared():

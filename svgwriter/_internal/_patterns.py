@@ -32,7 +32,7 @@ def _ancestry(leaf: Element, root: Element) -> tuple[Matrix, float]:
 def _expand_patterns(root: Element) -> None:
     """Replace pattern-filled shapes by their tiles cut to the outline, so vector formats keep patterns."""
     from ..elements import Group, PathOperand, Pattern
-    from ._layers import drawable_order
+    from ._render._layers import drawable_order
     from ._tree import replace_in_parent
 
     for leaf in drawable_order(root):

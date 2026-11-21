@@ -8,7 +8,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ._constants import (
+from .._constants import (
     EXTERNAL_ID_PREFIX,
     LINK_CACHE,
     PERCENT,
@@ -19,7 +19,7 @@ from ._constants import (
 )
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
+    from ...elements.core import Element
 
 __all__ = ["expand_uses"]
 
@@ -42,7 +42,7 @@ def expand_uses(root: Element) -> None:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._instances import expand_uses
+    >>> from svgwriter._internal._render._instances import expand_uses
     >>> doc = svg.Document(20, 20)
     >>> dot = doc.define(svg.circle(0, 0, 2, id="dot"))
     >>> _ = doc.add(svg.Use(dot, x=5, fill="red"))
@@ -51,7 +51,7 @@ def expand_uses(root: Element) -> None:
     >>> [(e.tag, [c.tag for c in e]) for e in copy if e.tag != "defs"]
     [('g', ['circle'])]
     """
-    from ..elements.structure import Use
+    from ...elements.structure import Use
 
     for use in _cyclic([e for e in root.iter() if isinstance(e, Use)]):
         if use.parent is not None:
@@ -72,7 +72,7 @@ def expand_uses(root: Element) -> None:
 
 def _cyclic(uses: list[Element]) -> list[Element]:
     """The uses whose references lead back to themselves, which SVG treats as errors and does not render."""
-    from ..elements.structure import Use
+    from ...elements.structure import Use
 
     targets = {id(use): use.referenced() for use in uses}
     state: dict[int, bool] = {}
@@ -118,8 +118,8 @@ def _external(use: Element) -> Element | None:
 
 @lru_cache(maxsize=LINK_CACHE)
 def _document(path: str, mtime: float) -> Element | None:
-    from ..attributes.cascade import resolve_styles
-    from ..document import Document
+    from ...attributes.cascade import resolve_styles
+    from ...document import Document
 
     root = Document.open(path).root
     resolve_styles(root)
@@ -136,10 +136,10 @@ def _encloses(target: Element, use: Element) -> bool:
 
 
 def _replace(use: Element, target: Element, root: Element, serial: int) -> None:
-    from ..elements import Group
-    from ..transform.matrix import Matrix
+    from ...elements import Group
+    from ...transform.matrix import Matrix
+    from .._tree import replace_in_parent
     from ._layers import _number
-    from ._tree import replace_in_parent
 
     group = Group()
     group.attributes.update((k, v) for k, v in use.attributes.items() if k not in USE_GEOMETRY)
@@ -163,7 +163,7 @@ def _imported(instances: list[Element], source: Element, serial: int) -> Element
     References inside *instances* and inside the copied resources are rewritten to the new ids,
     so an external gradient, pattern, clip path, mask, filter or marker keeps its meaning.
     """
-    from ..elements import Defs
+    from ...elements import Defs
 
     prefix = f"{EXTERNAL_ID_PREFIX}{serial}-"
     taken: dict[str, Element] = {}
@@ -197,9 +197,9 @@ def _instance(target: Element) -> Element:
 
 def _viewport(use: Element, target: Element, root: Element, serial: int) -> list[Element]:
     """The children of a ``<symbol>`` or ``<svg>`` fitted into the ``<use>``'s viewport, clipped when overflow hides."""
-    from ..attributes.viewbox import PreserveAspectRatio, ViewBox
-    from ..elements import ClipPath, Group, Rect
-    from ..transform.matrix import IDENTITY, Matrix
+    from ...attributes.viewbox import PreserveAspectRatio, ViewBox
+    from ...elements import ClipPath, Group, Rect
+    from ...transform.matrix import IDENTITY, Matrix
     from ._layers import fit_box
 
     view = root.get("viewBox")
@@ -231,7 +231,7 @@ def _viewport(use: Element, target: Element, root: Element, serial: int) -> list
 
 def _size(use: Element, target: Element, name: str, viewport: float, *, own: bool = False) -> float:
     """A ``<use>`` viewport length, the ``<use>``'s value winning unless *own* asks for the target's."""
-    from ..attributes.length import Length, Unit
+    from ...attributes.length import Length, Unit
 
     value = None if own else use.get(name)
     value = target.get(name) if value is None else value

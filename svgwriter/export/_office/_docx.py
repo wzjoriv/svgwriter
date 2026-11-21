@@ -46,7 +46,7 @@ def write_docx(document: Document) -> bytes:
     from docx.oxml import parse_xml
 
     from ..._internal._flatten import flatten
-    from ..._internal._layers import pixel_box
+    from ..._internal._render._layers import pixel_box
     from ._layout import split_equations
 
     rest, equations = split_equations(document)

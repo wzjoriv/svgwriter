@@ -7,7 +7,7 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING, Any
 
-from ._constants import (
+from .._constants import (
     MARKABLE,
     MARKER_CLIP_ID,
     MARKER_DEFAULT_SIZE,
@@ -19,8 +19,8 @@ from ._constants import (
 )
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
-    from ..transform.matrix import Matrix
+    from ...elements.core import Element
+    from ...transform.matrix import Matrix
 
 __all__ = ["expand_markers", "vertices"]
 
@@ -49,12 +49,12 @@ def vertices(data: Any) -> list[Vertex]:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._markers import vertices
+    >>> from svgwriter._internal._render._markers import vertices
     >>> [(x, y, i, o) for x, y, i, o in vertices(svg.PathData("M0 0 L10 0 L10 10"))]
     [(0.0, 0.0, 0.0, 0.0), (10.0, 0.0, 0.0, 90.0), (10.0, 10.0, 90.0, 90.0)]
     """
-    from ..ops import from_skia, to_skia
-    from ..pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
+    from ...ops import from_skia, to_skia
+    from ...pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
 
     points: list[list[Any]] = []
     current = start = (0.0, 0.0)
@@ -93,7 +93,7 @@ def _bisect(incoming: float, outgoing: float) -> float:
 
 
 def _number(marker: Element, name: str, default: float) -> float:
-    from ..attributes.length import Length
+    from ...attributes.length import Length
 
     value = marker.get(name)
     return float(Length.parse(value).to_user_units()) if value is not None else default
@@ -101,8 +101,8 @@ def _number(marker: Element, name: str, default: float) -> float:
 
 def _content_matrix(marker: Element) -> Matrix:
     """The marker's ``viewBox`` mapped into its ``markerWidth`` by ``markerHeight`` viewport."""
-    from ..attributes.viewbox import PreserveAspectRatio, ViewBox
-    from ..transform.matrix import IDENTITY, Matrix
+    from ...attributes.viewbox import PreserveAspectRatio, ViewBox
+    from ...transform.matrix import IDENTITY, Matrix
     from ._layers import fit_box
 
     box = marker.get("viewBox")
@@ -120,7 +120,7 @@ def _content_matrix(marker: Element) -> Matrix:
 
 def _placement(marker: Element, x: float, y: float, angle: float, stroke_width: float) -> Matrix:
     """The marker viewport's space to the shape's space at one vertex, ``refX``/``refY`` on the vertex."""
-    from ..transform.matrix import Matrix
+    from ...transform.matrix import Matrix
 
     matrix = Matrix.translate(x, y) @ Matrix.rotate(angle)
     if str(marker.get("markerUnits") or "strokeWidth") == "strokeWidth":
@@ -131,8 +131,8 @@ def _placement(marker: Element, x: float, y: float, angle: float, stroke_width: 
 
 def _instance(marker: Element, rules: list, serial: int) -> list[Element]:
     """The marker's content in its viewport, inheriting from the marker and clipped unless overflow shows it."""
-    from ..attributes.cascade import INHERITED, computed
-    from ..elements import ClipPath, Group, Rect
+    from ...attributes.cascade import INHERITED, computed
+    from ...elements import ClipPath, Group, Rect
 
     content = Group(*(child.clone() for child in marker))
     for name in INHERITED - {*MARKER_PROPERTIES, MARKER_SHORTHAND}:
@@ -151,8 +151,8 @@ def _instance(marker: Element, rules: list, serial: int) -> list[Element]:
 
 def _marker_of(shape: Element, name: str, rules: list, ids: dict[str, Element]) -> Element | None:
     """The ``<marker>`` that property *name* puts on *shape*."""
-    from ..attributes.cascade import computed
-    from ..elements import Marker
+    from ...attributes.cascade import computed
+    from ...elements import Marker
 
     value = computed(shape, name, None, rules)
     marker = getattr(value, "element", None) or ids.get(str(value or "").strip()[len(URL_OPEN):-1])
@@ -174,7 +174,7 @@ def expand_markers(root: Element) -> None:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._markers import expand_markers
+    >>> from svgwriter._internal._render._markers import expand_markers
     >>> doc = svg.Document(100, 20)
     >>> tip = doc.define(svg.Marker(svg.circle(0, 0, 2), orient="auto", overflow="visible"))
     >>> _ = doc.path("M10 10 L90 10", stroke="black", marker_end=tip)
@@ -183,9 +183,9 @@ def expand_markers(root: Element) -> None:
     >>> [e.tag for e in copy if e.tag != "defs"]
     ['path', 'g']
     """
-    from ..attributes.cascade import computed, rules_of
-    from ..attributes.length import Length
-    from ..elements import Group
+    from ...attributes.cascade import computed, rules_of
+    from ...attributes.length import Length
+    from ...elements import Group
 
     rules = rules_of(root)
     ids = {str(e.get("id")): e for e in root.iter() if e.get("id")}

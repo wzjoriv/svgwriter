@@ -58,7 +58,7 @@ def background_layer(element: Element, order: list[Element]) -> list[Element] | 
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._layers import drawable_order
+    >>> from svgwriter._internal._render._layers import drawable_order
     >>> from svgwriter.ops._filter_inputs import background_layer
     >>> doc = svg.Document(10, 10)
     >>> group = doc.add(svg.group(enable_background="new"))

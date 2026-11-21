@@ -7,10 +7,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ._constants import FEATURE_PREFIX, NON_CONTENT, RENDER_LANGUAGE
+from .._constants import FEATURE_PREFIX, NON_CONTENT, RENDER_LANGUAGE
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
+    from ...elements.core import Element
 
 __all__ = ["apply_conditions", "passes"]
 
@@ -77,8 +77,8 @@ def apply_conditions(root: Element) -> None:
     >>> [(e.tag, [c.tag for c in e]) for e in copy]
     [('g', ['circle'])]
     """
-    from ..elements import Group
-    from ._tree import replace_in_parent
+    from ...elements import Group
+    from .._tree import replace_in_parent
 
     for element in [e for e in root.iter() if e is not root]:
         if element.parent is not None and not passes(element):

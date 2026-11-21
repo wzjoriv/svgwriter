@@ -10,7 +10,7 @@ import pytest
 
 import svgwriter as svg
 from svgwriter._internal._constants import EMOJI_PROBE
-from svgwriter._internal._rendering import renderable_copy
+from svgwriter._internal._render._rendering import renderable_copy
 from svgwriter._internal._typography import _emoji
 from svgwriter._internal._typography._fonts import color_font, font_for
 from svgwriter.export import export

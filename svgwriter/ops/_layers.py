@@ -12,7 +12,7 @@ import numpy as np
 import skia
 
 from .._internal._constants import CONTAINERS, VISIBLE_OVERFLOW
-from .._internal._layers import ancestry, drawable_order, image_matrix, image_viewport
+from .._internal._render._layers import ancestry, drawable_order, image_matrix, image_viewport
 from .._internal._tree import clip_outline
 from ._constants import CHANNEL_MAX, CONCEALED
 
@@ -48,7 +48,7 @@ def layers(root: Element, atomic: Callable[[Element], bool] | None = None,
 
     See Also
     --------
-    svgwriter._internal._layers.drawable_order : The flat paint order that is split here.
+    svgwriter._internal._render._layers.drawable_order : The flat paint order that is split here.
 
     Examples
     --------
@@ -122,7 +122,7 @@ def hidden(root: Element, keep: list[Element], atomic: Callable[[Element], bool]
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._layers import drawable_order
+    >>> from svgwriter._internal._render._layers import drawable_order
     >>> from svgwriter.ops._layers import hidden
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 5, 5)

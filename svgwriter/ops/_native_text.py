@@ -108,7 +108,7 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix, *, o
     >>> text = svg.Text("hi", x=0, y=15)
     >>> draw_text(surface.getCanvas(), text, text, svg.Matrix())
     """
-    from .._internal._layers import ancestry
+    from .._internal._render._layers import ancestry
     from .._internal._tree import clip_outline
     from ..elements import Transformable
     from ._layers import _chain, skia_matrix

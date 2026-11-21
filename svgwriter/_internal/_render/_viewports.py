@@ -6,16 +6,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ._constants import NESTED_VIEWPORT_ID, PERCENT, USE_GEOMETRY, VISIBLE_OVERFLOW
+from .._constants import NESTED_VIEWPORT_ID, PERCENT, USE_GEOMETRY, VISIBLE_OVERFLOW
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
+    from ...elements.core import Element
 
 __all__ = ["flatten_viewports"]
 
 
 def _length(element: Element, name: str, extent: float, default: str) -> float:
-    from ..attributes.length import Length, Unit
+    from ...attributes.length import Length, Unit
 
     length = Length.parse(element.get(name, default))
     return length.value * extent / PERCENT if length.unit is Unit.PERCENT else float(length.to_user_units())
@@ -23,8 +23,8 @@ def _length(element: Element, name: str, extent: float, default: str) -> float:
 
 def _matrix_text(element: Element, width: float, height: float) -> str | None:
     """The ``viewBox`` mapping of *element* into its *width* by *height* viewport, as transform text."""
-    from ..attributes.viewbox import PreserveAspectRatio, ViewBox
-    from ..transform.matrix import Matrix
+    from ...attributes.viewbox import PreserveAspectRatio, ViewBox
+    from ...transform.matrix import Matrix
     from ._layers import fit_box
 
     box = element.get("viewBox")
@@ -53,16 +53,16 @@ def flatten_viewports(root: Element) -> None:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._viewports import flatten_viewports
+    >>> from svgwriter._internal._render._viewports import flatten_viewports
     >>> doc = svg.Document.from_string('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10">'
     ...                                '<svg x="2" width="5" height="5"><rect width="9" height="9"/></svg></svg>')
     >>> flatten_viewports(doc.root)
     >>> [e.tag for e in doc.root.iter()]
     ['svg', 'clipPath', 'rect', 'g', 'g', 'rect']
     """
-    from ..elements import ClipPath, Group, Rect
+    from ...elements import ClipPath, Group, Rect
+    from .._tree import replace_in_parent
     from ._layers import viewport_extent
-    from ._tree import replace_in_parent
 
     nested_viewports = [e for e in root.iter() if e.tag == "svg" and e is not root]
     for serial, nested in enumerate(reversed(nested_viewports), start=1):

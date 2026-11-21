@@ -8,9 +8,10 @@ import math
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
-from ._color._profiles import resolve_profiles
+from .._color._profiles import resolve_profiles
+from .._constants import CONTAINERS, NONE, PRIMITIVE_PREFIX, VISIBILITY
+from .._tree import replace_in_parent
 from ._conditions import apply_conditions
-from ._constants import CONTAINERS, NONE, PRIMITIVE_PREFIX, VISIBILITY
 from ._instances import expand_uses
 from ._keywords import resolve_keywords
 from ._layers import ancestry, drawable_order
@@ -19,16 +20,15 @@ from ._markers import expand_markers
 from ._servers import resolve_servers
 from ._stops import linear_rgb_stops
 from ._tiles import user_space_patterns
-from ._tree import replace_in_parent
 from ._viewports import flatten_viewports
 
 if TYPE_CHECKING:
-    from ..attributes.viewbox import ViewBox
-    from ..document import Document
-    from ..elements import Text
-    from ..elements.core import Element
-    from ..pathdata.data import BBox
-    from ..transform.matrix import Matrix
+    from ...attributes.viewbox import ViewBox
+    from ...document import Document
+    from ...elements import Text
+    from ...elements.core import Element
+    from ...pathdata.data import BBox
+    from ...transform.matrix import Matrix
 
 __all__ = [
     "drop_foreign",
@@ -46,8 +46,8 @@ __all__ = [
 
 def expand_image_patterns(root: Element) -> None:
     """Shapes filled with a pattern skia cannot paint (holding images, or with a ``viewBox``) become clipped tiles."""
-    from ..elements import PathOperand, Pattern
-    from ._tree import resolve
+    from ...elements import PathOperand, Pattern
+    from .._tree import resolve
 
     for leaf in list(root.iter()):
         pattern = resolve(leaf, leaf.attributes.get("fill")) if isinstance(leaf, PathOperand) else None
@@ -74,13 +74,13 @@ def shapes_as_paths(root: Element) -> None:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._rendering import shapes_as_paths
+    >>> from svgwriter._internal._render._rendering import shapes_as_paths
     >>> group = svg.group(svg.Line(0, 0, 5, 5, fill="red"))
     >>> shapes_as_paths(group)
     >>> group[0].tag, group[0].get("fill")
     ('path', 'none')
     """
-    from ..elements.shapes import Ellipse, Line, Path
+    from ...elements.shapes import Ellipse, Line, Path
 
     for shape in [e for e in root.iter() if isinstance(e, (Ellipse, Line))]:
         parent = shape.parent
@@ -103,7 +103,7 @@ def unfiltered_masks(root: Element) -> None:
 
 def fixed_layouts(root: Element) -> None:
     """Turn layout groups into plain groups, so the copy keeps their placement while its text becomes paths."""
-    from ..elements.structure import Group
+    from ...elements.structure import Group
 
     for element in root.iter():
         if element.arranges_children:
@@ -119,7 +119,7 @@ def drop_foreign(root: Element) -> None:
 
 def void_filters(root: Element) -> None:
     """Hide elements whose ``filter`` names no ``<filter>`` or one without primitives: they render nothing."""
-    from ._tree import resolve
+    from .._tree import resolve
 
     for element in list(root.iter()):
         value = element.attributes.get("filter")
@@ -144,7 +144,7 @@ def leaf_visibility(root: Element) -> None:
 
 def outlined(text: Text) -> Element:
     """*text* as a ``<g>`` of per-run outline paths (keeps its transform, clip and opacity)."""
-    from ..elements.structure import Group
+    from ...elements.structure import Group
 
     group = Group(*text.runs(), id=text.id, t=text.t)
     for name in ("clip-path", "mask", "filter", "opacity", "display", "visibility"):
@@ -179,14 +179,14 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._rendering import renderable_copy
+    >>> from svgwriter._internal._render._rendering import renderable_copy
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 5, 5)
     >>> renderable_copy(doc.root) is doc.root
     False
     """
-    from ..attributes.cascade import resolve_styles
-    from ..elements import Text
+    from ...attributes.cascade import resolve_styles
+    from ...elements import Text
 
     copy = root.clone()
     fixed_layouts(copy)
@@ -211,7 +211,7 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
         if keep_text is not None and keep_text(copy):
             return copy
         if color_glyphs and _has_color(copy):
-            from ..elements.structure import Group
+            from ...elements.structure import Group
 
             return Group(outlined(copy), _color_layer(copy))
         return outlined(copy)
@@ -243,7 +243,7 @@ def _color_layer(text: Text) -> Text:
 
 def view_matrix(document: Document, width: float, height: float, box: ViewBox | None = None) -> Matrix:
     """The ``viewBox`` mapping of *document* onto a *width* by *height* page, centred and uniformly scaled."""
-    from ..transform.matrix import IDENTITY, Matrix
+    from ...transform.matrix import IDENTITY, Matrix
 
     box = box or document.root.view_box
     if box is None or not box.width or not box.height:
@@ -272,14 +272,14 @@ def page_box(document: Document, element: Element) -> tuple[BBox | None, float]:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._rendering import page_box
+    >>> from svgwriter._internal._render._rendering import page_box
     >>> doc = svg.Document(100, 100)
     >>> box = doc.add(svg.Group()).scale(2).add(svg.rect(1, 1, 4, 4))
     >>> page_box(doc, box)
     (BBox(x=2.0, y=2.0, width=8.0, height=8.0), 2.0)
     """
-    from ..ops.render import page_size
-    from ..pathdata.data import BBox
+    from ...ops.render import page_size
+    from ...pathdata.data import BBox
 
     with document._prepared():
         width, height = page_size(document)

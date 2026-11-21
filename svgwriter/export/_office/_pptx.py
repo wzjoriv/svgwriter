@@ -69,7 +69,7 @@ def write_pptx(documents: list[Document]) -> bytes:
     """Write the deck, one slide per document; see :func:`svgwriter.export._office.pptx`."""
     presentation_module = require("pptx")
     from ..._internal._flatten import flatten
-    from ..._internal._layers import pixel_box
+    from ..._internal._render._layers import pixel_box
     from ._layout import split_equations
     from ._pptx_anim import slide_animations
 
