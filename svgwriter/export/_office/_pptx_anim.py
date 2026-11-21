@@ -113,13 +113,13 @@ def slide_animations(document: Document) -> SlideAnimations:
     from ..._internal._rendering import view_matrix
     from ...document import Document
     from ...elements.animation import AnimationElement
-    from ...ops.render import document_size
+    from ...ops.render import page_size
 
     copy = Document(root=document.root.clone(), theme=document.theme)
     result = SlideAnimations(copy)
     root = copy.root
     with copy._prepared():
-        view = view_matrix(copy, *document_size(copy))
+        view = view_matrix(copy, *page_size(copy))
     for animation in [e for e in root.iter() if isinstance(e, AnimationElement)]:
         target = animation.parent
         if target is None:

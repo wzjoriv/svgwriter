@@ -31,7 +31,7 @@ def read_tikz(text: str) -> Document:
     Returns
     -------
     Document
-        The drawing in TeX points with y pointing down, sized to
+        The drawing in user units, 96 per inch, with y pointing down, sized to
         ``\\useasboundingbox`` when present and fitted to the content otherwise.
 
     Raises
@@ -91,7 +91,7 @@ def read_tikz(text: str) -> Document:
     >>> from svgwriter.export._vector._tikz_read import read_tikz
     >>> doc = read_tikz(r"\\begin{tikzpicture}\\fill[blue] (0,0) rectangle (1,1);\\end{tikzpicture}")
     >>> doc[0].get("fill"), round(doc[0].bounds().width, 2)
-    ('#0000ff', 28.45)
+    ('#0000ff', 37.8)
     """
     text = _unroll(COMMENT_RE.sub("", text))
     events = _events(text)

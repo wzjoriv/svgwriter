@@ -24,6 +24,7 @@ if TYPE_CHECKING:
 __all__ = [
     "DEFAULT_SIZE",
     "document_size",
+    "page_size",
     "encode",
     "encode_image",
     "paint_tree",
@@ -67,11 +68,41 @@ def document_size(document: Document) -> tuple[float, float]:
     >>> document_size(svg.Document(40, 20))
     (40.0, 20.0)
     """
+    width, height = page_size(document)
+    return float(max(1, math.ceil(width))), float(max(1, math.ceil(height)))
+
+
+def page_size(document: Document) -> tuple[float, float]:
+    """Exact page size in user units (CSS pixels, 96 per inch): ``width``/``height``, else the ``viewBox`` size, else 300.
+
+    Unlike :func:`document_size` the size is not rounded, so vector formats keep the physical
+    size: a ``210mm`` wide document is 793.7 user units, 595.28 points.
+
+    Parameters
+    ----------
+    document : Document
+        The document to measure.
+
+    Returns
+    -------
+    (float, float)
+        Width and height in user units.
+
+    See Also
+    --------
+    document_size : The size rounded up to whole pixels for rasters.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops.render import page_size
+    >>> [round(v, 2) for v in page_size(svg.Document(210 * svg.mm, 297 * svg.mm))]
+    [793.7, 1122.52]
+    """
     root = document.root
     box = root.view_box
-    w = _dimension(root.get("width"), box.width if box else DEFAULT_SIZE)
-    h = _dimension(root.get("height"), box.height if box else DEFAULT_SIZE)
-    return float(max(1, math.ceil(w))), float(max(1, math.ceil(h)))
+    return (_dimension(root.get("width"), box.width if box else DEFAULT_SIZE),
+            _dimension(root.get("height"), box.height if box else DEFAULT_SIZE))
 
 
 def render_svg(

@@ -7,7 +7,16 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
-from ._constants import ANCHORS, DIAGONAL, FONTSIZE_RE, MARKUP_RE, NODE_FONT_SIZE, SPACE_RE, TEX_FAMILIES
+from ._constants import (
+    ANCHORS,
+    DIAGONAL,
+    FONTSIZE_RE,
+    MARKUP_RE,
+    NODE_FONT_SIZE,
+    PX_PER_TEX_PT,
+    SPACE_RE,
+    TEX_FAMILIES,
+)
 from ._tikz_syntax import _options
 
 if TYPE_CHECKING:
@@ -70,7 +79,7 @@ def _font(keys: dict[str, str]) -> dict[str, Any]:
     r"""SVG font keywords for a node's ``font=`` (``\fontsize``, family, ``\bfseries``, ``\itshape``) and opacity."""
     font = keys.get("font", "")
     size = FONTSIZE_RE.search(font)
-    attributes: dict[str, Any] = {"font_size": float(size.group(1)) if size else NODE_FONT_SIZE}
+    attributes: dict[str, Any] = {"font_size": float(size.group(1)) * PX_PER_TEX_PT if size else NODE_FONT_SIZE}
     family = next((name for command, name in TEX_FAMILIES.items() if command in font), None)
     if family:
         attributes["font_family"] = family

@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
+from ..._internal._constants import PX_PER_PT
 from ..._internal._emoji import color_glyph_images
 from ..._internal._flatten import Item, flatten, to_cubic
 from ..._internal._numbers import format_number
@@ -150,7 +151,7 @@ def _text(run: Any, height: float) -> str:
 
 
 def to_eps(document: Document, *, text: bool = True) -> str:
-    """EPS (PostScript level 2) in points, one user unit per point.
+    """EPS (PostScript level 2) at the document's physical size, 96 user units per inch (3/4 point each).
 
     The document is flattened first, so gradients become solid colours. Images are embedded, and
     emoji are drawn as masked images (PostScript level 3) since PostScript has no colour fonts.
@@ -180,18 +181,20 @@ def to_eps(document: Document, *, text: bool = True) -> str:
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, fill="red")
     >>> to_eps(doc).splitlines()[:2]
-    ['%!PS-Adobe-3.0 EPSF-3.0', '%%BoundingBox: 0 0 10 10']
+    ['%!PS-Adobe-3.0 EPSF-3.0', '%%BoundingBox: 0 0 8 8']
     """
     scene = flatten(document, handled=frozenset({"image"}), text=text, color_glyphs=False)
     level = BASE_LEVEL
+    width, height = scene.width / PX_PER_PT, scene.height / PX_PER_PT
     lines = [
         "%!PS-Adobe-3.0 EPSF-3.0",
-        f"%%BoundingBox: 0 0 {math.ceil(scene.width)} {math.ceil(scene.height)}",
-        f"%%HiResBoundingBox: 0 0 {_n(scene.width)} {_n(scene.height)}",
+        f"%%BoundingBox: 0 0 {math.ceil(width)} {math.ceil(height)}",
+        f"%%HiResBoundingBox: 0 0 {_n(width)} {_n(height)}",
         "%%Creator: svgwriter",
         "%%LanguageLevel: {level}",
         "%%EndComments",
         "gsave",
+        f"{_n(1 / PX_PER_PT)} {_n(1 / PX_PER_PT)} scale",
     ]
     for item in scene.painted():
         if isinstance(item, tuple):

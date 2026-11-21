@@ -7,35 +7,37 @@ from __future__ import annotations
 import re
 from typing import Final
 
+from ..._internal._constants import PT_PER_INCH, PX_PER_INCH, PX_PER_PT
+
 __all__ = [
     "ACCEL_SCALE", "ANIMATION_KEY", "A14_NS", "COLOR_ATTRIBUTES", "EFFECT_PRESETS", "MS_PER_SECOND", "P_NS",
     "PATH_TOLERANCE", "PERCENT_SCALE", "REPEAT_SCALE", "ALPHA_SCALE", "ANGLE_UNIT", "ASCENT", "A_NS", "BAR_CHARS", "BLANK_LAYOUT", "CAPS",
-    "DEFAULT_TEXT_PT", "EMU_PER_POINT", "EMU_PER_UNIT", "EQUATION_ID", "EXTRA_HINT", "GENERIC_FONTS",
+    "DEFAULT_TEXT_PT", "EMU_PER_INCH", "EMU_PER_POINT", "EMU_PER_UNIT", "EQUATION_ID", "EXTRA_HINT", "GENERIC_FONTS",
     "GROUP_CHARS", "HALF_POINTS_PER_UNIT", "HEADING_STYLE_RE", "HEX_COLOR_RE", "INLINE_GAP", "JOINS", "LINE_HEIGHT", "LIST_STYLE", "MARGIN", "MATHML_NS",
     "MATH_FONT", "MC_NS", "MITER_SCALE", "M_NS", "NARY_CHARS", "NUMBERED_STYLE", "OFF_VALUES", "PIC", "PICTURE_SCALE", "POINTS_PER_UNIT",
     "PPTX_SIZE_SCALE", "REL",
-    "ROUND_RECT_ADJUST", "SLIDE_MAX_EMU", "SLIDE_MIN_EMU", "TITLE_STYLE", "TWIPS_PER_UNIT", "USER_UNITS_PER_INCH", "WP", "WPS", "W_NS"
+    "ROUND_RECT_ADJUST", "SLIDE_MAX_EMU", "SLIDE_MIN_EMU", "TITLE_STYLE", "TWIPS_PER_UNIT", "WP", "WPS", "W_NS"
 ]
 
 EXTRA_HINT: Final = "pip install 'pysvgwriter[office]'"
 PICTURE_SCALE: Final = 2.0
-USER_UNITS_PER_INCH: Final = 96.0
 WP: Final = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
 WPS: Final = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"
 PIC: Final = "http://schemas.openxmlformats.org/drawingml/2006/picture"
 REL: Final = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 INLINE_GAP: Final = 10.0
 MARGIN: Final = 10.0
-EMU_PER_UNIT: Final = 9525
-SLIDE_MIN_EMU: Final = 914400
+EMU_PER_INCH: Final = 914400
+EMU_PER_UNIT: Final = round(EMU_PER_INCH / PX_PER_INCH)
+SLIDE_MIN_EMU: Final = EMU_PER_INCH
 SLIDE_MAX_EMU: Final = 51206400
 BLANK_LAYOUT: Final = 6
 ALPHA_SCALE: Final = 100000
-POINTS_PER_UNIT: Final = 0.75
+POINTS_PER_UNIT: Final = 1 / PX_PER_PT
 PPTX_SIZE_SCALE: Final = 100
 DEFAULT_TEXT_PT: Final = 18.0
 ROUND_RECT_ADJUST: Final = 16667
-EMU_PER_POINT: Final = 12700
+EMU_PER_POINT: Final = round(EMU_PER_INCH / PT_PER_INCH)
 LINE_HEIGHT: Final = 1.2
 ASCENT: Final = 0.9
 GENERIC_FONTS: Final = {"sans-serif": "Arial", "serif": "Times New Roman", "monospace": "Courier New",

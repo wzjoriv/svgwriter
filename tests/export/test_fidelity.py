@@ -115,7 +115,7 @@ def test_pdf_links_become_uri_annotations():
     link = doc.add(svg.Group()).translate(10, 5).add(svg.A(href="https://example.com"))
     link.add(svg.rect(10, 10, 40, 40, fill="red"))
     data = svg.export.export(doc, "pdf")
-    assert b"/URI (https://example.com)" in data and b"/Rect [20 45 60 85]" in data
+    assert b"/URI (https://example.com)" in data and b"/Rect [15 33.75 45 63.75]" in data
 
 
 def test_flatten_records_links():
@@ -200,7 +200,7 @@ def test_tikz_text_nodes_read_back_as_text():
     back = svg.export.find_importer("tikz").function(svg.export.export(doc, "tikz").encode())
     text = back[0]
     assert text.tag == "text" and text.text_content == "Hello"
-    assert (text.get("x"), text.get("y"), text.get("font-size")) == (10, 50, 20)
+    assert (text.get("x"), text.get("y"), text.get("font-size")) == pytest.approx((10, 50, 20), abs=1e-3)
     assert (text.get("fill"), text.get("font-weight"), text.get("font-style")) == ("#ff0000", "bold", "italic")
     assert text.get("font-family") == "sans-serif" and text.get("text-anchor") == "start"
 

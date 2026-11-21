@@ -20,7 +20,7 @@ from ._constants import (
     NODE_COMMANDS,
     PICTURE_RE,
 )
-from ._tikz_syntax import _balanced, _dimension, _options, _split
+from ._tikz_syntax import _balanced, _dimension, _measure, _options, _split
 
 if TYPE_CHECKING:
     from ._tikz_syntax import Pair, Point
@@ -30,7 +30,7 @@ __all__: list[str] = []
 
 @dataclass
 class _Frame:
-    """The picture's coordinate system: unit vectors and scale, mapped to y-down points."""
+    """The picture's coordinate system: unit vectors and scale, mapped to y-down user units."""
 
     x_unit: float = DEFAULT_UNIT
     y_unit: float = DEFAULT_UNIT
@@ -65,7 +65,7 @@ class _Frame:
         if key == "shift":
             return Matrix.translate(*self._raw(_balanced(value, 0)[0] if value.startswith("(") else value))
         if key in ("xshift", "yshift"):
-            offset = _dimension(value)[0]
+            offset = _measure(value)
             return Matrix.translate(offset, 0.0) if key == "xshift" else Matrix.translate(0.0, -offset)
         if key == "rotate":
             return Matrix.rotate(-float(value))
@@ -117,7 +117,7 @@ def _frame(options: str) -> _Frame:
     for key, value in _options(options):
         try:
             if key in ("x", "y") and value is not None:
-                setattr(frame, f"{key}_unit", _dimension(value)[0])
+                setattr(frame, f"{key}_unit", _measure(value))
             elif key in ("scale", "xscale", "yscale") and value is not None:
                 for axis in ("x", "y") if key == "scale" else (key[0],):
                     setattr(frame, f"{axis}_scale", getattr(frame, f"{axis}_scale") * float(value))

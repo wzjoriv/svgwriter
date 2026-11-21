@@ -9,6 +9,8 @@ import re
 import struct
 from typing import Final
 
+from ..._internal._constants import CM_PER_INCH, MM_PER_INCH, PX_PER_INCH, PX_PER_PT
+
 __all__ = [
     "ANCHORS",
     "ANGLE_EPSILON",
@@ -98,7 +100,11 @@ __all__ = [
     "OBJECT_RE",
     "PAINTS",
     "PATH_TOKEN_RE",
+    "MEDIA_BOX_RE",
+    "PDF_BOX_PRECISION",
     "PDF_HEADER",
+    "STARTXREF_RE",
+    "XREF_ENTRY_RE",
     "PDF_LINK_KEY",
     "PDF_MAX_DEPTH",
     "PDF_TOKEN_RE",
@@ -127,7 +133,13 @@ __all__ = [
     "SUBSET_RE",
     "SUPPORTED_BITS",
     "TEX_FAMILIES",
+    "TEX_PT_PER_EM",
+    "TEX_PT_PER_EX",
     "TEX_PT_PER_INCH",
+    "TEX_PT_PER_PC",
+    "TEX_LINE_WIDTH",
+    "PX_PER_BP",
+    "PX_PER_TEX_PT",
     "TIKZSET_RE",
     "TIKZSTYLE_RE",
     "TIKZ_CAPS",
@@ -238,6 +250,10 @@ OBJECT_RE: Final = re.compile(rb"(?<!\d)(\d+)\s+(\d+)\s+obj(?!" + REGULAR + rb")
 STREAM_RE: Final = re.compile(rb"\s*stream(?:\r\n|\n|\r)")
 ENDSTREAM_RE: Final = re.compile(rb"\s*endstream")
 INLINE_IMAGE_END_RE: Final = re.compile(rb"\sEI(?=\s|$)")
+MEDIA_BOX_RE: Final = re.compile(rb"/MediaBox\s*\[\s*0\s+0\s+([\d.]+)\s+([\d.]+)\s*\]")
+XREF_ENTRY_RE: Final = re.compile(rb"(?m)^(\d{10})( \d{5} n)")
+STARTXREF_RE: Final = re.compile(rb"(startxref\s+)(\d+)")
+PDF_BOX_PRECISION: Final = 4
 ENCRYPT_RE: Final = re.compile(rb"/Encrypt\s*(?:\d+\s+\d+\s+R|<<)")
 NAME_ESCAPE_RE: Final = re.compile(rb"#([0-9A-Fa-f]{2})")
 LITERALS: Final = {b"true": True, b"false": False, b"null": None}
@@ -268,15 +284,23 @@ LATEX_SPECIALS: Final = {
 }
 LINE_SPREAD: Final = 1.2
 TEX_PT_PER_INCH: Final = 72.27
-UNITS: Final = {"pt": 1.0, "bp": TEX_PT_PER_INCH / 72.0, "in": TEX_PT_PER_INCH, "cm": TEX_PT_PER_INCH / 2.54,
-                "mm": TEX_PT_PER_INCH / 25.4, "pc": 12.0, "em": 10.0, "ex": 4.3}
+TEX_PT_PER_PC: Final = 12.0
+TEX_PT_PER_EM: Final = 10.0
+TEX_PT_PER_EX: Final = 4.3
+PX_PER_TEX_PT: Final = PX_PER_INCH / TEX_PT_PER_INCH
+PX_PER_BP: Final = PX_PER_PT
+UNITS: Final = {"pt": PX_PER_TEX_PT, "bp": PX_PER_BP, "in": PX_PER_INCH, "cm": PX_PER_INCH / CM_PER_INCH,
+                "mm": PX_PER_INCH / MM_PER_INCH, "pc": TEX_PT_PER_PC * PX_PER_TEX_PT,
+                "em": TEX_PT_PER_EM * PX_PER_TEX_PT, "ex": TEX_PT_PER_EX * PX_PER_TEX_PT}
 DEFAULT_UNIT: Final = UNITS["cm"]
-DEFAULT_LINE_WIDTH: Final = 0.4
-LINE_WIDTHS: Final = {"ultra thin": 0.1, "very thin": 0.2, "thin": 0.4, "semithick": 0.6, "thick": 0.8,
-                      "very thick": 1.2, "ultra thick": 1.6}
-DASHES: Final = {"dashed": (3.0, 3.0), "densely dashed": (3.0, 2.0), "loosely dashed": (3.0, 6.0),
-                 "dotted": (DEFAULT_LINE_WIDTH, 2.0), "densely dotted": (DEFAULT_LINE_WIDTH, 1.0),
-                 "loosely dotted": (DEFAULT_LINE_WIDTH, 4.0), "solid": ()}
+TEX_LINE_WIDTH: Final = 0.4
+DEFAULT_LINE_WIDTH: Final = TEX_LINE_WIDTH * PX_PER_TEX_PT
+LINE_WIDTHS: Final = {name: width * PX_PER_TEX_PT for name, width in {
+    "ultra thin": 0.1, "very thin": 0.2, "thin": 0.4, "semithick": 0.6, "thick": 0.8, "very thick": 1.2,
+    "ultra thick": 1.6}.items()}
+DASHES: Final = {name: tuple(length * PX_PER_TEX_PT for length in lengths) for name, lengths in {
+    "dashed": (3.0, 3.0), "densely dashed": (3.0, 2.0), "loosely dashed": (3.0, 6.0), "dotted": (TEX_LINE_WIDTH, 2.0),
+    "densely dotted": (TEX_LINE_WIDTH, 1.0), "loosely dotted": (TEX_LINE_WIDTH, 4.0), "solid": ()}.items()}
 TIKZ_CAP_NAMES: Final = {"butt": "butt", "round": "round", "rect": "square"}
 XCOLOR: Final = {
     "red": (1.0, 0.0, 0.0), "green": (0.0, 1.0, 0.0), "blue": (0.0, 0.0, 1.0), "cyan": (0.0, 1.0, 1.0),
@@ -291,10 +315,10 @@ RGB_SCALE: Final = 255.0
 PERCENT: Final = 100.0
 FULL_TURN: Final = 2 * math.pi
 COMMENT_RE: Final = re.compile(r"(?<!\\)%[^\n]*")
-NODE_FONT_SIZE: Final = 10.0
+NODE_FONT_SIZE: Final = TEX_PT_PER_EM * PX_PER_TEX_PT
 NODE_BASELINE: Final = 0.35
 NODE_TEXT_HEIGHT: Final = 0.8 * NODE_FONT_SIZE
-INNER_SEP: Final = 3.333
+INNER_SEP: Final = 3.333 * PX_PER_TEX_PT
 MAX_STYLE_DEPTH: Final = 8
 MAX_LOOPS: Final = 1000
 MAX_LOOP_ITEMS: Final = 10000
