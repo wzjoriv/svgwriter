@@ -62,7 +62,6 @@ from .core import (
 from .filters import *  # noqa: F403
 from .filters import __all__ as _filters_all
 from .paint import ClipPath, Gradient, LinearGradient, Marker, Mask, Pattern, RadialGradient, Stop
-from .presets import ANIMATIONS, unregister_animation
 from .shapes import Circle, Ellipse, Line, Path, Polygon, Polyline, Rect, Shape
 from .structure import (
     A,
@@ -104,9 +103,7 @@ from .text import (
 
 __all__ = [
     "A",
-    "ANIMATIONS",
     "Motion",
-    "unregister_animation",
     "Accumulate",
     "Additive",
     "AltGlyph",

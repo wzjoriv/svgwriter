@@ -25,7 +25,7 @@ def test_metadata() -> None:
 
 
 def test_all_names_resolve() -> None:
-    for module_name in ("svgwriter", "svgwriter.elements", "svgwriter.io", "svgwriter.attributes", "svgwriter.pathdata", "svgwriter.export", "svgwriter.transform", "svgwriter.color", "svgwriter.builder", "svgwriter.theme", "svgwriter.elements.filters", "svgwriter.elements.structure", "svgwriter.elements.shapes", "svgwriter.aliases", "svgwriter.ops", "svgwriter.video", "svgwriter.cli"):
+    for module_name in ("svgwriter", "svgwriter.elements", "svgwriter.io", "svgwriter.attributes", "svgwriter.pathdata", "svgwriter.export", "svgwriter.transform", "svgwriter.color", "svgwriter.builder", "svgwriter.theme", "svgwriter.elements.filters", "svgwriter.elements.structure", "svgwriter.elements.shapes", "svgwriter.aliases", "svgwriter.ops", "svgwriter.video", "svgwriter.cli", "svgwriter.preset"):
         module = importlib.import_module(module_name)
         for name in module.__all__:
             assert getattr(module, name) is not None, f"{module_name}.{name}"

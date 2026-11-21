@@ -39,6 +39,8 @@ io
     parser.
 builder
     Composite shapes (star, gear, arrow) and effects (shadow, glow).
+preset
+    Presets of your own by kind (``@svg.preset.animation``, ``@svg.preset.shape``).
 theme
     Palettes, fonts and role styles applied as CSS classes (``Theme``).
 ops
@@ -58,7 +60,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from . import export, ops, theme, video
+from . import export, ops, preset, theme, video
 from ._document.sizes import SIZES, page_size, register_size, unregister_size
 from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
@@ -88,12 +90,11 @@ from .attributes import (
     rad,
     turn,
 )
-from .builder import SHAPES, drawing, drop_shadow, shape_factory
+from .builder import drawing, drop_shadow
 from .color import Color, PaintKeyword, parse_color, parse_paint
 from .document import Document
 from .elements import *  # noqa: F403
 from .elements import __all__ as _elements_all
-from .elements.presets import animation
 from .io.writer import SerializeOptions, to_string, write
 from .ops import interpolate, register_font, register_interpolator, text_to_path, unregister_interpolator
 from .pathdata import BBox, PathBuilder, PathData
@@ -144,7 +145,6 @@ __all__ = [
     "IRI",
     "Point",
     "SVGParseError",
-    "SHAPES",
     "SIZES",
     "Scene",
     "Align",
@@ -180,7 +180,6 @@ __all__ = [
     "rad",
     "turn",
     "mm",
-    "animation",
     "interpolate",
     "page_size",
     "latex",
@@ -193,11 +192,11 @@ __all__ = [
     "parse_paint",
     "export",
     "ops",
+    "preset",
     "percent",
     "pt",
     "px",
     "register_renderer",
-    "shape_factory",
     "text_to_path",
     "theme",
     "unregister_interpolator",

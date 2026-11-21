@@ -10,8 +10,8 @@ from typing import Annotated
 
 import typer
 
+from .. import preset
 from .._document.sizes import SIZES
-from ..builder import SHAPES
 from ..document import Document
 from ..elements.core import Category, Element
 from ..io.parser import Strictness, parse_file
@@ -57,7 +57,7 @@ def emit(root: Element, output: str | None, compact: bool, precision: int) -> No
 
 def shapes() -> None:
     """List registered composite shapes."""
-    for name in SHAPES.names():
+    for name in preset.list("shape"):
         print(name)
 
 
@@ -82,11 +82,12 @@ def draw(shape: Annotated[str, typer.Argument(help="a name from `svgwriter shape
          stroke: Annotated[str | None, typer.Option(help="stroke color")] = None,
          output: Output = None, compact: Compact = False, precision: Precision = PRECISION) -> None:
     """Render a registered shape."""
-    if shape not in SHAPES:
-        raise typer.BadParameter(f"{shape!r} is not one of {', '.join(SHAPES.names())}", param_hint="SHAPE")
+    try:
+        factory = preset.get("shape", shape)
+    except KeyError as error:
+        raise typer.BadParameter(error.args[0], param_hint="SHAPE") from None
     doc = Document(size, size)
     center, radius = size / 2, size * CANVAS_MARGIN
-    factory = SHAPES.get(shape)
     layout = DRAW_LAYOUTS.get(shape)
     if layout is None:
         drawn = factory(center, center, radius, fill=fill, stroke=stroke)

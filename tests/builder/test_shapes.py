@@ -239,9 +239,9 @@ class TestWave:
 
 class TestRegistration:
     def test_new_presets_are_registered(self) -> None:
-        names = set(svg.SHAPES.names())
+        names = set(svg.preset.list("shape"))
         assert {"regular_polygon", "heart", "callout", "cross", "grid", "spiral", "wave"} <= names
-        assert svg.SHAPES.get("heart") is builder.heart
+        assert svg.preset.get("shape", "heart") is builder.heart
 
     def test_every_preset_is_exported(self) -> None:
         for name in ("regular_polygon", "heart", "callout", "cross", "grid", "spiral", "wave"):

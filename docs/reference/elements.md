@@ -63,14 +63,11 @@ Element classes. Every class also has a lowercase alias (`svgwriter.circle` is `
 
 ## Animation presets
 
-`element.animate` returns a `Motion`; its methods add SMIL children and chain. `@svg.animation`
-adds presets of your own as more methods.
+`element.animate` returns a `Motion`; its methods add SMIL children and chain. `@svg.preset.animation`
+adds presets of your own as more methods, and `Motion.apply` runs any animation function with typed
+options (see [Preset functions](builder.md#preset-functions)).
 
 ```{eval-rst}
 .. autoclass:: svgwriter.Motion
    :members:
-.. autodata:: svgwriter.ANIMATIONS
-   :no-value:
-.. autofunction:: svgwriter.animation
-.. autofunction:: svgwriter.unregister_animation
 ```

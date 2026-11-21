@@ -15,13 +15,14 @@ from .._internal._constants import (
     CREATE_DRAW_SHARE,
     DEFAULT_DURATION,
     FOREVER,
+    MOTION_HELPERS,
     SUGGESTIONS,
     WRITE_LAG,
 )
+from .._internal._presets import ANIMATIONS
 from .._internal._typing import P
 from ._motion_transform import TransformPresets, timing
 from .animation import Animate, AnimateMotion, Ease, EaseLike, Set
-from .presets import ANIMATIONS
 
 if TYPE_CHECKING:
     from .core import Element
@@ -87,7 +88,7 @@ class Motion(TransformPresets):
     (a name such as ``"ease-in-out"``, a bézier 4-tuple, ``("steps", n)`` or
     a function; see :class:`~svgwriter.Ease`). ``show`` and ``hide`` act at
     one instant, so they take only the moment. Presets added with
-    :func:`@svg.animation <svgwriter.animation>` are methods too.
+    :func:`@svg.preset.animation <svgwriter.preset.animation>` are methods too.
 
     Parameters
     ----------
@@ -115,19 +116,22 @@ class Motion(TransformPresets):
         self.element.append(animation)
         return self
 
-    def __getattr__(self, name: str) -> Callable[..., Motion]:
-        if name in ANIMATIONS:
-            function = ANIMATIONS.get(name)
+    def __getattribute__(self, name: str) -> Any:
+        function = ANIMATIONS.user.get(name)
+        if function is None:
+            return object.__getattribute__(self, name)
 
-            @functools.wraps(function)
-            def preset(*args: Any, **options: Any) -> Motion:
-                return self.apply(function, *args, **options)
+        @functools.wraps(function)
+        def preset(*args: Any, **options: Any) -> Motion:
+            return self.apply(function, *args, **options)
 
-            return preset
-        known = [*ANIMATIONS, *(member for member in dir(Motion) if not member.startswith("_"))]
-        close = difflib.get_close_matches(name, known, n=SUGGESTIONS)
+        return preset
+
+    def __getattr__(self, name: str) -> Any:
+        close = difflib.get_close_matches(name, ANIMATIONS.names(), n=SUGGESTIONS)
         hint = f"; did you mean {' or '.join(map(repr, close))}?" if close else ""
-        raise AttributeError(f"no animation preset {name!r}{hint} (@svg.animation adds one)", name=name, obj=self)
+        raise AttributeError(f"no animation preset {name!r}{hint} (@svg.preset.animation adds one)", name=name,
+                             obj=self)
 
     def __dir__(self) -> list[str]:
         return sorted({*super().__dir__(), *ANIMATIONS})
@@ -137,7 +141,7 @@ class Motion(TransformPresets):
         """Run an animation function on this element: ``function(self, *args, **kwargs)``.
 
         Typed with the function's own parameters, so editors complete and check its options. The
-        function need not be registered; :func:`~svgwriter.animation` also makes it
+        function need not be registered; :func:`@svg.preset.animation <svgwriter.preset.animation>` also makes it
         ``element.animate.<name>``.
 
         Parameters
@@ -379,3 +383,11 @@ class Motion(TransformPresets):
         for index, child in enumerate(list(self.element)):
             getattr(Motion(child), preset)(begin=begin + index * step, **options)
         return self
+
+
+for _name, _member in vars(Motion).items():
+    if not _name.startswith("_") and _name not in MOTION_HELPERS and callable(_member):
+        ANIMATIONS.add_builtin(_name, _member)
+for _name, _member in vars(TransformPresets).items():
+    if not _name.startswith("_") and callable(_member):
+        ANIMATIONS.add_builtin(_name, _member)
