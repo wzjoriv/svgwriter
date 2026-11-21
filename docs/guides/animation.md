@@ -102,8 +102,8 @@ needed); `.png` and `.webp` become APNG and animated WebP with `animate=True`. O
 
 ## Video through ffmpeg
 
-`render_animation` draws frames and pipes them to ffmpeg (mp4, gif, webm, mov, apng). The `update`
-callback changes the document for each frame:
+`render_animation` draws frames and pipes them to ffmpeg (mp4, gif, webm, mov, apng; a `.png` path
+writes numbered frames). The `update` callback changes the document for each frame:
 
 ```python
 import math
@@ -118,11 +118,50 @@ The built-in `"skia"` renderer returns raw RGBA frames. Any callable `renderer(d
 returns PNG bytes or a uint8 `(H, W, 4)` array works, as does a `"module:function"` name. Missing ffmpeg
 raises `FFmpegNotFoundError` before any rendering.
 
-From the command line:
+## Scenes
+
+A `svg.Scene` subclass is one animation: class attributes set `width`, `height`, `fps`, `duration` and
+`renderer` (defaults 640 by 360, 30 fps, the SMIL length, `"skia"`), `build(doc)` draws into an empty
+document of that size once, and `update(seconds)` sets the state for each frame. SMIL animations in
+the drawing play as well, so a scene can use presets, Python, or both.
+
+```python
+class Pulse(svg.Scene):
+    width, height, fps, duration = 120, 120, 24, 2.0
+
+    def build(self, doc):
+        doc.rect(0, 0, 120, 120, fill="midnightblue")
+        self.dot = doc.circle(60, 60, 10, fill="gold")
+        self.dot.animate.fade_in(0.5)
+
+    def update(self, seconds):
+        self.dot.r = 10 + 30 * seconds / self.duration
+
+pulse = Pulse()
+still = pulse.render(1.0)        # PNG bytes of the frame at 1 s
+frames = list(pulse.frames())    # 48 frames, not encoded
+# pulse.save()                   # Pulse.mp4; or save("pulse.gif"), save("pulse.png") for numbered frames
+```
+
+`build` receives the document rather than returning one, so the size is declared once, as class
+attributes, and `build` holds only drawing code. It runs when the scene is created; keep the elements
+that `update` changes on `self`. `update` gets absolute time, so frames can be drawn in any order. In a
+notebook a scene displays as its animated SVG. `svg.Scene(doc)` animates an existing document as it is.
+
+A file can hold any number of scenes. A class whose name starts with `_` is skipped, so a shared base
+class stays out of the list. `svg.video.load_scenes` returns them, and the command line renders them:
 
 ```console
-$ python -m svgwriter animate scene.py -o out.mp4 --fps 30
+$ python -m svgwriter animate scenes.py --list            # print the scene names
+$ python -m svgwriter animate scenes.py                   # every scene to <Name>.mp4
+$ python -m svgwriter animate scenes.py Intro Outro --format gif
+$ python -m svgwriter animate scenes.py:Intro -o intro.webm
+$ python -m svgwriter animate mypackage.scenes:Intro      # an importable module
+$ python -m svgwriter render scenes.py Intro --time 1.5   # one frame to Intro.png
 ```
+
+`--fps`, `--duration` and `--renderer` override the scene's settings. An `.svg` file is accepted too and
+plays its SMIL. See `examples/13_scenes.py`.
 
 ## Tweening and morphing
 

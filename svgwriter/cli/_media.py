@@ -5,83 +5,22 @@
 from __future__ import annotations
 
 import argparse
-import runpy
 import sys
-from collections.abc import Callable
 from pathlib import Path
-from typing import Any
 
 from ..document import Document
-from ..video import FFmpegError, FFmpegNotFoundError
+from ..video import FFmpegError, FFmpegNotFoundError, Scene, SceneError, load_scenes
 from ..video.animation import DEFAULT_FPS, RENDERERS
 from ._basic import emit, output_options
 from ._constants import (
     DEFAULT_FONT,
     DEFAULT_TEXT_SIZE,
     EXIT_FAILURE,
-    SCENE_DOCUMENTS,
-    SCENE_FACTORIES,
+    FRAME_FORMAT,
     TEXT_MARGIN,
 )
 
-__all__ = ["SceneError", "add_media_commands", "load_scene"]
-
-
-class SceneError(ValueError):
-    """A scene script does not define a document.
-
-    Subclasses :class:`ValueError`.
-
-    See Also
-    --------
-    load_scene : Raises it.
-    """
-
-
-def load_scene(path: str | Path) -> tuple[Document, Callable[[Document, float], object] | None, dict[str, Any]]:
-    """Load ``(document, update, settings)`` from an ``.svg`` or ``.py`` file.
-
-    A Python scene defines ``build()`` (or ``scene()``) returning a
-    :class:`~svgwriter.Document`, or a module-level ``document``. It may
-    define ``update(document, seconds)`` and the settings ``FPS``,
-    ``DURATION`` and ``RENDERER``.
-
-    Parameters
-    ----------
-    path : str or pathlib.Path
-        An ``.svg`` file or a Python scene script.
-
-    Returns
-    -------
-    tuple
-        The document, the optional ``update`` callable (None when absent) and a
-        dict of the lowercase settings that the script defined.
-
-    Raises
-    ------
-    SceneError
-        If a Python script defines neither ``build()``/``scene()`` nor ``document``.
-
-    See Also
-    --------
-    svgwriter.Document.render_animation : Renders the loaded document.
-    """
-    source = Path(path)
-    if source.suffix.lower() == ".svg":
-        return Document.open(source), None, {}
-    namespace = runpy.run_path(str(source), run_name="__scene__")
-    document = None
-    for name in SCENE_FACTORIES:
-        if callable(namespace.get(name)):
-            document = namespace[name]()
-            break
-    else:
-        document = next((namespace[n] for n in SCENE_DOCUMENTS if n in namespace), None)
-    if not isinstance(document, Document):
-        raise SceneError(f"{source} must define build() returning a svgwriter.Document, or a 'document' variable")
-    settings = {key.lower(): namespace[key] for key in ("FPS", "DURATION", "RENDERER") if key in namespace}
-    update = namespace.get("update")
-    return document, update if callable(update) else None, settings
+__all__ = ["add_media_commands"]
 
 
 def _fail(message: str) -> int:
@@ -89,35 +28,37 @@ def _fail(message: str) -> int:
     return EXIT_FAILURE
 
 
+def _targets(args: argparse.Namespace, extension: str | None) -> list[tuple[Scene, Path | None]]:
+    scenes = load_scenes(args.scene, args.names)
+    if args.output is not None and len(scenes) > 1:
+        raise SceneError(f"-o names one file but {len(scenes)} scenes were selected; drop -o to write one file per scene")
+    if args.output is not None:
+        return [(scenes[0], Path(args.output))]
+    return [(scene, Path(f"{scene.name}.{extension}") if extension else None) for scene in scenes]
+
+
 def _cmd_animate(args: argparse.Namespace) -> int:
     try:
-        document, update, settings = load_scene(args.scene)
-        written = document.render_animation(
-            args.output,
-            fps=args.fps if args.fps is not None else settings.get("fps", DEFAULT_FPS),
-            duration=args.duration if args.duration is not None else settings.get("duration"),
-            renderer=args.renderer or settings.get("renderer"),
-            update=update,
-            ffmpeg=args.ffmpeg,
-        )
-    except (SceneError, FFmpegNotFoundError, FFmpegError, ValueError) as exc:
+        if args.list:
+            for scene in load_scenes(args.scene, args.names):
+                print(scene.name)
+            return 0
+        for scene, target in _targets(args, args.format):
+            print(scene.save(target, fps=args.fps, duration=args.duration, renderer=args.renderer, ffmpeg=args.ffmpeg))
+    except (FFmpegNotFoundError, FFmpegError, ValueError) as exc:
         return _fail(str(exc))
-    print(written)
     return 0
 
 
 def _cmd_render(args: argparse.Namespace) -> int:
-    from ..ops.render import render_png
-
     try:
-        document, update, _ = load_scene(args.scene)
-        if update is not None:
-            update(document, args.time)
-        data = render_png(document, scale=args.scale, background=args.background)
+        targets = _targets(args, FRAME_FORMAT)
     except SceneError as exc:
         return _fail(str(exc))
-    Path(args.output).write_bytes(data)
-    print(args.output)
+    for scene, target in targets:
+        written = target or Path(f"{scene.name}.{FRAME_FORMAT}")
+        written.write_bytes(scene.render(args.time, scale=args.scale, background=args.background))
+        print(written)
     return 0
 
 
@@ -144,24 +85,30 @@ def add_media_commands(commands: argparse._SubParsersAction[argparse.ArgumentPar
     --------
     svgwriter.cli._basic.add_basic_commands : The commands that need neither ffmpeg nor skia.
     """
+    source_help = "scene file (.py), file.py:Name, package.module:Name, or an .svg file"
+    names_help = "scene classes to pick (default: every Scene subclass the file defines)"
     animate = commands.add_parser(
         "animate",
-        help="render a scene to mp4/gif/webm through ffmpeg",
-        description="Render a scene (.py defining build() and optionally update(doc, t), or an .svg) "
-        "frame by frame and encode it with ffmpeg.",
+        help="render scenes to mp4/gif/webm/png frames through ffmpeg",
+        description="Render each svgwriter.Scene subclass in a file (or the ones named) frame by frame "
+        "and encode it with ffmpeg to <Name>.<format>.",
     )
-    animate.add_argument("scene", help="scene script (.py) or SVG file")
-    animate.add_argument("-o", "--out", "--output", dest="output", default="animation.mp4", help="output file; the extension picks the format")
-    animate.add_argument("--fps", type=float, default=None, help=f"frames per second (default: scene FPS or {DEFAULT_FPS:g})")
-    animate.add_argument("--duration", type=float, default=None, help="seconds (default: scene DURATION or the SMIL animation length)")
-    animate.add_argument("--renderer", default=None, help=f"registered name ({', '.join(RENDERERS.names())}) or module:function")
+    animate.add_argument("scene", help=source_help)
+    animate.add_argument("names", nargs="*", help=names_help)
+    animate.add_argument("-o", "--out", "--output", dest="output", default=None, help="output file for a single scene; the extension picks the format")
+    animate.add_argument("--format", default=None, help="extension of the <Name>.<format> files (default: mp4; png writes numbered frames)")
+    animate.add_argument("--list", action="store_true", help="print the scene names and exit")
+    animate.add_argument("--fps", type=float, default=None, help=f"frames per second (default: the scene's fps, {DEFAULT_FPS:g} unless set)")
+    animate.add_argument("--duration", type=float, default=None, help="seconds (default: the scene's duration or the SMIL animation length)")
+    animate.add_argument("--renderer", default=None, help=f"registered name ({', '.join(RENDERERS.names())}) or module:function (default: the scene's)")
     animate.add_argument("--ffmpeg", default=None, help="ffmpeg executable (default: found on PATH)")
     animate.set_defaults(func=_cmd_animate)
 
-    render = commands.add_parser("render", help="rasterize a scene or SVG file to PNG")
-    render.add_argument("scene", help="scene script (.py) or SVG file")
-    render.add_argument("-o", "--out", "--output", dest="output", default="out.png")
-    render.add_argument("--time", type=float, default=0.0, help="seconds passed to the scene's update()")
+    render = commands.add_parser("render", help="rasterize scenes or an SVG file to PNG")
+    render.add_argument("scene", help=source_help)
+    render.add_argument("names", nargs="*", help=names_help)
+    render.add_argument("-o", "--out", "--output", dest="output", default=None, help=f"output file for a single scene (default: <Name>.{FRAME_FORMAT})")
+    render.add_argument("--time", type=float, default=0.0, help="seconds into the scene")
     render.add_argument("--scale", type=float, default=1.0, help="pixels per user unit")
     render.add_argument("--background", default=None, help="background color (default: transparent)")
     render.set_defaults(func=_cmd_render)
