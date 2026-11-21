@@ -4,7 +4,7 @@ Document theme: the theme in use and the output preparation that applies it.
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 
 from ..theme.sheet import applied
@@ -35,6 +35,6 @@ class Theming:
         self._theme = Theme.of(value)
 
     @contextmanager
-    def _prepared(self) -> Iterator[None]:
+    def _prepared(self) -> Generator[None, None, None]:
         with self._sized(), applied(self._theme, self.root):
             yield

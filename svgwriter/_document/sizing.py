@@ -4,7 +4,7 @@ Document size: auto-size from content, ``content_bounds`` and ``fit``.
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from typing import TYPE_CHECKING, TypeVar
 
@@ -107,7 +107,7 @@ class Sizing:
         return self
 
     @contextmanager
-    def _sized(self) -> Iterator[None]:
+    def _sized(self) -> Generator[None, None, None]:
         if not self.auto_size:
             yield
             return

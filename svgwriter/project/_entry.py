@@ -7,7 +7,7 @@ from __future__ import annotations
 import importlib
 import os
 import sys
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
@@ -39,7 +39,7 @@ def _inside(module: object, root: Path) -> bool:
 
 
 @contextmanager
-def working_directory(root: Path) -> Iterator[None]:
+def working_directory(root: Path) -> Generator[None, None, None]:
     """Run the block with *root* as the current folder, so the project's relative paths resolve."""
     previous = Path.cwd()
     os.chdir(root)
@@ -50,7 +50,7 @@ def working_directory(root: Path) -> Iterator[None]:
 
 
 @contextmanager
-def project_scope(root: Path) -> Iterator[None]:
+def project_scope(root: Path) -> Generator[None, None, None]:
     """Import from *root* without bytecode caches; afterwards forget its modules and the presets and sizes they registered.
 
     Cached bytecode is keyed on modification time and size, so an edit within the same second that keeps
