@@ -9,6 +9,7 @@ import re
 from typing import Final
 
 __all__ = [
+    "ROOT_RULES",
     "ANGLE_ATTRIBUTES",
     "ANGLE_RE",
     "ANGLE_SPELLINGS",
@@ -69,6 +70,8 @@ RULE_RE: Final = re.compile(r"([^{}@]+)\{([^}]*)\}")
 AT_BLOCK_RE: Final = re.compile(r"@[^{;]+(\{(?:[^{}]|\{[^{}]*\})*\}|;)")
 COMPOUND_RE: Final = re.compile(r"(\*|[A-Za-z][\w-]*)|#([\w-]+)|\.([\w-]+)|\[([\w:-]+)(?:([~|]?=)\"?([^\"\]]*)\"?)?\]|(:[\w-]+(?:\([^)]*\))?)")
 IMPORTANT: Final = "!important"
+ROOT_RULES: Final = "_class_rules"
+"""Root attribute holding style rules by class name that apply as if they led the first ``<style>`` (a theme)."""
 
 CSS_DIMENSION_RE: Final = re.compile(r"^\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)([A-Za-z]+)\s*$")
 LENGTH_RE: Final = re.compile(

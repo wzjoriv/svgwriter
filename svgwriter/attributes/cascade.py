@@ -10,7 +10,7 @@ from contextvars import ContextVar
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
-from ._constants import AT_BLOCK_RE, COMMENT_RE, CSS_DIMENSION_RE, IMPORTANT, MARKER_LONGHANDS, RULE_RE
+from ._constants import AT_BLOCK_RE, COMMENT_RE, CSS_DIMENSION_RE, IMPORTANT, MARKER_LONGHANDS, ROOT_RULES, RULE_RE
 from ._selectors import matches_from, specificity, split_selector
 from .names import PRESENTATION_ATTRIBUTES
 
@@ -179,6 +179,9 @@ def frozen_rules() -> Generator[None, None, None]:
 def rules_of(root: Element) -> list[Rule]:
     """Collect the rules of every ``<style>`` element under an element.
 
+    Rules a document attaches to its root by class name (its theme's role styles) come first, for the
+    classes the tree uses, so measuring before output sees the same styles as the output.
+
     Parameters
     ----------
     root : Element
@@ -204,9 +207,16 @@ def rules_of(root: Element) -> list[Rule]:
     cache = _FROZEN.get()
     if cache is not None and id(root) in cache:
         return cache[id(root)]
-    rules: list[Rule] = []
-    for style in root.iter("style"):
-        css = "".join(c for c in style.children if isinstance(c, str))
+    by_class: dict[str, list[Rule]] = root.__dict__.get(ROOT_RULES) or {}
+    sheets: list[str] = []
+    used: set[str] = set()
+    for element in root.iter():
+        if element.tag == "style":
+            sheets.append("".join(c for c in element.children if isinstance(c, str)))
+        if by_class:
+            used.update(str(element.attributes.get("class", "")).split())
+    rules = [rule for name in sorted(used & by_class.keys()) for rule in by_class[name]]
+    for css in sheets:
         rules.extend(parse_css(css, start=len(rules)))
     if cache is not None:
         cache[id(root)] = rules
@@ -396,3 +406,4 @@ def resolve_styles(root: Element) -> None:
     for sheet in list(root.iter("style")):
         if sheet.parent is not None:
             sheet.parent.remove(sheet)
+    root.__dict__.pop(ROOT_RULES, None)

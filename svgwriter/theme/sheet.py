@@ -13,9 +13,10 @@ from ._errors import ThemeError
 from .theme import THEMES, Theme
 
 if TYPE_CHECKING:
+    from ..attributes.cascade import Rule
     from ..elements.core import Element
 
-__all__ = ["STYLE_ID", "applied", "sheet_theme", "used_roles"]
+__all__ = ["STYLE_ID", "applied", "role_rules", "sheet_theme", "used_roles"]
 
 
 def used_roles(theme: Theme, root: Element) -> list[str]:
@@ -158,3 +159,38 @@ def sheet_theme(root: Element) -> Theme | None:
     roles = {rule.selector.removeprefix(prefix).replace("-", "."): {key: value for key, value, _ in rule.declarations}
              for rule in parse_css(css) if rule.selector.startswith(prefix)}
     return Theme.current().replace(name=SHEET_THEME_NAME, roles=roles)
+
+
+def role_rules(theme: Theme) -> dict[str, list[Rule]]:
+    """The theme's role styles as parsed style rules, by the class name each one matches.
+
+    A document attaches them to its root, so styles looked up before output (layout measuring text,
+    ``computed``) see the theme the output will write.
+
+    Parameters
+    ----------
+    theme : Theme
+        The theme.
+
+    Returns
+    -------
+    dict of str to list of Rule
+        The rules of each ``role-`` class.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.theme.sheet import role_rules
+    >>> role_rules(svg.Theme.get("mono"))["role-dot"][0].declarations[0]
+    ('fill', '#000000', False)
+    """
+    from ..attributes.cascade import parse_css
+
+    cached: dict[str, list[Rule]] | None = theme._class_rules
+    if cached is None:
+        cached = {}
+        for rule in parse_css(theme.css().css()):
+            cached.setdefault(rule.selector.removeprefix("."), []).append(rule)
+        object.__setattr__(theme, "_class_rules", cached)
+    return cached
+

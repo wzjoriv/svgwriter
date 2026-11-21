@@ -76,7 +76,7 @@ class Theme(ThemeFiles):
     'brand'
     """
 
-    __slots__ = ("_document", "_extends", "_fonts", "_name", "_palette", "_roles", "_styles")
+    __slots__ = ("_class_rules", "_document", "_extends", "_fonts", "_name", "_palette", "_roles", "_styles")
 
     def __init__(self, name: str, palette: Palette | Mapping[str, PaletteSource], fonts: Fonts | None = None,
                  roles: Mapping[str, RoleSource] | None = None) -> None:
@@ -89,6 +89,7 @@ class Theme(ThemeFiles):
         object.__setattr__(self, "_styles", {k: resolve_role(self, k, v) for k, v in merged.items()})
         object.__setattr__(self, "_extends", None)
         object.__setattr__(self, "_document", None)
+        object.__setattr__(self, "_class_rules", None)
 
     def _from_file(self, extends: str | None, document: str | None) -> Theme:
         object.__setattr__(self, "_extends", extends)
