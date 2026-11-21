@@ -20,6 +20,7 @@ __all__ = [
     "bounds",
     "contains",
     "point_at_length",
+    "segment",
     "stroke_to_path",
     "tangent_at_length",
     "total_length",
@@ -208,6 +209,58 @@ def tangent_at_length(item: Geometry, distance: float) -> Point:
     Point(x=1.0, y=0.0)
     """
     return _position(item, distance, "tangent at length")[1]
+
+
+def segment(item: Geometry, start: float, end: float) -> PathData:
+    """The part of the outline between two distances from its start.
+
+    Subpaths are walked in order, as for :func:`total_length`; a stretch that
+    spans several subpaths keeps them as separate pieces.
+
+    Parameters
+    ----------
+    item : shape, text, PathData or str
+        The outline to cut.
+    start, end : float
+        Distances from the start in user units, clamped to ``0..total_length``.
+
+    Returns
+    -------
+    PathData
+        The piece of the outline (lines, quadratics and cubics).
+
+    Raises
+    ------
+    ValueError
+        If *end* comes before *start*.
+
+    See Also
+    --------
+    point_at_length : One point instead of a stretch.
+
+    Examples
+    --------
+    >>> from svgwriter.ops import segment
+    >>> str(segment("M0 0 L10 0 L10 10", 5, 15))
+    'M5 0 L10 0 L10 5'
+    """
+    if end < start:
+        raise ValueError(f"the end ({end:g}) comes before the start ({start:g})")
+    path = _skia_path(item)
+    measure = skia.PathMeasure(path, False, MEASURE_PRECISION)
+    result, walked = skia.Path(), 0.0
+    while True:
+        length = measure.getLength()
+        low, high = max(start - walked, 0.0), min(end - walked, length)
+        if low <= high and length:
+            piece = skia.Path()
+            measure.getSegment(low, high, piece, True)
+            if measure.isClosed() and high - low >= length:
+                piece.close()
+            result.addPath(piece)
+        walked += length
+        if walked >= end or not measure.nextContour():
+            return from_skia(result)
 
 
 def stroke_to_path(

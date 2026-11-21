@@ -16,8 +16,10 @@ False
 from __future__ import annotations
 
 from ._skia import Geometry, from_skia, to_skia
+from .along import distribute, frames, sample
 from .boolean import BooleanOp, combine, difference, intersection, simplify, union, xor
 from .composite import Operator, composite_rgba, resolve_operator
+from .corners import Corner, CornerFilter, Fillet, corners, round_corners
 from .graph import draw_graph
 from .interpolate import interpolate, register_interpolator, unregister_interpolator
 from .measure import (
@@ -26,6 +28,7 @@ from .measure import (
     bounds,
     contains,
     point_at_length,
+    segment,
     stroke_to_path,
     tangent_at_length,
     total_length,
@@ -39,6 +42,9 @@ __all__ = [
     "Anchor",
     "BooleanOp",
     "Cap",
+    "Corner",
+    "CornerFilter",
+    "Fillet",
     "FontWeight",
     "Geometry",
     "Join",
@@ -47,6 +53,9 @@ __all__ = [
     "combine",
     "composite_rgba",
     "contains",
+    "corners",
+    "distribute",
+    "frames",
     "difference",
     "draw_graph",
     "from_skia",
@@ -61,6 +70,9 @@ __all__ = [
     "register_interpolator",
     "render_svg",
     "resolve_operator",
+    "round_corners",
+    "sample",
+    "segment",
     "simplify",
     "render_frame",
     "stroke_to_path",
