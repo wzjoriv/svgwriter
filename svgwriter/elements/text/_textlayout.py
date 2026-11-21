@@ -14,10 +14,12 @@ from ...attributes.length import Length, Unit
 from ._constants import (
     DEFAULT_FONT_FAMILY,
     DEFAULT_FONT_SIZE,
+    NORMAL_SPACING,
     PERCENT,
     POSITION_NAMES,
     WHITESPACE_DEFAULT,
     WHITESPACE_PRESERVE,
+    WORD_SEPARATOR,
 )
 
 if TYPE_CHECKING:
@@ -225,6 +227,7 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
     chars = collect(text)
     lists = _Lists(*_viewport(text))
     fonts: dict[int, tuple[Any, ...]] = {}
+    spacings: dict[int, tuple[float, float]] = {}
     boxes: list[GlyphBox] = []
     chunks: list[int] = [0]
     pen_x = pen_y = 0.0
@@ -245,7 +248,8 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
             char.char, family, size, weight, italic, language), None)
         boxes.append(GlyphBox(char.char, outline, pen_x, pen_y, lists.value(char, "rotate") or 0.0, advance, source,
                               color))
-        pen_x += advance
+        letter, word = _spacing(source, size, spacings, rules)
+        pen_x += advance + letter + (word if char.char == WORD_SEPARATOR else 0.0)
     chunks.append(len(boxes))
     fit_lengths(chars, boxes, chunks, lists.reference["x"])
     for start, stop in zip(chunks, chunks[1:], strict=False):
@@ -271,6 +275,18 @@ def _font_key(source: Element, fonts: dict[int, tuple[Any, ...]], rules: list[Ru
             _language(source),
         )
     return fonts[id(source)]
+
+
+def _spacing(source: Element, size: float, spacings: dict[int, tuple[float, float]],
+             rules: list[Rule]) -> tuple[float, float]:
+    """``letter-spacing`` and ``word-spacing`` of *source* in user units (``normal`` is zero)."""
+    if id(source) not in spacings:
+        values = []
+        for name in ("letter-spacing", "word-spacing"):
+            value = str(computed(source, name, NORMAL_SPACING, rules)).strip()
+            values.append(0.0 if value == NORMAL_SPACING else Length.parse(value).to_user_units(font_size=size))
+        spacings[id(source)] = (values[0], values[1])
+    return spacings[id(source)]
 
 
 def _language(element: Element) -> str | None:
