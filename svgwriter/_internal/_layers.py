@@ -8,16 +8,27 @@ from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from ._constants import CONTAINERS, LINK_CACHE, NOT_RENDERED
+from ._constants import (
+    BASE64_SUFFIX,
+    CONTAINERS,
+    GZIP_MAGIC,
+    IMAGE_AXES,
+    LINK_CACHE,
+    NOT_RENDERED,
+    PERCENT,
+    SVG_DATA_URI,
+    VIEWPORT_FALLBACK,
+)
 
 if TYPE_CHECKING:
     from ..attributes.viewbox import PreserveAspectRatio
+    from ..document import Document
     from ..elements.core import Element
     from ..elements.structure import Image
     from ..pathdata.data import BBox
     from ..transform.matrix import Matrix
 
-__all__ = ["ancestry", "drawable_order", "fit_box", "image_matrix", "pixel_box", "resolve_links"]
+__all__ = ["ancestry", "drawable_order", "fit_box", "image_matrix", "pixel_box", "resolve_links", "viewport_extent"]
 
 
 def drawable_order(root: Element) -> list[Element]:
@@ -101,12 +112,34 @@ def _load(path: str, mtime: float, width: float, height: float) -> Any:
             raise ValueError(f"{path} links back to itself")
         _LOADING.add(path)
         try:
-            document = load(path)
-            columns, rows = max(1, round(width)), max(1, round(height))
-            return Pixels.from_array(document.rasterize(size=(columns, rows)))
+            return _rasterized(load(path), width, height)
         finally:
             _LOADING.discard(path)
     return Pixels.decode(Path(path).read_bytes())
+
+
+def _rasterized(document: Document, width: float, height: float) -> Any:
+    """The pixels of a linked SVG *document* drawn into its *width* by *height* ``<image>`` viewport."""
+    from ..elements.structure import Pixels
+
+    columns, rows = max(1, round(width)), max(1, round(height))
+    for name, size in (("width", columns), ("height", rows)):
+        if "%" in str(document.root.get(name, "%")):
+            document.root.attributes[name] = size
+    return Pixels.from_array(document.rasterize(size=(columns, rows)))
+
+
+def _svg_data(uri: str) -> bytes | None:
+    """The (gunzipped) bytes of an SVG ``data:`` URI, or None for any other link."""
+    import base64
+    import gzip
+    from urllib.parse import unquote_to_bytes
+
+    header, _, payload = uri.partition(",")
+    if not header.lower().startswith(SVG_DATA_URI):
+        return None
+    data = base64.b64decode(payload) if header.lower().endswith(BASE64_SUFFIX) else unquote_to_bytes(payload)
+    return gzip.decompress(data) if data[:len(GZIP_MAGIC)] == GZIP_MAGIC else data
 
 
 def resolve_links(root: Element) -> None:
@@ -135,8 +168,18 @@ def resolve_links(root: Element) -> None:
     from urllib.parse import unquote, urljoin, urlparse
     from urllib.request import url2pathname
 
+    from ..document import Document
     from ..elements.structure import Image
 
+    for image in [e for e in root.iter() if isinstance(e, Image)]:
+        _absolute_geometry(image)
+        data = _svg_data(str(image.attributes.get("xlink:href", "")))
+        if data is not None:
+            try:
+                image.attributes["xlink:href"] = _rasterized(Document.from_string(data), _length(image.get("width")),
+                                                             _length(image.get("height")))
+            except ValueError:
+                image.attributes.pop("xlink:href")
     for image in [e for e in root.iter() if isinstance(e, Image) and e.pixels is None]:
         href = image.attributes.get("xlink:href")
         if href is None:
@@ -150,6 +193,60 @@ def resolve_links(root: Element) -> None:
         except (OSError, ValueError):
             continue
         image.attributes["xlink:href"] = pixels
+
+
+def viewport_extent(element: Element) -> tuple[float, float]:
+    """The width and height of the viewport *element* sits in, which percentages resolve against.
+
+    Parameters
+    ----------
+    element : Element
+        Any element in a tree.
+
+    Returns
+    -------
+    tuple of (float, float)
+        The nearest ``<svg>`` ancestor's ``viewBox`` size, else its absolute ``width`` and
+        ``height``, else the next viewport up; 300 by 300 when none is sized.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter._internal._layers import viewport_extent
+    >>> doc = svg.Document(40, 30)
+    >>> viewport_extent(doc.rect(0, 0, 1, 1))
+    (40.0, 30.0)
+    """
+    from ..attributes.length import Length, Unit
+    from ..attributes.viewbox import ViewBox
+
+    node = element.parent
+    while node is not None:
+        if node.tag == "svg":
+            box = node.get("viewBox")
+            box = box if isinstance(box, ViewBox) or box is None else ViewBox.parse(str(box))
+            if box is not None and box.width and box.height:
+                return float(box.width), float(box.height)
+            sizes = [node.get(name) for name in ("width", "height")]
+            if all(size is not None and Length.parse(size).unit is not Unit.PERCENT for size in sizes):
+                return float(Length.parse(sizes[0]).to_user_units()), float(Length.parse(sizes[1]).to_user_units())
+        node = node.parent
+    return VIEWPORT_FALLBACK, VIEWPORT_FALLBACK
+
+
+def _absolute_geometry(image: Element) -> None:
+    """Rewrite percentage ``x``/``y``/``width``/``height`` of *image* as user units of its viewport."""
+    from ..attributes.length import Length, Unit
+
+    extent = None
+    for name, axis in IMAGE_AXES.items():
+        value = image.attributes.get(name)
+        if value is None:
+            continue
+        length = Length.parse(value)
+        if length.unit is Unit.PERCENT:
+            extent = extent or viewport_extent(image)
+            image.attributes[name] = length.value * extent[axis] / PERCENT
 
 
 def _length(value: object) -> float:
