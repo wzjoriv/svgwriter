@@ -1,12 +1,12 @@
 """
-Ready-made content: composite shapes, paints, filters, markers, text effects, presets and fonts.
+Ready-made content: composite shapes, paints, filters, markers, effects, presets and fonts.
 
 Sub-packages
 ------------
 builder
     Composite shapes (star, gear, arrow) and the ``drawing`` decorator.
-patterns, gradients, filters, markers, text_effects
-    Ready-made paints, filters, line markers and text effects.
+patterns, gradients, filters, markers, effects
+    Ready-made paints, filters, line markers and effects for any element.
 preset
     Presets of your own by kind (animation, shape, pattern and more).
 fonts

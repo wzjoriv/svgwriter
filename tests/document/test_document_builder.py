@@ -11,11 +11,11 @@ class TestDocument:
     def test_group_context_manager_nests(self) -> None:
         doc = svg.Document(100, 100)
         with doc.group(fill="red") as outer:
-            doc.add(svg.Rect())
+            doc.add(svg.Rect(0, 0, 1, 1))
             with doc.group(id="inner") as inner:
-                doc.add(svg.Circle())
+                doc.add(svg.Circle(0, 0, 1))
             doc.add(svg.Line())
-        doc.add(svg.Ellipse())
+        doc.add(svg.Ellipse(0, 0, 1, 1))
         assert [c.tag for c in outer] == ["rect", "g", "line"]
         assert [c.tag for c in inner] == ["circle"]
         assert doc.current is doc.root

@@ -5,7 +5,8 @@ import threading
 import pytest
 
 import svgwriter as svg
-from svgwriter.model.theme import Fonts, Palette, ThemeError
+from svgwriter.errors import ThemeError
+from svgwriter.model.theme import Fonts, Palette
 
 BUILTINS = ("light", "dark", "paper", "print", "mono", "noir", "brutalist", "dracula", "alucard", "one-dark",
             "one-light")
@@ -60,14 +61,14 @@ class TestFonts:
 class TestTheme:
     @pytest.mark.parametrize("name", BUILTINS)
     def test_builtins_resolve_every_role(self, name: str) -> None:
-        theme = svg.Theme.get(name)
-        assert theme.name == name and set(svg.THEMES.names()) >= set(BUILTINS)
+        theme = svg.themes.get(name)
+        assert theme.name == name and set(svg.themes.list()) >= set(BUILTINS)
         for role in theme.roles:
             assert theme.style(role)
 
     @pytest.mark.parametrize("name", BUILTINS)
     def test_builtin_text_meets_wcag_aa(self, name: str) -> None:
-        theme = svg.Theme.get(name)
+        theme = svg.themes.get(name)
         p = theme.palette
 
         def contrast(a: svg.Color, b: svg.Color) -> float:
@@ -85,22 +86,22 @@ class TestTheme:
 
     @pytest.mark.parametrize("name", BUILTINS)
     def test_builtin_themes_are_distinct(self, name: str) -> None:
-        styles = {other: (svg.Theme.get(other).style("title")["fill"].hex, svg.Theme.get(other).palette.surface.hex)
+        styles = {other: (svg.themes.get(other).style("title")["fill"].hex, svg.themes.get(other).palette.surface.hex)
                   for other in BUILTINS}
         assert list(styles.values()).count(styles[name]) == 1
 
     def test_immutable(self) -> None:
         with pytest.raises(AttributeError, match="immutable"):
-            svg.Theme.get("light").name = "x"  # type: ignore[misc]
+            svg.themes.get("light").name = "x"  # type: ignore[misc]
 
     def test_derived_entries_follow_foreground(self) -> None:
-        light = svg.Theme.get("light")
+        light = svg.themes.get("light")
         red = light.replace(palette={"foreground": "#ff0000"})
         assert red.palette.border != light.palette.border
         assert red.style("text")["fill"].hex == "#ff0000"
 
     def test_role_property_merge_and_function_roles(self) -> None:
-        theme = svg.Theme.get("light").replace(roles={
+        theme = svg.themes.get("light").replace(roles={
             "box": {"stroke-dasharray": "4 2"},
             "badge": lambda t: {"fill": t.palette.accent, "stroke": "{palette.border}"},
             "note": {"font": lambda t: f"{t.fonts.sizes['caption']}px serif"},
@@ -110,7 +111,7 @@ class TestTheme:
         assert theme.style("note")["font"] == "11.0px serif"
 
     def test_embedded_reference_and_alpha(self) -> None:
-        theme = svg.Theme.get("mono").replace(palette={"shade": lambda p: p.foreground.with_alpha(0.25)},
+        theme = svg.themes.get("mono").replace(palette={"shade": lambda p: p.foreground.with_alpha(0.25)},
                                               roles={"shade": {"fill": "{palette.shade}", "filter": "url(#{fonts.sizes.text})"}})
         style = theme.style("shade")
         assert style["fill-opacity"] == 0.25 and style["filter"] == "url(#14.0)"
@@ -127,10 +128,10 @@ class TestTheme:
     ])
     def test_role_errors(self, roles: dict[str, object], message: str) -> None:
         with pytest.raises(ThemeError, match=message):
-            svg.Theme.get("light").replace(roles=roles)  # type: ignore[arg-type]
+            svg.themes.get("light").replace(roles=roles)  # type: ignore[arg-type]
 
     def test_css_and_unknown_role(self) -> None:
-        theme = svg.Theme.get("light")
+        theme = svg.themes.get("light")
         assert len(theme.css()) == len(theme.roles)
         assert [s for s, _ in theme.css(["dot", "box"])] == [".role-box", ".role-dot"]
         with pytest.raises(ThemeError, match="no role"):
@@ -139,24 +140,24 @@ class TestTheme:
             theme.style("nope")
 
     def test_of_and_equality(self) -> None:
-        dark = svg.Theme.get("dark")
+        dark = svg.themes.get("dark")
         assert svg.Theme.of(dark) is dark and svg.Theme.of("dark") is dark
         with pytest.raises(TypeError):
             svg.Theme.of(3)  # type: ignore[arg-type]
         with pytest.raises(KeyError):
-            svg.Theme.get("nope")
-        assert dark == dark.replace() and dark != svg.Theme.get("light") and dark != "dark"
+            svg.themes.get("nope")
+        assert dark == dark.replace() and dark != svg.themes.get("light") and dark != "dark"
         assert repr(dark) == "Theme('dark')"
 
     def test_custom_theme_from_scratch(self) -> None:
-        palette = dict(svg.Theme.get("light").palette.sources)
+        palette = dict(svg.themes.get("light").palette.sources)
         theme = svg.Theme("site", palette, Fonts(family="Georgia"), roles={"hero": {"fill": "{palette.primary}"}})
         assert theme.style("text")["font-family"] == "Georgia" and "hero" in theme.roles
 
 
 class TestContext:
     def test_nested_blocks(self) -> None:
-        dark, paper = svg.Theme.get("dark"), svg.Theme.get("paper")
+        dark, paper = svg.themes.get("dark"), svg.themes.get("paper")
         with dark:
             with paper:
                 assert svg.Theme.current() is paper and svg.Document().theme is paper
@@ -167,7 +168,7 @@ class TestContext:
 
     def test_threads_are_independent(self) -> None:
         seen: list[str] = []
-        with svg.Theme.get("dark"):
+        with svg.themes.get("dark"):
             worker = threading.Thread(target=lambda: seen.append(svg.Theme.current().name))
             worker.start()
             worker.join()

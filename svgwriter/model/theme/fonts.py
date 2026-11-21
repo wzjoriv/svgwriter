@@ -9,8 +9,8 @@ from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Union
 
+from ...errors import ThemeError
 from ._constants import FONT_FAMILY, FONT_SIZES, FONT_WEIGHTS, MONOSPACE_FAMILY
-from ._errors import ThemeError
 
 if TYPE_CHECKING:
     from ...ops.typeface import Typeface

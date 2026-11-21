@@ -36,7 +36,7 @@ def resolve_keywords(root: Element) -> None:
     --------
     >>> import svgwriter as svg
     >>> from svgwriter._internal._render._keywords import resolve_keywords
-    >>> group = svg.Group(svg.Rect(fill="currentColor", stroke="inherit"), color="red", stroke="blue")
+    >>> group = svg.Group(svg.Rect(0, 0, 1, 1, fill="currentColor", stroke="inherit"), color="red", stroke="blue")
     >>> resolve_keywords(group)
     >>> rect = group[0]
     >>> str(rect.get("fill")), str(rect.get("stroke"))
@@ -73,7 +73,7 @@ def resolve_colors(root: Element) -> None:
     --------
     >>> import svgwriter as svg
     >>> from svgwriter._internal._render._keywords import resolve_colors
-    >>> rect = svg.Rect(fill="oklch(0.7 0.3 145 / 0.5)", fill_opacity=0.5)
+    >>> rect = svg.Rect(0, 0, 1, 1, fill="oklch(0.7 0.3 145 / 0.5)", fill_opacity=0.5)
     >>> resolve_colors(rect)
     >>> rect.get("fill"), rect.get("fill-opacity")
     ('#00c800', 0.25)

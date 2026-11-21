@@ -21,9 +21,9 @@ class TestErrors:
 
     def test_operators_reject_non_geometry(self) -> None:
         with pytest.raises(TypeError):
-            _ = svg.Circle() | 5  # type: ignore[operator]
+            _ = svg.Circle(0, 0, 1) | 5  # type: ignore[operator]
         with pytest.raises(TypeError):
-            _ = svg.Circle() - object()  # type: ignore[operator]
+            _ = svg.Circle(0, 0, 1) - object()  # type: ignore[operator]
 
 
 class TestBooleanOps:

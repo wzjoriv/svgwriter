@@ -9,6 +9,7 @@ from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, ClassVar, Literal, TypeAlias, TypeVar, Union, overload
 
 from ...._internal._constants import DEFAULT_PRECISION
+from ....errors import UnknownAttributeError, UnknownKeywordError
 from ...attributes.names import KNOWN_ATTRIBUTES, UNSUPPORTED_ATTRIBUTES, svg_name
 from ...attributes.values import format_value
 from ._access import AttributeAccess
@@ -17,7 +18,6 @@ from ._compose import Composable
 from ._constants import INSTANCE_FIELDS, OPEN_PREFIXES
 from ._construct import Construction
 from ._display import Displayable
-from ._errors import UnknownAttributeError, UnknownKeywordError
 from ._factory import _Shortcut
 from ._forward import forward_common
 from ._query import Queryable

@@ -18,7 +18,7 @@ def _slide_xml(data):
 
 
 def _read_pptx(data):
-    return svg.export.find_importer("pptx").function(data)
+    return svg.formats.reader("pptx").read(data)
 
 
 def _linked():
@@ -106,7 +106,7 @@ def test_pptx_keeps_links_on_shapes():
 def test_excalidraw_keeps_links():
     text = svg.export.export(_linked(), "excalidraw")
     assert json.loads(text)["elements"][0]["link"] == "https://example.com"
-    back = svg.export.find_importer("excalidraw").function(text.encode())
+    back = svg.formats.reader("excalidraw").read(text.encode())
     assert back[0].tag == "a"
 
 
@@ -155,7 +155,7 @@ def test_markers_are_drawn_in_vector_formats(fmt):
     if fmt == "pptx":
         pytest.importorskip("pptx")
     data = svg.export.export(_arrow_doc(), fmt)
-    back = svg.export.find_importer(fmt).function(data if isinstance(data, bytes) else data.encode())
+    back = svg.formats.reader(fmt).read(data if isinstance(data, bytes) else data.encode())
     tip = [e for e in back if str(e.get("fill")) == "#ff0000"]
     assert len(tip) == 1
     box = tip[0].bounds()
@@ -169,15 +169,15 @@ def test_markers_from_parsed_svg_and_every_vertex():
         '<circle cx="2" cy="2" r="2" fill="blue"/></marker></defs>'
         '<polyline points="10,20 50,20 90,20" fill="none" stroke="black" marker-start="url(#dot)" '
         'marker-mid="url(#dot)" marker-end="url(#dot)"/></svg>')
-    back = svg.export.find_importer("eps").function(svg.export.export(doc, "eps"))
+    back = svg.formats.reader("eps").read(svg.export.export(doc, "eps"))
     centres = sorted(round(e.bounds().x + 2) for e in back if str(e.get("fill")) == "#0000ff")
     assert centres == [10, 50, 90]
 
 
 def test_relative_paths_choose_the_format_by_extension():
-    assert svg.export.find_exporter("../figure.pdf").name == "pdf"
-    assert svg.export.find_exporter("./a.b/figure.svgz").name == "svgz"
-    assert svg.export.find_exporter(".png").name == "png"
+    assert svg.formats.writer("../figure.pdf").name == "pdf"
+    assert svg.formats.writer("./a.b/figure.svgz").name == "svgz"
+    assert svg.formats.writer(".png").name == "png"
 
 
 def test_excalidraw_keeps_text_and_images():
@@ -187,7 +187,7 @@ def test_excalidraw_keeps_text_and_images():
     scene = json.loads(svg.export.export(doc, "excalidraw"))
     assert sorted(e["type"] for e in scene["elements"]) == ["image", "text"]
     assert len(scene["files"]) == 1
-    back = svg.export.find_importer("excalidraw").function(json.dumps(scene).encode())
+    back = svg.formats.reader("excalidraw").read(json.dumps(scene).encode())
     text = next(e for e in back if e.tag == "text")
     image = next(e for e in back if e.tag == "image")
     assert text.text_content == "Hello" and (text.get("x"), text.get("y")) == (pytest.approx(10), pytest.approx(50))
@@ -197,7 +197,7 @@ def test_excalidraw_keeps_text_and_images():
 def test_tikz_text_nodes_read_back_as_text():
     doc = svg.Document(200, 100)
     doc.text("Hello", x=10, y=50, font_size=20, fill="#ff0000", font_weight="bold", font_style="italic")
-    back = svg.export.find_importer("tikz").function(svg.export.export(doc, "tikz").encode())
+    back = svg.formats.reader("tikz").read(svg.export.export(doc, "tikz").encode())
     text = back[0]
     assert text.tag == "text" and text.text_content == "Hello"
     assert (text.get("x"), text.get("y"), text.get("font-size")) == pytest.approx((10, 50, 20), abs=1e-3)
@@ -208,7 +208,7 @@ def test_tikz_text_nodes_read_back_as_text():
 def test_tikz_rotated_text_keeps_its_turn():
     doc = svg.Document(200, 100)
     doc.text("Turn", x=100, y=50, font_size=12).rotate(30, about=(100, 50))
-    back = svg.export.find_importer("tikz").function(svg.export.export(doc, "tikz").encode())
+    back = svg.formats.reader("tikz").read(svg.export.export(doc, "tikz").encode())
     assert back[0].bounds().y < 50 < back[0].bounds().y + back[0].bounds().height + 10
     assert back[0].t.b == pytest.approx(0.5, abs=1e-6)
 

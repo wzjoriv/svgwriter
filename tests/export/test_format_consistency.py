@@ -24,7 +24,7 @@ def test_a_pdf_colour_after_a_pattern_fill_paints_solid_again():
     dots = doc.define(svg.Pattern(svg.circle(5, 5, 3, fill="blue"), width=10, height=10, pattern_units="userSpaceOnUse"))
     doc.rect(0, 0, 40, 40, fill=dots, stroke="blue")
     doc.circle(70, 20, 15, fill="red")
-    back = svg.export.find_importer("pdf").function(svg.export.export(doc, "pdf"))
+    back = svg.formats.reader("pdf").read(svg.export.export(doc, "pdf"))
     assert str(list(back)[-1].get("fill")) == "#ff0000"
 
 
@@ -55,7 +55,7 @@ def _picture_between_shapes():
 
 def test_a_pptx_picture_keeps_its_place_among_the_shapes():
     pytest.importorskip("pptx")
-    back = svg.export.find_importer("pptx").function(svg.export.export(_picture_between_shapes(), "pptx"))
+    back = svg.formats.reader("pptx").read(svg.export.export(_picture_between_shapes(), "pptx"))
     assert [element.tag for element in back] == ["path", "image", "path"]
 
 
@@ -76,7 +76,7 @@ def test_a_pptx_equation_reads_back_centred_in_its_box_at_its_size():
     doc = svg.Document(200, 100)
     formula = doc.add(svg.latex("x+1", engine="mathtext").translate(20, 30))
     box = formula.bounds()
-    back = svg.export.find_importer("pptx").function(svg.export.export(doc, "pptx"))
+    back = svg.formats.reader("pptx").read(svg.export.export(doc, "pptx"))
     text = next(e for e in back.root.iter() if e.tag == "text")
     assert float(text.get("x")) == pytest.approx(box.x + box.width / 2, abs=0.5)
     assert box.y < float(text.get("y")) < box.y + box.height + 2
@@ -99,12 +99,12 @@ def test_a_tikz_or_eps_shading_reads_back_as_a_gradient(gradient, format):
     doc = svg.Document(60, 40)
     doc.rect(10, 5, 40, 30, fill=gradient())
     data = svg.export.export(doc, format)
-    back = svg.export.find_importer(format).function(data.encode() if isinstance(data, str) else data)
+    back = svg.formats.reader(format).read(data.encode() if isinstance(data, str) else data)
     assert np.abs(back.rasterize() - doc.rasterize()).mean() < 0.02
 
 
 def test_a_tikz_grid_reads_back_as_its_lines():
     picture = r"\begin{tikzpicture}\draw[help lines, step=0.5] (0,0) grid (2,1);\end{tikzpicture}"
-    (path,) = svg.export.find_importer("tikz").function(picture.encode())
+    (path,) = svg.formats.reader("tikz").read(picture.encode())
     assert str(path.get("d")).count("M") == 5 + 3
     assert path.get("stroke") == "#bfbfbf"

@@ -6,13 +6,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from .._registry import register, register_importer
+from ..._format import Format
 
 if TYPE_CHECKING:
     from ....document import Document
 
 
-@register("dxf", extensions=(".dxf",), binary=False)
 def dxf(document: Document, **options: Any) -> str:
     """AutoCAD DXF R12 polylines in mm (``tolerance``, ``unit_mm``).
 
@@ -45,7 +44,6 @@ def dxf(document: Document, **options: Any) -> str:
     return to_dxf(document, **options)
 
 
-@register("hpgl", extensions=(".hpgl", ".plt"), binary=False)
 def hpgl(document: Document, **options: Any) -> str:
     """HPGL for pen plotters and vinyl cutters, one pen per colour (``tolerance``, ``unit_mm``).
 
@@ -78,7 +76,6 @@ def hpgl(document: Document, **options: Any) -> str:
     return to_hpgl(document, **options)
 
 
-@register("gcode", extensions=(".gcode", ".nc", ".ngc"), binary=False)
 def gcode(document: Document, **options: Any) -> str:
     """G-code toolpaths for CNC mills and lasers (``feed``, ``mode``, ``cut_z``, ``tolerance``, ...).
 
@@ -111,7 +108,6 @@ def gcode(document: Document, **options: Any) -> str:
     return to_gcode(document, **options)
 
 
-@register_importer("dxf", extensions=(".dxf",))
 def read_dxf(data: bytes, **options: Any) -> Document:
     """DXF lines, polylines, circles, arcs and ellipses as stroked paths.
 
@@ -137,7 +133,7 @@ def read_dxf(data: bytes, **options: Any) -> Document:
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
     >>> data = svg.export.export(doc, "dxf").encode()
-    >>> len(svg.export.find_importer(".dxf").function(data)) > 0
+    >>> len(svg.formats.reader(".dxf").read(data)) > 0
     True
     """
     from ._cnc_read import read_dxf as read
@@ -145,7 +141,6 @@ def read_dxf(data: bytes, **options: Any) -> Document:
     return read(data.decode("utf-8", "replace"), **options)
 
 
-@register_importer("hpgl", extensions=(".hpgl", ".plt"))
 def read_hpgl(data: bytes, **options: Any) -> Document:
     """HPGL pen moves as stroked paths, coloured by pen.
 
@@ -171,7 +166,7 @@ def read_hpgl(data: bytes, **options: Any) -> Document:
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
     >>> data = svg.export.export(doc, "hpgl").encode()
-    >>> len(svg.export.find_importer(".hpgl").function(data)) > 0
+    >>> len(svg.formats.reader(".hpgl").read(data)) > 0
     True
     """
     from ._cnc_read import read_hpgl as read
@@ -179,7 +174,6 @@ def read_hpgl(data: bytes, **options: Any) -> Document:
     return read(data.decode("ascii", "replace"), **options)
 
 
-@register_importer("gcode", extensions=(".gcode", ".nc", ".ngc"))
 def read_gcode(data: bytes, **options: Any) -> Document:
     """G-code cutting moves as stroked paths.
 
@@ -205,9 +199,24 @@ def read_gcode(data: bytes, **options: Any) -> Document:
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
     >>> data = svg.export.export(doc, "gcode").encode()
-    >>> len(svg.export.find_importer(".gcode").function(data)) > 0
+    >>> len(svg.formats.reader(".gcode").read(data)) > 0
     True
     """
     from ._cnc_read import read_gcode as read
 
     return read(data.decode("ascii", "replace"), **options)
+
+
+class DxfFormat(Format, name="dxf", extensions=(".dxf",), binary=False):
+    write = staticmethod(dxf)
+    read = staticmethod(read_dxf)
+
+
+class HpglFormat(Format, name="hpgl", extensions=(".hpgl", ".plt"), binary=False):
+    write = staticmethod(hpgl)
+    read = staticmethod(read_hpgl)
+
+
+class GcodeFormat(Format, name="gcode", extensions=(".gcode", ".nc", ".ngc"), binary=False):
+    write = staticmethod(gcode)
+    read = staticmethod(read_gcode)

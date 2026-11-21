@@ -8,9 +8,9 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
+from svgwriter import formats
 from svgwriter._internal._color._icc_embedded import embed_profile, embedded_profile
 from svgwriter._internal._color._icc_output import output_profile
-from svgwriter.formats.export import find_importer
 
 Image = pytest.importorskip("PIL.Image")
 
@@ -53,7 +53,7 @@ def test_display_p3_converts_the_pixels_and_embeds_the_profile(name):
 
 
 def test_a_p3_png_reads_back_as_the_same_srgb_color():
-    doc = find_importer(".png").function(red().export("png", icc="display-p3"))
+    doc = formats.reader(".png").read(red().export("png", icc="display-p3"))
     pixels = np.asarray(doc[0].pixels.rgba())
     assert pixels[0, 0, :3] * 255 == pytest.approx([255, 0, 0], abs=3)
 
@@ -126,7 +126,7 @@ def test_pdf_srgb_output_intent_is_an_incremental_update():
     assert tagged.startswith(plain)
     assert b"/S /GTS_PDFA1" in tagged and b"/OutputIntents [" in tagged and b"/N 3" in tagged
     _check_xref(tagged)
-    assert find_importer("pdf").function(tagged)[0].get("fill") == "#ff0000"
+    assert formats.reader("pdf").read(tagged)[0].get("fill") == "#ff0000"
 
 
 def test_pdf_cmyk_output_intent_names_the_print_condition(cmyk_profile):

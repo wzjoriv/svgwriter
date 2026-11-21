@@ -2,7 +2,7 @@
 
 ``svgwriter new NAME --preset poster`` starts one from a preset, ``svgwriter build`` writes its outputs and
 ``svgwriter preview`` shows them on a live page that redraws as controls move and files change. In Python,
-:class:`Project` does the same: ``svg.Project.load().build()``. Presets are a registry (:func:`register_preset`).
+:class:`Project` does the same: ``svg.Project.load().build()``. Presets are a registry (:data:`presets`).
 
 Example
 -------
@@ -15,19 +15,17 @@ a4 ['.svg', '.png']
 
 from __future__ import annotations
 
-from ._config import PreviewConfig, ProjectConfig, ProjectError
+from ._config import PreviewConfig, ProjectConfig
 from ._gallery import Preview
-from .presets import PRESETS, Preset, register_preset, unregister_preset
+from ._presets import Preset, ProjectPresets, presets
 from .project import Project
 
 __all__ = [
-    "PRESETS",
+    "presets",
     "Preset",
     "PreviewConfig",
     "Preview",
     "Project",
     "ProjectConfig",
-    "ProjectError",
-    "register_preset",
-    "unregister_preset",
+    "ProjectPresets",
 ]

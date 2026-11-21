@@ -4,7 +4,6 @@ Project presets: starter folders that ``svgwriter new`` copies, kept in a regist
 
 from __future__ import annotations
 
-import difflib
 import json
 import os
 from collections.abc import Sequence
@@ -14,8 +13,10 @@ from typing import Any, Final
 
 import tomlkit
 
+from ..._internal._constants import ENTRY_POINT_PREFIX
 from ..._internal._registry import Registry
-from ._config import ProjectError, check_size
+from ...errors import ProjectError
+from ._config import check_size
 from ._constants import (
     BUILTIN_PRESETS,
     DOT_PREFIX,
@@ -30,7 +31,7 @@ from ._notebook import notebook_of
 
 SizeChoice = str | Sequence[float | str]
 
-__all__ = ["PRESETS", "Preset", "create", "find_preset", "register_preset", "unregister_preset"]
+__all__ = ["presets", "Preset", "ProjectPresets", "create"]
 
 
 @dataclass(frozen=True)
@@ -55,7 +56,7 @@ class Preset:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> svg.project.PRESETS.get("poster").extends
+    >>> svg.project.presets.get("poster").extends
     'blank'
     """
 
@@ -65,94 +66,48 @@ class Preset:
     extends: str | None = None
 
 
-PRESETS: Final[Registry[Preset]] = Registry("preset")
-"""Every project preset by name; ``svgwriter presets`` lists them."""
+class ProjectPresets(Registry[Preset]):
+    """Project presets by name: what ``svgwriter new NAME --preset <name>`` and :meth:`Project.new` start from.
 
-
-def register_preset(name: str, directory: str | os.PathLike[str], description: str, *,
-                    extends: str | None = None) -> Preset:
-    """Add a project preset that ``svgwriter new NAME --preset <name>`` and :meth:`Project.new` can start from.
-
-    Parameters
-    ----------
-    name : str
-        The preset name.
-    directory : str or os.PathLike
-        The folder to copy (see :class:`Preset` for the file name rules).
-    description : str
-        One line for ``svgwriter presets``.
-    extends : str, optional
-        A registered preset whose files are copied first, so this folder only holds what differs.
-        Defaults to None.
-
-    Returns
-    -------
-    Preset
-        The registered preset.
-
-    Raises
-    ------
-    ValueError
-        If the name is taken, the folder does not exist, or `extends` is not registered.
-
-    See Also
-    --------
-    unregister_preset : Remove it again.
+    Register a :class:`Preset` with :meth:`register` (its folder must exist and ``extends`` name a registered
+    preset); ``svgwriter presets`` lists them. Packages add presets through the ``svgwriter.project_preset``
+    entry-point group.
 
     Examples
     --------
     >>> import svgwriter as svg, tempfile
     >>> with tempfile.TemporaryDirectory() as folder:
-    ...     preset = svg.project.register_preset("badge", folder, "A round badge", extends="blank")
-    ...     print(preset.name in svg.project.PRESETS)
-    ...     svg.project.unregister_preset("badge")
+    ...     preset = svg.project.presets.register(svg.project.Preset("badge", "A round badge", folder, "blank"))
+    ...     print("badge" in svg.project.presets.list())
+    ...     _ = svg.project.presets.unregister("badge")
     True
     """
-    path = Path(directory)
-    if not path.is_dir():
-        raise ValueError(f"preset {name!r}: no folder {path}")
-    if extends is not None:
-        find_preset(extends)
-    return PRESETS.add(name, Preset(name, description, path, extends))
+
+    def prepare(self, name: str, item: Preset) -> Preset:
+        path = Path(item.directory)
+        if not path.is_dir():
+            raise ValueError(f"preset {name!r}: no folder {path}")
+        if item.extends is not None:
+            self.get(item.extends)
+        return Preset(name, item.description, path, item.extends)
 
 
-def unregister_preset(name: str) -> None:
-    """Remove a preset added with :func:`register_preset`.
-
-    Parameters
-    ----------
-    name : str
-        The registered name.
-
-    Raises
-    ------
-    KeyError
-        If no preset has that name.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> svg.project.unregister_preset("nope")
-    Traceback (most recent call last):
-    ...
-    KeyError: "unknown preset 'nope'"
-    """
-    PRESETS.remove(name)
+presets: Final = ProjectPresets("preset", group=ENTRY_POINT_PREFIX + "project_preset")
+"""Every project preset by name; ``svgwriter presets`` lists them."""
 
 
-def find_preset(name: str) -> Preset:
+def _find(name: str) -> Preset:
     """The preset registered as *name*; an unknown name raises :class:`ProjectError` listing the presets."""
-    if name not in PRESETS:
-        close = difflib.get_close_matches(name, PRESETS.names(), n=1)
-        hint = f"did you mean {close[0]!r}? " if close else ""
-        raise ProjectError(f"unknown preset {name!r}; {hint}presets: {', '.join(PRESETS.names())}")
-    return PRESETS.get(name)
+    found = presets.find(name)
+    if found is None:
+        raise ProjectError(f"{presets.unknown(name)}; presets: {', '.join(presets.list())}")
+    return found
 
 
 def _layers(preset: Preset) -> list[Preset]:
     chain = [preset]
     while chain[-1].extends is not None:
-        chain.append(find_preset(chain[-1].extends))
+        chain.append(_find(chain[-1].extends))
     return chain[::-1]
 
 
@@ -179,7 +134,7 @@ def _unstyled(table: Any, key: str, value: object) -> None:
 
 
 def _chosen(files: dict[Path, bytes], size: SizeChoice | None, theme: str | None) -> None:
-    from ...model.theme import THEMES
+    from ...model.theme import themes
 
     manifest, theme_file = Path(MANIFEST), Path(THEME_FILE)
     if size is not None:
@@ -189,8 +144,8 @@ def _chosen(files: dict[Path, bytes], size: SizeChoice | None, theme: str | None
         files[manifest] = tomlkit.dumps(document).encode("utf-8")
     if theme is None:
         return
-    if theme not in THEMES:
-        raise ProjectError(f"unknown theme {theme!r}; themes: {', '.join(THEMES.names())}")
+    if theme not in themes:
+        raise ProjectError(f"unknown theme {theme!r}; themes: {', '.join(themes.list())}")
     target, key = (theme_file, None) if theme_file in files else (manifest, "theme")
     document = tomlkit.parse(files[target].decode("utf-8"))
     _unstyled(document if key is None else document["project"], key or "extends", theme)
@@ -201,7 +156,7 @@ def create(path: str | os.PathLike[str], preset: str = "blank", *, notebook: boo
            name: str | None = None, theme: str | None = None, size: SizeChoice | None = None) -> Path:
     """Write a new project folder from *preset*; return the folder (see :meth:`svgwriter.Project.new`)."""
     folder = Path(path)
-    chosen = find_preset(preset)
+    chosen = _find(preset)
     if folder.exists() and any(folder.iterdir()):
         raise ProjectError(f"{folder} already exists and is not empty; choose a new folder name")
     values = {"project_name": name or folder.resolve().name, "preset": chosen.name}
@@ -226,4 +181,4 @@ def create(path: str | os.PathLike[str], preset: str = "blank", *, notebook: boo
 
 
 for _name, (_description, _extends) in BUILTIN_PRESETS.items():
-    PRESETS.add(_name, Preset(_name, _description, TEMPLATES / _name, _extends))
+    presets.add_builtin(_name, Preset(_name, _description, TEMPLATES / _name, _extends))

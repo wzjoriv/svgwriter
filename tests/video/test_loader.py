@@ -5,7 +5,8 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter.motion.video import Scene, SceneError, load_scenes
+from svgwriter.errors import SceneError
+from svgwriter.motion.video import Scene, load_scenes
 
 SCRIPT = '''
 import svgwriter as svg

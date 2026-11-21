@@ -1,5 +1,5 @@
 """
-Text effects of materials and motion: metal, wind, neon and glitch.
+Effects of materials and motion: metal, wind, neon and glitch.
 """
 
 from __future__ import annotations
@@ -16,11 +16,11 @@ from ...model.elements import (
     FeOffset,
     FeSpecularLighting,
     StandardInput,
-    Text,
 )
+from ...model.elements.core import Element
 from ...model.theme import Theme
 from ..gradients import blend, metallic
-from ..preset import text_effect
+from ..preset import effect
 from ._constants import (
     GLITCH_COLORS,
     GLITCH_DURATION,
@@ -46,14 +46,14 @@ from ._parts import fit, loop, tinted
 __all__ = ["glitch", "metal", "neon", "wind"]
 
 
-@text_effect
-def metal(text: Text, *, base: ColorLike = "#a8adb5", animate: bool = True) -> None:
-    """Polished metal letters: banded steel (or any *base*), a dark edge, a raised highlight and a shadow.
+@effect
+def metal(element: Element, *, base: ColorLike = "#a8adb5", animate: bool = True) -> None:
+    """Polished metal: banded steel (or any *base*), a dark edge, a raised highlight and a shadow.
 
     Parameters
     ----------
-    text : Text
-        The text, or a range of it.
+    element : Element
+        The element, or a range of a text.
     base : Color or str, optional
         Metal color; ``"gold"`` or ``"#b87333"`` (copper) for others. Defaults to steel.
     animate : bool, optional
@@ -63,14 +63,14 @@ def metal(text: Text, *, base: ColorLike = "#a8adb5", animate: bool = True) -> N
     --------
     >>> import svgwriter as svg
     >>> title = svg.text("Metal", x=0, y=30, font_size=30)
-    >>> svg.text_effects.metal(title, base="gold").fill.element.tag
+    >>> svg.effects.metal(title, base="gold").fill.element.tag
     'linearGradient'
     """
-    size = fit(text)
-    text.fill = metallic(base)
+    size = fit(element)
+    element.fill = metallic(base)
     edge, width = METAL_EDGE
-    text.stroke = edge
-    text.stroke_width = size(width)
+    element.stroke = edge
+    element.stroke_width = size(width)
     elevation, shine_constant, exponent, depth = METAL_LIGHT
     light = FeDistantLight(azimuth=METAL_SWEEP[0], elevation=elevation)
     if animate:
@@ -83,17 +83,17 @@ def metal(text: Text, *, base: ColorLike = "#a8adb5", animate: bool = True) -> N
     distance, opacity = METAL_SHADOW
     drop = FeOffset(size(distance), size(distance), in_=rim)
     flood, shadow = tinted("black", drop, opacity)
-    text.filter = size.filter(rim, shine, inside, lit, drop, flood, shadow, FeMerge(shadow, lit))
+    element.filter = size.filter(rim, shine, inside, lit, drop, flood, shadow, FeMerge(shadow, lit))
 
 
-@text_effect
-def wind(text: Text, *, animate: bool = True) -> None:
-    """Windswept letters: pale air-blue glyphs trailing a gusting streak.
+@effect
+def wind(element: Element, *, animate: bool = True) -> None:
+    """Windswept: pale air-blue, trailing a gusting streak.
 
     Parameters
     ----------
-    text : Text
-        The text, or a range of it.
+    element : Element
+        The element, or a range of a text.
     animate : bool, optional
         Let the streak gust. Defaults to True.
 
@@ -101,11 +101,11 @@ def wind(text: Text, *, animate: bool = True) -> None:
     --------
     >>> import svgwriter as svg
     >>> title = svg.text("Wind", x=0, y=30, font_size=30)
-    >>> svg.text_effects.wind(title).get("filter").element[0].tag
+    >>> svg.effects.wind(title).get("filter").element[0].tag
     'feGaussianBlur'
     """
-    size = fit(text)
-    text.fill = blend(*WIND_COLORS, angle=90)
+    size = fit(element)
+    element.fill = blend(*WIND_COLORS, angle=90)
     blur, distance, opacity = WIND_STREAK
     smear = FeGaussianBlur((size(blur), 0), in_=StandardInput.SOURCE_GRAPHIC)
     trail = FeOffset(-size(distance), 0, in_=smear)
@@ -113,17 +113,17 @@ def wind(text: Text, *, animate: bool = True) -> None:
         loop(trail, "dx", size.values(WIND_GUSTS), WIND_DURATION)
     faded = FeColorMatrix(ColorMatrixType.MATRIX, [1.0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, opacity, 0],
                           in_=trail)
-    text.filter = size.filter(smear, trail, faded, FeMerge(faded, StandardInput.SOURCE_GRAPHIC))
+    element.filter = size.filter(smear, trail, faded, FeMerge(faded, StandardInput.SOURCE_GRAPHIC))
 
 
-@text_effect
-def neon(text: Text, *, color: ColorLike | None = None, animate: bool = True) -> None:
+@effect
+def neon(element: Element, *, color: ColorLike | None = None, animate: bool = True) -> None:
     """A neon tube: a pale core in *color*'s tint, layered glows of *color*, and the odd flicker.
 
     Parameters
     ----------
-    text : Text
-        The text, or a range of it.
+    element : Element
+        The element, or a range of a text.
     color : Color or str, optional
         Tube color. Defaults to None, the current theme's accent color.
     animate : bool, optional
@@ -133,14 +133,14 @@ def neon(text: Text, *, color: ColorLike | None = None, animate: bool = True) ->
     --------
     >>> import svgwriter as svg
     >>> title = svg.text("Open", x=0, y=30, font_size=30)
-    >>> sum(child.tag == "feGaussianBlur" for child in svg.text_effects.neon(title).get("filter").element)
+    >>> sum(child.tag == "feGaussianBlur" for child in svg.effects.neon(title).get("filter").element)
     3
     """
-    size = fit(text)
+    size = fit(element)
     tube = as_color(color if color is not None else Theme.current().palette.accent)
-    text.fill = tube.mix("white", NEON_TUBE)
-    text.stroke = tube
-    text.stroke_width = size(NEON_STROKE)
+    element.fill = tube.mix("white", NEON_TUBE)
+    element.stroke = tube
+    element.stroke_width = size(NEON_STROKE)
     primitives = []
     glows = []
     for radius in reversed(NEON_GLOWS):
@@ -148,19 +148,19 @@ def neon(text: Text, *, color: ColorLike | None = None, animate: bool = True) ->
         flood, glow = tinted(tube, halo)
         primitives += [halo, flood, glow]
         glows.append(glow)
-    text.filter = size.filter(*primitives, FeMerge(*glows, StandardInput.SOURCE_GRAPHIC))
+    element.filter = size.filter(*primitives, FeMerge(*glows, StandardInput.SOURCE_GRAPHIC))
     if animate:
-        loop(text, "opacity", NEON_FLICKER, NEON_DURATION, discrete=True)
+        loop(element, "opacity", NEON_FLICKER, NEON_DURATION, discrete=True)
 
 
-@text_effect
-def glitch(text: Text, *, animate: bool = True) -> None:
-    """A digital glitch: red and cyan copies of the glyphs jump apart and back.
+@effect
+def glitch(element: Element, *, animate: bool = True) -> None:
+    """A digital glitch: red and cyan copies of the outline jump apart and back.
 
     Parameters
     ----------
-    text : Text
-        The text, or a range of it.
+    element : Element
+        The element, or a range of a text.
     animate : bool, optional
         Jitter the copies. Defaults to True.
 
@@ -168,10 +168,10 @@ def glitch(text: Text, *, animate: bool = True) -> None:
     --------
     >>> import svgwriter as svg
     >>> title = svg.text("Error", x=0, y=30, font_size=30)
-    >>> sum(child.tag == "feOffset" for child in svg.text_effects.glitch(title).get("filter").element)
+    >>> sum(child.tag == "feOffset" for child in svg.effects.glitch(title).get("filter").element)
     2
     """
-    size = fit(text)
+    size = fit(element)
     primitives = []
     copies = []
     for color, sign in zip(GLITCH_COLORS, (1, -1), strict=True):
@@ -181,4 +181,4 @@ def glitch(text: Text, *, animate: bool = True) -> None:
             loop(shift, "dx", size.values(sign * value for value in GLITCH_SHIFTS), GLITCH_DURATION, discrete=True)
         primitives += [flood, copy, shift]
         copies.append(shift)
-    text.filter = size.filter(*primitives, FeMerge(*copies, StandardInput.SOURCE_GRAPHIC))
+    element.filter = size.filter(*primitives, FeMerge(*copies, StandardInput.SOURCE_GRAPHIC))

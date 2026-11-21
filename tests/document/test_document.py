@@ -22,7 +22,7 @@ class TestAccess:
         b = doc.circle(5, 5, 1)
         assert doc[0] is a and doc[-1] is b and doc[0:2] == [a, b] and list(doc) == [a, b] and len(doc) == 2
         assert doc["logo"] is a and doc["g"].tag == "linearGradient"
-        assert "logo" in doc and a in doc and "nope" not in doc and svg.Rect() not in doc
+        assert "logo" in doc and a in doc and "nope" not in doc and svg.Rect(0, 0, 1, 1) not in doc
 
     def test_errors(self) -> None:
         doc = svg.Document(10, 10)
@@ -203,7 +203,7 @@ def test_from_string_reads_any_text_format() -> None:
 def test_from_string_rejects_unknown_formats_and_svg_only_options() -> None:
     import pytest
 
-    with pytest.raises(ValueError, match="no importer"):
-        svg.Document.from_string("x", "nope")  # no importer for this name or extension
+    with pytest.raises(ValueError, match="no format can read 'nope'"):
+        svg.Document.from_string("x", "nope")
     with pytest.raises(TypeError):
         svg.Document.from_string("flowchart LR\n  A --> B", "mermaid", strictness=svg.Strictness.STRICT)

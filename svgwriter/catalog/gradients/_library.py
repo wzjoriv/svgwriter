@@ -48,7 +48,7 @@ def theme(start: ColorLike | None = None, end: ColorLike | None = None, *, angle
     Notes
     -----
     Stop colors are numbers, so theme defaults come from :meth:`Theme.current <svgwriter.Theme.current>`
-    when the gradient is built: build it inside ``with svg.Theme.get("dark"):`` for the dark palette.
+    when the gradient is built: build it inside ``with svg.themes.get("dark"):`` for the dark palette.
 
     Examples
     --------

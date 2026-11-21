@@ -3,7 +3,7 @@
 Markers are sized in stroke widths, so heads grow with the line, and turn with it (``orient="auto"``).
 They take the line-end theme role ``"arrow.head"`` (the palette's foreground) unless a ``color=`` is given, and go into
 the document's ``<defs>`` when a line refers to them. Markers registered with
-:func:`svgwriter.catalog.preset.marker` answer here too.
+:data:`svgwriter.catalog.preset.marker` answer here too.
 
 Example
 -------

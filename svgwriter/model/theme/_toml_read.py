@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Any
 import tomlkit
 from tomlkit.exceptions import TOMLKitError
 
+from ...errors import ThemeError
 from ..color.color import Color
 from ._constants import (
     ARRAY_CHANNELS,
@@ -22,7 +23,6 @@ from ._constants import (
     FONT_TABLES,
     MAX_MAGNITUDE,
 )
-from ._errors import ThemeError
 
 if TYPE_CHECKING:
     from .theme import Theme
@@ -133,7 +133,7 @@ def read_roles(table: Mapping[str, Any], prefix: str = "") -> dict[str, dict[str
 
 def theme_from_toml(text: str, folder: Path | None = None) -> Theme:
     """Build a theme from TOML text; see :meth:`Theme.from_toml`. Font files resolve against *folder*."""
-    from .theme import Theme
+    from .theme import themes
 
     data = parse_document(text).unwrap()
     unknown = sorted(set(data) - FILE_KEYS)
@@ -141,7 +141,7 @@ def theme_from_toml(text: str, folder: Path | None = None) -> Theme:
         raise ThemeError(f"unknown theme file keys {unknown}; expected {sorted(FILE_KEYS)}")
     base_name = _text("extends", data.get("extends", DEFAULT_THEME))
     try:
-        base = Theme.get(base_name)
+        base = themes.get(base_name)
     except KeyError:
         raise ThemeError(f"extends: unknown theme {base_name!r}") from None
     palette = {k: read_value(f"palette.{k}", v) for k, v in _table("palette", data.get("palette", {})).items()}

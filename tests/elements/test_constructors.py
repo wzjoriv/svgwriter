@@ -23,7 +23,7 @@ def test_length_reads_are_floats_unless_they_have_units() -> None:
     assert (c.cx, c.cy, c.r) == (5.0, 6.0, 7.0) and all(isinstance(v, float) for v in (c.cx, c.cy, c.r))
     parsed = svg.parse('<rect x="3" width="2mm" height="50%"/>')
     assert parsed.x == 3.0 and str(parsed.width) == "2mm" and str(parsed.height) == "50%"
-    assert svg.Rect().rx is None
+    assert svg.Rect(0, 0, 1, 1).rx is None
 
 
 def test_lowercase_aliases_carry_constructors() -> None:

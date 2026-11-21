@@ -70,7 +70,7 @@ logo("mono")
 # Any theme works, including a variant made on the spot.
 
 # %%
-logo(svg.Theme.get("light").replace(palette={"primary": "#7c3aed", "accent": "#f472b6"}))
+logo(svg.themes.get("light").replace(palette={"primary": "#7c3aed", "accent": "#f472b6"}))
 
 # %% [markdown]
 # Every asset a project usually needs comes from that one definition: SVG variants, PNGs at any size,
@@ -86,4 +86,4 @@ if __name__ == "__main__":
         light.save(f"logo-{size}.png", pixels=size, padding=PADDING)
     light.save("favicon.ico", padding=PADDING, sizes=(16, 32, 48))
     light.save("logo.icns", padding=PADDING)
-    light.save("apple-touch-icon.png", padding=PADDING, pixels=180, background=svg.Theme.get("light").palette.primary)
+    light.save("apple-touch-icon.png", padding=PADDING, pixels=180, background=svg.themes.get("light").palette.primary)

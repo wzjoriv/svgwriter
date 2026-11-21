@@ -11,11 +11,12 @@ from typing import Final
 
 from ..._internal._constants import SVG_NS, XLINK_NS, XML_NS
 from ..._internal._typing import AnyPath
+from ...errors import SVGParseError
 from ...model.attributes.names import UNSUPPORTED_ATTRIBUTES
 from ...model.elements.core import Category, ContentModel, Element, UnknownElement
 from ._inkscape import read_transform_centers
 
-__all__ = ["SVGParseError", "Strictness", "parse", "parse_file"]
+__all__ = ["Strictness", "parse", "parse_file"]
 
 _PREFIXES: Final = {XLINK_NS: "xlink", XML_NS: "xml"}
 _IMPLIED: Final = frozenset({SVG_NS, XLINK_NS, XML_NS})
@@ -62,25 +63,6 @@ class Strictness(enum.IntEnum):
     WARN = 1
     STRICT = 2
 
-
-class SVGParseError(ValueError):
-    """Raised for malformed input or, when strict, unsupported content.
-
-    Subclasses :class:`ValueError`.
-
-    See Also
-    --------
-    parse : The function that raises it.
-
-    Examples
-    --------
-    >>> from svgwriter.formats.io import SVGParseError, parse
-    >>> try:
-    ...     parse("<svg")
-    ... except SVGParseError:
-    ...     print("malformed")
-    malformed
-    """
 
 
 def _split(name: str) -> tuple[str | None, str]:

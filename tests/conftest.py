@@ -20,6 +20,9 @@ REQUIRED_ARGS: dict[str, Callable[[], Element]] = {
     "hkern": lambda: svg.HKern(-10, u1="A", u2="V"),
     "vkern": lambda: svg.VKern(5, g1="a", g2="b"),
     "color-profile": lambda: svg.ColorProfile("sRGB", href="srgb.icc"),
+    "rect": lambda: svg.Rect(0, 0, 1, 1),
+    "circle": lambda: svg.Circle(0, 0, 1),
+    "ellipse": lambda: svg.Ellipse(0, 0, 1, 1),
 }
 
 

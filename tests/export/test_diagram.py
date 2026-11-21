@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter._internal._tools import DiagramToolError
+from svgwriter.errors import DiagramToolError
 from svgwriter.formats.export._diagram import read_dot, read_mermaid
 
 SVG_OUT = b'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="10"><rect width="20" height="10"/></svg>'
@@ -57,8 +57,8 @@ def test_mermaid_runs_with_svg_labels(monkeypatch, tmp_path):
 
 
 def test_extensions_route_to_the_importers():
-    assert svg.export.find_importer("x.gv").name == "dot"
-    assert svg.export.find_importer("x.mmd").name == "mermaid"
+    assert svg.formats.reader("x.gv").name == "dot"
+    assert svg.formats.reader("x.mmd").name == "mermaid"
 
 
 @pytest.mark.skipif(shutil.which("latex") is None or shutil.which("dvisvgm") is None, reason="no TeX installed")

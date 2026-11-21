@@ -89,8 +89,8 @@ class Motion(TransformPresets):
     (a name such as ``"ease-in-out"``, a bézier 4-tuple, ``("steps", n)`` or
     a function; see :class:`~svgwriter.Ease`). ``show`` and ``hide`` act at
     one instant, so they take only the moment. Presets added with
-    :func:`@svg.preset.animation <svgwriter.catalog.preset.animation>` are methods too, and so are behaviors
-    (:func:`@svg.preset.behavior <svgwriter.catalog.preset.behavior>`), which attach to the scene owning the element.
+    :data:`@svg.preset.animation <svgwriter.catalog.preset.animation>` are methods too, and so are behaviors
+    (:data:`@svg.preset.behavior <svgwriter.catalog.preset.behavior>`), which attach to the scene owning the element.
 
     Parameters
     ----------
@@ -132,7 +132,7 @@ class Motion(TransformPresets):
     def __getattr__(self, name: str) -> Any:
         if name in BEHAVIORS:
             return self._attach(name)
-        close = difflib.get_close_matches(name, [*ANIMATIONS.names(), *BEHAVIORS.names()], n=SUGGESTIONS)
+        close = difflib.get_close_matches(name, [*ANIMATIONS.list(), *BEHAVIORS.list()], n=SUGGESTIONS)
         hint = f"; did you mean {' or '.join(map(repr, close))}?" if close else ""
         raise AttributeError(f"no animation preset or behavior {name!r}{hint} (@svg.preset.animation or "
                              "@svg.preset.behavior adds one)", name=name, obj=self)
@@ -160,7 +160,7 @@ class Motion(TransformPresets):
         """Run an animation function on this element: ``function(self, *args, **kwargs)``.
 
         Typed with the function's own parameters, so editors complete and check its options. The
-        function need not be registered; :func:`@svg.preset.animation <svgwriter.catalog.preset.animation>` also makes it
+        function need not be registered; :data:`@svg.preset.animation <svgwriter.catalog.preset.animation>` also makes it
         ``element.animate.<name>``.
 
         Parameters

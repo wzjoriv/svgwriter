@@ -9,11 +9,10 @@ Built-in themes are ``light`` (the default), ``dark``, ``paper``, ``print``, ``m
 from __future__ import annotations
 
 from ._builtin import register_builtins
-from ._errors import ThemeError
 from .fonts import Fonts
 from .palette import Palette, PaletteSource
-from .theme import THEMES, RoleSource, Theme
+from .theme import RoleSource, Theme, themes
 
-__all__ = ["THEMES", "Fonts", "Palette", "PaletteSource", "RoleSource", "Theme", "ThemeError"]
+__all__ = ["themes", "Fonts", "Palette", "PaletteSource", "RoleSource", "Theme"]
 
 register_builtins()

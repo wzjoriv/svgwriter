@@ -23,7 +23,7 @@ def test_the_feature_drawing_survives_a_round_trip(drawing, tmp_path, format, li
     if format in OFFICE:
         pytest.importorskip(format)
     doc, reference = drawing
-    path = tmp_path / f"drawing{svg.export.exporters()[format].extensions[0]}"
+    path = tmp_path / f"drawing{svg.formats.get(format).extensions[0]}"
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         doc.save(path)

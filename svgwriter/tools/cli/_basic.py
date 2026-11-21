@@ -66,15 +66,15 @@ def emit(root: Element, output: str | None, compact: bool, precision: int) -> No
 @click.command()
 def shapes() -> None:
     """List registered composite shapes."""
-    for name in preset.list("shape"):
+    for name in preset.shape.list():
         click.echo(name)
 
 
 @click.command()
 def sizes() -> None:
     """List named canvas sizes (Document(size=...))."""
-    for name in preset.list("size"):
-        click.echo(f"{name:<{SIZE_COLUMN}} {preset.get('size', name)}")
+    for name in preset.size.list():
+        click.echo(f"{name:<{SIZE_COLUMN}} {preset.size.get(name)}")
 
 
 @click.command()
@@ -95,7 +95,7 @@ def elements() -> None:
 def draw(shape: str, size: float, fill: str, stroke: str | None, output: str | None, compact: bool, precision: int) -> None:
     """Render a registered shape (a name from `svgwriter shapes`)."""
     try:
-        factory = preset.get("shape", shape)
+        factory = preset.shape.get(shape)
     except KeyError as error:
         raise click.BadParameter(error.args[0], param_hint="SHAPE") from None
     doc = Document(size, size)

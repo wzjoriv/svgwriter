@@ -5,6 +5,7 @@ import math
 import pytest
 
 import svgwriter as svg
+from svgwriter.errors import PathSyntaxError
 from svgwriter.model.pathdata import (
     ArcTo,
     BBox,
@@ -15,7 +16,6 @@ from svgwriter.model.pathdata import (
     MoveTo,
     PathBuilder,
     PathData,
-    PathSyntaxError,
     QuadTo,
     SmoothCurveTo,
     SmoothQuadTo,

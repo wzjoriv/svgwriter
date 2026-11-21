@@ -132,11 +132,11 @@ def test_parse_paint() -> None:
 
 class TestOnElements:
     def test_tuple_fill(self) -> None:
-        r = svg.Rect(fill=(1, 0, 0))
+        r = svg.Rect(0, 0, 1, 1, fill=(1, 0, 0))
         assert 'fill="#ff0000"' in str(r) and not r.has("fill-opacity")
 
     def test_alpha_goes_to_matching_opacity(self) -> None:
-        r = svg.Rect(fill=(1, 0, 0, 0.5), stroke="rgba(0, 0, 255, 0.25)")
+        r = svg.Rect(0, 0, 1, 1, fill=(1, 0, 0, 0.5), stroke="rgba(0, 0, 255, 0.25)")
         assert r.get("fill-opacity") == 0.5 and str(r.get("fill")) == "#ff0000"
         assert r.get("stroke") == "rgba(0, 0, 255, 0.25)"
         r.stroke = Color.parse("rgba(0, 0, 255, 0.25)")
@@ -149,6 +149,6 @@ class TestOnElements:
             svg.FeDiffuseLighting(lighting_color=(1, 1, 1, 0.5))
 
     def test_paint_objects_pass_through(self) -> None:
-        r = svg.Rect(fill=PaintKeyword.NONE)
+        r = svg.Rect(0, 0, 1, 1, fill=PaintKeyword.NONE)
         r.stroke = PaintRef(FuncIRI("#g"))
         assert str(r.get("stroke")) == "url(#g)"

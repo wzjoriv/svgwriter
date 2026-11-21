@@ -10,24 +10,15 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any
 
 from ...._internal._constants import PX_PER_INCH
-from .._registry import register, register_importer
+from ....errors import OfficeExtraError
+from ..._format import Format
 from ._constants import EXTRA_HINT, PICTURE_SCALE
 
 if TYPE_CHECKING:
     from ....document import Document
 
-__all__ = ["OfficeExtraError"]
+__all__: list[str] = []
 
-
-class OfficeExtraError(ImportError):
-    """The library for an Office format is not installed.
-
-    Examples
-    --------
-    >>> from svgwriter.formats.export._office import OfficeExtraError
-    >>> issubclass(OfficeExtraError, ImportError)
-    True
-    """
 
 
 def require(module: str) -> Any:
@@ -38,7 +29,6 @@ def require(module: str) -> Any:
         raise OfficeExtraError(f"{module.split('.')[0]} is needed for this format; {EXTRA_HINT}") from error
 
 
-@register("pptx", extensions=(".pptx",), multipage=True)
 def pptx(document: Document | Sequence[Document]) -> bytes:
     """A PowerPoint deck with one slide per drawing, as editable shapes.
 
@@ -86,7 +76,7 @@ def pptx(document: Document | Sequence[Document]) -> bytes:
     >>> svg.export.export(doc, "pptx")[:2]
     b'PK'
     >>> deck = svg.export.export([doc, svg.Document(20, 20)], "pptx")
-    >>> len(svg.export.find_importer("pptx").function(deck, slide=None))
+    >>> len(svg.formats.reader("pptx").read(deck, slide=None))
     2
     """
     from ._pptx import write_pptx
@@ -94,7 +84,6 @@ def pptx(document: Document | Sequence[Document]) -> bytes:
     return write_pptx(list(document) if isinstance(document, Sequence) else [document])
 
 
-@register_importer("pptx", extensions=(".pptx",), page_option="slide")
 def read_pptx(data: bytes, *, slide: int | None = 0) -> Document | list[Document]:
     """The slides of a PowerPoint deck as native SVG elements.
 
@@ -129,7 +118,7 @@ def read_pptx(data: bytes, *, slide: int | None = 0) -> Document | list[Document
     >>> import svgwriter as svg
     >>> doc = svg.Document(40, 20)
     >>> _ = doc.circle(20, 10, 8, fill="red")
-    >>> back = svg.export.find_importer("pptx").function(svg.export.export(doc, "pptx"))
+    >>> back = svg.formats.reader("pptx").read(svg.export.export(doc, "pptx"))
     >>> [e.tag for e in back]
     ['path']
     """
@@ -147,7 +136,6 @@ def _picture(document: Document) -> tuple[bytes, float, float]:
     return png, width / PX_PER_INCH, height / PX_PER_INCH
 
 
-@register("docx", extensions=(".docx",))
 def docx(document: Document) -> bytes:
     """A Word document holding the drawing as native, editable Word shapes at its natural size.
 
@@ -195,7 +183,6 @@ def docx(document: Document) -> bytes:
     return write_docx(document)
 
 
-@register("xlsx", extensions=(".xlsx",))
 def xlsx(document: Document) -> bytes:
     """An Excel workbook with the drawing as a picture anchored at cell A1.
 
@@ -232,7 +219,6 @@ def xlsx(document: Document) -> bytes:
     return buffer.getvalue()
 
 
-@register_importer("docx", extensions=(".docx",))
 def read_docx(data: bytes) -> Document:
     """A Word document as live text laid out top to bottom, with its pictures and drawn shapes.
 
@@ -271,10 +257,24 @@ def read_docx(data: bytes) -> Document:
     >>> import svgwriter as svg
     >>> doc = svg.Document(40, 20)
     >>> _ = doc.rect(0, 0, 40, 20, fill="teal")
-    >>> back = svg.export.find_importer("docx").function(svg.export.export(doc, "docx"))
+    >>> back = svg.formats.reader("docx").read(svg.export.export(doc, "docx"))
     >>> [e.tag for e in back]
     ['path']
     """
     from ._docx_read import read_docx as read
 
     return read(data)
+
+
+class PptxFormat(Format, name="pptx", extensions=(".pptx",), multipage=True, page_option="slide"):
+    write = staticmethod(pptx)
+    read = staticmethod(read_pptx)
+
+
+class DocxFormat(Format, name="docx", extensions=(".docx",)):
+    write = staticmethod(docx)
+    read = staticmethod(read_docx)
+
+
+class XlsxFormat(Format, name="xlsx", extensions=(".xlsx",)):
+    write = staticmethod(xlsx)

@@ -103,13 +103,13 @@ class TestRenderers:
             video.resolve_renderer("tests.video.test_video:WIDTH")
 
     def test_register(self) -> None:
-        @video.register_renderer("test-solid")
+        @svg.renderers.register(name="test-solid")
         def render(document: svg.Document, seconds: float) -> bytes:
             return solid_png(document, seconds)
 
         assert video.resolve_renderer("test-solid") is render
-        assert svg.register_renderer is video.register_renderer
-        video.unregister_renderer("test-solid")
+        assert svg.renderers is video.renderers
+        assert svg.renderers.unregister("test-solid") is render
 
     def test_iter_frames_and_update(self) -> None:
         seen: list[float] = []
@@ -139,7 +139,7 @@ class TestFFmpegMissing:
             return solid_png(document, seconds)
 
         target = tmp_path / "out.mp4"
-        with pytest.raises(svg.FFmpegNotFoundError, match="Nothing was rendered"):
+        with pytest.raises(svg.errors.FFmpegNotFoundError, match="Nothing was rendered"):
             _doc().render_animation(target, 10, 1, renderer, ffmpeg="definitely-not-ffmpeg-xyz")
         assert calls == [] and not target.exists()
 
@@ -179,7 +179,7 @@ class TestEncoding:
         assert target.stat().st_size > 0
 
     def test_ffmpeg_failure_is_reported(self, tmp_path: Path) -> None:
-        with pytest.raises(video.FFmpegError, match="ffmpeg exited"):
+        with pytest.raises(svg.errors.FFmpegError, match="ffmpeg exited"):
             video.render_animation(_doc(), tmp_path / "missing-dir" / "x.mp4", 5, 0.4, solid_png)
 
     def test_renderer_error_stops_ffmpeg(self, tmp_path: Path) -> None:

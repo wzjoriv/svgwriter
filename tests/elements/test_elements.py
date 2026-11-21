@@ -102,6 +102,7 @@ class TestBasicShapes:
 class TestKeywordForwarding:
     def test_deep_chain_reaches_every_group(self) -> None:
         rect = svg.Rect(
+            0, 0, 1, 1,
             id="r",
             xml_lang="en",
             required_features="http://www.w3.org/TR/SVG11/feature#Shape",
@@ -141,7 +142,7 @@ class TestKeywordForwarding:
 class TestElementApi:
     def test_ids_and_references(self) -> None:
         grad = svg.LinearGradient()
-        rect = svg.Rect(fill=grad)
+        rect = svg.Rect(0, 0, 1, 1, fill=grad)
         assert grad.id is not None
         assert rect.get("fill") == svg.FuncIRI("#" + grad.id)
         use = svg.Use.of(rect)
@@ -158,7 +159,7 @@ class TestElementApi:
         assert "id" not in r.attributes
 
     def test_set_get_update(self) -> None:
-        r = svg.Rect()
+        r = svg.Rect(0, 0, 1, 1)
         assert r.set("stroke_linecap", "round") is r
         assert r.get("stroke-linecap") == "round"
         assert r.get("missing", 42) == 42
@@ -168,13 +169,13 @@ class TestElementApi:
         assert not r.has("opacity")
 
     def test_presentation_descriptor(self) -> None:
-        r = svg.Rect(fill="none", opacity="0.5")
+        r = svg.Rect(0, 0, 1, 1, fill="none", opacity="0.5")
         r.attributes["fill"] = "none"
         assert r.fill is PaintKeyword.NONE
         assert r.opacity == 0.5
 
     def test_style_property_and_css_moves(self) -> None:
-        r = svg.Rect(fill="red", stroke="blue", style="mix-blend-mode:multiply")
+        r = svg.Rect(0, 0, 1, 1, fill="red", stroke="blue", style="mix-blend-mode:multiply")
         r.to_css()
         assert str(r.attributes["style"]) == "mix-blend-mode:multiply;fill:red;stroke:blue"
         assert "fill" not in r.attributes
@@ -192,7 +193,7 @@ class TestElementApi:
 
     def test_children(self) -> None:
         g = svg.Group()
-        a, b = g.add(svg.Rect()), g.add(svg.Circle())
+        a, b = g.add(svg.Rect(0, 0, 1, 1)), g.add(svg.Circle(0, 0, 1))
         assert list(g) == [a, b]
         assert g[1] is b and g[:1] == [a]
         other = svg.Group()
@@ -207,15 +208,15 @@ class TestElementApi:
 
     def test_content_model_enforced(self) -> None:
         with pytest.raises(TypeError):
-            svg.Rect().append("text")
+            svg.Rect(0, 0, 1, 1).append("text")
         with pytest.raises(TypeError):
-            svg.GlyphRef().append(svg.Rect())
+            svg.GlyphRef().append(svg.Rect(0, 0, 1, 1))
         with pytest.raises(TypeError):
             svg.Group().append(42)  # type: ignore[type-var]
         assert ContentModel.MIXED == ContentModel.TEXT | ContentModel.ELEMENTS
 
     def test_iteration_and_search(self) -> None:
-        root = svg.Svg(svg.Group(svg.Rect(id="a"), svg.Group(svg.Rect(id="b"))), svg.Circle())
+        root = svg.Svg(svg.Group(svg.Rect(0, 0, 1, 1, id="a"), svg.Group(svg.Rect(0, 0, 1, 1, id="b"))), svg.Circle(0, 0, 1))
         assert [e.tag for e in root.iter()] == ["svg", "g", "rect", "g", "rect", "circle"]
         assert [e.tag for e in root.iter(max_depth=1)] == ["svg", "g", "circle"]
         assert len(root.find_all("rect")) == 2
@@ -271,7 +272,7 @@ class TestStructure:
         assert root.view_box is None
 
     def test_defs_created_once(self) -> None:
-        root = svg.Svg(svg.Rect())
+        root = svg.Svg(svg.Rect(0, 0, 1, 1))
         assert root.defs() is root.defs()
         assert root[0] is root.defs()
 
@@ -281,7 +282,7 @@ class TestStructure:
         assert str(use) == '<use xmlns:xlink="http://www.w3.org/1999/xlink" x="3" y="4" width="10" xlink:href="#dot"/>'
         sw = svg.Switch(svg.Text("fr", system_language="fr"), svg.Text("other"))
         assert len(sw) == 2
-        link = svg.A(svg.Rect(), href="https://example.org", target="_blank")
+        link = svg.A(svg.Rect(0, 0, 1, 1), href="https://example.org", target="_blank")
         assert link.get("target") == "_blank"
 
     def test_descriptive(self) -> None:
@@ -312,7 +313,7 @@ class TestStructure:
         parsed = svg.parse('<svg xmlns="http://www.w3.org/2000/svg"><foreignObject/><rect onclick="go()" cursor="hand"/></svg>')
         assert isinstance(parsed.children[0], UnknownElement)
         assert parsed.find(svg.Rect).attributes == {}  # type: ignore[union-attr]
-        with pytest.raises(svg.SVGParseError):
+        with pytest.raises(svg.errors.SVGParseError):
             svg.parse('<svg xmlns="http://www.w3.org/2000/svg"><rect onclick="go()"/></svg>', strictness=svg.Strictness.STRICT)
 
 
@@ -400,7 +401,7 @@ class TestErrorMessages:
 
     def test_string_index_points_to_ids(self) -> None:
         with pytest.raises(TypeError, match="get_element_by_id"):
-            svg.group(svg.rect())["x"]
+            svg.group(svg.rect(0, 0, 1, 1))["x"]
 
     def test_suggestions_include_methods(self) -> None:
         with pytest.raises(AttributeError, match="point_at_length"):

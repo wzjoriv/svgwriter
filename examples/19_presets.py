@@ -1,10 +1,12 @@
 """# Preset libraries
 
-Ready-made patterns, gradients, filters, markers and text effects, each a catalogue you can add to: one sheet
-per catalogue, a sentence whose words burn, smoke, shine, blow and snow while staying text, and gooey blobs.
+Ready-made patterns, gradients, filters, markers and effects, each a catalogue you can add to: one sheet
+per catalogue, a sentence whose words burn, smoke, shine, blow and snow while staying text, the same
+effects on shapes, and gooey blobs.
 
     python 19_presets.py                writes 19_patterns.svg, 19_gradients.svg, 19_filters.svg,
-                                        19_markers.svg, 19_sentence.svg/.gif and 19_goo.svg/.gif
+                                        19_markers.svg, 19_sentence.svg/.gif, 19_shapes.svg and
+                                        19_goo.svg/.gif
 """
 
 import svgwriter as svg
@@ -82,8 +84,8 @@ markers.save("19_markers.svg")
 markers
 
 # %% [markdown]
-# Text effects style a whole text or a range of it, and the words stay text. `text[a:b].effect("fire")` and
-# `svg.text_effects.fire(text[a:b])` move the range onto a copy of the line just above it, so the filter
+# Effects style any element, and on a text a whole line or a range of it; the words stay text. `text[a:b].effect("fire")` and
+# `svg.effects.fire(text[a:b])` move the range onto a copy of the line just above it, so the filter
 # reaches only those letters. Every effect animates with SMIL, so the SVG plays in a browser and the
 # same document renders to a GIF or a video.
 
@@ -105,6 +107,17 @@ sentence.save("19_sentence.gif")
 sentence
 
 # %% [markdown]
+# The same effects on shapes size themselves to the shape's bounding box instead of the glyph height.
+
+# %%
+shapes = svg.Document(500, 110)
+shapes.rect(0, 0, 500, 110, fill="#0f172a")
+for column, effect in enumerate(("fire", "ice", "metal", "neon", "glitch")):
+    shapes.add(svg.builder.star(50 + column * 100, 55, 34, points=5)).effect(effect)
+shapes.save("19_shapes.svg")
+shapes
+
+# %% [markdown]
 # Gooey blobs: two circles drift apart and back under `svg.filters.goo`, which blurs the group and
 # sharpens its alpha again, so the circles stretch a bridge before they part.
 
@@ -123,16 +136,16 @@ goo
 
 # %% [markdown]
 # Your own presets join the catalogues: `@svg.preset.pattern`, `filter`, `gradient`, `marker` and
-# `text_effect` register a function under its name, beside the built-in ones.
+# `effect` register a function under its name, beside the built-in ones.
 
 # %%
 
 
-@svg.preset.text_effect
-def ember(text: svg.Text, *, color: str = "#f97316") -> None:
+@svg.preset.effect
+def ember(element: svg.Element, *, color: str = "#f97316") -> None:
     """Glowing coals: the fire gradient without the flames."""
-    text.fill = svg.gradients.blend("#fde68a", color, "#7f1d1d", angle=-90)
-    text.filter = svg.filters.glow(3, color=color)
+    element.fill = svg.gradients.blend("#fde68a", color, "#7f1d1d", angle=-90)
+    element.filter = svg.filters.glow(3, color=color)
 
 
 embers = svg.Document(320, 60)

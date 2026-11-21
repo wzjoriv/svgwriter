@@ -15,7 +15,7 @@ doc.save("figure.pdf")
 doc.save("figure.tex", standalone=True)
 data = doc.export("eps")                      # bytes or str, without a file
 again = svg.Document.open("figure.svg")
-print(sorted(svg.export.exporters()))
+print(svg.formats.writers(), svg.formats.readers())
 ```
 
 | Format | Extension(s) | Export | Import | Notes |
@@ -168,8 +168,8 @@ wide = svg.Document(size="a4-landscape")             # any name turns with -land
 slide = svg.Document(size="slide-16:9")              # 1280 x 720, PowerPoint's default slide size
 typed = svg.Document(size=svg.size.letter.landscape)  # svg.size.<name> is a PageSize (width, height, units)
 svg.preset.size("poster-50x70", "50cm", "70cm")         # your own, also svg.size.poster_50x70
-print(svg.preset.list("size")[:6], svg.size.poster_50x70.landscape)
-svg.preset.unregister("size", "poster-50x70")
+print(svg.preset.size.list()[:6], svg.size.poster_50x70.landscape)
+svg.preset.size.unregister("poster-50x70")
 ```
 
 `svg.size.<name>` gives a `PageSize` for every registered size with the name turned into an identifier
@@ -273,26 +273,36 @@ CMYK intent. Without the extra, `icc=` raises an `ImportError` naming it.
 
 ## Your own formats
 
+A format is a class: the class line declares its name and extensions, and `write`, `read` or both say
+what it does. Creating the class registers it, so `doc.save`, `doc.export`, `svg.Document.open` and
+`svg.Document.from_string` use it at once.
+
 ```python
-@svg.export.register("count", extensions=(".count",), binary=False)
-def count(document, **options):
-    """Number of top-level elements."""
-    return str(len(document))
-
-doc.save("figure.count")
-
-@svg.export.register_importer("lines", extensions=(".lines",))
-def read_lines(data, **options):
+class Lines(svg.Format, name="lines", extensions=(".lines",), binary=False):
     """One polyline per text line of x,y pairs."""
-    out = svg.Document()
-    for line in data.decode().splitlines():
-        pairs = [tuple(map(float, p.split(","))) for p in line.split()]
-        out.add(svg.polyline(pairs, fill="none", stroke="black"))
-    return out
 
-svg.export.unregister("count")                       # plugins and tests can clean up
-svg.export.unregister("lines", importer=True)
+    def write(self, document, **options):
+        lines = [" ".join(f"{x:g},{y:g}" for x, y in shape.to_path().nodes) for shape in document]
+        return "\n".join(lines)
+
+    def read(self, data, **options):
+        out = svg.Document()
+        for line in data.decode().splitlines():
+            out.add(svg.polyline([tuple(map(float, p.split(","))) for p in line.split()],
+                                 fill="none", stroke="black"))
+        return out
+
+doc.save("figure.lines")
+again = svg.Document.open("figure.lines")
+svg.formats.unregister("lines")                      # plugins and tests can clean up
 ```
+
+`binary=True` (the default) means `write` returns `bytes`; `multipage=True` means `write` also takes a
+list of documents and `read` returns a list when its page option (`page_option=`, `"page"` by default)
+is None. `svg.formats.writer(path)` and `svg.formats.reader(path)` find a format by name, extension or
+file path. `read_extensions=` adds extensions the format only reads: the `svg` format also reads `.svgz`
+while `.svgz` writes through the `svgz` format, and Excalidraw also reads `.json`. A package can ship formats through the `svgwriter.format` entry-point group (see
+[Extending svgwriter](extending.md)).
 
 ## Diagrams
 

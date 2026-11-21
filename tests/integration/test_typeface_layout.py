@@ -47,7 +47,7 @@ def test_embed_fonts_after_layout_writes_each_used_face_once(typeface, font_file
 
 
 def test_theme_font_family_picks_the_face_for_the_role_weight(typeface):
-    theme = svg.Theme.get("light").replace(fonts={"family": typeface.name})
+    theme = svg.themes.get("light").replace(fonts={"family": typeface.name})
     doc = svg.Document(100, 60, theme=theme)
     doc += svg.VStack(svg.text("AA").as_role("title"), svg.text("AA").as_role("text"))
     assert [face.weight for face in doc.used_faces(typeface)] == [(700, 700), (400, 400)]

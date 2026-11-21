@@ -80,7 +80,7 @@ class BatchMotion:
 def _probe() -> Any:
     from ..elements.shapes import Circle
 
-    return Circle()
+    return Circle(0, 0, 1)
 
 
 def _pick(value: Any, index: int, count: int) -> Any:

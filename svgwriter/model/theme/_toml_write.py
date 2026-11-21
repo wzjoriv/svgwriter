@@ -12,10 +12,10 @@ from typing import TYPE_CHECKING, Any, Final
 
 import tomlkit
 
+from ...errors import ThemeError
 from ..attributes.style import Style
 from ..color.color import Color, as_color
 from ._constants import DEFAULT_THEME, FONT_TABLES
-from ._errors import ThemeError
 from ._resolve import resolve_value
 from ._roles import DERIVED_PALETTE, STANDARD_ROLES
 from ._toml_read import parse_document, read_value
@@ -172,14 +172,15 @@ def _write_roles(theme: Theme, base: Theme | None, roles: _Table) -> None:
 
 def theme_to_toml(theme: Theme) -> str:
     """Write *theme* as TOML; see :meth:`Theme.to_toml`."""
-    from .theme import Theme
 
     loaded = theme._document is not None
     document = parse_document(theme._document) if loaded else tomlkit.document()
     base = None
     if theme.extends is not None:
         try:
-            base = Theme.get(theme.extends)
+            from .theme import themes
+
+            base = themes.get(theme.extends)
         except KeyError:
             raise ThemeError(f"extends: unknown theme {theme.extends!r}") from None
     root = _Table(document, lambda: document)
