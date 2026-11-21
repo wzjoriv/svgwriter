@@ -1,5 +1,5 @@
 """
-``<filter>`` and the shared filter-primitive base classes.
+Filter primitive bases and how primitives name their inputs.
 """
 
 from __future__ import annotations
@@ -7,25 +7,14 @@ from __future__ import annotations
 from typing import Any, TypeAlias, Union
 
 from ..._internal._enums import Keyword
-from ..._internal._typing import Self, Units
 from .._behavior import (
     CoreAttributes,
-    ExternalResourcesAttribute,
     Positioned,
     PresentationAttributes,
-    XLinkAttributes,
 )
-from ..core import Category, Child, Container, Element
+from ..core import Category, Child, Element
 
-__all__ = [
-    "Filter",
-    "FilterInput",
-    "FilterPrimitive",
-    "SingleInput",
-    "StandardInput",
-    "TwoInputs",
-    "resolve_input",
-]
+__all__ = ["FilterInput", "FilterPrimitive", "SingleInput", "StandardInput", "TwoInputs", "remember_source", "resolve_input"]
 
 
 class StandardInput(Keyword):
@@ -105,7 +94,7 @@ class FilterPrimitive(Positioned, PresentationAttributes, CoreAttributes, catego
 
     def __init__(self, *args: Child, result: str | None = None, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.update(result=result)
+        self._assign(result=result)
 
     @property
     def result(self) -> str:
@@ -221,115 +210,3 @@ class TwoInputs(SingleInput):
     def __init__(self, *args: Child, in2: FilterInput | None = None, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self._input("in2", in2)
-
-
-class Filter(
-    XLinkAttributes,
-    Positioned,
-    PresentationAttributes,
-    ExternalResourcesAttribute,
-    CoreAttributes,
-    Container[Element],
-    tag="filter",
-    category=Category.CONTAINER,
-):
-    """``<filter>``: a graph of filter primitives.
-
-    Parameters
-    ----------
-    *primitives : FilterPrimitive
-        The primitives, in evaluation order.
-    filter_units, primitive_units : {"userSpaceOnUse", "objectBoundingBox"}, optional
-        Coordinate systems for the region and the primitives.
-    filter_res : float or (float, float), optional
-        Intermediate image resolution.
-    **kwargs
-        Region (``x``, ``y``, ``width``, ``height``), ``href`` and
-        presentation/core attributes in Python spelling.
-
-    See Also
-    --------
-    FilterPrimitive : Base of the elements a filter contains.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> str(svg.Filter(svg.FeGaussianBlur(std_deviation=1), id="soft"))
-    '<filter id="soft"><feGaussianBlur stdDeviation="1"/></filter>'
-    """
-
-    def __init__(
-        self,
-        *primitives: Child,
-        filter_units: Units | None = None,
-        primitive_units: Units | None = None,
-        filter_res: float | tuple[float, float] | None = None,
-        **kwargs: Any,
-    ) -> None:
-        super().__init__(*primitives, **kwargs)
-        self.update(filter_units=filter_units, primitive_units=primitive_units, filter_res=filter_res)
-        self.collect()
-
-    def collect(self) -> Self:
-        """Insert every detached primitive the filter's primitives read, before its first reader.
-
-        ``Filter(merge)`` is then enough: the blur and offset that feed the
-        merge come along in dependency order.
-
-        Returns
-        -------
-        Filter
-            This filter, for chaining.
-
-        Examples
-        --------
-        >>> import svgwriter as svg
-        >>> blur = svg.FeGaussianBlur(3, in_="SourceAlpha")
-        >>> shadow = svg.FeOffset(2, 2, in_=blur)
-        >>> f = svg.Filter(svg.FeMerge(shadow, "SourceGraphic"))
-        >>> [p.tag for p in f.primitives]
-        ['feGaussianBlur', 'feOffset', 'feMerge']
-        """
-        index = 0
-        while index < len(self.children):
-            child = self.children[index]
-            missing = [s for s in getattr(child, "sources", list)() if s.parent is None] if isinstance(
-                child, FilterPrimitive) else []
-            if not missing:
-                index += 1
-                continue
-            self.insert(index, missing[0])
-        return self
-
-    def __rshift__(self, other: Filter) -> Filter:
-        """``f1 >> f2``: one filter applying *f1*, then *f2* to its result.
-
-        SVG 1.1 allows a single ``filter`` per element, so this is how effects
-        stack: copies of *f2*'s primitives read *f1*'s output wherever they
-        read ``SourceGraphic`` (explicitly or as the first primitive).
-        """
-        if not isinstance(other, Filter):
-            return NotImplemented
-        first = [p.clone() for p in self.primitives]
-        second = [p.clone() for p in other.primitives]
-        last = first[-1].result if first else StandardInput.SOURCE_GRAPHIC.value
-        for position, primitive in enumerate(second):
-            for node in (primitive, *primitive.iter()):
-                for name in ("in", "in2"):
-                    value = node.get(name)
-                    if value == StandardInput.SOURCE_GRAPHIC.value or (
-                            position == 0 and name == "in" and value is None and isinstance(node, SingleInput)):
-                        node.set(name, last)
-        return Filter(*first, *second)
-
-    @property
-    def primitives(self) -> list[FilterPrimitive]:
-        """The filter-primitive children in evaluation order.
-
-        Examples
-        --------
-        >>> import svgwriter as svg
-        >>> svg.Filter(svg.FeOffset(), svg.FeTile()).primitives
-        [<FeOffset feOffset dx='0' dy='0'>, <FeTile feTile>]
-        """
-        return [c for c in self if isinstance(c, FilterPrimitive)]

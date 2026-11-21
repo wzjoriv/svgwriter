@@ -2,41 +2,21 @@
 
 from __future__ import annotations
 
-from ._compositing import (
-    BlendMode,
-    CompositeOperator,
-    FeBlend,
-    FeComposite,
-    FeFlood,
-    FeImage,
-    FeMerge,
-    FeMergeNode,
-    FeOffset,
-    FeTile,
-)
-from ._effects import (
-    Channel,
-    ColorMatrixType,
-    EdgeMode,
-    FeColorMatrix,
-    FeConvolveMatrix,
-    FeDisplacementMap,
-    FeGaussianBlur,
-    FeMorphology,
-    FeTurbulence,
-    MorphologyOperator,
-    TurbulenceType,
-)
-from .base import Filter, FilterInput, FilterPrimitive, SingleInput, StandardInput, TwoInputs, resolve_input
-from .lighting import (
-    FeDiffuseLighting,
-    FeDistantLight,
-    FePointLight,
-    FeSpecularLighting,
-    FeSpotLight,
-    LightSource,
-)
-from .transfer import FeComponentTransfer, FeFunc, FeFuncA, FeFuncB, FeFuncG, FeFuncR, TransferType
+from ._channels import FeFuncA, FeFuncB, FeFuncG, FeFuncR
+from ._component import FeComponentTransfer
+from ._compositing import BlendMode, CompositeOperator, FeBlend, FeComposite
+from ._convolve import FeConvolveMatrix, FeGaussianBlur
+from ._displacement import FeDisplacementMap, FeMorphology
+from ._effects import Channel, ColorMatrixType, EdgeMode, FeColorMatrix, MorphologyOperator, TurbulenceType
+from ._filter import Filter
+from ._flood import FeFlood, FeImage
+from ._merge import FeMerge, FeMergeNode
+from ._offset import FeOffset, FeTile
+from ._shading import FeDiffuseLighting, FeSpecularLighting
+from ._turbulence import FeTurbulence
+from .base import FilterInput, FilterPrimitive, SingleInput, StandardInput, TwoInputs, resolve_input
+from .lighting import FeDistantLight, FePointLight, FeSpotLight, LightSource
+from .transfer import FeFunc, TransferType
 
 __all__ = [
     "BlendMode",

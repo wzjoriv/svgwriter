@@ -8,6 +8,8 @@ the rest with ``super().__init__(*args, **kwargs)``.
 from __future__ import annotations
 
 from collections.abc import Sequence
+from itertools import repeat
+from operator import is_not
 from typing import Any
 
 from ..._internal._enums import Keyword
@@ -86,7 +88,8 @@ class CoreAttributes(Element):
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
-        self.update(xml_base=xml_base, xml_lang=xml_lang, xml_space=xml_space)
+        if xml_base is not None or xml_lang is not None or xml_space is not None:
+            self._assign(xml_base=xml_base, xml_lang=xml_lang, xml_space=xml_space)
 
 
 class ConditionalAttributes(Element):
@@ -121,7 +124,9 @@ class ConditionalAttributes(Element):
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
-        self.update(
+        if required_features is None and required_extensions is None and system_language is None:
+            return
+        self._assign(
             required_features=_words(required_features),
             required_extensions=_words(required_extensions),
             system_language=",".join(system_language) if isinstance(system_language, (list, tuple)) else system_language,
@@ -158,7 +163,8 @@ class StyleAttributes(StyleMethods, Element):
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
-        self.update(class_=_words(class_))
+        if class_ is not None:
+            self._assign(class_=_words(class_))
         if style is not None:
             self.style = Style(style)
 
@@ -245,7 +251,12 @@ class PresentationAttributes(PresentationMethods, StyleAttributes):
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
-        self.update(
+        given = (fill, fill_opacity, fill_rule, stroke, stroke_width, stroke_opacity, stroke_linecap, stroke_linejoin,
+                 stroke_miterlimit, stroke_dasharray, stroke_dashoffset, opacity, display, visibility, color, clip_path,
+                 mask, filter, font_family, font_size, font_weight, text_anchor)
+        if not any(map(is_not, given, repeat(None))):  # identity checks: values may be numpy arrays
+            return
+        self._assign(
             fill=fill,
             fill_opacity=fill_opacity,
             fill_rule=fill_rule,
@@ -304,7 +315,7 @@ class XLinkAttributes(Element):
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
-        self.update(
+        self._assign(
             xlink_href=href,
             xlink_title=xlink_title,
             xlink_show=xlink_show,
@@ -369,7 +380,8 @@ class ExternalResourcesAttribute(Element):
 
     def __init__(self, *args: Child, external_resources_required: bool | None = None, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.update(external_resources_required=external_resources_required)
+        if external_resources_required is not None:
+            self._assign(external_resources_required=external_resources_required)
 
 
 class GraphicsElement(

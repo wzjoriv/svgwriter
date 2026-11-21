@@ -13,7 +13,7 @@ from .._behavior import CoreAttributes, PresentationAttributes
 from ..core import Category, Child, Container, ContentModel, Element
 
 if TYPE_CHECKING:
-    from ._fonts import Glyph
+    from ._glyphs import Glyph
 
 __all__ = ["FontGlyphs"]
 
@@ -34,7 +34,7 @@ class _GlyphBase(PresentationAttributes, CoreAttributes, Container[Element], cat
             d = d.build()
         elif isinstance(d, str):
             d = PathData(d)
-        self.update(d=d, horiz_adv_x=horiz_adv_x, vert_origin_x=vert_origin_x, vert_origin_y=vert_origin_y, vert_adv_y=vert_adv_y)
+        self._assign(d=d, horiz_adv_x=horiz_adv_x, vert_origin_x=vert_origin_x, vert_origin_y=vert_origin_y, vert_adv_y=vert_adv_y)
 
 
 class _Kern(CoreAttributes, category=Category.FONT, content=ContentModel.EMPTY):
@@ -49,7 +49,7 @@ class _Kern(CoreAttributes, category=Category.FONT, content=ContentModel.EMPTY):
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self.update(u1=u1, g1=g1, u2=u2, g2=g2, k=k)
+        self._assign(u1=u1, g1=g1, u2=u2, g2=g2, k=k)
 
     @classmethod
     def pair(cls, first: str, second: str, k: float, **kwargs: Any) -> Self:
@@ -109,7 +109,7 @@ class FontGlyphs:
         >>> str(f.glyph("a", "M0 0L5 5"))
         '<glyph d="M0 0 L5 5" unicode="a"/>'
         """
-        from ._fonts import Glyph
+        from ._glyphs import Glyph
 
         return self.add(Glyph(unicode, d, **kwargs))
 
@@ -129,6 +129,6 @@ class FontGlyphs:
         >>> list(f.glyphs())
         ['a']
         """
-        from ._fonts import Glyph
+        from ._glyphs import Glyph
 
         return {str(g.get("unicode")): g for g in self if isinstance(g, Glyph)}

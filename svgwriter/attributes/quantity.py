@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING, Any
 
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._numbers import format_number
-from ._constants import ANGLE_ATTRIBUTES, EQUAL_DIGITS, LENGTH_ATTRIBUTES, SUPERSCRIPTS
+from ._constants import ANGLE_ATTRIBUTES, EQUAL_DIGITS, LENGTH_ATTRIBUTES, PLAIN_VALUE_TYPES, SUPERSCRIPTS
 
 if TYPE_CHECKING:
     from .angle import Angle
@@ -274,6 +274,8 @@ def check_dimension(name: str, value: object) -> None:
     ...
     TypeError: width needs a length, got length²
     """
+    if type(value) in PLAIN_VALUE_TYPES:
+        return
     from .angle import Angle
     from .length import Length
 

@@ -19,7 +19,8 @@ if TYPE_CHECKING:
     from ...pathdata.data import BBox, PathData
     from ..shapes import Path
     from ..structure import Group
-    from ._text import Text, TSpan
+    from ._spans import TSpan
+    from ._text import Text
 
 
 __all__ = ["TextAccess"]
@@ -347,6 +348,6 @@ class TextAccess:
         >>> str(t)
         '<text x="0" y="20">Hello <tspan fill="red">world</tspan></text>'
         """
-        from ._text import TSpan
+        from ._spans import TSpan
 
         return self.append(TSpan(text, **kwargs))
