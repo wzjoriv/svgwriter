@@ -54,7 +54,7 @@ class ThemeFiles:
         """
         path = Path(os.fspath(path))
         try:
-            return cls.from_toml(path.read_text(encoding="utf-8"))
+            return theme_from_toml(path.read_text(encoding="utf-8"), path.parent)
         except ThemeError as error:
             raise ThemeError(f"{path}: {error}") from None
 
@@ -88,7 +88,9 @@ class ThemeFiles:
         ``[roles.<name>]`` tables. Values are text, numbers, color arrays (``[r, g, b]`` or
         ``[r, g, b, a]``: all floats from 0 to 1 or all integers from 0 to 255), ``{palette.name}``
         / ``{fonts.sizes.name}`` references and expressions marked with a leading ``=``; nothing in
-        the file runs Python.
+        the file runs Python. ``fonts.family`` and ``fonts.monospace`` are a family name or a list
+        of font files (relative to the theme file when read with :meth:`load`), which become a
+        :class:`~svgwriter.Typeface`.
 
         Parameters
         ----------
