@@ -113,7 +113,7 @@ Formats are found by name or file extension: `doc.save("figure.pdf")`, `svg.Docu
 | Excalidraw | `.excalidraw` | ✓ | ✓ | writes outlines, text, images and links; import reads shapes, arrows, text, images and groups (also `.json`) |
 | HTML | `.html` `.htm` | ✓ | ✓ | standalone page with the SVG inline (text kept as text), `css=`, `handlers=`; import reads the first inline `<svg>` |
 | PowerPoint | `.pptx` | ✓ | ✓ | needs `pysvgwriter[office]`; editable shapes and text boxes both ways, `slide=` on import; text kept as text; a list of documents gives one slide each; `svg.latex` formulas become editable equations |
-| Word | `.docx` | ✓ | ✓ | needs `pysvgwriter[office]`; export is a picture, import reads pictures and drawn shapes (no text); `svg.latex` formulas become editable equations |
+| Word | `.docx` | ✓ | ✓ | needs `pysvgwriter[office]`; editable shapes, pictures and text boxes out; import lays out paragraphs, headings, lists and styled runs as `<text>` with pictures in flow; `svg.latex` formulas become editable equations |
 | Excel | `.xlsx` | ✓ | — | needs `pysvgwriter[office]`; the drawing as a picture |
 | Markdown | `.md` `.markdown` | — | ✓ | headings, lists, code and bold become `<text>` |
 | Plain text | `.txt` `.text` | — | ✓ | one `<text>` per line |
