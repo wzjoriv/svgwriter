@@ -63,7 +63,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from . import export, ops, preset, project, theme, video
-from ._document.sizes import SIZES, page_size, register_size, unregister_size
+from ._document.sizes import PageSize, page_size, size
 from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
 from .aliases import filter as filter  # noqa: A004, E402
@@ -148,7 +148,6 @@ __all__ = [
     "IRI",
     "Point",
     "SVGParseError",
-    "SIZES",
     "Scene",
     "Align",
     "Color",
@@ -157,6 +156,7 @@ __all__ = [
     "Length",
     "Matrix",
     "MeetOrSlice",
+    "PageSize",
     "PaintKeyword",
     "PathBuilder",
     "PathData",
@@ -188,7 +188,6 @@ __all__ = [
     "latex",
     "parse",
     "register_font",
-    "register_size",
     "register_interpolator",
     "parse_color",
     "parse_file",
@@ -202,10 +201,10 @@ __all__ = [
     "pt",
     "px",
     "register_renderer",
+    "size",
     "text_to_path",
     "theme",
     "unregister_interpolator",
-    "unregister_size",
     "to_string",
     "video",
     "write",

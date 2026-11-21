@@ -4,10 +4,12 @@ Constants for ``svgwriter._document``: defaults, tables and patterns.
 
 from __future__ import annotations
 
+import re
 from typing import Final
 
 __all__ = [
     "BUILTIN_SIZES",
+    "IDENTIFIER_SEPARATORS",
     "INLINE_STYLE",
     "LANDSCAPE_SUFFIX",
     "PORTRAIT_SUFFIX",
@@ -17,6 +19,8 @@ __all__ = [
 RASTER_REPRS: Final = ("_repr_png_", "_repr_jpeg_")
 
 INLINE_STYLE: Final = "display:inline-block;max-width:100%;overflow:auto;line-height:0"
+
+IDENTIFIER_SEPARATORS: Final = re.compile(r"\W+")
 
 LANDSCAPE_SUFFIX: Final = "-landscape"
 PORTRAIT_SUFFIX: Final = "-portrait"

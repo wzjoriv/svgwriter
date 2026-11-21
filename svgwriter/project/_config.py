@@ -11,7 +11,7 @@ from typing import Any
 
 import tomlkit
 
-from .._document.sizes import page_size
+from .._document.sizes import PageSize, page_size
 from ..attributes.length import Length
 from ..export import exporters
 from ._constants import (
@@ -31,7 +31,7 @@ from ._constants import (
 
 __all__ = ["ProjectConfig", "ProjectError", "check_formats", "find_manifest", "read_config"]
 
-SizeSpec = str | tuple[Length, Length] | None
+SizeSpec = str | PageSize | tuple[Length, Length] | None
 
 
 class ProjectError(ValueError):
@@ -61,8 +61,8 @@ class ProjectConfig:
         The project name; output files are named after it.
     entry : str
         ``"module:object"`` or ``"notebook.ipynb:object"``.
-    size : str, (Length, Length) or None
-        A named size or a width and height for the documents handed to the entry.
+    size : str, PageSize, (Length, Length) or None
+        A named size, a :class:`~svgwriter.PageSize` or a width and height for the documents handed to the entry.
     theme : str or None
         A theme file (relative to `root`) or a registered theme name.
     fonts : str
@@ -135,7 +135,7 @@ def _size(source: Path, value: object) -> SizeSpec:
     if value is None:
         return None
     try:
-        if isinstance(value, str):
+        if isinstance(value, (str, PageSize)):
             page_size(value)
             return value
         if isinstance(value, list) and len(value) == 2:
