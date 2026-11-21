@@ -297,8 +297,8 @@ def instances(shape: Element, x: ArrayLike, y: ArrayLike, *, angle: ArrayLike = 
     >>> import svgwriter as svg
     >>> arrow = svg.polygon([(0, -2), (6, 0), (0, 2)])
     >>> field = svg.batch.instances(arrow, [10, 30], 10, angle=[0, 90], fill=["red", "blue"])
-    >>> field.item_markup()[1]
-    '<use fill="#0000ff" transform="matrix(0 1 -1 0 30 7)" xlink:href="#polygon1"/>'
+    >>> field.item_markup()[1].replace(field.shape.id, "arrow")
+    '<use xlink:href="#arrow" fill="#0000ff" transform="matrix(0 1 -1 0 30 7)"/>'
     """
     columns = broadcast({"x": x, "y": y, "angle": angle, "scale": scale},
                         _attributes(attributes, fill=fill, opacity=opacity))
