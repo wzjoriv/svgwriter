@@ -1,0 +1,17 @@
+# A night sky: deep blue card, pale ink, a book serif.
+name = "text-effects"
+extends = "dark"
+
+[palette]
+background = "#070b14"
+surface = "#0f172a"
+foreground = "#e2e8f0"
+muted = "#64748b"
+border = "#1e293b"
+
+[fonts]
+family = "Georgia, 'Times New Roman', serif"
+
+[fonts.sizes]
+text = 30
+caption = 13
