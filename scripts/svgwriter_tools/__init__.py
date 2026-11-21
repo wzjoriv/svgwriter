@@ -6,6 +6,7 @@ python scripts/dev.py svgwriter bench [--count 100000]
 python scripts/dev.py svgwriter gallery
 python scripts/dev.py svgwriter formats [--format pdf --format tikz] [--out build/formats]
 python scripts/dev.py svgwriter signatures write|check
+python scripts/dev.py svgwriter demo-notebooks build|check
 """
 
 from __future__ import annotations
@@ -15,9 +16,11 @@ from pathlib import Path
 import typer
 
 from ._conformance import run_suite, write_report
+from ._demo_notebooks import app as demo_notebooks
 from ._suite import SUITE_DIR, SUITE_URL, fetch
 
 app = typer.Typer(name="svgwriter", help=__doc__, add_completion=False, no_args_is_help=True)
+app.add_typer(demo_notebooks, name="demo-notebooks")
 
 
 @app.command()

@@ -13,6 +13,10 @@ What it shows:
   `theme.toml`) and a project animation preset (`animations/deal.py`).
 - `svg.sweep`: the same function stepped over time, written as a GIF and an animated SVG.
 
+Controls: rank, suit, hue, iridescence, glow, corner radius and card width (see above); the notebook adds `svg.interact` and stills of other cards.
+
+Open the notebook, [playing-card.ipynb](playing-card.ipynb), to see the demo step by step with its pictures; run it to get a panel for the controls.
+
 ```
 svgwriter preview    # the card with its controls, live
 svgwriter build      # output/playing-card.{svg,png,pdf,gif} and output/playing-card-sweep.{svg,gif,...}
