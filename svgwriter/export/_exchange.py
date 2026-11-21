@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 __all__ = ["export", "load", "save"]
 
 
-def export(document: Document | Sequence[Document], format: str, *, time: float | None = None,
+def export(document: Document | Sequence[Document], format: str, *, seconds: float | None = None,
            **options: Any) -> bytes | str:
     """Convert *document* to *format* (a name or extension); returns ``bytes`` or ``str``.
 
@@ -28,7 +28,7 @@ def export(document: Document | Sequence[Document], format: str, *, time: float 
         (``"pdf"``: one page each; ``"pptx"``: one slide each).
     format : str
         A registered format name or an extension such as ``".pdf"``.
-    time : float, optional
+    seconds : float, optional
         Export the SMIL animation frame at this many seconds (see
         :meth:`Document.at`) instead of the document as written. Defaults to
         None, which keeps animations (formats without animation show t = 0).
@@ -61,23 +61,23 @@ def export(document: Document | Sequence[Document], format: str, *, time: float 
     2
     """
     exporter = find_exporter(format)
-    return exporter.function(_frames(exporter, document, time), **options)
+    return exporter.function(_frames(exporter, document, seconds), **options)
 
 
-def _frames(exporter: Exporter, document: Document | Sequence[Document], time: float | None) -> Any:
-    """The document (or list of documents) to hand to *exporter*, at *time* when given."""
+def _frames(exporter: Exporter, document: Document | Sequence[Document], seconds: float | None) -> Any:
+    """The document (or list of documents) to hand to *exporter*, at *seconds* when given."""
     if isinstance(document, Sequence):
         if not document:
             raise ValueError("no documents to export")
         if not exporter.multipage:
             raise ValueError(f"the {exporter.name} format holds one document; "
                              f"export several to a multi-page format such as pdf or pptx")
-        return [page.at(time) if time is not None else page for page in document]
-    return document.at(time) if time is not None else document
+        return [page.at(seconds) if seconds is not None else page for page in document]
+    return document.at(seconds) if seconds is not None else document
 
 
 def save(document: Document | Sequence[Document], path: str | os.PathLike[str], format: str | None = None, *,
-         time: float | None = None, **options: Any) -> Path:
+         seconds: float | None = None, **options: Any) -> Path:
     """Write *document* to *path*, choosing the format from *format* or the file extension.
 
     Parameters
@@ -89,7 +89,7 @@ def save(document: Document | Sequence[Document], path: str | os.PathLike[str], 
         Destination file.
     format : str, optional
         Format name overriding the extension. Defaults to None.
-    time : float, optional
+    seconds : float, optional
         Save the SMIL animation frame at this many seconds instead of the
         animated document. Defaults to None.
     **options
@@ -122,7 +122,7 @@ def save(document: Document | Sequence[Document], path: str | os.PathLike[str], 
     True
     """
     exporter = find_exporter(format or path)
-    data = exporter.function(_frames(exporter, document, time), **options)
+    data = exporter.function(_frames(exporter, document, seconds), **options)
     target = Path(path)
     if isinstance(data, bytes):
         target.write_bytes(data)
