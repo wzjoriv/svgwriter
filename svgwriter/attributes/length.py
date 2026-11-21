@@ -4,9 +4,10 @@ Lengths with units (``10``, ``2.5mm``, ``50%``).
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from functools import lru_cache
-from typing import Any, Final, TypeAlias, overload
+from typing import TYPE_CHECKING, Any, Final, TypeAlias, overload
 
 from .._internal._constants import (
     CM_PER_INCH,
@@ -17,30 +18,22 @@ from .._internal._constants import (
     PC_PER_INCH,
     PT_PER_INCH,
     PX_PER_INCH,
+    Q_PER_INCH,
 )
 from .._internal._enums import Keyword
 from .._internal._numbers import format_number
-from ._constants import LENGTH_RE
+from ._constants import LENGTH_RE, LENGTH_SCALES, LENGTH_SPELLINGS
+from .quantity import Quantity
 
-__all__ = [
-    "Length",
-    "LengthLike",
-    "LengthUnit",
-    "Unit",
-    "cm",
-    "em",
-    "ex",
-    "inch",
-    "mm",
-    "pc",
-    "percent",
-    "pt",
-    "px",
-]
+if TYPE_CHECKING:
+    from ..transform.matrix import Point
+    from .angle import Angle
+
+__all__ = ["Length", "LengthLike", "Unit"]
 
 
 class Unit(Keyword):
-    """SVG 1.1 length units.
+    """Length units: SVG 1.1's plus CSS's ``Q`` (quarter millimetres).
 
     ``NONE`` (also ``USER``) means user units. ``PIXEL`` and ``INCH`` are
     aliases of ``PX`` and ``IN``. ``str(unit)`` gives the suffix as written in SVG.
@@ -68,6 +61,7 @@ class Unit(Keyword):
     EM = "em"
     EX = "ex"
     PERCENT = "%"
+    Q = "Q"
     USER = ""
     PIXEL = "px"
     INCH = "in"
@@ -82,6 +76,7 @@ _ABSOLUTE_PER_INCH: Final = {
     Unit.PC: PC_PER_INCH,
     Unit.MM: MM_PER_INCH,
     Unit.CM: CM_PER_INCH,
+    Unit.Q: Q_PER_INCH,
 }
 
 
@@ -89,11 +84,17 @@ _ABSOLUTE_PER_INCH: Final = {
 class Length:
     """A number with an optional unit.
 
+    The unit may be spelled out (``"millimetres"``, ``"inches"``); metres and
+    feet are accepted too and stored as millimetres and inches, since SVG has
+    no such units. Multiplying or dividing by other lengths and angles gives a
+    `~svgwriter.attributes.quantity.Quantity` (an area, for instance) that turns
+    back into a length when the dimensions cancel.
+
     Parameters
     ----------
     value : float
         The magnitude.
-    unit : Unit, optional
+    unit : Unit or str, optional
         The unit; ``Unit.NONE`` means user units. Defaults to ``Unit.NONE``.
 
     See Also
@@ -107,10 +108,22 @@ class Length:
     '2.5mm'
     >>> Length.parse("1in").to_user_units()
     96.0
+    >>> str(Length(1.5, "metres")), str(Length(2, "ft"))
+    ('1500mm', '24in')
     """
 
     value: float
     unit: Unit = Unit.NONE
+
+    def __post_init__(self) -> None:
+        if isinstance(self.unit, Unit):
+            return
+        spelling = LENGTH_SPELLINGS.get(str(self.unit).lower())
+        if spelling is None:
+            raise ValueError(f"unknown length unit {self.unit!r}")
+        suffix, scale = LENGTH_SCALES.get(spelling, (spelling, 1.0))
+        object.__setattr__(self, "value", self.value * scale)
+        object.__setattr__(self, "unit", Unit(suffix))
 
     @overload
     @classmethod
@@ -141,6 +154,8 @@ class Length:
         ------
         ValueError
             If the text is not a valid length.
+        TypeError
+            If the value is an angle or another non-length quantity.
 
         Examples
         --------
@@ -154,6 +169,8 @@ class Length:
             return text
         if isinstance(text, (int, float)):
             return cls(float(text))
+        if not isinstance(text, str):
+            raise TypeError(f"needs a length, got {_dimension(text)}")
         return _parse_cached(text)
 
     def to_user_units(
@@ -258,11 +275,11 @@ class Length:
 
         Examples
         --------
-        >>> from svgwriter.attributes.length import inch
-        >>> inch(1).to("mm")
+        >>> import svgwriter as svg
+        >>> svg.inch(1).to("mm")
         Length(value=25.4, unit=<Unit.MM: 'mm'>)
         """
-        target = Unit(unit)
+        target = Length(0, unit).unit
         if target is self.unit:
             return self
         if not (self.absolute and Length(0, target).absolute):
@@ -275,7 +292,7 @@ class Length:
     def _other(self, other: object, operation: str) -> Length:
         """*other* as a length in this length's unit, for addition and comparison."""
         if not isinstance(other, (Length, int, float, str)) or isinstance(other, bool):
-            raise TypeError(f"cannot {operation} {type(other).__name__} and a length")
+            raise TypeError(f"cannot {operation} {_dimension(other)} and a length")
         value = Length.parse(other) if not isinstance(other, (int, float)) else Length(float(other), Unit.NONE)
         if value.unit is self.unit:
             return value
@@ -297,18 +314,46 @@ class Length:
     def __rsub__(self, other: float) -> Length:
         return -self + other
 
-    def __mul__(self, factor: float) -> Length:
-        if isinstance(factor, Length):
-            raise TypeError("a length times a length is an area, not a length; multiply by a number")
-        return Length(self.value * factor, self.unit)
+    def __mul__(self, other: object) -> Any:
+        """``length * number`` is a length; a length or angle factor gives a `Quantity` such as an area."""
+        if isinstance(other, (int, float)) and not isinstance(other, bool):
+            return Length(self.value * other, self.unit)
+        return Quantity.of(self) * other
 
     __rmul__ = __mul__
 
-    def __truediv__(self, other: float | Length) -> Any:
+    def __truediv__(self, other: object) -> Any:
         """``length / number`` is a length; ``length / length`` is their plain ratio."""
         if isinstance(other, (Length, str)):
             return self.value / self._other(other, "divide").value
-        return Length(self.value / other, self.unit)
+        if isinstance(other, (int, float)) and not isinstance(other, bool):
+            return Length(self.value / other, self.unit)
+        return Quantity.of(self) / other
+
+    def __rtruediv__(self, other: object) -> Any:
+        return Quantity.of(other) / self
+
+    def __pow__(self, power: int) -> Any:
+        return Quantity.of(self) ** power
+
+    def __matmul__(self, angle: Angle | float) -> Point:
+        """``distance @ angle``: the point at that distance from the origin, in that direction.
+
+        Plain numbers are degrees; positive angles turn from +x towards +y.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> p = svg.px(2) @ svg.deg(90)
+        >>> round(p.x, 9), p.y
+        (0.0, 2.0)
+        """
+        from ..transform.matrix import Point
+        from .angle import Angle
+
+        direction = Angle.parse(angle)
+        radius = self.to_user_units()
+        return Point(radius * math.cos(direction.radians), radius * math.sin(direction.radians))
 
     def __neg__(self) -> Length:
         return Length(-self.value, self.unit)
@@ -332,60 +377,18 @@ class Length:
 LengthLike: TypeAlias = Length | float | int | str
 
 
+def _dimension(value: object) -> str:
+    from .angle import Angle
+
+    if isinstance(value, Quantity):
+        return value.dimension
+    return "angle" if isinstance(value, Angle) else type(value).__name__
+
+
 @lru_cache(maxsize=512)
 def _parse_cached(text: str) -> Length:
     match = LENGTH_RE.match(text)
     if match is None:
         raise ValueError(f"invalid length: {text!r}")
     number, unit = match.groups()
-    return Length(float(number), Unit(unit or ""))
-
-
-class LengthUnit:
-    """A unit you can call or multiply: ``mm(5)`` and ``5 * mm`` are both ``Length(5, Unit.MM)``.
-
-    Parameters
-    ----------
-    unit : Unit
-        The unit this factory produces.
-
-    Examples
-    --------
-    >>> from svgwriter.attributes.length import inch, mm
-    >>> str(5 * mm), str(inch(2) - 10 * mm)
-    ('5mm', '1.6063in')
-    """
-
-    __slots__ = ("unit",)
-
-    def __init__(self, unit: Unit) -> None:
-        self.unit = unit
-
-    def __call__(self, value: float) -> Length:
-        return Length(float(value), self.unit)
-
-    def __rmul__(self, value: float) -> Length:
-        return Length(float(value), self.unit)
-
-    def __repr__(self) -> str:
-        return f"LengthUnit({self.unit.value!r})"
-
-
-px = LengthUnit(Unit.PX)
-"""Pixels (user units): ``px(5)`` or ``5 * px``."""
-pt = LengthUnit(Unit.PT)
-"""Points, 72 per inch: ``pt(5)`` or ``5 * pt``."""
-pc = LengthUnit(Unit.PC)
-"""Picas, 6 per inch: ``pc(5)`` or ``5 * pc``."""
-mm = LengthUnit(Unit.MM)
-"""Millimetres: ``mm(5)`` or ``5 * mm``."""
-cm = LengthUnit(Unit.CM)
-"""Centimetres: ``cm(5)`` or ``5 * cm``."""
-inch = LengthUnit(Unit.IN)
-"""Inches: ``inch(5)`` or ``5 * inch``."""
-em = LengthUnit(Unit.EM)
-"""Font-size multiples: ``em(5)`` or ``5 * em``."""
-ex = LengthUnit(Unit.EX)
-"""x-height multiples: ``ex(5)`` or ``5 * ex``."""
-percent = LengthUnit(Unit.PERCENT)
-"""Percentages: ``percent(5)`` or ``5 * percent``."""
+    return Length(float(number), unit or "")

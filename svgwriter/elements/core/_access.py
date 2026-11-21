@@ -12,6 +12,7 @@ from ..._internal._ids import next_id
 from ..._internal._registry import chainable
 from ..._internal._typing import ElementId
 from ...attributes.names import UNSUPPORTED_ATTRIBUTES, svg_name
+from ...attributes.quantity import check_dimension
 from ...attributes.reference import IRI, FuncIRI
 from ...color.color import Color, as_color
 from ._categories import Category
@@ -183,6 +184,9 @@ class AttributeAccess:
 
         Raises
         ------
+        TypeError
+            If a length, angle or `~svgwriter.Quantity` has the wrong
+            dimension for the attribute (``width`` given an area).
         ValueError
             If the attribute is unsupported, a color string is not a valid
             color or paint, or a color with alpha is given to an attribute
@@ -210,6 +214,7 @@ class AttributeAccess:
         if value is None:
             self.attributes.pop(key, None)
             return
+        check_dimension(key, value)
         if key in COLOR_ATTRIBUTES and isinstance(value, str):
             if not (key == "fill" and self.category is Category.ANIMATION):
                 _check_paint(key, value)

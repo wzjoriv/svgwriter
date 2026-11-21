@@ -9,13 +9,21 @@ import re
 from typing import Final
 
 __all__ = [
+    "ANGLE_ATTRIBUTES",
     "ANGLE_RE",
+    "ANGLE_SPELLINGS",
+    "LENGTH_ATTRIBUTES",
+    "LENGTH_SCALES",
+    "LENGTH_SPELLINGS",
+    "SUPERSCRIPTS",
     "AT_BLOCK_RE",
     "COMBINATORS",
     "COMMENT_RE",
     "COMPOUND_RE",
     "DEGREES_PER",
+    "FULL_TURN_DEGREES",
     "FUNC_IRI_RE",
+    "HALF_TURN_DEGREES",
     "IMPORTANT",
     "LENGTH_RE",
     "CSS_DIMENSION_RE",
@@ -28,8 +36,33 @@ __all__ = [
 
 MARKER_LONGHANDS: Final = ("marker-start", "marker-mid", "marker-end")
 
-DEGREES_PER: Final = {"deg": 1.0, "rad": 180.0 / math.pi, "grad": 0.9, "turn": 360.0}
-ANGLE_RE: Final = re.compile(r"^\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)\s*(deg|rad|grad|turn)?\s*$")
+FULL_TURN_DEGREES: Final = 360.0
+HALF_TURN_DEGREES: Final = FULL_TURN_DEGREES / 2
+DEGREES_PER: Final = {"deg": 1.0, "rad": 180.0 / math.pi, "grad": 0.9, "turn": FULL_TURN_DEGREES}
+ANGLE_RE: Final = re.compile(r"^\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)\s*([A-Za-z]+)?\s*$")
+ANGLE_SPELLINGS: Final = {
+    **{unit: unit for unit in DEGREES_PER},
+    "degree": "deg", "degrees": "deg", "radian": "rad", "radians": "rad",
+    "gon": "grad", "gradian": "grad", "gradians": "grad", "turns": "turn",
+}
+
+LENGTH_SPELLINGS: Final = {
+    "": "", "px": "px", "pt": "pt", "pc": "pc", "mm": "mm", "cm": "cm", "in": "in",
+    "em": "em", "ex": "ex", "%": "%", "q": "Q", "m": "m", "ft": "ft",
+    "pixel": "px", "pixels": "px", "point": "pt", "points": "pt", "inch": "in", "inches": "in",
+    "millimeter": "mm", "millimeters": "mm", "millimetre": "mm", "millimetres": "mm",
+    "centimeter": "cm", "centimeters": "cm", "centimetre": "cm", "centimetres": "cm",
+    "meter": "m", "meters": "m", "metre": "m", "metres": "m",
+}
+LENGTH_SCALES: Final = {"m": ("mm", 1000.0), "ft": ("in", 12.0)}
+
+ANGLE_ATTRIBUTES: Final = frozenset({"rotate", "azimuth", "elevation", "limitingConeAngle", "orient"})
+LENGTH_ATTRIBUTES: Final = frozenset({
+    "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "ry", "fx", "fy", "fr", "dx", "dy",
+    "width", "height", "stroke-width", "stroke-dashoffset", "font-size", "letter-spacing",
+    "word-spacing", "textLength", "startOffset", "markerWidth", "markerHeight", "refX", "refY",
+})
+SUPERSCRIPTS: Final = str.maketrans("-0123456789", "⁻⁰¹²³⁴⁵⁶⁷⁸⁹")
 
 COMMENT_RE: Final = re.compile(r"/\*.*?\*/", re.S)
 RULE_RE: Final = re.compile(r"([^{}@]+)\{([^}]*)\}")
@@ -39,7 +72,7 @@ IMPORTANT: Final = "!important"
 
 CSS_DIMENSION_RE: Final = re.compile(r"^\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)([A-Za-z]+)\s*$")
 LENGTH_RE: Final = re.compile(
-    r"^\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)\s*(px|pt|pc|mm|cm|in|em|ex|%)?\s*$"
+    r"^\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)\s*([A-Za-z]+|%)?\s*$"
 )
 
 PLAIN_ATTRIBUTES: Final = frozenset(
