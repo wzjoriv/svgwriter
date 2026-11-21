@@ -5,9 +5,10 @@ group and sharpens its edge again, so blobs that come close stretch a bridge, me
 """
 
 # %%
-import svgwriter as svg
 from animations import drift
 from components import body
+
+import svgwriter as svg
 
 LOOP = 4.0          # seconds before the scene repeats
 MELT = 14           # how far apart blobs still reach for each other

@@ -9,9 +9,10 @@ and the per-frame updates into SMIL.
 # %%
 import shutil
 
-import svgwriter as svg
 from animations import orbit
 from components import Counter, heading, read_planets
+
+import svgwriter as svg
 
 MARGIN = 80
 SUN = (90, 470)            # where the Sun sits in "Eight planets"

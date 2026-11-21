@@ -5,8 +5,9 @@ a millimetre, so the PDF prints at true size and the PNG comes out at 300 dpi.
 """
 
 # %%
-import svgwriter as svg
 from components import legend, route, tide_table
+
+import svgwriter as svg
 
 DISPLAY = svg.Typeface("serif")       # the title face; drop an OFL font into assets/fonts to change it
 TEXT = svg.Typeface("sans-serif")     # captions and labels

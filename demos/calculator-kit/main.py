@@ -6,9 +6,10 @@ to its content.
 """
 
 # %%
-import svgwriter as svg
 from animations import press
 from components import FONTS, LAYOUTS, SHAPES, SHELLS, display, key, keypad, shell
+
+import svgwriter as svg
 
 PALETTES = {"tangerine": "#f97316", "indigo": "#4f46e5", "teal": "#0d9488", "rose": "#e11d48",
             "graphite": "#3f3f46"}

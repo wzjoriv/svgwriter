@@ -6,9 +6,10 @@ text, and every effect animates with SMIL.
 """
 
 # %%
-import svgwriter as svg
 from animations import twinkle
 from components import card
+
+import svgwriter as svg
 
 LINES = (
     "...into the cold night, and Smoke curled around",

@@ -6,9 +6,10 @@ An adjustable playing card. `@svg.widgets.controls` declares a control per param
 """
 
 # %%
-import svgwriter as svg
 from animations import deal
 from components import PIP_COLUMNS, corner_index, court, pips
+
+import svgwriter as svg
 
 RANKS = ["A", *PIP_COLUMNS, "J", "Q", "K"]
 SUITS = {"♠": "foreground", "♥": "error", "♦": "error", "♣": "foreground"}
