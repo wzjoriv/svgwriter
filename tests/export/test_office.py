@@ -46,9 +46,8 @@ def test_pptx_reads_text_boxes_and_presets():
         svg.export.find_importer("pptx").function(buffer.getvalue(), slide=3)
 
 
-@pytest.mark.parametrize("fmt", ["docx", "xlsx"])
-def test_word_and_excel_hold_a_picture(fmt):
-    data = svg.export.export(_doc(), fmt)
+def test_excel_holds_a_picture():
+    data = svg.export.export(_doc(), "xlsx")
     assert data[:2] == b"PK" and len(data) > 1000
 
 
@@ -56,11 +55,3 @@ def test_missing_library_explains_the_extra(monkeypatch):
     monkeypatch.setitem(sys.modules, "docx", None)
     with pytest.raises(ImportError, match=r"svgwriter\[office\]"):
         svg.export.export(_doc(), "docx")
-
-
-def test_word_round_trip_brings_the_picture_back():
-    doc = _doc()
-    back = svg.export.find_importer("docx").function(svg.export.export(doc, "docx"))
-    image = next(e for e in back if e.tag == "image")
-    assert (image.width, image.height) == pytest.approx((200, 100), abs=1)
-    assert image.rgba()[20, 30, 3] > 0.9

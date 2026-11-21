@@ -92,7 +92,7 @@ def stack(blocks: Iterable[Line | Figure], gap: float = 0.0) -> Group:
     blocks : iterable of Line or Figure
         The flow, in reading order. Blank lines advance without drawing.
     gap : float, optional
-        Space added after each figure, in user units. Defaults to 0.
+        Space left above each figure, in user units. Defaults to 0.
 
     Returns
     -------
@@ -112,8 +112,9 @@ def stack(blocks: Iterable[Line | Figure], gap: float = 0.0) -> Group:
     y = 0.0
     for block in blocks:
         if isinstance(block, Figure):
+            y += gap
             group.add(block.make(y))
-            y += block.height + gap
+            y += block.height
             continue
         y += block.size * LINE_HEIGHT
         if any(str(getattr(run, "text_content", run)).strip() for run in block.runs):
