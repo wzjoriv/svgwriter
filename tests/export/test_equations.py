@@ -7,7 +7,7 @@ from lxml import etree
 import svgwriter as svg
 
 pytest.importorskip("latex2mathml")
-from svgwriter.export._office._omml import latex_to_omml  # noqa: E402
+from svgwriter.formats.export._office._omml import latex_to_omml  # noqa: E402
 
 M = "{http://schemas.openxmlformats.org/officeDocument/2006/math}"
 ORDER = {

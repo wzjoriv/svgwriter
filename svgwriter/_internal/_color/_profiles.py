@@ -10,7 +10,7 @@ from .._constants import BASE64_SUFFIX, DATA_URI
 from ._icc_constants import AUTO_PROFILE, COLOR_PROFILE, ICC_COLOR_RE, ICC_PAINTS, SRGB_PROFILE
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
+    from ...model.elements.core import Element
 
 __all__ = ["ProfileRef", "href_bytes", "profile_table", "resolve_profiles"]
 
@@ -111,7 +111,7 @@ def _lookup(table: dict[str, ProfileRef], name: str) -> ProfileRef | None:
 
 
 def _converted(text: str, table: dict[str, ProfileRef]) -> str | None:
-    from ...color.color import Color
+    from ...model.color.color import Color
     from ._icc import color_to_srgb, load_profile
 
     match = ICC_COLOR_RE.match(text)
@@ -132,8 +132,8 @@ def _converted(text: str, table: dict[str, ProfileRef]) -> str | None:
 
 
 def _profiled_image(image: Element, table: dict[str, ProfileRef]) -> Any:
-    from ...attributes.cascade import computed
-    from ...elements.structure import Pixels
+    from ...model.attributes.cascade import computed
+    from ...model.elements.structure import Pixels
 
     setting = str(computed(image, COLOR_PROFILE, AUTO_PROFILE, []) or AUTO_PROFILE).strip()
     href = image.attributes.get("xlink:href")
@@ -178,7 +178,7 @@ def resolve_profiles(root: Element) -> None:
     >>> str(rect.get("fill"))
     'red'
     """
-    from ...elements.structure import Image
+    from ...model.elements.structure import Image
 
     table = profile_table(root)
     for element in root.iter():

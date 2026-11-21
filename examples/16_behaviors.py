@@ -7,7 +7,7 @@ the video.
 """
 
 import svgwriter as svg
-from svgwriter.video.behaviors import wiggle
+from svgwriter.motion.video.behaviors import wiggle
 
 # %% [markdown]
 # A behaviour is a function of the element and the time. `@svg.preset.behavior` checks its shape and

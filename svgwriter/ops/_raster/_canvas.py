@@ -13,7 +13,7 @@ import skia
 from .._constants import CHANNEL_MAX, PIXEL_EPSILON
 
 if TYPE_CHECKING:
-    from ...color.color import ColorLike
+    from ...model.color.color import ColorLike
 
 __all__ = ["make_surface", "paint_svg", "read_pixels"]
 
@@ -25,7 +25,7 @@ def _pixels_for(extent: float) -> int:
 
 def make_surface(width: float, height: float, scale: float, background: ColorLike | None) -> skia.Surface:
     """A raster surface of the scaled size, cleared to *background* and scaled to user units."""
-    from ...color.color import as_color
+    from ...model.color.color import as_color
 
     surface = skia.Surface(_pixels_for(width * scale), _pixels_for(height * scale))
     if background is not None:

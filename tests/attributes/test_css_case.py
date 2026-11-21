@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 import svgwriter as svg
-from svgwriter.attributes.cascade import resolve_styles
+from svgwriter.model.attributes.cascade import resolve_styles
 
 
 @pytest.mark.parametrize("css, expected", [("stroke-width: 20PX", "20px"), ("stroke-width: 1.5Em", "1.5em"),

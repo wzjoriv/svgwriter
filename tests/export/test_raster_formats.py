@@ -11,7 +11,7 @@ import svgwriter as svg
 from svgwriter._internal._codecs._encoders import encode_bmp
 from svgwriter._internal._codecs._gif import encode_gif
 from svgwriter._internal._codecs._pnm import decode_pnm, encode_pnm
-from svgwriter.elements.structure import Image, Pixels
+from svgwriter.model.elements.structure import Image, Pixels
 
 
 def _noise(rows: int = 40, columns: int = 50, seed: int = 0) -> np.ndarray:
@@ -251,7 +251,7 @@ def test_gif_exporter_keeps_transparent_background() -> None:
 
 def test_animated_documents_export_animated_gifs():
     import svgwriter as svg
-    from svgwriter.elements.structure import Pixels
+    from svgwriter.model.elements.structure import Pixels
 
     doc = svg.Document(40, 20)
     ball = doc.circle(4, 10, 4, fill="red")
@@ -266,7 +266,7 @@ def test_time_option_picks_the_frame_for_still_formats():
     import numpy as np
 
     import svgwriter as svg
-    from svgwriter.elements.structure import Pixels
+    from svgwriter.model.elements.structure import Pixels
 
     doc = svg.Document(40, 20)
     ball = doc.circle(5, 10, 4, fill="red")

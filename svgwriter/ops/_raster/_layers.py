@@ -17,9 +17,9 @@ from ..._internal._tree import clip_outline
 from .._constants import CHANNEL_MAX, CONCEALED
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
-    from ...elements.structure import Image
-    from ...transform.matrix import Matrix
+    from ...model.elements.core import Element
+    from ...model.elements.structure import Image
+    from ...model.transform.matrix import Matrix
 
 __all__ = ["concealed", "draw_image", "hidden", "layers", "referenced", "skia_matrix"]
 
@@ -59,7 +59,7 @@ def layers(root: Element, atomic: Callable[[Element], bool] | None = None,
     >>> [(len(run), image) for run, image in layers(doc.root)]
     [(1, None)]
     """
-    from ...elements import Image, Text
+    from ...model.elements import Image, Text
 
     result: list[tuple[list[Element], Element | None]] = []
     run: list[Element] = []
@@ -196,7 +196,7 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
     --------
     layers : Decide which images are drawn separately.
     """
-    from ...elements import Transformable
+    from ...model.elements import Transformable
     from .._filters import paint_mask
     from .._skia import to_skia
 

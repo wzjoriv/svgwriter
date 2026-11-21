@@ -11,10 +11,10 @@ from typing import TYPE_CHECKING, Any
 from .._constants import DEFAULT_SIZE, JOIN_TOLERANCE
 
 if TYPE_CHECKING:
-    from ...color.color import Color
     from ...document import Document
-    from ...elements.core import Element
-    from ...transform.matrix import Matrix
+    from ...model.color.color import Color
+    from ...model.elements.core import Element
+    from ...model.transform.matrix import Matrix
 
 __all__ = ["TextRun", "text_runs"]
 
@@ -58,7 +58,7 @@ class TextRun:
 
 
 def _font(source: Element, rules: list[Any]) -> tuple[str, float, bool, bool]:
-    from ...attributes.cascade import computed
+    from ...model.attributes.cascade import computed
     from .._typography._fonts import font_size, font_weight
 
     family = str(computed(source, "font-family", "sans-serif", rules))
@@ -92,8 +92,8 @@ def text_runs(document: Document, *, color_glyphs: bool = True) -> list[TextRun]
     >>> [(run.text, run.size, round(run.matrix.e, 1)) for run in text_runs(doc)]
     [('Hello', 20.0, 10.0)]
     """
-    from ...attributes.rules import rules_of
-    from ...elements import Text
+    from ...model.attributes.rules import rules_of
+    from ...model.elements import Text
     from ...ops.render import page_size
     from .._render._layers import ancestry
     from .._render._rendering import view_matrix
@@ -139,7 +139,7 @@ def _continues(previous: Any, box: Any) -> bool:
 
 
 def _run(boxes: list[Any], page: Matrix, opacity: float, rules: list[Any], font: Any, paint: Any, number: Any) -> TextRun:
-    from ...transform.matrix import Matrix
+    from ...model.transform.matrix import Matrix
 
     first, last = boxes[0], boxes[-1]
     family, size, bold, italic = font(first.source, rules)

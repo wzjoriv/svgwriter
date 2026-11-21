@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter.elements.structure import Pixels
+from svgwriter.model.elements.structure import Pixels
 
 
 class TestConstruction:

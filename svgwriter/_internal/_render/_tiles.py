@@ -18,15 +18,15 @@ from .._constants import (
 from .._tree import resolve
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
-    from ...pathdata.data import BBox
+    from ...model.elements.core import Element
+    from ...model.pathdata.data import BBox
 
 __all__ = ["user_space_patterns"]
 
 
 def _tile(pattern: Element, box: BBox | None, extent: tuple[float, float]) -> list[float] | None:
     """``x``, ``y``, ``width``, ``height`` of the tile in user units, or None without a box to scale by."""
-    from ...attributes.length import Length, Unit
+    from ...model.attributes.length import Length, Unit
 
     bounding = str(pattern.get("patternUnits", OBJECT_BOUNDING_BOX)) == OBJECT_BOUNDING_BOX
     if bounding and box is None:
@@ -46,7 +46,7 @@ def _tile(pattern: Element, box: BBox | None, extent: tuple[float, float]) -> li
 
 
 def _rewrite(pattern: Element, tile: list[float], box: BBox | None) -> None:
-    from ...elements import Group
+    from ...model.elements import Group
 
     x, y, width, height = tile
     content_box = str(pattern.get("patternContentUnits", USER_SPACE)) == OBJECT_BOUNDING_BOX

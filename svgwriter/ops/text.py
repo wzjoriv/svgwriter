@@ -14,14 +14,14 @@ from .._internal._constants import ANCHOR_SHIFT
 from .._internal._typography._font_match import FontStyle, describe
 from .._internal._typography._font_names import family_names
 from .._internal._typography._fonts import font_for, registered_typefaces, resolve_font
-from ..pathdata.data import PathData
-from ..transform.matrix import Matrix
+from ..model.pathdata.data import PathData
+from ..model.transform.matrix import Matrix
 from ._constants import DEFAULT_FAMILY, DEFAULT_FONT_SIZE, GLYPH_CACHE
 from ._skia import from_skia
 from ._text import GlyphBox, layout_glyphs
 
 if TYPE_CHECKING:
-    from ..elements.shapes import Path
+    from ..model.elements.shapes import Path
 
 __all__ = [
     "Anchor", "FontWeight", "GlyphBox", "glyph_shape", "layout_glyphs", "register_font", "text_outline", "text_to_path",
@@ -177,7 +177,7 @@ def text_width(
 
 def _laid_out(text: str, font_family: str, size: float, weight: FontWeight, italic: bool) -> list[Any]:
     """Glyph boxes from the full text engine (per-character font fallback and shaping included)."""
-    from ..elements.text import Text
+    from ..model.elements.text import Text
 
     element = Text(text, x=0, y=0, font_family=font_family, font_size=size, xml_space="preserve",
                    font_weight=None if weight == "normal" else weight, font_style="italic" if italic else None)
@@ -290,7 +290,7 @@ def text_to_path(
     >>> text_to_path("Hi", size=24, fill="navy").tag
     'path'
     """
-    from ..elements.shapes import Path
+    from ..model.elements.shapes import Path
 
     data = text_outline(text, font_family, size, x=x, y=y, anchor=anchor, weight=weight, italic=italic)
     return Path(data, **kwargs)

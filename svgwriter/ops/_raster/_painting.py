@@ -10,14 +10,14 @@ from typing import TYPE_CHECKING, Any
 import skia
 
 from ..._internal._render._rendering import renderable_copy
-from ...transform.matrix import IDENTITY, Matrix
+from ...model.transform.matrix import IDENTITY, Matrix
 from ._canvas import make_surface, paint_svg, read_pixels
 from ._layers import concealed, draw_image, hidden, layers
 
 if TYPE_CHECKING:
-    from ...attributes.viewbox import ViewBox
-    from ...color.color import ColorLike
-    from ...elements.core import Element
+    from ...model.attributes.viewbox import ViewBox
+    from ...model.color.color import ColorLike
+    from ...model.elements.core import Element
 
 __all__ = ["paint_tree", "render_tree"]
 
@@ -135,8 +135,8 @@ def paint_tree(
     >>> surface = skia.Surface(4, 2)
     >>> paint_tree(surface.getCanvas(), doc.root, lambda text: text, 4, 2, viewport=True)
     """
-    from ...elements.text import Text
-    from ...io.writer import to_string
+    from ...formats.io.writer import to_string
+    from ...model.elements.text import Text
     from .._filters import draw_filtered, needs_engine
     from ._native_text import draw_text
     from ._native_text import native_text as drawable

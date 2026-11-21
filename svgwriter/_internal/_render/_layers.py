@@ -10,11 +10,11 @@ from typing import TYPE_CHECKING
 from .._constants import CONTAINERS, NOT_RENDERED, VIEWPORT_FALLBACK
 
 if TYPE_CHECKING:
-    from ...attributes.viewbox import PreserveAspectRatio
-    from ...elements.core import Element
-    from ...elements.structure import Image
-    from ...pathdata.data import BBox
-    from ...transform.matrix import Matrix
+    from ...model.attributes.viewbox import PreserveAspectRatio
+    from ...model.elements.core import Element
+    from ...model.elements.structure import Image
+    from ...model.pathdata.data import BBox
+    from ...model.transform.matrix import Matrix
 
 __all__ = ["ancestry", "drawable_order", "fit_box", "image_matrix", "image_viewport", "pixel_box", "viewport_extent"]
 
@@ -91,8 +91,8 @@ def viewport_extent(element: Element) -> tuple[float, float]:
     >>> viewport_extent(doc.rect(0, 0, 1, 1))
     (40.0, 30.0)
     """
-    from ...attributes.length import Length, Unit
-    from ...attributes.viewbox import ViewBox
+    from ...model.attributes.length import Length, Unit
+    from ...model.attributes.viewbox import ViewBox
 
     node = element.parent
     while node is not None:
@@ -109,15 +109,15 @@ def viewport_extent(element: Element) -> tuple[float, float]:
 
 
 def _number(value: object, default: float = 0.0) -> float:
-    from ...attributes.length import Length
+    from ...model.attributes.length import Length
 
     return default if value is None else Length.parse(value).to_user_units()
 
 
 def fit_box(box_w: float, box_h: float, w: float, h: float, ratio: PreserveAspectRatio) -> Matrix:
     """Map a *w* by *h* area into a *box_w* by *box_h* box as ``preserveAspectRatio`` *ratio* says."""
-    from ...attributes.viewbox import Align, MeetOrSlice
-    from ...transform.matrix import Matrix
+    from ...model.attributes.viewbox import Align, MeetOrSlice
+    from ...model.transform.matrix import Matrix
 
     sx, sy = box_w / w, box_h / h
     if ratio.align is Align.NONE:
@@ -154,8 +154,8 @@ def image_matrix(image: Image) -> Matrix:
     >>> (image_matrix(picture).e, image_matrix(picture).f)
     (10.0, 20.0)
     """
-    from ...attributes.viewbox import PreserveAspectRatio
-    from ...transform.matrix import Matrix
+    from ...model.attributes.viewbox import PreserveAspectRatio
+    from ...model.transform.matrix import Matrix
 
     rows, columns = image.shape
     ratio_text = image.get("preserveAspectRatio")
@@ -186,7 +186,7 @@ def image_viewport(image: Image) -> BBox | None:
     >>> image_viewport(svg.Image("a.png", 1, 2, 3, 4))
     BBox(x=1.0, y=2.0, width=3.0, height=4.0)
     """
-    from ...pathdata.data import BBox
+    from ...model.pathdata.data import BBox
 
     if image.get("width") is None or image.get("height") is None:
         return None
@@ -196,8 +196,8 @@ def image_viewport(image: Image) -> BBox | None:
 
 def ancestry(element: Element, root: Element) -> tuple[Matrix, float]:
     """The transform and opacity *element* collects from itself up to *root* (an outer ``<svg>`` root excluded)."""
-    from ...elements import Transformable
-    from ...transform.matrix import IDENTITY
+    from ...model.elements import Transformable
+    from ...model.transform.matrix import IDENTITY
 
     matrix, opacity = IDENTITY, 1.0
     node: Element | None = element
@@ -237,7 +237,7 @@ def pixel_box(image: Image, matrix: Matrix) -> BBox:
     >>> pixel_box(picture, image_matrix(picture))
     BBox(x=10.0, y=20.0, width=8.0, height=4.0)
     """
-    from ...pathdata.data import BBox
+    from ...model.pathdata.data import BBox
 
     rows, columns = image.shape
     corners = [matrix.apply(x, y) for x in (0, columns) for y in (0, rows)]

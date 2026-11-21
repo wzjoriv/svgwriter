@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from svgwriter.color._spaces import SPACES, convert, lab_to_srgb, oklab_to_srgb, srgb_to_oklab
+from svgwriter.model.color._spaces import SPACES, convert, lab_to_srgb, oklab_to_srgb, srgb_to_oklab
 
 SAMPLE = (0.3, 0.6, 0.9)
 

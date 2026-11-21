@@ -22,7 +22,7 @@ from .._constants import (
 )
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
+    from ...model.elements.core import Element
 
 __all__ = ["paint_mask", "primitive_filter"]
 
@@ -79,7 +79,7 @@ def _linear_transfer(primitive: Element) -> list[float] | None:
 
 
 def _flood(primitive: Element) -> Any:
-    from ...color.color import as_color
+    from ...model.color.color import as_color
 
     color = as_color(primitive.get("flood-color", "black")).with_alpha(float(primitive.get("flood-opacity", 1)))
     red, green, blue, alpha = color.uint8
@@ -166,7 +166,7 @@ def primitive_filter(primitive: Element, first: Any, second: Any, scale: tuple[f
 
 def paint_mask(canvas: skia.Canvas, mask: Element, paint_svg: Callable[[skia.Canvas, str, float, float], None]) -> None:
     """Draw *mask*'s content as a luminance layer that keeps only the masked part of what is under it."""
-    from ...io.writer import to_string
+    from ...formats.io.writer import to_string
 
     body = "".join(to_string(child, xml_declaration=False, pretty=False) for child in mask)
     text = (f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '

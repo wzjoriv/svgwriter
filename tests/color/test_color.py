@@ -3,8 +3,8 @@ from __future__ import annotations
 import pytest
 
 import svgwriter as svg
-from svgwriter.attributes import FuncIRI
-from svgwriter.color import (
+from svgwriter.model.attributes import FuncIRI
+from svgwriter.model.color import (
     NAMED_COLORS,
     Color,
     PaintKeyword,

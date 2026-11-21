@@ -17,7 +17,7 @@ from .._constants import (
 )
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
+    from ...model.elements.core import Element
 
 __all__ = ["linear_rgb_stops"]
 
@@ -62,9 +62,9 @@ def linear_rgb_stops(root: Element) -> None:
     >>> len(list(doc.get_element_by_id("g").iter("stop")))
     17
     """
-    from ...attributes.cascade import computed
-    from ...color.color import Color, as_color
-    from ...elements.paint import Stop
+    from ...model.attributes.cascade import computed
+    from ...model.color.color import Color, as_color
+    from ...model.elements.paint import Stop
 
     for gradient in [e for e in root.iter() if e.tag in ("linearGradient", "radialGradient")]:
         if str(computed(gradient, "color-interpolation", "sRGB", [])) != LINEAR_RGB:

@@ -16,10 +16,10 @@ from ._patterns import _ancestry, _expand_patterns
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from ...color.color import Color
     from ...document import Document
-    from ...elements.core import Element
-    from ...pathdata.data import PathData
+    from ...model.color.color import Color
+    from ...model.elements.core import Element
+    from ...model.pathdata.data import PathData
     from ._paints import Shading
 
 __all__ = ["Item", "Point", "Scene", "flatten", "polylines", "to_cubic"]
@@ -162,8 +162,8 @@ def to_cubic(data: PathData) -> list[tuple[str, tuple[float, ...]]]:
     >>> to_cubic(svg.PathData("M0 0 L10 0 Z"))
     [('M', (0.0, 0.0)), ('L', (10.0, 0.0)), ('Z', ())]
     """
+    from ...model.pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
     from ...ops import from_skia, to_skia
-    from ...pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
 
     ops: list[tuple[str, tuple[float, ...]]] = []
     current = (0.0, 0.0)
@@ -188,8 +188,8 @@ def to_cubic(data: PathData) -> list[tuple[str, tuple[float, ...]]]:
 
 
 def _number(element: Element, name: str, default: float, rules: list) -> float:
-    from ...attributes.cascade import computed
-    from ...attributes.length import Length
+    from ...model.attributes.cascade import computed
+    from ...model.attributes.length import Length
 
     value = computed(element, name, default, rules)
     try:
@@ -199,7 +199,7 @@ def _number(element: Element, name: str, default: float, rules: list) -> float:
 
 
 def _hidden(leaf: Element, root: Element) -> bool:
-    from ...attributes.cascade import computed
+    from ...model.attributes.cascade import computed
 
     node: Element | None = leaf
     while node is not None and node is not root:
@@ -271,9 +271,9 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
     >>> len(scene.items), scene.skipped
     (1, [])
     """
-    from ...attributes.cascade import computed
-    from ...attributes.rules import rules_of
-    from ...elements import Image, PathOperand
+    from ...model.attributes.cascade import computed
+    from ...model.attributes.rules import rules_of
+    from ...model.elements import Image, PathOperand
     from ...ops.render import page_size
     from .._render._layers import ancestry, drawable_order, image_matrix
     from .._render._rendering import renderable_copy, view_matrix

@@ -93,10 +93,10 @@ def test_internal_imports_no_public_package_at_load() -> None:
 
 
 def test_rule_examples() -> None:
-    assert _violates("svgwriter.export._flatten", "svgwriter.ops._renderable.Renderable")
-    assert not _violates("svgwriter.export._flatten", "svgwriter._internal._drawable.Drawable")
+    assert _violates("svgwriter.formats.export._flatten", "svgwriter.ops._renderable.Renderable")
+    assert not _violates("svgwriter.formats.export._flatten", "svgwriter._internal._drawable.Drawable")
     assert not _violates("svgwriter.ops.render", "svgwriter.ops._fonts.load")
-    assert _violates("svgwriter.export._flatten", "svgwriter.ops.render._view")
+    assert _violates("svgwriter.formats.export._flatten", "svgwriter.ops.render._view")
     assert not _violates("svgwriter.ops.text", "svgwriter.ops.render._view")
 
 
@@ -110,4 +110,5 @@ def test_all_names_exist(name: str) -> None:
         assert hasattr(module, exported), f"{name}.__all__ lists missing {exported!r}"
         value = getattr(module, exported)
         if isinstance(value, ModuleType):
-            assert value.__name__ == f"{name}.{exported}", f"{name}.{exported} is {value.__name__}"
+            owner, _, leaf = value.__name__.rpartition(".")
+            assert leaf == exported and (owner == name or owner.startswith(f"{name}.")), f"{name}.{exported} is {value.__name__}"

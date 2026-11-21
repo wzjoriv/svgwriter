@@ -7,7 +7,7 @@ import time
 import pytest
 
 import svgwriter as svg
-from svgwriter.widgets import Interactive, Recorder, Slider
+from svgwriter.tools.widgets import Interactive, Recorder, Slider
 
 
 def badge(radius=10, color="#0ea5e9", label="Hi"):
@@ -131,7 +131,7 @@ def test_missing_ipywidgets(monkeypatch) -> None:
 
 def test_notebook_backend_widgets() -> None:
     pytest.importorskip("ipywidgets")
-    from svgwriter.widgets import _ipywidgets
+    from svgwriter.tools.widgets import _ipywidgets
 
     panel = _ipywidgets.NotebookBackend()
     controls = {

@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter.elements.structure import Pixels
+from svgwriter.model.elements.structure import Pixels
 from svgwriter.ops import composite_rgba, resolve_operator
 
 RED = np.array([1.0, 0, 0, 0.5])
@@ -112,7 +112,7 @@ def test_pixels_composite_with_elements_and_documents() -> None:
     import numpy as np
 
     import svgwriter as svg
-    from svgwriter.elements.structure import Pixels
+    from svgwriter.model.elements.structure import Pixels
 
     photo = Pixels.from_array(np.full((10, 10, 3), 0.5))
     spot = svg.circle(5, 5, 3, fill="red")

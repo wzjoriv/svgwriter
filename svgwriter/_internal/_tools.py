@@ -23,7 +23,7 @@ class DiagramToolError(RuntimeError):
 
     See Also
     --------
-    svgwriter.export._diagram.read_dot, svgwriter.export._diagram.read_mermaid : The importers that run the tools.
+    svgwriter.formats.export._diagram.read_dot, svgwriter.formats.export._diagram.read_mermaid : The importers that run the tools.
 
     Examples
     --------

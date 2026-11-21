@@ -8,10 +8,10 @@ import pytest
 from click.testing import CliRunner
 
 import svgwriter as svg
-from svgwriter.cli import _project as project_commands
-from svgwriter.cli import app, main
-from svgwriter.cli._constants import CUSTOM_SIZE, KEEP_CHOICE
-from svgwriter.cli._prompts import parse_size
+from svgwriter.tools.cli import _project as project_commands
+from svgwriter.tools.cli import app, main
+from svgwriter.tools.cli._constants import CUSTOM_SIZE, KEEP_CHOICE
+from svgwriter.tools.cli._prompts import parse_size
 
 WIDTH = "Width (a number or a length such as 50cm)"
 

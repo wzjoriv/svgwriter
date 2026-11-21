@@ -6,7 +6,7 @@ import pytest
 from click.testing import CliRunner
 
 import svgwriter as svg
-from svgwriter.cli import app, main
+from svgwriter.tools.cli import app, main
 
 
 @pytest.fixture

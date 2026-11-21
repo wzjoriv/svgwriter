@@ -15,9 +15,9 @@ from .._constants import CHANNEL_MAX, EMOJI_CELL_LEVELS, EMOJI_PIXELS_PER_EM
 
 if TYPE_CHECKING:
     from ...document import Document
-    from ...elements.structure import Pixels
+    from ...model.elements.structure import Pixels
+    from ...model.transform.matrix import Matrix
     from ...ops.text import GlyphBox
-    from ...transform.matrix import Matrix
     from .._flat._flatten import Item
     from ._shaping import ColorGlyphs
 
@@ -90,8 +90,8 @@ def render_color_glyphs(color: ColorGlyphs, alpha: float = 1.0,
     >>> all(render_color_glyphs(b.color)[0].rgba().shape[0] > 0 for b in boxes)
     True
     """
-    from ...elements.structure import Pixels
-    from ...transform.matrix import Matrix
+    from ...model.elements.structure import Pixels
+    from ...model.transform.matrix import Matrix
 
     bounds = color.font.getBounds(list(color.glyphs))
     left = min(rect.left() + dx for rect, (dx, _) in zip(bounds, color.offsets, strict=True))
@@ -133,10 +133,10 @@ def color_glyph_boxes(document: Document) -> Iterator[tuple[GlyphBox, Matrix, fl
     >>> list(color_glyph_boxes(doc))
     []
     """
-    from ...attributes.rules import rules_of
-    from ...elements import Text
+    from ...model.attributes.rules import rules_of
+    from ...model.elements import Text
+    from ...model.transform.matrix import Matrix
     from ...ops.render import page_size
-    from ...transform.matrix import Matrix
     from .._flat._flatten import _hidden, _number
     from .._flat._paints import _paint
     from .._render._layers import ancestry, drawable_order
@@ -218,8 +218,8 @@ def color_glyph_cells(document: Document, pixels_per_em: float) -> list[Item]:
     >>> color_glyph_cells(svg.Document(10, 10), 24)
     []
     """
-    from ...color.color import Color
-    from ...pathdata import PathBuilder
+    from ...model.color.color import Color
+    from ...model.pathdata import PathBuilder
     from .._flat._flatten import Item
 
     items: list[Item] = []

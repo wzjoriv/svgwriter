@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter.video import FFmpegNotFoundError, Scene
+from svgwriter.motion.video import FFmpegNotFoundError, Scene
 
 
 class Orbit(svg.Scene):

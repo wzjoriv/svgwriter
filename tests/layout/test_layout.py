@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter.layout._tracks import auto_place, parse_tracks, size_tracks
+from svgwriter.model.layout._tracks import auto_place, parse_tracks, size_tracks
 
 
 def boxes(*sizes):

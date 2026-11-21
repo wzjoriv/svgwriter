@@ -7,9 +7,9 @@ import zipfile
 import pytest
 
 import svgwriter as svg
-from svgwriter.export._office._anim_smil import Effect, smil_effect
-from svgwriter.export._office._pptx_anim import slide_animations
-from svgwriter.export._office._pptx_timing import timing_xml
+from svgwriter.formats.export._office._anim_smil import Effect, smil_effect
+from svgwriter.formats.export._office._pptx_anim import slide_animations
+from svgwriter.formats.export._office._pptx_timing import timing_xml
 
 pytest.importorskip("pptx")
 

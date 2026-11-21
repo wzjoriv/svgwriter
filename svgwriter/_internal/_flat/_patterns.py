@@ -8,16 +8,16 @@ import math
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
-    from ...pathdata.data import PathData
-    from ...transform.matrix import Matrix
+    from ...model.elements.core import Element
+    from ...model.pathdata.data import PathData
+    from ...model.transform.matrix import Matrix
 
 __all__: list[str] = []
 
 
 def _ancestry(leaf: Element, root: Element) -> tuple[Matrix, float]:
-    from ...elements import Transformable
-    from ...transform.matrix import IDENTITY
+    from ...model.elements import Transformable
+    from ...model.transform.matrix import IDENTITY
 
     matrix, opacity = IDENTITY, 1.0
     node = leaf.parent
@@ -31,7 +31,7 @@ def _ancestry(leaf: Element, root: Element) -> tuple[Matrix, float]:
 
 def _expand_patterns(root: Element) -> None:
     """Replace pattern-filled shapes by their tiles cut to the outline, so vector formats keep patterns."""
-    from ...elements import Group, PathOperand, Pattern
+    from ...model.elements import Group, PathOperand, Pattern
     from .._render._layers import drawable_order
     from .._tree import replace_in_parent
 
@@ -58,9 +58,9 @@ def _expand_patterns(root: Element) -> None:
 
 def _cut_tiles(pattern: Any, box: Any, outline: PathData) -> list[Any]:
     """Each shape of each tile as a ``<path>`` intersected with *outline* (pattern transform baked in)."""
-    from ...elements import PathOperand
+    from ...model.elements import PathOperand
+    from ...model.transform.matrix import Matrix
     from ...ops.boolean import intersection
-    from ...transform.matrix import Matrix
 
     tile = pattern.tile(box)
     inverse = pattern.t.inverse()

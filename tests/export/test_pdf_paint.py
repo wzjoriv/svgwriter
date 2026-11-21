@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter.export import find_importer
+from svgwriter.formats.export import find_importer
 
 
 def _round_trip(doc):

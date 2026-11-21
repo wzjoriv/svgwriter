@@ -9,8 +9,8 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter.video import resolve_renderer
-from svgwriter.video.behaviors import breathe, wiggle
+from svgwriter.motion.video import resolve_renderer
+from svgwriter.motion.video.behaviors import breathe, wiggle
 
 PIXEL_TOLERANCE = 0.002
 

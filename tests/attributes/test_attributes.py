@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from svgwriter.attributes import (
+from svgwriter.model.attributes import (
     IRI,
     Align,
     Attr,
@@ -22,7 +22,7 @@ from svgwriter.attributes import (
     py_name,
     svg_name,
 )
-from svgwriter.attributes.names import CAMEL_CASE_ATTRIBUTES
+from svgwriter.model.attributes.names import CAMEL_CASE_ATTRIBUTES
 
 
 @pytest.mark.parametrize(

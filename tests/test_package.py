@@ -25,14 +25,14 @@ def test_metadata() -> None:
 
 
 def test_all_names_resolve() -> None:
-    for module_name in ("svgwriter", "svgwriter.elements", "svgwriter.io", "svgwriter.attributes", "svgwriter.pathdata", "svgwriter.export", "svgwriter.transform", "svgwriter.color", "svgwriter.builder", "svgwriter.theme", "svgwriter.elements.filters", "svgwriter.elements.structure", "svgwriter.elements.shapes", "svgwriter.aliases", "svgwriter.ops", "svgwriter.video", "svgwriter.cli", "svgwriter.preset", "svgwriter.project", "svgwriter.widgets"):
+    for module_name in ("svgwriter", "svgwriter.model.elements", "svgwriter.formats.io", "svgwriter.model.attributes", "svgwriter.model.pathdata", "svgwriter.formats.export", "svgwriter.model.transform", "svgwriter.model.color", "svgwriter.catalog.builder", "svgwriter.model.theme", "svgwriter.model.elements.filters", "svgwriter.model.elements.structure", "svgwriter.model.elements.shapes", "svgwriter.aliases", "svgwriter.ops", "svgwriter.motion.video", "svgwriter.tools.cli", "svgwriter.catalog.preset", "svgwriter.tools.project", "svgwriter.tools.widgets"):
         module = importlib.import_module(module_name)
         for name in module.__all__:
             assert getattr(module, name) is not None, f"{module_name}.{name}"
 
 
 def test_lazy_module_getattr() -> None:
-    import svgwriter.io as io_pkg
+    import svgwriter.formats.io as io_pkg
 
     assert "parse" in dir(svg)
     assert callable(svg.parse) and callable(io_pkg.parse_file)

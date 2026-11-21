@@ -5,7 +5,7 @@ import threading
 import pytest
 
 import svgwriter as svg
-from svgwriter.theme import Fonts, Palette, ThemeError
+from svgwriter.model.theme import Fonts, Palette, ThemeError
 
 BUILTINS = ("light", "dark", "paper", "print", "mono", "noir", "brutalist", "dracula", "alucard", "one-dark",
             "one-light")

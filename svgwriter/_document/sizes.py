@@ -7,7 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .._internal._presets import SIZES
-from ..attributes.length import Length, LengthLike, Unit
+from ..model.attributes.length import Length, LengthLike, Unit
 from ._constants import BUILTIN_SIZES, IDENTIFIER_SEPARATORS, LANDSCAPE_SUFFIX, PORTRAIT_SUFFIX
 
 __all__ = ["PageSize", "page_size", "size"]
@@ -26,7 +26,7 @@ class PageSize:
     """A canvas size: a width and a height counted in one unit.
 
     Look the built-in ones up as attributes of :data:`svgwriter.size` (``svg.size.a4``), add your own
-    with :func:`svgwriter.preset.size`, and pass either to ``Document(size=...)``, ``Scene.size`` or a
+    with :func:`svgwriter.catalog.preset.size`, and pass either to ``Document(size=...)``, ``Scene.size`` or a
     project's ``size``.
 
     Parameters
@@ -39,7 +39,7 @@ class PageSize:
     See Also
     --------
     svgwriter.size : The built-in sizes by name.
-    svgwriter.preset.size : Register a size under a name.
+    svgwriter.catalog.preset.size : Register a size under a name.
 
     Examples
     --------
@@ -150,7 +150,7 @@ class _Sizes:
 size = _Sizes()
 """The registered sizes as attributes, names turned into identifiers (``"slide-16:9"`` is ``size.slide_16_9``).
 
-Every attribute is a :class:`PageSize`; sizes added with :func:`svgwriter.preset.size` appear here too.
+Every attribute is a :class:`PageSize`; sizes added with :func:`svgwriter.catalog.preset.size` appear here too.
 """
 
 
@@ -176,7 +176,7 @@ def page_size(size: str | PageSize) -> tuple[Length, Length]:
 
     See Also
     --------
-    svgwriter.preset.size : Add a size.
+    svgwriter.catalog.preset.size : Add a size.
 
     Examples
     --------

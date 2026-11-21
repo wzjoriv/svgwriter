@@ -13,8 +13,8 @@ from pathlib import Path
 import numpy as np
 
 import svgwriter as svg
-from svgwriter.elements.animation import AnimationElement
-from svgwriter.elements.structure import Pixels
+from svgwriter.model.elements.animation import AnimationElement
+from svgwriter.model.elements.structure import Pixels
 from svgwriter.ops.render import render_svg
 
 OUT_OF_SCOPE_CHAPTERS = {"script": "scripting", "interact": "interactivity and events", "extend": "foreignObject",

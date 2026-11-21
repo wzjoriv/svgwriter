@@ -4,7 +4,7 @@ Command line interface: ``python -m svgwriter``.
 
 from __future__ import annotations
 
-from .cli import app, main
+from .tools.cli import app, main
 
 __all__ = ["app", "main"]
 

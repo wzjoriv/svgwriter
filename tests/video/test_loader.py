@@ -5,11 +5,11 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter.video import Scene, SceneError, load_scenes
+from svgwriter.motion.video import Scene, SceneError, load_scenes
 
 SCRIPT = '''
 import svgwriter as svg
-from svgwriter.video import Scene as Imported
+from svgwriter.motion.video import Scene as Imported
 
 class _Base(svg.Scene):
     width = height = 8

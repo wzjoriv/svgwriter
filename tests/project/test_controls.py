@@ -10,8 +10,8 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter.project._form import controls_form
-from svgwriter.project._server import LiveServer
+from svgwriter.tools.project._form import controls_form
+from svgwriter.tools.project._server import LiveServer
 
 MAIN = '''import svgwriter as svg
 

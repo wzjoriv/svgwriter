@@ -5,11 +5,11 @@ import math
 import pytest
 
 import svgwriter as svg
-from svgwriter.color import Color
-from svgwriter.pathdata import PathData
-from svgwriter.pathdata._affine import transform_arc
-from svgwriter.pathdata.commands import ArcTo
-from svgwriter.transform import Matrix, Point, Rotate, Transform
+from svgwriter.model.color import Color
+from svgwriter.model.pathdata import PathData
+from svgwriter.model.pathdata._affine import transform_arc
+from svgwriter.model.pathdata.commands import ArcTo
+from svgwriter.model.transform import Matrix, Point, Rotate, Transform
 
 
 class TestContainerOperators:

@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter.video import Video
+from svgwriter.motion.video import Video
 
 pytestmark = pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="ffmpeg not installed")
 

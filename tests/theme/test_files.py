@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter.theme import ThemeError
+from svgwriter.model.theme import ThemeError
 
 
 @pytest.mark.parametrize("name", ["light", "dark", "paper", "print", "mono"])

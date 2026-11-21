@@ -21,83 +21,54 @@ Example
 
 Sub-packages
 ------------
-elements
-    One class per SVG 1.1 element (``structure``, ``shapes``, ``text``,
-    ``fonts``, ``paint``, ``clip``, ``filters``, ``animation``).
-attributes
-    Lengths and units, ``viewBox``, ``preserveAspectRatio``, inline styles
-    and style sheets, IRI references, attribute-name mapping.
-pathdata
-    Path data: commands, parsing, serialization, transforms, arc math,
-    ``PathBuilder`` and node arrays.
-transform
-    Affine matrices and transform lists.
-color
-    Color keywords and syntaxes and the ``<paint>`` type.
-io
-    Serialization options, writers (string, file, stream, async) and the
-    parser.
-builder
-    Composite shapes (star, gear, arrow) and the ``drawing`` decorator.
-patterns, gradients, filters, markers, text_effects
-    Ready-made paints, filters, line markers and text effects (``fill=svg.patterns.stripes()``,
-    ``el.filter = svg.filters.glow()``, ``text[4:9].effect("fire")``).
-preset
-    Presets of your own by kind (``@svg.preset.animation``, ``@svg.preset.shape``, ``@svg.preset.pattern``).
-project
-    Design projects: ``svgwriter.toml``, presets, building and live preview (``Project``).
-layout
-    Stacks and grids that place their children by size (VStack, HStack, Grid).
-theme
-    Palettes, fonts and role styles applied as CSS classes (``Theme``).
-fonts
-    Fonts from drawings: glyphs, icons and kerning written as OTF, TTF, WOFF and WOFF2 (``FontBuilder``).
+model
+    The object model: ``elements``, ``attributes``, ``color``, ``pathdata``,
+    ``transform``, ``layout`` and ``theme`` (``svg.Rect``, ``svg.Theme``).
+catalog
+    Ready-made content: ``builder``, ``patterns``, ``gradients``, ``filters``,
+    ``markers``, ``text_effects``, ``preset`` and ``fonts``
+    (``fill=svg.patterns.stripes()``, ``svg.FontBuilder``).
+formats
+    Files: ``export`` (format registry by name or extension), ``io``
+    (writers and the parser) and ``inkscape``.
+motion
+    ``video``: scenes, frame rendering and encoding with ffmpeg.
+tools
+    ``cli`` (the ``python -m svgwriter`` command line), ``project`` (design
+    projects) and ``widgets`` (notebook panels and sweeps).
 ops
     Boolean operations, text outlines, measurement, rendering and image
     compositing (skia).
-export
-    Format registry by name or extension: vector (SVG, PDF, TikZ, EPS),
-    raster (PNG, JPEG, WebP, BMP, GIF, PPM, ICO, ICNS), plotter (DXF, HPGL,
-    G-code) and Excalidraw; ``svg.export.register`` adds more.
-inkscape
-    Inkscape files: layers, labels, editable stars and arcs, connectors,
-    guides and export hints.
-video
-    Frame rendering through a pluggable renderer and encoding with ffmpeg.
-widgets
-    Controls for drawing functions: notebook panels (``interact``), preview forms and sweeps over time
-    (``sweep``).
-cli
-    The ``python -m svgwriter`` command line.
+
+Every sub-package listed above by name is also an attribute of this
+package (``svg.patterns``, ``svg.export``, ``svg.video``), except ``cli``.
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from . import (
-    export,
-    filters,
-    fonts,
-    gradients,
-    inkscape,
-    layout,
-    markers,
-    ops,
-    patterns,
-    preset,
-    project,
-    text_effects,
-    theme,
-    video,
-    widgets,
-)
+from . import ops
 from ._document.sizes import PageSize, page_size, size
 from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
 from .aliases import filter as filter  # noqa: A004, E402
 from .aliases import set as set
-from .attributes import (
+from .catalog import builder as builder
+from .catalog import filters, fonts, gradients, markers, patterns, preset, text_effects
+from .catalog.builder import drawing
+from .catalog.fonts import FontBuilder
+from .document import Document
+from .formats import export, inkscape
+from .formats import io as io
+from .formats.io.writer import SerializeOptions, to_string, write
+from .model import attributes as attributes
+from .model import color as color
+from .model import elements as elements
+from .model import layout, theme
+from .model import pathdata as pathdata
+from .model import transform as transform
+from .model.attributes import (
     IRI,
     Align,
     Angle,
@@ -125,15 +96,16 @@ from .attributes import (
     rad,
     turn,
 )
-from .attributes.units import angle, length
-from .builder import drawing
-from .color import Color, PaintKeyword, parse_color, parse_paint
-from .document import Document
-from .elements import *  # noqa: F403
-from .elements import __all__ as _elements_all
-from .fonts import FontBuilder
-from .io.writer import SerializeOptions, to_string, write
-from .layout import Grid, HStack, Spacer, VStack
+from .model.attributes.units import angle, length
+from .model.color import Color, PaintKeyword, parse_color, parse_paint
+from .model.elements import *  # noqa: F403
+from .model.elements import __all__ as _elements_all
+from .model.layout import Grid, HStack, Spacer, VStack
+from .model.pathdata import BBox, PathBuilder, PathData
+from .model.theme import THEMES, Theme
+from .model.transform import Matrix, Point, Transform
+from .motion import video
+from .motion.video import FFmpegNotFoundError, Scene, register_renderer
 from .ops import (
     Typeface,
     distribute,
@@ -143,28 +115,25 @@ from .ops import (
     text_to_path,
     unregister_interpolator,
 )
-from .pathdata import BBox, PathBuilder, PathData
-from .project import Project
-from .theme import THEMES, Theme
-from .transform import Matrix, Point, Transform
-from .video import FFmpegNotFoundError, Scene, register_renderer
-from .widgets import interact, sweep
+from .tools import project, widgets
+from .tools.project import Project
+from .tools.widgets import interact, sweep
 
 if TYPE_CHECKING:
     from ._internal._latex import latex
-    from .io import write_async
-    from .io.parser import Strictness, SVGParseError, parse, parse_file
+    from .formats.io import write_async
+    from .formats.io.parser import Strictness, SVGParseError, parse, parse_file
 
 __version__ = "2.4.0"
 __author__ = "Josue N Rivera"
 
 _LAZY = {
     "latex": ("_internal._latex", "latex"),
-    "parse": ("io.parser", "parse"),
-    "parse_file": ("io.parser", "parse_file"),
-    "Strictness": ("io.parser", "Strictness"),
-    "SVGParseError": ("io.parser", "SVGParseError"),
-    "write_async": ("io", "write_async"),
+    "parse": ("formats.io.parser", "parse"),
+    "parse_file": ("formats.io.parser", "parse_file"),
+    "Strictness": ("formats.io.parser", "Strictness"),
+    "SVGParseError": ("formats.io.parser", "SVGParseError"),
+    "write_async": ("formats.io", "write_async"),
 }
 
 

@@ -8,7 +8,7 @@ Run it as ``python 05_paint_and_filters.py`` or open ``05_paint_and_filters.ipyn
 
 
 import svgwriter as svg
-from svgwriter.elements import filters as fe
+from svgwriter.model.elements import filters as fe
 
 # %% [markdown]
 # ## Paint

@@ -8,7 +8,7 @@ from collections.abc import Iterable, Mapping
 from typing import TYPE_CHECKING, TypeVar
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
+    from ..model.elements.core import Element
 
 __all__ = ["with_role"]
 
@@ -21,8 +21,8 @@ def with_role(element: E, role: str | None, given: Iterable[str], fallback: Mapp
     The theme rule overrides plain attributes, so the caller's choices are kept in ``style`` where they
     still win. *fallback* attributes apply when no theme sheet is present (an element written on its own).
     """
-    from ..attributes.names import PRESENTATION_ATTRIBUTES, svg_name
-    from ..theme.theme import Theme
+    from ..model.attributes.names import PRESENTATION_ATTRIBUTES, svg_name
+    from ..model.theme.theme import Theme
 
     if role is None:
         return element

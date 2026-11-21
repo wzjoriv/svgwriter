@@ -6,7 +6,7 @@ import pytest
 
 import svgwriter as svg
 from svgwriter._internal._tools import DiagramToolError
-from svgwriter.export._diagram import read_dot, read_mermaid
+from svgwriter.formats.export._diagram import read_dot, read_mermaid
 
 SVG_OUT = b'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="10"><rect width="20" height="10"/></svg>'
 
@@ -88,7 +88,7 @@ def test_latex_reports_missing_tools_without_any_fallback(monkeypatch):
 
 
 def test_plantuml_and_d2_use_their_tools(monkeypatch, tmp_path):
-    from svgwriter.export._diagram import read_d2, read_plantuml
+    from svgwriter.formats.export._diagram import read_d2, read_plantuml
 
     monkeypatch.setenv("SVGWRITER_PLANTUML", _fake_tool(
         tmp_path, "plantuml", f"import sys; sys.stdin.read(); sys.stdout.buffer.write({SVG_OUT!r})"))
@@ -131,7 +131,7 @@ class TestMermaidFlowcharts:
     """
 
     def test_parse_shapes_edges_and_subgraphs(self):
-        from svgwriter.export._diagram._mermaid import parse_flowchart
+        from svgwriter.formats.export._diagram._mermaid import parse_flowchart
 
         chart = parse_flowchart(self.SOURCE)
         assert [(n.id, n.shape) for n in chart.nodes.values()] == [
@@ -142,7 +142,7 @@ class TestMermaidFlowcharts:
         assert chart.subgraphs == [("Group", ["B", "C"])]
 
     def test_layout_ranks_top_to_bottom_and_left_to_right(self):
-        from svgwriter.export._diagram._mermaid import draw_flowchart, parse_flowchart
+        from svgwriter.formats.export._diagram._mermaid import draw_flowchart, parse_flowchart
 
         chart = parse_flowchart(self.SOURCE)
         draw_flowchart(chart)

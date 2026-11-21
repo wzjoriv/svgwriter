@@ -3,6 +3,6 @@
 Serialization options, writers and the parser.
 
 ```{eval-rst}
-.. automodule:: svgwriter.io
+.. automodule:: svgwriter.formats.io
    :members:
 ```

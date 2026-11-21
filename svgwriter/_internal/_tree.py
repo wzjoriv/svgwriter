@@ -11,8 +11,8 @@ from typing import TYPE_CHECKING, Any
 from ._typing import Stack
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
-    from ..pathdata.data import PathData
+    from ..model.elements.core import Element
+    from ..model.pathdata.data import PathData
 
 __all__ = ["attach_cursor", "clip_outline", "cursor_of", "element_list", "replace_in_parent", "resolve", "settle_parent"]
 
@@ -40,7 +40,7 @@ def resolve(element: Element, value: Any) -> Element | None:
     >>> resolve(g, "url(#dot)").tag
     'circle'
     """
-    from ..elements.core import Element
+    from ..model.elements.core import Element
 
     target = getattr(value, "element", None)
     root = element.root()
@@ -80,9 +80,9 @@ def clip_outline(element: Element) -> PathData | None:
     >>> clip_outline(svg.rect(0, 0, 9, 9)) is None
     True
     """
-    from ..elements import PathOperand
-    from ..pathdata.data import PathData
-    from ..transform.matrix import Matrix
+    from ..model.elements import PathOperand
+    from ..model.pathdata.data import PathData
+    from ..model.transform.matrix import Matrix
 
     clip = resolve(element, element.attributes.get("clip-path"))
     if clip is None:
@@ -205,7 +205,7 @@ def element_list(items: Element | str | Iterable[Element]) -> list[Element | str
     >>> len(element_list([svg.circle(0, 0, 1), svg.circle(1, 1, 1)]))
     2
     """
-    from ..elements.core import Element
+    from ..model.elements.core import Element
 
     if isinstance(items, (Element, str)):
         return [items]

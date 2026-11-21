@@ -64,7 +64,7 @@ class TestExport:
 def test_transparent_stroke_reads_as_none():
     import json
 
-    from svgwriter.export._scene._excalidraw import read_excalidraw
+    from svgwriter.formats.export._scene._excalidraw import read_excalidraw
 
     scene = {"type": "excalidraw", "elements": [{"type": "rectangle", "x": 0, "y": 0, "width": 4, "height": 4,
                                                  "strokeColor": "transparent", "backgroundColor": "#ff0000"}]}

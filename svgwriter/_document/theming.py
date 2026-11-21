@@ -7,10 +7,10 @@ from __future__ import annotations
 from collections.abc import Generator
 from contextlib import contextmanager
 
-from ..attributes.rules import set_class_rules
-from ..layout import settle
-from ..theme.sheet import applied, role_rules
-from ..theme.theme import Theme
+from ..model.attributes.rules import set_class_rules
+from ..model.layout import settle
+from ..model.theme.sheet import applied, role_rules
+from ..model.theme.theme import Theme
 
 
 class Theming:

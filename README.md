@@ -127,7 +127,7 @@ Formats are found by name or file extension: `doc.save("figure.pdf")`, `svg.Docu
 | PlantUML | `.puml` `.plantuml` | — | ✓ | drawn by `plantuml` |
 | D2 | `.d2` | — | ✓ | drawn by `d2` |
 | LaTeX math | `svg.latex(...)` | — | ✓ | formulas as glyph outlines: TeX (`latex` + `dvisvgm`), else Ziamath (`pysvgwriter[math]`), else matplotlib mathtext |
-| Video frames | `.mp4` `.webm` `.mov` | ✓ | ✓ | needs ffmpeg: `render_animation` writes frames, `svgwriter.video.Video` reads them |
+| Video frames | `.mp4` `.webm` `.mov` | ✓ | ✓ | needs ffmpeg: `render_animation` writes frames, `svgwriter.motion.video.Video` reads them |
 
 `svg.export.register(...)` and `register_importer(...)` add formats of your own.
 

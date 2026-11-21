@@ -5,12 +5,12 @@ import inspect
 import pytest
 
 import svgwriter as svg
-from svgwriter.attributes.names import PRESENTATION_ATTRIBUTES, py_name
-from svgwriter.elements import Element, PresentationAttributes
-from svgwriter.elements._behavior._presentation import PresentationKeywords
+from svgwriter.model.attributes.names import PRESENTATION_ATTRIBUTES, py_name
+from svgwriter.model.elements import Element, PresentationAttributes
+from svgwriter.model.elements._behavior._presentation import PresentationKeywords
 
 ELEMENTS = sorted(
-    (cls for cls in Element._registry.values() if cls.__module__.startswith("svgwriter.elements.")),
+    (cls for cls in Element._registry.values() if cls.__module__.startswith("svgwriter.model.elements.")),
     key=lambda cls: cls.__name__,
 )
 KEYWORD_KINDS = (inspect.Parameter.POSITIONAL_OR_KEYWORD, inspect.Parameter.KEYWORD_ONLY)

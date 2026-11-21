@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 import svgwriter as svg
-from svgwriter.color._difference import ciede2000
+from svgwriter.model.color._difference import ciede2000
 
 SHARMA_2005 = [
     ((50.0, 2.6772, -79.7751), (50.0, 0.0, -82.7485), 2.0425),

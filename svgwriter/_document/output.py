@@ -12,15 +12,15 @@ import numpy as np
 
 from .._internal._drawable import ascii_markup
 from .._internal._typing import AnyPath
-from ..elements.core import Element
-from ..video.animation import DEFAULT_FPS
+from ..model.elements.core import Element
+from ..motion.video.animation import DEFAULT_FPS
 from ._constants import INLINE_STYLE
 
 if TYPE_CHECKING:
-    from ..attributes.protocols import TextSink
-    from ..color.color import ColorLike
     from ..document import Document
-    from ..video.animation import Renderer, Update
+    from ..model.attributes.protocols import TextSink
+    from ..model.color.color import ColorLike
+    from ..motion.video.animation import Renderer, Update
 
 
 E = TypeVar("E", bound=Element)
@@ -30,12 +30,12 @@ class Output:
     """Serialization, rendering, saving and loading; mixed into :class:`~svgwriter.Document`."""
 
     def to_string(self, **options: Any) -> str:
-        """Serialize; see :class:`svgwriter.io.SerializeOptions`. Auto-sized documents get their size here.
+        """Serialize; see :class:`svgwriter.formats.io.SerializeOptions`. Auto-sized documents get their size here.
 
         Parameters
         ----------
         **options
-            Fields of :class:`~svgwriter.io.SerializeOptions`.
+            Fields of :class:`~svgwriter.formats.io.SerializeOptions`.
 
         Returns
         -------
@@ -185,8 +185,8 @@ class Output:
     def save(self, target: AnyPath | TextSink, *, format: str | None = None, **options: Any) -> None:
         """Write to a path or text stream; the format follows *format* or the file extension.
 
-        ``.svg`` (and text streams) write SVG text with :class:`~svgwriter.io.SerializeOptions`;
-        other extensions use :mod:`svgwriter.export` (``.png``, ``.pdf``, ``.tikz``, ...).
+        ``.svg`` (and text streams) write SVG text with :class:`~svgwriter.formats.io.SerializeOptions`;
+        other extensions use :mod:`svgwriter.formats.export` (``.png``, ``.pdf``, ``.tikz``, ...).
 
         Parameters
         ----------
@@ -215,14 +215,14 @@ class Output:
             with self._prepared():
                 self.root.save(target, **options)
             return
-        from ..export import save
+        from ..formats.export import save
 
         save(self, target, format, **options)  # type: ignore[arg-type]
 
     def export(self, format: str, **options: Any) -> bytes | str:
         """This document in *format* (``"png"``, ``"pdf"``, ``"tikz"``, ... or an extension).
 
-        See :func:`svgwriter.export.exporters` for the registered formats.
+        See :func:`svgwriter.formats.export.exporters` for the registered formats.
 
         Parameters
         ----------
@@ -247,7 +247,7 @@ class Output:
         >>> Document(10, 10).export("png")[1:4]
         b'PNG'
         """
-        from ..export import export
+        from ..formats.export import export
 
         return export(self, format, **options)
 
@@ -290,7 +290,7 @@ class Output:
         ...     print(len(Document.open(path)))
         0
         """
-        from ..export import load
+        from ..formats.export import load
 
         result = load(path, format, **options)
         if isinstance(result, list):
@@ -319,7 +319,7 @@ class Output:
         See Also
         --------
         open : Read one page.
-        svgwriter.export.save : Writes a list of documents as pages or slides.
+        svgwriter.formats.export.save : Writes a list of documents as pages or slides.
 
         Examples
         --------
@@ -330,7 +330,7 @@ class Output:
         ...     [page.root.get("width") for page in svg.Document.open_all(path)]
         [10.0, 20.0]
         """
-        from ..export import find_importer, load
+        from ..formats.export import find_importer, load
 
         page_option = find_importer(format or path).page_option
         if page_option is not None:
@@ -346,7 +346,7 @@ class Output:
         path : str or os.PathLike
             Destination file.
         **options
-            ``options`` or fields of :class:`~svgwriter.io.SerializeOptions`.
+            ``options`` or fields of :class:`~svgwriter.formats.io.SerializeOptions`.
 
         See Also
         --------
@@ -362,7 +362,7 @@ class Output:
         ...     print(path.exists())
         True
         """
-        from ..io import write_async
+        from ..formats.io import write_async
 
         await write_async(self.root, path, **options)
 
@@ -378,7 +378,7 @@ class Output:
     ) -> FilePath:
         """Render frames through *renderer* and encode them with ffmpeg.
 
-        See :func:`svgwriter.video.render_animation` for the parameters.
+        See :func:`svgwriter.motion.video.render_animation` for the parameters.
         ffmpeg is located before any frame is rendered.
 
         Parameters
@@ -411,7 +411,7 @@ class Output:
 
         See Also
         --------
-        svgwriter.video.iter_frames : The frames without encoding.
+        svgwriter.motion.video.iter_frames : The frames without encoding.
 
         Examples
         --------
@@ -420,6 +420,6 @@ class Output:
         >>> doc = Document(8, 6)
         >>> doc.render_animation("out.gif", duration=1, renderer="skia")  # doctest: +SKIP
         """
-        from ..video.animation import render_animation
+        from ..motion.video.animation import render_animation
 
         return render_animation(self, path, fps, duration, renderer, update=update, ffmpeg=ffmpeg)

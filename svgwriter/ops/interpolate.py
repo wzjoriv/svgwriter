@@ -9,14 +9,14 @@ from typing import TYPE_CHECKING, Any, Final, TypeVar
 
 import numpy as np
 
-from ..color.color import Color, as_color
-from ..pathdata.data import PathData
-from ..transform.matrix import Matrix, Point
+from ..model.color.color import Color, as_color
+from ..model.pathdata.data import PathData
+from ..model.transform.matrix import Matrix, Point
 from ._constants import DISCRETE_SWITCH, FULL_TURN, GEOMETRY_SKIP, HALF_TURN
 from ._morph import blend_outlines
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
+    from ..model.elements.core import Element
 
 __all__ = ["interpolate", "register_interpolator", "unregister_interpolator"]
 
@@ -27,7 +27,7 @@ def interpolate(a: T, b: T, t: float) -> T:
     """The value a fraction *t* of the way from *a* to *b* (``t=0`` gives *a*, ``t=1`` gives *b*).
 
     Works on numbers, ``(x, y)`` points and numeric sequences, colors (in
-    RGBA), :class:`~svgwriter.transform.Matrix` (translation, rotation, skew
+    RGBA), :class:`~svgwriter.model.transform.Matrix` (translation, rotation, skew
     and scale separately, so turns stay turns), :class:`~svgwriter.PathData`
     and elements. Two elements of the same kind and shape interpolate their
     attributes; anything else is morphed as outlines: outlines pair with
@@ -233,7 +233,7 @@ def _is_array(value: object) -> bool:
 
 
 def _is_element(value: object) -> bool:
-    from ..elements.core import Element
+    from ..model.elements.core import Element
 
     return isinstance(value, Element)
 
@@ -293,7 +293,7 @@ def _geometry(element: Element) -> frozenset[str]:
 
 def _morph(a: Element, b: Element, t: float) -> Element:
     """Both as local outlines, blended; paint and other attributes blend or switch."""
-    from ..elements.shapes import Path
+    from ..model.elements.shapes import Path
 
     data = blend_outlines(a.local_outline(), b.local_outline(), t)  # type: ignore[attr-defined]
     path = Path(data)

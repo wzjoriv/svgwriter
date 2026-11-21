@@ -8,8 +8,8 @@ from typing import TYPE_CHECKING, Any, Protocol, TypeVar
 
 import numpy as np
 
-from ..elements.core import Element
-from ..elements.structure import Group
+from ..model.elements.core import Element
+from ..model.elements.structure import Group
 from ._constants import RASTER_REPRS
 
 if TYPE_CHECKING:
@@ -73,18 +73,18 @@ def to_element(item: Any) -> Any:
     if is_graph(item):
         return draw_graph(item)
     if isinstance(item, np.ndarray):
-        from ..elements.structure import Image
+        from ..model.elements.structure import Image
 
         return Image(item)
     text = _svg_text(item)
     if text is not None:
-        from ..io.parser import parse
+        from ..formats.io.parser import parse
 
         return _nested(parse(text))
     for name in RASTER_REPRS:
         data = getattr(item, name, lambda: None)() if hasattr(item, name) else None
         if data:
-            from ..elements.structure import Image, Pixels
+            from ..model.elements.structure import Image, Pixels
 
             pixels = Pixels.decode(data if isinstance(data, bytes) else bytes(data))
             return Image(pixels.rgba())

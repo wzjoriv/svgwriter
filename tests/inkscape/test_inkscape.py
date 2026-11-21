@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter.inkscape import Arc, Guide, Star
+from svgwriter.formats.inkscape import Arc, Guide, Star
 
 DATA = Path(__file__).parent / "data"
 INKSCAPE = "http://www.inkscape.org/namespaces/inkscape"

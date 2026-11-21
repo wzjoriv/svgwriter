@@ -6,15 +6,15 @@ the top level as well; the guide is {doc}`../guides/widgets`.
 ```{eval-rst}
 .. autosummary::
 
-   svgwriter.widgets.interact
-   svgwriter.widgets.sweep
-   svgwriter.widgets.controls
-   svgwriter.widgets.control
-   svgwriter.widgets.controls_of
+   svgwriter.tools.widgets.interact
+   svgwriter.tools.widgets.sweep
+   svgwriter.tools.widgets.controls
+   svgwriter.tools.widgets.control
+   svgwriter.tools.widgets.controls_of
 ```
 
 ```{eval-rst}
-.. automodule:: svgwriter.widgets
+.. automodule:: svgwriter.tools.widgets
    :members:
    :inherited-members: Control
 ```

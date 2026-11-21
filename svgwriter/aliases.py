@@ -8,7 +8,7 @@ snake_case spelling, for code that reads closer to the markup.
 ``filter`` and ``set`` shadow builtins, so they are attributes of the
 package but left out of ``__all__``; ``from svgwriter import *`` will not
 replace the builtins. ``svg.path`` is the ``Path`` element class; path
-data (commands, parsing, ``PathBuilder``) lives in the ``svgwriter.pathdata``
+data (commands, parsing, ``PathBuilder``) lives in the ``svgwriter.model.pathdata``
 sub-package.
 
 Examples
@@ -22,7 +22,7 @@ True
 
 from __future__ import annotations
 
-from .elements import (
+from .model.elements import (
     A,
     AltGlyph,
     AltGlyphDef,

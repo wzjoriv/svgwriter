@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 import svgwriter as svg
-from svgwriter.io import write_many_async
+from svgwriter.formats.io import write_many_async
 
 # %% [markdown]
 # `element.animate` adds ready-made SMIL animations and chains. `draw` strokes a ring on like a pen.

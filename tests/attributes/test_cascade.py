@@ -3,8 +3,8 @@ from __future__ import annotations
 import pytest
 
 import svgwriter as svg
-from svgwriter.attributes.cascade import computed, matches, resolve_styles
-from svgwriter.attributes.rules import parse_css
+from svgwriter.model.attributes.cascade import computed, matches, resolve_styles
+from svgwriter.model.attributes.rules import parse_css
 
 
 def tree() -> tuple[svg.Svg, svg.Group, svg.Rect]:

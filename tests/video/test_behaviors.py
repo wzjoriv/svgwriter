@@ -5,7 +5,7 @@ import math
 import pytest
 
 import svgwriter as svg
-from svgwriter.video.behaviors import breathe, hover, wiggle
+from svgwriter.motion.video.behaviors import breathe, hover, wiggle
 
 
 def sway(element: svg.Element, seconds: float, *, angle: float = 10.0) -> None:
