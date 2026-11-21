@@ -253,7 +253,8 @@ fill = "{palette.accent}"
 
 Values are text (colors, CSS, references or `=` expressions), numbers, or color arrays: `[r, g, b]` or
 `[r, g, b, a]`, either all floats from 0 to 1 or all integers from 0 to 255 (a mix is an error). Font
-sizes and weights are numbers.
+sizes and weights are numbers. `fonts.family` and `fonts.monospace` are a family name or a list of font
+files, relative to the theme file, loaded as an `svg.Typeface` (see [Typography](text.md#typography)).
 
 `save` writes what differs from the theme it `extends`: a variant made with `replace` on a registered theme
 extends that theme, so `svg.Theme.get("dark").replace(name="night").save(path)` writes two lines. References

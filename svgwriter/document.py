@@ -14,6 +14,7 @@ from ._document.output import Output
 from ._document.sizes import PageSize, page_size
 from ._document.sizing import Sizing
 from ._document.theming import Theming
+from ._document.typography import Typography
 from ._internal._tree import attach_cursor
 from ._internal._typing import AnyPath, Stack
 from .elements.core import Element, ElementFactory
@@ -32,7 +33,7 @@ __all__ = ["Document"]
 E = TypeVar("E", bound=Element)
 
 
-class Document(Sizing, Theming, Output, Access, ElementFactory):
+class Document(Sizing, Theming, Typography, Output, Access, ElementFactory):
     """An SVG document under construction.
 
     Shortcut methods (``doc.circle(...)``, ``doc.linear_gradient(...)``)

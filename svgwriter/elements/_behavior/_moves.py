@@ -7,6 +7,7 @@ from __future__ import annotations
 from numbers import Real
 from typing import TYPE_CHECKING, Any
 
+from ...attributes.angle import Angle
 from ...transform.matrix import Matrix, Point
 from ...transform.ops import TransformOp
 from ...transform.transform import Transform, TransformLike, as_transform
@@ -73,13 +74,13 @@ class TransformMethods:
         """
         return self._compose(Matrix.translate(dx, dy), local, pivot=False)
 
-    def rotate(self: E, degrees: float, *, about: Pivot | None = None, local: bool = False) -> E:
+    def rotate(self: E, degrees: float | Angle, *, about: Pivot | None = None, local: bool = False) -> E:
         """Rotate by *degrees* (clockwise on screen) and return ``self``.
 
         Parameters
         ----------
-        degrees : float
-            Angle; positive turns from +x towards +y.
+        degrees : float or Angle
+            Angle (numbers are degrees); positive turns from +x towards +y.
         about : str or (float, float), optional
             Pivot: a point name (see :attr:`anchor`), read on the element's
             own box, or a point in parent coordinates (local ones with
@@ -92,6 +93,11 @@ class TransformMethods:
         Transformable
             This element.
 
+        Raises
+        ------
+        TypeError
+            If *degrees* is a length or another non-angle quantity.
+
         Examples
         --------
         >>> import svgwriter as svg
@@ -100,6 +106,8 @@ class TransformMethods:
         >>> svg.rect(0, 0, 10, 10).rotate(90, about="top_left").bounds()
         BBox(x=-10.0, y=0.0, width=10.0, height=10.0)
         """
+        if not isinstance(degrees, Real):
+            degrees = Angle.parse(degrees).degrees
         return self._compose(Matrix.rotate(degrees), local, about)
 
     def scale(
@@ -257,8 +265,6 @@ class TransformMethods:
 
         target = self if in_place else self.clone()
         if operator == "@":
-            from ...attributes.angle import Angle
-
             if isinstance(operand, (Real, Angle)):
                 return target.rotate(float(operand))
             if isinstance(operand, (*_TRANSFORMS, str)):

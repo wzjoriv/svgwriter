@@ -2,13 +2,34 @@
 
 from __future__ import annotations
 
-from .angle import Angle, AngleUnit, deg, grad, rad, turn
+from .angle import Angle
 from .descriptors import Attr
-from .length import Length, LengthLike, Unit, cm, em, ex, inch, mm, pc, percent, pt, px
+from .length import Length, LengthLike, Unit
 from .names import CAMEL_CASE_ATTRIBUTES, PRESENTATION_ATTRIBUTES, py_name, svg_name
 from .protocols import SupportsSVG, TextSink
+from .quantity import Quantity
 from .reference import IRI, FuncIRI, parse_func_iri
 from .style import Style, StyleLike, StyleSheet
+from .units import (
+    AngleUnit,
+    LengthUnit,
+    cm,
+    deg,
+    em,
+    ex,
+    ft,
+    grad,
+    inch,
+    m,
+    mm,
+    pc,
+    percent,
+    pt,
+    px,
+    q,
+    rad,
+    turn,
+)
 from .values import format_value
 from .viewbox import Align, MeetOrSlice, PreserveAspectRatio, ViewBox
 
@@ -27,8 +48,10 @@ __all__ = [
     "FuncIRI",
     "Length",
     "LengthLike",
+    "LengthUnit",
     "MeetOrSlice",
     "PreserveAspectRatio",
+    "Quantity",
     "Style",
     "StyleLike",
     "StyleSheet",
@@ -40,13 +63,16 @@ __all__ = [
     "em",
     "ex",
     "format_value",
+    "ft",
     "inch",
+    "m",
     "mm",
     "pc",
     "parse_func_iri",
     "percent",
     "pt",
     "px",
+    "q",
     "py_name",
     "svg_name",
 ]

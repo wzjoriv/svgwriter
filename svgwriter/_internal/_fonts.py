@@ -30,6 +30,7 @@ from ._constants import (
     NORMAL_WIDTH,
     PERCENT,
 )
+from ._font_match import FaceStyle, instance, match_rank
 
 if TYPE_CHECKING:
     from ..ops.text import FontWeight
@@ -66,7 +67,7 @@ def weight_value(value: FontWeight) -> int:
     return int(value)
 
 
-registered_typefaces: dict[str, list[Any]] = {}
+registered_typefaces: dict[str, list[tuple[Any, FaceStyle]]] = {}
 _COLOR_FACES: dict[int, bool] = {}
 
 
@@ -79,12 +80,17 @@ def color_font(typeface: Any) -> bool:
     return _COLOR_FACES[key]
 
 
-def registered_face(family: str, weight: int, slant: Any) -> Any:
-    """The registered typeface of *family* closest to the requested weight and slant, if any."""
+def registered_face(family: str, weight: int, italic: bool) -> Any:
+    """The registered typeface of *family* that CSS font matching picks for the weight and slant, if any.
+
+    Variable faces come back set to the requested weight.
+    """
     faces = registered_typefaces.get(family.lower())
     if not faces:
         return None
-    return min(faces, key=lambda face: (face.fontStyle().slant() != slant, abs(face.fontStyle().weight() - weight)))
+    style = "italic" if italic else "normal"
+    typeface, face = min(faces, key=lambda entry: match_rank(entry[1], weight, style))
+    return instance(typeface, face, weight, style)
 
 
 @lru_cache(maxsize=FONT_CACHE)
@@ -93,7 +99,7 @@ def resolve_font(font_family: str, size: float, weight: FontWeight, italic: bool
     slant = skia.FontStyle.kItalic_Slant if italic else skia.FontStyle.kUpright_Slant
     families = [name.strip().strip("'\"") for name in font_family.split(",") if name.strip()]
     for family in families:
-        face = registered_face(family, weight_value(weight), slant)
+        face = registered_face(family, weight_value(weight), italic)
         if face is not None:
             return skia.Font(face, size)
     typeface = None

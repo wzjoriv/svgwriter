@@ -29,6 +29,9 @@ __all__ = [
 class Font(FontGlyphs, PresentationAttributes, ExternalResourcesAttribute, CoreAttributes, Container[Element], tag="font", category=Category.FONT):
     """``<font>``: an SVG font made of glyph outlines.
 
+    This is the SVG 1.1 element; to set text in TrueType/OpenType font
+    files, use :class:`~svgwriter.Typeface`.
+
     Parameters
     ----------
     *children : Element
@@ -48,6 +51,7 @@ class Font(FontGlyphs, PresentationAttributes, ExternalResourcesAttribute, CoreA
     --------
     FontFace : The font's descriptors.
     Glyph : One character outline.
+    Typeface : A font family of TrueType/OpenType faces.
 
     Examples
     --------
