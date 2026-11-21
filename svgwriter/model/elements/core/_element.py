@@ -201,7 +201,7 @@ class Element(Construction, AttributeAccess, TreeEditing, Queryable, Displayable
 
         See Also
         --------
-        svgwriter.preset.behavior : Write a behavior.
+        svgwriter.catalog.preset.behavior : Write a behavior.
 
         Examples
         --------

@@ -42,7 +42,7 @@ class SceneMotion:
         Typed with the behavior's own options, so editors complete and check them. Behaviors run in the
         order they were attached, all before :meth:`update`. The first one attached to an element records
         its :attr:`~svgwriter.Element.home`. ``element.animate.<name>(...)`` does the same for a behavior
-        registered with :func:`@svg.preset.behavior <svgwriter.preset.behavior>`.
+        registered with :func:`@svg.preset.behavior <svgwriter.catalog.preset.behavior>`.
 
         Parameters
         ----------

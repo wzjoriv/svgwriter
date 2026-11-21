@@ -77,16 +77,9 @@ from typing import TYPE_CHECKING, Any
 
 from . import (
     export,
-    filters,
-    fonts,
-    gradients,
     inkscape,
-    markers,
     ops,
-    patterns,
-    preset,
     project,
-    text_effects,
     video,
     widgets,
 )
@@ -95,9 +88,11 @@ from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
 from .aliases import filter as filter  # noqa: A004, E402
 from .aliases import set as set
-from .builder import drawing
+from .catalog import builder as builder
+from .catalog import filters, fonts, gradients, markers, patterns, preset, text_effects
+from .catalog.builder import drawing
+from .catalog.fonts import FontBuilder
 from .document import Document
-from .fonts import FontBuilder
 from .io.writer import SerializeOptions, to_string, write
 from .model import attributes as attributes
 from .model import color as color

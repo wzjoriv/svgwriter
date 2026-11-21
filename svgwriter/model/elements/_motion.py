@@ -89,8 +89,8 @@ class Motion(TransformPresets):
     (a name such as ``"ease-in-out"``, a bézier 4-tuple, ``("steps", n)`` or
     a function; see :class:`~svgwriter.Ease`). ``show`` and ``hide`` act at
     one instant, so they take only the moment. Presets added with
-    :func:`@svg.preset.animation <svgwriter.preset.animation>` are methods too, and so are behaviors
-    (:func:`@svg.preset.behavior <svgwriter.preset.behavior>`), which attach to the scene owning the element.
+    :func:`@svg.preset.animation <svgwriter.catalog.preset.animation>` are methods too, and so are behaviors
+    (:func:`@svg.preset.behavior <svgwriter.catalog.preset.behavior>`), which attach to the scene owning the element.
 
     Parameters
     ----------
@@ -160,7 +160,7 @@ class Motion(TransformPresets):
         """Run an animation function on this element: ``function(self, *args, **kwargs)``.
 
         Typed with the function's own parameters, so editors complete and check its options. The
-        function need not be registered; :func:`@svg.preset.animation <svgwriter.preset.animation>` also makes it
+        function need not be registered; :func:`@svg.preset.animation <svgwriter.catalog.preset.animation>` also makes it
         ``element.animate.<name>``.
 
         Parameters

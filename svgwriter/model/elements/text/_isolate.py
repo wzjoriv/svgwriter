@@ -108,7 +108,7 @@ class RangeEffects:
         ----------
         name : str
             A text effect: ``"fire"``, ``"ice"``, ``"smoke"``, ``"metal"``, ``"wind"``, ``"snow"``,
-            ``"neon"``, ``"glitch"`` or one registered with :func:`svgwriter.preset.text_effect`.
+            ``"neon"``, ``"glitch"`` or one registered with :func:`svgwriter.catalog.preset.text_effect`.
         **options
             The effect's options.
 
@@ -124,7 +124,7 @@ class RangeEffects:
 
         See Also
         --------
-        svgwriter.text_effects : The built-in effects.
+        svgwriter.catalog.text_effects : The built-in effects.
 
         Examples
         --------

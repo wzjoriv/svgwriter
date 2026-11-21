@@ -11,7 +11,7 @@ from typing import Any
 
 import click
 
-from .. import preset
+from ..catalog import preset
 from ..document import Document
 from ..io.parser import Strictness, parse_file
 from ..io.writer import SerializeOptions

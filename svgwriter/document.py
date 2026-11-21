@@ -69,7 +69,7 @@ class Document(Building, Sizing, Theming, Typography, Output, Access, InkscapeDa
     See Also
     --------
     svgwriter.model.elements.Svg : The root element wrapped by a document.
-    svgwriter.preset.size : Add a named size.
+    svgwriter.catalog.preset.size : Add a named size.
 
     Notes
     -----

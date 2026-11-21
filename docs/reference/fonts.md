@@ -4,7 +4,7 @@ Building fonts from drawings; see [Making fonts](../guides/fonts.md). `svg.FontB
 available at the top level.
 
 ```{eval-rst}
-.. automodule:: svgwriter.fonts
+.. automodule:: svgwriter.catalog.fonts
    :members:
    :show-inheritance:
 ```
