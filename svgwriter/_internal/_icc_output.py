@@ -10,7 +10,7 @@ from typing import Any, Literal, TypeAlias
 
 import numpy as np
 
-from ._icc_constants import DEFAULT_INTENT, ICC_EXTRA_HINT, OUTPUT_PROFILES, PROFILE_CACHE
+from ._icc_constants import ICC_EXTRA_HINT, OUTPUT_INTENT, OUTPUT_PROFILES, PROFILE_CACHE
 
 __all__ = ["IccLike", "OutputProfile", "output_profile", "to_profile"]
 
@@ -127,7 +127,7 @@ def to_profile(rgba: np.ndarray, target: OutputProfile) -> np.ndarray:
         raise ValueError(f"cannot write pixels in a {target.space} profile; use an RGB or CMYK profile")
     source = output_profile("srgb").profile
     converted = np.asarray(source.transform(np.ascontiguousarray(rgba[..., :3]), target.profile,
-                                            intent=DEFAULT_INTENT), dtype=np.uint8)
+                                            intent=OUTPUT_INTENT, bpc=True), dtype=np.uint8)
     if target.space == "CMYK":
         return converted
     return np.concatenate([converted, rgba[..., 3:]], axis=2)

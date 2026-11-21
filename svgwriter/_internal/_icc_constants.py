@@ -12,6 +12,7 @@ __all__ = [
     "CMYK_SCALE",
     "COLOR_PROFILE",
     "DEFAULT_INTENT",
+    "OUTPUT_INTENT",
     "ICC_COLOR_RE",
     "ICC_PAINTS",
     "INTENTS",
@@ -47,6 +48,8 @@ ICC_COLOR_RE: Final = re.compile(r"^(?P<head>url\([^)]*\)\s*)?(?P<color>.*?)\s*i
                                  re.IGNORECASE)
 
 DEFAULT_INTENT: Final = "perceptual"
+OUTPUT_INTENT: Final = "relative"
+"""Intent for writing output files: paper white stays unprinted, with black point compensation."""
 INTENTS: Final = {
     "auto": "perceptual",
     "perceptual": "perceptual",
