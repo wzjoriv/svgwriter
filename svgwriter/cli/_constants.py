@@ -13,6 +13,7 @@ __all__ = [
     "DEFAULT_FONT",
     "DEFAULT_TEXT_SIZE",
     "DRAW_LAYOUTS",
+    "EXIT_ERROR",
     "EXIT_FAILURE",
     "FRAME_FORMAT",
     "SIZE_COLUMN",
@@ -26,6 +27,7 @@ STROKE_WIDTH: Final = 2
 
 FRAME_FORMAT: Final = "png"
 EXIT_FAILURE: Final = 1
+EXIT_ERROR: Final = 2
 DEFAULT_TEXT_SIZE: Final = 48.0
 DEFAULT_FONT: Final = "sans-serif"
 TEXT_MARGIN: Final = 4.0

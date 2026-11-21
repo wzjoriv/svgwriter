@@ -4,9 +4,11 @@
 
 from __future__ import annotations
 
-import argparse
 import sys
 from collections import Counter
+from typing import Annotated
+
+import typer
 
 from .._document.sizes import SIZES
 from ..builder import SHAPES
@@ -16,136 +18,113 @@ from ..io.parser import Strictness, parse_file
 from ..io.writer import SerializeOptions
 from ._constants import CANVAS_MARGIN, DEFAULT_CANVAS, DRAW_LAYOUTS, SIZE_COLUMN, STROKE_WIDTH
 
-__all__ = ["add_basic_commands", "emit", "output_options"]
+__all__ = ["Compact", "Output", "Precision", "add_basic_commands", "emit"]
+
+Output = Annotated[str | None, typer.Option("-o", "--output", help="write here instead of stdout")]
+Compact = Annotated[bool, typer.Option("--compact", help="single-line output, shortest path data")]
+Precision = Annotated[int, typer.Option("--precision", help="significant digits of numbers")]
+PRECISION = SerializeOptions().precision
 
 
-def _cmd_shapes(args: argparse.Namespace) -> int:
-    for name in SHAPES.names():
-        print(name)
-    return 0
-
-
-def _cmd_sizes(args: argparse.Namespace) -> int:
-    for name in SIZES.names():
-        width, height = SIZES.get(name)
-        print(f"{name:<{SIZE_COLUMN}} {width} x {height}")
-    return 0
-
-
-def _cmd_elements(args: argparse.Namespace) -> int:
-    for category in Category:
-        tags = sorted(Element.registered(category))
-        if tags:
-            print(f"{category.name.lower()}: {' '.join(tags)}")
-    return 0
-
-
-def _cmd_draw(args: argparse.Namespace) -> int:
-    size = args.size
-    doc = Document(size, size)
-    center, radius = size / 2, size * CANVAS_MARGIN
-    factory = SHAPES.get(args.shape)
-    layout = DRAW_LAYOUTS.get(args.shape)
-    if layout is None:
-        shape = factory(center, center, radius, fill=args.fill, stroke=args.stroke)
-    else:
-        lead, options = layout(center, radius)
-        stroked = {"stroke": args.fill, "stroke_width": STROKE_WIDTH} if options.pop("line", False) else {"fill": args.fill, "stroke": args.stroke}
-        shape = factory(*lead, **options, **stroked)
-    doc += shape
-    emit(doc.root, args)
-    return 0
-
-
-def _cmd_format(args: argparse.Namespace) -> int:
-    emit(parse_file(args.input, strictness=Strictness.WARN), args)
-    return 0
-
-
-def _cmd_info(args: argparse.Namespace) -> int:
-    counts = Counter(element.tag for element in parse_file(args.input).iter())
-    for tag, count in counts.most_common():
-        print(f"{count:6d}  {tag}")
-    return 0
-
-
-def emit(root: Element, args: argparse.Namespace) -> None:
-    """Write *root* to ``--output`` or stdout using the output options.
+def emit(root: Element, output: str | None, compact: bool, precision: int) -> None:
+    """Write *root* to *output*, or to stdout when it is None.
 
     Parameters
     ----------
     root : Element
         Root of the tree to write.
-    args : argparse.Namespace
-        Parsed arguments providing ``output``, ``compact`` and ``precision``.
+    output : str or None
+        The file to write, or None for stdout.
+    compact : bool
+        Single-line output with the shortest path data.
+    precision : int
+        Significant digits of numbers.
 
-    See Also
+    Examples
     --------
-    output_options : Adds the matching arguments to a parser.
+    >>> import svgwriter as svg
+    >>> from svgwriter.cli._basic import emit
+    >>> emit(svg.Svg(), None, compact=True, precision=3)  # doctest: +ELLIPSIS
+    <?xml ...?>
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1"/>
     """
-    options = SerializeOptions(pretty=not args.compact, precision=args.precision, compact_paths=args.compact)
-    if args.output:
-        root.save(args.output, options=options)
+    options = SerializeOptions(pretty=not compact, precision=precision, compact_paths=compact)
+    if output:
+        root.save(output, options=options)
     else:
         sys.stdout.write(root.to_string(options=options))
 
 
-def output_options(sub: argparse.ArgumentParser) -> None:
-    """Add ``--output``, ``--compact`` and ``--precision`` to a sub-command parser.
-
-    Parameters
-    ----------
-    sub : argparse.ArgumentParser
-        The parser of a sub-command that writes SVG.
-
-    See Also
-    --------
-    emit : Consumes the parsed values.
-
-    Examples
-    --------
-    >>> import argparse
-    >>> from svgwriter.cli._basic import output_options
-    >>> parser = argparse.ArgumentParser()
-    >>> output_options(parser)
-    >>> args = parser.parse_args(["-o", "out.svg", "--compact"])
-    >>> args.output, args.compact
-    ('out.svg', True)
-    """
-    sub.add_argument("-o", "--output", help="write here instead of stdout")
-    sub.add_argument("--compact", action="store_true", help="single-line output, shortest path data")
-    sub.add_argument("--precision", type=int, default=SerializeOptions().precision)
+def shapes() -> None:
+    """List registered composite shapes."""
+    for name in SHAPES.names():
+        print(name)
 
 
-def add_basic_commands(commands: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+def sizes() -> None:
+    """List named canvas sizes (Document(size=...))."""
+    for name in SIZES.names():
+        width, height = SIZES.get(name)
+        print(f"{name:<{SIZE_COLUMN}} {width} x {height}")
+
+
+def elements() -> None:
+    """List supported elements by category."""
+    for category in Category:
+        tags = sorted(Element.registered(category))
+        if tags:
+            print(f"{category.name.lower()}: {' '.join(tags)}")
+
+
+def draw(shape: Annotated[str, typer.Argument(help="a name from `svgwriter shapes`")],
+         size: Annotated[float, typer.Option(help="canvas size")] = DEFAULT_CANVAS,
+         fill: Annotated[str, typer.Option(help="fill color")] = "steelblue",
+         stroke: Annotated[str | None, typer.Option(help="stroke color")] = None,
+         output: Output = None, compact: Compact = False, precision: Precision = PRECISION) -> None:
+    """Render a registered shape."""
+    if shape not in SHAPES:
+        raise typer.BadParameter(f"{shape!r} is not one of {', '.join(SHAPES.names())}", param_hint="SHAPE")
+    doc = Document(size, size)
+    center, radius = size / 2, size * CANVAS_MARGIN
+    factory = SHAPES.get(shape)
+    layout = DRAW_LAYOUTS.get(shape)
+    if layout is None:
+        drawn = factory(center, center, radius, fill=fill, stroke=stroke)
+    else:
+        lead, options = layout(center, radius)
+        line = options.pop("line", False)
+        stroked = {"stroke": fill, "stroke_width": STROKE_WIDTH} if line else {"fill": fill, "stroke": stroke}
+        drawn = factory(*lead, **options, **stroked)
+    doc += drawn
+    emit(doc.root, output, compact, precision)
+
+
+def format_file(source: Annotated[str, typer.Argument(metavar="INPUT", help="the SVG file")],
+                output: Output = None, compact: Compact = False, precision: Precision = PRECISION) -> None:
+    """Parse a file and write it back out."""
+    emit(parse_file(source, strictness=Strictness.WARN), output, compact, precision)
+
+
+def info(source: Annotated[str, typer.Argument(metavar="INPUT", help="the SVG file")]) -> None:
+    """Count elements in a file."""
+    counts = Counter(element.tag for element in parse_file(source).iter())
+    for tag, count in counts.most_common():
+        print(f"{count:6d}  {tag}")
+
+
+def add_basic_commands(app: typer.Typer) -> None:
     """Register ``shapes``, ``sizes``, ``elements``, ``draw``, ``format`` and ``info``.
 
     Parameters
     ----------
-    commands : argparse._SubParsersAction
-        The sub-parser collection of the main parser.
+    app : typer.Typer
+        The command line application.
 
     See Also
     --------
     svgwriter.cli._media.add_media_commands : The commands that need ffmpeg or skia.
     """
-    commands.add_parser("shapes", help="list registered composite shapes").set_defaults(func=_cmd_shapes)
-    commands.add_parser("sizes", help="list named canvas sizes (Document(size=...))").set_defaults(func=_cmd_sizes)
-    commands.add_parser("elements", help="list supported elements by category").set_defaults(func=_cmd_elements)
-
-    draw = commands.add_parser("draw", help="render a registered shape")
-    draw.add_argument("shape", choices=SHAPES.names())
-    draw.add_argument("--size", type=float, default=DEFAULT_CANVAS)
-    draw.add_argument("--fill", default="steelblue")
-    draw.add_argument("--stroke", default=None)
-    output_options(draw)
-    draw.set_defaults(func=_cmd_draw)
-
-    fmt = commands.add_parser("format", help="parse a file and write it back out")
-    fmt.add_argument("input")
-    output_options(fmt)
-    fmt.set_defaults(func=_cmd_format)
-
-    info = commands.add_parser("info", help="count elements in a file")
-    info.add_argument("input")
-    info.set_defaults(func=_cmd_info)
+    for command in (shapes, sizes, elements, draw):
+        app.command()(command)
+    app.command("format")(format_file)
+    app.command()(info)

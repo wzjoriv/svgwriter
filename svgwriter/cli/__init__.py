@@ -1,4 +1,4 @@
-"""The ``python -m svgwriter`` command line.
+"""The ``svgwriter`` command line (also ``python -m svgwriter``).
 
 Commands
 --------
@@ -13,44 +13,38 @@ outline             write text as glyph outlines (skia-python)
 
 from __future__ import annotations
 
-import argparse
+import sys
 from collections.abc import Sequence
-from typing import Final
+from typing import Annotated
+
+import typer
 
 from .. import __version__
 from ._basic import add_basic_commands
+from ._constants import EXIT_ERROR
 from ._media import add_media_commands
 
-EXIT_ERROR: Final = 2
+__all__ = ["app", "main"]
 
-__all__ = ["build_parser", "main"]
+app = typer.Typer(name="svgwriter", help="Write, reformat, inspect and animate SVG 1.1 files.", add_completion=False,
+                  no_args_is_help=True, pretty_exceptions_enable=False)
+"""The ``svgwriter`` application; ``app.command()`` adds a command."""
 
 
-def build_parser() -> argparse.ArgumentParser:
-    """Build the ``svgwriter`` argument parser with every sub-command attached.
+def _version(shown: bool) -> None:
+    if shown:
+        print(f"svgwriter {__version__}")
+        raise typer.Exit()
 
-    Returns
-    -------
-    argparse.ArgumentParser
-        The parser used by :func:`main`.
 
-    See Also
-    --------
-    main : Parse arguments and run a command.
+@app.callback()
+def _options(version: Annotated[bool, typer.Option("--version", callback=_version, is_eager=True,
+                                                   help="show the version and exit")] = False) -> None:
+    """Write, reformat, inspect and animate SVG 1.1 files."""
 
-    Examples
-    --------
-    >>> from svgwriter.cli import build_parser
-    >>> args = build_parser().parse_args(["draw", "star", "--size", "50"])
-    >>> args.command, args.shape, args.size
-    ('draw', 'star', 50.0)
-    """
-    parser = argparse.ArgumentParser(prog="svgwriter", description="Write, reformat, inspect and animate SVG 1.1 files.")
-    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
-    commands = parser.add_subparsers(dest="command", required=True)
-    add_basic_commands(commands)
-    add_media_commands(commands)
-    return parser
+
+add_basic_commands(app)
+add_media_commands(app)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -64,21 +58,21 @@ def main(argv: Sequence[str] | None = None) -> int:
     Returns
     -------
     int
-        The process exit status; 0 on success.
+        The exit status: 0 on success, 1 when a command fails, 2 for a usage error or a file that
+        cannot be read or written; errors are one line on stderr, without a traceback.
 
-    Raises
-    ------
-    SystemExit
-        With status 2 when a file cannot be read or written or its contents
-        are invalid; the message is printed as one line, without a traceback.
-
-    See Also
+    Examples
     --------
-    build_parser : The parser that interprets `argv`.
+    >>> from svgwriter.cli import main
+    >>> main(["draw", "star", "--size", "50", "--compact"])  # doctest: +ELLIPSIS
+    <?xml ...?>
+    <svg ...</svg>0
     """
-    parser = build_parser()
-    args = parser.parse_args(argv)
     try:
-        return int(args.func(args))
+        app(args=list(argv) if argv is not None else None, prog_name="svgwriter")
+    except SystemExit as done:
+        return done.code if isinstance(done.code, int) else 0
     except (OSError, ValueError, TypeError) as error:
-        parser.exit(EXIT_ERROR, f"{parser.prog}: error: {error}\n")
+        print(f"svgwriter: error: {error}", file=sys.stderr)
+        return EXIT_ERROR
+    return 0
