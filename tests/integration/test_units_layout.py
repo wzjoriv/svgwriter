@@ -51,13 +51,16 @@ def test_path_tools_take_page_millimetres():
     assert square.between(0, svg.mm(10), by="length").total_length() == pytest.approx(10)
 
 
-def test_a_20mm_rect_is_20mm_in_the_pdf_and_the_browser_render():
+def test_a_20mm_rect_is_20mm_in_the_pdf_and_the_browser_render(tmp_path):
     doc = svg.Document(size="a4")
     doc.rect(0, 0, svg.mm(20), svg.mm(20), fill="black")
-    content = re.search(rb"stream\r?\n(.*?)endstream", doc.export("pdf"), re.S).group(1)
-    scale = float(re.findall(rb"([\d.]+) 0 0 [\d.]+ [-\d.]+ [-\d.]+ cm", content)[-1])
-    width = float(re.search(rb"[\d.]+ [\d.]+ ([\d.]+) [\d.]+ re", content).group(1))
-    assert width * scale == pytest.approx(20 * PT_PER_MM, abs=0.01)
+    pdf = tmp_path / "page.pdf"
+    doc.save(pdf)
+    back = svg.Document.open(pdf)
+    millimetres_per_unit = 210 / float(back.root.get("width"))
+    square = min((element for element in back.root.iter() if element.tag in {"rect", "path"}),
+                 key=lambda element: element.bounds().width)
+    assert square.bounds().width * millimetres_per_unit == pytest.approx(20, abs=0.05)
     doc.rect(0, 30, svg.mm(210), 1, fill="black")
     pixels = svg.ops.render_svg(doc.to_string(), 800, 1200)[..., 3] > 0.5
     square, page = pixels[:20].any(axis=0).sum(), pixels[100:].any(axis=0).sum()
