@@ -1,0 +1,16 @@
+# The poster's look. Sizes are millimetres, because the page is drawn in millimetres.
+name = "{{ project_name }}"
+extends = "print"
+
+[palette]
+primary = "#0f4c81"
+accent = "#e07a1f"
+
+[fonts]
+family = "Georgia, 'Times New Roman', serif"
+
+[fonts.sizes]
+title = 16
+subtitle = 7
+text = 5
+caption = 4

@@ -1,0 +1,9 @@
+# The project: `svgwriter build` writes every output below into output/, `svgwriter preview` shows them live.
+[project]
+name = "{{ project_name }}"
+entry = "main:Intro"      # a Scene class, or a list of them
+theme = "theme.toml"
+
+[outputs]
+formats = ["gif", "svg"]  # add "mp4" or "webm" when ffmpeg is installed
+gif = { fps = 12, scale = 0.5 }

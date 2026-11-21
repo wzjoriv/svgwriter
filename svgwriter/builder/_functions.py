@@ -6,9 +6,9 @@ from __future__ import annotations
 
 from typing import Any
 
+from .._internal._roles import with_role
 from ..elements.shapes import Circle, Line, Rect
 from ._constants import DASH_PATTERN, DOT_RADIUS, FALLBACK_INK
-from ._roles import with_role
 
 __all__ = ["dashed_line", "dot", "outline"]
 

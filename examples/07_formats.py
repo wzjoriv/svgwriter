@@ -93,3 +93,30 @@ for name, texts, shapes, images in rows:
 
 # %%
 svg.Document.open(formats / "drawing.pdf")
+
+# %% [markdown]
+# ## Print sizes and units
+#
+# `size="a6-landscape"` makes a postcard in millimetres: the `viewBox` counts in mm, so plain numbers
+# below are millimetres. Lengths in other units convert with `.to("mm")`, angles take `svg.deg` or
+# `svg.turn`, and `dpi=` renders the real size at print resolution.
+
+# %%
+card = svg.Document(size="a6-landscape")
+card_width, card_height = (side.value for side in svg.page_size("a6-landscape"))
+margin = svg.inch(0.25).to("mm").value
+title_size = svg.pt(18).to("mm").value
+card.rect(0, 0, card_width, card_height, fill="#fefce8")
+card.rect(margin, margin, card_width - 2 * margin, card_height - 2 * margin, fill="none", stroke="#a16207",
+          stroke_width=svg.pt(1).to("mm").value)
+card.text("Greetings from 148 x 105 mm", x=card_width / 2, y=30, font_size=title_size,
+          font_family="Georgia, serif", text_anchor="middle", fill="#713f12")
+for index in range(8):
+    ray = svg.rect(card_width / 2 - 0.6, 48, 1.2, 22, fill="#f59e0b")
+    card += ray.rotate(svg.turn(index / 8), about=(card_width / 2, 70))
+card.circle(card_width / 2, 70, 9, fill="#f59e0b")
+card += svg.Polygon.regular(card_width - 22, card_height - 22, 6, 3, fill="#0ea5e9").rotate(svg.deg(30))
+card.save(formats / "postcard.png", dpi=300)
+print("viewBox:", card.root.get("viewBox"), "| width:", card.root.get("width"))
+print("postcard.png at 300 dpi:", svg.Document.open(formats / "postcard.png").root.get("width"), "px wide")
+card

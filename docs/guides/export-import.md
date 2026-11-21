@@ -153,6 +153,34 @@ page = svg.export.load("figure.pdf", page=0)
 picture = svg.Document.open("figure.tex")
 ```
 
+## Page sizes
+
+`size=` names a canvas instead of a width and height. Paper and card sizes keep their real units, so the
+`viewBox` counts in millimetres or inches and plain numbers inside are millimetres or inches; screen sizes
+are pixels. `dpi=` on raster exports then gives the real size in pixels:
+
+```python
+poster = svg.Document(size="a4")                     # 210 x 297 mm; coordinates are millimetres
+poster.rect(10, 10, 190, 277, fill="none", stroke="black", stroke_width=0.5)
+poster.save("poster.png", dpi=150)                   # 1241 x 1755 pixels
+wide = svg.Document(size="a4-landscape")             # any name turns with -landscape or -portrait
+slide = svg.Document(size="slide-16:9")              # 1280 x 720, PowerPoint's default slide size
+svg.register_size("poster-50x70", "50cm", "70cm")
+print(svg.SIZES.names()[:6], [str(side) for side in svg.page_size("poster-50x70-landscape")])
+svg.unregister_size("poster-50x70")
+```
+
+| Kind | Names |
+|---|---|
+| Paper (mm) | `a0` to `a6` |
+| Paper (in) | `letter`, `legal`, `tabloid`, `business-card` |
+| Slides and video (px) | `slide-16:9`, `slide-4:3`, `video-720p`, `video-1080p`, `youtube-thumbnail` |
+| Social images (px) | `instagram-post`, `instagram-portrait`, `instagram-story`, `og-image` |
+| Icons (px) | `favicon`, `apple-touch-icon`, `icon` |
+
+`svgwriter sizes` lists them with their dimensions, `Scene` subclasses take the same names
+(`size = "instagram-story"`), and [project files](projects.md) use them for `size`.
+
 ## Pages and slides
 
 PDF and PowerPoint hold several drawings. Pass a list to `export` or `save` to write one page or

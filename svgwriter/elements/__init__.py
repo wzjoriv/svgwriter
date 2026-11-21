@@ -30,6 +30,7 @@ from ._behavior import (
     XLinkAttributes,
     XmlSpace,
 )
+from ._motion import Motion
 from .animation import (
     Accumulate,
     Additive,
@@ -102,6 +103,7 @@ from .text import (
 
 __all__ = [
     "A",
+    "Motion",
     "Accumulate",
     "Additive",
     "AltGlyph",

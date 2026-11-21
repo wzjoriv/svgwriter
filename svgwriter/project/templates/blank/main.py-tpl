@@ -1,0 +1,29 @@
+"""# {{ project_name }}
+
+The drawing. `svgwriter build` creates a document with the size and theme from `svgwriter.toml`, hands it
+to `build`, and writes every output listed there.
+"""
+
+# %%
+import svgwriter as svg
+from animations import bob
+from components import title_block
+
+# %% [markdown]
+# `build` draws into that document. Shapes take their colors from theme roles, the title comes from a
+# component, and the star moves with this project's own `bob` animation.
+
+# %%
+def build(doc: svg.Document) -> None:
+    """Draw the page."""
+    box = doc.root.get("viewBox")
+    doc.rect(0, 0, box.width, box.height).as_role("background")
+    doc += title_block("{{ project_name }}", "Edit main.py, then run svgwriter build", x=56, y=96)
+    star = svg.builder.star(box.width / 2, box.height / 2 + 60, 110, 48)
+    doc += star
+    star.animate.apply(bob, height=16)
+
+
+# %%
+if __name__ == "__main__":
+    print(*svg.Project.load().build(), sep="\n")

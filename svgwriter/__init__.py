@@ -39,6 +39,10 @@ io
     parser.
 builder
     Composite shapes (star, gear, arrow) and effects (shadow, glow).
+preset
+    Presets of your own by kind (``@svg.preset.animation``, ``@svg.preset.shape``).
+project
+    Design projects: ``svgwriter.toml``, presets, building and live preview (``Project``).
 theme
     Palettes, fonts and role styles applied as CSS classes (``Theme``).
 ops
@@ -58,7 +62,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from . import export, ops, theme, video
+from . import export, ops, preset, project, theme, video
+from ._document.sizes import SIZES, page_size, register_size, unregister_size
 from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
 from .aliases import filter as filter  # noqa: A004, E402
@@ -87,7 +92,7 @@ from .attributes import (
     rad,
     turn,
 )
-from .builder import SHAPES, drawing, drop_shadow, shape_factory
+from .builder import drawing, drop_shadow
 from .color import Color, PaintKeyword, parse_color, parse_paint
 from .document import Document
 from .elements import *  # noqa: F403
@@ -95,6 +100,7 @@ from .elements import __all__ as _elements_all
 from .io.writer import SerializeOptions, to_string, write
 from .ops import interpolate, register_font, register_interpolator, text_to_path, unregister_interpolator
 from .pathdata import BBox, PathBuilder, PathData
+from .project import Project
 from .theme import THEMES, Theme
 from .transform import Matrix, Point, Transform
 from .video import FFmpegNotFoundError, Scene, register_renderer
@@ -142,7 +148,7 @@ __all__ = [
     "IRI",
     "Point",
     "SVGParseError",
-    "SHAPES",
+    "SIZES",
     "Scene",
     "Align",
     "Color",
@@ -178,23 +184,28 @@ __all__ = [
     "turn",
     "mm",
     "interpolate",
+    "page_size",
     "latex",
     "parse",
     "register_font",
+    "register_size",
     "register_interpolator",
     "parse_color",
     "parse_file",
     "parse_paint",
     "export",
     "ops",
+    "preset",
+    "project",
+    "Project",
     "percent",
     "pt",
     "px",
     "register_renderer",
-    "shape_factory",
     "text_to_path",
     "theme",
     "unregister_interpolator",
+    "unregister_size",
     "to_string",
     "video",
     "write",

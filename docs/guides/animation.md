@@ -74,6 +74,44 @@ badge = svg.circle(50, 50, 30, fill="teal")
 badge.animate.create(1).uncreate(1, begin=3)
 ```
 
+## Presets of your own
+
+A reusable animation is a typed function decorated with `@svg.preset.animation`. Its first positional
+parameter is the element's `Motion` (what `el.animate` returns), every option is keyword-only with a
+default, and it returns the motion so calls chain:
+
+```python
+@svg.preset.animation
+def bob(motion: svg.Motion, *, height: float = 8, dur: float = 1, begin: float = 0,
+        ease: svg.EaseLike | None = None) -> svg.Motion:
+    """Rise by *height* and come back down."""
+    half = dur / 2
+    return motion.move_by(0, -height, half, begin=begin, ease=ease).move_by(0, height, half, begin=begin + half,
+                                                                            ease=ease)
+
+
+dot = svg.circle(20, 40, 6, fill="teal")
+dot.animate.apply(bob, height=12).fade_out(begin=1)   # typed: editors complete and check the options
+dot.animate.bob(begin=2)                              # by name, like the built-in presets
+row = svg.Group()
+row += [svg.circle(20 + 20 * index, 80, 6) for index in range(4)]
+row.animate.stagger("bob", step=0.2, height=6)
+print(svg.preset.list("animation")[-1])
+svg.preset.unregister("animation", "bob")
+```
+
+The shape is checked when the function is decorated, so a mistake fails at once with a `TypeError`
+showing the expected signature. Returning None is accepted too; `apply` returns the motion either way.
+`@svg.preset.animation(name="hop")` registers under another name. A taken name raises `ValueError` naming
+the function that owns it, built-in presets included; `replace=True` replaces one on purpose (a
+replacement can still call the original as `svg.Motion.spin(motion, ...)`), and unregistering the
+replacement brings the built-in back. `svg.preset.list("animation")` lists the built-in presets and
+yours, and an unknown name in `el.animate.<name>` raises `AttributeError` suggesting the closest ones.
+`Motion.apply` also runs functions that are not registered at all.
+
+In a [project](projects.md), presets live in the `animations/` folder and are registered when it is
+imported.
+
 ## Easing
 
 Every preset with a duration (all but `show` and `hide`), and `Animate`, `AnimateTransform`, `AnimateColor` and `AnimateMotion`, takes `ease=`: a

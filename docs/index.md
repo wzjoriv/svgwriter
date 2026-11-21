@@ -39,6 +39,7 @@ guides/export-import
 guides/animation
 guides/logos
 guides/themes
+guides/projects
 ```
 
 ```{toctree}

@@ -1,0 +1,12 @@
+# The animation's look.
+name = "{{ project_name }}"
+extends = "dark"
+
+[palette]
+primary = "#38bdf8"
+accent = "#f472b6"
+on_primary = "=readable({palette.primary})"
+
+[fonts.sizes]
+title = 64
+subtitle = 30

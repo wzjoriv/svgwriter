@@ -1,19 +1,18 @@
 """
-Theme roles for builder shapes: the role class plus caller attributes kept ahead of it.
+Theme roles for preset shapes: the role class plus caller attributes kept ahead of it.
 """
 
 from __future__ import annotations
 
 from collections.abc import Iterable, Mapping
-from typing import TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
-from ..attributes.names import PRESENTATION_ATTRIBUTES, svg_name
-from ..elements.core import Element
-from ..theme.theme import Theme
+if TYPE_CHECKING:
+    from ..elements.core import Element
 
 __all__ = ["with_role"]
 
-E = TypeVar("E", bound=Element)
+E = TypeVar("E", bound="Element")
 
 
 def with_role(element: E, role: str | None, given: Iterable[str], fallback: Mapping[str, object] | None = None) -> E:
@@ -22,6 +21,9 @@ def with_role(element: E, role: str | None, given: Iterable[str], fallback: Mapp
     The theme rule overrides plain attributes, so the caller's choices are kept in ``style`` where they
     still win. *fallback* attributes apply when no theme sheet is present (an element written on its own).
     """
+    from ..attributes.names import PRESENTATION_ATTRIBUTES, svg_name
+    from ..theme.theme import Theme
+
     if role is None:
         return element
     names = {svg_name(key) for key in given} & PRESENTATION_ATTRIBUTES

@@ -4,16 +4,13 @@ Composite shapes registered by name for the CLI and plugins.
 
 from __future__ import annotations
 
-import functools
 import math
-from collections.abc import Callable
-from typing import Any, Final, TypeVar
+from typing import Any, TypeVar
 
-from .._internal._registry import Registry
-from .._internal._typing import P
 from ..elements.core import Element
 from ..elements.shapes import Path, Polygon
 from ..pathdata.builder import PathBuilder
+from ..preset import shape
 from ._constants import (
     ARROW_HEAD_ANGLE,
     DEFAULT_HEAD_SIZE,
@@ -25,75 +22,11 @@ from ._constants import (
     QUARTER_TURN,
     TOOTH_DEPTH_RATIO,
 )
-from ._roles import with_role
 from ._rounded import rounded_outline
 
-__all__ = ["SHAPES", "arrow", "gear", "regular_polygon", "shape_factory", "star"]
+__all__ = ["arrow", "gear", "regular_polygon", "star"]
 
 E = TypeVar("E", bound=Element)
-
-SHAPES: Final[Registry[Callable[..., Element]]] = Registry("shape")
-
-
-def shape_factory(name: str, role: str | None = "shape") -> Callable[[Callable[P, E]], Callable[P, E]]:
-    """Register a function returning an element under *name*.
-
-    The wrapper checks the return type, so plugins fail loudly, and marks the
-    element with a theme *role*; presentation keywords the caller passes move
-    into the inline style so they keep priority over the role. Registered
-    shapes are listed by ``python -m svgwriter shapes`` and drawn by
-    ``python -m svgwriter draw``.
-
-    Parameters
-    ----------
-    name : str
-        The name to register the shape under.
-    role : str or None, optional
-        Theme role of the shapes built (see :class:`~svgwriter.Theme`). Defaults to ``"shape"``
-        (filled with the palette's primary color); None leaves them unthemed.
-
-    Returns
-    -------
-    callable
-        A decorator that registers the function and returns the checking wrapper.
-
-    Raises
-    ------
-    ValueError
-        If `name` is already registered.
-    TypeError
-        When the decorated function is called and does not return an element.
-
-    See Also
-    --------
-    SHAPES : The registry of shapes.
-
-    Examples
-    --------
-    >>> from svgwriter import Circle
-    >>> from svgwriter.builder import shape_factory
-    >>> from svgwriter.builder import SHAPES
-    >>> @shape_factory("disc")
-    ... def disc(cx, cy, r, **kwargs):
-    ...     return Circle(cx, cy, r, **kwargs)
-    >>> str(disc(0, 0, 2, stroke="red"))
-    '<circle cx="0" cy="0" r="2" style="stroke:red" class="role-shape"/>'
-    >>> _ = SHAPES.remove("disc")
-    """
-
-    def decorate(func: Callable[P, E]) -> Callable[P, E]:
-        @functools.wraps(func)
-        def wrapper(*args: P.args, **kwargs: P.kwargs) -> E:
-            result = func(*args, **kwargs)
-            if not isinstance(result, Element):
-                raise TypeError(f"shape {name!r} returned {type(result).__name__}")
-            return with_role(result, role, kwargs)
-
-        SHAPES.add(name, wrapper)
-        return wrapper
-
-    return decorate
-
 
 def _ring(cx: float, cy: float, radii: list[float], rotation: float) -> list[tuple[float, float]]:
     count = len(radii)
@@ -104,7 +37,7 @@ def _ring(cx: float, cy: float, radii: list[float], rotation: float) -> list[tup
     return points
 
 
-@shape_factory("star")
+@shape("star")
 def star(
     cx: float,
     cy: float,
@@ -158,7 +91,7 @@ def star(
     return Polygon(vertices, **kwargs)
 
 
-@shape_factory("gear")
+@shape("gear")
 def gear(cx: float, cy: float, radius: float, teeth: int = DEFAULT_TEETH, **kwargs: Any) -> Polygon:
     """Build a gear outline with square-ish teeth.
 
@@ -193,7 +126,7 @@ def gear(cx: float, cy: float, radius: float, teeth: int = DEFAULT_TEETH, **kwar
     return Polygon(_ring(cx, cy, radii, 0.0), **kwargs)
 
 
-@shape_factory("arrow", role="arrow.line")
+@shape("arrow", role="arrow.line")
 def arrow(x1: float, y1: float, x2: float, y2: float, head: float = DEFAULT_HEAD_SIZE, **kwargs: Any) -> Path:
     """Build a line with an open arrowhead at ``(x2, y2)``.
 
@@ -234,7 +167,7 @@ def arrow(x1: float, y1: float, x2: float, y2: float, head: float = DEFAULT_HEAD
     return Path(builder, **kwargs)
 
 
-@shape_factory("regular_polygon")
+@shape("regular_polygon")
 def regular_polygon(
     cx: float,
     cy: float,
@@ -293,4 +226,4 @@ def regular_polygon(
     return Polygon(vertices, **kwargs)
 
 
-shape_factory("polygon")(Polygon.regular)
+shape("polygon")(Polygon.regular)

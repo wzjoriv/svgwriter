@@ -1,0 +1,11 @@
+# The project's look: palette, fonts and role styles. It extends a built-in theme, so only changes go here.
+name = "{{ project_name }}"
+extends = "light"
+
+[palette]
+primary = "#4f46e5"
+accent = "#f59e0b"
+on_primary = "=readable({palette.primary})"
+
+[fonts]
+family = "Inter, 'Segoe UI', Helvetica, Arial, sans-serif"
