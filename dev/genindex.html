@@ -832,6 +832,8 @@
           <li><a href="reference/geometry.html#svgwriter.pathdata.VLineTo.coordinates">(VLineTo attribute)</a>
 </li>
         </ul></li>
+        <li><a href="reference/color.html#svgwriter.color.Color.coords">coords() (Color method)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.elements.Element.copy">copy() (Element method)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.Corner">Corner (class in svgwriter.ops)</a>
@@ -943,6 +945,10 @@
         <li><a href="reference/attributes.html#svgwriter.attributes.units.deg">deg (in module svgwriter.attributes.units)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.Angle.degrees">degrees (Angle property)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.delta">delta() (Color method)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.delta_e2000">delta_e2000() (Color method)</a>
 </li>
         <li><a href="reference/color.html#svgwriter.color.Color.desaturate">desaturate() (Color method)</a>
 </li>
@@ -1298,6 +1304,8 @@
         </ul></li>
         <li><a href="reference/ops.html#svgwriter.ops.from_skia">from_skia() (in module svgwriter.ops)</a>
 </li>
+        <li><a href="reference/color.html#svgwriter.color.Color.from_space">from_space() (Color class method)</a>
+</li>
         <li><a href="reference/document.html#svgwriter.Document.from_string">from_string() (Document class method)</a>
 </li>
         <li><a href="reference/color.html#svgwriter.color.Color.from_uint8">from_uint8() (Color class method)</a>
@@ -1326,8 +1334,12 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.TransferType.GAMMA">GAMMA (TransferType attribute)</a>
 </li>
-        <li><a href="reference/elements.html#svgwriter.elements.filters.FeFunc.gamma">gamma() (FeFunc class method)</a>
+        <li><a href="reference/color.html#svgwriter.color.Color.gamma">gamma() (Color method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.elements.filters.FeFunc.gamma">(FeFunc class method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/builder.html#svgwriter.builder.gear">gear() (in module svgwriter.builder)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.shapes.Circle.geometry_attributes">geometry_attributes (Circle attribute)</a>
@@ -1460,6 +1472,8 @@
           <li><a href="reference/attributes.html#svgwriter.attributes.Unit.IN">(Unit attribute)</a>
 </li>
         </ul></li>
+        <li><a href="reference/color.html#svgwriter.color.Color.in_gamut">in_gamut (Color property)</a>
+</li>
         <li><a href="reference/attributes.html#svgwriter.attributes.units.inch">inch (in module svgwriter.attributes.units)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.Unit.INCH">INCH (Unit attribute)</a>
@@ -2047,6 +2061,8 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.text.Character.position">position (Character property)</a>
 </li>
+        <li><a href="reference/color.html#svgwriter.color.Color.posterize">posterize() (Color method)</a>
+</li>
         <li><a href="reference/io.html#svgwriter.io.SerializeOptions.precision">precision (SerializeOptions attribute)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.Style.presentation_only">presentation_only() (Style method)</a>
@@ -2365,6 +2381,8 @@
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.cascade.Rule.selector">selector (Rule attribute)</a>
 </li>
+        <li><a href="reference/color.html#svgwriter.color.Color.sepia">sepia() (Color method)</a>
+</li>
         <li><a href="reference/io.html#svgwriter.io.SerializeOptions">SerializeOptions (class in svgwriter.io)</a>
 </li>
         <li><a href="reference/project.html#svgwriter.Project.serve">serve() (Project method)</a>
@@ -2372,6 +2390,8 @@
         <li><a href="reference/elements.html#svgwriter.elements.animation.Set">Set (class in svgwriter.elements.animation)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.Element.set">set() (Element method)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.shade">shade() (Color method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.shapes.Shape">Shape (class in svgwriter.elements.shapes)</a>
 </li>
@@ -2443,9 +2463,11 @@
 </li>
         <li><a href="reference/geometry.html#svgwriter.pathdata.SmoothQuadTo">SmoothQuadTo (class in svgwriter.pathdata)</a>
 </li>
-        <li><a href="reference/ops.html#svgwriter.ops.Face.source">source (Face attribute)</a>
+        <li><a href="reference/color.html#svgwriter.color.Color.source">source (Color attribute)</a>
 
         <ul>
+          <li><a href="reference/ops.html#svgwriter.ops.Face.source">(Face attribute)</a>
+</li>
           <li><a href="reference/project.html#svgwriter.project.ProjectConfig.source">(ProjectConfig attribute)</a>
 </li>
         </ul></li>
@@ -2456,6 +2478,8 @@
         <li><a href="reference/theme.html#svgwriter.theme.Palette.sources">sources (Palette property)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.FilterPrimitive.sources">sources() (FilterPrimitive method)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.space">space (Color property)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.cascade.Rule.specificity">specificity (Rule attribute)</a>
 </li>
@@ -2489,12 +2513,12 @@
           <li><a href="reference/theme.html#svgwriter.theme.Theme.style">(Theme method)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.elements.structure.StyleElement">StyleElement (class in svgwriter.elements.structure)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.Face.styles">styles (Face property)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/attributes.html#svgwriter.attributes.StyleSheet">StyleSheet (class in svgwriter.attributes)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.Face.subfamily">subfamily (Face attribute)</a>
@@ -2930,6 +2954,8 @@
         <li><a href="reference/video.html#svgwriter.video.Frame.time">time (Frame attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.animation.Ease.time_of">time_of() (Ease method)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.tint">tint() (Color method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.structure.Title">Title (class in svgwriter.elements.structure)</a>
 </li>

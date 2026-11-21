@@ -548,45 +548,48 @@ Derived values follow their sources: replacing <code class="docutils literal not
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lighten(c,</span> <span class="pre">amount)</span></code>, <code class="docutils literal notranslate"><span class="pre">darken(c,</span> <span class="pre">amount)</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">c</span></code> moved toward white or black; <code class="docutils literal notranslate"><span class="pre">amount</span></code> from 0 to 1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">c</span></code> moved toward white or black in HSL; <code class="docutils literal notranslate"><span class="pre">amount</span></code> from 0 to 1</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mix(a,</span> <span class="pre">b,</span> <span class="pre">weight?,</span> <span class="pre">space?)</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">a</span></code> blended toward <code class="docutils literal notranslate"><span class="pre">b</span></code> by <code class="docutils literal notranslate"><span class="pre">weight</span></code> (default 0.5) in <code class="docutils literal notranslate"><span class="pre">'srgb'</span></code> (default), <code class="docutils literal notranslate"><span class="pre">'linear'</span></code>, <code class="docutils literal notranslate"><span class="pre">'oklab'</span></code> or <code class="docutils literal notranslate"><span class="pre">'oklch'</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">tint(c,</span> <span class="pre">amount)</span></code>, <code class="docutils literal notranslate"><span class="pre">shade(c,</span> <span class="pre">amount)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">c</span></code> mixed with white or black in OKLab, keeping its hue; <code class="docutils literal notranslate"><span class="pre">amount</span></code> from 0 to 1</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">alpha(c,</span> <span class="pre">a)</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mix(a,</span> <span class="pre">b,</span> <span class="pre">weight?,</span> <span class="pre">space?)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">a</span></code> blended toward <code class="docutils literal notranslate"><span class="pre">b</span></code> by <code class="docutils literal notranslate"><span class="pre">weight</span></code> (default 0.5) in <code class="docutils literal notranslate"><span class="pre">'srgb'</span></code> (default), <code class="docutils literal notranslate"><span class="pre">'linear'</span></code>, <code class="docutils literal notranslate"><span class="pre">'display-p3'</span></code>, <code class="docutils literal notranslate"><span class="pre">'lab'</span></code>, <code class="docutils literal notranslate"><span class="pre">'lch'</span></code>, <code class="docutils literal notranslate"><span class="pre">'oklab'</span></code>, <code class="docutils literal notranslate"><span class="pre">'oklch'</span></code> or <code class="docutils literal notranslate"><span class="pre">'xyz'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alpha(c,</span> <span class="pre">a)</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">c</span></code> with opacity <code class="docutils literal notranslate"><span class="pre">a</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">saturate(c,</span> <span class="pre">amount)</span></code>, <code class="docutils literal notranslate"><span class="pre">desaturate(c,</span> <span class="pre">amount)</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">saturate(c,</span> <span class="pre">amount)</span></code>, <code class="docutils literal notranslate"><span class="pre">desaturate(c,</span> <span class="pre">amount)</span></code></p></td>
 <td><p>HSL saturation raised or lowered</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hue_shift(c,</span> <span class="pre">degrees)</span></code>, <code class="docutils literal notranslate"><span class="pre">complement(c)</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hue_shift(c,</span> <span class="pre">degrees)</span></code>, <code class="docutils literal notranslate"><span class="pre">complement(c)</span></code></p></td>
 <td><p>hue turned by <code class="docutils literal notranslate"><span class="pre">degrees</span></code>, or by 180</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">grayscale(c)</span></code>, <code class="docutils literal notranslate"><span class="pre">invert(c)</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grayscale(c)</span></code>, <code class="docutils literal notranslate"><span class="pre">invert(c)</span></code></p></td>
 <td><p>grey of the same luminance; inverted channels</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">luminance(c)</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">luminance(c)</span></code></p></td>
 <td><p>WCAG relative luminance, 0 to 1</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">contrast(a,</span> <span class="pre">b)</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">contrast(a,</span> <span class="pre">b)</span></code></p></td>
 <td><p>WCAG contrast ratio, 1 to 21</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">is_dark(c)</span></code>, <code class="docutils literal notranslate"><span class="pre">is_light(c)</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">is_dark(c)</span></code>, <code class="docutils literal notranslate"><span class="pre">is_light(c)</span></code></p></td>
 <td><p>a condition</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">readable(bg,</span> <span class="pre">a?,</span> <span class="pre">b?)</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">readable(bg,</span> <span class="pre">a?,</span> <span class="pre">b?)</span></code></p></td>
 <td><p>of <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> (default black and white), the one with more contrast on <code class="docutils literal notranslate"><span class="pre">bg</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">min(x,</span> <span class="pre">...)</span></code>, <code class="docutils literal notranslate"><span class="pre">max(x,</span> <span class="pre">...)</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">min(x,</span> <span class="pre">...)</span></code>, <code class="docutils literal notranslate"><span class="pre">max(x,</span> <span class="pre">...)</span></code></p></td>
 <td><p>the smallest or largest number</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">clamp(x,</span> <span class="pre">low,</span> <span class="pre">high)</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">clamp(x,</span> <span class="pre">low,</span> <span class="pre">high)</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">x</span></code> kept within <code class="docutils literal notranslate"><span class="pre">low</span></code> and <code class="docutils literal notranslate"><span class="pre">high</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">round(x,</span> <span class="pre">digits?)</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">round(x,</span> <span class="pre">digits?)</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">x</span></code> rounded to 0 (default) to 6 digits</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">if(condition,</span> <span class="pre">then,</span> <span class="pre">else)</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">if(condition,</span> <span class="pre">then,</span> <span class="pre">else)</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">then</span></code> or <code class="docutils literal notranslate"><span class="pre">else</span></code>; only the chosen one is evaluated</p></td>
 </tr>
 </tbody>

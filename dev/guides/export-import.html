@@ -338,13 +338,13 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">.png</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">scale</span></code>, <code class="docutils literal notranslate"><span class="pre">size</span></code>, <code class="docutils literal notranslate"><span class="pre">padding</span></code>, <code class="docutils literal notranslate"><span class="pre">background</span></code>; text becomes pixels; import is an <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">scale</span></code>, <code class="docutils literal notranslate"><span class="pre">size</span></code>, <code class="docutils literal notranslate"><span class="pre">padding</span></code>, <code class="docutils literal notranslate"><span class="pre">background</span></code>, <code class="docutils literal notranslate"><span class="pre">icc</span></code>; text becomes pixels; import is an <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>JPEG</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.jpg</span></code> <code class="docutils literal notranslate"><span class="pre">.jpeg</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">quality</span></code>; import is an <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">quality</span></code>, <code class="docutils literal notranslate"><span class="pre">icc</span></code>; import is an <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>WebP</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.webp</span></code></p></td>
@@ -382,127 +382,133 @@
 <td class="text-center"><p>✓</p></td>
 <td><p>import also reads <code class="docutils literal notranslate"><span class="pre">.pbm</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>ICO</p></td>
+<tr class="row-even"><td><p>TIFF</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.tif</span></code> <code class="docutils literal notranslate"><span class="pre">.tiff</span></code></p></td>
+<td class="text-center"><p>✓</p></td>
+<td class="text-center"><p>—</p></td>
+<td><p>lossless RGBA with the <code class="docutils literal notranslate"><span class="pre">dpi</span></code> written in; <code class="docutils literal notranslate"><span class="pre">icc=</span></code> with a CMYK profile writes CMYK</p></td>
+</tr>
+<tr class="row-odd"><td><p>ICO</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.ico</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>PNG entries at <code class="docutils literal notranslate"><span class="pre">sizes=</span></code>, <code class="docutils literal notranslate"><span class="pre">padding=</span></code>; import takes the largest image</p></td>
 </tr>
-<tr class="row-odd"><td><p>ICNS</p></td>
+<tr class="row-even"><td><p>ICNS</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.icns</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>standard and Retina sizes; import takes the largest image</p></td>
 </tr>
-<tr class="row-even"><td><p>PDF</p></td>
+<tr class="row-odd"><td><p>PDF</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.pdf</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
-<td><p>vector (skia); text kept as text, in an embedded font subset; import reads paths, images, clips, text and shadings, <code class="docutils literal notranslate"><span class="pre">page=</span></code>; links stay clickable; a list of documents gives one page each (<code class="docutils literal notranslate"><span class="pre">page=None</span></code> reads all)</p></td>
+<td><p>vector (skia); text kept as text, in an embedded font subset; import reads paths, images, clips, text and shadings, <code class="docutils literal notranslate"><span class="pre">page=</span></code>; links stay clickable; a list of documents gives one page each (<code class="docutils literal notranslate"><span class="pre">page=None</span></code> reads all); <code class="docutils literal notranslate"><span class="pre">icc</span></code> output intent; <code class="docutils literal notranslate"><span class="pre">px_per_inch</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>EPS / PostScript</p></td>
+<tr class="row-even"><td><p>EPS / PostScript</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.eps</span></code> <code class="docutils literal notranslate"><span class="pre">.ps</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>text kept as text (ASCII in standard fonts); no transparency; import is a small PostScript interpreter</p></td>
 </tr>
-<tr class="row-even"><td><p>TikZ</p></td>
+<tr class="row-odd"><td><p>TikZ</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.tikz</span></code> <code class="docutils literal notranslate"><span class="pre">.tex</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">standalone=True</span></code> for a compilable document; text kept as <code class="docutils literal notranslate"><span class="pre">\node</span></code>; import reads <code class="docutils literal notranslate"><span class="pre">\draw</span></code>, <code class="docutils literal notranslate"><span class="pre">\fill</span></code>, nodes, grids, shadings, <code class="docutils literal notranslate"><span class="pre">\foreach</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>DXF</p></td>
+<tr class="row-even"><td><p>DXF</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.dxf</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>CAD polylines in mm, one layer per colour; import reads lines, polylines, circles, arcs, ellipses</p></td>
 </tr>
-<tr class="row-even"><td><p>HPGL</p></td>
+<tr class="row-odd"><td><p>HPGL</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.hpgl</span></code> <code class="docutils literal notranslate"><span class="pre">.plt</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>pen plotters and cutters, one pen per colour</p></td>
 </tr>
-<tr class="row-odd"><td><p>G-code</p></td>
+<tr class="row-even"><td><p>G-code</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.gcode</span></code> <code class="docutils literal notranslate"><span class="pre">.nc</span></code> <code class="docutils literal notranslate"><span class="pre">.ngc</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">mode=&quot;mill&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;laser&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">feed</span></code>, <code class="docutils literal notranslate"><span class="pre">cut_z</span></code>, <code class="docutils literal notranslate"><span class="pre">tolerance</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>Excalidraw</p></td>
+<tr class="row-odd"><td><p>Excalidraw</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.excalidraw</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>writes outlines, text, images and links; import reads shapes, arrows, text, images and groups (also <code class="docutils literal notranslate"><span class="pre">.json</span></code>)</p></td>
 </tr>
-<tr class="row-odd"><td><p>HTML</p></td>
+<tr class="row-even"><td><p>HTML</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.html</span></code> <code class="docutils literal notranslate"><span class="pre">.htm</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>standalone page with the SVG inline (text kept as text), <code class="docutils literal notranslate"><span class="pre">css=</span></code>, <code class="docutils literal notranslate"><span class="pre">handlers=</span></code>; import reads the first inline <code class="docutils literal notranslate"><span class="pre">&lt;svg&gt;</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>PowerPoint</p></td>
+<tr class="row-odd"><td><p>PowerPoint</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.pptx</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>needs <code class="docutils literal notranslate"><span class="pre">pysvgwriter[office]</span></code>; editable shapes and text boxes both ways, <code class="docutils literal notranslate"><span class="pre">slide=</span></code> on import; text kept as text; a list of documents gives one slide each (<code class="docutils literal notranslate"><span class="pre">slide=None</span></code> reads all); <code class="docutils literal notranslate"><span class="pre">svg.latex</span></code> formulas become editable equations</p></td>
 </tr>
-<tr class="row-odd"><td><p>Word</p></td>
+<tr class="row-even"><td><p>Word</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.docx</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>needs <code class="docutils literal notranslate"><span class="pre">pysvgwriter[office]</span></code>; editable shapes, pictures and text boxes out; import lays out paragraphs, headings, lists and styled runs as <code class="docutils literal notranslate"><span class="pre">&lt;text&gt;</span></code> with pictures in flow; <code class="docutils literal notranslate"><span class="pre">svg.latex</span></code> formulas become editable equations</p></td>
 </tr>
-<tr class="row-even"><td><p>Excel</p></td>
+<tr class="row-odd"><td><p>Excel</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.xlsx</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>—</p></td>
 <td><p>needs <code class="docutils literal notranslate"><span class="pre">pysvgwriter[office]</span></code>; the drawing as a picture</p></td>
 </tr>
-<tr class="row-odd"><td><p>Markdown</p></td>
+<tr class="row-even"><td><p>Markdown</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.md</span></code> <code class="docutils literal notranslate"><span class="pre">.markdown</span></code></p></td>
 <td class="text-center"><p>—</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>headings, lists, code and bold become <code class="docutils literal notranslate"><span class="pre">&lt;text&gt;</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>Plain text</p></td>
+<tr class="row-odd"><td><p>Plain text</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.txt</span></code> <code class="docutils literal notranslate"><span class="pre">.text</span></code></p></td>
 <td class="text-center"><p>—</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>one <code class="docutils literal notranslate"><span class="pre">&lt;text&gt;</span></code> per line</p></td>
 </tr>
-<tr class="row-odd"><td><p>Graphviz DOT</p></td>
+<tr class="row-even"><td><p>Graphviz DOT</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.dot</span></code> <code class="docutils literal notranslate"><span class="pre">.gv</span></code></p></td>
 <td class="text-center"><p>—</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>laid out by Graphviz (<code class="docutils literal notranslate"><span class="pre">dot</span></code>, or <code class="docutils literal notranslate"><span class="pre">SVGWRITER_DOT</span></code>)</p></td>
 </tr>
-<tr class="row-even"><td><p>Mermaid</p></td>
+<tr class="row-odd"><td><p>Mermaid</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.mmd</span></code> <code class="docutils literal notranslate"><span class="pre">.mermaid</span></code></p></td>
 <td class="text-center"><p>—</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>flowcharts need no tool (built-in parser and layout); other diagrams use <code class="docutils literal notranslate"><span class="pre">mmdc</span></code> (<code class="docutils literal notranslate"><span class="pre">SVGWRITER_MMDC</span></code>)</p></td>
 </tr>
-<tr class="row-odd"><td><p>PlantUML</p></td>
+<tr class="row-even"><td><p>PlantUML</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.puml</span></code> <code class="docutils literal notranslate"><span class="pre">.plantuml</span></code></p></td>
 <td class="text-center"><p>—</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>drawn by <code class="docutils literal notranslate"><span class="pre">plantuml</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>D2</p></td>
+<tr class="row-odd"><td><p>D2</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.d2</span></code></p></td>
 <td class="text-center"><p>—</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>drawn by <code class="docutils literal notranslate"><span class="pre">d2</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>LaTeX math</p></td>
+<tr class="row-even"><td><p>LaTeX math</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">svg.latex(...)</span></code></p></td>
 <td class="text-center"><p>—</p></td>
 <td class="text-center"><p>✓</p></td>
 <td><p>formulas as glyph outlines: TeX (<code class="docutils literal notranslate"><span class="pre">latex</span></code> + <code class="docutils literal notranslate"><span class="pre">dvisvgm</span></code>), else Ziamath (<code class="docutils literal notranslate"><span class="pre">pysvgwriter[math]</span></code>), else matplotlib mathtext</p></td>
 </tr>
-<tr class="row-even"><td><p>Video frames</p></td>
+<tr class="row-odd"><td><p>Video frames</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.mp4</span></code> <code class="docutils literal notranslate"><span class="pre">.webm</span></code> <code class="docutils literal notranslate"><span class="pre">.mov</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
@@ -950,6 +956,52 @@ sets how many pixels an inch of the document becomes (96 is <code class="docutil
 96/2.54, so a file made elsewhere opens at its real size and an exported file reads back at the
 same size with every shape in the same place, measured in user units (a millimetre document comes
 back as 793.7 × 1122.5 units with no <code class="docutils literal notranslate"><span class="pre">viewBox</span></code> scaling).</p>
+<p>A drawing made in plain numbers is in CSS pixels, so a 144-unit-wide figure prints 1.5 inches wide.
+When the numbers are meant as points (one unit, one point, as in many plotting tools), pass
+<code class="docutils literal notranslate"><span class="pre">px_per_inch=72</span></code> to <code class="docutils literal notranslate"><span class="pre">pdf</span></code>, <code class="docutils literal notranslate"><span class="pre">eps</span></code> or <code class="docutils literal notranslate"><span class="pre">tikz</span></code>; sizes in <code class="docutils literal notranslate"><span class="pre">mm</span></code>, <code class="docutils literal notranslate"><span class="pre">cm</span></code>, <code class="docutils literal notranslate"><span class="pre">in</span></code>, <code class="docutils literal notranslate"><span class="pre">pt</span></code> or <code class="docutils literal notranslate"><span class="pre">pc</span></code> stay as they are:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">chart</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">144</span><span class="p">,</span> <span class="mi">72</span><span class="p">)</span>                     <span class="c1"># meant as 2 x 1 inches</span>
+<span class="n">chart</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"none"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"black"</span><span class="p">)</span>
+<span class="n">chart</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"chart.pdf"</span><span class="p">,</span> <span class="n">px_per_inch</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>          <span class="c1"># 144 x 72 pt</span>
+<span class="n">chart</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"chart.pdf"</span><span class="p">)</span>                          <span class="c1"># 108 x 54 pt: CSS pixels</span>
+</pre></div>
+</div>
+</section>
+<section id="colour-profiles">
+<h2>Colour profiles<a class="headerlink" href="#colour-profiles" title="Link to this heading">¶</a></h2>
+<p>Every export draws in sRGB. With the <a class="reference internal" href="../start/installation.html"><span class="doc">color extra</span></a> installed, <code class="docutils literal notranslate"><span class="pre">icc=</span></code>
+attaches an ICC profile, converting the pixels when it is not sRGB (LittleCMS does it in one pass and
+profiles are parsed once):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"figure.png"</span><span class="p">,</span> <span class="n">icc</span><span class="o">=</span><span class="s2">"srgb"</span><span class="p">)</span>               <span class="c1"># tagged sRGB, pixels unchanged</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"figure.png"</span><span class="p">,</span> <span class="n">icc</span><span class="o">=</span><span class="s2">"display-p3"</span><span class="p">)</span>         <span class="c1"># pixels converted to Display P3, profile in iCCP</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"figure.jpg"</span><span class="p">,</span> <span class="n">icc</span><span class="o">=</span><span class="s2">"display-p3"</span><span class="p">)</span>         <span class="c1"># profile in APP2 segments</span>
+<span class="c1"># doc.save("press.tif", icc=open("press.icc", "rb").read(), dpi=300)   # CMYK ink for a CMYK profile</span>
+<span class="c1"># doc.save("print.pdf", icc=open("press.icc", "rb").read())            # PDF/X-style output intent</span>
+</pre></div>
+</div>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Format</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">icc=</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>PNG, APNG, JPEG</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;srgb&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;display-p3&quot;</span></code> or RGB profile bytes; the pixels are converted and the profile embedded</p></td>
+</tr>
+<tr class="row-odd"><td><p>TIFF</p></td>
+<td><p>the same, or CMYK profile bytes: the file is CMYK, flattened on white since ink has no alpha</p></td>
+</tr>
+<tr class="row-even"><td><p>PDF</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;srgb&quot;</span></code> adds an sRGB output intent (as PDF/A expects); CMYK profile bytes add a PDF/X-style intent naming the press condition</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A PDF keeps its colours as sRGB DeviceRGB: skia’s PDF backend writes no other colour space and no
+CMYK, so the intent is appended as an incremental update and a non-sRGB RGB profile is refused rather
+than silently reinterpreting the colours; a RIP converts the RGB to the press condition named by a
+CMYK intent. Without the extra, <code class="docutils literal notranslate"><span class="pre">icc=</span></code> raises an <code class="docutils literal notranslate"><span class="pre">ImportError</span></code> naming it.</p>
 </section>
 <section id="your-own-formats">
 <h2>Your own formats<a class="headerlink" href="#your-own-formats" title="Link to this heading">¶</a></h2>
@@ -1094,6 +1146,7 @@ interaction is attached by the page, by element id:</p>
 <li><a class="reference internal" href="#page-sizes">Page sizes</a></li>
 <li><a class="reference internal" href="#pages-and-slides">Pages and slides</a></li>
 <li><a class="reference internal" href="#physical-size">Physical size</a></li>
+<li><a class="reference internal" href="#colour-profiles">Colour profiles</a></li>
 <li><a class="reference internal" href="#your-own-formats">Your own formats</a></li>
 <li><a class="reference internal" href="#diagrams">Diagrams</a></li>
 <li><a class="reference internal" href="#office-files">Office files</a></li>

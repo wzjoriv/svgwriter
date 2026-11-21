@@ -349,8 +349,31 @@ in colors, so a translucent <code class="docutils literal notranslate"><span cla
 </table>
 </div>
 <p>Comma and space-separated forms both work, <code class="docutils literal notranslate"><span class="pre">/</span> <span class="pre">alpha</span></code> sets the opacity and <code class="docutils literal notranslate"><span class="pre">none</span></code> is a zero channel.
-Colors outside the sRGB gamut (most of Display P3, Rec. 2020 and high-chroma OKLCH) are clipped to it.
 For press-accurate CMYK use an ICC profile: a trailing <code class="docutils literal notranslate"><span class="pre">icc-color(...)</span></code> is kept with the color.</p>
+</section>
+<section id="wide-gamut-colors-keep-their-space">
+<h3>Wide-gamut colors keep their space<a class="headerlink" href="#wide-gamut-colors-keep-their-space" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">hex</span></code>, <code class="docutils literal notranslate"><span class="pre">rgba</span></code> and the SVG output are always sRGB, so colors outside its gamut (most of Display P3,
+Rec. 2020 and high-chroma OKLCH) are clipped there. The color itself is not: a color parsed from
+<code class="docutils literal notranslate"><span class="pre">lab()</span></code>, <code class="docutils literal notranslate"><span class="pre">lch()</span></code>, <code class="docutils literal notranslate"><span class="pre">oklab()</span></code>, <code class="docutils literal notranslate"><span class="pre">oklch()</span></code> or <code class="docutils literal notranslate"><span class="pre">color(&lt;space&gt;</span> <span class="pre">...)</span></code> keeps its space and exact channels, and
+mixing, tints, shades, differences and <code class="docutils literal notranslate"><span class="pre">to_css</span></code> start from them:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">green</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"color(display-p3 0 1 0)"</span><span class="p">)</span>
+<span class="n">green</span><span class="o">.</span><span class="n">hex</span><span class="p">,</span> <span class="n">green</span><span class="o">.</span><span class="n">space</span><span class="p">,</span> <span class="n">green</span><span class="o">.</span><span class="n">in_gamut</span>            <span class="c1"># ('#00ff00', 'display-p3', False)</span>
+<span class="n">green</span><span class="o">.</span><span class="n">coords</span><span class="p">(</span><span class="s2">"oklch"</span><span class="p">)</span>                             <span class="c1"># exact OKLCH channels, unclipped</span>
+<span class="n">green</span><span class="o">.</span><span class="n">mix</span><span class="p">(</span><span class="s2">"white"</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="s2">"display-p3"</span><span class="p">)</span><span class="o">.</span><span class="n">to_css</span><span class="p">(</span><span class="s2">"display-p3"</span><span class="p">)</span>   <span class="c1"># 'color(display-p3 0.5 1 0.5)'</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">from_space</span><span class="p">(</span><span class="s2">"oklch"</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">145</span><span class="p">))</span>    <span class="c1"># build one directly</span>
+</pre></div>
+</div>
+<p>Spaces are <code class="docutils literal notranslate"><span class="pre">srgb</span></code>, <code class="docutils literal notranslate"><span class="pre">srgb-linear</span></code>, <code class="docutils literal notranslate"><span class="pre">display-p3</span></code>, <code class="docutils literal notranslate"><span class="pre">a98-rgb</span></code>, <code class="docutils literal notranslate"><span class="pre">rec2020</span></code>, <code class="docutils literal notranslate"><span class="pre">xyz-d65</span></code>, <code class="docutils literal notranslate"><span class="pre">xyz-d50</span></code>, <code class="docutils literal notranslate"><span class="pre">lab</span></code>,
+<code class="docutils literal notranslate"><span class="pre">lch</span></code>, <code class="docutils literal notranslate"><span class="pre">oklab</span></code> and <code class="docutils literal notranslate"><span class="pre">oklch</span></code>. Colors given in sRGB (names, hex, <code class="docutils literal notranslate"><span class="pre">rgb()</span></code>, <code class="docutils literal notranslate"><span class="pre">hsl()</span></code>, tuples) carry no
+<code class="docutils literal notranslate"><span class="pre">source</span></code> and behave exactly as plain sRGB values; conversions are cached.</p>
+<p><code class="docutils literal notranslate"><span class="pre">to_css(space)</span></code> writes CSS text in any of those spaces, plus <code class="docutils literal notranslate"><span class="pre">hsl</span></code> and <code class="docutils literal notranslate"><span class="pre">hwb</span></code>; the default <code class="docutils literal notranslate"><span class="pre">&quot;srgb&quot;</span></code> gives
+the name, hex or <code class="docutils literal notranslate"><span class="pre">rgba(...)</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"tomato"</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">to_css</span><span class="p">(),</span> <span class="n">c</span><span class="o">.</span><span class="n">to_css</span><span class="p">(</span><span class="s2">"oklch"</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">to_css</span><span class="p">(</span><span class="s2">"display-p3"</span><span class="p">)</span>
+<span class="c1"># ('tomato', 'oklch(0.696 0.196 32.321)', 'color(display-p3 0.9283 0.4286 0.3199)')</span>
+</pre></div>
+</div>
 </section>
 <section id="adjusting-colors">
 <h3>Adjusting colors<a class="headerlink" href="#adjusting-colors" title="Link to this heading">¶</a></h3>
@@ -359,14 +382,22 @@ For press-accurate CMYK use an ICC profile: a trailing <code class="docutils lit
 <span class="n">c</span><span class="o">.</span><span class="n">saturate</span><span class="p">(</span><span class="mf">0.2</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">desaturate</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>     <span class="c1"># HSL saturation</span>
 <span class="n">c</span><span class="o">.</span><span class="n">hue_shift</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span>        <span class="c1"># HSL hue</span>
 <span class="n">c</span><span class="o">.</span><span class="n">grayscale</span><span class="p">(),</span> <span class="n">c</span><span class="o">.</span><span class="n">invert</span><span class="p">()</span>              <span class="c1"># same perceived lightness; negative</span>
-<span class="n">c</span><span class="o">.</span><span class="n">mix</span><span class="p">(</span><span class="s2">"white"</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="s2">"oklch"</span><span class="p">)</span>     <span class="c1"># "srgb" (default), "linear", "oklab" or "oklch"</span>
+<span class="n">c</span><span class="o">.</span><span class="n">tint</span><span class="p">(</span><span class="mf">0.3</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">shade</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>              <span class="c1"># mixed with white or black in OKLab</span>
+<span class="n">c</span><span class="o">.</span><span class="n">mix</span><span class="p">(</span><span class="s2">"white"</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="s2">"oklch"</span><span class="p">)</span>     <span class="c1"># "srgb" (default), "linear", "display-p3", "lab", "lch",</span>
+                                       <span class="c1"># "oklab", "oklch" or "xyz"</span>
+<span class="n">c</span><span class="o">.</span><span class="n">posterize</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">sepia</span><span class="p">(</span><span class="mf">0.8</span><span class="p">)</span>           <span class="c1"># 4 levels per channel; the CSS sepia() filter</span>
+<span class="n">c</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="mf">2.2</span><span class="p">)</span>                           <span class="c1"># every channel to a power, as feFuncX type="gamma"</span>
 <span class="n">c</span><span class="o">.</span><span class="n">contrast</span><span class="p">(</span><span class="s2">"white"</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">is_dark</span>         <span class="c1"># WCAG ratio; whether white text reads better</span>
 <span class="n">c</span><span class="o">.</span><span class="n">readable</span><span class="p">()</span>                           <span class="c1"># black or white, whichever has more contrast on c</span>
+<span class="n">c</span><span class="o">.</span><span class="n">delta</span><span class="p">(</span><span class="s2">"#0f7a70"</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">delta_e2000</span><span class="p">(</span><span class="s2">"#0f7a70"</span><span class="p">)</span>   <span class="c1"># OKLab distance; CIEDE2000</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">lighten</span></code> and <code class="docutils literal notranslate"><span class="pre">darken</span></code> move HSL lightness: they reach pure white and black at the ends and keep the hue,
-which is what palettes expect. For perceptually even steps mix in OKLCH instead:
-<code class="docutils literal notranslate"><span class="pre">c.mix(&quot;white&quot;,</span> <span class="pre">0.2,</span> <span class="pre">space=&quot;oklch&quot;)</span></code>. <code class="docutils literal notranslate"><span class="pre">space=&quot;linear&quot;</span></code> mixes light as it adds physically.</p>
+which is what palettes expect. <code class="docutils literal notranslate"><span class="pre">tint</span></code> and <code class="docutils literal notranslate"><span class="pre">shade</span></code> mix with white or black in OKLab instead: white and
+black lie on OKLab’s neutral axis, so the OKLab hue stays exactly the same and lightness changes in
+perceptually even steps. <code class="docutils literal notranslate"><span class="pre">space=&quot;linear&quot;</span></code> mixes light as it adds physically.</p>
+<p><code class="docutils literal notranslate"><span class="pre">delta</span></code> is the Euclidean distance in OKLab (about 0.02 is just noticeable); <code class="docutils literal notranslate"><span class="pre">delta_e2000</span></code> is the
+CIEDE2000 formula on CIE Lab, the standard in print and colour science (about 1 is just noticeable).</p>
 </section>
 </section>
 <section id="colour-profiles">
@@ -506,6 +537,7 @@ composites onto a whole image.</p>
 <li><a class="reference internal" href="#">Colors and images</a><ul>
 <li><a class="reference internal" href="#colors">Colors</a><ul>
 <li><a class="reference internal" href="#css-color-4-text">CSS Color 4 text</a></li>
+<li><a class="reference internal" href="#wide-gamut-colors-keep-their-space">Wide-gamut colors keep their space</a></li>
 <li><a class="reference internal" href="#adjusting-colors">Adjusting colors</a></li>
 </ul>
 </li>
