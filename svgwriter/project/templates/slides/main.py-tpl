@@ -1,0 +1,61 @@
+"""# {{ project_name }}
+
+A deck: each function draws one slide into a 1280 x 720 document, and `slides` lists them in order.
+Animations become PowerPoint effects.
+"""
+
+# %%
+import svgwriter as svg
+from animations import bob
+from components import title_block
+
+MARGIN = 80
+
+# %% [markdown]
+# Every slide starts from the same frame: the background and an accent bar.
+
+# %%
+def frame(doc: svg.Document) -> svg.ViewBox:
+    """Background and accent bar; returns the slide's box."""
+    box = doc.root.get("viewBox")
+    doc.rect(0, 0, box.width, box.height).as_role("background")
+    doc.rect(0, 0, 16, box.height).as_role("shape")
+    return box
+
+
+def cover(doc: svg.Document) -> None:
+    """The title slide."""
+    box = frame(doc)
+    title = title_block("{{ project_name }}", "Made with svgwriter", x=MARGIN, y=box.height / 2 - 20, gap=56)
+    doc += title
+    title.animate.fade_in(1)
+    star = svg.builder.star(box.width - 220, box.height / 2, 110, 48)
+    doc += star
+    star.animate.apply(bob, height=20)
+
+
+def agenda(doc: svg.Document) -> None:
+    """Three points, appearing one after another."""
+    box = frame(doc)
+    doc.text("Agenda", x=MARGIN, y=140).as_role("title")
+    points = svg.Group()
+    for index, line in enumerate(("Why it matters", "What we built", "What comes next")):
+        y = 260 + index * 90
+        points += svg.Group(svg.builder.dot(MARGIN + 12, y - 9, 10),
+                            svg.text(line, x=MARGIN + 44, y=y).as_role("text"))
+    doc += points
+    points.animate.stagger("fade_in", step=0.6, dur=0.5)
+    doc.text("1 / 3", x=box.width - MARGIN, y=box.height - 40, text_anchor="end").as_role("caption")
+
+
+def closing(doc: svg.Document) -> None:
+    """The last slide."""
+    box = frame(doc)
+    doc.text("Thank you", x=box.width / 2, y=box.height / 2, text_anchor="middle").as_role("title")
+
+
+slides = [cover, agenda, closing]
+
+# %%
+if __name__ == "__main__":
+    print(*svg.Project.load().build(), sep="\n")

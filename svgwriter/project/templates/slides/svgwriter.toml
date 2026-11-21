@@ -1,0 +1,9 @@
+# The project: `svgwriter build` writes every output below into output/, `svgwriter preview` shows them live.
+[project]
+name = "{{ project_name }}"
+entry = "main:slides"     # a list of functions, one slide each
+size = "slide-16:9"       # 1280 x 720, PowerPoint's default slide size
+theme = "theme.toml"
+
+[outputs]
+formats = ["pptx", "pdf"] # PowerPoint needs the office extra: pip install pysvgwriter[office]

@@ -2,6 +2,10 @@
 
 Commands
 --------
+new                 start a design project from a preset
+build               write a project's outputs
+presets             list project presets
+preview             serve a project's outputs on a page that reloads on every save
 shapes, elements    list registered composite shapes and element classes
 sizes               list named canvas sizes
 draw                write a registered shape
@@ -23,10 +27,11 @@ from .. import __version__
 from ._basic import add_basic_commands
 from ._constants import EXIT_ERROR
 from ._media import add_media_commands
+from ._project import add_project_commands
 
 __all__ = ["app", "main"]
 
-app = typer.Typer(name="svgwriter", help="Write, reformat, inspect and animate SVG 1.1 files.", add_completion=False,
+app = typer.Typer(name="svgwriter", help="Start design projects and build them; write, reformat, inspect and animate SVG 1.1 files.", add_completion=False,
                   no_args_is_help=True, pretty_exceptions_enable=False)
 """The ``svgwriter`` application; ``app.command()`` adds a command."""
 
@@ -43,6 +48,7 @@ def _options(version: Annotated[bool, typer.Option("--version", callback=_versio
     """Write, reformat, inspect and animate SVG 1.1 files."""
 
 
+add_project_commands(app)
 add_basic_commands(app)
 add_media_commands(app)
 

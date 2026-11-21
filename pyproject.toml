@@ -67,6 +67,11 @@ math = [
 color = [
     "python-lcms2>=0.2.3",
 ]
+notebook = [
+    "nbformat>=5",
+    "nbclient>=0.7",
+    "ipykernel>=6",
+]
 test = [
     "pysvgwriter[office,plot,graph,igraph,rustworkx,math]",
     "pytest>=7",
@@ -76,15 +81,11 @@ test = [
     "python-lcms2>=0.2.3; python_version < '3.15'",
 ]
 dev = [
-    "pysvgwriter[test,docs]",
+    "pysvgwriter[test,docs,notebook]",
     "stubpy",
     "pytest-cov",
     "ruff>=0.6",
-    "typer>=0.12",
     "tomli; python_version < '3.11'",
-    "nbformat",
-    "nbclient",
-    "ipykernel",
 ]
 
 docs = [
@@ -103,7 +104,7 @@ version = { attr = "svgwriter.__version__" }
 include = ["svgwriter*"]
 
 [tool.setuptools.package-data]
-svgwriter = ["py.typed", "*.pyi", "**/*.pyi"]
+svgwriter = ["py.typed", "*.pyi", "**/*.pyi", "project/templates/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -1,0 +1,13 @@
+"""``bob``: float up and back down, again and again."""
+
+import svgwriter as svg
+
+
+@svg.preset.animation
+def bob(motion: svg.Motion, *, height: float = 8, dur: float = 2, begin: float = 0,
+        ease: svg.EaseLike | None = "ease-in-out") -> svg.Motion:
+    """Rise by *height* and settle back over *dur* seconds, forever."""
+    motion.element.append(svg.AnimateTransform("translate", attribute_name="transform", additive="sum",
+                                               values=f"0 0;0 {-height:g};0 0", dur=dur, begin=begin,
+                                               repeat_count="indefinite", ease=ease))
+    return motion

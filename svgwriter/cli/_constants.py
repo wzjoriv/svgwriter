@@ -16,6 +16,8 @@ __all__ = [
     "EXIT_ERROR",
     "EXIT_FAILURE",
     "FRAME_FORMAT",
+    "PRESET_COLUMN",
+    "PREVIEW_PORT",
     "SIZE_COLUMN",
     "STROKE_WIDTH",
     "TEXT_MARGIN",
@@ -32,6 +34,8 @@ DEFAULT_TEXT_SIZE: Final = 48.0
 DEFAULT_FONT: Final = "sans-serif"
 TEXT_MARGIN: Final = 4.0
 SIZE_COLUMN: Final = 20
+PRESET_COLUMN: Final = 12
+PREVIEW_PORT: Final = 8000
 
 DRAW_LAYOUTS: Final[dict[str, Callable[[float, float], tuple[tuple[float, ...], dict[str, Any]]]]] = {
     "arrow": lambda c, r: ((c - r, c, c + r, c), {"line": True}),

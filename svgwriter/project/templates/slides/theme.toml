@@ -1,0 +1,14 @@
+# The deck's look: every slide takes its colors and fonts from here.
+name = "{{ project_name }}"
+extends = "light"
+
+[palette]
+primary = "#7c3aed"
+accent = "#f97316"
+on_primary = "=readable({palette.primary})"
+
+[fonts.sizes]
+title = 56
+subtitle = 30
+text = 26
+caption = 18

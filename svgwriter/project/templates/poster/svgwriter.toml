@@ -1,0 +1,10 @@
+# The project: `svgwriter build` writes every output below into output/, `svgwriter preview` shows them live.
+[project]
+name = "{{ project_name }}"
+entry = "main:build"      # module:function that draws into a document of this size and theme
+size = "a4"               # millimetres: the drawing's coordinates are mm; try "a3", "letter" or "a4-landscape"
+theme = "theme.toml"
+
+[outputs]
+formats = ["pdf", "svg", "png"]
+png = { dpi = 150 }       # print resolution for the preview image

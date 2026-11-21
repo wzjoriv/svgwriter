@@ -41,6 +41,8 @@ builder
     Composite shapes (star, gear, arrow) and effects (shadow, glow).
 preset
     Presets of your own by kind (``@svg.preset.animation``, ``@svg.preset.shape``).
+project
+    Design projects: ``svgwriter.toml``, presets, building and live preview (``Project``).
 theme
     Palettes, fonts and role styles applied as CSS classes (``Theme``).
 ops
@@ -60,7 +62,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from . import export, ops, preset, theme, video
+from . import export, ops, preset, project, theme, video
 from ._document.sizes import SIZES, page_size, register_size, unregister_size
 from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
@@ -98,6 +100,7 @@ from .elements import __all__ as _elements_all
 from .io.writer import SerializeOptions, to_string, write
 from .ops import interpolate, register_font, register_interpolator, text_to_path, unregister_interpolator
 from .pathdata import BBox, PathBuilder, PathData
+from .project import Project
 from .theme import THEMES, Theme
 from .transform import Matrix, Point, Transform
 from .video import FFmpegNotFoundError, Scene, register_renderer
@@ -193,6 +196,8 @@ __all__ = [
     "export",
     "ops",
     "preset",
+    "project",
+    "Project",
     "percent",
     "pt",
     "px",

@@ -1,0 +1,53 @@
+"""# {{ project_name }}
+
+An A4 poster drawn in millimetres: the page is `size = "a4"`, so every coordinate below is a millimetre.
+The chart reads `assets/data/values.csv`; builds run in the project folder, so paths are relative to it.
+"""
+
+# %%
+import csv
+from pathlib import Path
+
+import svgwriter as svg
+from animations import bob
+from components import title_block
+
+MARGIN = 18
+DATA = Path("assets/data/values.csv")
+
+# %% [markdown]
+# The chart is a component of this file: one bar per row of the CSV, scaled to the tallest value.
+
+# %%
+def bar_chart(rows: list[dict[str, str]], *, x: float, y: float, width: float, height: float) -> svg.Group:
+    """Bars for *rows* (``label``, ``value``) in the box at (x, y), labels under each bar."""
+    chart = svg.Group()
+    top = max(float(row["value"]) for row in rows)
+    step = width / len(rows)
+    for index, row in enumerate(rows):
+        tall = height * float(row["value"]) / top
+        left = x + index * step + step * 0.15
+        chart += svg.rect(left, y + height - tall, step * 0.7, tall, rx=1.5).as_role("shape")
+        chart += svg.text(row["label"], x=left + step * 0.35, y=y + height + 8, text_anchor="middle").as_role("caption")
+    return chart
+
+
+# %%
+def build(doc: svg.Document) -> None:
+    """Draw the poster."""
+    box = doc.root.get("viewBox")
+    with DATA.open(encoding="utf-8") as file:
+        rows = list(csv.DictReader(file))
+    doc.rect(0, 0, box.width, box.height).as_role("background")
+    doc.rect(0, 0, box.width, 70).as_role("surface")
+    doc += title_block("{{ project_name }}", "A poster in millimetres", x=MARGIN, y=40, gap=14)
+    doc += bar_chart(rows, x=MARGIN, y=100, width=box.width - 2 * MARGIN, height=120)
+    badge = svg.builder.star(box.width - 40, 36, 14, 6).as_role("accent")
+    doc += badge
+    badge.animate.apply(bob, height=3)
+    doc.text("Source: assets/data/values.csv", x=MARGIN, y=box.height - MARGIN).as_role("caption")
+
+
+# %%
+if __name__ == "__main__":
+    print(*svg.Project.load().build(), sep="\n")
