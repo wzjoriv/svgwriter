@@ -4,94 +4,165 @@ Named canvas sizes: paper, slides, video, social images and icons (``Document(si
 
 from __future__ import annotations
 
-import difflib
-from typing import Final
+from dataclasses import dataclass
 
-from .._internal._registry import Registry
-from ..attributes.length import Length, LengthLike
-from ._constants import BUILTIN_SIZES, LANDSCAPE_SUFFIX, PORTRAIT_SUFFIX
+from .._internal._presets import SIZES
+from ..attributes.length import Length, LengthLike, Unit
+from ._constants import BUILTIN_SIZES, IDENTIFIER_SEPARATORS, LANDSCAPE_SUFFIX, PORTRAIT_SUFFIX
 
-__all__ = ["SIZES", "page_size", "register_size", "unregister_size"]
-
-SIZES: Final[Registry[tuple[Length, Length]]] = Registry("size")
-"""Every named size as ``name -> (width, height)``: ``SIZES.names()`` lists them, ``page_size`` looks one up."""
+__all__ = ["PageSize", "page_size", "size"]
 
 
 def _length(value: LengthLike) -> Length:
     return value if isinstance(value, Length) else Length.parse(value) if isinstance(value, str) else Length(float(value))
 
 
-def register_size(name: str, width: LengthLike, height: LengthLike) -> None:
-    """Add a named canvas size for ``Document(size=name)``, ``Scene.size`` and project files.
+def _identifier(name: str) -> str:
+    return IDENTIFIER_SEPARATORS.sub("_", name).strip("_")
 
-    Sizes with a physical unit (``"210mm"``, ``svg.inch(11)``) make documents whose ``viewBox`` counts
-    in that unit, so drawing coordinates are millimetres or inches; plain numbers are pixels. Every
-    name also works with ``-landscape`` and ``-portrait`` appended.
+
+@dataclass(frozen=True, slots=True)
+class PageSize:
+    """A canvas size: a width and a height counted in one unit.
+
+    Look the built-in ones up as attributes of :data:`svgwriter.size` (``svg.size.a4``), add your own
+    with :func:`svgwriter.preset.size`, and pass either to ``Document(size=...)``, ``Scene.size`` or a
+    project's ``size``.
 
     Parameters
     ----------
-    name : str
-        The name, such as ``"poster-50x70"``.
-    width, height : Length, float or str
-        The size: a :class:`~svgwriter.Length`, length text such as ``"50cm"``, or pixels.
-
-    Raises
-    ------
-    ValueError
-        If *name* is taken, or the two lengths have different units.
+    width, height : float
+        The two sides, in `units`.
+    units : Unit, optional
+        The unit both sides are counted in. Defaults to ``Unit.NONE``, user units (pixels).
 
     See Also
     --------
-    unregister_size : Remove it again.
-    page_size : Look a size up.
-    SIZES : Every registered size.
+    svgwriter.size : The built-in sizes by name.
+    svgwriter.preset.size : Register a size under a name.
 
     Examples
     --------
     >>> import svgwriter as svg
-    >>> svg.register_size("poster-50x70", "50cm", "70cm")
-    >>> svg.Document(size="poster-50x70-landscape").root.get("viewBox").width
-    70.0
-    >>> svg.unregister_size("poster-50x70")
+    >>> a4 = svg.size.a4
+    >>> a4
+    PageSize(width=210.0, height=297.0, units=<Unit.MM: 'mm'>)
+    >>> str(a4.landscape), a4.landscape.portrait == a4
+    ('297mm x 210mm', True)
+    >>> svg.Document(size=a4.landscape).root.get("viewBox").width
+    297.0
     """
-    first, second = _length(width), _length(height)
-    if first.unit is not second.unit:
-        raise ValueError(f"size {name!r}: width and height need one unit, not {first} and {second}")
-    SIZES.add(name, (first, second))
+
+    width: float
+    height: float
+    units: Unit = Unit.NONE
+
+    @classmethod
+    def of(cls, width: LengthLike, height: LengthLike) -> PageSize:
+        """A size from two lengths of one unit.
+
+        Parameters
+        ----------
+        width, height : Length, float or str
+            A :class:`~svgwriter.Length`, length text such as ``"50cm"``, or pixels.
+
+        Returns
+        -------
+        PageSize
+            The size.
+
+        Raises
+        ------
+        ValueError
+            If the two lengths have different units.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.PageSize.of("50cm", "70cm")
+        PageSize(width=50.0, height=70.0, units=<Unit.CM: 'cm'>)
+        """
+        first, second = _length(width), _length(height)
+        if first.unit is not second.unit:
+            raise ValueError(f"width and height need one unit, not {first} and {second}")
+        return cls(first.value, second.value, first.unit)
+
+    @property
+    def lengths(self) -> tuple[Length, Length]:
+        """``(width, height)`` as :class:`~svgwriter.Length` values."""
+        return Length(self.width, self.units), Length(self.height, self.units)
+
+    @property
+    def landscape(self) -> PageSize:
+        """The same size with the long side across."""
+        return self if self.width >= self.height else PageSize(self.height, self.width, self.units)
+
+    @property
+    def portrait(self) -> PageSize:
+        """The same size with the long side down."""
+        return self if self.height >= self.width else PageSize(self.height, self.width, self.units)
+
+    def __str__(self) -> str:
+        width, height = self.lengths
+        return f"{width} x {height}"
 
 
-def unregister_size(name: str) -> None:
-    """Remove a size added with :func:`register_size`.
+class _Sizes:
+    """The registered sizes as attributes: ``svg.size.a4``, ``svg.size.slide_16_9``, ``svg.size.<your own>``."""
+
+    a0: PageSize
+    a1: PageSize
+    a2: PageSize
+    a3: PageSize
+    a4: PageSize
+    a5: PageSize
+    a6: PageSize
+    letter: PageSize
+    legal: PageSize
+    tabloid: PageSize
+    business_card: PageSize
+    slide_16_9: PageSize
+    slide_4_3: PageSize
+    video_720p: PageSize
+    video_1080p: PageSize
+    instagram_post: PageSize
+    instagram_portrait: PageSize
+    instagram_story: PageSize
+    og_image: PageSize
+    youtube_thumbnail: PageSize
+    favicon: PageSize
+    apple_touch_icon: PageSize
+    icon: PageSize
+
+    def __getattr__(self, name: str) -> PageSize:
+        for registered in SIZES:
+            if _identifier(registered) == name:
+                return SIZES.get(registered)
+        raise AttributeError(f"no size {name!r}; svg.preset.list(\"size\") lists every size")
+
+    def __dir__(self) -> list[str]:
+        return [_identifier(registered) for registered in SIZES]
+
+    def __repr__(self) -> str:
+        return f"size({', '.join(dir(self))})"
+
+
+size = _Sizes()
+"""The registered sizes as attributes, names turned into identifiers (``"slide-16:9"`` is ``size.slide_16_9``).
+
+Every attribute is a :class:`PageSize`; sizes added with :func:`svgwriter.preset.size` appear here too.
+"""
+
+
+def page_size(size: str | PageSize) -> tuple[Length, Length]:
+    """The width and height of a size, turned for a ``-landscape`` or ``-portrait`` suffix.
 
     Parameters
     ----------
-    name : str
-        The registered name.
-
-    Raises
-    ------
-    KeyError
-        If no size has that name.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> svg.register_size("square", 100, 100)
-    >>> svg.unregister_size("square")
-    >>> "square" in svg.SIZES
-    False
-    """
-    SIZES.remove(name)
-
-
-def page_size(name: str) -> tuple[Length, Length]:
-    """The width and height registered as *name*, turned for a ``-landscape`` or ``-portrait`` suffix.
-
-    Parameters
-    ----------
-    name : str
-        A name from :data:`SIZES` (``"a4"``, ``"letter"``, ``"slide-16:9"``, ``"instagram-story"``,
-        ...), optionally followed by ``-landscape`` (long side across) or ``-portrait`` (long side down).
+    size : str or PageSize
+        A :class:`PageSize`, or a name from ``svg.preset.list("size")`` (``"a4"``, ``"letter"``,
+        ``"slide-16:9"``, ``"instagram-story"``, ...), optionally followed by ``-landscape`` (long side
+        across) or ``-portrait`` (long side down).
 
     Returns
     -------
@@ -105,7 +176,7 @@ def page_size(name: str) -> tuple[Length, Length]:
 
     See Also
     --------
-    register_size : Add a size.
+    svgwriter.preset.size : Add a size.
 
     Examples
     --------
@@ -115,21 +186,21 @@ def page_size(name: str) -> tuple[Length, Length]:
     >>> svg.page_size("a44")
     Traceback (most recent call last):
     ...
-    ValueError: unknown size 'a44'; did you mean 'a4'? (svg.SIZES.names() lists every size)
+    ValueError: unknown size 'a44'; did you mean 'a4'? (svg.preset.list("size") lists every size)
     """
-    base, turn = name, None
+    if isinstance(size, PageSize):
+        return size.lengths
+    base, turn = size, None
     for suffix in (LANDSCAPE_SUFFIX, PORTRAIT_SUFFIX):
-        if name not in SIZES and name.endswith(suffix):
-            base, turn = name.removesuffix(suffix), suffix
+        if size not in SIZES and size.endswith(suffix):
+            base, turn = size.removesuffix(suffix), suffix
     if base not in SIZES:
-        close = difflib.get_close_matches(base, SIZES.names(), n=3)
-        hint = f"; did you mean {' or '.join(map(repr, close))}?" if close else ""
-        raise ValueError(f"unknown size {name!r}{hint} (svg.SIZES.names() lists every size)")
-    width, height = SIZES.get(base)
-    if turn is not None and (width.value > height.value) != (turn == LANDSCAPE_SUFFIX):
-        width, height = height, width
-    return width, height
+        raise ValueError(f"{SIZES.unknown(size if turn is None else base)} (svg.preset.list(\"size\") lists every size)")
+    page = SIZES.get(base)
+    if turn is not None:
+        page = page.landscape if turn == LANDSCAPE_SUFFIX else page.portrait
+    return page.lengths
 
 
 for _name, (_width, _height) in BUILTIN_SIZES.items():
-    register_size(_name, _width, _height)
+    SIZES.add_builtin(_name, PageSize.of(_width, _height))

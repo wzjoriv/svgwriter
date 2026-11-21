@@ -9,6 +9,7 @@ from typing import Final
 
 __all__ = [
     "ANIMATED_FORMATS",
+    "BAKED_FORMATS",
     "BUILTIN_PRESETS",
     "CELL_MARKER",
     "DEFAULT_ENTRY",
@@ -81,6 +82,7 @@ PREVIEW_CELLS: Final = (
 
 KEEPS_ANIMATION: Final = frozenset({"svg", "svgz", "html", "pptx", "gif"})
 ANIMATED_FORMATS: Final = frozenset({"gif"})
+BAKED_FORMATS: Final = KEEPS_ANIMATION - ANIMATED_FORMATS
 VIDEO_FORMATS: Final = frozenset({"mp4", "webm", "mov", "apng"})
 DEFAULT_GIF_FPS: Final = 15.0
 

@@ -32,6 +32,7 @@ logo.animate.fade_in(0.5).spin(2, begin=0.5)
 | Color and any attribute | `blink`, `color_cycle(colors)`, `tween(attribute, start, end)` |
 | Shape | `morph(target)` (a `<path>` turning into any shape, contours matched by `interpolate`) |
 | Groups | `stagger(preset, step=)` (each child starts `step` seconds after the last) |
+| Behaviours (in a scene) | `wiggle(angle=, period=)`, `hover(height=, period=)`, `breathe(amount=, period=)` (Python motion run every frame; see [Behaviours](#behaviours)) |
 
 Every preset takes `dur` and `begin` in seconds, `repeat` (a count or `"indefinite"`) and keeps its end
 state unless `freeze=False`. They are plain SMIL, so they play in browsers and in `doc.at(t)`, video,
@@ -175,8 +176,9 @@ frame at time `t`:
 Python and SMIL on different attributes simply combine. On the same attribute SMIL wins, since it is
 applied last, unless the animation has `additive="sum"`, which adds to whatever `update` set (every
 transform preset is additive, so `update` can move an element that a preset is spinning). The
-duration defaults to the end of the last SMIL animation. An `.svg` file keeps only the SMIL, as Python
-does not run in a browser; video, GIF, APNG and WebP exports include both.
+duration defaults to the end of the last SMIL animation. Python does not run in a browser, so
+`doc.save("x.svg")` keeps only the SMIL; a scene's `save("x.svg")` bakes the Python motion into SMIL
+first (see [Baking](#baking-python-animation-into-smil)). Video, GIF, APNG and WebP exports include both.
 
 ```python
 class Drift(svg.Scene):
@@ -257,6 +259,87 @@ $ python -m svgwriter render scenes.py Intro --time 1.5   # one frame to Intro.p
 
 `--fps`, `--duration` and `--renderer` override the scene's settings. An `.svg` file is accepted too and
 plays its SMIL. See `examples/13_scenes.py`.
+
+## Behaviours
+
+A behaviour is Python motion you can reuse: a function of the element and the time in seconds that a
+scene runs before every frame. Decorate it with `@svg.preset.behavior`; the element and the time come
+first, and every option is keyword-only with a default (checked when the function is decorated, as for
+animation presets):
+
+```python
+import math
+
+@svg.preset.behavior
+def sway(element: svg.Element, seconds: float, *, angle: float = 10, period: float = 2) -> None:
+    """Rock about the anchor by up to *angle* degrees."""
+    element.t = element.home.t
+    element.rotate(angle * math.sin(2 * math.pi * seconds / period))
+
+
+class Garden(svg.Scene):
+    width, height, duration = 160, 100, 2.0
+
+    def build(self, doc):
+        stem = doc.rect(76, 30, 8, 60, fill="seagreen", anchor="bottom")
+        stem.animate.sway(angle=15)                        # by name, once it is in the scene
+        self.sun = self.attach(doc.circle(30, 25, 12, fill="gold"), svg.video.behaviors.hover, height=6)
+
+    def update(self, seconds):
+        self.sun.fill = svg.Color(1, 0.84 - 0.3 * seconds / self.duration, 0)
+
+garden = Garden()
+still = garden.render(0.5)
+svg.preset.unregister("behavior", "sway")
+```
+
+`self.attach(element, function, **options)` is typed with the function's own options, so editors
+complete and check them, and it returns the element; `element.animate.<name>(...)` does the same by
+name once the element is in a scene's document (outside one it raises `ValueError`). Behaviours run in
+the order they were attached, all before `update(seconds)`, so `update` sees their result.
+
+`element.home` is a copy of the element taken when its first behaviour is attached. Start each frame
+from it (`element.t = element.home.t`, then a relative move) rather than from the current state: the
+motion is computed afresh every frame, so it never drifts and frames can be drawn in any order. The
+built-in behaviours `wiggle`, `hover` and `breathe` (in `svg.video.behaviors`) work this way, about the
+element's anchor. `@svg.preset.behavior(name=..., replace=True)`, `svg.preset.list("behavior")`,
+`svg.preset.get` and `svg.preset.unregister` follow the same rules as animation presets, and behaviours
+and animation presets share one set of names, since both are reached through `element.animate`.
+
+## Baking Python animation into SMIL
+
+`scene.bake()` returns a copy of the document whose SMIL plays what the behaviours and `update` do, so
+the animation runs anywhere SMIL does. Saving a scene as `.svg`, `.svgz`, `.html` or `.pptx` bakes it
+automatically (no ffmpeg needed):
+
+```python
+baked = garden.bake()                     # a Document; garden.document keeps its Python state
+frame = baked.at(1.0)                     # the same frame the video shows at 1 s
+# garden.save("garden.svg")               # plays in a browser like the video
+# garden.save("garden.pptx")              # slide effects where PowerPoint has them
+```
+
+The scene is sampled `fps` times a second (`bake(fps=...)` to change it) and every element is compared
+from sample to sample:
+
+| Change | Baked as |
+|---|---|
+| Numbers in attributes and properties (`x`, `r`, `opacity`, `stroke-width`, `points`, ...) | `<animate>` with `values`/`keyTimes`, interpolated |
+| Colours | `<animate>` between colours, interpolated |
+| Path `d` | interpolated while the commands keep their shape, switching where they change |
+| Transforms | `<animateTransform>` for translate, then rotate, skew and scale about the element's centre |
+| `class`, keywords and other text values | `<set>` at each change |
+| Text content | one copy of the text element per text, shown in turn with `visibility` sets |
+| Elements added or removed | `visibility` sets |
+
+Each channel keeps only the keyframes it needs: a straight run becomes two keyframes, and a curve keeps
+as many as hold every sample within `tolerance` (default 0.01, in user units, degrees, scale factors or
+colour channels from 0 to 1). A property set in the inline `style` moves to an attribute, which SMIL
+animates. The document's own SMIL is kept and plays on top of the baked animation, exactly as it plays
+on top of `update` in the video. What SMIL cannot express (an element moving to another parent, an id
+changing, CSS declarations that are not SVG properties, an attribute removed with no initial value) is
+left out and listed in one warning. Baking runs `update` for every sample, so it leaves the scene at its
+last moment.
 
 ## Tweening and morphing
 

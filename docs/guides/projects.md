@@ -70,7 +70,7 @@ gif = { fps = 12, scale = 0.5 }
 |---|---|---|
 | `project.name` | folder name | The project name; outputs are `output/<name>.<ext>` |
 | `project.entry` | `"main:build"` | What draws the project (see below) |
-| `project.size` | none (fits the content) | A [named size](export-import.md#page-sizes) or `[width, height]` |
+| `project.size` | none (fits the content) | A [named size](export-import.md#page-sizes) or `[width, height]`; `ProjectConfig(size=svg.size.a4)` takes a `PageSize` |
 | `project.theme` | none | A theme file or a registered theme name |
 | `project.fonts` | `"assets/fonts"` | Font folder |
 | `outputs.formats` | `["svg", "png"]` | Any export format name, plus `gif`, `mp4`, `webm`, `mov` for animations |
@@ -102,7 +102,7 @@ The entry object decides what gets drawn:
 |---|---|
 | A function taking a `Document` | One page: `output/<name>.<ext>` per format |
 | A list of such functions | One page each: one PDF or PowerPoint file, numbered files for other formats |
-| A `Scene` class (or a list) | GIF frames rendered in Python (no ffmpeg), animated SVG, `mp4`/`webm`/`mov` through ffmpeg |
+| A `Scene` class (or a list) | GIF frames rendered in Python (no ffmpeg), animated SVG and PowerPoint with `update` and behaviours baked into SMIL, `mp4`/`webm`/`mov` through ffmpeg |
 
 Still formats such as PDF and PNG show a page once its animations have ended; `png = { time = 0 }`
 shows the start instead. SVG, GIF and PowerPoint keep the animations.

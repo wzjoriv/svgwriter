@@ -19,6 +19,7 @@ Example
 
 from __future__ import annotations
 
+from . import behaviors
 from ._ffmpeg import FFmpegError, FFmpegNotFoundError, find_ffmpeg
 from .animation import (
     DEFAULT_FPS,
@@ -39,6 +40,7 @@ from .scene import Scene
 
 __all__ = [
     "Scene",
+    "behaviors",
     "SceneError",
     "Video",
     "DEFAULT_FPS",

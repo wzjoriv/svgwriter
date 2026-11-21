@@ -1,5 +1,5 @@
 """
-Preset registries: one per kind (animation, shape), with built-in entries that users may replace on purpose.
+Preset registries: one per kind (animation, behavior, shape), with built-in entries that users may replace on purpose.
 """
 
 from __future__ import annotations
@@ -10,7 +10,7 @@ from typing import Any, Final
 
 from ._constants import SUGGESTIONS
 
-__all__ = ["ANIMATIONS", "KINDS", "SHAPES", "PresetRegistry", "owner_of"]
+__all__ = ["ANIMATIONS", "BEHAVIORS", "KINDS", "SHAPES", "SIZES", "PresetRegistry", "owner_of"]
 
 Preset = Callable[..., Any]
 
@@ -90,5 +90,7 @@ class PresetRegistry:
 
 
 ANIMATIONS: Final = PresetRegistry("animation")
+BEHAVIORS: Final = PresetRegistry("behavior")
 SHAPES: Final = PresetRegistry("shape")
-KINDS: Final = {"animation": ANIMATIONS, "shape": SHAPES}
+SIZES: Final = PresetRegistry("size")
+KINDS: Final = {"animation": ANIMATIONS, "behavior": BEHAVIORS, "shape": SHAPES, "size": SIZES}

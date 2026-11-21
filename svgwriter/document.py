@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any, TypeVar, overload
 from ._document.access import Access
 from ._document.ingest import SupportsSVG, to_element
 from ._document.output import Output
-from ._document.sizes import page_size
+from ._document.sizes import PageSize, page_size
 from ._document.sizing import Sizing
 from ._document.theming import Theming
 from ._document.typography import Typography
@@ -45,9 +45,9 @@ class Document(Sizing, Theming, Typography, Output, Access, ElementFactory):
     width, height : float or Length, optional
         Canvas size; a matching ``viewBox`` is added unless one is given.
         Defaults to None, which sizes the canvas from the content on output.
-    size : str, optional
-        A named size instead of `width` and `height`: ``"a4"``, ``"letter"``,
-        ``"slide-16:9"``, ``"instagram-post"``, ... (see :data:`~svgwriter.SIZES`), with
+    size : str or PageSize, optional
+        A :class:`~svgwriter.PageSize` (``svg.size.a4``), or a named size instead of `width` and `height`: ``"a4"``, ``"letter"``,
+        ``"slide-16:9"``, ``"instagram-post"``, ... (see :data:`~svgwriter.size`), with
         ``-landscape`` or ``-portrait`` appended to turn it. Paper sizes are in millimetres or
         inches, so the ``viewBox`` counts in those units. Defaults to None.
     root : Svg, optional
@@ -68,7 +68,7 @@ class Document(Sizing, Theming, Typography, Output, Access, ElementFactory):
     See Also
     --------
     svgwriter.elements.Svg : The root element wrapped by a document.
-    svgwriter.register_size : Add a named size.
+    svgwriter.preset.size : Add a named size.
 
     Notes
     -----
@@ -96,7 +96,7 @@ class Document(Sizing, Theming, Typography, Output, Access, ElementFactory):
     """
 
     def __init__(self, width: float | Length | None = None, height: float | Length | None = None, *,
-                 size: str | None = None, root: Svg | None = None, theme: Theme | str | None = None,
+                 size: str | PageSize | None = None, root: Svg | None = None, theme: Theme | str | None = None,
                  **kwargs: Any) -> None:
         if size is not None:
             if width is not None or height is not None:
