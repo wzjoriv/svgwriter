@@ -12,6 +12,7 @@ from ._constants import (
     ALPHA_ONLY,
     CHANNELS,
     COLOR_MIXING,
+    DISPLACEMENT,
     FRAMED,
     LIGHTING,
     LINEAR_RGB,
@@ -54,7 +55,8 @@ def image_filter(filter_element: Element, frame: Frame) -> Any:
     """The ``<filter>`` as one skia image filter; None when it has no primitives.
 
     Every result is cropped to its primitive subregion and colours mix in the space
-    ``color-interpolation-filters`` names (``linearRGB`` by default).
+    ``color-interpolation-filters`` names (``linearRGB`` by default); for ``feDisplacementMap``
+    that space applies to the map (``in2``) only.
 
     Parameters
     ----------
@@ -89,10 +91,12 @@ def image_filter(filter_element: Element, frame: Frame) -> Any:
 
         source = primitive.get("in")
         first, second = resolve(source, previous), resolve(primitive.get("in2"), None)
-        linear = primitive.tag in COLOR_MIXING and str(
-            computed(primitive, "color-interpolation-filters", LINEAR_RGB, [])) == LINEAR_RGB
+        space = str(computed(primitive, "color-interpolation-filters", LINEAR_RGB, [])) == LINEAR_RGB
+        linear = primitive.tag in COLOR_MIXING and space
         if linear:
             first, second = _linear(first), _linear(second) if second is not None else None
+        elif primitive.tag == DISPLACEMENT and space:
+            second = _linear(second)
         source_area = previous_area if source is None else regions.get(str(source), frame.region)
         area = frame.subregion(primitive, frame.region)
         if primitive.tag in LIGHTING:

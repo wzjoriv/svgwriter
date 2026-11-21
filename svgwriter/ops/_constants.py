@@ -86,6 +86,7 @@ __all__ = [
     "ENABLE_BACKGROUND",
     "NEW_BACKGROUND",
     "OPACITY",
+    "DISPLACEMENT",
 ]
 
 SOURCE_GRAPHIC: Final = "SourceGraphic"
@@ -117,7 +118,8 @@ EDGE_MODES: Final = {"duplicate": skia.TileMode.kClamp, "wrap": skia.TileMode.kR
 LIGHT_SOURCES: Final = frozenset({"feDistantLight", "fePointLight", "feSpotLight"})
 LIGHTING: Final = frozenset({"feDiffuseLighting", "feSpecularLighting"})
 SPOT_CUTOFF: Final = 90.0
-FRAMED: Final = frozenset({"feImage", "feTile", "feDisplacementMap"})
+DISPLACEMENT: Final = "feDisplacementMap"
+FRAMED: Final = frozenset({"feImage", "feTile", DISPLACEMENT})
 COLOR_MIXING: Final = frozenset({"feBlend", "feComposite", "feMerge", "feGaussianBlur", "feColorMatrix",
                                  "feComponentTransfer", "feMorphology", "feConvolveMatrix",
                                  "feDiffuseLighting", "feSpecularLighting"})

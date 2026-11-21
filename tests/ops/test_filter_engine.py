@@ -102,3 +102,14 @@ def test_fe_image_fits_its_unclipped_subregion() -> None:
                   f'xlink:href="{png_uri((0, 1, 0))}"/></filter>'
                   '<rect width="50" height="50" fill="red" filter="url(#f)"/>')
     assert np.allclose(pixels[25, 10], WHITE, atol=0.02) and np.allclose(pixels[25, 40], LIME, atol=0.02)
+
+
+@pytest.mark.parametrize("space, moved", [("linearRGB", False), ("sRGB", True)])
+def test_fe_displacement_map_reads_its_map_in_the_interpolation_space(space: str, moved: bool) -> None:
+    half_in_linear_light = 0.7354
+    pixels = draw(f'<defs><rect id="t" x="40" y="40" width="20" height="20" fill="lime"/></defs>'
+                  f'<filter id="f" x="0" y="0" width="1" height="1" color-interpolation-filters="{space}">'
+                  f'<feImage result="m" xlink:href="{png_uri((half_in_linear_light,) * 3)}"/>'
+                  '<feImage xlink:href="#t" result="t"/><feDisplacementMap in="t" in2="m" scale="40" '
+                  'xChannelSelector="R" yChannelSelector="G"/></filter><rect width="100" height="100" filter="url(#f)"/>')
+    assert np.allclose(pixels[57, 57], WHITE if moved else LIME, atol=0.05)
