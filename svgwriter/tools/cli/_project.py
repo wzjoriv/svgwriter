@@ -9,7 +9,7 @@ from pathlib import Path
 import click
 
 from ..project import PRESETS, Project
-from ._constants import DEFAULT_PRESET, PRESET_COLUMN, PREVIEW_PORT
+from ._constants import DEFAULT_PRESET, PRESET_COLUMN
 from ._prompts import (
     ask_name,
     ask_notebook,
@@ -85,13 +85,15 @@ def presets() -> None:
 
 
 @click.command()
-@click.option("--port", type=int, default=PREVIEW_PORT, show_default=True, help="local port")
-@click.option("--open/--no-open", "open_browser", default=True, help="open the page in a browser")
+@click.option("--port", type=int, default=None, help="local port  [default: [preview] port, 8000]")
+@click.option("--open/--no-open", "open_browser", default=None,
+              help="open the page in a browser  [default: [preview] open, yes]")
 @PROJECT_PATH
-def preview(port: int, open_browser: bool, path: Path) -> None:
-    """Serve the outputs on a local page that rebuilds and reloads on every save."""
+def preview(port: int | None, open_browser: bool | None, path: Path) -> None:
+    """Serve a live page that redraws as controls move and files change."""
     project = Project.load(path)
-    click.echo(f"previewing {project.name} at http://127.0.0.1:{port}/ (Ctrl+C stops)")
+    shown = project.config.preview.port if port is None else port
+    click.echo(f"previewing {project.name} at http://127.0.0.1:{shown}/ (Ctrl+C stops)")
     project.serve(port, open_browser=open_browser)
 
 

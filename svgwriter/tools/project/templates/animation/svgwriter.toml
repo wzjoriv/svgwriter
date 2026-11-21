@@ -7,3 +7,15 @@ theme = "theme.toml"
 [outputs]
 formats = ["gif", "svg"]  # add "mp4" or "webm" when ffmpeg is installed
 gif = { fps = 12, scale = 0.5 }
+
+# `svgwriter preview` settings; every key is optional and shown at its default.
+# [preview]
+# pages = ["name", "name-Scene"]  # pages and scenes to show, in order (default: all)
+# background = "checker"          # "checker", "light", "dark" or a colour
+# layout = "auto"                 # controls on the "right", at the "bottom", or "auto"
+# fit = "contain"                 # scale the drawing to fit, or "actual" size
+# port = 8000
+# open = true                     # open a browser on start
+# debounce_ms = 80                # pause after a control moves before redrawing
+# build_on_save = true            # write the outputs after a save
+# formats_on_build = ["svg"]      # what saves and Build outputs write (default: [outputs] formats)
