@@ -718,10 +718,10 @@ lengths) switch halfway, as SMIL does. Called directly on two values it cannot b
 </section>
 <section id="video-in">
 <h2>Video in<a class="headerlink" href="#video-in" title="Link to this heading">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">svgwriter.video.Video(path)</span></code> reads a video lazily through ffmpeg: <code class="docutils literal notranslate"><span class="pre">video[i]</span></code> is frame <code class="docutils literal notranslate"><span class="pre">i</span></code> as an
+<p><code class="docutils literal notranslate"><span class="pre">svgwriter.motion.video.Video(path)</span></code> reads a video lazily through ffmpeg: <code class="docutils literal notranslate"><span class="pre">video[i]</span></code> is frame <code class="docutils literal notranslate"><span class="pre">i</span></code> as an
 <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">video.at(seconds)</span></code> the frame shown at that time, and iterating streams every frame as a
 numpy array. Mix footage with vector animation in <code class="docutils literal notranslate"><span class="pre">update</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.video</span><span class="w"> </span><span class="kn">import</span> <span class="n">Video</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.motion.video</span><span class="w"> </span><span class="kn">import</span> <span class="n">Video</span>
 
 <span class="c1"># clip = Video("footage.mp4")</span>
 <span class="c1"># backdrop = doc.add(clip[0])</span>

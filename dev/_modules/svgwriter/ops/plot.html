@@ -308,14 +308,14 @@
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..document</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..model.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"to_matplotlib"</span><span class="p">]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_codes</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Vertices and matplotlib path codes for path data (curves as cubic Béziers)."""</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..pathdata.commands</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClosePath</span><span class="p">,</span> <span class="n">CurveTo</span><span class="p">,</span> <span class="n">LineTo</span><span class="p">,</span> <span class="n">MoveTo</span><span class="p">,</span> <span class="n">QuadTo</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..model.pathdata.commands</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClosePath</span><span class="p">,</span> <span class="n">CurveTo</span><span class="p">,</span> <span class="n">LineTo</span><span class="p">,</span> <span class="n">MoveTo</span><span class="p">,</span> <span class="n">QuadTo</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">._skia</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_skia</span><span class="p">,</span> <span class="n">to_skia</span>
 
     <span class="n">vertices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>

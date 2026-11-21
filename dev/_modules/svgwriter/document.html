@@ -314,14 +314,14 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.typography</span><span class="w"> </span><span class="kn">import</span> <span class="n">Typography</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._internal._tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">attach_cursor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyPath</span><span class="p">,</span> <span class="n">Stack</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">ElementFactory</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.elements.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Svg</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.theme.sheet</span><span class="w"> </span><span class="kn">import</span> <span class="n">sheet_theme</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.theme.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Theme</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">ElementFactory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model.elements.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Svg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model.theme.sheet</span><span class="w"> </span><span class="kn">import</span> <span class="n">sheet_theme</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model.theme.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Theme</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.io.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">Strictness</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.formats.io.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">Strictness</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.model.attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Document"</span><span class="p">]</span>
 
@@ -355,7 +355,7 @@
 <span class="sd">        the theme sheet of an existing `root`, else takes :meth:`Theme.current() &lt;svgwriter.Theme.current&gt;`</span>
 <span class="sd">        (``"light"`` outside a ``with theme:`` block).</span>
 <span class="sd">    **kwargs</span>
-<span class="sd">        Forwarded to :class:`~svgwriter.elements.Svg`.</span>
+<span class="sd">        Forwarded to :class:`~svgwriter.model.elements.Svg`.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
@@ -366,8 +366,8 @@
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    svgwriter.elements.Svg : The root element wrapped by a document.</span>
-<span class="sd">    svgwriter.preset.size : Add a named size.</span>
+<span class="sd">    svgwriter.model.elements.Svg : The root element wrapped by a document.</span>
+<span class="sd">    svgwriter.catalog.preset.size : Add a named size.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -463,10 +463,10 @@
 <span class="sd">        &gt;&gt;&gt; len(chart.root.children) &gt; 0</span>
 <span class="sd">        True</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">.io.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">Strictness</span><span class="p">,</span> <span class="n">parse</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.formats.io.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">Strictness</span><span class="p">,</span> <span class="n">parse</span>
 
         <span class="k">if</span> <span class="nb">format</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">"svg"</span><span class="p">:</span>
-            <span class="kn">from</span><span class="w"> </span><span class="nn">.export</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_importer</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.formats.export</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_importer</span>
 
             <span class="k">if</span> <span class="n">strictness</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"strictness= applies to SVG only"</span><span class="p">)</span>
@@ -500,7 +500,7 @@
 <span class="sd">            Canvas size.</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Forwarded to the constructor; ``options`` (a</span>
-<span class="sd">            :class:`~svgwriter.io.SerializeOptions`) is used when saving.</span>
+<span class="sd">            :class:`~svgwriter.formats.io.SerializeOptions`) is used when saving.</span>
 
 <span class="sd">        Yields</span>
 <span class="sd">        ------</span>

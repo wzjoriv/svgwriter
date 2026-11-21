@@ -307,14 +307,14 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">skia</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._render._rendering</span><span class="w"> </span><span class="kn">import</span> <span class="n">view_matrix</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span><span class="p">,</span> <span class="n">Unit</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..attributes.viewbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">ViewBox</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..model.attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span><span class="p">,</span> <span class="n">Unit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..model.attributes.viewbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">ViewBox</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">CHANNEL_MAX</span><span class="p">,</span> <span class="n">DEFAULT_QUALITY</span><span class="p">,</span> <span class="n">FORMATS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._raster</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_surface</span><span class="p">,</span> <span class="n">paint_svg</span><span class="p">,</span> <span class="n">paint_tree</span><span class="p">,</span> <span class="n">read_pixels</span><span class="p">,</span> <span class="n">render_tree</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..color.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColorLike</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..document</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..model.color.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColorLike</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">"DEFAULT_SIZE"</span><span class="p">,</span>
@@ -662,7 +662,7 @@
 <div class="viewcode-block" id="render_frame">
 <a class="viewcode-back" href="../../../reference/ops.html#svgwriter.ops.render_frame">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">render_frame</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Frame renderer for :func:`~svgwriter.video.render_animation`: an opaque uint8 RGBA frame.</span>
+<span class="w">    </span><span class="sd">"""Frame renderer for :func:`~svgwriter.motion.video.render_animation`: an opaque uint8 RGBA frame.</span>
 
 <span class="sd">    Draws the document as it is at each frame (use ``update=`` to change it</span>
 <span class="sd">    over time) on white, and returns raw pixels so ffmpeg needs no PNG</span>
@@ -698,7 +698,7 @@
 <span class="sd">    ((2, 4, 4), 'uint8')</span>
 <span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._animation._smil</span><span class="w"> </span><span class="kn">import</span> <span class="n">snapshot</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.animation</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnimationElement</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..model.elements.animation</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnimationElement</span>
 
     <span class="k">if</span> <span class="n">document</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">AnimationElement</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">document</span> <span class="o">=</span> <span class="n">snapshot</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span>

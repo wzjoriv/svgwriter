@@ -357,8 +357,8 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 </table>
 </div>
 <dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.cli.app">
-<span class="sig-name descname"><span class="pre">app</span></span><a class="headerlink" href="#svgwriter.cli.app" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="svgwriter.tools.cli.app">
+<span class="sig-name descname"><span class="pre">app</span></span><a class="headerlink" href="#svgwriter.tools.cli.app" title="Link to this definition">¶</a></dt>
 <dd><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">click.Group</span></code>; <code class="docutils literal notranslate"><span class="pre">app.add_command(command)</span></code> adds a command.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -368,8 +368,8 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="svgwriter.cli.main">
-<span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/cli.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.cli.main" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="svgwriter.tools.cli.main">
+<span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/tools/cli.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.tools.cli.main" title="Link to this definition">¶</a></dt>
 <dd><p>Run the command line.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -381,7 +381,7 @@ cannot be read or written; errors are one line on stderr, without a traceback.</
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">main</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.tools.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">main</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">main</span><span class="p">([</span><span class="s2">"draw"</span><span class="p">,</span> <span class="s2">"star"</span><span class="p">,</span> <span class="s2">"--size"</span><span class="p">,</span> <span class="s2">"50"</span><span class="p">,</span> <span class="s2">"--compact"</span><span class="p">])</span>
 <span class="go">&lt;?xml ...?&gt;</span>
 <span class="go">&lt;svg ...&lt;/svg&gt;0</span>
@@ -439,8 +439,8 @@ cannot be read or written; errors are one line on stderr, without a traceback.</
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Command line</a><ul>
-<li><a class="reference internal" href="#svgwriter.cli.app"><code class="docutils literal notranslate"><span class="pre">app</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.tools.cli.app"><code class="docutils literal notranslate"><span class="pre">app</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.tools.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>
 </ul>

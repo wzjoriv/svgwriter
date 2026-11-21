@@ -3,31 +3,31 @@
 Matrices, transform lists, path data and bounding boxes.
 
 ```{eval-rst}
-.. automodule:: svgwriter.transform
+.. automodule:: svgwriter.model.transform
    :members:
    :exclude-members: Matrix, Transform
 
-.. autoclass:: svgwriter.transform.Matrix
+.. autoclass:: svgwriter.model.transform.Matrix
    :members:
    :inherited-members: Drawable
 
-.. autoclass:: svgwriter.transform.Transform
+.. autoclass:: svgwriter.model.transform.Transform
    :members:
    :inherited-members:
 
-.. automodule:: svgwriter.pathdata
+.. automodule:: svgwriter.model.pathdata
    :members:
    :exclude-members: PathBuilder, PathCommand, PathData
 
-.. autoclass:: svgwriter.pathdata.PathBuilder
+.. autoclass:: svgwriter.model.pathdata.PathBuilder
    :members:
    :inherited-members:
 
-.. autoclass:: svgwriter.pathdata.PathCommand
+.. autoclass:: svgwriter.model.pathdata.PathCommand
    :members:
    :inherited-members: ABC
 
-.. autoclass:: svgwriter.pathdata.PathData
+.. autoclass:: svgwriter.model.pathdata.PathData
    :members:
    :inherited-members: Drawable
 ```
