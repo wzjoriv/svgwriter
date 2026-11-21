@@ -54,6 +54,12 @@ plot = [
 graph = [
     "networkx>=3.0",
 ]
+igraph = [
+    "python-igraph>=0.11",
+]
+rustworkx = [
+    "rustworkx>=0.15",
+]
 math = [
     "ziamath>=0.11",
 ]
@@ -61,7 +67,7 @@ color = [
     "python-lcms2>=0.2.3",
 ]
 test = [
-    "pysvgwriter[office,plot,graph,math]",
+    "pysvgwriter[office,plot,graph,igraph,rustworkx,math]",
     "pytest>=7",
     "ezdxf>=1.0",
     "pillow>=10",
