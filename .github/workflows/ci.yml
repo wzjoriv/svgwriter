@@ -47,6 +47,8 @@ jobs:
         run: python scripts/dev.py stub generate
       - name: Notebooks match their scripts
         run: python scripts/dev.py notebooks check
+      - name: Demo notebooks match their scripts
+        run: python scripts/dev.py svgwriter demo-notebooks check
       - name: Quick tests
         run: pytest -q -p no:cacheprovider --durations=15
 

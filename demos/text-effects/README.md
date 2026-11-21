@@ -11,6 +11,10 @@ What it shows:
 - The theme (`theme.toml`), a component (`components/card.py`, the card with its stars) and a project
   animation preset (`animations/twinkle.py`).
 
+Controls (`svgwriter preview` shows them as a form): a dropdown per highlighted word (Smoke, Metal, Wind, sparks, Snow) picks its effect from `svg.text_effects`. The defaults give the effects named above.
+
+Open the notebook, [text-effects.ipynb](text-effects.ipynb), to see the demo step by step with its pictures; run it to get a panel for the controls.
+
 ```
 svgwriter preview    # the animated SVG and the GIF
 svgwriter build      # output/text-effects.svg and output/text-effects.gif

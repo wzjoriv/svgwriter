@@ -16,6 +16,10 @@ What it shows:
   SVG plays in a browser like the video.
 - The theme (`theme.toml`) and data read from `assets/`.
 
+Controls: `explainer` takes the clip (`Eight planets` or `700× wider`) and a `time scale` that speeds up the orbits and the counter. They drive `svg.interact` in the notebook; the project's entry stays the two scenes, so `svgwriter build` still writes one clip each, and `svgwriter preview` shows no form for scenes.
+
+Open the notebook, [planets-explainer.ipynb](planets-explainer.ipynb), to see the demo step by step with its pictures; run it to get a panel for the controls.
+
 ```
 svgwriter preview                # every output, playing
 svgwriter build                  # output/planets-explainer-<Scene>.{mp4,svg,pptx}; needs ffmpeg for MP4
