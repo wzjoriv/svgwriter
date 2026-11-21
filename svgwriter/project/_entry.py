@@ -52,15 +52,22 @@ def working_directory(root: Path) -> Iterator[None]:
 
 @contextmanager
 def project_scope(root: Path) -> Iterator[None]:
-    """Import from *root*; afterwards forget its modules and the presets and sizes they registered."""
+    """Import from *root* without bytecode caches; afterwards forget its modules and the presets and sizes they registered.
+
+    Cached bytecode is keyed on modification time and size, so an edit within the same second that keeps
+    the size would otherwise load the old code.
+    """
     root = root.resolve()
     shadowed = {name: sys.modules.pop(name) for name in _local_names(root) if name in sys.modules}
     presets, sizes = {kind: registry.state() for kind, registry in KINDS.items()}, set(SIZES)
+    writes_bytecode = sys.dont_write_bytecode
+    sys.dont_write_bytecode = True
     sys.path.insert(0, str(root))
     importlib.invalidate_caches()
     try:
         yield
     finally:
+        sys.dont_write_bytecode = writes_bytecode
         sys.path.remove(str(root))
         for name, module in list(sys.modules.items()):
             if _inside(module, root):
