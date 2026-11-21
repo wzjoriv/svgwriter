@@ -5,13 +5,25 @@ Boolean path operations (union, intersection, difference, xor).
 from __future__ import annotations
 
 import enum
+import warnings
 
 import skia
 
+from ..pathdata.commands import ClosePath
 from ..pathdata.data import PathData
+from ._constants import OPEN_BOOLEAN_WARNING
 from ._skia import Geometry, from_skia, geometry_data, to_skia
 
 __all__ = ["BooleanOp", "combine", "difference", "intersection", "simplify", "union", "xor"]
+
+
+def _checked(result: PathData, operands: list[PathData], name: str) -> PathData:
+    """*result*, warning when it is empty because an operand is an open path with no area."""
+    if not len(result) and any(
+        len(piece) > 1 and not isinstance(piece[-1], ClosePath) for data in operands for piece in data.subpaths()
+    ):
+        warnings.warn(OPEN_BOOLEAN_WARNING.format(name=name), stacklevel=3)
+    return result
 
 
 class BooleanOp(enum.Enum):
@@ -39,6 +51,9 @@ def combine(first: Geometry, second: Geometry, op: BooleanOp) -> PathData:
 
     The result has no self-intersections; the named helpers :func:`union`,
     :func:`intersection`, :func:`difference` and :func:`xor` call this.
+    Boolean operations work on filled areas: an open path counts as closed by
+    a straight line, so a lone line or polyline with no area adds nothing.
+    When that leaves the result empty a warning says so.
 
     Parameters
     ----------
@@ -73,7 +88,7 @@ def combine(first: Geometry, second: Geometry, op: BooleanOp) -> PathData:
     result = skia.Op(to_skia(a_data, evenodd=a_evenodd), to_skia(b_data, evenodd=b_evenodd), getattr(skia.PathOp, op.value))
     if result is None:
         raise ValueError(f"skia could not compute the {op.name.lower()} of these outlines")
-    return from_skia(result)
+    return _checked(from_skia(result), [a_data, b_data], op.name.lower())
 
 
 def union(first: Geometry, *others: Geometry) -> PathData:
@@ -113,13 +128,15 @@ def union(first: Geometry, *others: Geometry) -> PathData:
     if not others:
         return simplify(first)
     builder = skia.OpBuilder()
+    operands = []
     for item in (first, *others):
         data, evenodd = geometry_data(item)
+        operands.append(data)
         builder.add(to_skia(data, evenodd=evenodd), skia.PathOp.kUnion_PathOp)
     result = builder.resolve()
     if result is None:
         raise ValueError("skia could not compute the union of these outlines")
-    return from_skia(result)
+    return _checked(from_skia(result), operands, "union")
 
 
 def intersection(first: Geometry, second: Geometry) -> PathData:

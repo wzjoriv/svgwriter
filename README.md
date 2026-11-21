@@ -44,12 +44,12 @@ pixels = doc.rasterize(scale=2)                          # numpy float32 RGBA, s
 | Text | `text[i]` / `text[a:b]` move, rotate or style characters while staying real text; `tspan` layout, CSS and inherited fonts; `text.glyphs()` for free-form outlines |
 | Colors and images | `Color` in 0-1 floats with alpha (auto `*-opacity`); `Image(numpy_array)` with color channels and broadcastable alpha; `Image.open("photo.png")`; Porter-Duff compositing `a \| b` (over), `a & b` (in), `a - b` (out), `a ^ b`, `a * b` (multiply), `a.composite(b, "screen")` |
 | Documents | `doc[0]`, `doc["logo"]`, `for el in doc`; auto-size to content; definitions land in `<defs>` when referenced; `doc.add(x)` takes elements, documents, matplotlib figures and anything with `__svgwriter__`, `_repr_svg_`, `_repr_png_` or `_repr_jpeg_` (see [Adding other objects](#adding-other-objects)); notebook display |
-| Themes | `svg.Theme` palettes, fonts and role styles; `el.as_role("box")` marks elements, the document writes one CSS rule per role so the SVG stays restylable; `light`, `dark`, `paper`, `print`, `mono` built in; `theme.replace(...)` variants, TOML theme files, `with theme:` defaults |
+| Themes | `svg.Theme` palettes, fonts and role styles; `el.as_role("box")` marks elements, the document writes one CSS rule per role so the SVG stays restylable; eleven built-in themes (light, dark, paper, print, mono, noir, brutalist, dracula, ...); `=` expressions in theme files; `theme.replace(...)` variants, TOML theme files, `with theme:` defaults |
 | Rendering | skia: `rasterize(size=..., padding=...)` to numpy, embedded and linked images, text, CSS `<style>`; deterministic output |
 | Export / import | A registry by name or extension: more than 30 formats from SVG and PNG to PDF, TikZ, DXF, G-code, PowerPoint, Graphviz and Mermaid (see [Export and import](#export-and-import)); `svg.export.register(...)` adds more |
 | Projects | `svgwriter new my-poster --preset poster` starts a design folder (`svgwriter.toml`, theme, components, animations, assets); `svgwriter build` writes every output and `svgwriter preview` reloads a browser page on save; `blank`, `poster`, `slides` and `animation` presets build out of the box, as scripts or notebooks |
 | Sizes and units | `svg.Document(size="a4")`, `"letter"`, `"slide-16:9"`, `"instagram-story"`, ... with real units, so the drawing counts in mm or inches; `svg.mm`, `svg.inch`, `svg.pt` lengths and `svg.deg`, `svg.turn` angles |
-| Animation | SMIL elements; `el.animate` presets plus your own as typed functions (`@svg.preset.animation`, `el.animate.apply(fn, ...)`); `doc.render_animation("out.mp4", update=...)` through ffmpeg; `svg.Scene` classes, several per file, rendered by `svgwriter animate`; `svg.interpolate(a, b, t)` tweens numbers, colors, transforms and morphs any two shapes |
+| Animation | SMIL elements; `el.animate` presets plus your own as typed functions (`@svg.preset.animation`, per-frame `@svg.preset.behavior`, `el.animate.apply(fn, ...)`); `svg.Scene` classes, several per file, rendered by `svgwriter animate`; Python-driven scenes baked into SMIL so SVG files play like the video; PowerPoint slide effects both ways; `svg.interpolate(a, b, t)` tweens numbers, colors, transforms and morphs any two shapes |
 
 ## Geometry in one minute
 
@@ -154,16 +154,8 @@ svg.Document.open("sketch.excalidraw").save("sketch.svg")
 
 Regenerate the pictures (PNG, and the animations as GIF) with `python scripts/dev.py svgwriter gallery`.
 
-## Development
+## Contributing
 
-```
-pip install -e ".[dev]"
-python scripts/dev.py test                     # test tiers
-python scripts/dev.py check                    # ruff, tests, docs
-python scripts/dev.py stub generate            # build the .pyi stubs locally (git-ignored; the release workflow builds the shipped ones)
-python scripts/dev.py svgwriter conformance    # W3C SVG 1.1 suite (after: svgwriter fetch-suite)
-python scripts/dev.py svgwriter bench          # timing of the hot paths
-python scripts/dev.py svgwriter formats        # every export and round trip side by side, scored (build/formats)
-```
+Development setup, commands and conventions are in the [contributing guide](https://wzjoriv.github.io/svgwriter/dev/contributing.html).
 
 MIT licensed.

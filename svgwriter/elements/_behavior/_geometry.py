@@ -10,6 +10,7 @@ from ..._internal._tree import clip_outline
 from ...pathdata.data import PathData
 from ...transform.transform import TransformLike, as_transform
 from ..core import Element
+from ._along import AlongPath
 from ._boolean import BooleanOps
 from ._constants import NOT_COPIED
 from ._measure import Measurement
@@ -22,10 +23,11 @@ __all__ = ["Operand", "PathOperand"]
 Operand: TypeAlias = Union["PathOperand", PathData, str]
 
 
-class PathOperand(BooleanOps, Measurement, Element):
+class PathOperand(BooleanOps, Measurement, AlongPath, Element):
     """An element with an outline.
 
-    Adds :meth:`to_path`, boolean operators and exact measurement:
+    Adds :meth:`to_path`, exact measurement, walking the outline (:meth:`at`,
+    :meth:`sample`, :meth:`between`, :meth:`round_corners`, ...) and boolean operators:
 
     - ``a | b``: union
     - ``a & b``: intersection
