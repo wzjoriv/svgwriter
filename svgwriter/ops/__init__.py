@@ -34,15 +34,20 @@ from .parallel import rasterize_many
 from .plot import to_matplotlib
 from .render import encode, rasterize, render_frame, render_png, render_svg
 from .text import Anchor, FontWeight, register_font, text_outline, text_to_path, text_width
+from .typeface import Face, FaceMetrics, FontSource, Typeface
 
 __all__ = [
     "Anchor",
     "BooleanOp",
     "Cap",
+    "Face",
+    "FaceMetrics",
+    "FontSource",
     "FontWeight",
     "Geometry",
     "Join",
     "Operator",
+    "Typeface",
     "bounds",
     "combine",
     "composite_rgba",

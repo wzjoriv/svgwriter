@@ -210,6 +210,8 @@ class AttributeAccess:
         if value is None:
             self.attributes.pop(key, None)
             return
+        if key == "font" and _is_typeface(value):
+            key = "font-family"
         if key in COLOR_ATTRIBUTES and isinstance(value, str):
             if not (key == "fill" and self.category is Category.ANIMATION):
                 _check_paint(key, value)
@@ -322,3 +324,10 @@ class AttributeAccess:
         False
         """
         self.attributes.pop(svg_name(name), None)
+
+
+def _is_typeface(value: object) -> bool:
+    """Whether *value* is a :class:`~svgwriter.ops.Typeface`, which ``font=`` sets as the family."""
+    from ...ops.typeface import Typeface
+
+    return isinstance(value, Typeface)
