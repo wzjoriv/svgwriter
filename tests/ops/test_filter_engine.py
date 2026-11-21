@@ -95,3 +95,10 @@ def test_bounding_box_primitive_units_scale_primitive_lengths(primitive: str, li
     pixels = draw('<filter id="f" primitiveUnits="objectBoundingBox" x="-1" y="-1" width="3" height="3">'
                   f'{primitive}</filter><rect x="20" y="20" width="40" height="40" fill="lime" filter="url(#f)"/>')
     assert pixels[lime][0] < 0.9 and np.allclose(pixels[white], WHITE, atol=0.02)
+
+
+def test_fe_image_fits_its_unclipped_subregion() -> None:
+    pixels = draw(f'<filter id="f" x="0" y="0" width="1" height="1"><feImage width="100" '
+                  f'xlink:href="{png_uri((0, 1, 0))}"/></filter>'
+                  '<rect width="50" height="50" fill="red" filter="url(#f)"/>')
+    assert np.allclose(pixels[25, 10], WHITE, atol=0.02) and np.allclose(pixels[25, 40], LIME, atol=0.02)

@@ -119,6 +119,21 @@ class Frame:
             return (self.box.width, self.box.height)
         return (1.0, 1.0)
 
+    def placement(self, primitive: Element) -> skia.Rect:
+        """The primitive subregion of *primitive* as given, before clipping; where ``feImage`` fits its picture.
+
+        Parameters
+        ----------
+        primitive : Element
+            An ``fe*`` element; the coordinates it leaves out come from the filter region.
+
+        Returns
+        -------
+        skia.Rect
+            The unclipped subregion.
+        """
+        return _rect(primitive, self.box, self.viewport, self.bounding, self.region) or self.region
+
     def subregion(self, primitive: Element, default: skia.Rect) -> skia.Rect:
         """The primitive subregion of *primitive*, clipped to the filter region.
 

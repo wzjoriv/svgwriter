@@ -42,7 +42,7 @@ def _framed(primitive: Element, first: Any, second: Any, frame: Frame, area: ski
     from ._filter_frame import image_source
 
     if primitive.tag == "feImage":
-        return image_source(primitive, area, frame)
+        return image_source(primitive, frame.placement(primitive), frame)
     if primitive.tag == "feTile":
         return skia.ImageFilters.Tile(source_area, area, first)
     channels = [CHANNELS.get(str(primitive.get(name, "A")), skia.ColorChannel.kA)
