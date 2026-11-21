@@ -64,6 +64,14 @@ def style_of(value: object) -> FontStyle:
     return text  # type: ignore[return-value]
 
 
+def variation_axes(typeface: Any) -> list[Any]:
+    """The variation axes of a skia typeface; empty for a static font (some skia builds raise for those)."""
+    try:
+        return list(typeface.getVariationDesignParameters())
+    except RuntimeError:
+        return []
+
+
 def describe(typeface: Any, weight: float | Range | None = None, style: str | None = None,
              stretch: float | Range | None = None, subfamily: str = "") -> FaceStyle:
     """The CSS descriptors of a skia typeface, read from the font unless given.
@@ -72,7 +80,7 @@ def describe(typeface: Any, weight: float | Range | None = None, style: str | No
     selection flags, with an italic or oblique subfamily name winning over an upright flag.
     """
     axes = {str(axis_tag(axis.tag)): (axis.min, getattr(axis, "def"), axis.max)
-            for axis in typeface.getVariationDesignParameters()}
+            for axis in variation_axes(typeface)}
     font_style = typeface.fontStyle()
     if weight is None:
         weight = axes[AXIS_WEIGHT][0::2] if AXIS_WEIGHT in axes else font_style.weight()

@@ -65,6 +65,7 @@ def family_of(source: FontSource) -> str:
 
 
 @cache
+@cache
 def _installed_families() -> tuple[str, ...]:
     """Every installed family name, indexed once on first need."""
     manager = skia.FontMgr.RefDefault()
@@ -85,6 +86,7 @@ def installed_faces(name: str) -> tuple[str, list[Face]]:
                 typeface, subfamily = styles.createTypeface(index), styles.getStyle(index)[1] or REGULAR_SUBFAMILY
                 faces.append(Face.of(family, typeface, describe(typeface, subfamily=subfamily), subfamily=subfamily))
             return family, faces
-    close = difflib.get_close_matches(name, _installed_families(), n=SUGGESTIONS)
+    families = {family.lower(): family for family in _installed_families()}
+    close = [families[match] for match in difflib.get_close_matches(name.lower(), families, n=SUGGESTIONS)]
     hint = f"; did you mean {' or '.join(repr(match) for match in close)}?" if close else ""
     raise LookupError(f"no installed font family {name!r}{hint} (load files with Typeface.from_files)")
