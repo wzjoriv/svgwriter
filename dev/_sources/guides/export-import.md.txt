@@ -242,7 +242,7 @@ chart.save("chart.pdf")                          # 108 x 54 pt: CSS pixels
 
 ## Colour profiles
 
-Every export draws in sRGB. With the {doc}`color extra <../start/installation>` installed, `icc=`
+Every export draws in sRGB. `icc=`
 attaches an ICC profile, converting the pixels when it is not sRGB (LittleCMS does it in one pass and
 profiles are parsed once):
 

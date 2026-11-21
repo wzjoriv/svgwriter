@@ -978,7 +978,7 @@ When the numbers are meant as points (one unit, one point, as in many plotting t
 </section>
 <section id="colour-profiles">
 <h2>Colour profiles<a class="headerlink" href="#colour-profiles" title="Link to this heading">¶</a></h2>
-<p>Every export draws in sRGB. With the <a class="reference internal" href="../start/installation.html"><span class="doc">color extra</span></a> installed, <code class="docutils literal notranslate"><span class="pre">icc=</span></code>
+<p>Every export draws in sRGB. <code class="docutils literal notranslate"><span class="pre">icc=</span></code>
 attaches an ICC profile, converting the pixels when it is not sRGB (LittleCMS does it in one pass and
 profiles are parsed once):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"figure.png"</span><span class="p">,</span> <span class="n">icc</span><span class="o">=</span><span class="s2">"srgb"</span><span class="p">)</span>               <span class="c1"># tagged sRGB, pixels unchanged</span>

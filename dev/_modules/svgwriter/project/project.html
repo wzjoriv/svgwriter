@@ -320,7 +320,7 @@
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._gallery</span><span class="w"> </span><span class="kn">import</span> <span class="n">Preview</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._notebook</span><span class="w"> </span><span class="kn">import</span> <span class="n">headless</span><span class="p">,</span> <span class="n">kernel_object</span><span class="p">,</span> <span class="n">run_notebook</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.presets</span><span class="w"> </span><span class="kn">import</span> <span class="n">create</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.presets</span><span class="w"> </span><span class="kn">import</span> <span class="n">SizeChoice</span><span class="p">,</span> <span class="n">create</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Project"</span><span class="p">]</span>
 
@@ -404,7 +404,7 @@
 <a class="viewcode-back" href="../../../reference/project.html#svgwriter.Project.new">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">new</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">preset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"blank"</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">notebook</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Project</span><span class="p">:</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">theme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">SizeChoice</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Project</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Create a project folder from a preset and load it.</span>
 
 <span class="sd">        Parameters</span>
@@ -417,6 +417,11 @@
 <span class="sd">            Write ``main.ipynb`` instead of ``main.py``. Defaults to False.</span>
 <span class="sd">        name : str, optional</span>
 <span class="sd">            The project name. Defaults to the folder name.</span>
+<span class="sd">        theme : str, optional</span>
+<span class="sd">            A built-in theme name that ``theme.toml`` extends. Defaults to None, the preset's own.</span>
+<span class="sd">        size : str or sequence of (float or str), optional</span>
+<span class="sd">            A size name (``"a4"``) or ``[width, height]``, written to ``svgwriter.toml``. Defaults to</span>
+<span class="sd">            None, the preset's own.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -426,7 +431,8 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ProjectError</span>
-<span class="sd">            If the preset is unknown (the message lists the presets) or the folder is not empty.</span>
+<span class="sd">            If the preset, theme or size is unknown (the message lists the choices) or the folder is</span>
+<span class="sd">            not empty.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -435,7 +441,7 @@
 <span class="sd">        ...     print(svg.Project.new(f"{folder}/talk", preset="slides").config.formats)</span>
 <span class="sd">        ('pptx', 'pdf')</span>
 <span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">create</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">preset</span><span class="p">,</span> <span class="n">notebook</span><span class="o">=</span><span class="n">notebook</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">create</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">preset</span><span class="p">,</span> <span class="n">notebook</span><span class="o">=</span><span class="n">notebook</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="n">theme</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span></div>
 
 
     <span class="nd">@property</span>
