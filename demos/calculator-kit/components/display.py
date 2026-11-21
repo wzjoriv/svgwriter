@@ -18,4 +18,4 @@ def display(value: str, history: str | None, *, font: str, size: float, align: s
                      .as_role("readout"))
     lines.append(svg.text(value, font_family=FONTS[font], font_size=size).as_role("readout"))
     return svg.VStack(*lines, gap=size * 0.2, padding=(size * 0.35, size * 0.45), align=ALIGN[align],
-                      background=svg.rect(rx=radius).as_role("screen"))
+                      background=svg.rect(0, 0, 1, 1, rx=radius).as_role("screen"))

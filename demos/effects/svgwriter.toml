@@ -1,8 +1,8 @@
-# The text effects: the SVG plays in a browser, the GIF anywhere.
+# Effects on words, a logo and buttons: the SVG plays in a browser, the GIF anywhere.
 [project]
-name = "text-effects"
+name = "effects"
 entry = "main:passage"
-size = [960, 300]
+size = [1100, 300]
 theme = "theme.toml"
 
 [outputs]

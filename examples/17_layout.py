@@ -20,7 +20,7 @@ def key(label: str) -> svg.VStack:
     """One calculator key: the label on a rounded rect, in the accent role for operators."""
     role = "accent" if label in OPERATORS else "box"
     return svg.VStack(svg.text(label, font_size=20).as_role("text"), padding=(12, 16), align="center",
-                      background=svg.rect(rx=10).as_role(role))
+                      background=svg.rect(0, 0, 1, 1, rx=10).as_role(role))
 
 
 seven = key("7")
@@ -44,9 +44,9 @@ keypad
 
 # %%
 display = svg.HStack(svg.Spacer(), svg.text("1,234.5", font_size=32).as_role("title"),
-                     padding=(10, 14), background=svg.rect(rx=10).as_role("surface"))
+                     padding=(10, 14), background=svg.rect(0, 0, 1, 1, rx=10).as_role("surface"))
 card = svg.VStack(display, keypad, gap=12, padding=16, align="stretch",
-                  background=svg.rect(rx=20).as_role("background"))
+                  background=svg.rect(0, 0, 1, 1, rx=20).as_role("background"))
 doc = svg.Document(theme="dark")
 doc += card
 doc.save("17_calculator.svg")
