@@ -8,8 +8,21 @@ import re
 from typing import Final
 
 __all__ = [
+    "BAKE_DIGITS",
+    "BAKE_DISCRETE",
+    "BAKE_DOCUMENTS",
+    "BAKE_HIDDEN",
+    "BAKE_INITIAL",
+    "BAKE_PARTS",
+    "BAKE_PLACEHOLDER",
+    "BAKE_TOLERANCE",
+    "BAKE_VISIBILITY",
+    "BAKE_VISIBLE",
+    "BREATHE_AMOUNT",
+    "BREATHE_PERIOD",
     "CHANNELS",
     "CHANNEL_MAX",
+    "DEGREES_PER_TURN",
     "DURATION_RE",
     "EVEN_PAD",
     "FFMPEG",
@@ -17,6 +30,8 @@ __all__ = [
     "FRAME_PATTERN",
     "FRAME_SUFFIX",
     "GIF_FILTER",
+    "HOVER_HEIGHT",
+    "HOVER_PERIOD",
     "OUTPUTS",
     "PNG_SIGNATURE",
     "PNG_SIZE_OFFSET",
@@ -35,6 +50,8 @@ __all__ = [
     "STREAM_RE",
     "TIMECOUNT_RE",
     "TIME_SCALE",
+    "WIGGLE_ANGLE",
+    "WIGGLE_PERIOD",
 ]
 
 FFMPEG: Final = "ffmpeg"
@@ -77,3 +94,29 @@ SCENE_SCRIPT: Final = ".py"
 SCENE_SVG: Final = ".svg"
 FRAME_SUFFIX: Final = ".png"
 FRAME_PATTERN: Final = "{stem}_%04d{suffix}"
+WIGGLE_ANGLE: Final = 6.0
+WIGGLE_PERIOD: Final = 0.5
+HOVER_HEIGHT: Final = 4.0
+HOVER_PERIOD: Final = 2.0
+BREATHE_AMOUNT: Final = 0.05
+BREATHE_PERIOD: Final = 2.0
+BAKE_TOLERANCE: Final = 0.01
+BAKE_DIGITS: Final = 6
+BAKE_DOCUMENTS: Final = frozenset({".svg", ".svgz", ".html", ".htm", ".pptx"})
+BAKE_DISCRETE: Final = frozenset({
+    "class", "id", "role", "href", "xlink:href", "font-family", "text-anchor", "dominant-baseline", "display",
+    "visibility", "fill-rule", "clip-rule", "stroke-linecap", "stroke-linejoin", "clip-path", "mask", "filter",
+    "marker-start", "marker-mid", "marker-end", "font-weight", "font-style", "preserveAspectRatio",
+})
+BAKE_VISIBILITY: Final = "visibility"
+BAKE_HIDDEN: Final = "hidden"
+BAKE_VISIBLE: Final = "visible"
+BAKE_PLACEHOLDER: Final = "\x00"
+BAKE_PARTS: Final = (("translate", (0.0, 0.0)), ("rotate", (0.0,)), ("skewX", (0.0,)), ("scale", (1.0, 1.0)))
+DEGREES_PER_TURN: Final = 360.0
+BAKE_INITIAL: Final = {
+    "class": "", "display": "inline", "visibility": "visible", "stroke-dasharray": "none", "font-weight": "normal",
+    "font-style": "normal", "text-anchor": "start", "fill-rule": "nonzero", "clip-rule": "nonzero",
+    "stroke-linecap": "butt", "stroke-linejoin": "miter", "clip-path": "none", "mask": "none", "filter": "none",
+    "marker-start": "none", "marker-mid": "none", "marker-end": "none",
+}

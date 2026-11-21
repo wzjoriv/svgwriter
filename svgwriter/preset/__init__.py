@@ -1,4 +1,4 @@
-"""Presets of your own, by kind: animations, shapes and canvas sizes, each registered by a decorator and found by name.
+"""Presets of your own, by kind: animations, behaviors, shapes and canvas sizes, each found by name.
 
 Animations and shapes register by decorator (``name=``, ``replace=``) and sizes by a call
 (``svg.preset.size(name, width, height)``); every kind has ``list(kind)``, ``get(kind, name)`` and
@@ -20,8 +20,9 @@ True
 from __future__ import annotations
 
 from ._animation import animation
+from ._behavior import behavior
 from ._kinds import get, list, unregister
 from ._shape import shape
 from ._size import size
 
-__all__ = ["animation", "get", "list", "shape", "size", "unregister"]
+__all__ = ["animation", "behavior", "get", "list", "shape", "size", "unregister"]
