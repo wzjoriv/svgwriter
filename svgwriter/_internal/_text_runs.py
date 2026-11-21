@@ -98,7 +98,7 @@ def text_runs(document: Document, *, color_glyphs: bool = True) -> list[TextRun]
     from ._rendering import view_matrix
 
     runs: list[TextRun] = []
-    with document._sized():
+    with document._prepared():
         width, height = document_size(document)
         view = view_matrix(document, width, height)
         root = document.root

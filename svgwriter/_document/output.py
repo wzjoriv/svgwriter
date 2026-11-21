@@ -55,7 +55,7 @@ class Output:
         >>> print(doc.to_string(pretty=False, xml_declaration=False))
         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10" version="1.1"><circle cx="5" cy="5" r="2"/></svg>
         """
-        with self._sized():
+        with self._prepared():
             return self.root.to_string(**options)
 
     def __str__(self) -> str:
@@ -147,7 +147,7 @@ class Output:
         """
         from ..ops.render import rasterize
 
-        with self._sized():
+        with self._prepared():
             return rasterize(self, scale=scale, size=size, padding=padding, background=background,
                              snapshot=snapshot)
 
@@ -212,7 +212,7 @@ class Output:
         """
         if format is None and (not isinstance(target, (str, os.PathLike))
                                or str(target).lower().endswith(".svg")):
-            with self._sized():
+            with self._prepared():
                 self.root.save(target, **options)
             return
         from ..export import save
