@@ -62,7 +62,7 @@ math = [
     "ziamath>=0.11",
 ]
 color = [
-    "python-lcms2>=0.2.3",
+    "python-lcms2>=0.3.1",
 ]
 notebook = [
     "nbformat>=5",
@@ -75,7 +75,7 @@ test = [
     "ezdxf>=1.0",
     "pillow>=10",
     "fonttools>=4.40",
-    "python-lcms2>=0.2.3; python_version < '3.15'",
+    "python-lcms2>=0.3.1; python_version < '3.15'",
 ]
 dev = [
     "pysvgwriter[test,docs,notebook]",
