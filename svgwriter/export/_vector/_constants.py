@@ -103,9 +103,15 @@ __all__ = [
     "PATH_TOKEN_RE",
     "MEDIA_BOX_RE",
     "PDF_BOX_PRECISION",
+    "PDF_ICC_COMPONENTS",
+    "PDF_OUTPUT_INTENTS",
+    "PDF_STRING_ESCAPES",
     "PHYSICAL_UNITS",
     "PDF_HEADER",
+    "ROOT_RE",
     "STARTXREF_RE",
+    "TRAILER_INFO_RE",
+    "TRAILER_SIZE_RE",
     "XREF_ENTRY_RE",
     "PDF_LINK_KEY",
     "PDF_MAX_DEPTH",
@@ -256,8 +262,15 @@ MEDIA_BOX_RE: Final = re.compile(rb"/MediaBox\s*\[\s*0\s+0\s+([\d.]+)\s+([\d.]+)
 XREF_ENTRY_RE: Final = re.compile(rb"(?m)^(\d{10})( \d{5} n)")
 STARTXREF_RE: Final = re.compile(rb"(startxref\s+)(\d+)")
 PDF_BOX_PRECISION: Final = 4
+ROOT_RE: Final = re.compile(rb"/Root\s+(\d+)\s+0\s+R")
+TRAILER_SIZE_RE: Final = re.compile(rb"/Size\s+(\d+)")
+TRAILER_INFO_RE: Final = re.compile(rb"/Info\s+\d+\s+0\s+R")
+PDF_OUTPUT_INTENTS: Final = {"RGB": (b"GTS_PDFA1", b"sRGB IEC61966-2.1"), "CMYK": (b"GTS_PDFX", b"Custom")}
+"""Per profile colour space: the output intent subtype and its output condition identifier."""
 PHYSICAL_UNITS: Final = frozenset({Unit.MM, Unit.CM, Unit.IN, Unit.PT, Unit.PC})
 """Page size units that fix the printed size, so ``px_per_inch`` leaves them alone."""
+PDF_ICC_COMPONENTS: Final = {"RGB": 3, "CMYK": 4}
+PDF_STRING_ESCAPES: Final = {ord("\\"): r"\\", ord("("): r"\(", ord(")"): r"\)"}
 ENCRYPT_RE: Final = re.compile(rb"/Encrypt\s*(?:\d+\s+\d+\s+R|<<)")
 NAME_ESCAPE_RE: Final = re.compile(rb"#([0-9A-Fa-f]{2})")
 LITERALS: Final = {b"true": True, b"false": False, b"null": None}

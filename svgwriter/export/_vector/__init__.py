@@ -14,12 +14,13 @@ from .._registry import register, register_importer
 from ._constants import PDF_LINK_KEY
 
 if TYPE_CHECKING:
+    from ..._internal._icc_output import IccLike
     from ...document import Document
 
 
 @register("pdf", extensions=(".pdf",), multipage=True)
 def pdf(document: Document | Sequence[Document], *, title: str | None = None, author: str | None = None,
-        text: bool = True, px_per_inch: float = PX_PER_INCH) -> bytes:
+        text: bool = True, px_per_inch: float = PX_PER_INCH, icc: IccLike | None = None) -> bytes:
     """Vector PDF drawn by skia: shapes stay vector, text stays selectable, images are embedded.
 
     Pages have the document's physical size: a user unit (CSS pixel) is 3/4 of a point, 96 per
@@ -43,6 +44,11 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     px_per_inch : float, optional
         User units per inch of a document sized in pixels or plain numbers: 72 prints one unit as
         one point. Sizes in ``mm``, ``cm``, ``in``, ``pt`` or ``pc`` are kept. Defaults to 96 (CSS).
+    icc : {"srgb"} or bytes, optional
+        An output intent with this ICC profile: ``"srgb"`` declares the page colours sRGB
+        (as PDF/A expects), CMYK profile bytes name the printing condition (as PDF/X expects).
+        The colours stay sRGB, since skia writes only DeviceRGB, so other RGB profiles are refused.
+        Needs the ``color`` extra. Defaults to None.
 
     Returns
     -------
@@ -52,7 +58,9 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     Raises
     ------
     ValueError
-        If `px_per_inch` is not above 0.
+        If `px_per_inch` is not above 0 or `icc` is not sRGB or a CMYK profile.
+    ImportError
+        If `icc` is given without the ``color`` extra.
 
     See Also
     --------
@@ -89,7 +97,13 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
         _links(canvas, page)
         pdf_document.endPage()
     pdf_document.close()
-    return exact_media_boxes(bytes(stream.detachAsData()), sizes)
+    data = exact_media_boxes(bytes(stream.detachAsData()), sizes)
+    if icc is None:
+        return data
+    from ..._internal._icc_output import output_profile
+    from ._pdf_intent import with_output_intent
+
+    return with_output_intent(data, output_profile(icc))
 
 
 def _links(canvas: skia.Canvas, page: Document) -> None:
