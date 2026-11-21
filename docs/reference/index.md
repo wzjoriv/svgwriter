@@ -12,6 +12,7 @@ geometry
 layout
 color
 ops
+fonts
 export
 io
 attributes
