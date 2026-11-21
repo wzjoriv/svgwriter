@@ -9,6 +9,8 @@ import svgwriter as svg
 from svgwriter.export import find_importer
 
 TOLERANCE = 0.01
+PT = 96 / 72
+TEX_PT = 96 / 72.27
 
 
 def drawing() -> svg.Document:
@@ -102,22 +104,23 @@ BT /F1 12 Tf (ignored text with re f) Tj ET
 class TestPdf:
     def test_flate_form_state_and_colors(self) -> None:
         doc = find_importer("pdf").function(pdf_file([PAGE_ONE, b"0 g 0 0 5 5 re f"], [FORM]))
-        assert (doc.root.get("width"), doc.root.get("height")) == (100, 50)
+        assert (doc.root.get("width"), doc.root.get("height")) == pytest.approx((100 * PT, 50 * PT))
         line, square, curve, text, form = doc
         assert text.tag == "text" and text.text_content == "ignored text with re f" and text.get("font-size") == 12
         assert form.get("clip-path") is not None
-        assert line.get("stroke") == "#ff0000" and line.get("stroke-width") == 4 and line.get("stroke-dasharray") == "2 1"
-        assert line.bounds().y == pytest.approx(10)
+        assert line.get("stroke") == "#ff0000" and line.get("stroke-width") == pytest.approx(4 * PT)
+        assert line.get("stroke-dasharray") == "2.66667 1.33333"
+        assert line.bounds().y == pytest.approx(10 * PT)
         assert square.get("fill") == "#00ff00" and square.get("opacity") == 0.5
-        assert square.bounds() == pytest.approx((10, 30, 20, 10))
+        assert square.bounds() == pytest.approx(tuple(v * PT for v in (10, 30, 20, 10)))
         assert curve.get("fill") == "#00ffff" and curve.get("fill-rule") == "evenodd"
-        assert form.get("fill") == "#0000ff" and form.bounds() == pytest.approx((50, 40, 10, 10))
+        assert form.get("fill") == "#0000ff" and form.bounds() == pytest.approx(tuple(v * PT for v in (50, 40, 10, 10)))
 
     def test_page_option(self, tmp_path) -> None:
         path = tmp_path / "two.pdf"
         path.write_bytes(pdf_file([PAGE_ONE, b"0 g 0 0 5 5 re f"], [FORM]))
         second = svg.export.load(path, page=1)
-        assert len(second) == 1 and second[0].bounds() == pytest.approx((0, 45, 5, 5))
+        assert len(second) == 1 and second[0].bounds() == pytest.approx(tuple(v * PT for v in (0, 45, 5, 5)))
         with pytest.raises(ValueError, match="page 2 out of range"):
             svg.export.load(path, page=2)
 
@@ -125,7 +128,7 @@ class TestPdf:
         data = (b"%PDF-1.1\n1 0 obj << /Type /Page /MediaBox [0 0 20 20] /Contents 2 0 R >> endobj\n"
                 b"2 0 obj << /Length 999 >> stream\n0.5 G 2 2 m 18 18 l S\nendstream endobj\n")
         line, = find_importer("pdf").function(data)
-        assert line.get("stroke") == "#808080" and line.bounds() == pytest.approx((2, 2, 16, 16))
+        assert line.get("stroke") == "#808080" and line.bounds() == pytest.approx(tuple(v * PT for v in (2, 2, 16, 16)))
 
     def test_bad_input(self) -> None:
         reader = find_importer("pdf").function
@@ -155,16 +158,16 @@ class TestEps:
     def test_procedures_and_operators(self) -> None:
         doc = find_importer("eps").function(EPS_PROCEDURES)
         box, circle, dashed, rotated = doc
-        assert box.get("fill") == "#808080" and box.bounds() == pytest.approx((10, 70, 20, 20))
-        assert circle.get("stroke") == "#0000ff" and circle.bounds() == pytest.approx((40, 40, 20, 20), abs=TOLERANCE)
-        assert dashed.get("stroke") == "#ff00ff" and dashed.get("stroke-dasharray") == "3 1"
-        assert dashed.get("stroke-linecap") == "round" and dashed.get("stroke-width") == 2
-        assert rotated.bounds() == pytest.approx((80, 80, 10, 10))
+        assert box.get("fill") == "#808080" and box.bounds() == pytest.approx(tuple(v * PT for v in (10, 70, 20, 20)))
+        assert circle.get("stroke") == "#0000ff" and circle.bounds() == pytest.approx(tuple(v * PT for v in (40, 40, 20, 20)), abs=TOLERANCE)
+        assert dashed.get("stroke") == "#ff00ff" and dashed.get("stroke-dasharray") == "4 1.33333"
+        assert dashed.get("stroke-linecap") == "round" and dashed.get("stroke-width") == pytest.approx(2 * PT)
+        assert rotated.bounds() == pytest.approx(tuple(v * PT for v in (80, 80, 10, 10)))
 
     def test_arcn_and_relative_curve(self) -> None:
         doc = find_importer("eps").function(b"%!PS\n0 0 moveto 10 0 rlineto 10 0 10 180 0 arcn 0 10 0 10 10 10 rcurveto stroke")
         path, = doc
-        assert (path.bounds().width, path.bounds().height) == pytest.approx((30, 10), abs=TOLERANCE)
+        assert (path.bounds().width, path.bounds().height) == pytest.approx((30 * PT, 10 * PT), abs=TOLERANCE)
 
     def test_dictionary_scope_and_saved_path(self) -> None:
         program = b"""%!PS
@@ -174,7 +177,7 @@ class TestEps:
         1 0 0 setrgbcolor gsave fill grestore 0 setgray stroke"""
         path, = find_importer("eps").function(program)
         assert (path.get("fill"), path.get("stroke")) == ("#ff0000", "#000000")
-        assert path.bounds().width == pytest.approx(5)
+        assert path.bounds().width == pytest.approx(5 * PT)
 
     def test_bad_input(self) -> None:
         with pytest.raises(ValueError, match="not PostScript"):
@@ -203,7 +206,7 @@ class TestEps:
         text = next(e for e in find_importer("eps").function(program).root.iter() if e.tag == "text")
         assert text.text_content == "Hi" and text.get("font-size") == 12
         assert text.get("font-family") == "Helvetica" and text.get("font-weight") == "bold"
-        assert text.t.apply(0, 0) == pytest.approx((10, 40))
+        assert text.t.apply(0, 0) == pytest.approx((10 * PT, 40 * PT))
 
     def test_text_advances_current_point(self) -> None:
         program = b"%!PS\n%%BoundingBox: 0 0 100 50\n/Times-Roman 10 selectfont 5 5 moveto (AB) show (C) show"
@@ -218,7 +221,7 @@ newpath 30 30 moveto 90 30 lineto 90 90 lineto 30 90 lineto closepath clip
 newpath 0 0 100 100 rectfill grestore 1 0 0 setrgbcolor 0 0 5 5 rectfill"""
         clipped, plain = find_importer("eps").function(program)
         assert clipped.get("clip-path") is not None and plain.get("clip-path") is None
-        assert "M30 40 L60 40 L60 70 L30 70 Z" in find_importer("eps").function(program).export("svg")
+        assert "M40 53.3333 L80 53.3333 L80 93.3333 L40 93.3333 Z" in find_importer("eps").function(program).export("svg")
 
 
 TIKZ = r"""
@@ -241,19 +244,19 @@ TIKZ = r"""
 
 class TestTikz:
     def test_hand_written(self) -> None:
-        cm = 72.27 / 2.54
+        cm = 96 / 2.54
         triangle, circle, square, label, curve, dot = find_importer("tikz").function(TIKZ.encode())
         assert label.text_content == "label"
-        assert triangle.get("stroke") == "#ff0000" and triangle.get("stroke-width") == 0.8 and triangle.get("fill") == "none"
+        assert triangle.get("stroke") == "#ff0000" and triangle.get("stroke-width") == pytest.approx(0.8 * TEX_PT) and triangle.get("fill") == "none"
         assert triangle.bounds() == pytest.approx((0, -cm, 2 * cm, cm))
         assert (circle.get("fill"), circle.get("stroke"), circle.get("opacity")) == ("#ff8000", "#336699", 0.5)
         assert circle.bounds() == pytest.approx((2.5 * cm, -0.5 * cm, cm, cm), abs=TOLERANCE)
         assert square.get("fill") == "#008000" and square.bounds() == pytest.approx((0, -3 * cm, cm, cm))
-        assert curve.get("stroke-dasharray") == "3 3" and curve.bounds().width == pytest.approx(30)
-        assert dot.bounds().width == pytest.approx(6, abs=TOLERANCE) and dot.get("fill") == "#336699"
+        assert curve.get("stroke-dasharray") == "3.98506 3.98506" and curve.bounds().width == pytest.approx(30 * TEX_PT)
+        assert dot.bounds().width == pytest.approx(6 * TEX_PT, abs=TOLERANCE) and dot.get("fill") == "#336699"
 
     def test_bounding_box_sets_the_page(self) -> None:
-        doc = find_importer("tikz").function(rb"\begin{tikzpicture}[x=1pt,y=-1pt]\useasboundingbox (0,0) rectangle (40,20);"
+        doc = find_importer("tikz").function(rb"\begin{tikzpicture}[x=0.75bp,y=-0.75bp]\useasboundingbox (0,0) rectangle (40,20);"
                                              rb"\fill (5,5) rectangle (10,10);\end{tikzpicture}")
         assert doc.root.view_box == (0, 0, 40, 20) and doc[0].bounds() == pytest.approx((5, 5, 5, 5))
 
@@ -293,7 +296,7 @@ def test_tikz_nodes_become_text():
     assert text.get("x") == pytest.approx(box.x + box.width / 2)
 
 
-POINTS = r"\begin{tikzpicture}[x=1pt,y=1pt]"
+POINTS = r"\begin{tikzpicture}[x=0.75bp,y=0.75bp]"
 
 
 def tikz_doc(body: str) -> svg.Document:
@@ -311,8 +314,8 @@ def test_tikz_nodes_inside_paths():
                    r"\draw (0,0) node {A} -- (20,0) node {B};")
     mid, right, a, b = kinds(doc, "text")
     assert (mid.text_content, mid.get("fill")) == ("m", "#ff0000")
-    assert mid.get("x") == pytest.approx(5.0) and mid.get("y") == pytest.approx(3.5)
-    assert right.get("x") > 10.0 and right.get("y") == pytest.approx(-10.0 + 3.5)
+    assert mid.get("x") == pytest.approx(5.0) and mid.get("y") == pytest.approx(3.5 * TEX_PT)
+    assert right.get("x") > 10.0 and right.get("y") == pytest.approx(-10.0 + 3.5 * TEX_PT)
     assert (a.get("x"), b.get("x")) == (pytest.approx(0.0), pytest.approx(20.0))
     assert len(kinds(doc, "path")) == 2
 
@@ -331,9 +334,9 @@ def test_tikz_node_shapes_and_anchors():
                    r"\node[draw, inner sep=2pt] (b) at (50,0) {Hi};"
                    r"\draw (b.north) -- (50,30);")
     circle, line, box, up = kinds(doc, "path")
-    assert circle.get("fill") == "#ffff00" and circle.bounds().width == pytest.approx(20.0)
-    assert line.bounds().x == pytest.approx(20.0)
-    width = text_width("Hi", size=10.0) + 4.0
+    assert circle.get("fill") == "#ffff00" and circle.bounds().width == pytest.approx(20.0 * TEX_PT)
+    assert line.bounds().x == pytest.approx(10.0 + 10.0 * TEX_PT)
+    width = (text_width("Hi", size=10.0) + 4.0) * TEX_PT
     assert box.bounds().width == pytest.approx(width)
     assert up.bounds().y == pytest.approx(-30.0) and up.bounds().height == pytest.approx(30.0 - box.bounds().height / 2)
 
@@ -343,11 +346,11 @@ def test_tikz_styles_expand_in_options():
                    r"\tikzstyle{wide}=[line width=2pt]"
                    r"\draw[box] (0,0) -- (5,0); \draw[wide, box] (0,1) -- (5,1) node {n};")
     first, second = kinds(doc, "path")
-    assert (first.get("stroke"), first.get("stroke-width")) == ("#0000ff", 0.8)
-    assert second.get("stroke-width") == 0.8 and first.get("stroke-dasharray") is not None
+    assert (first.get("stroke"), first.get("stroke-width")) == ("#0000ff", pytest.approx(0.8 * TEX_PT))
+    assert second.get("stroke-width") == pytest.approx(0.8 * TEX_PT) and first.get("stroke-dasharray") is not None
     assert kinds(doc, "text")[0].get("fill") == "#ff0000"
     wide = tikz_doc(r"\tikzstyle{wide}=[line width=2pt]\draw[wide] (0,0) -- (5,0);")
-    assert kinds(wide, "path")[0].get("stroke-width") == 2.0
+    assert kinds(wide, "path")[0].get("stroke-width") == pytest.approx(2.0 * TEX_PT)
 
 
 def test_tikz_scopes_nest():
@@ -356,12 +359,12 @@ def test_tikz_scopes_nest():
                    r"\draw (0,0) -- (1,0);\end{scope}"
                    r"\begin{scope}[rotate=90]\draw (0,0) -- (3,0);\end{scope}\draw (0,0) -- (1,0);")
     inner, outer, rotated, plain = (p.bounds() for p in kinds(doc, "path"))
-    assert (inner.x, inner.width) == (pytest.approx(15.0), pytest.approx(2.0))
+    assert (inner.x, inner.width) == (pytest.approx(10.0 + 5.0 * TEX_PT), pytest.approx(2.0))
     assert (outer.x, outer.width) == (pytest.approx(10.0), pytest.approx(1.0))
     assert (rotated.width, rotated.height) == (pytest.approx(0.0), pytest.approx(3.0)) and rotated.y < 0
     assert plain.x == pytest.approx(0.0)
     paths = kinds(doc, "path")
-    assert paths[0].get("stroke") == paths[1].get("stroke") == "#ff0000" and paths[0].get("stroke-width") == 0.8
+    assert paths[0].get("stroke") == paths[1].get("stroke") == "#ff0000" and paths[0].get("stroke-width") == pytest.approx(0.8 * TEX_PT)
     assert paths[3].get("stroke") == "#000000"
 
 

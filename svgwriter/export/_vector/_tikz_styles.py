@@ -27,7 +27,7 @@ from ._constants import (
     XCOLOR,
 )
 from ._reading import Shape, cmyk_to_rgb
-from ._tikz_syntax import _dimension
+from ._tikz_syntax import _measure
 
 if TYPE_CHECKING:
     from ._reading import RGB
@@ -165,7 +165,7 @@ def _help_lines(style: _Style, _: str | None) -> None:
 
 def _dash_pattern(value: str | None) -> tuple[float, ...]:
     """Dash lengths of ``on <len> off <len> ...``."""
-    return tuple(_dimension(v)[0] for v in DASH_RE.findall(value or ""))
+    return tuple(_measure(v) for v in DASH_RE.findall(value or ""))
 
 
 OPTIONS: Final[dict[str, Callable[[_Style, str | None], None]]] = {
@@ -173,7 +173,7 @@ OPTIONS: Final[dict[str, Callable[[_Style, str | None], None]]] = {
     "fill": lambda s, v: s.paint("fill", v),
     "color": lambda s, v: setattr(s, "color", _mix(v or "black", s.colors)),
     "text": lambda s, v: setattr(s, "text_color", _mix(v or "black", s.colors)),
-    "line width": lambda s, v: setattr(s, "line_width", _dimension(v or "0.4pt")[0]),
+    "line width": lambda s, v: setattr(s, "line_width", _measure(v or "0.4pt")),
     "opacity": _opacity,
     "fill opacity": lambda s, v: setattr(s, "fill_opacity", float(v or 1)),
     "draw opacity": lambda s, v: setattr(s, "draw_opacity", float(v or 1)),

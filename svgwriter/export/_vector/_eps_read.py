@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ..._internal._constants import PX_PER_PT
 from ...transform.matrix import Matrix
 from ._eps_machine import _Machine
 from ._eps_syntax import _bounding_box, _parse, _postscript
@@ -28,7 +29,7 @@ def read_eps(data: bytes) -> Document:
     Returns
     -------
     Document
-        The drawing in points with y pointing down, sized to ``%%HiResBoundingBox``
+        The drawing in user units, 96 per inch (4/3 per point), with y pointing down, sized to ``%%HiResBoundingBox``
         or ``%%BoundingBox`` when present and fitted to the content otherwise.
 
     Raises
@@ -71,13 +72,14 @@ def read_eps(data: bytes) -> Document:
     Examples
     --------
     >>> from svgwriter.export._vector._eps_read import read_eps
-    >>> doc = read_eps(b"%!PS\\n%%BoundingBox: 0 0 10 10\\n1 0 0 setrgbcolor 0 0 10 5 rectfill")
+    >>> doc = read_eps(b"%!PS\\n%%BoundingBox: 0 0 12 6\\n1 0 0 setrgbcolor 0 0 6 3 rectfill")
     >>> doc[0].get("fill"), doc[0].bounds()
-    ('#ff0000', BBox(x=0.0, y=5.0, width=10.0, height=5.0))
+    ('#ff0000', BBox(x=0.0, y=4.0, width=8.0, height=4.0))
     """
     data = _postscript(data)
     box = _bounding_box(data)
     llx, lly, urx, ury = box if box is not None else (0.0, 0.0, 0.0, 0.0)
-    machine = _Machine(Matrix(1.0, 0.0, 0.0, -1.0, -llx, ury))
+    machine = _Machine(Matrix(PX_PER_PT, 0.0, 0.0, -PX_PER_PT, -llx * PX_PER_PT, ury * PX_PER_PT))
     machine.execute(_parse(data))
-    return to_document(machine.shapes, None if box is None else (0.0, 0.0, urx - llx, ury - lly))
+    view = None if box is None else (0.0, 0.0, (urx - llx) * PX_PER_PT, (ury - lly) * PX_PER_PT)
+    return to_document(machine.shapes, view)
