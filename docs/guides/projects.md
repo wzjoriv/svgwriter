@@ -104,7 +104,7 @@ The entry object decides what gets drawn:
 | A list of such functions | One page each: one PDF or PowerPoint file, numbered files for other formats |
 | A `Scene` class (or a list) | GIF frames rendered in Python (no ffmpeg), animated SVG and PowerPoint with `update` and behaviours baked into SMIL, `mp4`/`webm`/`mov` through ffmpeg |
 
-Still formats such as PDF and PNG show a page once its animations have ended; `png = { time = 0 }`
+Still formats such as PDF and PNG show a page once its animations have ended; `png = { seconds = 0 }`
 shows the start instead. SVG, GIF and PowerPoint keep the animations.
 
 ## Presets

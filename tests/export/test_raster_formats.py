@@ -272,7 +272,7 @@ def test_time_option_picks_the_frame_for_still_formats():
     ball = doc.circle(5, 10, 4, fill="red")
     ball.append(svg.Animate(attribute_name="cx", from_=5, to=35, dur=1, fill="freeze"))
     start = Pixels.decode(svg.export.export(doc, "png")).rgba()
-    end = Pixels.decode(svg.export.export(doc, "png", time=1)).rgba()
+    end = Pixels.decode(svg.export.export(doc, "png", seconds=1)).rgba()
     assert np.argmax(start[10, :, 3]) < 10 < 30 < np.argmax(end[10, :, 3]) + 5
 
 

@@ -1,6 +1,6 @@
 """Presets of your own, by kind: animations, behaviors, shapes and canvas sizes, each found by name.
 
-Animations and shapes register by decorator (``name=``, ``replace=``) and sizes by a call
+Animations, behaviors and shapes register by decorator (``name=``, ``replace=``) and sizes by a call
 (``svg.preset.size(name, width, height)``); every kind has ``list(kind)``, ``get(kind, name)`` and
 ``unregister(kind, name)``. A taken name raises an error naming its
 owner, built-in presets included; ``replace=True`` replaces one on purpose.

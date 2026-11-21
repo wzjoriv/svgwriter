@@ -1,17 +1,18 @@
 """
-CSS-wide keywords made explicit on a render copy: ``inherit`` and ``currentColor`` become concrete values.
+CSS-wide keywords made explicit on a render copy: ``inherit`` and ``currentColor`` become concrete values,
+and CSS Color 4 colours (``oklch()``, ``color(display-p3 ...)``, alpha forms) become sRGB hex.
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from .._constants import COLOR_PROPERTIES, CURRENT_COLOR, INHERIT
+from .._constants import COLOR_OPACITIES, COLOR_PROPERTIES, CURRENT_COLOR, INHERIT, LEGACY_COLOR_RE, NONE
 
 if TYPE_CHECKING:
     from ...elements.core import Element
 
-__all__ = ["resolve_keywords"]
+__all__ = ["resolve_colors", "resolve_keywords"]
 
 
 def _text(value: object) -> str:
@@ -54,3 +55,41 @@ def resolve_keywords(root: Element) -> None:
                     element.attributes[name] = inherited
             elif text == CURRENT_COLOR and name in COLOR_PROPERTIES:
                 element.attributes[name] = computed(element, "color", "black", [])
+
+
+def resolve_colors(root: Element) -> None:
+    """Write every colour property in a syntax SVG 1.1 renderers read, in place on a render copy.
+
+    Colours beyond hex, comma ``rgb()`` and keywords (``oklch()``, ``lab()``, ``hsl()``,
+    ``color(display-p3 ...)``, alpha forms) become sRGB hex, clipped to the sRGB gamut, and their
+    alpha multiplies the matching opacity property.
+
+    Parameters
+    ----------
+    root : Element
+        A render copy with resolved styles and keywords; it is changed in place.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter._internal._render._keywords import resolve_colors
+    >>> rect = svg.Rect(fill="oklch(0.7 0.3 145 / 0.5)", fill_opacity=0.5)
+    >>> resolve_colors(rect)
+    >>> rect.get("fill"), rect.get("fill-opacity")
+    ('#00c800', 0.25)
+    """
+    from ...color.color import Color
+
+    for element in root.iter():
+        for name in COLOR_PROPERTIES & element.attributes.keys():
+            text = _text(element.attributes[name])
+            if text == NONE or LEGACY_COLOR_RE.match(text):
+                continue
+            try:
+                color = Color.parse(text)
+            except ValueError:
+                continue
+            element.attributes[name] = color.opaque.hex
+            opacity = COLOR_OPACITIES.get(name)
+            if color.a < 1.0 and opacity is not None:
+                element.attributes[opacity] = float(_text(element.attributes.get(opacity, 1.0))) * color.a

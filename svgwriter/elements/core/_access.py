@@ -12,9 +12,10 @@ from ..._internal._constants import INKSCAPE_LABEL
 from ..._internal._ids import next_id
 from ..._internal._registry import chainable
 from ..._internal._typing import ElementId
-from ...attributes.names import UNSUPPORTED_ATTRIBUTES, svg_name
+from ...attributes.names import PRESENTATION_ATTRIBUTES, UNSUPPORTED_ATTRIBUTES, svg_name
 from ...attributes.quantity import check_dimension
 from ...attributes.reference import IRI, FuncIRI
+from ...attributes.style import Style
 from ...color.color import Color, as_color
 from ._categories import Category
 from ._constants import COLOR_ATTRIBUTES, COLOR_OPACITY, HREF_ATTRIBUTES, XML_NAME_RE
@@ -200,7 +201,9 @@ class AttributeAccess:
 
         Attributes in other namespaces use Clark notation: ``"{uri}name"``.
         Colors with alpha are split into the color and its ``*-opacity``
-        attribute, and elements are replaced by references to them.
+        attribute, and elements are replaced by references to them. A
+        presentation property the inline ``style`` already declares (as
+        Inkscape writes them) is changed there, where it takes effect.
 
         Parameters
         ----------
@@ -230,6 +233,10 @@ class AttributeAccess:
         >>> _ = r.set("stroke_width", 3)
         >>> r.attributes["stroke-width"]
         3
+        >>> styled = svg.rect(0, 0, 1, 1, style="fill:#ff0000")
+        >>> styled.fill = "blue"
+        >>> styled.attributes["style"], styled.has("fill")
+        (Style({'fill': 'blue'}), False)
         """
         from ._element import Element
 
@@ -240,6 +247,7 @@ class AttributeAccess:
             )
         if value is None:
             self.attributes.pop(key, None)
+            self._store(key, None)
             return
         if key == "font" and _is_typeface(value):
             key = "font-family"
@@ -253,15 +261,33 @@ class AttributeAccess:
         if isinstance(value, Color) and value.a < 1.0 and key in COLOR_ATTRIBUTES:
             if key not in COLOR_OPACITY:
                 raise ValueError(f"{key} has no opacity in SVG 1.1; use an opaque color")
-            self.attributes[COLOR_OPACITY[key]] = value.a
+            self._store(COLOR_OPACITY[key], value.a)
             value = value.opaque
         if isinstance(value, Element):
             value = value.iri if key in HREF_ATTRIBUTES else value.url
         elif isinstance(value, FuncIRI) and key in HREF_ATTRIBUTES:
             value = IRI(value.target, value.element)
-        self.attributes[key] = value
+        self._store(key, value)
         if getattr(value, "element", None) is not None:
             self._define_references(self)
+
+    def _inline_style(self) -> Style | None:
+        """The inline ``style`` declarations, or None when there is no ``style`` attribute."""
+        raw = self.attributes.get("style")
+        return None if raw is None else Style(raw)
+
+    def _store(self, key: str, value: AttrValue) -> None:
+        """Write *value* where it takes effect: the inline style when it declares *key*, else the attribute."""
+        style = self._inline_style() if key in PRESENTATION_ATTRIBUTES else None
+        if style is None or key not in style:
+            if value is not None:
+                self.attributes[key] = value
+            return
+        style[key] = value
+        if style:
+            self.attributes["style"] = style
+        else:
+            del self.attributes["style"]
 
     @chainable
     def update(self, attributes: Mapping[str, AttrValue] | None = None, /, **kwargs: AttrValue) -> None:
@@ -297,6 +323,9 @@ class AttributeAccess:
     def get(self, name: str, default: object = None) -> object:
         """Return an attribute value, or *default* if it is not set.
 
+        A presentation property declared in the inline ``style`` is read from there, as it overrides
+        the attribute.
+
         Parameters
         ----------
         name : str
@@ -315,8 +344,14 @@ class AttributeAccess:
         >>> r = svg.rect(0, 0, 1, 1, stroke_width=2)
         >>> r.get("stroke_width"), r.get("fill", "none")
         (2, 'none')
+        >>> svg.rect(0, 0, 1, 1, style="fill:blue").get("fill")
+        'blue'
         """
-        return self.attributes.get(svg_name(name), default)
+        key = svg_name(name)
+        style = self._inline_style() if key in PRESENTATION_ATTRIBUTES else None
+        if style is not None and key in style:
+            return style[key]
+        return self.attributes.get(key, default)
 
     def has(self, name: str) -> bool:
         """Report whether an attribute is set.
