@@ -155,7 +155,7 @@ if TYPE_CHECKING:
     from .io import write_async
     from .io.parser import Strictness, SVGParseError, parse, parse_file
 
-__version__ = "2.3.0"
+__version__ = "2.4.0"
 __author__ = "Josue N Rivera"
 
 _LAZY = {
