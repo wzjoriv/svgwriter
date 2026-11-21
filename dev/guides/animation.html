@@ -500,6 +500,17 @@ started where the points have least distance to travel, so the in-between shapes
 </div>
 <p>In an <code class="docutils literal notranslate"><span class="pre">update</span></code> callback this gives morphs and tweens per frame, for instance
 <code class="docutils literal notranslate"><span class="pre">doc[0]</span> <span class="pre">=</span> <span class="pre">svg.interpolate(start,</span> <span class="pre">end,</span> <span class="pre">time</span> <span class="pre">/</span> <span class="pre">duration)</span></code>.</p>
+<p>Attribute values inside elements that cannot blend (keywords such as <code class="docutils literal notranslate"><span class="pre">none</span></code>, font names, lists of different
+lengths) switch halfway, as SMIL does. Called directly on two values it cannot blend, <code class="docutils literal notranslate"><span class="pre">interpolate</span></code> raises
+<code class="docutils literal notranslate"><span class="pre">TypeError</span></code>. Teach it a new type with <code class="docutils literal notranslate"><span class="pre">svg.register_interpolator</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Weight</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">svg</span><span class="o">.</span><span class="n">register_interpolator</span><span class="p">(</span><span class="n">Weight</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Weight</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">t</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">Weight</span><span class="p">(</span><span class="mi">400</span><span class="p">),</span> <span class="n">Weight</span><span class="p">(</span><span class="mi">700</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">unregister_interpolator</span><span class="p">(</span><span class="n">Weight</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="video-in">
 <h2>Video in<a class="headerlink" href="#video-in" title="Link to this heading">¶</a></h2>
