@@ -1,0 +1,31 @@
+# The kit's look: neutral greys for the shell and the digit keys; the accent comes from the palette swatches.
+name = "calculator-kit"
+extends = "light"
+
+[palette]
+background = "#e9e7e2"     # the desk behind the calculator
+surface = "#f7f6f3"        # the shell
+foreground = "#1c1c1e"
+muted = "#77736b"
+border = "#cfccc4"
+digit = "#ffffff"
+function = "#dedbd4"
+screen = "#1f2421"
+on_screen = "#e8f3e9"
+
+[fonts]
+family = "Inter, 'Segoe UI', Helvetica, Arial, sans-serif"
+monospace = "Consolas, 'DejaVu Sans Mono', Menlo, monospace"
+
+[fonts.sizes]
+text = 20                  # key labels
+caption = 13               # the history line
+
+[roles.desk]
+fill = "{palette.background}"
+
+[roles.screen]
+fill = "{palette.screen}"
+
+[roles.readout]
+fill = "{palette.on_screen}"

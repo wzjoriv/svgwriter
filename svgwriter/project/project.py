@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import Mapping, Sequence
+from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
 
@@ -153,8 +154,8 @@ class Project:
     def build(self, formats: Sequence[str] | None = None, *, values: Mapping[str, Any] | None = None) -> list[Path]:
         """Draw the project and write its outputs into the output folder.
 
-        Fonts in the font folder are registered first, the theme applies to every page and scene, and the
-        project's code runs in the project folder, so relative paths such as ``assets/data/values.csv`` work.
+        Fonts in the font folder are registered first, the theme applies to every page and scene (also to
+        scenes the entry module makes when it is imported), and the project's code runs in the project folder, so relative paths such as ``assets/data/values.csv`` work.
 
         Parameters
         ----------
@@ -201,8 +202,9 @@ class Project:
             with working_directory(self.root):
                 return write_outputs(self.config, items_of(self.config, value), theme, chosen, values)
         with project_scope(self.root), working_directory(self.root):
-            return write_outputs(self.config, items_of(self.config, load_object(self.config)), theme, chosen,
-                                 values)
+            with theme if theme is not None else nullcontext():
+                entry = load_object(self.config)
+            return write_outputs(self.config, items_of(self.config, entry), theme, chosen, values)
 
     def controls(self) -> dict[str, Control]:
         """The controls the entry's page functions declare with :func:`svgwriter.widgets.controls`.

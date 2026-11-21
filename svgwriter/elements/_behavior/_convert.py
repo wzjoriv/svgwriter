@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from ..._internal._constants import SVG_NS, XLINK_NS
 from ...attributes.length import Length
-from ..core import Element
+from ..core import Element, references_of
 from ._constants import DEFAULT_STROKE_WIDTH
 from ._transformable import Transformable
 
@@ -366,8 +366,7 @@ def _definitions(element: Element) -> list[Element]:
     while pending:
         node = pending.pop()
         for item in node.iter():
-            for value in item.attributes.values():
-                target = getattr(value, "element", None)
+            for target in references_of(item):
                 if isinstance(target, Element) and target.parent is None and id(target) not in seen:
                     seen.add(id(target))
                     found.append(target)

@@ -32,6 +32,12 @@ class TestRanges:
         line[9:13].effect("snow")
         assert len(doc.root.find_all(svg.Text)) == 3
 
+    def test_effect_paint_wins_over_a_role(self) -> None:
+        doc, line = _line()
+        line.as_role("text")
+        layer = line[9:13].effect("metal")
+        assert not layer.has("fill") and str(layer.style["fill"]).startswith("url(")
+
     def test_unplaced_range_explains(self) -> None:
         with pytest.raises(ValueError, match="add the text to a document"):
             svg.text("loose", x=0, y=0)[0:2].effect("fire")

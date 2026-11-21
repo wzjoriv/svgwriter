@@ -1,0 +1,12 @@
+# Lava-lamp colours on a soft dark ground.
+name = "blobs"
+extends = "dark"
+
+[palette]
+background = "#1a1033"
+primary = "#ff5d8f"
+secondary = "#ffb347"
+accent = "#7c5cff"
+
+[roles.goo]
+fill = "{palette.primary}"

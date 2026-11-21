@@ -1,0 +1,25 @@
+# Deep space: a near-black sky, warm sunlight and cool orbit lines.
+name = "planets-explainer"
+extends = "dark"
+
+[palette]
+background = "#05060f"
+foreground = "#e6e9f5"
+muted = "#8a91b4"
+primary = "#ffd166"       # the Sun and the titles
+accent = "#ef6f3c"        # Betelgeuse
+border = "#2b3150"        # orbit lines
+
+[fonts]
+family = "Inter, 'Segoe UI', Helvetica, Arial, sans-serif"
+
+[fonts.sizes]
+title = 64
+subtitle = 26
+text = 20
+caption = 16
+
+[roles.orbit]
+fill = "none"
+stroke = "{palette.border}"
+stroke-width = 1.5

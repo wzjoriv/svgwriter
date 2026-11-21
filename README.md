@@ -139,6 +139,14 @@ doc.save("icon.ico", sizes=(16, 32, 48), padding=4)
 svg.Document.open("sketch.excalidraw").save("sketch.svg")
 ```
 
+## Demos
+
+[`demos/`](https://github.com/wzjoriv/svgwriter/tree/main/demos) holds complete design projects, each an ordinary `svgwriter new` project that uses several features together; open one and run `svgwriter preview` (see the [demos page](https://wzjoriv.github.io/svgwriter/dev/demos.html)).
+
+| | | | | | |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| [![Playing card](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/demos/playing-card.png)](https://github.com/wzjoriv/svgwriter/tree/main/demos/playing-card)<br>[Playing card](https://github.com/wzjoriv/svgwriter/tree/main/demos/playing-card) | [![Calculator kit](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/demos/calculator-kit.png)](https://github.com/wzjoriv/svgwriter/tree/main/demos/calculator-kit)<br>[Calculator kit](https://github.com/wzjoriv/svgwriter/tree/main/demos/calculator-kit) | [![Text effects](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/demos/text-effects.gif)](https://github.com/wzjoriv/svgwriter/tree/main/demos/text-effects)<br>[Text effects](https://github.com/wzjoriv/svgwriter/tree/main/demos/text-effects) | [![Planets explainer](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/demos/planets-explainer.gif)](https://github.com/wzjoriv/svgwriter/tree/main/demos/planets-explainer)<br>[Planets explainer](https://github.com/wzjoriv/svgwriter/tree/main/demos/planets-explainer) | [![Blobs](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/demos/blobs.gif)](https://github.com/wzjoriv/svgwriter/tree/main/demos/blobs)<br>[Blobs](https://github.com/wzjoriv/svgwriter/tree/main/demos/blobs) | [![A4 poster](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/demos/poster.png)](https://github.com/wzjoriv/svgwriter/tree/main/demos/poster)<br>[A4 poster](https://github.com/wzjoriv/svgwriter/tree/main/demos/poster) |
+
 ## Examples
 
 [`examples/`](https://github.com/wzjoriv/svgwriter/tree/main/examples) is a nineteen-step learning path, from shapes to formats, animation, scenes, interop, a logo, themes, PowerPoint and preset libraries; each step is a runnable script with a Jupyter notebook next to it that shows the results as pictures (see its [README](https://github.com/wzjoriv/svgwriter/blob/main/examples/README.md)). All pictures below are rendered by svgwriter.
@@ -155,7 +163,7 @@ svg.Document.open("sketch.excalidraw").save("sketch.svg")
 | [![Animation presets](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/animation.gif)](https://github.com/wzjoriv/svgwriter/blob/main/examples/09_animation.ipynb)<br>[Animation presets](https://github.com/wzjoriv/svgwriter/blob/main/examples/09_animation.ipynb) | [![Scenes](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/scenes.gif)](https://github.com/wzjoriv/svgwriter/blob/main/examples/13_scenes.ipynb)<br>[Scenes](https://github.com/wzjoriv/svgwriter/blob/main/examples/13_scenes.ipynb) | [![PowerPoint with an editable equation](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/powerpoint.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/15_powerpoint.ipynb)<br>[PowerPoint with an editable equation](https://github.com/wzjoriv/svgwriter/blob/main/examples/15_powerpoint.ipynb) |
 | [![Text effects that stay text](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/text_effects.gif)](https://github.com/wzjoriv/svgwriter/blob/main/examples/19_presets.ipynb)<br>[Text effects that stay text](https://github.com/wzjoriv/svgwriter/blob/main/examples/19_presets.ipynb) | [![Filters](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/filter_catalogue.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/19_presets.ipynb)<br>[Filters](https://github.com/wzjoriv/svgwriter/blob/main/examples/19_presets.ipynb) | [![Gooey blobs](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/goo.gif)](https://github.com/wzjoriv/svgwriter/blob/main/examples/19_presets.ipynb)<br>[Gooey blobs](https://github.com/wzjoriv/svgwriter/blob/main/examples/19_presets.ipynb) |
 
-Regenerate the pictures (PNG, and the animations as GIF) with `python scripts/dev.py svgwriter gallery`.
+Regenerate the pictures and the demo tiles (PNG, and the animations as GIF) with `python scripts/dev.py svgwriter gallery`.
 
 ## Contributing
 

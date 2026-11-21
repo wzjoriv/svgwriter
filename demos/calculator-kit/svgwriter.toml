@@ -1,0 +1,10 @@
+# The calculator kit: `svgwriter preview` shows every control beside the calculator, `svgwriter build`
+# writes it at the starting values.
+[project]
+name = "calculator-kit"
+entry = "main:calculator"
+theme = "theme.toml"
+
+[outputs]
+formats = ["svg", "png", "pdf"]
+png = { scale = 2 }
