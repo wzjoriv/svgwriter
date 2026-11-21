@@ -4,7 +4,7 @@ Child editing for ``Element``: append, insert, remove and text content.
 
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator, Mapping
 from typing import TYPE_CHECKING
 
 from ._categories import ContentModel
@@ -12,7 +12,16 @@ from ._categories import ContentModel
 if TYPE_CHECKING:
     from ._element import C, Child, Element
 
-__all__ = ["TreeEditing"]
+__all__ = ["TreeEditing", "references_of"]
+
+
+def references_of(element: Element) -> Iterator[Element]:
+    """The elements *element*'s own attributes point at, inline ``style`` properties included."""
+    for value in element.attributes.values():
+        for item in value.values() if isinstance(value, Mapping) else (value,):
+            target = getattr(item, "element", None)
+            if target is not None:
+                yield target
 
 
 class TreeEditing:
@@ -82,9 +91,8 @@ class TreeEditing:
             if element._auto_id and element._id_owner is not root:
                 object.__setattr__(element, "_id_owner", root)
                 element.attributes["id"] = root._auto_id_for(element.tag or "el", element)
-            for value in list(element.attributes.values()):
-                target = getattr(value, "element", None)
-                if target is not None and target.parent is None and target is not root:
+            for target in list(references_of(element)):
+                if target.parent is None and target is not root:
                     root.defs().append(target)  # type: ignore[attr-defined]
 
     def extend(self, children: Iterable[Child]) -> None:

@@ -69,6 +69,13 @@ class TestAutoDefs:
         doc += group
         assert clip.parent is doc.defs
 
+    def test_references_in_inline_style_define_when_added(self) -> None:
+        doc = svg.Document(10, 10)
+        head = svg.markers.arrow()
+        line = svg.path("M0 0 L10 10", marker_end=head).as_role("line")
+        doc += svg.Group(line)
+        assert head.parent is doc.defs
+
     def test_setting_reference_inside_document(self) -> None:
         doc = svg.Document(10, 10)
         rect = doc.rect(0, 0, 1, 1)
