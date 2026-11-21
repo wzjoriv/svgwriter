@@ -7,10 +7,14 @@ from __future__ import annotations
 from typing import Final
 
 __all__ = [
+    "CENTER_TOLERANCE",
+    "CENTER_X",
+    "CENTER_Y",
     "CHUNKS_PER_YIELD",
     "DEFAULT_ENCODING",
     "FOREIGN_PREFIX",
     "LEADING_ATTRIBUTES",
+    "NAMESPACE_DECLARATION",
     "RANK",
 ]
 
@@ -23,3 +27,8 @@ LEADING_ATTRIBUTES: Final = (
     "d", "points", "viewBox", "offset",
 )
 RANK: Final = {name: index for index, name in enumerate(LEADING_ATTRIBUTES)}
+
+CENTER_X: Final = "inkscape:transform-center-x"
+CENTER_Y: Final = "inkscape:transform-center-y"
+CENTER_TOLERANCE: Final = 1e-9
+NAMESPACE_DECLARATION: Final = "xmlns"

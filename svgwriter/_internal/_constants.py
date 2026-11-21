@@ -68,14 +68,18 @@ __all__ = [
     "GRID",
     "GRID_STEP",
     "INDEFINITE",
+    "INKSCAPE_LABEL",
+    "INKSCAPE_NS",
     "INSTALL_HINT",
     "JOIN_TOLERANCE",
+    "KNOWN_NAMESPACES",
     "LATEX",
     "LATEX_SIZE",
     "LATEX_SOURCE",
     "LATEX_TEMPLATE",
     "LATIN_EXTENDED_ADDITIONAL",
     "LINK_CACHE",
+    "SODIPODI_NS",
     "VIEWPORT_AXES",
     "TILE_OFFSETS",
     "TILE_COPY_SUFFIX",
@@ -171,6 +175,17 @@ __all__ = [
 SVG_NS: Final = "http://www.w3.org/2000/svg"
 XLINK_NS: Final = "http://www.w3.org/1999/xlink"
 XML_NS: Final = "http://www.w3.org/XML/1998/namespace"
+INKSCAPE_NS: Final = "http://www.inkscape.org/namespaces/inkscape"
+INKSCAPE_LABEL: Final = "inkscape:label"
+SODIPODI_NS: Final = "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+KNOWN_NAMESPACES: Final = {
+    "xlink": XLINK_NS,
+    "inkscape": INKSCAPE_NS,
+    "sodipodi": SODIPODI_NS,
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "cc": "http://creativecommons.org/ns#",
+    "dc": "http://purl.org/dc/elements/1.1/",
+}
 
 SVG_VERSION: Final = "1.1"
 BASE_PROFILE: Final = "full"
@@ -213,7 +228,7 @@ ATTRIBUTE_TABLE = str.maketrans(
     }
 )
 
-NON_CONTENT: Final = frozenset({"defs", "style", "title", "desc", "metadata"})
+NON_CONTENT: Final = frozenset({"defs", "style", "title", "desc", "metadata", "namedview"})
 
 BOLD_WEIGHT: Final = 700
 DEFAULT_FAMILY: Final = "sans-serif"

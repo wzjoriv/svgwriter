@@ -102,7 +102,7 @@ PLAIN_ATTRIBUTES: Final = frozenset(
         "xml:lang", "xml:space",
     }
 )
-PREFIXES: Final = ("xlink", "xml")
+PREFIXES: Final = ("xlink", "xml", "inkscape", "sodipodi")
 
 FUNC_IRI_RE: Final = re.compile(r"""^\s*url\(\s*(['"]?)(.*?)\1\s*\)\s*$""")
 

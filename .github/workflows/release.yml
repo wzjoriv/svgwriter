@@ -1,7 +1,7 @@
 name: Build and publish
 
 # svgwriter is pure Python: one sdist and one universal wheel (skia-python, numpy and uharfbuzz bring
-# their own binary wheels). Publishing uses the PYPI_API_TOKEN secret when set, otherwise PyPI
+# their own binary wheels). The Inkscape extension in plugins/inkscape is attached to the release as a zip. Publishing uses the PYPI_API_TOKEN secret when set, otherwise PyPI
 # trusted publishing (environment `pypi`).
 
 on:
@@ -42,6 +42,28 @@ jobs:
         with:
           name: dist
           path: dist/
+
+  inkscape:
+    name: Inkscape extension zip
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Zip plugins/inkscape
+        run: cd plugins/inkscape && zip -r "$RUNNER_TEMP/svgwriter-inkscape.zip" . -x "__pycache__/*"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: svgwriter-inkscape
+          path: ${{ runner.temp }}/svgwriter-inkscape.zip
+      - name: Attach to the release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$TAG" "$RUNNER_TEMP/svgwriter-inkscape.zip" --clobber --repo "$GITHUB_REPOSITORY"
 
   publish:
     name: Publish to PyPI

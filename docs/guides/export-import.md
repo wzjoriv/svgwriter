@@ -20,7 +20,7 @@ print(sorted(svg.export.exporters()))
 
 | Format | Extension(s) | Export | Import | Notes |
 |---|---|:---:|:---:|---|
-| SVG | `.svg` | ✓ | ✓ | the native format; ids, links, `<style>` and animation kept; `pretty`, `precision`, `compact_paths` |
+| SVG | `.svg` | ✓ | ✓ | the native format; ids, links, `<style>`, animation and [Inkscape data](inkscape.md) kept; `pretty`, `precision`, `compact_paths` |
 | SVGZ | `.svgz` | ✓ | ✓ | gzip-compressed SVG |
 | PNG | `.png` | ✓ | ✓ | `scale`, `size`, `padding`, `background`, `icc`; text becomes pixels; import is an `<image>` |
 | JPEG | `.jpg` `.jpeg` | ✓ | ✓ | `quality`, `icc`; import is an `<image>` |

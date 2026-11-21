@@ -11,9 +11,9 @@ from typing import IO, Any
 from .._internal._constants import SVG_NS, XLINK_NS
 from .._internal._typing import AnyPath
 from ..elements.core import Category, Element
-from ._constants import RANK
+from ._constants import NAMESPACE_DECLARATION, RANK
 
-__all__ = ["default_namespaces", "inline_content", "open_text", "ordered", "uses_xlink"]
+__all__ = ["default_namespaces", "inline_content", "open_text", "ordered", "used_namespaces"]
 
 
 def ordered(attributes: dict[str, Any]) -> list[tuple[str, Any]]:
@@ -33,9 +33,23 @@ def inline_content(element: Element) -> bool:
     return element.category is Category.TEXT_CONTENT or any(isinstance(c, str) for c in element.children)
 
 
-def uses_xlink(element: Element) -> bool:
-    """Whether any element in the tree has an ``xlink:`` attribute."""
-    return any(key.startswith("xlink:") for node in element.iter() for key in node.attributes)
+def used_namespaces(element: Element) -> tuple[set[str], set[str], set[str]]:
+    """Prefixes of ``prefix:name`` attributes, URIs of ``{uri}name`` attributes and foreign element URIs in the tree."""
+    prefixes: set[str] = set()
+    attribute_uris: set[str] = set()
+    element_uris: set[str] = set()
+    for node in element.iter():
+        namespace = getattr(node, "namespace", None)
+        if namespace and namespace != SVG_NS:
+            element_uris.add(namespace)
+        for key in node.attributes:
+            if key.startswith("{"):
+                attribute_uris.add(key[1:].partition("}")[0])
+            elif ":" in key:
+                prefix = key.partition(":")[0]
+                if prefix != NAMESPACE_DECLARATION:
+                    prefixes.add(prefix)
+    return prefixes, attribute_uris, element_uris
 
 
 

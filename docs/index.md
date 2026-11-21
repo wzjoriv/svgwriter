@@ -40,6 +40,7 @@ guides/export-import
 guides/animation
 guides/logos
 guides/themes
+guides/inkscape
 guides/projects
 ```
 

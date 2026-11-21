@@ -13,10 +13,24 @@ from .._internal._constants import SVG_NS, XLINK_NS, XML_NS
 from .._internal._typing import AnyPath
 from ..attributes.names import UNSUPPORTED_ATTRIBUTES
 from ..elements.core import Category, ContentModel, Element, UnknownElement
+from ._inkscape import read_transform_centers
 
 __all__ = ["SVGParseError", "Strictness", "parse", "parse_file"]
 
 _PREFIXES: Final = {XLINK_NS: "xlink", XML_NS: "xml"}
+_IMPLIED: Final = frozenset({SVG_NS, XLINK_NS, XML_NS})
+
+
+class _Builder(ET.TreeBuilder):
+    """A tree builder that also records the namespace prefixes declared in the source."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.prefixes: dict[str, str] = dict(_PREFIXES)
+
+    def start_ns(self, prefix: str, uri: str) -> None:
+        if prefix:
+            self.prefixes.setdefault(uri, prefix)
 
 
 class Strictness(enum.IntEnum):
@@ -96,7 +110,7 @@ def _add_text(element: Element, text: str | None) -> None:
         element.children.append(text)
 
 
-def _convert(node: ET.Element, strictness: Strictness) -> Element:
+def _convert(node: ET.Element, strictness: Strictness, prefixes: dict[str, str]) -> Element:
     namespace, local = _split(node.tag)
     attributes: dict[str, str] = {}
     for key, value in node.attrib.items():
@@ -105,8 +119,8 @@ def _convert(node: ET.Element, strictness: Strictness) -> Element:
             _complain(f"dropping unsupported scripting attribute {key_local!r} on <{local}>", strictness)
         elif key_ns is None:
             attributes[key_local] = value
-        elif key_ns in _PREFIXES:
-            attributes[f"{_PREFIXES[key_ns]}:{key_local}"] = value
+        elif key_ns in prefixes:
+            attributes[f"{prefixes[key_ns]}:{key_local}"] = value
         else:
             attributes[key] = value
     if "href" in attributes:
@@ -125,7 +139,7 @@ def _convert(node: ET.Element, strictness: Strictness) -> Element:
 
     _add_text(element, node.text)
     for child_node in node:
-        child = _convert(child_node, strictness)
+        child = _convert(child_node, strictness, prefixes)
         child.parent = element
         element.children.append(child)
         _add_text(element, child_node.tail)
@@ -136,7 +150,11 @@ def parse(source: str | bytes, *, strictness: Strictness = Strictness.LENIENT) -
     """Parse SVG text into an element tree.
 
     Reads the text with ``xml.etree`` and rebuilds it with the library's element
-    classes, so the result can be edited and written back out.
+    classes, so the result can be edited and written back out. Attributes in
+    other namespaces keep the prefix the source declared (``inkscape:label``),
+    and those declarations stay on the root, so writing the tree again uses the
+    same prefixes. Inkscape rotation centres (``inkscape:transform-center-x`` and
+    ``-y``) become the element's :attr:`~svgwriter.elements.Transformable.anchor`.
 
     Parameters
     ----------
@@ -170,13 +188,19 @@ def parse(source: str | bytes, *, strictness: Strictness = Strictness.LENIENT) -
     >>> type(parse('<circle r="2"/>')).__name__
     'Circle'
     """
+    builder = _Builder()
+    reader = ET.XMLParser(target=builder)
     try:
-        root = ET.fromstring(source)
+        reader.feed(source)
+        root = reader.close()
     except ET.ParseError as exc:
         raise SVGParseError(str(exc)) from exc
-    element = _convert(root, strictness)
+    element = _convert(root, strictness, builder.prefixes)
     if isinstance(element, UnknownElement):
         raise SVGParseError(f"<{element.tag}> is not an SVG element; expected <svg> or an SVG fragment such as <g>")
+    declared = {f"xmlns:{prefix}": uri for uri, prefix in builder.prefixes.items() if uri not in _IMPLIED}
+    element.attributes = {**element.attributes, **declared}
+    read_transform_centers(element)
     return element
 
 

@@ -119,7 +119,7 @@ def svg_name(name: str) -> str:
         return name
     for prefix in PREFIXES:
         if name.startswith(prefix + "_"):
-            return f"{prefix}:{name[len(prefix) + 1:]}"
+            return f"{prefix}:{name[len(prefix) + 1:].replace('_', '-')}"
     compact = name.replace("_", "").lower()
     if compact in _CAMEL_LOOKUP:
         return _CAMEL_LOOKUP[compact]
