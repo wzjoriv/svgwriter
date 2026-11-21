@@ -149,5 +149,27 @@ fill = "{palette.primary}"
 fill = "{palette.accent}"
 ```
 
-Saving writes every value resolved, so a saved file is a snapshot: entries that were functions are
-written as the colors they produced. Reading TOML on Python 3.10 needs `tomli`.
+Values are text, numbers, `{palette.name}` / `{fonts.sizes.name}` references, or color arrays: `[r, g, b]`
+or `[r, g, b, a]`, either all floats from 0 to 1 or all integers from 0 to 255 (a mix is an error).
+
+`save` writes what differs from the theme it `extends`: a variant made with `replace` on a registered theme
+extends that theme, so `svg.Theme.get("dark").replace(name="night").save(path)` writes two lines. References
+are written as references, and only values given as Python functions are written as the colors and numbers
+they produce. A theme read from a file remembers the file: saving it, or a `replace` variant of it, edits
+that text, so comments, blank lines and key order stay, and only edited or new keys change.
+
+```python
+import svgwriter as svg
+
+night = svg.Theme.from_toml("""
+# Night, for slides
+extends = "dark"
+
+[palette]
+primary = "#38bdf8"   # sky blue
+""")
+print(night.replace(palette={"accent": "{palette.primary}"}).to_toml())
+```
+
+Errors name the key, and the file when one was loaded:
+`night.toml: palette.primary: unknown reference {palette.nope}`.

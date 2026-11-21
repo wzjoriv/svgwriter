@@ -15,7 +15,7 @@ from .palette import ThemeError
 if TYPE_CHECKING:
     from .theme import RoleSource, Theme
 
-__all__ = ["check_role_name", "resolve_role"]
+__all__ = ["check_role_name", "resolve_role", "resolve_value"]
 
 
 def check_role_name(name: str) -> str:
@@ -39,7 +39,8 @@ def _reference(theme: Theme, where: str, path: str) -> object:
     raise ThemeError(f"{where}: unknown reference {{{path}}}; use {{palette.name}} or {{fonts.name}}")
 
 
-def _value(theme: Theme, where: str, value: object) -> object:
+def resolve_value(theme: Theme, where: str, value: object) -> object:
+    """Resolve one role property value: call a function, then replace ``{section.name}`` references."""
     if callable(value):
         try:
             value = value(theme)
@@ -69,7 +70,7 @@ def resolve_role(theme: Theme, name: str, source: RoleSource) -> Style:
         raise ThemeError(f"{where}: expected a mapping of CSS properties, got {type(source).__name__}")
     style = Style()
     for prop, raw in Style(source).items():
-        value = _value(theme, f"{where}.{prop}", raw)
+        value = resolve_value(theme, f"{where}.{prop}", raw)
         if isinstance(value, bool) or not isinstance(value, (str, int, float, Color)):
             raise ThemeError(f"{where}.{prop}: unsupported value {value!r}")
         if prop in LENGTH_PROPERTIES and isinstance(value, (int, float)):

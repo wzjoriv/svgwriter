@@ -8,6 +8,7 @@ import re
 from typing import Final
 
 __all__ = [
+    "ARRAY_CHANNELS",
     "BORDER_MIX",
     "BUILTIN_THEMES",
     "DEFAULT_THEME",
@@ -15,6 +16,7 @@ __all__ = [
     "FILE_KEYS",
     "FONT_FAMILY",
     "FONT_SIZES",
+    "FONT_TABLES",
     "FONT_WEIGHTS",
     "GEOMETRIC_FAMILY",
     "LENGTH_PROPERTIES",
@@ -30,7 +32,6 @@ __all__ = [
     "ROLE_NAME_RE",
     "STYLE_ID",
     "THIN_LINE_WIDTH",
-    "TOML_BARE_KEY_RE",
 ]
 
 DEFAULT_THEME: Final = "light"
@@ -40,7 +41,8 @@ ROLE_NAME_RE: Final = re.compile(r"[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*")
 REFERENCE_RE: Final = re.compile(r"\{([a-z_][a-z0-9_]*(?:\.[a-z0-9_]+)+)\}")
 FILE_KEYS: Final = frozenset({"name", "extends", "palette", "fonts", "roles"})
 FILE_FONT_KEYS: Final = frozenset({"family", "monospace", "sizes", "weights"})
-TOML_BARE_KEY_RE: Final = re.compile(r"[A-Za-z0-9_-]+")
+FONT_TABLES: Final = ("sizes", "weights")
+ARRAY_CHANNELS: Final = (3, 4)
 
 FONT_FAMILY: Final = "Helvetica, Arial, sans-serif"
 MONOSPACE_FAMILY: Final = "Consolas, Menlo, monospace"

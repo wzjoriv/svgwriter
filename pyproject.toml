@@ -15,7 +15,7 @@ dependencies = [
     "skia-python>=87",
     "numpy>=1.24",
     "uharfbuzz>=0.40",
-    "tomli>=2; python_version < \"3.11\"",
+    "tomlkit>=0.12",
 ]
 keywords = ["svg", "vector", "graphics", "drawing", "animation"]
 classifiers = [

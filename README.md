@@ -11,7 +11,7 @@
 Build, edit and render vector graphics in Python with a complete SVG 1.1 object model. Shapes move,
 rotate and scale through one transform; geometry has boolean operations and measurement; text, images
 and colors are first-class (numpy-backed); documents render with skia and export to PNG, PDF, TikZ, DXF
-and more. Python 3.10+, `pip install pysvgwriter` (brings skia-python, numpy and uharfbuzz), then `import svgwriter`.
+and more. Python 3.10+, `pip install pysvgwriter` (brings skia-python, numpy, uharfbuzz and tomlkit), then `import svgwriter`.
 
 ```python
 import svgwriter as svg
