@@ -119,6 +119,8 @@ __all__ = [
     "DATA_URI",
     "VISIBILITY",
     "LINKED_OVERSAMPLE",
+    "EXTERNAL_ID_PREFIX",
+    "URL_REFERENCE_RE",
     "PRIMITIVE_PREFIX",
     "VIEWPORT_FALLBACK",
     "LUMA",
@@ -283,6 +285,8 @@ SVG_DATA_URI: Final = "data:image/svg+xml"
 DATA_URI: Final = "data:"
 VISIBILITY: Final = "visibility"
 LINKED_OVERSAMPLE: Final = 2.0
+EXTERNAL_ID_PREFIX: Final = "svgwriter-external-"
+URL_REFERENCE_RE: Final = re.compile(r"url\(\s*['\"]?#([^)'\"\s]+)")
 PRIMITIVE_PREFIX: Final = "fe"
 BASE64_SUFFIX: Final = ";base64"
 GZIP_MAGIC: Final = b"\x1f\x8b"
