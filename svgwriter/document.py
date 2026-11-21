@@ -6,10 +6,10 @@ from __future__ import annotations
 
 from collections.abc import Generator
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Any, TypeVar, overload
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from ._document.access import Access
-from ._document.ingest import SupportsSVG, to_element
+from ._document.building import Building
 from ._document.inkscape import InkscapeData
 from ._document.output import Output
 from ._document.sizes import PageSize, page_size
@@ -19,14 +19,12 @@ from ._document.typography import Typography
 from ._internal._tree import attach_cursor
 from ._internal._typing import AnyPath, Stack
 from .elements.core import Element, ElementFactory
-from .elements.structure import Defs, Desc, Group, Svg, Title
+from .elements.structure import Svg
 from .theme.sheet import sheet_theme
 from .theme.theme import Theme
 
 if TYPE_CHECKING:
     from .attributes.length import Length
-    from .attributes.style import StyleSheet
-    from .elements.structure import StyleElement
     from .io.parser import Strictness
 
 __all__ = ["Document"]
@@ -35,7 +33,7 @@ __all__ = ["Document"]
 E = TypeVar("E", bound=Element)
 
 
-class Document(Sizing, Theming, Typography, Output, Access, InkscapeData, ElementFactory):
+class Document(Building, Sizing, Theming, Typography, Output, Access, InkscapeData, ElementFactory):
     """An SVG document under construction.
 
     Shortcut methods (``doc.circle(...)``, ``doc.linear_gradient(...)``)
@@ -224,224 +222,3 @@ class Document(Sizing, Theming, Typography, Output, Access, InkscapeData, Elemen
         doc = cls(width, height, **kwargs)
         yield doc
         doc.save(path, options=options)
-
-    @property
-    def current(self) -> Element:
-        """Where :meth:`add` inserts: the innermost open container.
-
-        Examples
-        --------
-        >>> doc = Document(10, 10)
-        >>> doc.current is doc.root
-        True
-        >>> with doc.group() as g:
-        ...     print(doc.current is g)
-        True
-        """
-        return self._stack.peek()
-
-    @property
-    def defs(self) -> Defs:
-        """The root ``<defs>``, created on first use; ``doc.defs += x`` adds to it.
-
-        Examples
-        --------
-        >>> from svgwriter import Rect
-        >>> doc = Document(10, 10)
-        >>> doc.defs += Rect(0, 0, 1, 1, id="cell")
-        >>> doc.defs.tag, len(doc.defs)
-        ('defs', 1)
-        """
-        return self.root.defs()
-
-    @defs.setter
-    def defs(self, value: Defs) -> None:
-        if value is not self.root.defs():
-            raise AttributeError("use doc.defs += element to add definitions")
-
-    def _place(self, element: E) -> E:
-        attach_cursor(element, self._stack)
-        return self.current.append(element)
-
-    def _define(self, element: E) -> E:
-        element.ensure_id()
-        if element.parent is not self.defs:
-            self.defs.append(element)
-        attach_cursor(element, self._stack)
-        return element
-
-    @overload
-    def add(self, element: E) -> E: ...
-    @overload
-    def add(self, element: SupportsSVG) -> Group: ...
-    def add(self, element: Element | SupportsSVG) -> Element:
-        """Add *element* at the insertion point and return it.
-
-        Objects from other libraries that implement ``_repr_svg_`` (plots,
-        diagrams, formulas) are parsed and added as a ``<g>`` holding their
-        ``<svg>``, so they can be moved and scaled like any group.
-
-        Parameters
-        ----------
-        element : Element or SupportsSVG
-            The element, or an object providing ``_repr_svg_``.
-
-        Returns
-        -------
-        Element
-            The added element; a ``<g>`` when a foreign object was converted.
-
-        Raises
-        ------
-        TypeError
-            If a ``_repr_svg_`` object returns no SVG.
-
-        See Also
-        --------
-        define : Add to ``<defs>`` instead.
-
-        Examples
-        --------
-        >>> from svgwriter import Rect
-        >>> doc = Document(10, 10)
-        >>> rect = doc.add(Rect(0, 0, 5, 5))
-        >>> rect.parent is doc.root
-        True
-        """
-        return self._place(to_element(element))  # type: ignore[arg-type]
-
-    def define(self, element: E) -> E:
-        """Put *element* in ``<defs>`` (giving it an id) and return it.
-
-        Parameters
-        ----------
-        element : Element
-            The element to define; it receives an id if it has none.
-
-        Returns
-        -------
-        Element
-            The same element, now inside ``<defs>``.
-
-        See Also
-        --------
-        add : Add at the insertion point instead.
-
-        Examples
-        --------
-        >>> from svgwriter import Rect
-        >>> doc = Document(10, 10)
-        >>> cell = doc.define(Rect(0, 0, 1, 1))
-        >>> cell.parent is doc.defs, cell.id.startswith("rect")
-        (True, True)
-        """
-        return self._define(element)
-
-    def title(self, text: str) -> Title:
-        """Add a ``<title>`` as the first child of the root.
-
-        Parameters
-        ----------
-        text : str
-            The accessible name of the document.
-
-        Returns
-        -------
-        Title
-            The new element.
-
-        See Also
-        --------
-        describe : Add a longer description.
-
-        Examples
-        --------
-        >>> doc = Document(10, 10)
-        >>> doc.title("Chart").children
-        ['Chart']
-        """
-        return self.root.insert(0, Title(text))
-
-    def describe(self, text: str) -> Desc:
-        """Add a ``<desc>`` at the insertion point.
-
-        Parameters
-        ----------
-        text : str
-            The description.
-
-        Returns
-        -------
-        Desc
-            The new element.
-
-        See Also
-        --------
-        title : Add a short name.
-
-        Examples
-        --------
-        >>> doc = Document(10, 10)
-        >>> doc.describe("A blue square").children
-        ['A blue square']
-        """
-        return self.add(Desc(text))
-
-    def style(self, css: str | StyleSheet = "", **kwargs: Any) -> StyleElement:
-        """Add a ``<style>`` sheet near the top of the document.
-
-        Parameters
-        ----------
-        css : str or StyleSheet, optional
-            The stylesheet. Defaults to an empty string.
-        **kwargs
-            Forwarded to :class:`~svgwriter.elements.structure.StyleElement`.
-
-        Returns
-        -------
-        StyleElement
-            The new element, placed after the ``<title>`` when there is one.
-
-        Examples
-        --------
-        >>> doc = Document(10, 10)
-        >>> doc.style(".a { fill: red }").tag
-        'style'
-        """
-        from .elements.structure import StyleElement
-
-        return self.root.insert(1 if self.root.children and isinstance(self.root.children[0], Title) else 0, StyleElement(css, **kwargs))
-
-    @contextmanager
-    def nest(self, element: E) -> Generator[E, None, None]:
-        """Add *element* and make it the insertion point inside the block.
-
-        Parameters
-        ----------
-        element : Element
-            The container to add and open.
-
-        Yields
-        ------
-        Element
-            The same element.
-
-        See Also
-        --------
-        add : Add without nesting.
-
-        Examples
-        --------
-        >>> from svgwriter import Group
-        >>> doc = Document(10, 10)
-        >>> with doc.nest(Group()) as g:
-        ...     _ = doc.circle(5, 5, 2)
-        >>> len(g)
-        1
-        """
-        self.add(element)
-        self._stack.push(element)
-        try:
-            yield element
-        finally:
-            self._stack.pop()
