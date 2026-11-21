@@ -43,7 +43,7 @@ class Theme(ThemeFiles):
     roles : mapping of str to style or callable, optional
         Extra or replaced role styles, merged over the standard roles. Each is a mapping of CSS
         properties (values may be literals, ``"{palette.name}"``/``"{fonts.sizes.name}"``
-        references, expressions such as ``"{fonts.sizes.text} * 1.5"`` or functions of the theme) or a
+        references, expressions such as ``"={fonts.sizes.text} * 1.5"`` or functions of the theme) or a
         function of the theme returning one.
         Defaults to None.
 

@@ -13,13 +13,12 @@ __all__ = [
     "BOOLEAN_WORDS",
     "BORDER_MIX",
     "BUILTIN_THEMES",
-    "CALL_RE",
     "COLOR_FUNCTION_RE",
     "COMPARISONS",
     "CONDITIONAL",
-    "CSS_TEXT_FUNCTIONS",
     "DEFAULT_THEME",
     "EXPONENT_RE",
+    "EXPRESSION_MARK",
     "EXPRESSION_CACHE_SIZE",
     "FILE_FONT_KEYS",
     "FILE_KEYS",
@@ -33,7 +32,6 @@ __all__ = [
     "HEAVY_LINE_WIDTH",
     "LENGTH_UNIT",
     "LINE_WIDTH",
-    "LOGIC_OPERATORS",
     "LOGIC_WORDS",
     "MAX_ARGUMENTS",
     "MAX_EXPRESSION_DEPTH",
@@ -46,13 +44,11 @@ __all__ = [
     "NAME_RE",
     "NUMBER_RE",
     "OPACITY_PROPERTIES",
-    "OPERAND_TOKENS",
     "OPERATORS",
     "PUNCTUATION",
     "QUOTES",
     "REFERENCE_RE",
     "UNSUPPORTED_OPERATORS",
-    "UNTOKENIZED_STARTS",
     "SERIF_FAMILY",
     "SHADOW_ALPHA",
     "ROLE_CLASS_PREFIX",
@@ -72,6 +68,7 @@ FONT_TABLES: Final = ("sizes", "weights")
 ARRAY_CHANNELS: Final = (3, 4)
 ARRAY_INTEGER_MAX: Final = 255
 
+EXPRESSION_MARK: Final = "="
 MAX_EXPRESSION_LENGTH: Final = 512
 MAX_EXPRESSION_DEPTH: Final = 32
 MAX_REFERENCE_DEPTH: Final = 16
@@ -81,9 +78,7 @@ MAX_ROUND_DIGITS: Final = 6
 EXPRESSION_CACHE_SIZE: Final = 1024
 LENGTH_UNIT: Final = "px"
 CONDITIONAL: Final = "if"
-LOGIC_OPERATORS: Final = frozenset({"and", "or"})
-LOGIC_WORDS: Final = LOGIC_OPERATORS | {"not"}
-OPERAND_TOKENS: Final = frozenset({"number", "string", "color", "reference", "name", ")"})
+LOGIC_WORDS: Final = frozenset({"and", "or", "not"})
 BOOLEAN_WORDS: Final = {"true": True, "false": False}
 COMPARISONS: Final = frozenset({"<", "<=", ">", ">=", "==", "!="})
 OPERATORS: Final = ("**", "<=", ">=", "==", "!=", "<", ">", "+", "-", "*", "/", "%")
@@ -91,17 +86,11 @@ UNSUPPORTED_OPERATORS: Final = {"**": "the power operator ** is not supported",
                                 "%": "the % operator is not supported"}
 QUOTES: Final = frozenset("'\"")
 PUNCTUATION: Final = frozenset("(),")
-UNTOKENIZED_STARTS: Final = QUOTES | {"{"}
 NUMBER_RE: Final = re.compile(r"(\d+(?:\.\d+)?|\.\d+)([A-Za-z%][A-Za-z0-9%]*)?")
 EXPONENT_RE: Final = re.compile(r"[eE]\d*")
 NAME_RE: Final = re.compile(r"[A-Za-z][A-Za-z0-9_]*(?:-[A-Za-z][A-Za-z0-9_]*)*")
 HEX_RE: Final = re.compile(r"#[0-9A-Za-z]+")
 COLOR_FUNCTION_RE: Final = re.compile(r"(?:device-cmyk|rgba?|hsla?|hsva?|hwb|lab|lch|oklab|oklch|color)\s*\(", re.I)
-CALL_RE: Final = re.compile(r"([A-Za-z_][\w.]*)\s*\(")
-CSS_TEXT_FUNCTIONS: Final = frozenset({
-    "url", "var", "calc", "attr", "local", "format", "rotate", "translate", "translatex", "translatey",
-    "scale", "scalex", "scaley", "skewx", "skewy", "matrix", "blur", "cubic-bezier", "steps",
-})
 
 FONT_FAMILY: Final = "Helvetica, Arial, sans-serif"
 MONOSPACE_FAMILY: Final = "Consolas, Menlo, monospace"

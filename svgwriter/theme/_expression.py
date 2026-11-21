@@ -1,5 +1,5 @@
 """
-Theme expressions: deciding which text values are expressions, and evaluating them.
+Theme expressions: text values that start with ``=``, and their evaluation.
 
 Evaluation walks the parsed tree with a fixed set of operators and the functions of
 ``_functions.FUNCTIONS``; nothing in an expression reaches Python's ``eval``, attributes or imports.
@@ -8,24 +8,12 @@ Evaluation walks the parsed tree with a fixed set of operators and the functions
 from __future__ import annotations
 
 from collections.abc import Callable
-from functools import lru_cache
 
 from ..color.color import Color
-from ._constants import (
-    CALL_RE,
-    COMPARISONS,
-    CONDITIONAL,
-    CSS_TEXT_FUNCTIONS,
-    EXPONENT_RE,
-    EXPRESSION_CACHE_SIZE,
-    LOGIC_OPERATORS,
-    MAX_EXPRESSION_LENGTH,
-    OPERAND_TOKENS,
-    UNTOKENIZED_STARTS,
-)
+from ._constants import COMPARISONS, CONDITIONAL, EXPRESSION_MARK
 from ._errors import ThemeError
-from ._functions import FUNCTIONS, Value, arity, kind
-from ._lexer import ExpressionError, Token, tokenize
+from ._functions import FUNCTIONS, Value, kind
+from ._lexer import ExpressionError
 from ._parser import Binary, Call, Literal, Node, Reference, Unary, check_magnitude, parse
 
 __all__ = ["Lookup", "evaluate", "is_expression"]
@@ -34,31 +22,11 @@ Lookup = Callable[[str], object]
 """Resolves a reference path such as ``"palette.primary"`` to its value."""
 
 
-def _computes(tokens: list[Token]) -> bool:
-    if [t.kind for t in tokens] == ["reference", "end"] or (tokens[0].kind, tokens[0].text) == ("name", "not"):
-        return True
-    for index, token in enumerate(tokens):
-        if token.kind == "name" and token.text in LOGIC_OPERATORS:
-            return True
-        if token.kind == "number" and EXPONENT_RE.fullmatch(token.unit):
-            return True
-        if token.kind != "operator":
-            continue
-        binary = index > 0 and tokens[index - 1].kind in OPERAND_TOKENS
-        if binary or tokens[index + 1].kind != "number":
-            return True
-    return False
-
-
-@lru_cache(maxsize=EXPRESSION_CACHE_SIZE)
 def is_expression(text: str) -> bool:
-    """Whether a text value is an expression rather than plain text with ``{references}``.
+    """Whether a text value is an expression: it starts with ``=``, like a spreadsheet formula.
 
-    It is one when it is a lone reference, calls a function (any call-like name other than a CSS
-    function such as ``url`` or a color function), starts with ``(`` or ``not``, puts an operator
-    between two values, or writes a number with an exponent. Text longer than the expression limit,
-    and text that starts like a call, a reference or quoted text but holds characters outside the language,
-    count too, so they are rejected rather than written out.
+    Anything else is never evaluated: a color, a lone ``{reference}``, or CSS text with its
+    references filled in.
 
     Parameters
     ----------
@@ -73,24 +41,12 @@ def is_expression(text: str) -> bool:
     Examples
     --------
     >>> from svgwriter.theme._expression import is_expression
-    >>> is_expression("readable({palette.primary})"), is_expression("{fonts.sizes.text} * 1.5")
+    >>> is_expression("=readable({palette.primary})"), is_expression(" = {fonts.sizes.text} * 1.5")
     (True, True)
-    >>> is_expression("1px solid {palette.border}"), is_expression("Georgia, serif"), is_expression("-2px")
+    >>> is_expression("12px/1.5 serif"), is_expression("{palette.primary}"), is_expression("-0.02em")
     (False, False, False)
     """
-    source = text.strip()
-    if len(source) > MAX_EXPRESSION_LENGTH or source.startswith("("):
-        return True
-    call = CALL_RE.match(source)
-    if call is not None and call.group(1).lower() in CSS_TEXT_FUNCTIONS:
-        return False
-    if call is not None and (arity(call.group(1)) is not None or not call.group(1).isalpha()):
-        return True
-    try:
-        tokens = tokenize(source)
-    except ExpressionError:
-        return call is not None or source[:1] in UNTOKENIZED_STARTS
-    return call is not None and tokens[0].kind == "name" or _computes(tokens)
+    return text.lstrip().startswith(EXPRESSION_MARK)
 
 
 def _number(value: Value, operator: str) -> float:
@@ -189,7 +145,7 @@ def evaluate(text: str, lookup: Lookup, where: str) -> Value:
     Parameters
     ----------
     text : str
-        The expression.
+        The expression, starting with ``=``.
     lookup : callable
         Takes a reference path such as ``"palette.primary"`` and returns its value, raising
         ThemeError if it names nothing.
@@ -209,11 +165,11 @@ def evaluate(text: str, lookup: Lookup, where: str) -> Value:
     Examples
     --------
     >>> from svgwriter.theme._expression import evaluate
-    >>> evaluate("max({fonts.sizes.text} * 1.5, 12)", lambda path: 14.0, "roles.badge.font-size")
+    >>> evaluate("=max({fonts.sizes.text} * 1.5, 12)", lambda path: 14.0, "roles.badge.font-size")
     21.0
     """
     try:
-        return _Evaluator(lookup).run(parse(text.strip()))
+        return _Evaluator(lookup).run(parse(text.lstrip().removeprefix(EXPRESSION_MARK).strip()))
     except ExpressionError as error:
         raise ThemeError(f"{where}: {error}") from None
     except RecursionError:

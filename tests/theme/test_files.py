@@ -161,7 +161,7 @@ def test_missing_base_and_file_errors(tmp_path: Path) -> None:
 
 
 def test_expressions_saved_as_written() -> None:
-    text = '[palette]\nprimary = "#fde68a"\nlabel = "readable({palette.primary})"  # follows primary\n'
+    text = '[palette]\nprimary = "#fde68a"\nlabel = "=readable({palette.primary})"  # follows primary\n'
     theme = svg.Theme.from_toml(text)
     assert theme.palette.label.hex == "#000000"
     darker = theme.replace(palette={"primary": "#1e3a8a"})

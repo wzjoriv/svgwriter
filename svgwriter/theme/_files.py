@@ -87,7 +87,8 @@ class ThemeFiles:
         ``name``, ``[palette]``, ``[fonts]`` (with ``[fonts.sizes]`` and ``[fonts.weights]``) and
         ``[roles.<name>]`` tables. Values are text, numbers, color arrays (``[r, g, b]`` or
         ``[r, g, b, a]``: all floats from 0 to 1 or all integers from 0 to 255), ``{palette.name}``
-        / ``{fonts.sizes.name}`` references and expressions; nothing in the file runs Python.
+        / ``{fonts.sizes.name}`` references and expressions marked with a leading ``=``; nothing in
+        the file runs Python.
 
         Parameters
         ----------

@@ -16,10 +16,10 @@ __all__ = ["DERIVED_PALETTE", "STANDARD_ROLES"]
 
 
 DERIVED_PALETTE: dict[str, str] = {
-    "border": f"mix({{palette.foreground}}, {{palette.background}}, {BORDER_MIX})",
-    "muted": f"mix({{palette.foreground}}, {{palette.background}}, {MUTED_MIX})",
-    "shadow": f"alpha({{palette.foreground}}, {SHADOW_ALPHA})",
-    "on_primary": "readable({palette.primary}, {palette.background}, {palette.foreground})",
+    "border": f"=mix({{palette.foreground}}, {{palette.background}}, {BORDER_MIX})",
+    "muted": f"=mix({{palette.foreground}}, {{palette.background}}, {MUTED_MIX})",
+    "shadow": f"=alpha({{palette.foreground}}, {SHADOW_ALPHA})",
+    "on_primary": "=readable({palette.primary}, {palette.background}, {palette.foreground})",
 }
 
 

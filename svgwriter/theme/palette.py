@@ -8,7 +8,7 @@ from collections.abc import Callable, Iterator, Mapping
 from typing import TypeAlias
 
 from ..color.color import Color, ColorLike, as_color
-from ._constants import MAX_REFERENCE_DEPTH
+from ._constants import MAX_REFERENCE_DEPTH, REFERENCE_RE
 from ._errors import ThemeError
 from ._expression import evaluate, is_expression
 
@@ -25,8 +25,8 @@ class Palette(Mapping[str, Color]):
     ----------
     sources : mapping of str to color or str or callable
         Each role's source: a color (``"#0f766e"``, ``"navy"``, a :class:`~svgwriter.Color`), a
-        reference to another role written ``"{palette.name}"``, an expression such as
-        ``"lighten({palette.primary}, 0.2)"`` (see the Themes guide), or a function that receives
+        reference to another role written ``"{palette.name}"``, an expression marked
+        with a leading ``=`` such as ``"=lighten({palette.primary}, 0.2)"`` (see the Themes guide), or a function that receives
         this palette and returns a color (``lambda p: p.foreground.mix(p.background, 0.3)``).
 
     Raises
@@ -52,7 +52,7 @@ class Palette(Mapping[str, Color]):
     '#808080'
     >>> p.replace({"ink": "#ff0000"}).line.hex
     '#ff8080'
-    >>> Palette({"ink": "navy", "label": "readable({palette.ink})"}).label.hex
+    >>> Palette({"ink": "navy", "label": "=readable({palette.ink})"}).label.hex
     '#ffffff'
     """
 
@@ -94,6 +94,8 @@ class Palette(Mapping[str, Color]):
                 return as_color(source(self))
             except AttributeError as error:
                 raise ThemeError(f"palette.{name}: {error}") from None
+        if isinstance(source, str) and (whole := REFERENCE_RE.fullmatch(source.strip())) is not None:
+            return self._reference(name, whole.group(1))
         if isinstance(source, str) and is_expression(source):
             source = evaluate(source, lambda path: self._reference(name, path), f"palette.{name}")  # type: ignore[assignment]
             if isinstance(source, bool) or not isinstance(source, (str, Color)):

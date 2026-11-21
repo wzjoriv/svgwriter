@@ -49,6 +49,9 @@ def resolve_value(theme: Theme, where: str, value: object) -> object:
             raise ThemeError(f"{where}: {error}") from None
     if not isinstance(value, str):
         return value
+    whole = REFERENCE_RE.fullmatch(value.strip())
+    if whole is not None:
+        return _reference(theme, where, whole.group(1))
     if is_expression(value):
         result = evaluate(value, lambda path: _reference(theme, where, path), where)
         if isinstance(result, bool):

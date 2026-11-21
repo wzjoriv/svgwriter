@@ -14,15 +14,19 @@ SIZES = {"fonts.sizes.text": 14.0, "fonts.sizes.caption": 11.0}
 
 
 def palette_value(expression: str) -> svg.Color:
-    return Palette({**LIGHT.palette.sources, "x": expression}).x
+    return Palette({**LIGHT.palette.sources, "x": "=" + expression}).x
+
+
+def role_text(text: str, prop: str = "opacity") -> object:
+    return LIGHT.replace(roles={"probe": {prop: text}}).style("probe")[prop]
 
 
 def role_value(expression: str, prop: str = "opacity") -> object:
-    return LIGHT.replace(roles={"probe": {prop: expression}}).style("probe")[prop]
+    return role_text("=" + expression, prop)
 
 
 def value(expression: str) -> object:
-    return evaluate(expression, SIZES.__getitem__, "test")
+    return evaluate("=" + expression, SIZES.__getitem__, "test")
 
 
 class TestColors:
@@ -47,15 +51,15 @@ class TestColors:
         assert palette_value(expression) == expected
 
     def test_references_follow_their_source(self) -> None:
-        palette = Palette({"ink": "#0f766e", "paper": "white", "label": "readable({palette.ink})",
-                           "edge": "mix({palette.ink}, {palette.paper}, 0.6, 'oklab')"})
+        palette = Palette({"ink": "#0f766e", "paper": "white", "label": "=readable({palette.ink})",
+                           "edge": "= mix({palette.ink}, {palette.paper}, 0.6, 'oklab')"})
         assert palette.label.hex == "#ffffff"
         assert palette.replace({"ink": "#fde68a"}).label.hex == "#000000"
         assert palette.edge == svg.Color.parse("#0f766e").mix("white", 0.6, "oklab")
 
     def test_builtin_derived_entries(self) -> None:
         sources = LIGHT.palette.sources
-        assert sources["on_primary"] == "readable({palette.primary}, {palette.background}, {palette.foreground})"
+        assert sources["on_primary"] == "=readable({palette.primary}, {palette.background}, {palette.foreground})"
         assert LIGHT.palette.on_primary.hex == "#ffffff" and svg.Theme.get("dark").palette.on_primary.hex == "#042f2e"
         assert LIGHT.palette.border == LIGHT.palette.foreground.mix(LIGHT.palette.background, 0.7)
         assert LIGHT.palette.shadow == LIGHT.palette.foreground.with_alpha(0.2)
@@ -88,15 +92,24 @@ class TestNumbersAndLogic:
 
 class TestText:
     @pytest.mark.parametrize("text", [
-        "1px solid {palette.border}", "Gill Sans, sans-serif", "4 2", "-0.02em", "50%", "2px", "url(#a-b)",
-        "rotate(45 10 10)", "rgb(255 0 0 / 50%)", "#ff000080", "none", "small-caps", "{fonts.sizes.text}px",
+        "1px solid {palette.border}", "12px/1.5 serif", "Gill Sans, sans-serif", "4 2", "-0.02em", "50%", "2px",
+        "url(#a-b)", "rotate(45 10 10)", "rgb(255 0 0 / 50%)", "#ff000080", "none", "{palette.primary}",
+        "readable({palette.primary})", "{fonts.sizes.text} * 1.5", "1 < 2", "a = b",
     ])
-    def test_plain_text_is_not_an_expression(self, text: str) -> None:
+    def test_text_without_mark_is_never_evaluated(self, text: str) -> None:
         assert not is_expression(text)
 
+    @pytest.mark.parametrize("text", ["=1", " = 1", "=  1"])
+    def test_mark_with_spaces(self, text: str) -> None:
+        assert is_expression(text) and evaluate(text, SIZES.__getitem__, "test") == 1
+
     def test_text_keeps_references(self) -> None:
-        assert role_value("1px solid {palette.border}", "border") == f"1px solid {LIGHT.palette.border.hex}"
-        assert role_value("Gill Sans, sans-serif", "font-family") == "Gill Sans, sans-serif"
+        assert role_text("1px solid {palette.border}", "border") == f"1px solid {LIGHT.palette.border.hex}"
+        assert role_text("12px/1.5 serif", "font") == "12px/1.5 serif"
+        assert role_text("-0.02em", "letter-spacing") == "-0.02em"
+        assert role_text("{fonts.sizes.text} * 1.5", "font-size") == "14.0 * 1.5"
+        assert role_text("{fonts.sizes.text}", "font-size") == "14px"
+        assert role_value("12px/1.5", "line-height") == 8.0
 
 
 HOSTILE = [
@@ -113,7 +126,7 @@ HOSTILE = [
     ("open('secrets.txt')", "unknown function 'open'"),
     ("getattr(red, 'hex')", "unknown function 'getattr'"),
     ("compile('1', 'x', 'eval')", "unknown function 'compile'"),
-    ("lambda: 0", "lambda: 0"),
+    ("lambda: 0", "unexpected character ':'"),
     ("9**9**9", r"power operator \*\* is not supported"),
     ("2 ** 1000", r"power operator \*\* is not supported"),
     ("9e999", "exponent notation is not allowed"),
@@ -139,29 +152,31 @@ class TestHostileInput:
     @pytest.mark.parametrize(("text", "message"), HOSTILE)
     def test_rejected_in_palette(self, text: str, message: str) -> None:
         with pytest.raises(ThemeError, match=f"palette.x: .*{message}"):
-            Palette({**LIGHT.palette.sources, "x": text})
+            palette_value(text)
 
-    @pytest.mark.parametrize(("text", "message"), [h for h in HOSTILE if h[0] != "lambda: 0"])
+    @pytest.mark.parametrize(("text", "message"), HOSTILE)
     def test_rejected_in_roles_and_files(self, text: str, message: str) -> None:
         with pytest.raises(ThemeError, match=f"roles.probe.stroke-width: .*{message}"):
             role_value(text, "stroke-width")
-        toml = f"[roles.probe]\nstroke-width = '''{text}'''\n"
+        toml = f"[roles.probe]\nstroke-width = '''={text}'''\n"
         with pytest.raises(ThemeError, match=f"roles.probe.stroke-width: .*{message}"):
             svg.Theme.from_toml(toml)
 
-    def test_other_text_is_written_as_text(self) -> None:
-        assert role_value("lambda: 0", "content") == "lambda: 0"
-        assert role_value("f{palette.primary}", "content") == f"f{LIGHT.palette.primary.hex}"
+    @pytest.mark.parametrize("text", [h[0] for h in HOSTILE if "{" not in h[0]])
+    def test_without_mark_is_inert_text(self, text: str) -> None:
+        assert role_text(text, "content") == text
+        with pytest.raises(ThemeError, match="palette.x: unknown color"):
+            Palette({**LIGHT.palette.sources, "x": text})
 
     def test_reference_cycles(self) -> None:
         with pytest.raises(ThemeError, match="cycle: palette.a -> palette.b -> palette.a"):
-            Palette({"a": "lighten({palette.b}, 0.1)", "b": "mix({palette.a}, white)"})
+            Palette({"a": "=lighten({palette.b}, 0.1)", "b": "=mix({palette.a}, white)"})
         with pytest.raises(ThemeError, match="cycle: palette.a -> palette.a"):
-            Palette({"a": "if(is_dark({palette.a}), black, white)"})
+            Palette({"a": "=if(is_dark({palette.a}), black, white)"})
 
     def test_reference_chain_depth(self) -> None:
         def chain(length: int) -> dict[str, str]:
-            links = {f"c{i}": f"darken({{palette.c{i + 1}}}, 0.01)" for i in range(length - 1)}
+            links = {f"c{i}": f"=darken({{palette.c{i + 1}}}, 0.01)" for i in range(length - 1)}
             return {**links, f"c{length - 1}": "white"}
 
         assert Palette(chain(MAX_REFERENCE_DEPTH)).c0.hex
@@ -171,6 +186,7 @@ class TestHostileInput:
     def test_long_text_rejected(self) -> None:
         with pytest.raises(ThemeError, match="longer than"):
             role_value("a" * (MAX_EXPRESSION_LENGTH + 1), "font-family")
+        assert role_text("a" * (MAX_EXPRESSION_LENGTH + 1), "font-family") == "a" * (MAX_EXPRESSION_LENGTH + 1)
 
 
 @pytest.mark.parametrize(("expression", "message"), [
@@ -198,6 +214,7 @@ class TestHostileInput:
     ("rgb(1, 2", "unclosed color function"),
     ("2em * 2", "unit 'em' is not supported"),
     ("{palette}", "malformed reference"),
+    ("", "unexpected end of expression"),
     ("{other.x} * 2", "unknown reference"),
     ("{fonts.sizes.nope} * 2", "unknown reference"),
     ("{fonts.sizes.text} *", "unexpected end of expression"),
@@ -216,6 +233,6 @@ def test_condition_is_not_a_css_value() -> None:
 
 def test_errors_name_the_file(tmp_path: Path) -> None:
     path = tmp_path / "bad.toml"
-    path.write_text('[palette]\naccent = "lighten({palette.primary}, 5)"\n', encoding="utf-8")
+    path.write_text('[palette]\naccent = "=lighten({palette.primary}, 5)"\n', encoding="utf-8")
     with pytest.raises(ThemeError, match=r"bad\.toml: palette\.accent: lighten\(\): argument 2"):
         svg.Theme.load(path)
