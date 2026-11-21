@@ -90,12 +90,12 @@ def _external(use: Element) -> Element | None:
     from urllib.parse import unquote, urldefrag, urljoin, urlparse
     from urllib.request import url2pathname
 
-    from ._layers import _base_uri
+    from ._links import base_uri
 
     href = use.attributes.get("xlink:href", use.attributes.get("href"))
     if href is None or str(href).startswith("#"):
         return None
-    address, fragment = urldefrag(urljoin(_base_uri(use), str(href)))
+    address, fragment = urldefrag(urljoin(base_uri(use), str(href)))
     target = urlparse(address)
     if target.scheme != "file" or not fragment:
         return None

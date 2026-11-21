@@ -9,10 +9,11 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 from ._conditions import apply_conditions
-from ._constants import CONTAINERS, NONE, VISIBILITY
+from ._constants import CONTAINERS, NONE, PRIMITIVE_PREFIX, VISIBILITY
 from ._instances import expand_uses
 from ._keywords import resolve_keywords
-from ._layers import ancestry, drawable_order, resolve_links
+from ._layers import ancestry, drawable_order
+from ._links import resolve_links
 from ._markers import expand_markers
 from ._servers import resolve_servers
 from ._tiles import user_space_patterns
@@ -27,6 +28,7 @@ if TYPE_CHECKING:
     from ..transform.matrix import Matrix
 
 __all__ = [
+    "drop_foreign",
     "ellipses_as_paths",
     "leaf_visibility",
     "expand_image_patterns",
@@ -36,6 +38,7 @@ __all__ = [
     "unfilled_lines",
     "unfiltered_masks",
     "view_matrix",
+    "void_filters",
 ]
 
 
@@ -80,6 +83,27 @@ def unfiltered_masks(root: Element) -> None:
     """Drop ``filter`` from every ``<mask>``: a mask is not rendered itself, so no filter applies to it."""
     for mask in [e for e in root.iter() if e.tag == "mask"]:
         mask.attributes.pop("filter", None)
+
+
+def drop_foreign(root: Element) -> None:
+    """Remove elements from other XML namespaces: they are not SVG, so nothing of them renders."""
+    for element in [e for e in root.iter() if getattr(e, "namespace", None) is not None]:
+        if element.parent is not None:
+            element.parent.remove(element)
+
+
+def void_filters(root: Element) -> None:
+    """Hide elements whose ``filter`` names no ``<filter>`` or one without primitives: they render nothing."""
+    from ._tree import resolve
+
+    for element in list(root.iter()):
+        value = element.attributes.get("filter")
+        if value is None or str(value).strip() == NONE:
+            continue
+        target = resolve(element, value)
+        if target is None or target.tag != "filter" or not any(
+                not isinstance(child, str) and child.tag.startswith(PRIMITIVE_PREFIX) for child in target):
+            element.attributes["display"] = NONE
 
 
 def leaf_visibility(root: Element) -> None:
@@ -140,6 +164,7 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     from ..elements import Text
 
     copy = root.clone()
+    drop_foreign(copy)
     resolve_styles(copy)
     apply_conditions(copy)
     expand_uses(copy)
@@ -150,6 +175,7 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     unfilled_lines(copy)
     unfiltered_masks(copy)
     leaf_visibility(copy)
+    void_filters(copy)
     expand_image_patterns(copy)
     user_space_patterns(copy)
     expand_markers(copy)

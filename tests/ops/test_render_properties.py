@@ -26,3 +26,13 @@ def test_visible_child_of_a_hidden_group_is_drawn() -> None:
     pixels = doc.rasterize(background="white")
     assert np.allclose(pixels[50, 25], (1, 1, 1, 1), atol=0.02)
     assert np.allclose(pixels[50, 75], (0, 1, 0, 1), atol=0.02)
+
+
+def test_elements_from_other_namespaces_are_not_drawn() -> None:
+    doc = svg.Document.from_string(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><g xmlns:s="http://www.w3.org/2000/svg">'
+        '<circle xmlns="http://example.org/other" cx="50" cy="50" r="50" fill="red"/>'
+        '<s:rect width="50" height="50" fill="lime"/></g></svg>')
+    pixels = doc.rasterize(background="white")
+    assert np.allclose(pixels[25, 25], (0, 1, 0, 1), atol=0.02)
+    assert np.allclose(pixels[75, 75], (1, 1, 1, 1), atol=0.02)
