@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
 @register("pdf", extensions=(".pdf",), multipage=True)
 def pdf(document: Document | Sequence[Document], *, title: str | None = None, author: str | None = None,
-        text: bool = True, px_per_inch: float = PX_PER_INCH, icc: IccLike | None = None) -> bytes:
+        text: bool = True, units_per_inch: float = PX_PER_INCH, icc: IccLike | None = None) -> bytes:
     """Vector PDF drawn by skia: shapes stay vector, text stays selectable, images are embedded.
 
     Pages have the document's physical size: a user unit (CSS pixel) is 3/4 of a point, 96 per
@@ -41,7 +41,7 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
         PDF author metadata. Defaults to None.
     text : bool, optional
         Keep text as text where possible; False draws every glyph as an outline. Defaults to True.
-    px_per_inch : float, optional
+    units_per_inch : float, optional
         User units per inch of a document sized in pixels or plain numbers: 72 prints one unit as
         one point. Sizes in ``mm``, ``cm``, ``in``, ``pt`` or ``pc`` are kept. Defaults to 96 (CSS).
     icc : {"srgb"} or bytes, optional
@@ -58,7 +58,7 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     Raises
     ------
     ValueError
-        If `px_per_inch` is not above 0 or `icc` is not sRGB or a CMYK profile.
+        If `units_per_inch` is not above 0 or `icc` is not sRGB or a CMYK profile.
     ImportError
         If `icc` is given without the ``color`` extra.
 
@@ -74,8 +74,8 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     """
     from ..._internal._render._rendering import view_matrix
     from ...ops.render import page_size, paint_tree
+    from .._units import unit_scale
     from ._pdf_boxes import exact_media_boxes, page_points
-    from ._units import unit_scale
 
     stream = skia.DynamicMemoryWStream()
     metadata = skia.PDF.Metadata()
@@ -88,7 +88,7 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     for page in document if isinstance(document, Sequence) else [document]:
         with page._prepared():
             width, height = page_size(page)
-            points = PX_PER_PT / unit_scale(page, px_per_inch)
+            points = PX_PER_PT / unit_scale(page, units_per_inch)
             sizes.append((width / points, height / points))
             canvas = pdf_document.beginPage(*page_points(*sizes[-1]))
             canvas.scale(1 / points, 1 / points)
@@ -118,7 +118,7 @@ def _links(canvas: skia.Canvas, page: Document) -> None:
 
 
 @register("tikz", extensions=(".tikz", ".tex"), binary=False)
-def tikz(document: Document, *, standalone: bool = False, text: bool = True, px_per_inch: float = PX_PER_INCH) -> str:
+def tikz(document: Document, *, standalone: bool = False, text: bool = True, units_per_inch: float = PX_PER_INCH) -> str:
     """A TikZ picture of the flattened vector content (gradients as shadings; images skipped).
 
     Parameters
@@ -130,7 +130,7 @@ def tikz(document: Document, *, standalone: bool = False, text: bool = True, px_
     text : bool, optional
         Write text as ``\\node`` commands typeset by LaTeX; False draws the exact glyph outlines.
         Defaults to True.
-    px_per_inch : float, optional
+    units_per_inch : float, optional
         User units per inch of a document sized in pixels; 72 draws one unit as one point. Sizes
         in ``mm``, ``cm``, ``in``, ``pt`` or ``pc`` are kept. Defaults to 96.
 
@@ -153,11 +153,11 @@ def tikz(document: Document, *, standalone: bool = False, text: bool = True, px_
     """
     from ._tikz import to_tikz
 
-    return to_tikz(document, standalone=standalone, text=text, px_per_inch=px_per_inch)
+    return to_tikz(document, standalone=standalone, text=text, units_per_inch=units_per_inch)
 
 
 @register("eps", extensions=(".eps", ".ps"))
-def eps(document: Document, *, text: bool = True, px_per_inch: float = PX_PER_INCH) -> bytes:
+def eps(document: Document, *, text: bool = True, units_per_inch: float = PX_PER_INCH) -> bytes:
     """Encapsulated PostScript of the flattened vector content (solid paints; images skipped).
 
     Parameters
@@ -166,7 +166,7 @@ def eps(document: Document, *, text: bool = True, px_per_inch: float = PX_PER_IN
         The document to convert.
     text : bool, optional
         Write text with PostScript fonts; False draws the exact glyph outlines. Defaults to True.
-    px_per_inch : float, optional
+    units_per_inch : float, optional
         User units per inch of a document sized in pixels; 72 draws one unit as one point. Sizes
         in ``mm``, ``cm``, ``in``, ``pt`` or ``pc`` are kept. Defaults to 96.
 
@@ -187,7 +187,7 @@ def eps(document: Document, *, text: bool = True, px_per_inch: float = PX_PER_IN
     """
     from ._eps import to_eps
 
-    return to_eps(document, text=text, px_per_inch=px_per_inch).encode("ascii")
+    return to_eps(document, text=text, units_per_inch=units_per_inch).encode("ascii")
 
 
 @register_importer("pdf", extensions=(".pdf",), page_option="page")

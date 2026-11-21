@@ -72,10 +72,10 @@ class TestUnknownAttributeHints:
         with pytest.raises(AttributeError, match=r"fade_out is an animation; use element\.animate\.fade_out"):
             svg.text("A").fade_out()
         with pytest.raises(AttributeError, match=r"wiggle is a behavior; use element\.animate\.wiggle"):
-            svg.rect(0, 0, 1, 1).wiggle
+            _ = svg.rect(0, 0, 1, 1).wiggle
 
     def test_close_matches_cover_methods_attributes_and_presets(self):
         with pytest.raises(AttributeError, match="did you mean 'animate.fade_out'"):
-            svg.text("A").fade_ot
+            _ = svg.text("A").fade_ot
         with pytest.raises(AttributeError, match="did you mean 'width'"):
-            svg.rect(0, 0, 1, 1).widht
+            _ = svg.rect(0, 0, 1, 1).widht

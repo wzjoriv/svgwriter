@@ -13,6 +13,7 @@ from ..._internal._flat._flatten import Item, flatten, to_cubic
 from ..._internal._flat._paints import Shading
 from ..._internal._numbers import format_number
 from ..._internal._typography._emoji import color_glyph_cells
+from .._units import unit_scale
 from ._constants import (
     ANGLE_EPSILON,
     LATEX_SPECIALS,
@@ -27,7 +28,6 @@ from ._constants import (
     TIKZ_PRECISION,
     TIKZ_STANDALONE,
 )
-from ._units import unit_scale
 
 if TYPE_CHECKING:
     from ...color.color import Color
@@ -104,7 +104,7 @@ def _shading_options(shading: Shading, color: Callable[[Color], str]) -> list[st
 
 
 def to_tikz(document: Document, *, standalone: bool = False, text: bool = True,
-            px_per_inch: float = PX_PER_INCH) -> str:
+            units_per_inch: float = PX_PER_INCH) -> str:
     """A ``tikzpicture`` at the document's physical size: 1 user unit = 0.75 bp (96 per inch), y down as in SVG.
 
     The document is flattened first: gradients become TikZ shadings and images are skipped. Text is
@@ -119,7 +119,7 @@ def to_tikz(document: Document, *, standalone: bool = False, text: bool = True,
         Wrap in a compilable ``standalone`` LaTeX document. Defaults to False.
     text : bool, optional
         Keep text as LaTeX text; False draws the exact glyph outlines. Defaults to True.
-    px_per_inch : float, optional
+    units_per_inch : float, optional
         User units per inch of a document sized in pixels; 72 draws one unit as one point.
         Sizes in ``mm``, ``cm``, ``in``, ``pt`` or ``pc`` are kept. Defaults to 96.
 
@@ -142,7 +142,7 @@ def to_tikz(document: Document, *, standalone: bool = False, text: bool = True,
     True
     """
     scene = flatten(document, text=text, color_glyphs=False)
-    scale = unit_scale(document, px_per_inch)
+    scale = unit_scale(document, units_per_inch)
     bp, tex_pt = PX_PER_BP / scale, PX_PER_TEX_PT / scale
     colors: dict[tuple[int, int, int], str] = {}
 

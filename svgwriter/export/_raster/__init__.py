@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any
 
 from ..._internal._constants import PX_PER_INCH
 from .._registry import register, register_importer
+from .._units import dpi_scale
 from . import _tiff  # noqa: F401
 from ._constants import DEFAULT_GIF_FPS, DEFAULT_QUALITY, ICC_FORMATS
 
@@ -29,8 +30,8 @@ def _frames(document: Document, fps: float, duration: float | None, **options: A
     length = duration if duration is not None else animation_duration(document)
     if not length:
         return []
-    if isinstance(options.get("size"), int):
-        options["size"] = (options["size"], options["size"])
+    if isinstance(options.get("pixels"), int):
+        options["pixels"] = (options["pixels"], options["pixels"])
     if processes == 1:
         return [to_uint8(document.at(seconds).rasterize(**options)) for seconds in frame_times(fps, length)]
     snapshots = [document.at(seconds) for seconds in frame_times(fps, length)]
@@ -64,9 +65,9 @@ def _is_srgb(icc: IccLike) -> bool:
 
 
 def _raster(format: str) -> Callable[..., bytes]:
-    def exporter(document: Document, *, scale: float | None = None, size: tuple[int, int] | int | None = None,
+    def exporter(document: Document, *, scale: float | None = None, pixels: tuple[int, int] | int | None = None,
                  padding: float = 0.0, background: ColorLike | None = None, quality: int = DEFAULT_QUALITY,
-                 dpi: float | None = None, animate: bool = False, fps: float = DEFAULT_GIF_FPS,
+                 dpi: float | None = None, units_per_inch: float = PX_PER_INCH, animate: bool = False, fps: float = DEFAULT_GIF_FPS,
                  duration: float | None = None, loop: int = 0, processes: int | None = 1,
                  icc: IccLike | None = None) -> bytes:
         from ..._internal._codecs._encoders import ENCODERS
@@ -78,33 +79,33 @@ def _raster(format: str) -> Callable[..., bytes]:
             raise ValueError(f"{format} cannot embed an ICC profile; use one of {', '.join(ICC_FORMATS)} or tiff")
         if format == "jpeg" and background is None:
             background = "white"
-        if isinstance(size, int):
-            size = (size, size)
-        if dpi is None and scale is None and size is None:
+        if isinstance(pixels, int):
+            pixels = (pixels, pixels)
+        if dpi is None and scale is None and pixels is None:
             dpi = export_hints(document.root).dpi
-        scale = dpi / PX_PER_INCH if dpi is not None else 1.0 if scale is None else scale
+        scale = dpi_scale(document, dpi, units_per_inch) if dpi is not None else 1.0 if scale is None else scale
         animated = _animation_encoders()
         if animate and format in animated:
-            frames = _frames(document, fps, duration, scale=scale, size=size, padding=padding, background=background,
+            frames = _frames(document, fps, duration, scale=scale, pixels=pixels, padding=padding, background=background,
                              processes=processes)
             if frames:
                 return _profiled(frames, icc, lambda done: animated[format](done, fps, loop=loop))
         if icc is not None and not _is_srgb(icc):
             from ...ops.render import encode
 
-            still = [to_uint8(document.rasterize(scale=scale, size=size, padding=padding, background=background))]
+            still = [to_uint8(document.rasterize(scale=scale, pixels=pixels, padding=padding, background=background))]
             return _profiled(still, icc, lambda done: encode(done[0], format, quality=quality))
         if icc is not None:
-            image = document.rasterize(scale=scale, size=size, padding=padding, background=background, snapshot=True)
+            image = document.rasterize(scale=scale, pixels=pixels, padding=padding, background=background, snapshot=True)
             return _profiled([image], icc, lambda done: encode_image(done[0], format, quality=quality))
         native = format not in ENCODERS
-        image = document.rasterize(scale=scale, size=size, padding=padding, background=background, snapshot=native)
+        image = document.rasterize(scale=scale, pixels=pixels, padding=padding, background=background, snapshot=native)
         if not native:
             return ENCODERS[format](to_uint8(image))
         return encode_image(image, format, quality=quality)
 
-    exporter.__doc__ = (f"{format.upper()} raster (``scale`` or ``dpi``, defaulting to Inkscape's "
-                        "``inkscape:export-xdpi`` when the document has one, ``size``, ``padding``, ``background``, "
+    exporter.__doc__ = (f"{format.upper()} raster (``scale`` or ``dpi`` with ``units_per_inch``, defaulting to Inkscape's "
+                        "``inkscape:export-xdpi`` when the document has one, ``pixels``, ``padding``, ``background``, "
                         "``quality``" + (", ``icc`` (``'srgb'``, ``'display-p3'`` or RGB profile bytes: pixels are "
                                          "converted and the profile embedded)" if format in ICC_FORMATS else "")
                         + ")" + ("; ``animate=True`` with ``fps``, ``duration``, ``loop`` writes the SMIL "
@@ -119,17 +120,17 @@ register("bmp", extensions=(".bmp",))(_raster("bmp"))
 
 
 @register("gif", extensions=(".gif",))
-def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int | None = None, padding: float = 0.0,
+def gif(document: Document, *, scale: float = 1.0, pixels: tuple[int, int] | int | None = None, padding: float = 0.0,
         background: ColorLike | None = None, animate: bool | None = None, fps: float = DEFAULT_GIF_FPS,
         duration: float | None = None, loop: int = 0, quality: int = DEFAULT_QUALITY,
-        dpi: float | None = None, processes: int | None = 1) -> bytes:
+        dpi: float | None = None, units_per_inch: float = PX_PER_INCH, processes: int | None = 1) -> bytes:
     """GIF: a still image, or an animated GIF of the document's SMIL animation.
 
     Parameters
     ----------
     document : Document
         The drawing.
-    scale, size, padding, background : optional
+    scale, pixels, padding, background : optional
         As for PNG.
     animate : bool, optional
         Write every frame of the SMIL animation. Defaults to None, which
@@ -142,8 +143,9 @@ def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int |
         Repeats; 0 loops forever. Defaults to 0.
     quality : int, optional
         Accepted like the other raster formats; GIF is lossless. Defaults to 90.
-    dpi : float, optional
-        Pixels per inch instead of `scale` (96 is scale 1). Defaults to None.
+    dpi, units_per_inch : float, optional
+        As for PNG: pixels per printed inch instead of `scale`, and user units per inch of a page
+        sized in plain numbers. Default to None and 96.
     processes : int, optional
         Worker processes for the frames; None uses every CPU. Defaults to 1.
 
@@ -168,10 +170,10 @@ def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int |
 
     del quality
     if dpi is not None:
-        scale = dpi / PX_PER_INCH
-    if isinstance(size, int):
-        size = (size, size)
-    options = {"scale": scale, "size": size, "padding": padding, "background": background}
+        scale = dpi_scale(document, dpi, units_per_inch)
+    if isinstance(pixels, int):
+        pixels = (pixels, pixels)
+    options = {"scale": scale, "pixels": pixels, "padding": padding, "background": background}
     length = duration if duration is not None else animation_duration(document)
     moving = animate if animate is not None else document.root.find(AnimationElement) is not None
     if not moving or not length:

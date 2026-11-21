@@ -92,21 +92,21 @@ def pixels() -> svg.Document:
     return doc
 
 
-def test_px_per_inch_72_makes_a_pixel_page_one_point_per_unit():
-    assert media_boxes(pixels().export("pdf", px_per_inch=72)) == [pytest.approx((144, 72))]
+def test_units_per_inch_72_makes_a_pixel_page_one_point_per_unit():
+    assert media_boxes(pixels().export("pdf", units_per_inch=72)) == [pytest.approx((144, 72))]
     assert media_boxes(pixels().export("pdf")) == [pytest.approx((108, 54))]
-    text = pixels().export("eps", px_per_inch=72).decode()
+    text = pixels().export("eps", units_per_inch=72).decode()
     assert "%%HiResBoundingBox: 0 0 144 72" in text and "\n1 1 scale\n" in text
-    picture = pixels().export("tikz", px_per_inch=72)
+    picture = pixels().export("tikz", units_per_inch=72)
     assert "[x=1bp, y=-1bp]" in picture and "line width=2bp" in picture
 
 
 @pytest.mark.parametrize("name", ["pdf", "eps", "tikz"])
-def test_px_per_inch_keeps_physical_sizes(name):
-    assert a4().export(name, px_per_inch=72) == a4().export(name)
+def test_units_per_inch_keeps_physical_sizes(name):
+    assert a4().export(name, units_per_inch=72) == a4().export(name)
 
 
 @pytest.mark.parametrize("name", ["pdf", "eps", "tikz"])
-def test_px_per_inch_must_be_positive(name):
-    with pytest.raises(ValueError, match="px_per_inch must be above 0"):
-        pixels().export(name, px_per_inch=0)
+def test_units_per_inch_must_be_positive(name):
+    with pytest.raises(ValueError, match="units_per_inch must be above 0"):
+        pixels().export(name, units_per_inch=0)

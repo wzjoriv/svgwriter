@@ -23,7 +23,7 @@ def _sample() -> svg.Document:
 
 
 def _render(doc: svg.Document) -> np.ndarray:
-    return doc.rasterize(size=SIZE, background="white")[..., :3]
+    return doc.rasterize(pixels=SIZE, background="white")[..., :3]
 
 
 @pytest.mark.parametrize(("fmt", "tolerance"), sorted({**EXACT, **RASTER}.items()))

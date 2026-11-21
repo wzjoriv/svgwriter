@@ -241,7 +241,7 @@ def test_exporters_accept_png_options() -> None:
     for name in ("bmp", "gif", "ppm"):
         data = svg.export.export(_doc(), name, scale=2, padding=1, background="white", quality=50)
         assert Pixels.decode(data).shape == (20, 36)
-    assert Pixels.decode(svg.export.export(_doc(), "gif", size=10)).shape == (10, 10)
+    assert Pixels.decode(svg.export.export(_doc(), "gif", pixels=10)).shape == (10, 10)
 
 
 def test_gif_exporter_keeps_transparent_background() -> None:

@@ -64,17 +64,17 @@ def test_a_20mm_rect_is_20mm_in_the_pdf_and_the_browser_render():
     assert square / page == pytest.approx(20 / 210, abs=0.005)
 
 
-def test_pdf_page_is_exactly_a4_whatever_px_per_inch():
+def test_pdf_page_is_exactly_a4_whatever_units_per_inch():
     doc, _ = a4_stack()
-    for options in ({}, {"px_per_inch": 300}):
+    for options in ({}, {"units_per_inch": 300}):
         x0, y0, x1, y1 = (float(v) for v in MEDIA_BOX.search(doc.export("pdf", **options)).groups())
         assert (x1 - x0, y1 - y0) == pytest.approx((210 * PT_PER_MM, 297 * PT_PER_MM), abs=1e-3)
 
 
-def test_px_per_inch_scales_pixel_sized_pages_only():
+def test_units_per_inch_scales_pixel_sized_pages_only():
     page = svg.Document(96, 48)
     page += svg.HStack(svg.rect(0, 0, 10, 10), svg.rect(0, 0, 10, 10), gap=svg.inch(0.25))
-    sizes = [tuple(float(v) for v in MEDIA_BOX.search(page.export("pdf", px_per_inch=ppi)).groups()[2:])
+    sizes = [tuple(float(v) for v in MEDIA_BOX.search(page.export("pdf", units_per_inch=ppi)).groups()[2:])
              for ppi in (96, 192)]
     assert sizes == [pytest.approx((72, 36)), pytest.approx((36, 18))]
 
@@ -91,3 +91,11 @@ def test_grid_tracks_take_page_units():
     grid = svg.Grid(*[svg.rect(0, 0, 20, 20) for _ in range(4)], columns=2, gap=svg.mm(3), width=svg.mm(100))
     doc += grid
     assert (grid.bounds().width, grid.bounds().height) == (100, 43)
+
+
+def test_png_takes_units_per_inch_like_pdf():
+    image = pytest.importorskip("PIL.Image")
+    chart = svg.Document(144, 72)
+    assert image.open(io.BytesIO(chart.export("png", dpi=100, units_per_inch=72))).size == (200, 100)
+    page = svg.Document(svg.inch(2), svg.inch(1))
+    assert image.open(io.BytesIO(page.export("png", dpi=100, units_per_inch=72))).size == (200, 100)
