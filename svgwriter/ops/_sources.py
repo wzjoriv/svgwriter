@@ -18,6 +18,7 @@ from .._internal._constants import GENERIC_CANDIDATES
 from .._internal._font_constants import BASE64_MARKER, DATA_URI, REGULAR_SUBFAMILY, SUGGESTIONS
 from .._internal._font_match import describe
 from .._internal._font_names import face_count, family_names
+from .._internal._sfnt import collection_member
 from ._faces import Face
 
 __all__ = ["FontSource", "family_of", "installed_faces", "load", "load_face"]
@@ -41,11 +42,19 @@ def _read(source: FontSource) -> tuple[Path | None, bytes]:
     return path, path.read_bytes()
 
 
+def _typeface(data: Any, blob: bytes, index: int) -> Any:
+    """Face *index* of a font; a collection member some font managers cannot open is opened as its own file."""
+    typeface = skia.Typeface.MakeFromData(data, index)
+    if typeface is None and face_count(blob) > 1:
+        typeface = skia.Typeface.MakeFromData(skia.Data.MakeWithCopy(collection_member(blob, index)), 0)
+    return typeface
+
+
 def load(source: FontSource) -> list[tuple[Any, Path | None, bytes]]:
     """Every face (skia typeface, path, bytes) of a font file or its contents; collections give several."""
     path, blob = _read(source)
     data = skia.Data.MakeWithCopy(blob)
-    typefaces = [skia.Typeface.MakeFromData(data, index) for index in range(face_count(blob))]
+    typefaces = [_typeface(data, blob, index) for index in range(face_count(blob))]
     if not typefaces or None in typefaces:
         raise ValueError(f"cannot read a font from {str(path) if path else 'the data'!r}")
     return [(typeface, path, blob) for typeface in typefaces]
