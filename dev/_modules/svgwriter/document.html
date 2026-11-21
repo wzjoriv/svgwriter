@@ -225,6 +225,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../guides/logos.html">Logos and icons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/themes.html">Themes</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -243,6 +244,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../reference/video.html">Animation export</a></li>
 </ul>
 </li>
@@ -291,10 +293,12 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.ingest</span><span class="w"> </span><span class="kn">import</span> <span class="n">SupportsSVG</span><span class="p">,</span> <span class="n">to_element</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.output</span><span class="w"> </span><span class="kn">import</span> <span class="n">Output</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.sizing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sizing</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._document.theming</span><span class="w"> </span><span class="kn">import</span> <span class="n">Theming</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._internal._tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">attach_cursor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyPath</span><span class="p">,</span> <span class="n">Stack</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">ElementFactory</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.elements.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Defs</span><span class="p">,</span> <span class="n">Desc</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="n">Svg</span><span class="p">,</span> <span class="n">Title</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.theme.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Theme</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.attributes.style</span><span class="w"> </span><span class="kn">import</span> <span class="n">StyleSheet</span>
@@ -309,7 +313,7 @@
 
 <div class="viewcode-block" id="Document">
 <a class="viewcode-back" href="../../reference/document.html#svgwriter.Document">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Document</span><span class="p">(</span><span class="n">Sizing</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">Access</span><span class="p">,</span> <span class="n">ElementFactory</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Document</span><span class="p">(</span><span class="n">Sizing</span><span class="p">,</span> <span class="n">Theming</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">Access</span><span class="p">,</span> <span class="n">ElementFactory</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""An SVG document under construction.</span>
 
 <span class="sd">    Shortcut methods (``doc.circle(...)``, ``doc.linear_gradient(...)``)</span>
@@ -323,6 +327,9 @@
 <span class="sd">        Defaults to None, which sizes the canvas from the content on output.</span>
 <span class="sd">    root : Svg, optional</span>
 <span class="sd">        Use an existing root instead of creating one. Defaults to None.</span>
+<span class="sd">    theme : Theme or str, optional</span>
+<span class="sd">        Styles elements marked with ``as_role``. Defaults to None, which takes</span>
+<span class="sd">        :meth:`Theme.current() &lt;svgwriter.Theme.current&gt;` (``"light"`` outside a ``with theme:`` block).</span>
 <span class="sd">    **kwargs</span>
 <span class="sd">        Forwarded to :class:`~svgwriter.elements.Svg`.</span>
 
@@ -352,13 +359,15 @@
 <span class="sd">    'rect'</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">Svg</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">Svg</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">theme</span><span class="p">:</span> <span class="n">Theme</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">height</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">root</span> <span class="o">=</span> <span class="n">Svg</span><span class="o">.</span><span class="n">with_size</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">root</span> <span class="o">=</span> <span class="n">Svg</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">Theme</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">:</span> <span class="n">Stack</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="n">Stack</span><span class="p">([</span><span class="n">root</span><span class="p">])</span>
         <span class="n">attach_cursor</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">)</span>
 

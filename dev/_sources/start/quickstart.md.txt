@@ -55,4 +55,4 @@ print(again[0].tag, len(again))       # top-level content by index
 
 ## More examples
 
-The `examples/` folder of the repository is a numbered learning path of runnable scripts (`examples/01_basic_shapes.py` to `examples/12_logo.py`), each with a Jupyter notebook beside it (`examples/<name>.ipynb`) that shows the results as pictures.
+The `examples/` folder of the repository is a numbered learning path of runnable scripts (`examples/01_basic_shapes.py` to `examples/14_themes.py`), each with a Jupyter notebook beside it (`examples/<name>.ipynb`) that shows the results as pictures.

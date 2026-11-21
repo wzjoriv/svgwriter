@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Animation export" href="video.html"><link rel="prev" title="Attribute values and styles" href="attributes.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Themes" href="theme.html"><link rel="prev" title="Attribute values and styles" href="attributes.html">
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
@@ -226,6 +226,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/logos.html">Logos and icons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/themes.html">Themes</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -244,6 +245,7 @@
 <li class="toctree-l2"><a class="reference internal" href="io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video.html">Animation export</a></li>
 </ul>
 </li>
@@ -356,13 +358,19 @@ operations like any other element.</p>
 <span class="n">cutout</span> <span class="o">=</span> <span class="n">badge</span> <span class="o">-</span> <span class="n">builder</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">grid</span></code>, <code class="docutils literal notranslate"><span class="pre">spiral</span></code> and <code class="docutils literal notranslate"><span class="pre">wave</span></code> return open paths with <code class="docutils literal notranslate"><span class="pre">fill=&quot;none&quot;</span></code>, so give them a <code class="docutils literal notranslate"><span class="pre">stroke</span></code>.
+<p>Presets carry a <a class="reference internal" href="../guides/themes.html"><span class="std std-doc">theme role</span></a>, so they follow the document theme: registered shapes
+are <code class="docutils literal notranslate"><span class="pre">shape</span></code> (filled with the palette’s primary color), <code class="docutils literal notranslate"><span class="pre">callout</span></code> is <code class="docutils literal notranslate"><span class="pre">box</span></code>, <code class="docutils literal notranslate"><span class="pre">arrow</span></code> is <code class="docutils literal notranslate"><span class="pre">arrow.line</span></code>, <code class="docutils literal notranslate"><span class="pre">grid</span></code>
+is <code class="docutils literal notranslate"><span class="pre">grid</span></code>, <code class="docutils literal notranslate"><span class="pre">spiral</span></code> and <code class="docutils literal notranslate"><span class="pre">wave</span></code> are <code class="docutils literal notranslate"><span class="pre">line</span></code>; <code class="docutils literal notranslate"><span class="pre">outline</span></code>, <code class="docutils literal notranslate"><span class="pre">dashed_line</span></code>, <code class="docutils literal notranslate"><span class="pre">dot</span></code> and the default <code class="docutils literal notranslate"><span class="pre">arrow_marker</span></code>
+head are <code class="docutils literal notranslate"><span class="pre">outline</span></code>, <code class="docutils literal notranslate"><span class="pre">line</span></code>, <code class="docutils literal notranslate"><span class="pre">dot</span></code> and <code class="docutils literal notranslate"><span class="pre">arrow.head</span></code>. Presentation keywords you pass go into the inline
+<code class="docutils literal notranslate"><span class="pre">style</span></code>, so they win over the role. <code class="docutils literal notranslate"><span class="pre">grid</span></code>, <code class="docutils literal notranslate"><span class="pre">spiral</span></code> and <code class="docutils literal notranslate"><span class="pre">wave</span></code> return open paths with <code class="docutils literal notranslate"><span class="pre">fill=&quot;none&quot;</span></code>.
 <code class="docutils literal notranslate"><span class="pre">wave</span></code> takes <code class="docutils literal notranslate"><span class="pre">kind=&quot;sine&quot;</span></code> (smooth cubic segments), <code class="docutils literal notranslate"><span class="pre">&quot;square&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;triangle&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;sawtooth&quot;</span></code>.</p>
 <section id="your-own-presets">
 <h2>Your own presets<a class="headerlink" href="#your-own-presets" title="Link to this heading">¶</a></h2>
 <p>A preset is a function that returns an element. Decorating it with <code class="docutils literal notranslate"><span class="pre">shape_factory(name)</span></code> registers it
 in <code class="docutils literal notranslate"><span class="pre">SHAPES</span></code>, the registry behind <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">svgwriter</span> <span class="pre">shapes</span></code>, and checks at call time that it really
-returns an element. The name must be unique; registering it twice raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>.</p>
+returns an element. The name must be unique; registering it twice raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>.
+<code class="docutils literal notranslate"><span class="pre">shape_factory(name,</span> <span class="pre">role=&quot;shape&quot;)</span></code> gives the built elements a theme role; <code class="docutils literal notranslate"><span class="pre">role=None</span></code> leaves them
+unthemed.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">SHAPES</span><span class="p">,</span> <span class="n">shape_factory</span>
 
@@ -417,20 +425,21 @@ what the element classes do not provide.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">arrow</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">arrow</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">xml_declaration</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="go">'&lt;path d="M0 0 L10 0 M1.3397 5 L10 0 M1.3397 -5 L10 0" fill="none"/&gt;'</span>
+<span class="go">'&lt;path d="M0 0 L10 0 M1.3397 5 L10 0 M1.3397 -5 L10 0" fill="none" class="role-arrow-line"/&gt;'</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="svgwriter.builder.arrow_marker">
-<span class="sig-name descname"><span class="pre">arrow_marker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="color.html#svgwriter.color.Color" title="svgwriter.color.color.Color"><span class="pre">Color</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.paint.Marker" title="svgwriter.elements.paint._clip.Marker"><span class="pre">Marker</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/builder/_effects.html#arrow_marker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.builder.arrow_marker" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">arrow_marker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="color.html#svgwriter.color.Color" title="svgwriter.color.color.Color"><span class="pre">Color</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.paint.Marker" title="svgwriter.elements.paint._clip.Marker"><span class="pre">Marker</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/builder/_effects.html#arrow_marker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.builder.arrow_marker" title="Link to this definition">¶</a></dt>
 <dd><p>Build a filled triangular arrowhead for <code class="docutils literal notranslate"><span class="pre">marker-end</span></code>.</p>
 <p>The marker orients itself along the line it decorates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>color</strong> (<a class="reference internal" href="color.html#svgwriter.color.Color" title="svgwriter.color.Color"><em>Color</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Fill of the arrowhead. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;black&quot;</span></code>.</p></li>
+<li><p><strong>color</strong> (<a class="reference internal" href="color.html#svgwriter.color.Color" title="svgwriter.color.Color"><em>Color</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Fill of the arrowhead. Defaults to None, which gives the head the theme role <code class="docutils literal notranslate"><span class="pre">&quot;arrow.head&quot;</span></code>
+(black when written without a document theme).</p></li>
 <li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Width and height of the marker. Defaults to 10.0.</p></li>
 <li><p><strong>**kwargs</strong> – Forwarded to <code class="xref py py-class docutils literal notranslate"><span class="pre">Marker</span></code>.</p></li>
 </ul>
@@ -524,6 +533,60 @@ what the element classes do not provide.</p>
 <span class="go">12</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cross</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">bbox</span><span class="o">.</span><span class="n">width</span>
 <span class="go">30.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.builder.dashed_line">
+<span class="sig-name descname"><span class="pre">dashed_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">y1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">y2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.shapes.Line" title="svgwriter.elements.shapes._basic.Line"><span class="pre">Line</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/builder/_functions.html#dashed_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.builder.dashed_line" title="Link to this definition">¶</a></dt>
+<dd><p>A dashed line with the theme role <code class="docutils literal notranslate"><span class="pre">&quot;line&quot;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – End points.</p></li>
+<li><p><strong>y1</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – End points.</p></li>
+<li><p><strong>x2</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – End points.</p></li>
+<li><p><strong>y2</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – End points.</p></li>
+<li><p><strong>**kwargs</strong> – Forwarded to <code class="xref py py-class docutils literal notranslate"><span class="pre">Line</span></code>; presentation attributes keep priority over the role.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Line</em> – The line, dashed <code class="docutils literal notranslate"><span class="pre">4</span> <span class="pre">2</span></code>; black when written without a document theme.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">dashed_line</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">line</span> <span class="o">=</span> <span class="n">dashed_line</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">line</span><span class="o">.</span><span class="n">style</span><span class="p">[</span><span class="s2">"stroke"</span><span class="p">],</span> <span class="n">line</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"stroke-dasharray"</span><span class="p">)</span>
+<span class="go">('red', (4, 2))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.builder.dot">
+<span class="sig-name descname"><span class="pre">dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.shapes.Circle" title="svgwriter.elements.shapes._basic.Circle"><span class="pre">Circle</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/builder/_functions.html#dot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.builder.dot" title="Link to this definition">¶</a></dt>
+<dd><p>A small filled circle with the theme role <code class="docutils literal notranslate"><span class="pre">&quot;dot&quot;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Center.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Center.</p></li>
+<li><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Radius. Defaults to 2.</p></li>
+<li><p><strong>**kwargs</strong> – Forwarded to <code class="xref py py-class docutils literal notranslate"><span class="pre">Circle</span></code>; presentation attributes keep priority over the role.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Circle</em> – The circle.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="s2">"dark"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">+=</span> <span class="n">svg</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">".role-dot { fill:#e5e7eb"</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
+<span class="go">True</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -689,14 +752,14 @@ top-left corner and stop at the last one that fits.</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.builder.dashed_line</span></code></dt><dd><p>A single dashed line.</p>
+<dt><a class="reference internal" href="#svgwriter.builder.dashed_line" title="svgwriter.builder.dashed_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.builder.dashed_line</span></code></a></dt><dd><p>A single dashed line.</p>
 </dd>
 </dl>
 </div>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">grid</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">grid</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
-<span class="go">'&lt;path d="M0 0 L20 0 M0 10 L20 10 M0 0 L0 10 M10 0 L10 10 M20 0 L20 10" fill="none"/&gt;'</span>
+<span class="go">'&lt;path d="M0 0 L20 0 M0 10 L20 10 M0 0 L0 10 M10 0 L10 10 M20 0 L20 10" fill="none" class="role-grid"/&gt;'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">int</span><span class="p">(</span><span class="n">grid</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">bbox</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
 <span class="go">20</span>
 </pre></div>
@@ -732,6 +795,32 @@ top-left corner and stop at the last one that fits.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">box</span> <span class="o">=</span> <span class="n">heart</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span><span class="o">.</span><span class="n">bbox</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="go">(40.0, 38.0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.builder.outline">
+<span class="sig-name descname"><span class="pre">outline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.shapes.Rect" title="svgwriter.elements.shapes._basic.Rect"><span class="pre">Rect</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/builder/_functions.html#outline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.builder.outline" title="Link to this definition">¶</a></dt>
+<dd><p>An unfilled rectangle with the theme role <code class="docutils literal notranslate"><span class="pre">&quot;outline&quot;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Top-left corner.</p></li>
+<li><p><strong>y</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Top-left corner.</p></li>
+<li><p><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Size.</p></li>
+<li><p><strong>height</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Size.</p></li>
+<li><p><strong>**kwargs</strong> – Forwarded to <code class="xref py py-class docutils literal notranslate"><span class="pre">Rect</span></code>; presentation attributes keep priority over the role.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Rect</em> – The rectangle; unfilled and black-stroked when written without a document theme.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">outline</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">outline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="go">'&lt;rect x="0" y="0" width="5" height="5" fill="none" stroke="black" class="role-outline"/&gt;'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -779,14 +868,20 @@ top-left corner and stop at the last one that fits.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="svgwriter.builder.shape_factory">
-<span class="sig-name descname"><span class="pre">shape_factory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">P</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">E</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">P</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">E</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/builder/_shapes.html#shape_factory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.builder.shape_factory" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">shape_factory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'shape'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">P</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">E</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">P</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">E</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/builder/_shapes.html#shape_factory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.builder.shape_factory" title="Link to this definition">¶</a></dt>
 <dd><p>Register a function returning an element under <em>name</em>.</p>
-<p>The wrapper checks the return type, so plugins fail loudly. Registered
+<p>The wrapper checks the return type, so plugins fail loudly, and marks the
+element with a theme <em>role</em>; presentation keywords the caller passes move
+into the inline style so they keep priority over the role. Registered
 shapes are listed by <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">svgwriter</span> <span class="pre">shapes</span></code> and drawn by
 <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">svgwriter</span> <span class="pre">draw</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name to register the shape under.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name to register the shape under.</p></li>
+<li><p><strong>role</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – Theme role of the shapes built (see <code class="xref py py-class docutils literal notranslate"><span class="pre">Theme</span></code>). Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;shape&quot;</span></code>
+(filled with the palette’s primary color); None leaves them unthemed.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>callable</em> – A decorator that registers the function and returns the checking wrapper.</p>
@@ -812,8 +907,8 @@ shapes are listed by <code class="docutils literal notranslate"><span class="pre
 <span class="gp">&gt;&gt;&gt; </span><span class="nd">@shape_factory</span><span class="p">(</span><span class="s2">"disc"</span><span class="p">)</span>
 <span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">disc</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">Circle</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">disc</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span>
-<span class="go">'circle'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">disc</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"red"</span><span class="p">))</span>
+<span class="go">'&lt;circle cx="0" cy="0" r="2" style="stroke:red" class="role-shape"/&gt;'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">SHAPES</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">"disc"</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -951,12 +1046,12 @@ the crest; sawtooth starts at the trough and ramps up. Defaults to <code class="
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="video.html">
+          <a class="next-page" href="theme.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Animation export</div>
+                <div class="title">Themes</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -1007,12 +1102,15 @@ the crest; sawtooth starts at the trough and ramps up. Defaults to <code class="
 <li><a class="reference internal" href="#svgwriter.builder.arrow_marker"><code class="docutils literal notranslate"><span class="pre">arrow_marker()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.builder.callout"><code class="docutils literal notranslate"><span class="pre">callout()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.builder.cross"><code class="docutils literal notranslate"><span class="pre">cross()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.builder.dashed_line"><code class="docutils literal notranslate"><span class="pre">dashed_line()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.builder.dot"><code class="docutils literal notranslate"><span class="pre">dot()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.builder.drawing"><code class="docutils literal notranslate"><span class="pre">drawing()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.builder.drop_shadow"><code class="docutils literal notranslate"><span class="pre">drop_shadow()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.builder.gear"><code class="docutils literal notranslate"><span class="pre">gear()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.builder.glow"><code class="docutils literal notranslate"><span class="pre">glow()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.builder.grid"><code class="docutils literal notranslate"><span class="pre">grid()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.builder.heart"><code class="docutils literal notranslate"><span class="pre">heart()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.builder.outline"><code class="docutils literal notranslate"><span class="pre">outline()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.builder.regular_polygon"><code class="docutils literal notranslate"><span class="pre">regular_polygon()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.builder.shape_factory"><code class="docutils literal notranslate"><span class="pre">shape_factory()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.builder.spiral"><code class="docutils literal notranslate"><span class="pre">spiral()</span></code></a></li>

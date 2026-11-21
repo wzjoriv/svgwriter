@@ -225,6 +225,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/logos.html">Logos and icons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/themes.html">Themes</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -243,6 +244,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/video.html">Animation export</a></li>
 </ul>
 </li>
@@ -304,6 +306,7 @@
     <span class="n">QUARTER_TURN</span><span class="p">,</span>
     <span class="n">TOOTH_DEPTH_RATIO</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._roles</span><span class="w"> </span><span class="kn">import</span> <span class="n">with_role</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._rounded</span><span class="w"> </span><span class="kn">import</span> <span class="n">rounded_outline</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"SHAPES"</span><span class="p">,</span> <span class="s2">"arrow"</span><span class="p">,</span> <span class="s2">"gear"</span><span class="p">,</span> <span class="s2">"regular_polygon"</span><span class="p">,</span> <span class="s2">"shape_factory"</span><span class="p">,</span> <span class="s2">"star"</span><span class="p">]</span>
@@ -315,10 +318,12 @@
 
 <div class="viewcode-block" id="shape_factory">
 <a class="viewcode-back" href="../../../reference/builder.html#svgwriter.builder.shape_factory">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">shape_factory</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">shape_factory</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">"shape"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">"""Register a function returning an element under *name*.</span>
 
-<span class="sd">    The wrapper checks the return type, so plugins fail loudly. Registered</span>
+<span class="sd">    The wrapper checks the return type, so plugins fail loudly, and marks the</span>
+<span class="sd">    element with a theme *role*; presentation keywords the caller passes move</span>
+<span class="sd">    into the inline style so they keep priority over the role. Registered</span>
 <span class="sd">    shapes are listed by ``python -m svgwriter shapes`` and drawn by</span>
 <span class="sd">    ``python -m svgwriter draw``.</span>
 
@@ -326,6 +331,9 @@
 <span class="sd">    ----------</span>
 <span class="sd">    name : str</span>
 <span class="sd">        The name to register the shape under.</span>
+<span class="sd">    role : str or None, optional</span>
+<span class="sd">        Theme role of the shapes built (see :class:`~svgwriter.Theme`). Defaults to ``"shape"``</span>
+<span class="sd">        (filled with the palette's primary color); None leaves them unthemed.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -351,8 +359,8 @@
 <span class="sd">    &gt;&gt;&gt; @shape_factory("disc")</span>
 <span class="sd">    ... def disc(cx, cy, r, **kwargs):</span>
 <span class="sd">    ...     return Circle(cx, cy, r, **kwargs)</span>
-<span class="sd">    &gt;&gt;&gt; disc(0, 0, 2).tag</span>
-<span class="sd">    'circle'</span>
+<span class="sd">    &gt;&gt;&gt; str(disc(0, 0, 2, stroke="red"))</span>
+<span class="sd">    '&lt;circle cx="0" cy="0" r="2" style="stroke:red" class="role-shape"/&gt;'</span>
 <span class="sd">    &gt;&gt;&gt; _ = SHAPES.remove("disc")</span>
 <span class="sd">    """</span>
 
@@ -362,7 +370,7 @@
             <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"shape </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> returned </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">result</span>
+            <span class="k">return</span> <span class="n">with_role</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">SHAPES</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">wrapper</span>
@@ -477,7 +485,7 @@
 
 <div class="viewcode-block" id="arrow">
 <a class="viewcode-back" href="../../../reference/builder.html#svgwriter.builder.arrow">[docs]</a>
-<span class="nd">@shape_factory</span><span class="p">(</span><span class="s2">"arrow"</span><span class="p">)</span>
+<span class="nd">@shape_factory</span><span class="p">(</span><span class="s2">"arrow"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"arrow.line"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">arrow</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">head</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_HEAD_SIZE</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Build a line with an open arrowhead at ``(x2, y2)``.</span>
 
@@ -506,7 +514,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; from svgwriter.builder import arrow</span>
 <span class="sd">    &gt;&gt;&gt; arrow(0, 0, 10, 0).to_string(xml_declaration=False, pretty=False)</span>
-<span class="sd">    '&lt;path d="M0 0 L10 0 M1.3397 5 L10 0 M1.3397 -5 L10 0" fill="none"/&gt;'</span>
+<span class="sd">    '&lt;path d="M0 0 L10 0 M1.3397 5 L10 0 M1.3397 -5 L10 0" fill="none" class="role-arrow-line"/&gt;'</span>
 <span class="sd">    """</span>
     <span class="n">angle</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span>
     <span class="n">spread</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">ARROW_HEAD_ANGLE</span><span class="p">)</span>

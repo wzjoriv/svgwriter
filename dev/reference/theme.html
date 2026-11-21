@@ -1,0 +1,903 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Animation export" href="video.html"><link rel="prev" title="Composite shapes and effects" href="builder.html">
+        <link rel="prefetch" href="../_static/logo.svg" as="image">
+
+    <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
+        <title>Themes - svgwriter 1.3.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f0f0f0;
+  --color-code-foreground: black;
+  --color-brand-primary: #0f766e;
+  --color-brand-content: #0f766e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #5eead4;
+  --color-brand-content: #99f6e4;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #5eead4;
+  --color-brand-content: #99f6e4;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     Development docs for the next release. <a href="https://wzjoriv.github.io/svgwriter/stable/">Stable docs</a>. 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">svgwriter 1.3.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">svgwriter 1.3.0</span>
+  
+</a><div class="sidebar-versions">
+  <span class="sidebar-versions-label">1.3.0</span>
+  <a href="https://wzjoriv.github.io/svgwriter/stable/" class="">stable</a>
+  <a href="https://wzjoriv.github.io/svgwriter/dev/" class="current">dev</a>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Start</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../start/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../start/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/geometry.html">Geometry and transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/paths.html">Paths, boolean operations and measurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/text.html">Text</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/colors-and-images.html">Colors and images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/documents.html">Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/rendering.html">Rendering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/export-import.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/animation.html">Animation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/logos.html">Logos and icons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/themes.html">Themes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../explanation/design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanation/conformance.html">Conformance</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API reference</a><input aria-label="Toggle navigation of API reference" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="document.html">Document</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elements.html">Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color.html">Colors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ops.html">Geometry operations and rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="export.html">Export and import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io.html">Reading and writing SVG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attributes.html">Attribute values and styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Themes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="video.html">Animation export</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/wzjoriv/svgwriter/blob/main/docs/reference/theme.md?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/wzjoriv/svgwriter/edit/main/docs/reference/theme.md" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="themes">
+<h1>Themes<a class="headerlink" href="#themes" title="Link to this heading">¶</a></h1>
+<p>Palettes, fonts and role styles; see the <a class="reference internal" href="../guides/themes.html"><span class="std std-doc">Themes guide</span></a>. <code class="docutils literal notranslate"><span class="pre">svg.Theme</span></code> and
+<code class="docutils literal notranslate"><span class="pre">svg.THEMES</span></code> are also available at the top level.</p>
+<p id="module-svgwriter.theme">Themes: palettes, fonts and role styles that documents apply as CSS classes.</p>
+<p>A <a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><code class="xref py py-class docutils literal notranslate"><span class="pre">Theme</span></code></a> is immutable. Elements opt in with <code class="docutils literal notranslate"><span class="pre">element.as_role(&quot;box&quot;)</span></code>; a document writes one
+<code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> rule per role it uses, so the SVG stays portable and can be restyled by swapping the sheet.
+Built-in themes are <code class="docutils literal notranslate"><span class="pre">light</span></code> (the default), <code class="docutils literal notranslate"><span class="pre">dark</span></code>, <code class="docutils literal notranslate"><span class="pre">paper</span></code>, <code class="docutils literal notranslate"><span class="pre">print</span></code> and <code class="docutils literal notranslate"><span class="pre">mono</span></code>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="svgwriter.theme.Fonts">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Fonts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">family</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Helvetica</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Arial</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sans-serif'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monospace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Consolas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Menlo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monospace'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/theme/fonts.html#Fonts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.Fonts" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Font families, named sizes (user units) and named weights.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>family</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – CSS <code class="docutils literal notranslate"><span class="pre">font-family</span></code> of ordinary text. Defaults to a sans-serif stack.</p></li>
+<li><p><strong>monospace</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – CSS <code class="docutils literal notranslate"><span class="pre">font-family</span></code> of code. Defaults to a monospace stack.</p></li>
+<li><p><strong>sizes</strong> (<em>mapping</em><em> of </em><em>str to float</em><em>, </em><em>optional</em>) – Named font sizes such as <code class="docutils literal notranslate"><span class="pre">&quot;text&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;title&quot;</span></code>. Defaults to text 14, title 24,
+subtitle 18 and caption 11.</p></li>
+<li><p><strong>weights</strong> (<em>mapping</em><em> of </em><em>str to int</em><em>, </em><em>optional</em>) – Named weights such as <code class="docutils literal notranslate"><span class="pre">&quot;regular&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;bold&quot;</span></code>. Defaults to 400 and 700.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Theme</span></code></a></dt><dd><p>Uses these values in its text roles.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fonts</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fonts</span> <span class="o">=</span> <span class="n">Fonts</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">sizes</span><span class="o">=</span><span class="p">{</span><span class="s2">"title"</span><span class="p">:</span> <span class="mi">30</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fonts</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">"title"</span><span class="p">],</span> <span class="n">fonts</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">"text"</span><span class="p">]</span>
+<span class="go">(30, 14.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fonts</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="s2">"weights.bold"</span><span class="p">)</span>
+<span class="go">700</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.theme.Fonts.family">
+<span class="sig-name descname"><span class="pre">family</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Helvetica,</span> <span class="pre">Arial,</span> <span class="pre">sans-serif'</span></span><a class="headerlink" href="#svgwriter.theme.Fonts.family" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.theme.Fonts.monospace">
+<span class="sig-name descname"><span class="pre">monospace</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Consolas,</span> <span class="pre">Menlo,</span> <span class="pre">monospace'</span></span><a class="headerlink" href="#svgwriter.theme.Fonts.monospace" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.theme.Fonts.sizes">
+<span class="sig-name descname"><span class="pre">sizes</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#svgwriter.theme.Fonts.sizes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.theme.Fonts.weights">
+<span class="sig-name descname"><span class="pre">weights</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#svgwriter.theme.Fonts.weights" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.theme.Fonts.replace">
+<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">family</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monospace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.theme.Fonts" title="svgwriter.theme.fonts.Fonts"><span class="pre">Fonts</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/theme/fonts.html#Fonts.replace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.Fonts.replace" title="Link to this definition">¶</a></dt>
+<dd><p>A copy with some values replaced; <code class="docutils literal notranslate"><span class="pre">sizes</span></code> and <code class="docutils literal notranslate"><span class="pre">weights</span></code> merge by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>family</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – New families. Defaults to None, which keeps the current ones.</p></li>
+<li><p><strong>monospace</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – New families. Defaults to None, which keeps the current ones.</p></li>
+<li><p><strong>sizes</strong> (<em>mapping</em><em>, </em><em>optional</em>) – Entries to replace or add. Defaults to None.</p></li>
+<li><p><strong>weights</strong> (<em>mapping</em><em>, </em><em>optional</em>) – Entries to replace or add. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Fonts</em> – The merged fonts.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fonts</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Fonts</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="s2">"Georgia, serif"</span><span class="p">)</span><span class="o">.</span><span class="n">family</span>
+<span class="go">'Georgia, serif'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.theme.Fonts.lookup">
+<span class="sig-name descname"><span class="pre">lookup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/theme/fonts.html#Fonts.lookup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.Fonts.lookup" title="Link to this definition">¶</a></dt>
+<dd><p>The value at a dotted path: <code class="docutils literal notranslate"><span class="pre">family</span></code>, <code class="docutils literal notranslate"><span class="pre">monospace</span></code>, <code class="docutils literal notranslate"><span class="pre">sizes.&lt;name&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">weights.&lt;name&gt;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The path below <code class="docutils literal notranslate"><span class="pre">fonts</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>str or float or int</em> – The value.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.theme.ThemeError" title="svgwriter.theme.ThemeError"><strong>ThemeError</strong></a> – If the path names nothing.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fonts</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Fonts</span><span class="p">()</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="s2">"sizes.caption"</span><span class="p">)</span>
+<span class="go">11.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.theme.Fonts.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/theme/fonts.html#Fonts.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.Fonts.to_dict" title="Link to this definition">¶</a></dt>
+<dd><p>The fonts as plain data, as written to theme files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>dict</em> – <code class="docutils literal notranslate"><span class="pre">family</span></code>, <code class="docutils literal notranslate"><span class="pre">monospace</span></code>, <code class="docutils literal notranslate"><span class="pre">sizes</span></code> and <code class="docutils literal notranslate"><span class="pre">weights</span></code>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fonts</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">Fonts</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+<span class="go">['family', 'monospace', 'sizes', 'weights']</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="svgwriter.theme.Palette">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Palette</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sources</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="color.html#svgwriter.color.Color" title="svgwriter.color.color.Color"><span class="pre">Color</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.theme.Palette" title="svgwriter.theme.palette.Palette"><span class="pre">Palette</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="color.html#svgwriter.color.Color" title="svgwriter.color.color.Color"><span class="pre">Color</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/theme/palette.html#Palette"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.Palette" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="color.html#svgwriter.color.Color" title="svgwriter.color.color.Color"><code class="xref py py-class docutils literal notranslate"><span class="pre">Color</span></code></a>]</p>
+<p>Immutable color roles, resolved once from literals, references and functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sources</strong> (<em>mapping</em><em> of </em><em>str to color</em><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>callable</em>) – Each role’s source: a color (<code class="docutils literal notranslate"><span class="pre">&quot;#0f766e&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;navy&quot;</span></code>, a <code class="xref py py-class docutils literal notranslate"><span class="pre">Color</span></code>), a
+reference to another role written <code class="docutils literal notranslate"><span class="pre">&quot;{palette.name}&quot;</span></code>, or a function that receives this
+palette and returns a color (<code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">p:</span> <span class="pre">p.foreground.mix(p.background,</span> <span class="pre">0.3)</span></code>).</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#svgwriter.theme.ThemeError" title="svgwriter.theme.ThemeError"><strong>ThemeError</strong></a> – If a reference names a missing role, references form a cycle, or a value is not a color.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Theme</span></code></a></dt><dd><p>Combines a palette with fonts and role styles.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>Sources are kept, so <a class="reference internal" href="#svgwriter.theme.Palette.replace" title="svgwriter.theme.Palette.replace"><code class="xref py py-meth docutils literal notranslate"><span class="pre">replace()</span></code></a> derives again: replacing <code class="docutils literal notranslate"><span class="pre">foreground</span></code> also changes
+every role computed from it. Roles read as attributes (<code class="docutils literal notranslate"><span class="pre">palette.primary</span></code>) or keys.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Palette</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Palette</span><span class="p">({</span><span class="s2">"ink"</span><span class="p">:</span> <span class="s2">"#000000"</span><span class="p">,</span> <span class="s2">"paper"</span><span class="p">:</span> <span class="s2">"white"</span><span class="p">,</span> <span class="s2">"line"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">ink</span><span class="o">.</span><span class="n">mix</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">paper</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#808080'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">replace</span><span class="p">({</span><span class="s2">"ink"</span><span class="p">:</span> <span class="s2">"#ff0000"</span><span class="p">})</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#ff8080'</span>
+</pre></div>
+</div>
+<dl class="py property">
+<dt class="sig sig-object py" id="svgwriter.theme.Palette.sources">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">sources</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="color.html#svgwriter.color.Color" title="svgwriter.color.color.Color"><span class="pre">Color</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.theme.Palette" title="svgwriter.theme.palette.Palette"><span class="pre">Palette</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="color.html#svgwriter.color.Color" title="svgwriter.color.color.Color"><span class="pre">Color</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#svgwriter.theme.Palette.sources" title="Link to this definition">¶</a></dt>
+<dd><p>literals, references and functions.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Palette</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Palette</span><span class="p">({</span><span class="s2">"a"</span><span class="p">:</span> <span class="s2">"red"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{palette.a}</span><span class="s2">"</span><span class="p">})</span><span class="o">.</span><span class="n">sources</span><span class="p">[</span><span class="s2">"b"</span><span class="p">]</span>
+<span class="go">'{palette.a}'</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Each role’s source as given</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.theme.Palette.replace">
+<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sources</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="color.html#svgwriter.color.Color" title="svgwriter.color.color.Color"><span class="pre">Color</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.theme.Palette" title="svgwriter.theme.palette.Palette"><span class="pre">Palette</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="color.html#svgwriter.color.Color" title="svgwriter.color.color.Color"><span class="pre">Color</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.theme.Palette" title="svgwriter.theme.palette.Palette"><span class="pre">Palette</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/theme/palette.html#Palette.replace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.Palette.replace" title="Link to this definition">¶</a></dt>
+<dd><p>A new palette with some sources replaced or added; derived roles follow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sources</strong> (<em>mapping</em><em> of </em><em>str to color</em><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>callable</em>) – The roles to replace or add.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Palette</em> – The merged palette.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Palette</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Palette</span><span class="p">({</span><span class="s2">"a"</span><span class="p">:</span> <span class="s2">"red"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{palette.a}</span><span class="s2">"</span><span class="p">})</span><span class="o">.</span><span class="n">replace</span><span class="p">({</span><span class="s2">"a"</span><span class="p">:</span> <span class="s2">"blue"</span><span class="p">})</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#0000ff'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="svgwriter.theme.Theme">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">palette</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.theme.Palette" title="svgwriter.theme.Palette"><span class="pre">Palette</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PaletteSource</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fonts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.theme.Fonts" title="svgwriter.theme.Fonts"><span class="pre">Fonts</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">RoleSource</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/theme/theme.html#Theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.Theme" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ThemeFiles</span></code></p>
+<p>Colors, fonts and the styles of named roles, applied to documents as CSS classes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – A short name, used by <a class="reference internal" href="#svgwriter.theme.Theme.get" title="svgwriter.theme.Theme.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get()</span></code></a> once registered and written to theme files.</p></li>
+<li><p><strong>palette</strong> (<a class="reference internal" href="#svgwriter.theme.Palette" title="svgwriter.theme.Palette"><em>Palette</em></a><em> or </em><em>mapping</em>) – Color roles (see <a class="reference internal" href="#svgwriter.theme.Palette" title="svgwriter.theme.Palette"><code class="xref py py-class docutils literal notranslate"><span class="pre">Palette</span></code></a>). <code class="docutils literal notranslate"><span class="pre">border</span></code> and <code class="docutils literal notranslate"><span class="pre">muted</span></code> are derived from
+<code class="docutils literal notranslate"><span class="pre">foreground</span></code> and <code class="docutils literal notranslate"><span class="pre">background</span></code> unless given.</p></li>
+<li><p><strong>fonts</strong> (<a class="reference internal" href="#svgwriter.theme.Fonts" title="svgwriter.theme.Fonts"><em>Fonts</em></a><em>, </em><em>optional</em>) – Families, sizes and weights. Defaults to <code class="docutils literal notranslate"><span class="pre">Fonts()</span></code>.</p></li>
+<li><p><strong>roles</strong> (<em>mapping</em><em> of </em><em>str to style</em><em> or </em><em>callable</em><em>, </em><em>optional</em>) – Extra or replaced role styles, merged over the standard roles. Each is a mapping of CSS
+properties (values may be literals, <code class="docutils literal notranslate"><span class="pre">&quot;{palette.name}&quot;</span></code>/<code class="docutils literal notranslate"><span class="pre">&quot;{fonts.sizes.name}&quot;</span></code>
+references or functions of the theme) or a function of the theme returning one.
+Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#svgwriter.theme.ThemeError" title="svgwriter.theme.ThemeError"><strong>ThemeError</strong></a> – If a role name is invalid or anything cannot be resolved.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="document.html#svgwriter.Document" title="svgwriter.Document"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.Document</span></code></a></dt><dd><p>Takes <code class="docutils literal notranslate"><span class="pre">theme=</span></code>; elements opt in with <code class="docutils literal notranslate"><span class="pre">as_role</span></code>.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>A theme never changes. <a class="reference internal" href="#svgwriter.theme.Theme.replace" title="svgwriter.theme.Theme.replace"><code class="xref py py-meth docutils literal notranslate"><span class="pre">replace()</span></code></a> builds variants, and <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">theme:</span></code> makes it the default
+for documents created in the block (a context variable, so threads and tasks stay separate).
+Outside any block the default is the registered <code class="docutils literal notranslate"><span class="pre">&quot;light&quot;</span></code> theme.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dark</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dark</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">"box"</span><span class="p">)[</span><span class="s2">"fill"</span><span class="p">]</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#1f2937'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">brand</span> <span class="o">=</span> <span class="n">dark</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"brand"</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="s2">"primary"</span><span class="p">:</span> <span class="s2">"#ff6600"</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">brand</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">"shape"</span><span class="p">)[</span><span class="s2">"fill"</span><span class="p">]</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#ff6600'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">brand</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">name</span>
+<span class="go">'brand'</span>
+</pre></div>
+</div>
+<dl class="py property">
+<dt class="sig sig-object py" id="svgwriter.theme.Theme.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><a class="headerlink" href="#svgwriter.theme.Theme.name" title="Link to this definition">¶</a></dt>
+<dd><p>The theme’s name.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="svgwriter.theme.Theme.palette">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">palette</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.theme.Palette" title="svgwriter.theme.palette.Palette"><span class="pre">Palette</span></a></span><a class="headerlink" href="#svgwriter.theme.Theme.palette" title="Link to this definition">¶</a></dt>
+<dd><p>The resolved color roles.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="svgwriter.theme.Theme.fonts">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">fonts</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.theme.Fonts" title="svgwriter.theme.fonts.Fonts"><span class="pre">Fonts</span></a></span><a class="headerlink" href="#svgwriter.theme.Theme.fonts" title="Link to this definition">¶</a></dt>
+<dd><p>Font families, sizes and weights.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="svgwriter.theme.Theme.roles">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">roles</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="attributes.html#svgwriter.attributes.Style" title="svgwriter.attributes.style.Style"><span class="pre">Style</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.theme.Theme"><span class="pre">Theme</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="attributes.html#svgwriter.attributes.Style" title="svgwriter.attributes.style.Style"><span class="pre">Style</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#svgwriter.theme.Theme.roles" title="Link to this definition">¶</a></dt>
+<dd><p>Every role’s source, standard roles included, as given.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.theme.Theme.style">
+<span class="sig-name descname"><span class="pre">style</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="attributes.html#svgwriter.attributes.Style" title="svgwriter.attributes.style.Style"><span class="pre">Style</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/theme/theme.html#Theme.style"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.Theme.style" title="Link to this definition">¶</a></dt>
+<dd><p>The resolved style of <em>role</em> (a copy).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>role</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The role name, such as <code class="docutils literal notranslate"><span class="pre">&quot;box&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;arrow.head&quot;</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Style</em> – CSS declarations with colors resolved.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.theme.ThemeError" title="svgwriter.theme.ThemeError"><strong>ThemeError</strong></a> – If the theme has no such role.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"light"</span><span class="p">)</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">"line"</span><span class="p">))</span>
+<span class="go">'fill:none;stroke:#1f2933;stroke-width:2px'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.theme.Theme.class_name">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">class_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/theme/theme.html#Theme.class_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.Theme.class_name" title="Link to this definition">¶</a></dt>
+<dd><p>The CSS class that marks elements of <em>role</em>: <code class="docutils literal notranslate"><span class="pre">role-</span></code> plus the name with dots as dashes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>role</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The role name.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>str</em> – The class name.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">class_name</span><span class="p">(</span><span class="s2">"arrow.head"</span><span class="p">)</span>
+<span class="go">'role-arrow-head'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.theme.Theme.css">
+<span class="sig-name descname"><span class="pre">css</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="attributes.html#svgwriter.attributes.StyleSheet" title="svgwriter.attributes.style.StyleSheet"><span class="pre">StyleSheet</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/theme/theme.html#Theme.css"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.Theme.css" title="Link to this definition">¶</a></dt>
+<dd><p>A style sheet with one <code class="docutils literal notranslate"><span class="pre">.role-&lt;name&gt;</span></code> rule per role.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>roles</strong> (<em>iterable</em><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – The roles to include, in theme order. Defaults to None, which includes every role.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>StyleSheet</em> – The rules.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.theme.ThemeError" title="svgwriter.theme.ThemeError"><strong>ThemeError</strong></a> – If a requested role is not in the theme.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mono"</span><span class="p">)</span><span class="o">.</span><span class="n">css</span><span class="p">([</span><span class="s2">"dot"</span><span class="p">])</span><span class="o">.</span><span class="n">css</span><span class="p">()</span>
+<span class="go">'.role-dot { fill:#000000;stroke:none }'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.theme.Theme.replace">
+<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">palette</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PaletteSource</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fonts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.theme.Fonts" title="svgwriter.theme.Fonts"><span class="pre">Fonts</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">RoleSource</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><span class="pre">Theme</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/theme/theme.html#Theme.replace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.Theme.replace" title="Link to this definition">¶</a></dt>
+<dd><p>A variant: palette entries, font values and role properties merge into this theme’s.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – The variant’s name. Defaults to None, which keeps this name.</p></li>
+<li><p><strong>palette</strong> (<em>mapping</em><em>, </em><em>optional</em>) – Palette sources to replace or add; derived roles follow. Defaults to None.</p></li>
+<li><p><strong>fonts</strong> (<a class="reference internal" href="#svgwriter.theme.Fonts" title="svgwriter.theme.Fonts"><em>Fonts</em></a><em> or </em><em>mapping</em><em>, </em><em>optional</em>) – A whole <a class="reference internal" href="#svgwriter.theme.Fonts" title="svgwriter.theme.Fonts"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fonts</span></code></a>, or keywords of <a class="reference internal" href="#svgwriter.theme.Fonts.replace" title="svgwriter.theme.Fonts.replace"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Fonts.replace()</span></code></a>. Defaults to None.</p></li>
+<li><p><strong>roles</strong> (<em>mapping</em><em>, </em><em>optional</em>) – Role sources; a mapping merges property by property into the existing role, a
+function replaces it. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Theme</em> – The new theme.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">light</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"light"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bold</span> <span class="o">=</span> <span class="n">light</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">roles</span><span class="o">=</span><span class="p">{</span><span class="s2">"line"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"stroke-width"</span><span class="p">:</span> <span class="mi">4</span><span class="p">}},</span> <span class="n">fonts</span><span class="o">=</span><span class="p">{</span><span class="s2">"sizes"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="mi">16</span><span class="p">}})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">bold</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">"line"</span><span class="p">)),</span> <span class="n">bold</span><span class="o">.</span><span class="n">fonts</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">"text"</span><span class="p">]</span>
+<span class="go">('fill:none;stroke:#1f2933;stroke-width:4px', 16)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.theme.Theme.get">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.theme.Theme"><span class="pre">Theme</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/theme/theme.html#Theme.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.Theme.get" title="Link to this definition">¶</a></dt>
+<dd><p>The registered theme called <em>name</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – <code class="docutils literal notranslate"><span class="pre">&quot;light&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;dark&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;paper&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;print&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;mono&quot;</span></code> or one added to <code class="xref py py-data docutils literal notranslate"><span class="pre">THEMES</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Theme</em> – The theme.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#KeyError" title="(in Python v3.15)"><strong>KeyError</strong></a> – If no theme has that name.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"paper"</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+<span class="go">'paper'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.theme.Theme.current">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">current</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.theme.Theme"><span class="pre">Theme</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/theme/theme.html#Theme.current"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.Theme.current" title="Link to this definition">¶</a></dt>
+<dd><p>The theme in effect: the innermost <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">theme:</span></code> block, else <code class="docutils literal notranslate"><span class="pre">&quot;light&quot;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Theme</em> – The theme new documents use.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
+<span class="go">'light'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
+<span class="go">'dark'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.theme.Theme.of">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.theme.Theme"><span class="pre">Theme</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.theme.Theme"><span class="pre">Theme</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/theme/theme.html#Theme.of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.Theme.of" title="Link to this definition">¶</a></dt>
+<dd><p>A theme from a theme, a registered name, or None for <a class="reference internal" href="#svgwriter.theme.Theme.current" title="svgwriter.theme.Theme.current"><code class="xref py py-meth docutils literal notranslate"><span class="pre">current()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>theme</strong> (<a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><em>Theme</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>None</em>) – What to resolve.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Theme</em> – The theme.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">)</span> <span class="ow">is</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+<span class="go">(True, 'light')</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="svgwriter.theme.ThemeError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ThemeError</span></span><a class="reference internal" href="../_modules/svgwriter/theme/palette.html#ThemeError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.ThemeError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a></p>
+<p>A theme that cannot be resolved: an unknown role or reference, a cycle, or a malformed value.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">svg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">Palette</span><span class="p">({</span><span class="s2">"a"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{palette.b}</span><span class="s2">"</span><span class="p">})</span>
+<span class="gp">... </span><span class="k">except</span> <span class="n">svg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">ThemeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+<span class="go">palette.a: unknown reference {palette.b}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p id="module-svgwriter.theme.sheet">The theme <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> sheet of a tree: the roles it uses and the sheet written while it is output.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.theme.sheet.applied">
+<span class="sig-name descname"><span class="pre">applied</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><span class="pre">Theme</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><span class="pre">Element</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/theme/sheet.html#applied"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.sheet.applied" title="Link to this definition">¶</a></dt>
+<dd><p>Hold the theme sheet in <em>root</em> for the duration of the block.</p>
+<p>The sheet is a <code class="docutils literal notranslate"><span class="pre">&lt;style</span> <span class="pre">id=&quot;svgwriter-theme&quot;&gt;</span></code> with rules for the roles in use. An existing one
+(from a parsed file) has its text replaced; otherwise one is inserted at the top. The tree is
+restored on exit. Nothing is written when no role is used and no sheet exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theme</strong> (<a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><em>Theme</em></a>) – The theme to apply.</p></li>
+<li><p><strong>root</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – The root <code class="docutils literal notranslate"><span class="pre">&lt;svg&gt;</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>None</em></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.theme.sheet</span><span class="w"> </span><span class="kn">import</span> <span class="n">applied</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Svg</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"dot"</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">applied</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mono"</span><span class="p">),</span> <span class="n">root</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">root</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">css</span>
+<span class="go">'.role-dot { fill:#000000;stroke:none }'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.theme.sheet.used_roles">
+<span class="sig-name descname"><span class="pre">used_roles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><span class="pre">Theme</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><span class="pre">Element</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/theme/sheet.html#used_roles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.theme.sheet.used_roles" title="Link to this definition">¶</a></dt>
+<dd><p>The roles of <em>theme</em> that elements under <em>root</em> carry, in theme order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theme</strong> (<a class="reference internal" href="#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><em>Theme</em></a>) – The theme whose roles are looked for.</p></li>
+<li><p><strong>root</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – The tree to search, including itself.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>list of str</em> – Role names.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.theme.ThemeError" title="svgwriter.theme.ThemeError"><strong>ThemeError</strong></a> – If an element carries a <code class="docutils literal notranslate"><span class="pre">role-</span></code> class that the theme does not define.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.theme.sheet</span><span class="w"> </span><span class="kn">import</span> <span class="n">used_roles</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"dot"</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"box"</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">used_roles</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"light"</span><span class="p">),</span> <span class="n">g</span><span class="p">)</span>
+<span class="go">['box', 'dot']</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="video.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Animation export</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="builder.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Composite shapes and effects</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Josue N Rivera
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Themes</a><ul>
+<li><a class="reference internal" href="#svgwriter.theme.Fonts"><code class="docutils literal notranslate"><span class="pre">Fonts</span></code></a><ul>
+<li><a class="reference internal" href="#svgwriter.theme.Fonts.family"><code class="docutils literal notranslate"><span class="pre">Fonts.family</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Fonts.monospace"><code class="docutils literal notranslate"><span class="pre">Fonts.monospace</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Fonts.sizes"><code class="docutils literal notranslate"><span class="pre">Fonts.sizes</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Fonts.weights"><code class="docutils literal notranslate"><span class="pre">Fonts.weights</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Fonts.replace"><code class="docutils literal notranslate"><span class="pre">Fonts.replace()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Fonts.lookup"><code class="docutils literal notranslate"><span class="pre">Fonts.lookup()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Fonts.to_dict"><code class="docutils literal notranslate"><span class="pre">Fonts.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#svgwriter.theme.Palette"><code class="docutils literal notranslate"><span class="pre">Palette</span></code></a><ul>
+<li><a class="reference internal" href="#svgwriter.theme.Palette.sources"><code class="docutils literal notranslate"><span class="pre">Palette.sources</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Palette.replace"><code class="docutils literal notranslate"><span class="pre">Palette.replace()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#svgwriter.theme.Theme"><code class="docutils literal notranslate"><span class="pre">Theme</span></code></a><ul>
+<li><a class="reference internal" href="#svgwriter.theme.Theme.name"><code class="docutils literal notranslate"><span class="pre">Theme.name</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Theme.palette"><code class="docutils literal notranslate"><span class="pre">Theme.palette</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Theme.fonts"><code class="docutils literal notranslate"><span class="pre">Theme.fonts</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Theme.roles"><code class="docutils literal notranslate"><span class="pre">Theme.roles</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Theme.style"><code class="docutils literal notranslate"><span class="pre">Theme.style()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Theme.class_name"><code class="docutils literal notranslate"><span class="pre">Theme.class_name()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Theme.css"><code class="docutils literal notranslate"><span class="pre">Theme.css()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Theme.replace"><code class="docutils literal notranslate"><span class="pre">Theme.replace()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Theme.get"><code class="docutils literal notranslate"><span class="pre">Theme.get()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Theme.current"><code class="docutils literal notranslate"><span class="pre">Theme.current()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.Theme.of"><code class="docutils literal notranslate"><span class="pre">Theme.of()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#svgwriter.theme.ThemeError"><code class="docutils literal notranslate"><span class="pre">ThemeError</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.sheet.applied"><code class="docutils literal notranslate"><span class="pre">applied()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.theme.sheet.used_roles"><code class="docutils literal notranslate"><span class="pre">used_roles()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=e3eff1ea"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

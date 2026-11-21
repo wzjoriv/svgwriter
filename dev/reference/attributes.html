@@ -226,6 +226,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/logos.html">Logos and icons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/themes.html">Themes</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -244,6 +245,7 @@
 <li class="toctree-l2"><a class="reference internal" href="io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video.html">Animation export</a></li>
 </ul>
 </li>
@@ -1650,7 +1652,8 @@ selector. Comments are removed and <code class="docutils literal notranslate"><s
 <dd><p>Rewrite a tree so CSS and inline styles become presentation attributes.</p>
 <p>The tree is modified in place: matching rule declarations and inline
 <code class="docutils literal notranslate"><span class="pre">style</span></code> values are written as attributes and the <code class="docutils literal notranslate"><span class="pre">style</span></code> attribute is
-removed. Renderers that ignore CSS then see the same result. The CSS-only <code class="docutils literal notranslate"><span class="pre">marker</span></code>
+removed; <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> sheets, now folded in, are removed too, so later lookups do not apply
+their rules a second time over inline values. Renderers that ignore CSS then see the same result. The CSS-only <code class="docutils literal notranslate"><span class="pre">marker</span></code>
 shorthand becomes <code class="docutils literal notranslate"><span class="pre">marker-start</span></code>, <code class="docutils literal notranslate"><span class="pre">marker-mid</span></code> and <code class="docutils literal notranslate"><span class="pre">marker-end</span></code>, and CSS units, which
 are case-insensitive (<code class="docutils literal notranslate"><span class="pre">20PX</span></code>), are written in the lower case attributes require.</p>
 <dl class="field-list simple">

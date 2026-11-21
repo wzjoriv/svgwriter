@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Design" href="../explanation/design.html"><link rel="prev" title="Animation" href="animation.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Themes" href="themes.html"><link rel="prev" title="Animation" href="animation.html">
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
@@ -226,6 +226,7 @@
 <li class="toctree-l1"><a class="reference internal" href="export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="animation.html">Animation</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Logos and icons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -244,6 +245,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/video.html">Animation export</a></li>
 </ul>
 </li>
@@ -293,11 +295,11 @@
 so regenerating and comparing bytes tells whether checked-in assets are stale.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">logo</span><span class="p">(</span><span class="n">theme</span><span class="o">=</span><span class="s2">"light"</span><span class="p">):</span>
-    <span class="n">ground</span><span class="p">,</span> <span class="n">mark</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"#0f766e"</span><span class="p">,</span> <span class="s2">"white"</span><span class="p">)</span> <span class="k">if</span> <span class="n">theme</span> <span class="o">==</span> <span class="s2">"light"</span> <span class="k">else</span> <span class="p">(</span><span class="s2">"#99f6e4"</span><span class="p">,</span> <span class="s2">"#042f2e"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">logo</span><span class="p">(</span><span class="n">theme</span><span class="p">:</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"light"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">:</span>
+    <span class="n">palette</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span><span class="o">.</span><span class="n">palette</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">Svg</span><span class="p">(</span><span class="n">view_box</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)))</span>
-    <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">ground</span><span class="p">)</span>
-    <span class="n">doc</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">"none"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="n">mark</span><span class="p">,</span> <span class="n">stroke_width</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="o">-</span><span class="mi">22</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">24</span><span class="p">)</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">palette</span><span class="o">.</span><span class="n">primary</span><span class="p">)</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">"none"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="n">palette</span><span class="o">.</span><span class="n">on_primary</span><span class="p">,</span> <span class="n">stroke_width</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="o">-</span><span class="mi">22</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">24</span><span class="p">)</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">doc</span>
 
 <span class="n">light</span> <span class="o">=</span> <span class="n">logo</span><span class="p">()</span>
@@ -308,7 +310,8 @@ so regenerating and comparing bytes tells whether checked-in assets are stale.</
 <span class="n">logo</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"logo-dark.svg"</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">examples/12_logo.py</span></code> in the repository is a complete version with light, dark and mono variants and the full
+<p>Variants are themes (<a class="reference internal" href="themes.html"><span class="std std-doc">Themes</span></a>): <code class="docutils literal notranslate"><span class="pre">logo(&quot;dark&quot;)</span></code>, <code class="docutils literal notranslate"><span class="pre">logo(&quot;mono&quot;)</span></code>, or any
+<code class="docutils literal notranslate"><span class="pre">svg.Theme.get(&quot;light&quot;).replace(palette={...})</span></code>. <code class="docutils literal notranslate"><span class="pre">examples/12_logo.py</span></code> in the repository is a complete version with light, dark and mono variants and the full
 asset set.</p>
 </section>
 
@@ -317,12 +320,12 @@ asset set.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../explanation/design.html">
+          <a class="next-page" href="themes.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Design</div>
+                <div class="title">Themes</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>

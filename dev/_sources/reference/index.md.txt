@@ -15,5 +15,6 @@ export
 io
 attributes
 builder
+theme
 video
 ```
