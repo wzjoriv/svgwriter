@@ -4,7 +4,8 @@ Draw ``<image>`` pixels in z-order around skia's SVG renderer, which cannot load
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -13,14 +14,14 @@ import skia
 from .._internal._constants import CONTAINERS, VISIBLE_OVERFLOW
 from .._internal._layers import ancestry, drawable_order, image_matrix, image_viewport
 from .._internal._tree import clip_outline
-from ._constants import CHANNEL_MAX
+from ._constants import CHANNEL_MAX, CONCEALED
 
 if TYPE_CHECKING:
     from ..elements.core import Element
     from ..elements.structure import Image
     from ..transform.matrix import Matrix
 
-__all__ = ["draw_image", "hidden", "layers", "referenced", "skia_matrix"]
+__all__ = ["concealed", "draw_image", "hidden", "layers", "referenced", "skia_matrix"]
 
 
 def layers(root: Element, atomic: Callable[[Element], bool] | None = None,
@@ -134,6 +135,45 @@ def hidden(root: Element, keep: list[Element], atomic: Callable[[Element], bool]
     return [leaf for leaf in drawable_order(root, atomic) if id(leaf) not in kept] + (
         [] if root.tag in CONTAINERS or id(root) in kept else [root]
     )
+
+
+@contextmanager
+def concealed(leaves: list[Element]) -> Iterator[None]:
+    """Hide *leaves* (``display="none"``, filter dropped) while the block runs, then restore them.
+
+    The filter goes too: skia's SVG renderer still draws a filter whose result is opaque
+    without input, such as lighting or a flood, for an element that is not displayed.
+
+    Parameters
+    ----------
+    leaves : list of Element
+        The elements to hide.
+
+    Yields
+    ------
+    None
+        Control while the leaves are hidden.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops._layers import concealed
+    >>> rect = svg.Rect(filter="url(#f)")
+    >>> with concealed([rect]):
+    ...     rect.get("display"), rect.get("filter")
+    ('none', None)
+    >>> rect.get("filter")
+    'url(#f)'
+    """
+    saved = [{name: leaf.attributes.pop(name) for name in CONCEALED if name in leaf.attributes} for leaf in leaves]
+    for leaf in leaves:
+        leaf.attributes[CONCEALED[0]] = "none"
+    try:
+        yield
+    finally:
+        for leaf, values in zip(leaves, saved, strict=True):
+            leaf.attributes.pop(CONCEALED[0], None)
+            leaf.attributes.update(values)
 
 
 def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -> None:

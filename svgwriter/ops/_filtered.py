@@ -11,8 +11,8 @@ import skia
 
 from .._internal._layers import ancestry, viewport_extent
 from ._canvas import paint_svg
-from ._constants import DISPLAY, ENGINE_PRIMITIVES, PICTURE_BOUNDS
-from ._layers import draw_image, hidden, referenced, skia_matrix
+from ._constants import ENGINE_PRIMITIVES, PICTURE_BOUNDS
+from ._layers import concealed, draw_image, hidden, referenced, skia_matrix
 
 if TYPE_CHECKING:
     from ..elements.core import Element
@@ -55,17 +55,14 @@ def _painted(root: Element, wrap: Callable[[str], str], others: list[Element], e
     """*root* serialized with *others* hidden (and *extra* appended at the top level)."""
     from ..io.writer import to_string
 
-    for leaf in others:
-        leaf.attributes[DISPLAY] = "none"
     if extra is not None:
         root.add(extra)
     try:
-        return wrap(to_string(root, xml_declaration=False, pretty=False))
+        with concealed(others):
+            return wrap(to_string(root, xml_declaration=False, pretty=False))
     finally:
         if extra is not None:
             root.remove(extra)
-        for leaf in others:
-            leaf.attributes.pop(DISPLAY, None)
 
 
 def draw_filtered(canvas: skia.Canvas, element: Element, root: Element, wrap: Callable[[str], str],

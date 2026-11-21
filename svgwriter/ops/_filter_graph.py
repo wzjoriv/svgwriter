@@ -8,8 +8,18 @@ from typing import TYPE_CHECKING, Any
 
 import skia
 
-from ._constants import ALPHA_ONLY, CHANNELS, COLOR_MIXING, FRAMED, LINEAR_RGB, SOURCE_ALPHA, SOURCE_GRAPHIC
+from ._constants import (
+    ALPHA_ONLY,
+    CHANNELS,
+    COLOR_MIXING,
+    FRAMED,
+    LIGHTING,
+    LINEAR_RGB,
+    SOURCE_ALPHA,
+    SOURCE_GRAPHIC,
+)
 from ._image_effects import primitive_filter
+from ._lighting import lighting_filter
 
 if TYPE_CHECKING:
     from ..elements.core import Element
@@ -84,7 +94,9 @@ def image_filter(filter_element: Element, frame: Frame) -> Any:
             first, second = _linear(first), _linear(second) if second is not None else None
         source_area = previous_area if source is None else regions.get(str(source), frame.region)
         area = frame.subregion(primitive, frame.region)
-        if primitive.tag in FRAMED:
+        if primitive.tag in LIGHTING:
+            made = lighting_filter(primitive, first, frame, linear)
+        elif primitive.tag in FRAMED:
             made = _framed(primitive, first, second, frame, area, source_area)
         else:
             made = primitive_filter(primitive, first, second)
