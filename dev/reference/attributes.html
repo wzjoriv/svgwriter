@@ -1650,7 +1650,9 @@ selector. Comments are removed and <code class="docutils literal notranslate"><s
 <dd><p>Rewrite a tree so CSS and inline styles become presentation attributes.</p>
 <p>The tree is modified in place: matching rule declarations and inline
 <code class="docutils literal notranslate"><span class="pre">style</span></code> values are written as attributes and the <code class="docutils literal notranslate"><span class="pre">style</span></code> attribute is
-removed. Renderers that ignore CSS then see the same result.</p>
+removed. Renderers that ignore CSS then see the same result. The CSS-only <code class="docutils literal notranslate"><span class="pre">marker</span></code>
+shorthand becomes <code class="docutils literal notranslate"><span class="pre">marker-start</span></code>, <code class="docutils literal notranslate"><span class="pre">marker-mid</span></code> and <code class="docutils literal notranslate"><span class="pre">marker-end</span></code>, and CSS units, which
+are case-insensitive (<code class="docutils literal notranslate"><span class="pre">20PX</span></code>), are written in the lower case attributes require.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>root</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – The root of the tree to rewrite.</p>

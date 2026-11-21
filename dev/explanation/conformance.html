@@ -297,7 +297,7 @@
 <p><strong>Round-trip fidelity: 429 / 430.</strong> Each file is parsed, written back, and both versions are rendered
 by skia; the pictures must match. The one difference is a namespace test where skia ignores XML
 namespaces and svgwriter’s output is the correct one. Four files skia cannot read are excluded.</p>
-<p><strong>Rendering: 289 / 434 (67 %)</strong> against the reference PNGs. A test passes when at most 1 % of its
+<p><strong>Rendering: 333 / 434 (77 %)</strong> against the reference PNGs. A test passes when at most 1 % of its
 pixels differ. The suite’s <code class="docutils literal notranslate"><span class="pre">$Revision$</span></code> label and <code class="docutils literal notranslate"><span class="pre">DRAFT</span></code> watermark are bookkeeping, often newer than
 the reference PNG, so they are not compared; animated tests are drawn once their animations have
 settled, the state the references show.</p>
@@ -311,23 +311,23 @@ settled, the state the references show.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>animate</p></td>
-<td class="text-right"><p>55</p></td>
+<td class="text-right"><p>56</p></td>
 <td class="text-right"><p>74</p></td>
 </tr>
 <tr class="row-odd"><td><p>color</p></td>
-<td class="text-right"><p>3</p></td>
+<td class="text-right"><p>4</p></td>
 <td class="text-right"><p>6</p></td>
 </tr>
 <tr class="row-even"><td><p>conform</p></td>
-<td class="text-right"><p>1</p></td>
+<td class="text-right"><p>2</p></td>
 <td class="text-right"><p>2</p></td>
 </tr>
 <tr class="row-odd"><td><p>coords</p></td>
-<td class="text-right"><p>24</p></td>
+<td class="text-right"><p>28</p></td>
 <td class="text-right"><p>28</p></td>
 </tr>
 <tr class="row-even"><td><p>filters</p></td>
-<td class="text-right"><p>18</p></td>
+<td class="text-right"><p>28</p></td>
 <td class="text-right"><p>42</p></td>
 </tr>
 <tr class="row-odd"><td><p>fonts</p></td>
@@ -335,15 +335,15 @@ settled, the state the references show.</p>
 <td class="text-right"><p>17</p></td>
 </tr>
 <tr class="row-even"><td><p>imp</p></td>
-<td class="text-right"><p>0</p></td>
+<td class="text-right"><p>1</p></td>
 <td class="text-right"><p>1</p></td>
 </tr>
 <tr class="row-odd"><td><p>linking</p></td>
-<td class="text-right"><p>9</p></td>
+<td class="text-right"><p>10</p></td>
 <td class="text-right"><p>12</p></td>
 </tr>
 <tr class="row-even"><td><p>masking</p></td>
-<td class="text-right"><p>13</p></td>
+<td class="text-right"><p>15</p></td>
 <td class="text-right"><p>17</p></td>
 </tr>
 <tr class="row-odd"><td><p>metadata</p></td>
@@ -351,7 +351,7 @@ settled, the state the references show.</p>
 <td class="text-right"><p>1</p></td>
 </tr>
 <tr class="row-even"><td><p>painting</p></td>
-<td class="text-right"><p>25</p></td>
+<td class="text-right"><p>31</p></td>
 <td class="text-right"><p>31</p></td>
 </tr>
 <tr class="row-odd"><td><p>paths</p></td>
@@ -359,7 +359,7 @@ settled, the state the references show.</p>
 <td class="text-right"><p>19</p></td>
 </tr>
 <tr class="row-even"><td><p>pservers</p></td>
-<td class="text-right"><p>22</p></td>
+<td class="text-right"><p>30</p></td>
 <td class="text-right"><p>33</p></td>
 </tr>
 <tr class="row-odd"><td><p>render</p></td>
@@ -371,15 +371,15 @@ settled, the state the references show.</p>
 <td class="text-right"><p>22</p></td>
 </tr>
 <tr class="row-odd"><td><p>struct</p></td>
-<td class="text-right"><p>36</p></td>
+<td class="text-right"><p>43</p></td>
 <td class="text-right"><p>48</p></td>
 </tr>
 <tr class="row-even"><td><p>styling</p></td>
-<td class="text-right"><p>7</p></td>
+<td class="text-right"><p>8</p></td>
 <td class="text-right"><p>17</p></td>
 </tr>
 <tr class="row-odd"><td><p>text</p></td>
-<td class="text-right"><p>27</p></td>
+<td class="text-right"><p>28</p></td>
 <td class="text-right"><p>54</p></td>
 </tr>
 <tr class="row-even"><td><p>types</p></td>

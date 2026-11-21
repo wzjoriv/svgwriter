@@ -408,7 +408,10 @@
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.structure.Pixels.decode">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pixels</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Decode encoded image bytes.</span>
+<span class="w">        </span><span class="sd">"""Decode encoded image bytes into sRGB.</span>
+
+<span class="sd">        Embedded colour information (ICC profile, PNG ``gAMA``/``cHRM``) is applied, so the</span>
+<span class="sd">        pixels look as the file intends.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -445,7 +448,8 @@
         <span class="k">if</span> <span class="n">codec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"could not decode the image data: unknown or damaged format"</span><span class="p">)</span>
         <span class="n">size</span> <span class="o">=</span> <span class="n">codec</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
-        <span class="n">info</span> <span class="o">=</span> <span class="n">skia</span><span class="o">.</span><span class="n">ImageInfo</span><span class="o">.</span><span class="n">Make</span><span class="p">(</span><span class="n">size</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="n">size</span><span class="o">.</span><span class="n">height</span><span class="p">(),</span> <span class="n">skia</span><span class="o">.</span><span class="n">kRGBA_8888_ColorType</span><span class="p">,</span> <span class="n">skia</span><span class="o">.</span><span class="n">kUnpremul_AlphaType</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">skia</span><span class="o">.</span><span class="n">ImageInfo</span><span class="o">.</span><span class="n">Make</span><span class="p">(</span><span class="n">size</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="n">size</span><span class="o">.</span><span class="n">height</span><span class="p">(),</span> <span class="n">skia</span><span class="o">.</span><span class="n">kRGBA_8888_ColorType</span><span class="p">,</span> <span class="n">skia</span><span class="o">.</span><span class="n">kUnpremul_AlphaType</span><span class="p">,</span>
+                                   <span class="n">skia</span><span class="o">.</span><span class="n">ColorSpace</span><span class="o">.</span><span class="n">MakeSRGB</span><span class="p">())</span>
         <span class="n">rgba</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">size</span><span class="o">.</span><span class="n">height</span><span class="p">(),</span> <span class="n">size</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="mi">4</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">codec</span><span class="o">.</span><span class="n">getPixels</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">rgba</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">minRowBytes</span><span class="p">())</span> <span class="o">!=</span> <span class="n">skia</span><span class="o">.</span><span class="n">Codec</span><span class="o">.</span><span class="n">Result</span><span class="o">.</span><span class="n">kSuccess</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"could not decode the image data"</span><span class="p">)</span>

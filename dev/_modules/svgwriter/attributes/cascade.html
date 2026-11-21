@@ -286,7 +286,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Final</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">AT_BLOCK_RE</span><span class="p">,</span> <span class="n">COMMENT_RE</span><span class="p">,</span> <span class="n">IMPORTANT</span><span class="p">,</span> <span class="n">RULE_RE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">AT_BLOCK_RE</span><span class="p">,</span> <span class="n">COMMENT_RE</span><span class="p">,</span> <span class="n">CSS_DIMENSION_RE</span><span class="p">,</span> <span class="n">IMPORTANT</span><span class="p">,</span> <span class="n">MARKER_LONGHANDS</span><span class="p">,</span> <span class="n">RULE_RE</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._selectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">matches_from</span><span class="p">,</span> <span class="n">specificity</span><span class="p">,</span> <span class="n">split_selector</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.names</span><span class="w"> </span><span class="kn">import</span> <span class="n">PRESENTATION_ATTRIBUTES</span>
 
@@ -614,7 +614,9 @@
 
 <span class="sd">    The tree is modified in place: matching rule declarations and inline</span>
 <span class="sd">    ``style`` values are written as attributes and the ``style`` attribute is</span>
-<span class="sd">    removed. Renderers that ignore CSS then see the same result.</span>
+<span class="sd">    removed. Renderers that ignore CSS then see the same result. The CSS-only ``marker``</span>
+<span class="sd">    shorthand becomes ``marker-start``, ``marker-mid`` and ``marker-end``, and CSS units, which</span>
+<span class="sd">    are case-insensitive (``20PX``), are written in the lower case attributes require.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -634,12 +636,16 @@
     <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">():</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">css_declarations</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span> <span class="k">if</span> <span class="n">rules</span> <span class="k">else</span> <span class="p">{}</span>
         <span class="n">values</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_inline</span><span class="p">(</span><span class="n">element</span><span class="p">))</span>
+        <span class="k">if</span> <span class="s2">"marker"</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+            <span class="n">shorthand</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"marker"</span><span class="p">)</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">MARKER_LONGHANDS</span><span class="p">,</span> <span class="n">shorthand</span><span class="p">),</span> <span class="o">**</span><span class="n">values</span><span class="p">}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
             <span class="k">continue</span>
         <span class="n">element</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"style"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">PRESENTATION_ATTRIBUTES</span> <span class="ow">or</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"transform"</span><span class="p">,):</span>
-                <span class="n">element</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
+                <span class="n">dimension</span> <span class="o">=</span> <span class="n">CSS_DIMENSION_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                <span class="n">element</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">dimension</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">dimension</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span> <span class="k">if</span> <span class="n">dimension</span> <span class="k">else</span> <span class="n">value</span></div>
 
 </pre></div>
         </article>
