@@ -224,6 +224,39 @@ class Scene(SceneMotion):
         return iter_frames(self.document, fps or self.fps, duration or self.duration,
                            renderer or self.renderer, update=self._advance)
 
+    def at(self, seconds: float) -> Document:
+        """The scene as it is at *seconds*: behaviors and :meth:`update` run, SMIL sampled.
+
+        Parameters
+        ----------
+        seconds : float
+            The moment, from the start of the scene.
+
+        Returns
+        -------
+        Document
+            A still copy, like :meth:`Document.at <svgwriter.Document.at>`; the scene's own document
+            keeps the Python state of that moment.
+
+        See Also
+        --------
+        svgwriter.Document.at : The SMIL-only moment of a document.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> class Grow(svg.Scene):
+        ...     width, height = 10, 10
+        ...     def build(self, doc):
+        ...         self.box = doc.rect(0, 0, 1, 1)
+        ...     def update(self, seconds):
+        ...         self.box.width = 1 + seconds
+        >>> Grow().at(2).root[-1].get("width")
+        3
+        """
+        self._advance(self.document, seconds)
+        return self.document.at(seconds)
+
     def render(self, seconds: float = 0.0, *, scale: float = 1.0, background: ColorLike | None = None) -> bytes:
         """One frame at *seconds* as PNG bytes, with SMIL applied.
 
@@ -243,7 +276,7 @@ class Scene(SceneMotion):
 
         See Also
         --------
-        svgwriter.Document.at : The still copy that is drawn.
+        at : The still copy that is drawn.
 
         Examples
         --------
@@ -253,8 +286,7 @@ class Scene(SceneMotion):
         """
         from ..ops.render import render_png
 
-        self._advance(self.document, seconds)
-        return render_png(self.document.at(seconds), scale=scale, background=background)
+        return render_png(self.at(seconds), scale=scale, background=background)
 
     def save(self, path: AnyPath | None = None, *, fps: float | None = None, duration: float | None = None,
              renderer: Renderer | str | None = None, ffmpeg: str | None = None) -> Path:

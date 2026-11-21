@@ -414,7 +414,7 @@ class TestErrorMessages:
 def test_rasterize_square_size_and_wide_int_pixels() -> None:
     import numpy as np
 
-    assert svg.Document(5, 5).rasterize(size=8).shape == (8, 8, 4)
+    assert svg.Document(5, 5).rasterize(pixels=8).shape == (8, 8, 4)
     with pytest.raises(ValueError, match="astype"):
         svg.Image(np.full((2, 2), 300, dtype=np.int16))
 

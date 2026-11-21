@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 from ..._internal._constants import PX_PER_INCH
 from .._registry import register
+from .._units import dpi_scale
 
 if TYPE_CHECKING:
     from ..._internal._color._icc_output import IccLike
@@ -18,19 +19,22 @@ __all__ = ["tiff"]
 
 
 @register("tiff", extensions=(".tif", ".tiff"))
-def tiff(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int | None = None, padding: float = 0.0,
-         background: ColorLike | None = None, dpi: float | None = None, icc: IccLike | None = None) -> bytes:
+def tiff(document: Document, *, scale: float = 1.0, pixels: tuple[int, int] | int | None = None, padding: float = 0.0,
+         background: ColorLike | None = None, dpi: float | None = None,
+         units_per_inch: float = PX_PER_INCH, icc: IccLike | None = None) -> bytes:
     """TIFF: lossless RGBA, or CMYK separations through a CMYK ICC profile.
 
     Parameters
     ----------
     document : Document
         The drawing.
-    scale, size, padding, background : optional
+    scale, pixels, padding, background : optional
         As for PNG. A CMYK file has no transparency, so `background` defaults to white for it.
     dpi : float, optional
-        Pixels per inch instead of `scale` (96 is scale 1); written as the file's resolution.
-        Defaults to None.
+        Pixels per printed inch instead of `scale`; written as the file's resolution. Defaults to None.
+    units_per_inch : float, optional
+        User units per inch of a page sized in plain numbers: 72 makes one unit one point. Sizes in
+        ``mm``, ``cm``, ``in``, ``pt`` or ``pc`` are kept. Defaults to 96 (CSS).
     icc : {"srgb", "display-p3"} or bytes, optional
         Output profile, embedded in the file: ``"srgb"`` tags the pixels as sRGB,
         ``"display-p3"`` or RGB profile bytes convert them, and CMYK profile bytes (a press or
@@ -60,9 +64,9 @@ def tiff(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int 
     from ..._internal._codecs._tiff import encode_tiff
 
     if dpi is not None:
-        scale = dpi / PX_PER_INCH
-    if isinstance(size, int):
-        size = (size, size)
+        scale = dpi_scale(document, dpi, units_per_inch)
+    if isinstance(pixels, int):
+        pixels = (pixels, pixels)
     target = None
     if icc is not None:
         from ..._internal._color._icc_output import output_profile
@@ -71,10 +75,10 @@ def tiff(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int 
     cmyk = target is not None and target.space == "CMYK"
     if cmyk and background is None:
         background = "white"
-    pixels = to_uint8(document.rasterize(scale=scale, size=size, padding=padding, background=background))
+    image = to_uint8(document.rasterize(scale=scale, pixels=pixels, padding=padding, background=background))
     if target is not None:
         from ..._internal._color._icc_output import to_profile
 
-        pixels = to_profile(pixels, target)
-    return encode_tiff(pixels, "CMYK" if cmyk else "RGB", dpi=scale * PX_PER_INCH,
+        image = to_profile(image, target)
+    return encode_tiff(image, "CMYK" if cmyk else "RGB", dpi=dpi if dpi is not None else scale * PX_PER_INCH,
                        profile=None if target is None else target.data)

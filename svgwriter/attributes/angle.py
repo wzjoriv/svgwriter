@@ -10,7 +10,14 @@ from typing import TYPE_CHECKING, Any
 
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._numbers import format_number
-from ._constants import ANGLE_RE, ANGLE_SPELLINGS, DEGREES_PER, FULL_TURN_DEGREES, HALF_TURN_DEGREES
+from ._constants import (
+    ANGLE_RE,
+    ANGLE_SPELLINGS,
+    DEGREES_PER,
+    EQUAL_DIGITS,
+    FULL_TURN_DEGREES,
+    HALF_TURN_DEGREES,
+)
 from .quantity import Quantity
 
 if TYPE_CHECKING:
@@ -23,7 +30,7 @@ def _number(value: object) -> bool:
     return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True, slots=True, eq=False)
 class Angle:
     """An angle with a unit; ``float(angle)`` is degrees, as every svgwriter rotation expects.
 
@@ -302,6 +309,15 @@ class Angle:
 
     def __float__(self) -> float:
         return self.degrees
+
+    def __eq__(self, other: object) -> bool:
+        """Equal turns of any unit; plain numbers are degrees."""
+        if isinstance(other, bool) or not isinstance(other, (Angle, int, float)):
+            return NotImplemented
+        return round(self.degrees, EQUAL_DIGITS) == round(other.degrees if isinstance(other, Angle) else float(other), EQUAL_DIGITS)
+
+    def __hash__(self) -> int:
+        return hash(round(self.degrees, EQUAL_DIGITS))
 
     def __lt__(self, other: Angle | float) -> bool:
         return self.value < self._value(other)

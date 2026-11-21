@@ -183,8 +183,9 @@ def expand_markers(root: Element) -> None:
     >>> [e.tag for e in copy if e.tag != "defs"]
     ['path', 'g']
     """
-    from ...attributes.cascade import computed, rules_of
+    from ...attributes.cascade import computed
     from ...attributes.length import Length
+    from ...attributes.rules import rules_of
     from ...elements import Group
 
     rules = rules_of(root)

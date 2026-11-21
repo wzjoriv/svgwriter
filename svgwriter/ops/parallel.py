@@ -49,7 +49,7 @@ def rasterize_many(documents: Iterable[Document], *, processes: int | None = Non
         ``numpy.float32`` (0..1, like ``rasterize``) or ``numpy.uint8`` (0..255,
         four times less data to move between processes). Defaults to float32.
     **options
-        ``scale``, ``size``, ``padding``, ``background`` as for :meth:`Document.rasterize`.
+        ``scale``, ``pixels``, ``padding``, ``background`` as for :meth:`Document.rasterize`.
 
     Returns
     -------

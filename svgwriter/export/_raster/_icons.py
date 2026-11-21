@@ -28,7 +28,7 @@ __all__ = ["ICNS_SIZES", "ICO_SIZES", "read_icon", "to_icns", "to_ico"]
 def _pngs(document: Document, sizes: Iterable[int], padding: float) -> dict[int, bytes]:
     from ...ops.render import encode_image
 
-    return {size: encode_image(document.rasterize(size=(size, size), padding=padding, snapshot=True))
+    return {size: encode_image(document.rasterize(pixels=(size, size), padding=padding, snapshot=True))
             for size in sorted(set(sizes))}
 
 

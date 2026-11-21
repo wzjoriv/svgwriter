@@ -8,6 +8,7 @@ import re
 from typing import Final
 
 __all__ = [
+    "PAGE_LENGTH_DIGITS",
     "ANCHOR_SHIFT",
     "ANIMATED_DEFAULTS",
     "ATTRIBUTE_TABLE",
@@ -413,3 +414,6 @@ RENDER_LANGUAGE: Final = "en"
 FEATURE_PREFIX: Final = "http://www.w3.org/TR/SVG11/feature#"
 SUGGESTIONS: Final = 3
 MOTION_HELPERS: Final = frozenset({"apply", "stagger", "element"})
+
+PAGE_LENGTH_DIGITS: Final = 9
+"""Decimal places kept when a length converts to user units of a physically sized page."""

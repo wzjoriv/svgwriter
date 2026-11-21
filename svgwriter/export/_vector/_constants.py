@@ -10,7 +10,6 @@ import struct
 from typing import Final
 
 from ..._internal._constants import CM_PER_INCH, MM_PER_INCH, PX_PER_INCH, PX_PER_PT
-from ...attributes.length import Unit
 
 __all__ = [
     "ANCHORS",
@@ -106,7 +105,6 @@ __all__ = [
     "PDF_ICC_COMPONENTS",
     "PDF_OUTPUT_INTENTS",
     "PDF_STRING_ESCAPES",
-    "PHYSICAL_UNITS",
     "PDF_HEADER",
     "ROOT_RE",
     "STARTXREF_RE",
@@ -267,8 +265,6 @@ TRAILER_SIZE_RE: Final = re.compile(rb"/Size\s+(\d+)")
 TRAILER_INFO_RE: Final = re.compile(rb"/Info\s+\d+\s+0\s+R")
 PDF_OUTPUT_INTENTS: Final = {"RGB": (b"GTS_PDFA1", b"sRGB IEC61966-2.1"), "CMYK": (b"GTS_PDFX", b"Custom")}
 """Per profile colour space: the output intent subtype and its output condition identifier."""
-PHYSICAL_UNITS: Final = frozenset({Unit.MM, Unit.CM, Unit.IN, Unit.PT, Unit.PC})
-"""Page size units that fix the printed size, so ``px_per_inch`` leaves them alone."""
 PDF_ICC_COMPONENTS: Final = {"RGB": 3, "CMYK": 4}
 PDF_STRING_ESCAPES: Final = {ord("\\"): r"\\", ord("("): r"\(", ord(")"): r"\)"}
 ENCRYPT_RE: Final = re.compile(rb"/Encrypt\s*(?:\d+\s+\d+\s+R|<<)")

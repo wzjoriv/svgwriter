@@ -125,7 +125,7 @@ class Writer:
         """A matrix written relative to the element's own anchor when that reads better."""
         if not isinstance(value, Matrix) or not hasattr(element, "anchor"):
             return self._value("transform", value)
-        return value.svg_value(self.options.precision, pivot=element.anchor,
+        return value.svg_value(self.options.precision, anchor=element.anchor,
                                box=element.local_bbox())  # type: ignore[attr-defined]
 
     def _open_tag(self, element: Element, extra: dict[str, str], names: dict[str, str], tag: str) -> str:

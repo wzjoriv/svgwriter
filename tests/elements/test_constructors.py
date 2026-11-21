@@ -65,3 +65,17 @@ def test_small_fixes() -> None:
         hash(Transform.rotate(5))
     glow = svg.builder.glow(5)
     assert glow.get("x") == "-20%" and glow.get("width") is not None
+
+
+class TestUnknownAttributeHints:
+    def test_animation_and_behavior_presets_point_at_animate(self):
+        with pytest.raises(AttributeError, match=r"fade_out is an animation; use element\.animate\.fade_out"):
+            svg.text("A").fade_out()
+        with pytest.raises(AttributeError, match=r"wiggle is a behavior; use element\.animate\.wiggle"):
+            _ = svg.rect(0, 0, 1, 1).wiggle
+
+    def test_close_matches_cover_methods_attributes_and_presets(self):
+        with pytest.raises(AttributeError, match="did you mean 'animate.fade_out'"):
+            _ = svg.text("A").fade_ot
+        with pytest.raises(AttributeError, match="did you mean 'width'"):
+            _ = svg.rect(0, 0, 1, 1).widht

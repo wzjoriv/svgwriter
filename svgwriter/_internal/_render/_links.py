@@ -80,7 +80,7 @@ def _rasterized(document: Document, width: float, height: float, ratio: str, den
         root.attributes["preserveAspectRatio"] = ratio
     root.attributes["width"], root.attributes["height"] = width, height
     columns, rows = max(1, round(width * density)), max(1, round(height * density))
-    return Pixels.from_array(document.rasterize(size=(columns, rows)))
+    return Pixels.from_array(document.rasterize(pixels=(columns, rows)))
 
 
 def _density(image: Element) -> float:

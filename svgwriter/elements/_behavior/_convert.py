@@ -245,7 +245,7 @@ class Convertible(Transformable):
         return type(box)(box.x - half, box.y - half, box.width + 2 * half, box.height + 2 * half)
 
     def rasterize(
-        self, *, scale: float = 1.0, size: tuple[int, int] | int | None = None, padding: float = 0.0,
+        self, *, scale: float = 1.0, pixels: tuple[int, int] | int | None = None, padding: float = 0.0,
         background: ColorLike | None = None,
     ) -> np.ndarray:
         """Render this element alone into an RGBA array.
@@ -257,7 +257,7 @@ class Convertible(Transformable):
         ----------
         scale : float, optional
             Pixels per user unit. Defaults to 1.0.
-        size : (int, int) or int, optional
+        pixels : (int, int) or int, optional
             Exact output ``(columns, rows)``, or one int for a square; the
             element is fitted and centred, and *scale* is ignored. Defaults to None.
         padding : float, optional
@@ -286,8 +286,8 @@ class Convertible(Transformable):
         if box is None:
             raise TypeError(f"<{self.tag}> has no known size; give it width and height or rasterize the document")
         canvas = type(box)(box.x - padding, box.y - padding, box.width + 2 * padding, box.height + 2 * padding)
-        if size is not None:
-            canvas, scale = _fit(canvas, (size, size) if isinstance(size, int) else size)
+        if pixels is not None:
+            canvas, scale = _fit(canvas, (pixels, pixels) if isinstance(pixels, int) else pixels)
         return render_box(self, canvas, scale, background)
 
 

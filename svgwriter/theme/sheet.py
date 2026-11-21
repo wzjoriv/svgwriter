@@ -13,7 +13,7 @@ from ._errors import ThemeError
 from .theme import THEMES, Theme
 
 if TYPE_CHECKING:
-    from ..attributes.cascade import Rule
+    from ..attributes.rules import Rule
     from ..elements.core import Element
 
 __all__ = ["STYLE_ID", "applied", "role_rules", "sheet_theme", "used_roles"]
@@ -140,7 +140,7 @@ def sheet_theme(root: Element) -> Theme | None:
     >>> sheet_theme(svg.Svg()) is None
     True
     """
-    from ..attributes.cascade import parse_css
+    from ..attributes.rules import parse_css
     from ..elements.structure import StyleElement
 
     sheet = root.get_element_by_id(STYLE_ID)
@@ -184,7 +184,7 @@ def role_rules(theme: Theme) -> dict[str, list[Rule]]:
     >>> role_rules(svg.Theme.get("mono"))["role-dot"][0].declarations[0]
     ('fill', '#000000', False)
     """
-    from ..attributes.cascade import parse_css
+    from ..attributes.rules import parse_css
 
     cached: dict[str, list[Rule]] | None = theme._class_rules
     if cached is None:

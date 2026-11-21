@@ -162,7 +162,7 @@ def rasterize(
     document: Document,
     *,
     scale: float = 1.0,
-    size: tuple[int, int] | int | None = None,
+    pixels: tuple[int, int] | int | None = None,
     padding: float = 0.0,
     background: ColorLike | None = None,
     snapshot: bool = False,
@@ -175,13 +175,13 @@ def rasterize(
         What to draw; SMIL animation is not evaluated.
     scale : float, optional
         Pixels per user unit of the document's size (see :func:`document_size`). Defaults to 1.0.
-    size : (int, int) or int, optional
+    pixels : (int, int) or int, optional
         Exact output ``(columns, rows)``, or one int for a square; a ``viewBox`` drawing is fitted
         into it and *scale* is ignored. Without a ``viewBox`` this is the
         viewport size in user units. Defaults to None.
     padding : float, optional
         Margin around the drawing in its own (``viewBox``) units; with
-        *size* the padded drawing is fitted and centred. Defaults to 0.0.
+        *pixels* the padded drawing is fitted and centred. Defaults to 0.0.
     background : color, optional
         Painted under the drawing; transparent when omitted. Defaults to None.
     snapshot : bool, optional
@@ -208,7 +208,7 @@ def rasterize(
     >>> _ = doc.rect(0, 0, 4, 2, fill="red")
     >>> rasterize(doc).shape
     (2, 4, 4)
-    >>> rasterize(doc, size=(32, 32), padding=1).shape
+    >>> rasterize(doc, pixels=(32, 32), padding=1).shape
     (32, 32, 4)
     """
     width, height = document_size(document)
@@ -220,10 +220,10 @@ def rasterize(
         padded = ViewBox(base.min_x - padding, base.min_y - padding, base.width + 2 * padding,
                          base.height + 2 * padding)
         box, width, height = padded, padded.width * unit, padded.height * unit
-    if isinstance(size, int):
-        size = (size, size)
-    if size is not None:
-        columns, rows = size
+    if isinstance(pixels, int):
+        pixels = (pixels, pixels)
+    if pixels is not None:
+        columns, rows = pixels
         if box is None:
             width, height, scale = float(columns), float(rows), 1.0
         else:
@@ -351,7 +351,7 @@ def render_png(document: Document, *, scale: float = 1.0, background: ColorLike 
     return encode_image(rasterize(document, scale=scale, background=background, snapshot=True))
 
 
-def render_frame(document: Document, time: float) -> np.ndarray:
+def render_frame(document: Document, seconds: float) -> np.ndarray:
     """Frame renderer for :func:`~svgwriter.video.render_animation`: an opaque uint8 RGBA frame.
 
     Draws the document as it is at each frame (use ``update=`` to change it
@@ -362,8 +362,8 @@ def render_frame(document: Document, time: float) -> np.ndarray:
     ----------
     document : Document
         The document to draw.
-    time : float
-        The frame time; unused, since the document itself carries the state.
+    seconds : float
+        The frame's moment; SMIL animation is sampled there, Python state is already on the document.
 
     Returns
     -------
@@ -391,7 +391,7 @@ def render_frame(document: Document, time: float) -> np.ndarray:
     from ..elements.animation import AnimationElement
 
     if document.root.find(AnimationElement) is not None:
-        document = snapshot(document, time)
+        document = snapshot(document, seconds)
     image = document.rasterize(background="white", snapshot=True)
     info = skia.ImageInfo.Make(image.width(), image.height(), skia.kRGBA_8888_ColorType, skia.kPremul_AlphaType)
     frame = np.empty((image.height(), image.width(), 4), np.uint8)

@@ -147,7 +147,7 @@ def run_test(path: Path, reference: Path) -> Outcome:
             if reference.exists():
                 expected = Pixels.decode(reference.read_bytes()).rgba()
                 shown = doc.at(SETTLED_TIME) if doc.root.find(AnimationElement) is not None else doc
-                drawn = _rgb(svg.ops.rasterize(shown, size=(expected.shape[1], expected.shape[0]), background=BACKGROUND))
+                drawn = _rgb(svg.ops.rasterize(shown, pixels=(expected.shape[1], expected.shape[0]), background=BACKGROUND))
                 expected = _rgb(expected)
                 for label in label_boxes(doc, expected.shape):
                     drawn[label] = expected[label]

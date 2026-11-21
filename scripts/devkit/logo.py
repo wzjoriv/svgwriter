@@ -109,7 +109,7 @@ def render(logo: Any, variants: dict[str, dict[str, Any]], png_sizes: list[int],
         if "svg" in formats:
             files[f"{stem}.svg"] = doc.export("svg").encode("utf-8")
         for size in sorted(sizes):
-            files[f"{stem}-{size}.png"] = doc.export("png", size=size)
+            files[f"{stem}-{size}.png"] = doc.export("png", pixels=size)
         if "ico" in formats:
             ico_sizes = tuple(sorted(s for s in png_sizes if s <= ICO_MAX_SIZE))
             files[f"{stem}.ico"] = export(doc, "ico", **({"sizes": ico_sizes} if ico_sizes else {}))
@@ -117,7 +117,7 @@ def render(logo: Any, variants: dict[str, dict[str, Any]], png_sizes: list[int],
             files[f"{stem}.icns"] = export(doc, "icns")
         if main and "favicon" in formats:
             files["favicon.ico"] = export(doc, "ico", sizes=FAVICON_SIZES)
-            files["apple-touch-icon.png"] = doc.export("png", size=APPLE_TOUCH_SIZE)
+            files["apple-touch-icon.png"] = doc.export("png", pixels=APPLE_TOUCH_SIZE)
         if main and "webmanifest" in formats:
             icons = [{"src": f"{stem}-{s}.png", "sizes": f"{s}x{s}", "type": "image/png"} for s in MANIFEST_SIZES]
             files[MANIFEST_NAME] = (json.dumps({"icons": icons}, indent=2) + "\n").encode("utf-8")
@@ -129,7 +129,7 @@ def _ios(doc: Any, export: Any) -> dict[str, bytes]:
     for points, scale, idiom in IOS_ICONS:
         pixels = round(points * scale)
         name = f"icon-{pixels}.png"
-        files[f"{IOS_SET}/{name}"] = doc.export("png", size=pixels, background="white")
+        files[f"{IOS_SET}/{name}"] = doc.export("png", pixels=pixels, background="white")
         images.append({"filename": name, "idiom": idiom, "scale": f"{scale}x", "size": f"{points:g}x{points:g}"})
     contents = {"images": images, "info": {"author": "devkit", "version": 1}}
     files[f"{IOS_SET}/Contents.json"] = (json.dumps(contents, indent=2) + "\n").encode("utf-8")
@@ -137,14 +137,14 @@ def _ios(doc: Any, export: Any) -> dict[str, bytes]:
 
 
 def _android(doc: Any, export: Any) -> dict[str, bytes]:
-    files = {f"android/mipmap-{density}/ic_launcher.png": doc.export("png", size=size)
+    files = {f"android/mipmap-{density}/ic_launcher.png": doc.export("png", pixels=size)
              for density, size in ANDROID_DENSITIES.items()}
-    files["android/play-store-icon.png"] = doc.export("png", size=ANDROID_STORE_SIZE)
+    files["android/play-store-icon.png"] = doc.export("png", pixels=ANDROID_STORE_SIZE)
     return files
 
 
 def _desktop(doc: Any, export: Any) -> dict[str, bytes]:
-    files = {f"desktop/hicolor/{s}x{s}/apps/{STEM}.png": doc.export("png", size=s) for s in DESKTOP_SIZES}
+    files = {f"desktop/hicolor/{s}x{s}/apps/{STEM}.png": doc.export("png", pixels=s) for s in DESKTOP_SIZES}
     files[f"desktop/{STEM}.ico"] = export(doc, "ico", sizes=tuple(s for s in DESKTOP_SIZES if s <= ICO_MAX_SIZE))
     files[f"desktop/{STEM}.icns"] = export(doc, "icns")
     files[f"desktop/hicolor/scalable/apps/{STEM}.svg"] = doc.export("svg").encode("utf-8")

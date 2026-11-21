@@ -33,10 +33,13 @@ __all__ = [
     "PREFIXES",
     "RULE_RE",
     "SEPARATORS",
+    "EQUAL_DIGITS",
 ]
 
 MARKER_LONGHANDS: Final = ("marker-start", "marker-mid", "marker-end")
 
+EQUAL_DIGITS: Final = 9
+"""Decimal places at which lengths, angles and quantities in different units count as equal."""
 FULL_TURN_DEGREES: Final = 360.0
 HALF_TURN_DEGREES: Final = FULL_TURN_DEGREES / 2
 DEGREES_PER: Final = {"deg": 1.0, "rad": 180.0 / math.pi, "grad": 0.9, "turn": FULL_TURN_DEGREES}

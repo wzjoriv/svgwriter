@@ -22,7 +22,7 @@ class MatrixText:
 
     __slots__ = ()
 
-    def svg_value(self, precision: int = DEFAULT_PRECISION, *, pivot: tuple[float, float] | None = None,
+    def svg_value(self, precision: int = DEFAULT_PRECISION, *, anchor: tuple[float, float] | None = None,
                   box: Any = None) -> str:
         """The shortest ``transform`` text for this matrix.
 
@@ -34,13 +34,13 @@ class MatrixText:
         ----------
         precision : int, optional
             Maximum number of decimal places. Defaults to the library default precision.
-        pivot : (float, float), optional
-            The element's own pivot (its anchor). When a pure rotation's
+        anchor : (float, float), optional
+            The element's anchor. When a pure rotation's
             centre would fall outside *box*, the text becomes
             ``translate(dx dy) rotate(a px py)`` about this point instead,
             which is what a person would write. Defaults to None.
         box : BBox, optional
-            The element's local bounding box, used with *pivot*. Defaults to None.
+            The element's local bounding box, used with *anchor*. Defaults to None.
 
         Returns
         -------
@@ -71,8 +71,8 @@ class MatrixText:
             denominator = (1 - rotation.a) ** 2 + rotation.b ** 2
             cx = ((1 - rotation.a) * tx - rotation.b * ty) / denominator
             cy = (rotation.b * tx + (1 - rotation.a) * ty) / denominator
-            if pivot is not None and box is not None and not _inside(box, cx, cy):
-                px, py = float(pivot[0]), float(pivot[1])
+            if anchor is not None and box is not None and not _inside(box, cx, cy):
+                px, py = float(anchor[0]), float(anchor[1])
                 moved = self.apply(px, py)
                 dx, dy = moved.x - px, moved.y - py
                 shift = "" if zero(dx) and zero(dy) else (

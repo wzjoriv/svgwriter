@@ -21,7 +21,7 @@ class TestPalette:
         assert list(p) == ["ink", "paper", "edge", "mid"] and len(p) == 4
 
     def test_replace_rederives(self) -> None:
-        p = Palette({"a": "red", "b": lambda p: p.a.darken(0.1)}).replace({"a": "blue"})
+        p = Palette({"a": "red", "b": lambda p: p.a.darken(0.1)}).replace(a="blue")
         assert p.b.hex == svg.Color.parse("blue").darken(0.1).hex
 
     @pytest.mark.parametrize(("sources", "message"), [

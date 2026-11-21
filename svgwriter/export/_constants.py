@@ -7,7 +7,10 @@ from __future__ import annotations
 import re
 from typing import Final
 
+from ..attributes.length import Unit
+
 __all__ = [
+    "PHYSICAL_UNITS",
     "BODY_SIZE",
     "BOLD_RE",
     "BULLET",
@@ -76,3 +79,6 @@ BOLD_RE: Final = re.compile(r"\*\*(.+?)\*\*|__(.+?)__")
 INLINE_RE: Final = re.compile(r"`([^`]*)`|\*([^*]+)\*|_([^_]+)_|!?\[([^\]]*)\]\([^)]*\)")
 INDENT_PER_LEVEL: Final = 20.0
 SPACES_PER_LEVEL: Final = 2
+
+PHYSICAL_UNITS: Final = frozenset({Unit.MM, Unit.CM, Unit.IN, Unit.PT, Unit.PC})
+"""Page size units that fix the printed size, so ``units_per_inch`` leaves them alone."""
