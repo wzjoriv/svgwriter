@@ -27,8 +27,8 @@ logo.animate.fade_in(0.5).spin(2, begin=0.5)
 |---|---|
 | Appear / disappear | `show(at=)`, `hide(at=)` (at once), `fade_in`, `fade_out`, `draw` (stroke draws on), `wipe(side)`, `typewriter` (text) |
 | Create | `create` (outline draws on, then the fill fades in), `uncreate` (the reverse), `write` (text character by character, a group child by child) |
-| Motion | `slide_in(side)`, `move_to(x, y)`, `follow(path)`, `bounce`, `shake` |
-| Scale and turn | `grow`, `shrink`, `pulse`, `spin(turns=)` (about the element's centre) |
+| Motion | `move_by(dx, dy)`, `move_to(x, y)`, `slide_in(side)`, `follow(path)`, `bounce`, `shake` |
+| Turn, scale and skew | `rotate(angle)`, `scale(factor)` (or `(sx, sy)`), `skew(x=, y=)`, `spin(turns=)`, `grow`, `shrink`, `pulse` (about the element's anchor, or `about=(x, y)`) |
 | Color and any attribute | `blink`, `color_cycle(colors)`, `tween(attribute, start, end)` |
 | Shape | `morph(target)` (a `<path>` turning into any shape, contours matched by `interpolate`) |
 | Groups | `stagger(preset, step=)` (each child starts `step` seconds after the last) |
@@ -36,6 +36,18 @@ logo.animate.fade_in(0.5).spin(2, begin=0.5)
 Every preset takes `dur` and `begin` in seconds, `repeat` (a count or `"indefinite"`) and keeps its end
 state unless `freeze=False`. They are plain SMIL, so they play in browsers and in `doc.at(t)`, video,
 animated GIF, APNG and WebP.
+
+The transform presets are relative and add up: each starts from wherever the element is, after its
+own transform and any earlier preset, so `el.animate.rotate(30).rotate(30, begin=1)` ends at 60
+degrees. They pivot like the static methods: `el.rotate(30)` and `el.animate.rotate(30)` both turn
+about `el.anchor` (the bounding-box centre unless set), and `about=(x, y)` takes a point in parent
+coordinates (local ones with `local=True`). `move_by` measures along the parent's axes unless
+`local=True`.
+
+```python
+card = svg.rect(20, 20, 60, 30, fill="slateblue")
+card.animate.rotate(90).scale(1.5, begin=1).skew(x=20, begin=2).move_by(40, 0, begin=3)
+```
 
 `create`, `uncreate` and `write` animate `stroke-dasharray`/`stroke-dashoffset` and `fill-opacity`.
 A shape without a stroke is drawn with its fill color, every contour of a shape draws at once, and
