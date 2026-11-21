@@ -49,6 +49,7 @@ pixels = doc.rasterize(scale=2)                          # numpy float32 RGBA, s
 | Export / import | A registry by name or extension: more than 30 formats from SVG and PNG to PDF, TikZ, DXF, G-code, PowerPoint, Graphviz and Mermaid (see [Export and import](#export-and-import)); `svg.export.register(...)` adds more |
 | Projects | `svgwriter new my-poster --preset poster` starts a design folder (`svgwriter.toml`, theme, components, animations, assets); `svgwriter build` writes every output and `svgwriter preview` reloads a browser page on save; `blank`, `poster`, `slides` and `animation` presets build out of the box, as scripts or notebooks |
 | Sizes and units | `svg.Document(size="a4")`, `"letter"`, `"slide-16:9"`, `"instagram-story"`, ... with real units, so the drawing counts in mm or inches; `svg.mm`, `svg.inch`, `svg.pt` lengths and `svg.deg`, `svg.turn` angles |
+| Widgets | `@svg.widgets.controls(hue=(0, 360), suit=["♠", "♥"], glow=False)` declares sliders, button rows, toggles and colour pickers as plain data; `svg.interact(fn)` shows them beside the live drawing in a notebook (`pysvgwriter[widget]`) with `.values`, `.save()` and `.code()`; `svgwriter preview` shows the same controls as a form; `svg.sweep(fn, hue=(0, 360))` animates them into baked SVG, GIF, MP4 or PowerPoint |
 | Animation | SMIL elements; `el.animate` presets plus your own as typed functions (`@svg.preset.animation`, per-frame `@svg.preset.behavior`, `el.animate.apply(fn, ...)`); `svg.Scene` classes, several per file, rendered by `svgwriter animate`; Python-driven scenes baked into SMIL so SVG files play like the video; PowerPoint slide effects both ways; `svg.interpolate(a, b, t)` tweens numbers, colors, transforms and morphs any two shapes |
 
 ## Geometry in one minute
@@ -139,7 +140,7 @@ svg.Document.open("sketch.excalidraw").save("sketch.svg")
 
 ## Examples
 
-[`examples/`](https://github.com/wzjoriv/svgwriter/tree/main/examples) is a fifteen-step learning path, from shapes to formats, animation, scenes, interop, a logo, themes and PowerPoint; each step is a runnable script with a Jupyter notebook next to it that shows the results as pictures (see its [README](https://github.com/wzjoriv/svgwriter/blob/main/examples/README.md)). All pictures below are rendered by svgwriter.
+[`examples/`](https://github.com/wzjoriv/svgwriter/tree/main/examples) is an eighteen-step learning path, from shapes to formats, animation, scenes, interop, a logo, themes and PowerPoint; each step is a runnable script with a Jupyter notebook next to it that shows the results as pictures (see its [README](https://github.com/wzjoriv/svgwriter/blob/main/examples/README.md)). All pictures below are rendered by svgwriter.
 
 [![One drawing in every built-in theme](https://raw.githubusercontent.com/wzjoriv/svgwriter/main/docs/_static/examples/themes.png)](https://github.com/wzjoriv/svgwriter/blob/main/examples/14_themes.ipynb)
 

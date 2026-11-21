@@ -59,6 +59,9 @@ inkscape
     guides and export hints.
 video
     Frame rendering through a pluggable renderer and encoding with ffmpeg.
+widgets
+    Controls for drawing functions: notebook panels (``interact``), preview forms and sweeps over time
+    (``sweep``).
 cli
     The ``python -m svgwriter`` command line.
 """
@@ -67,7 +70,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from . import export, inkscape, layout, ops, preset, project, theme, video
+from . import export, inkscape, layout, ops, preset, project, theme, video, widgets
 from ._document.sizes import PageSize, page_size, size
 from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
@@ -123,6 +126,7 @@ from .project import Project
 from .theme import THEMES, Theme
 from .transform import Matrix, Point, Transform
 from .video import FFmpegNotFoundError, Scene, register_renderer
+from .widgets import interact, sweep
 
 if TYPE_CHECKING:
     from ._internal._latex import latex
@@ -240,6 +244,9 @@ __all__ = [
     "unregister_interpolator",
     "to_string",
     "video",
+    "widgets",
+    "interact",
+    "sweep",
     "write",
     "write_async",
     *_elements_all,

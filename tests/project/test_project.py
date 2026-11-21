@@ -236,7 +236,7 @@ class TestPreview:
         from svgwriter.project._server import LiveServer
 
         project = svg.Project.new(tmp_path / "live")
-        server = LiveServer(project.root, lambda: svg.Project.load(project.root).build(["svg"]), "live", 0)
+        server = LiveServer(project.root, lambda values: svg.Project.load(project.root).build(["svg"]), "live", 0)
         thread = threading.Thread(target=server.serve, kwargs={"open_browser": False}, daemon=True)
         thread.start()
         try:

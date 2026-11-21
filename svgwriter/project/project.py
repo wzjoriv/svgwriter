@@ -5,9 +5,12 @@
 from __future__ import annotations
 
 import os
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from pathlib import Path
+from typing import Any
 
+from ..video import Scene
+from ..widgets import Control, controls_of
 from ._build import write_outputs
 from ._config import ProjectConfig, check_formats, read_config
 from ._constants import DEFAULT_PORT, NOTEBOOK_SUFFIX
@@ -147,7 +150,7 @@ class Project:
         """The folder the outputs are written to."""
         return self.root / self.config.output
 
-    def build(self, formats: Sequence[str] | None = None) -> list[Path]:
+    def build(self, formats: Sequence[str] | None = None, *, values: Mapping[str, Any] | None = None) -> list[Path]:
         """Draw the project and write its outputs into the output folder.
 
         Fonts in the font folder are registered first, the theme applies to every page and scene, and the
@@ -157,6 +160,9 @@ class Project:
         ----------
         formats : sequence of str, optional
             Formats to write. Defaults to None, the ``[outputs] formats`` of the manifest.
+        values : mapping, optional
+            Values for the controls the entry declares (:func:`svgwriter.widgets.controls`), by parameter
+            name. Defaults to None, their starting values.
 
         Returns
         -------
@@ -193,9 +199,42 @@ class Project:
             if value is None:
                 return run_notebook(self.config, self.root / target, chosen)
             with working_directory(self.root):
-                return write_outputs(self.config, items_of(self.config, value), theme, chosen)
+                return write_outputs(self.config, items_of(self.config, value), theme, chosen, values)
         with project_scope(self.root), working_directory(self.root):
-            return write_outputs(self.config, items_of(self.config, load_object(self.config)), theme, chosen)
+            return write_outputs(self.config, items_of(self.config, load_object(self.config)), theme, chosen,
+                                 values)
+
+    def controls(self) -> dict[str, Control]:
+        """The controls the entry's page functions declare with :func:`svgwriter.widgets.controls`.
+
+        ``svgwriter preview`` shows them as a form above the outputs; ``svgwriter build`` uses their starting
+        values. Notebook entries declare none here.
+
+        Returns
+        -------
+        dict of str to Control
+            One control per parameter name, across the entry's functions.
+
+        Raises
+        ------
+        ProjectError
+            If the entry cannot be found.
+
+        Examples
+        --------
+        >>> import svgwriter as svg, tempfile
+        >>> with tempfile.TemporaryDirectory() as folder:
+        ...     print(svg.Project.new(f"{folder}/card").controls())
+        {}
+        """
+        if entry_parts(self.config)[0].endswith(NOTEBOOK_SUFFIX):
+            return {}
+        found: dict[str, Control] = {}
+        with project_scope(self.root), working_directory(self.root):
+            for item in items_of(self.config, load_object(self.config)):
+                if not isinstance(item, (Scene, type)):
+                    found.update(controls_of(item, infer=False))
+        return found
 
     def preview(self, formats: Sequence[str] | None = None) -> Preview:
         """Build the outputs and show them: in a notebook each file appears inline, and animations play.
@@ -228,7 +267,8 @@ class Project:
         """Serve a live preview at ``http://127.0.0.1:<port>`` until interrupted (Ctrl+C).
 
         The project is rebuilt whenever one of its files changes, and the page reloads itself; a failed build
-        shows its traceback on the page until the next save.
+        shows its traceback under the last outputs that worked. Controls the entry declares
+        (:func:`svgwriter.widgets.controls`) appear as a form above the outputs, which rebuild as they change.
 
         Parameters
         ----------
@@ -248,4 +288,5 @@ class Project:
         """
         from ._server import LiveServer
 
-        LiveServer(self.root, lambda: Project.load(self.root).build(), self.name, port).serve(open_browser)
+        LiveServer(self.root, lambda values: Project.load(self.root).build(values=values), self.name, port,
+                   controls=lambda: Project.load(self.root).controls()).serve(open_browser)

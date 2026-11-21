@@ -19,11 +19,12 @@ from ..document import Document
 from ..export import exporters, save
 from ..theme import Theme
 from ..video import Scene, animation_duration, frame_times
+from ..widgets import controls_of
 from ._config import ProjectConfig
 from ._constants import ANIMATED_FORMATS, BAKED_FORMATS, DEFAULT_GIF_FPS, KEEPS_ANIMATION, VIDEO_FORMATS
 from ._entry import Item
 
-__all__ = ["write_outputs"]
+__all__ = ["control_arguments", "write_outputs"]
 
 
 def _extension(format: str) -> str:
@@ -31,14 +32,21 @@ def _extension(format: str) -> str:
     return exporter.extensions[0] if exporter is not None and exporter.extensions else f".{format}"
 
 
-def _page(config: ProjectConfig, function: Any) -> Document:
+def control_arguments(function: Any, values: Mapping[str, Any]) -> dict[str, Any]:
+    """Keyword arguments for the controls *function* declares: *values* where given, else the starting values."""
+    controls = controls_of(function, infer=False)
+    return {name: control.argument(control.check(values[name]) if name in values else control.initial)
+            for name, control in controls.items()}
+
+
+def _page(config: ProjectConfig, function: Any, values: Mapping[str, Any]) -> Document:
     if isinstance(config.size, (str, PageSize)):
         doc = Document(size=config.size)
     elif config.size is not None:
         doc = Document(*config.size)
     else:
         doc = Document()
-    result = function(doc)
+    result = function(doc, **control_arguments(function, values))
     return result if isinstance(result, Document) else doc
 
 
@@ -98,14 +106,17 @@ def _write_pages(pages: Sequence[Document], targets: list[Path], format: str, op
 
 
 def write_outputs(config: ProjectConfig, items: Sequence[Item], theme: Theme | None,
-                  formats: Sequence[str]) -> list[Path]:
-    """Draw every page and scene with the project's size and theme, then write each format; return the files."""
+                  formats: Sequence[str], values: Mapping[str, Any] | None = None) -> list[Path]:
+    """Draw every page and scene with the project's size and theme, then write each format; return the files.
+
+    Page functions with declared controls receive *values* for them, or their starting values.
+    """
     folder = config.root / config.output
     folder.mkdir(parents=True, exist_ok=True)
     with theme if theme is not None else nullcontext():
         scenes = [item if isinstance(item, Scene) else item() for item in items
                   if isinstance(item, Scene) or isinstance(item, type) and issubclass(item, Scene)]
-        pages = [_page(config, item) for item in items if not isinstance(item, (Scene, type))]
+        pages = [_page(config, item, values or {}) for item in items if not isinstance(item, (Scene, type))]
     written: list[Path] = []
     for format in formats:
         options = config.options.get(format, {})
