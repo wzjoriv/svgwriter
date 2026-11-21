@@ -307,7 +307,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">...model.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span><span class="p">,</span> <span class="n">parse_color</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_COLOR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_COLOR</span><span class="p">,</span> <span class="n">SEGMENTED_WRAP</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._control</span><span class="w"> </span><span class="kn">import</span> <span class="n">Control</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Checkbox"</span><span class="p">,</span> <span class="s2">"ColorPicker"</span><span class="p">,</span> <span class="s2">"Dropdown"</span><span class="p">,</span> <span class="s2">"MultiSelect"</span><span class="p">,</span> <span class="s2">"Segmented"</span><span class="p">,</span> <span class="s2">"Swatches"</span><span class="p">,</span> <span class="s2">"Text"</span><span class="p">,</span> <span class="s2">"Toggle"</span><span class="p">,</span>
@@ -523,7 +523,16 @@
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">    &gt;&gt;&gt; svg.widgets.Segmented(["♠", "♥"]).from_form(1)</span>
 <span class="sd">    '♥'</span>
-<span class="sd">    """</span></div>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Backends show up to six options as buttons and more than that as a dropdown, see ``compact``.</span>
+<span class="sd">    """</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compact</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Whether the options are few enough to show as a row of buttons."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">SEGMENTED_WRAP</span></div>
 
 
 
