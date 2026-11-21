@@ -15,10 +15,10 @@ from typing import Any, BinaryIO, TypeAlias
 import skia
 
 from .._internal._constants import GENERIC_CANDIDATES
-from .._internal._font_constants import BASE64_MARKER, DATA_URI, REGULAR_SUBFAMILY, SUGGESTIONS
-from .._internal._font_match import describe
-from .._internal._font_names import face_count, family_names
-from .._internal._sfnt import collection_member
+from .._internal._typography._font_constants import BASE64_MARKER, DATA_URI, REGULAR_SUBFAMILY, SUGGESTIONS
+from .._internal._typography._font_match import describe
+from .._internal._typography._font_names import face_count, family_names
+from .._internal._typography._sfnt import collection_member
 from ._faces import Face
 
 __all__ = ["FontSource", "family_of", "installed_faces", "load", "load_face"]

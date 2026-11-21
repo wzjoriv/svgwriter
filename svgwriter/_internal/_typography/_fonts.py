@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any
 
 import skia
 
-from ._constants import (
+from .._constants import (
     BOLD_WEIGHT,
     COLOR_GLYPH_TABLES,
     DEFAULT_FAMILY,
@@ -33,7 +33,7 @@ from ._constants import (
 from ._font_match import FaceStyle, instance, match_rank
 
 if TYPE_CHECKING:
-    from ..ops.text import FontWeight
+    from ...ops.text import FontWeight
 
 __all__ = ["cluster_font", "color_font", "font_for", "font_size", "font_weight", "registered_face", "registered_typefaces", "resolve_font", "weight_value"]
 
@@ -46,7 +46,7 @@ def font_weight(value: object) -> int:
 
 def font_size(value: object) -> float:
     """A ``font-size`` value (keyword, length or percentage of the default) in user units."""
-    from ..attributes.length import Length, Unit
+    from ...attributes.length import Length, Unit
 
     text = str(value).strip()
     if text in FONT_SIZE_KEYWORDS:
@@ -152,7 +152,7 @@ def font_for(char: str, font_family: str, size: float, weight: FontWeight = "nor
 
     Examples
     --------
-    >>> from svgwriter._internal._fonts import font_for
+    >>> from svgwriter._internal._typography._fonts import font_for
     >>> font_for("A", "sans-serif", 16).getSize()
     16.0
     """
@@ -220,7 +220,7 @@ def cluster_font(cluster: str, font_family: str, size: float, weight: FontWeight
 
     Examples
     --------
-    >>> from svgwriter._internal._fonts import cluster_font
+    >>> from svgwriter._internal._typography._fonts import cluster_font
     >>> cluster_font("A", "sans-serif", 16).getSize()
     16.0
     """

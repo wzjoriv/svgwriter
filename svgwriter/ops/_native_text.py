@@ -150,9 +150,9 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix, *, o
 
 def _draw_color(canvas: skia.Canvas, box: Any, opacity: float, searchable: bool) -> None:
     """Draw the colour glyphs of *box* at its place and angle; only the fill's opacity applies to them."""
-    from .._internal._emoji import draw_glyphs
     from .._internal._flatten import _number
     from .._internal._paints import _paint
+    from .._internal._typography._emoji import draw_glyphs
 
     if _paint(box.source, "fill", "black", []) is None:
         return
@@ -170,7 +170,7 @@ def _hidden_text(canvas: skia.Canvas, color: Any, place: Matrix, alpha: float) -
 
     The single shaped glyph of a skin-tone, keycap or ZWJ emoji maps to no characters in the PDF.
     """
-    from .._internal._emoji import draw_glyphs
+    from .._internal._typography._emoji import draw_glyphs
 
     glyphs = list(color.font.textToGlyphs(color.text))
     small = color.font.makeWithSize(color.font.getSize() / len(glyphs))
@@ -187,8 +187,8 @@ def _solid_alpha(alpha: float) -> skia.Paint:
 
 def _glyph_font(box: Any) -> Any:
     """The skia font that draws *box* as one glyph, or None when it must be an outline."""
-    from .._internal._fonts import font_for, font_size, font_weight
-    from .._internal._shaping import needs_shaping
+    from .._internal._typography._fonts import font_for, font_size, font_weight
+    from .._internal._typography._shaping import needs_shaping
     from ..attributes.cascade import computed
 
     if needs_shaping(box.char) or box.source is None:

@@ -239,7 +239,7 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
     color_glyphs : bool, optional
         Leave emoji to the outlines or text runs, warning when outlines lose them (colour
         glyphs have no outline); False when the caller places them itself, see
-        :func:`~svgwriter._internal._emoji.color_glyph_images`. Defaults to True.
+        :func:`~svgwriter._internal._typography._emoji.color_glyph_images`. Defaults to True.
 
     Returns
     -------
@@ -339,14 +339,14 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
                       stacklevel=3)
     texts = []
     if text:
-        from ._text_runs import text_runs
+        from ._typography._text_runs import text_runs
 
         texts = text_runs(document, color_glyphs=color_glyphs)
     return Scene(width, height, items, skipped, texts, images)
 
 
 def _has_emoji(document: Document) -> bool:
-    from ._emoji import color_glyph_boxes
+    from ._typography._emoji import color_glyph_boxes
 
     return next(color_glyph_boxes(document), None) is not None
 

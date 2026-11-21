@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .._internal._fonts import font_size, font_weight, resolve_font
+from .._internal._typography._fonts import font_size, font_weight, resolve_font
 from ..elements import Transformable
 from ..elements.core import Element
 from ..pathdata.data import BBox

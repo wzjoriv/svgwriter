@@ -8,7 +8,7 @@ import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from ..._internal._fonts import font_size, font_weight
+from ..._internal._typography._fonts import font_size, font_weight
 from ...attributes.cascade import Rule, computed, rules_of
 from ...attributes.length import Length, Unit
 from ._constants import (
@@ -312,8 +312,8 @@ def _shaped_runs(chars: list[Char], lists: Any, fonts: dict[int, tuple[Any, ...]
 
     Runs in a colour font (emoji) are always shaped, so each emoji cluster becomes one glyph.
     """
-    from ..._internal._fonts import color_font
-    from ..._internal._shaping import needs_shaping, shape_run
+    from ..._internal._typography._fonts import color_font
+    from ..._internal._typography._shaping import needs_shaping, shape_run
 
     result: dict[int, tuple[Any, float, Any]] = {}
     start = 0
@@ -339,7 +339,7 @@ def _font_segments(chars: list[Char], start: int, stop: int, key: tuple[Any, ...
     """
     import unicodedata
 
-    from ..._internal._fonts import cluster_font
+    from ..._internal._typography._fonts import cluster_font
     from ._clusters import cluster_bounds
 
     run = "".join(char.char for char in chars[start:stop])

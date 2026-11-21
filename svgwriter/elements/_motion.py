@@ -277,7 +277,7 @@ class Motion(TransformPresets):
     def wipe(self, side: str = "left", dur: float = DEFAULT_DURATION, *, begin: float = 0.0,
              repeat: float | str | None = None, freeze: bool = True, ease: EaseLike | None = None) -> Motion:
         """Reveal the element from one side (``left``, ``right``, ``top``, ``bottom``) with a growing clip."""
-        from ..elements.shapes import Rect
+        from .shapes import Rect
 
         box = self.element.local_bbox()  # type: ignore[attr-defined]
         if box is None:

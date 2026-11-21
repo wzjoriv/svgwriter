@@ -13,10 +13,15 @@ from typing import Any
 
 import skia
 
-from .._internal._font_constants import AXIS_WEIGHT, FONT_MIME, REGULAR_SUBFAMILY, STANDALONE_SUFFIXES
-from .._internal._font_match import FaceStyle, FontStyle, Range, axis_tag
-from .._internal._font_names import face_count
-from .._internal._sfnt import font_format, sfnt_bytes
+from .._internal._typography._font_constants import (
+    AXIS_WEIGHT,
+    FONT_MIME,
+    REGULAR_SUBFAMILY,
+    STANDALONE_SUFFIXES,
+)
+from .._internal._typography._font_match import FaceStyle, FontStyle, Range, axis_tag
+from .._internal._typography._font_names import face_count
+from .._internal._typography._sfnt import font_format, sfnt_bytes
 from ._constants import DEFAULT_FONT_SIZE, FAMILY_IDENTIFIER
 
 __all__ = ["Face", "FaceMetrics", "css_family"]
@@ -162,7 +167,7 @@ class Face:
         Examples
         --------
         >>> import skia
-        >>> from svgwriter._internal._font_match import describe
+        >>> from svgwriter._internal._typography._font_match import describe
         >>> from svgwriter.ops import Face
         >>> typeface = skia.Typeface("sans-serif")
         >>> Face.of("Sans", typeface, describe(typeface)).family

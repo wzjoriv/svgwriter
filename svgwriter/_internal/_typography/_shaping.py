@@ -7,7 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from ._constants import (
+from .._constants import (
     CJK_START,
     COMPLEX_SCRIPT_START,
     EMOJI_END,
@@ -18,7 +18,7 @@ from ._constants import (
 from ._fonts import color_font
 
 if TYPE_CHECKING:
-    from ..pathdata import PathData
+    from ...pathdata import PathData
 
 __all__ = ["ColorGlyphs", "harfbuzz", "hb_font", "needs_shaping", "shape_run"]
 
@@ -40,8 +40,8 @@ class ColorGlyphs:
 
     Examples
     --------
-    >>> from svgwriter._internal._fonts import font_for
-    >>> from svgwriter._internal._shaping import ColorGlyphs
+    >>> from svgwriter._internal._typography._fonts import font_for
+    >>> from svgwriter._internal._typography._shaping import ColorGlyphs
     >>> ColorGlyphs("x", font_for("x", "sans-serif", 16), (1,), ((0.0, 0.0),)).glyphs
     (1,)
     """
@@ -119,16 +119,16 @@ def shape_run(text: str, font: Any) -> list[tuple[PathData, float, ColorGlyphs |
 
     Examples
     --------
-    >>> from svgwriter._internal._fonts import font_for
-    >>> from svgwriter._internal._shaping import needs_shaping, shape_run
+    >>> from svgwriter._internal._typography._fonts import font_for
+    >>> from svgwriter._internal._typography._shaping import needs_shaping, shape_run
     >>> needs_shaping("plain latin")
     False
     >>> [advance > 0 for _, advance, _ in shape_run("ab", font_for("a", "sans-serif", 16))]
     [False, True]
     """
-    from ..ops import from_skia
-    from ..pathdata import PathData
-    from ..transform import Matrix
+    from ...ops import from_skia
+    from ...pathdata import PathData
+    from ...transform import Matrix
 
     hb = harfbuzz()
     if hb is None:

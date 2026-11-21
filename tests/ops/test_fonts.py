@@ -4,7 +4,7 @@ import pytest
 import skia
 
 import svgwriter as svg
-from svgwriter._internal import _fonts, _shaping
+from svgwriter._internal._typography import _fonts, _shaping
 
 EM = 1000
 

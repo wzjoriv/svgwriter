@@ -10,10 +10,10 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 
 from ..._internal._constants import PX_PER_INCH, PX_PER_PT
-from ..._internal._emoji import color_glyph_images
 from ..._internal._flatten import Item, flatten, to_cubic
 from ..._internal._numbers import format_number
 from ..._internal._paints import Shading
+from ..._internal._typography._emoji import color_glyph_images
 from ...transform.matrix import Matrix
 from ._constants import (
     AXIAL,

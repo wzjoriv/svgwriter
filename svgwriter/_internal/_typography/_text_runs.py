@@ -8,13 +8,13 @@ import math
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
-from ._constants import DEFAULT_SIZE, JOIN_TOLERANCE
+from .._constants import DEFAULT_SIZE, JOIN_TOLERANCE
 
 if TYPE_CHECKING:
-    from ..color.color import Color
-    from ..document import Document
-    from ..elements.core import Element
-    from ..transform.matrix import Matrix
+    from ...color.color import Color
+    from ...document import Document
+    from ...elements.core import Element
+    from ...transform.matrix import Matrix
 
 __all__ = ["TextRun", "text_runs"]
 
@@ -58,7 +58,7 @@ class TextRun:
 
 
 def _font(source: Element, rules: list[Any]) -> tuple[str, float, bool, bool]:
-    from ..attributes.cascade import computed
+    from ...attributes.cascade import computed
     from ._fonts import font_size, font_weight
 
     family = str(computed(source, "font-family", "sans-serif", rules))
@@ -92,13 +92,13 @@ def text_runs(document: Document, *, color_glyphs: bool = True) -> list[TextRun]
     >>> [(run.text, run.size, round(run.matrix.e, 1)) for run in text_runs(doc)]
     [('Hello', 20.0, 10.0)]
     """
-    from ..attributes.cascade import rules_of
-    from ..elements import Text
-    from ..ops.render import page_size
-    from ._flatten import _number
-    from ._layers import ancestry
-    from ._paints import _paint
-    from ._rendering import view_matrix
+    from ...attributes.cascade import rules_of
+    from ...elements import Text
+    from ...ops.render import page_size
+    from .._flatten import _number
+    from .._layers import ancestry
+    from .._paints import _paint
+    from .._rendering import view_matrix
 
     runs: list[TextRun] = []
     with document._prepared():
@@ -139,7 +139,7 @@ def _continues(previous: Any, box: Any) -> bool:
 
 
 def _run(boxes: list[Any], page: Matrix, opacity: float, rules: list[Any], font: Any, paint: Any, number: Any) -> TextRun:
-    from ..transform.matrix import Matrix
+    from ...transform.matrix import Matrix
 
     first, last = boxes[0], boxes[-1]
     family, size, bold, italic = font(first.source, rules)

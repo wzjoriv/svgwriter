@@ -11,14 +11,14 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 import skia
 
-from ._constants import CHANNEL_MAX, EMOJI_CELL_LEVELS, EMOJI_PIXELS_PER_EM
+from .._constants import CHANNEL_MAX, EMOJI_CELL_LEVELS, EMOJI_PIXELS_PER_EM
 
 if TYPE_CHECKING:
-    from ..document import Document
-    from ..elements.structure import Pixels
-    from ..ops.text import GlyphBox
-    from ..transform.matrix import Matrix
-    from ._flatten import Item
+    from ...document import Document
+    from ...elements.structure import Pixels
+    from ...ops.text import GlyphBox
+    from ...transform.matrix import Matrix
+    from .._flatten import Item
     from ._shaping import ColorGlyphs
 
 __all__ = ["color_glyph_boxes", "color_glyph_cells", "color_glyph_images", "draw_glyphs", "render_color_glyphs"]
@@ -49,8 +49,8 @@ def draw_glyphs(canvas: skia.Canvas, font: Any, glyphs: Sequence[int], offsets: 
     --------
     >>> import skia
     >>> from svgwriter import Matrix
-    >>> from svgwriter._internal._emoji import draw_glyphs
-    >>> from svgwriter._internal._fonts import font_for
+    >>> from svgwriter._internal._typography._emoji import draw_glyphs
+    >>> from svgwriter._internal._typography._fonts import font_for
     >>> font = font_for("A", "sans-serif", 16)
     >>> draw_glyphs(skia.Surface(20, 20).getCanvas(), font, font.textToGlyphs("A"), [(2.0, 16.0)], Matrix(),
     ...             skia.Paint())
@@ -85,13 +85,13 @@ def render_color_glyphs(color: ColorGlyphs, alpha: float = 1.0,
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._emoji import render_color_glyphs
+    >>> from svgwriter._internal._typography._emoji import render_color_glyphs
     >>> boxes = [b for b in svg.Text("\\U0001f600", x=0, y=0, font_size=20).layout() if b.color]
     >>> all(render_color_glyphs(b.color)[0].rgba().shape[0] > 0 for b in boxes)
     True
     """
-    from ..elements.structure import Pixels
-    from ..transform.matrix import Matrix
+    from ...elements.structure import Pixels
+    from ...transform.matrix import Matrix
 
     bounds = color.font.getBounds(list(color.glyphs))
     left = min(rect.left() + dx for rect, (dx, _) in zip(bounds, color.offsets, strict=True))
@@ -127,20 +127,20 @@ def color_glyph_boxes(document: Document) -> Iterator[tuple[GlyphBox, Matrix, fl
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._emoji import color_glyph_boxes
+    >>> from svgwriter._internal._typography._emoji import color_glyph_boxes
     >>> doc = svg.Document(40, 20)
     >>> _ = doc.text("plain", x=0, y=15)
     >>> list(color_glyph_boxes(doc))
     []
     """
-    from ..attributes.cascade import rules_of
-    from ..elements import Text
-    from ..ops.render import page_size
-    from ..transform.matrix import Matrix
-    from ._flatten import _hidden, _number
-    from ._layers import ancestry, drawable_order
-    from ._paints import _paint
-    from ._rendering import view_matrix
+    from ...attributes.cascade import rules_of
+    from ...elements import Text
+    from ...ops.render import page_size
+    from ...transform.matrix import Matrix
+    from .._flatten import _hidden, _number
+    from .._layers import ancestry, drawable_order
+    from .._paints import _paint
+    from .._rendering import view_matrix
 
     with document._prepared():
         width, height = page_size(document)
@@ -181,7 +181,7 @@ def color_glyph_images(document: Document, pixels_per_em: float = EMOJI_PIXELS_P
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._emoji import color_glyph_images
+    >>> from svgwriter._internal._typography._emoji import color_glyph_images
     >>> color_glyph_images(svg.Document(10, 10))
     []
     """
@@ -214,13 +214,13 @@ def color_glyph_cells(document: Document, pixels_per_em: float) -> list[Item]:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._emoji import color_glyph_cells
+    >>> from svgwriter._internal._typography._emoji import color_glyph_cells
     >>> color_glyph_cells(svg.Document(10, 10), 24)
     []
     """
-    from ..color.color import Color
-    from ..pathdata import PathBuilder
-    from ._flatten import Item
+    from ...color.color import Color
+    from ...pathdata import PathBuilder
+    from .._flatten import Item
 
     items: list[Item] = []
     step = EMOJI_CELL_LEVELS - 1
