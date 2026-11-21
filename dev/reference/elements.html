@@ -392,6 +392,46 @@ arguments use Python spelling (<code class="docutils literal notranslate"><span 
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="svgwriter.elements.Element.home">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">home</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.elements.Element" title="svgwriter.elements.core._element.Element"><span class="pre">Element</span></a></span><a class="headerlink" href="#svgwriter.elements.Element.home" title="Link to this definition">¶</a></dt>
+<dd><p>a detached copy to start each frame from.</p>
+<p>A behavior that sets the state from <a class="reference internal" href="#svgwriter.elements.Element.home" title="svgwriter.elements.Element.home"><code class="xref py py-attr docutils literal notranslate"><span class="pre">home</span></code></a> (<code class="docutils literal notranslate"><span class="pre">element.t</span> <span class="pre">=</span> <span class="pre">element.home.t</span></code>, then a relative move)
+computes every frame afresh, so the motion never drifts and frames can be drawn in any order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Element</em> – The copy <code class="xref py py-meth docutils literal notranslate"><span class="pre">Scene.attach</span></code> took.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If no behavior has been attached to this element.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="builder.html#svgwriter.preset.behavior" title="svgwriter.preset.behavior"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.preset.behavior</span></code></a></dt><dd><p>Write a behavior.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Hop</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mf">1.0</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">dot</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">hover</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">element</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span> <span class="o">=</span> <span class="n">Hop</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">dot</span><span class="o">.</span><span class="n">cy</span> <span class="o">=</span> <span class="mi">31</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="p">(</span><span class="n">scene</span><span class="o">.</span><span class="n">dot</span><span class="o">.</span><span class="n">home</span><span class="o">.</span><span class="n">cy</span><span class="p">)</span>
+<span class="go">30.0</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The element as it was when its first behavior was attached</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.elements.Element.computed">
 <span class="sig-name descname"><span class="pre">computed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/elements/core/_element.html#Element.computed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.elements.Element.computed" title="Link to this definition">¶</a></dt>
@@ -7450,7 +7490,8 @@ state; default True) and <code class="docutils literal notranslate"><span class=
 (a name such as <code class="docutils literal notranslate"><span class="pre">&quot;ease-in-out&quot;</span></code>, a bézier 4-tuple, <code class="docutils literal notranslate"><span class="pre">(&quot;steps&quot;,</span> <span class="pre">n)</span></code> or
 a function; see <code class="xref py py-class docutils literal notranslate"><span class="pre">Ease</span></code>). <code class="docutils literal notranslate"><span class="pre">show</span></code> and <code class="docutils literal notranslate"><span class="pre">hide</span></code> act at
 one instant, so they take only the moment. Presets added with
-<a class="reference internal" href="builder.html#svgwriter.preset.animation" title="svgwriter.preset.animation"><code class="xref py py-func docutils literal notranslate"><span class="pre">&#64;svg.preset.animation</span></code></a> are methods too.</p>
+<a class="reference internal" href="builder.html#svgwriter.preset.animation" title="svgwriter.preset.animation"><code class="xref py py-func docutils literal notranslate"><span class="pre">&#64;svg.preset.animation</span></code></a> are methods too, and so are behaviors
+(<a class="reference internal" href="builder.html#svgwriter.preset.behavior" title="svgwriter.preset.behavior"><code class="xref py py-func docutils literal notranslate"><span class="pre">&#64;svg.preset.behavior</span></code></a>), which attach to the scene owning the element.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>element</strong> (<a class="reference internal" href="#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – What to animate.</p>
@@ -7712,6 +7753,7 @@ rewritten to the matched start shape, which looks the same.</p>
 <li><a class="reference internal" href="#svgwriter.elements.Element.content"><code class="docutils literal notranslate"><span class="pre">Element.content</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.id"><code class="docutils literal notranslate"><span class="pre">Element.id</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.animate"><code class="docutils literal notranslate"><span class="pre">Element.animate</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.elements.Element.home"><code class="docutils literal notranslate"><span class="pre">Element.home</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.computed"><code class="docutils literal notranslate"><span class="pre">Element.computed()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.clone"><code class="docutils literal notranslate"><span class="pre">Element.clone()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.copy"><code class="docutils literal notranslate"><span class="pre">Element.copy()</span></code></a></li>

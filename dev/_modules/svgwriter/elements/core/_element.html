@@ -451,6 +451,45 @@
 
         <span class="k">return</span> <span class="n">Motion</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">home</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Element</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The element as it was when its first behavior was attached: a detached copy to start each frame from.</span>
+
+<span class="sd">        A behavior that sets the state from :attr:`home` (``element.t = element.home.t``, then a relative move)</span>
+<span class="sd">        computes every frame afresh, so the motion never drifts and frames can be drawn in any order.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Element</span>
+<span class="sd">            The copy :meth:`Scene.attach &lt;svgwriter.Scene.attach&gt;` took.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If no behavior has been attached to this element.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        svgwriter.preset.behavior : Write a behavior.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">        &gt;&gt;&gt; class Hop(svg.Scene):</span>
+<span class="sd">        ...     width, height, duration = 40, 40, 1.0</span>
+<span class="sd">        ...     def build(self, doc):</span>
+<span class="sd">        ...         self.dot = doc.circle(20, 30, 4).animate.hover(height=10).element</span>
+<span class="sd">        &gt;&gt;&gt; scene = Hop()</span>
+<span class="sd">        &gt;&gt;&gt; scene.dot.cy = 31</span>
+<span class="sd">        &gt;&gt;&gt; float(scene.dot.home.cy)</span>
+<span class="sd">        30.0</span>
+<span class="sd">        """</span>
+        <span class="n">home</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"_home"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">home</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="si">}</span><span class="s2">&gt; has no home yet: it is recorded when a behavior is attached "</span>
+                             <span class="s2">"(Scene.attach or element.animate.&lt;behavior&gt;)"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">home</span>  <span class="c1"># type: ignore[no-any-return]</span>
+
 <div class="viewcode-block" id="Element.computed">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.Element.computed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">computed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>

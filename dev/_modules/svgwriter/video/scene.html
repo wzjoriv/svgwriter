@@ -292,10 +292,12 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">ClassVar</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.._document.sizes</span><span class="w"> </span><span class="kn">import</span> <span class="n">page_size</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._document.sizes</span><span class="w"> </span><span class="kn">import</span> <span class="n">PageSize</span><span class="p">,</span> <span class="n">page_size</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._scenes</span><span class="w"> </span><span class="kn">import</span> <span class="n">adopt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyPath</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">SCENE_FORMAT</span><span class="p">,</span> <span class="n">SCENE_HEIGHT</span><span class="p">,</span> <span class="n">SCENE_RENDERER</span><span class="p">,</span> <span class="n">SCENE_WIDTH</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.animation</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_FPS</span><span class="p">,</span> <span class="n">Renderer</span><span class="p">,</span> <span class="n">iter_frames</span><span class="p">,</span> <span class="n">render_animation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">BAKE_DOCUMENTS</span><span class="p">,</span> <span class="n">SCENE_FORMAT</span><span class="p">,</span> <span class="n">SCENE_HEIGHT</span><span class="p">,</span> <span class="n">SCENE_RENDERER</span><span class="p">,</span> <span class="n">SCENE_WIDTH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._scene_motion</span><span class="w"> </span><span class="kn">import</span> <span class="n">SceneMotion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.animation</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_FPS</span><span class="p">,</span> <span class="n">Renderer</span><span class="p">,</span> <span class="n">animation_duration</span><span class="p">,</span> <span class="n">iter_frames</span><span class="p">,</span> <span class="n">render_animation</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.frames</span><span class="w"> </span><span class="kn">import</span> <span class="n">Frame</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -307,13 +309,14 @@
 
 <div class="viewcode-block" id="Scene">
 <a class="viewcode-back" href="../../../reference/video.html#svgwriter.video.Scene">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Scene</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Scene</span><span class="p">(</span><span class="n">SceneMotion</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""An animation: a drawing built once, then changed over time.</span>
 
 <span class="sd">    Subclass it, set the class attributes and override :meth:`build` and,</span>
-<span class="sd">    for procedural motion, :meth:`update`. SMIL animations in the drawing</span>
-<span class="sd">    play as well. One file can hold several scenes; ``svgwriter animate``</span>
-<span class="sd">    renders each one.</span>
+<span class="sd">    for procedural motion, :meth:`update`; :meth:`attach` adds reusable</span>
+<span class="sd">    behaviors. SMIL animations in the drawing play as well. Saving as SVG or</span>
+<span class="sd">    PowerPoint bakes the Python motion into SMIL (:meth:`bake`). One file</span>
+<span class="sd">    can hold several scenes; ``svgwriter animate`` renders each one.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -327,9 +330,9 @@
 <span class="sd">    ----------</span>
 <span class="sd">    width, height : float</span>
 <span class="sd">        Size of the document handed to :meth:`build`. Default 640 by 360.</span>
-<span class="sd">    size : str or None</span>
-<span class="sd">        A named size instead (``"video-1080p"``, ``"instagram-story"``, ... see</span>
-<span class="sd">        :data:`~svgwriter.SIZES`); it sets `width` and `height`. Default None.</span>
+<span class="sd">    size : str, PageSize or None</span>
+<span class="sd">        A named size instead (``"video-1080p"``, ``svg.size.instagram_story``, ... see</span>
+<span class="sd">        :data:`~svgwriter.size`); it sets `width` and `height`. Default None.</span>
 <span class="sd">    fps : float</span>
 <span class="sd">        Frames per second. Default 30.0.</span>
 <span class="sd">    duration : float or None</span>
@@ -375,7 +378,7 @@
 
     <span class="n">width</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">SCENE_WIDTH</span>
     <span class="n">height</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">SCENE_HEIGHT</span>
-    <span class="n">size</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">size</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PageSize</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">fps</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_FPS</span>
     <span class="n">duration</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">renderer</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Renderer</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">SCENE_RENDERER</span>
@@ -388,13 +391,17 @@
             <span class="bp">cls</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">document</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span><span class="w"> </span><span class="nn">..document</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..document</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span>
 
-            <span class="n">document</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="k">else</span> <span class="n">Document</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span> <span class="o">=</span> <span class="n">document</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_behaviors</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="n">built</span> <span class="o">=</span> <span class="n">document</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">document</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">document</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="k">else</span> <span class="n">Document</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span> <span class="o">=</span> <span class="n">document</span>
+        <span class="n">adopt</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">built</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fps</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> fps&gt;"</span>
@@ -428,7 +435,7 @@
 <div class="viewcode-block" id="Scene.update">
 <a class="viewcode-back" href="../../../reference/video.html#svgwriter.video.Scene.update">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Set the drawing to its state at *seconds*; called before every frame.</span>
+<span class="w">        </span><span class="sd">"""Set the drawing to its state at *seconds*; called before every frame, after the behaviors.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -470,9 +477,6 @@
 <span class="sd">        640.0</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_advance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Scene.frames">
 <a class="viewcode-back" href="../../../reference/video.html#svgwriter.video.Scene.frames">[docs]</a>
@@ -546,7 +550,7 @@
 <span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">..ops.render</span><span class="w"> </span><span class="kn">import</span> <span class="n">render_png</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_advance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">render_png</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">document</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">seconds</span><span class="p">),</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="n">background</span><span class="p">)</span></div>
 
 
@@ -554,16 +558,18 @@
 <a class="viewcode-back" href="../../../reference/video.html#svgwriter.video.Scene.save">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">AnyPath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">fps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
              <span class="n">renderer</span><span class="p">:</span> <span class="n">Renderer</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ffmpeg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Render the scene and encode it with ffmpeg.</span>
+<span class="w">        </span><span class="sd">"""Render the scene and encode it with ffmpeg, or bake it into an animated SVG or PowerPoint deck.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        path : str or path-like, optional</span>
 <span class="sd">            Output file; the extension picks the format (``.mp4``, ``.gif``,</span>
 <span class="sd">            ``.webm``, ``.mov``, ``.apng``; ``.png`` writes numbered frames).</span>
+<span class="sd">            ``.svg``, ``.svgz``, ``.html`` and ``.pptx`` save :meth:`bake`'s</span>
+<span class="sd">            document instead, without ffmpeg.</span>
 <span class="sd">            Defaults to ``&lt;name&gt;.mp4`` in the current folder.</span>
 <span class="sd">        fps : float, optional</span>
-<span class="sd">            Overrides the class's ``fps``.</span>
+<span class="sd">            Overrides the class's ``fps`` (the sampling rate when baking).</span>
 <span class="sd">        duration : float, optional</span>
 <span class="sd">            Overrides the class's ``duration``.</span>
 <span class="sd">        renderer : callable or str, optional</span>
@@ -598,15 +604,24 @@
 <span class="sd">        svgwriter.video._ffmpeg.FFmpegNotFoundError: ...</span>
 <span class="sd">        """</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">SCENE_FORMAT</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">BAKE_DOCUMENTS</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bake</span><span class="p">(</span><span class="n">fps</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">target</span>
         <span class="k">return</span> <span class="n">render_animation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">document</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fps</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">fps</span><span class="p">,</span> <span class="n">duration</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span>
                                 <span class="n">renderer</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">renderer</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_advance</span><span class="p">,</span> <span class="n">ffmpeg</span><span class="o">=</span><span class="n">ffmpeg</span><span class="p">)</span></div>
 
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_shown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Document</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""What a notebook displays: the baked document when Python moves the drawing, else the drawing."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moves</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">duration</span> <span class="ow">or</span> <span class="n">animation_duration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">document</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bake</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">document</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_repr_svg_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">document</span><span class="o">.</span><span class="n">_repr_svg_</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shown</span><span class="p">()</span><span class="o">.</span><span class="n">_repr_svg_</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">document</span><span class="o">.</span><span class="n">_repr_html_</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shown</span><span class="p">()</span><span class="o">.</span><span class="n">_repr_html_</span><span class="p">()</span></div>
 
 </pre></div>
         </article>
