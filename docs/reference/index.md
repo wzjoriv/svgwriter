@@ -16,6 +16,7 @@ export
 io
 attributes
 builder
+presets
 theme
 inkscape
 video

@@ -33,6 +33,5 @@ stacked = soft >> drop
 print(len(stacked.primitives))
 ```
 
-Ready-made effects live in `svgwriter.builder`: `drop_shadow(dx, dy, blur, color)`, `glow(radius)` and
-`arrow_marker(...)`, alongside composite shapes such as `star`, `heart`, `callout` and `wave`; see
-[Composite shapes and effects](../reference/builder.md) for all of them and how to register your own.
+Ready-made filters live in `svg.filters` (`drop_shadow`, `glow`, `long_shadow`, `outline`, `goo`, ...),
+with patterns, gradients, markers and text effects beside them; see the [Presets guide](presets.md).

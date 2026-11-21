@@ -9,7 +9,7 @@ import svgwriter as svg
 def _arrow_document():
     doc = svg.Document(100, 40)
     doc.rect(0, 0, 100, 40, fill="white")
-    doc.path("M10 20 L80 20", fill="none", stroke="red", stroke_width=2, marker_end=svg.builder.arrow_marker("red", 6))
+    doc.path("M10 20 L80 20", fill="none", stroke="red", stroke_width=2, marker_end=svg.markers.arrow(6, color="red"))
     return doc
 
 

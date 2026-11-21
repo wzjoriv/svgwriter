@@ -4,7 +4,6 @@ import pytest
 
 import svgwriter as svg
 from svgwriter import builder
-from tests.conftest import wellformed
 
 
 class TestPresets:
@@ -96,24 +95,10 @@ class TestRegistry:
 
     def test_unknown_kind(self) -> None:
         with pytest.raises(ValueError, match="kinds: animation, behavior, shape"):
-            svg.preset.list("pattern")
+            svg.preset.list("nope")
 
 
-class TestEffects:
-    def test_drop_shadow_is_a_valid_graph(self) -> None:
-        shadow = svg.drop_shadow(3, 3, 2, "navy", 0.4, id="shadow")
-        results = {p.get("result") for p in shadow.primitives if p.has("result")}
-        inputs = {p.get("in") for p in shadow.iter() if p.has("in")} | {p.get("in2") for p in shadow.iter() if p.has("in2")}
-        standard = {svg.StandardInput.SOURCE_ALPHA, svg.StandardInput.SOURCE_GRAPHIC}
-        assert inputs <= results | standard
-        assert shadow.get("x") == "-20%"
-        wellformed(svg.Svg(svg.Defs(shadow)).to_string())
-
-    def test_glow_and_marker(self) -> None:
-        assert len(builder.glow(4).primitives) == 2
-        marker = builder.arrow_marker("red", 8, id="head")
-        assert marker.get("orient") == "auto" and marker.view_box == svg.ViewBox(0, 0, 8, 8)
-
+class TestDrawing:
     def test_drawing_decorator(self) -> None:
         @svg.drawing(50, 40, id="pic")
         def picture(doc: svg.Document, color: str, *, radius: float = 5) -> None:
@@ -126,12 +111,3 @@ class TestEffects:
         assert picture.__name__ == "picture"
 
 
-class TestThemedMarker:
-    def test_default_head_follows_the_theme(self) -> None:
-        marker = svg.builder.arrow_marker()
-        head = marker[0]
-        assert head.classes == ["role-arrow-head"] and head.get("fill") == "black"
-        doc = svg.Document(20, 20, theme="dark")
-        doc.define(marker)
-        assert ".role-arrow-head { fill:#e5e7eb" in doc.to_string()
-        assert svg.builder.arrow_marker("red")[0].classes == []

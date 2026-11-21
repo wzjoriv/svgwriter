@@ -53,7 +53,7 @@ def formats_drawing(*, formula: bool = True) -> svg.Document:
     doc.add(svg.Rect(340, 120, 40, 80, fill="#14b8a6", clip_path=clip))
     tilted = doc.add(svg.Group(transform="rotate(20 60 200)"))
     tilted.add(svg.rect(30, 180, 60, 30, fill="#a855f7", stroke="#3b0764", stroke_width=2))
-    head = svg.builder.arrow_marker("#dc2626", 6)
+    head = svg.markers.arrow(6, color="#dc2626")
     doc.path("M110 220 Q150 160 190 220", fill="none", stroke="#dc2626", stroke_width=3, marker_end=head)
     doc.add(svg.builder.star(240, 240, 35, 15, points=5, fill="#fbbf24", stroke="#92400e", stroke_width=2))
     doc.add(svg.Image(_picture(), 300, 215, 60, 60))

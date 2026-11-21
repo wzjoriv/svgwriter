@@ -26,7 +26,8 @@ def list(kind: str) -> builtins.list[str]:
     Parameters
     ----------
     kind : str
-        ``"animation"``, ``"behavior"``, ``"shape"`` or ``"size"``.
+        ``"animation"``, ``"behavior"``, ``"shape"``, ``"size"``, ``"pattern"``, ``"filter"``, ``"gradient"``,
+        ``"marker"`` or ``"text_effect"``.
 
     Returns
     -------
@@ -53,7 +54,8 @@ def get(kind: str, name: str) -> Any:
     Parameters
     ----------
     kind : str
-        ``"animation"``, ``"behavior"``, ``"shape"`` or ``"size"``.
+        ``"animation"``, ``"behavior"``, ``"shape"``, ``"size"``, ``"pattern"``, ``"filter"``, ``"gradient"``,
+        ``"marker"`` or ``"text_effect"``.
     name : str
         The preset name.
 
@@ -61,8 +63,9 @@ def get(kind: str, name: str) -> Any:
     -------
     callable
         A shape factory, a :class:`~svgwriter.PageSize`, an animation function ``f(motion, ...)`` for
-        :meth:`Motion.apply <svgwriter.Motion.apply>`, or a behavior ``f(element, seconds, ...)`` for
-        :meth:`Scene.attach <svgwriter.Scene.attach>`.
+        :meth:`Motion.apply <svgwriter.Motion.apply>`, a behavior ``f(element, seconds, ...)`` for
+        :meth:`Scene.attach <svgwriter.Scene.attach>`, a pattern, filter, gradient or marker factory, or a
+        text effect ``f(text_or_range, ...)``.
 
     Raises
     ------
@@ -90,7 +93,8 @@ def unregister(kind: str, name: str) -> None:
     Parameters
     ----------
     kind : str
-        ``"animation"``, ``"behavior"``, ``"shape"`` or ``"size"``.
+        ``"animation"``, ``"behavior"``, ``"shape"``, ``"size"``, ``"pattern"``, ``"filter"``, ``"gradient"``,
+        ``"marker"`` or ``"text_effect"``.
     name : str
         The registered name.
 

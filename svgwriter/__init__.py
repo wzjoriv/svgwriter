@@ -38,9 +38,12 @@ io
     Serialization options, writers (string, file, stream, async) and the
     parser.
 builder
-    Composite shapes (star, gear, arrow) and effects (shadow, glow).
+    Composite shapes (star, gear, arrow) and the ``drawing`` decorator.
+patterns, gradients, filters, markers, text_effects
+    Ready-made paints, filters, line markers and text effects (``fill=svg.patterns.stripes()``,
+    ``el.filter = svg.filters.glow()``, ``text[4:9].effect("fire")``).
 preset
-    Presets of your own by kind (``@svg.preset.animation``, ``@svg.preset.shape``).
+    Presets of your own by kind (``@svg.preset.animation``, ``@svg.preset.shape``, ``@svg.preset.pattern``).
 project
     Design projects: ``svgwriter.toml``, presets, building and live preview (``Project``).
 layout
@@ -70,7 +73,22 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from . import export, inkscape, layout, ops, preset, project, theme, video, widgets
+from . import (
+    export,
+    filters,
+    gradients,
+    inkscape,
+    layout,
+    markers,
+    ops,
+    patterns,
+    preset,
+    project,
+    text_effects,
+    theme,
+    video,
+    widgets,
+)
 from ._document.sizes import PageSize, page_size, size
 from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
@@ -105,7 +123,7 @@ from .attributes import (
     turn,
 )
 from .attributes.units import angle, length
-from .builder import drawing, drop_shadow
+from .builder import drawing
 from .color import Color, PaintKeyword, parse_color, parse_paint
 from .document import Document
 from .elements import *  # noqa: F403
@@ -199,7 +217,6 @@ __all__ = [
     "__version__",
     "cm",
     "drawing",
-    "drop_shadow",
     "em",
     "inch",
     "ft",
@@ -224,13 +241,17 @@ __all__ = [
     "parse_file",
     "parse_paint",
     "export",
+    "filters",
+    "gradients",
     "inkscape",
     "layout",
     "Grid",
     "HStack",
     "Spacer",
     "VStack",
+    "markers",
     "ops",
+    "patterns",
     "preset",
     "project",
     "Project",
@@ -239,6 +260,7 @@ __all__ = [
     "px",
     "register_renderer",
     "size",
+    "text_effects",
     "text_to_path",
     "theme",
     "unregister_interpolator",
