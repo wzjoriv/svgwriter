@@ -1,0 +1,11 @@
+# The explainer: two scenes, written as a video, an animated SVG per scene and a PowerPoint deck.
+# Without ffmpeg, build the GIF instead: `svgwriter build --format gif` (or run `python main.py`).
+[project]
+name = "planets-explainer"
+entry = "main:scenes"     # a list of Scene classes, one clip each
+theme = "theme.toml"
+
+[outputs]
+formats = ["mp4", "svg", "pptx"]
+mp4 = { fps = 30 }
+gif = { fps = 12, scale = 0.5 }

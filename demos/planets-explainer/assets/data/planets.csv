@@ -1,0 +1,9 @@
+name,au,color,radius
+Mercury,0.387,#b5a7a0,3
+Venus,0.723,#e8c27a,5
+Earth,1.000,#4f9be8,5
+Mars,1.524,#d9673c,4
+Jupiter,5.203,#d9b38c,11
+Saturn,9.537,#e6d29b,9
+Uranus,19.19,#9fd8e3,7
+Neptune,30.07,#4f6fe0,7
