@@ -1,10 +1,9 @@
 # Goo blobs: a looping scene, written as a GIF and as an animated SVG (the motion baked into SMIL).
 [project]
 name = "blobs"
-entry = "main:Blobs"
+entry = "main:blobs"
 theme = "theme.toml"
 
 [outputs]
 formats = ["gif", "svg"]
 gif = { fps = 15 }
-svg = { fps = 15 }

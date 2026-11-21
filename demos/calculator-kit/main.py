@@ -16,7 +16,7 @@ PALETTES = {"tangerine": "#f97316", "indigo": "#4f46e5", "teal": "#0d9488", "ros
 WEIGHTS = {"light": 300, "regular": 400, "medium": 500, "bold": 700}
 DESK = 40          # desk margin around the calculator
 GLASS_BLOBS = (("#f472b6", 0.15, 0.2, 0.45), ("#38bdf8", 0.85, 0.35, 0.5), ("#facc15", 0.4, 0.9, 0.4))
-"""Colour, x, y (shares of the desk) and radius (share of the width) of the blobs behind a glass shell."""
+# colour, x, y (shares of the desk) and radius (share of the width) of the blobs behind a glass shell
 
 # %% [markdown]
 # The controls: rows of buttons for the styles, sliders for the spacing, a toggle for the history line and
