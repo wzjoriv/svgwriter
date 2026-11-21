@@ -251,6 +251,10 @@ def test_collections_load_every_face():
     assert typeface.measure("A", 100, weight=BOLD) == pytest.approx(70)
     single = skia.Typeface.MakeFromData(skia.Data.MakeWithCopy(typeface.face(BOLD).data))
     assert single.fontStyle().weight() == BOLD
+    from svgwriter._internal._sfnt import collection_member
+
+    member = skia.Typeface.MakeFromData(skia.Data.MakeWithCopy(collection_member(buffer.getvalue(), 1)))
+    assert member.fontStyle().weight() == BOLD
 
 
 def test_sources_may_be_streams_and_data_uris():
@@ -267,7 +271,9 @@ def test_css_can_reference_instead_of_embed(family):
     assert f"local('{serif.name} {serif.face().subfamily}')" in serif.css([serif.face()], embed=False)
 
 
-def test_unknown_installed_family_suggests_close_names():
-    installed = svg.Typeface("sans-serif").name
-    with pytest.raises(LookupError, match="did you mean"):
-        svg.Typeface(installed[:-1] + "x")
+def test_unknown_installed_family_suggests_close_names(monkeypatch: pytest.MonkeyPatch):
+    from svgwriter.ops import _sources
+
+    monkeypatch.setattr(_sources, "_installed_families", lambda: ("Gill Sans", "Georgia", "Helvetica"))
+    with pytest.raises(LookupError, match="did you mean 'Georgia'"):
+        svg.Typeface("georgai")

@@ -10,6 +10,8 @@ from typing import Any
 from ._font_constants import (
     CFF_TABLES,
     CHECKSUM_MAGIC,
+    COLLECTION_COUNT,
+    COLLECTION_OFFSETS_AT,
     HEAD_ADJUSTMENT,
     HEAD_TABLE,
     SFNT_CFF,
@@ -21,7 +23,7 @@ from ._font_constants import (
 )
 from ._font_match import axis_tag
 
-__all__ = ["font_format", "sfnt_bytes"]
+__all__ = ["collection_member", "font_format", "sfnt_bytes"]
 
 
 def font_format(tags: list[str]) -> str:
@@ -40,7 +42,22 @@ def _checksum(data: bytes) -> int:
 
 def sfnt_bytes(typeface: Any) -> bytes:
     """A standalone TrueType/OpenType file holding every table of a skia typeface (one face of a collection)."""
-    tables = {str(axis_tag(tag)): bytes(typeface.getTableData(tag)) for tag in typeface.getTableTags()}
+    return _build({str(axis_tag(tag)): bytes(typeface.getTableData(tag)) for tag in typeface.getTableTags()})
+
+
+def collection_member(blob: bytes, index: int) -> bytes:
+    """Face *index* of a ``.ttc``/``.otc`` collection as a standalone font file, read from its table directory."""
+    record = struct.calcsize(SFNT_RECORD)
+    start = struct.unpack_from(COLLECTION_COUNT, blob, COLLECTION_OFFSETS_AT + index * struct.calcsize(COLLECTION_COUNT))[0]
+    count = struct.unpack_from(SFNT_HEADER, blob, start)[1]
+    tables = {}
+    for at in range(start + struct.calcsize(SFNT_HEADER), start + struct.calcsize(SFNT_HEADER) + count * record, record):
+        tag, _, offset, length = struct.unpack_from(SFNT_RECORD, blob, at)
+        tables[tag.decode("latin-1")] = blob[offset:offset + length]
+    return _build(tables)
+
+
+def _build(tables: dict[str, bytes]) -> bytes:
     if HEAD_TABLE in tables:
         head = bytearray(tables[HEAD_TABLE])
         head[HEAD_ADJUSTMENT] = bytes(HEAD_ADJUSTMENT.stop - HEAD_ADJUSTMENT.start)

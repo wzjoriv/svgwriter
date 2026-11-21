@@ -235,7 +235,7 @@ class Face:
         """
         units = self.typeface.getUnitsPerEm()
         found = skia.Font(self.typeface, units).getMetrics()
-        return FaceMetrics(units, -found.fAscent, found.fDescent, found.fXHeight, found.fCapHeight)
+        return FaceMetrics(units, *(round(value) for value in (-found.fAscent, found.fDescent, found.fXHeight, found.fCapHeight)))
 
     def at(self, weight: float) -> Face:
         """This face pinned to one weight of its range (a variable instance).

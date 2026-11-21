@@ -15,6 +15,7 @@ __all__ = [
     "CHECKSUM_MAGIC",
     "COLLECTION_COUNT",
     "COLLECTION_COUNT_AT",
+    "COLLECTION_OFFSETS_AT",
     "COLLECTION_TAG",
     "DATA_URI",
     "ENGLISH_US",
@@ -84,6 +85,8 @@ SUBFAMILY_STYLES: Final = ("italic", "oblique")
 COLLECTION_TAG: Final = b"ttcf"
 COLLECTION_COUNT: Final = ">I"
 COLLECTION_COUNT_AT: Final = 8
+COLLECTION_OFFSETS_AT: Final = 12
+"""Byte offset of the per-face table-directory offsets in a ``.ttc`` header."""
 DATA_URI: Final = "data:"
 BASE64_MARKER: Final = ";base64"
 SUGGESTIONS: Final = 3
