@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.export._exchange - svgwriter 2.1.0</title>
+        <title>svgwriter.export._exchange - svgwriter 2.2.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">svgwriter 2.1.0</div></a>
+      <a href="../../../index.html"><div class="brand">svgwriter 2.2.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.1.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.2.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.1.0</span>
+  <span class="sidebar-versions-label">2.2.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -223,6 +223,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -245,7 +247,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/builder.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/theme.html">Themes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/cli.html">Command line</a></li>
 </ul>
@@ -302,7 +306,7 @@
 
 <div class="viewcode-block" id="export">
 <a class="viewcode-back" href="../../../reference/export.html#svgwriter.export.export">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
            <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Convert *document* to *format* (a name or extension); returns ``bytes`` or ``str``.</span>
 
@@ -313,7 +317,7 @@
 <span class="sd">        (``"pdf"``: one page each; ``"pptx"``: one slide each).</span>
 <span class="sd">    format : str</span>
 <span class="sd">        A registered format name or an extension such as ``".pdf"``.</span>
-<span class="sd">    time : float, optional</span>
+<span class="sd">    seconds : float, optional</span>
 <span class="sd">        Export the SMIL animation frame at this many seconds (see</span>
 <span class="sd">        :meth:`Document.at`) instead of the document as written. Defaults to</span>
 <span class="sd">        None, which keeps animations (formats without animation show t = 0).</span>
@@ -346,26 +350,26 @@
 <span class="sd">    2</span>
 <span class="sd">    """</span>
     <span class="n">exporter</span> <span class="o">=</span> <span class="n">find_exporter</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">exporter</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">time</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">exporter</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span></div>
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">:</span> <span class="n">Exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""The document (or list of documents) to hand to *exporter*, at *time* when given."""</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">:</span> <span class="n">Exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The document (or list of documents) to hand to *exporter*, at *seconds* when given."""</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">document</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"no documents to export"</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">exporter</span><span class="o">.</span><span class="n">multipage</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"the </span><span class="si">{</span><span class="n">exporter</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> format holds one document; "</span>
                              <span class="sa">f</span><span class="s2">"export several to a multi-page format such as pdf or pptx"</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">page</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">page</span> <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">document</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">document</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">document</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">page</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span> <span class="k">if</span> <span class="n">seconds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">page</span> <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">document</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">document</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span> <span class="k">if</span> <span class="n">seconds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">document</span>
 
 
 <div class="viewcode-block" id="save">
 <a class="viewcode-back" href="../../../reference/export.html#svgwriter.export.save">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-         <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+         <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Write *document* to *path*, choosing the format from *format* or the file extension.</span>
 
 <span class="sd">    Parameters</span>
@@ -377,7 +381,7 @@
 <span class="sd">        Destination file.</span>
 <span class="sd">    format : str, optional</span>
 <span class="sd">        Format name overriding the extension. Defaults to None.</span>
-<span class="sd">    time : float, optional</span>
+<span class="sd">    seconds : float, optional</span>
 <span class="sd">        Save the SMIL animation frame at this many seconds instead of the</span>
 <span class="sd">        animated document. Defaults to None.</span>
 <span class="sd">    **options</span>
@@ -410,7 +414,7 @@
 <span class="sd">    True</span>
 <span class="sd">    """</span>
     <span class="n">exporter</span> <span class="o">=</span> <span class="n">find_exporter</span><span class="p">(</span><span class="nb">format</span> <span class="ow">or</span> <span class="n">path</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">exporter</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">time</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">exporter</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
     <span class="n">target</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
         <span class="n">target</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -500,7 +504,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=1d3a154c"></script>
+</div><script src="../../../_static/documentation_options.js?v=b06a6580"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

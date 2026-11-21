@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Attribute values and styles - svgwriter 2.1.0</title>
+        <title>Attribute values and styles - svgwriter 2.2.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.1.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.2.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.1.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.2.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.1.0</span>
+  <span class="sidebar-versions-label">2.2.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -224,6 +224,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -246,7 +248,9 @@
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="builder.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="theme.html">Themes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html">Command line</a></li>
 </ul>
@@ -2441,6 +2445,8 @@ are case-insensitive (<code class="docutils literal notranslate"><span class="pr
 <dt class="sig sig-object py" id="svgwriter.attributes.cascade.rules_of">
 <span class="sig-name descname"><span class="pre">rules_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><span class="pre">Element</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.attributes.cascade.Rule" title="svgwriter.attributes.cascade.Rule"><span class="pre">Rule</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/cascade.html#rules_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.cascade.rules_of" title="Link to this definition">¶</a></dt>
 <dd><p>Collect the rules of every <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> element under an element.</p>
+<p>Rules a document attaches to its root by class name (its theme’s role styles) come first, for the
+classes the tree uses, so measuring before output sees the same styles as the output.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>root</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – The element to search, including itself.</p>
@@ -2462,6 +2468,29 @@ are case-insensitive (<code class="docutils literal notranslate"><span class="pr
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">'&lt;svg xmlns="http://www.w3.org/2000/svg"&gt;&lt;style&gt;.a{fill:red}&lt;/style&gt;&lt;/svg&gt;'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">rule</span><span class="o">.</span><span class="n">selector</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">rules_of</span><span class="p">(</span><span class="n">doc</span><span class="p">)]</span>
 <span class="go">['.a']</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.attributes.cascade.set_class_rules">
+<span class="sig-name descname"><span class="pre">set_class_rules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><span class="pre">Element</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.attributes.cascade.Rule" title="svgwriter.attributes.cascade.Rule"><span class="pre">Rule</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/cascade.html#set_class_rules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.cascade.set_class_rules" title="Link to this definition">¶</a></dt>
+<dd><p>Attach rules by class name to <em>root</em>; <a class="reference internal" href="#svgwriter.attributes.cascade.rules_of" title="svgwriter.attributes.cascade.rules_of"><code class="xref py py-func docutils literal notranslate"><span class="pre">rules_of()</span></code></a> puts them first for the classes in use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – The root of a tree.</p></li>
+<li><p><strong>rules</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a><em> of </em><em>str to list</em><em> of </em><a class="reference internal" href="#svgwriter.attributes.cascade.Rule" title="svgwriter.attributes.cascade.Rule"><em>Rule</em></a>) – The rules of each class name, such as a theme’s role styles.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.cascade</span><span class="w"> </span><span class="kn">import</span> <span class="n">computed</span><span class="p">,</span> <span class="n">parse_css</span><span class="p">,</span> <span class="n">set_class_rules</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Svg</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">"a"</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">set_class_rules</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="p">{</span><span class="s2">"a"</span><span class="p">:</span> <span class="n">parse_css</span><span class="p">(</span><span class="s2">".a { fill: red }"</span><span class="p">)})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">computed</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">"fill"</span><span class="p">)</span>
+<span class="go">'red'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -2721,6 +2750,7 @@ are case-insensitive (<code class="docutils literal notranslate"><span class="pr
 <li><a class="reference internal" href="#svgwriter.attributes.cascade.parse_css"><code class="docutils literal notranslate"><span class="pre">parse_css()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.attributes.cascade.resolve_styles"><code class="docutils literal notranslate"><span class="pre">resolve_styles()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.attributes.cascade.rules_of"><code class="docutils literal notranslate"><span class="pre">rules_of()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.attributes.cascade.set_class_rules"><code class="docutils literal notranslate"><span class="pre">set_class_rules()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -2732,7 +2762,7 @@ are case-insensitive (<code class="docutils literal notranslate"><span class="pr
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=1d3a154c"></script>
+</div><script src="../_static/documentation_options.js?v=b06a6580"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

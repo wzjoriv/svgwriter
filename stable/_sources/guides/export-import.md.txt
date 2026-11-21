@@ -20,7 +20,7 @@ print(sorted(svg.export.exporters()))
 
 | Format | Extension(s) | Export | Import | Notes |
 |---|---|:---:|:---:|---|
-| SVG | `.svg` | ✓ | ✓ | the native format; ids, links, `<style>` and animation kept; `pretty`, `precision`, `compact_paths` |
+| SVG | `.svg` | ✓ | ✓ | the native format; ids, links, `<style>`, animation and [Inkscape data](inkscape.md) kept; `pretty`, `precision`, `compact_paths` |
 | SVGZ | `.svgz` | ✓ | ✓ | gzip-compressed SVG |
 | PNG | `.png` | ✓ | ✓ | `scale`, `size`, `padding`, `background`, `icc`; text becomes pixels; import is an `<image>` |
 | JPEG | `.jpg` `.jpeg` | ✓ | ✓ | `quality`, `icc`; import is an `<image>` |
@@ -83,7 +83,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 | SMIL animation | yes | one frame | one frame | one frame | one frame | slide effects, both ways | one frame | one frame | one frame | one frame |
 | links | yes | no | yes | no | no | on shapes | no | no | yes | no |
 
-"one frame" is the drawing at t = 0, or at `time=`; `render_animation` writes animated GIF and video.
+"one frame" is the drawing at t = 0, or at `seconds=`; `render_animation` writes animated GIF and video.
 
 PowerPoint keeps SMIL as slide effects that start with the slide, each at its own `begin` (no clicks
 needed), and reading a deck turns them back into `element.animate` presets:

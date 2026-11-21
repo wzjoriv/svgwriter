@@ -17,7 +17,9 @@ io
 attributes
 builder
 theme
+inkscape
 video
+widgets
 project
 cli
 ```

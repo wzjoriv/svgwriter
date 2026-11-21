@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.elements.shapes._path - svgwriter 2.1.0</title>
+        <title>svgwriter.elements.shapes._path - svgwriter 2.2.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">svgwriter 2.1.0</div></a>
+      <a href="../../../../index.html"><div class="brand">svgwriter 2.2.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.1.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.2.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.1.0</span>
+  <span class="sidebar-versions-label">2.2.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
@@ -223,6 +223,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -245,7 +247,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/builder.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/theme.html">Themes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/cli.html">Command line</a></li>
 </ul>
@@ -302,6 +306,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">._commands</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathCommands</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">...inkscape.connectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Group</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Path"</span><span class="p">]</span>
@@ -356,6 +361,35 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">d</span>  <span class="c1"># type: ignore[assignment]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">path_length</span><span class="o">=</span><span class="n">path_length</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">connects</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Connection</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The objects this path joins as an Inkscape connector, or None for a plain path.</span>
+
+<span class="sd">        Assign ``(start, end)`` to attach the path to two elements</span>
+<span class="sd">        (``inkscape:connection-start`` and ``-end``; it is redrawn as a straight</span>
+<span class="sd">        line between their centres), or None to detach it.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">        &gt;&gt;&gt; doc = svg.Document(100, 40)</span>
+<span class="sd">        &gt;&gt;&gt; a, b = doc.circle(10, 20, 5), doc.circle(90, 20, 5)</span>
+<span class="sd">        &gt;&gt;&gt; wire = doc.path(stroke="black")</span>
+<span class="sd">        &gt;&gt;&gt; wire.connects = (a, b)</span>
+<span class="sd">        &gt;&gt;&gt; wire.connects.start is a, str(wire.d)</span>
+<span class="sd">        (True, 'M10 20 L90 20')</span>
+<span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">...inkscape.connectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">connection</span>
+
+        <span class="k">return</span> <span class="n">connection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@connects</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">connects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">...inkscape.connectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">connect</span>
+
+        <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">value</span>
+        <span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">d</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PathData</span><span class="p">:</span>
@@ -530,7 +564,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=1d3a154c"></script>
+</div><script src="../../../../_static/documentation_options.js?v=b06a6580"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

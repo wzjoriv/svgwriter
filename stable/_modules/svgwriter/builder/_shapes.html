@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.builder._shapes - svgwriter 2.1.0</title>
+        <title>svgwriter.builder._shapes - svgwriter 2.2.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">svgwriter 2.1.0</div></a>
+      <a href="../../../index.html"><div class="brand">svgwriter 2.2.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.1.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.2.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.1.0</span>
+  <span class="sidebar-versions-label">2.2.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -223,6 +223,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -245,7 +247,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/builder.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/theme.html">Themes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/cli.html">Command line</a></li>
 </ul>
@@ -320,9 +324,18 @@
     <span class="k">return</span> <span class="n">points</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_inkscape_star</span><span class="p">(</span><span class="n">cx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">cy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">outer</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">inner</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">corner_radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                   <span class="o">*</span><span class="p">,</span> <span class="n">flatsided</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..inkscape</span><span class="w"> </span><span class="kn">import</span> <span class="n">Star</span>
+
+    <span class="k">if</span> <span class="n">corner_radius</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"corner_radius= does not apply to Inkscape stars; round them in Inkscape instead"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Star</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">outer</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">sides</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">angle</span><span class="p">,</span> <span class="n">flatsided</span><span class="o">=</span><span class="n">flatsided</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="star">
 <a class="viewcode-back" href="../../../reference/builder.html#svgwriter.builder.star">[docs]</a>
-<span class="nd">@shape</span><span class="p">(</span><span class="s2">"star"</span><span class="p">)</span>
+<span class="nd">@shape</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">star</span><span class="p">(</span>
     <span class="n">cx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">cy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -331,6 +344,7 @@
     <span class="n">points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_STAR_POINTS</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">corner_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">inkscape</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Polygon</span> <span class="o">|</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Build a star with *points* tips, pointing up.</span>
@@ -348,14 +362,22 @@
 <span class="sd">    corner_radius : float, optional</span>
 <span class="sd">        Radius of the circular fillet at every tip and notch; it shrinks where the star is too small</span>
 <span class="sd">        for it. Defaults to 0 (sharp).</span>
+<span class="sd">    inkscape : bool, optional</span>
+<span class="sd">        Build a path carrying Inkscape's star parameters (``sodipodi:type="star"``),</span>
+<span class="sd">        so the star stays editable with Inkscape's star tool. Defaults to False.</span>
 <span class="sd">    **kwargs</span>
 <span class="sd">        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`</span>
-<span class="sd">        (:class:`~svgwriter.elements.Path` when rounded).</span>
+<span class="sd">        (:class:`~svgwriter.elements.Path` when rounded or `inkscape`).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    Polygon or Path</span>
-<span class="sd">        The star, a polygon unless `corner_radius` rounds it into a path.</span>
+<span class="sd">        The star, a polygon unless `corner_radius` or `inkscape` makes it a path.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If `inkscape` is combined with `corner_radius`.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -368,8 +390,12 @@
 <span class="sd">    10</span>
 <span class="sd">    &gt;&gt;&gt; round(star(50, 50, 40, corner_radius=4).bbox.height, 1)</span>
 <span class="sd">    64.0</span>
+<span class="sd">    &gt;&gt;&gt; star(50, 50, 40, inkscape=True).get("sodipodi:type")</span>
+<span class="sd">    'star'</span>
 <span class="sd">    """</span>
     <span class="n">inner</span> <span class="o">=</span> <span class="n">outer</span> <span class="o">*</span> <span class="n">DEFAULT_INNER_RATIO</span> <span class="k">if</span> <span class="n">inner</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">inner</span>
+    <span class="k">if</span> <span class="n">inkscape</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_inkscape_star</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">outer</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="o">-</span><span class="n">QUARTER_TURN</span><span class="p">,</span> <span class="n">corner_radius</span><span class="p">,</span> <span class="n">flatsided</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">vertices</span> <span class="o">=</span> <span class="n">_ring</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="p">[</span><span class="n">outer</span><span class="p">,</span> <span class="n">inner</span><span class="p">]</span> <span class="o">*</span> <span class="n">points</span><span class="p">,</span> <span class="o">-</span><span class="n">QUARTER_TURN</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">corner_radius</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">rounded_outline</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="p">[</span><span class="n">corner_radius</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -379,7 +405,7 @@
 
 <div class="viewcode-block" id="gear">
 <a class="viewcode-back" href="../../../reference/builder.html#svgwriter.builder.gear">[docs]</a>
-<span class="nd">@shape</span><span class="p">(</span><span class="s2">"gear"</span><span class="p">)</span>
+<span class="nd">@shape</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">gear</span><span class="p">(</span><span class="n">cx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">cy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">teeth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_TEETH</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Polygon</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Build a gear outline with square-ish teeth.</span>
 
@@ -417,7 +443,7 @@
 
 <div class="viewcode-block" id="arrow">
 <a class="viewcode-back" href="../../../reference/builder.html#svgwriter.builder.arrow">[docs]</a>
-<span class="nd">@shape</span><span class="p">(</span><span class="s2">"arrow"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"arrow.line"</span><span class="p">)</span>
+<span class="nd">@shape</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"arrow.line"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">arrow</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">head</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_HEAD_SIZE</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Build a line with an open arrowhead at ``(x2, y2)``.</span>
 
@@ -461,7 +487,7 @@
 
 <div class="viewcode-block" id="regular_polygon">
 <a class="viewcode-back" href="../../../reference/builder.html#svgwriter.builder.regular_polygon">[docs]</a>
-<span class="nd">@shape</span><span class="p">(</span><span class="s2">"regular_polygon"</span><span class="p">)</span>
+<span class="nd">@shape</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">regular_polygon</span><span class="p">(</span>
     <span class="n">cx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">cy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -470,6 +496,7 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">rotation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">corner_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">inkscape</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Polygon</span> <span class="o">|</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Build a regular polygon with optionally rounded corners.</span>
@@ -486,19 +513,23 @@
 <span class="sd">        Clockwise rotation in degrees; the first corner is at the top when 0. Defaults to 0.</span>
 <span class="sd">    corner_radius : float, optional</span>
 <span class="sd">        Radius of the circular fillet at every corner. Defaults to 0 (sharp).</span>
+<span class="sd">    inkscape : bool, optional</span>
+<span class="sd">        Build a path carrying Inkscape's polygon parameters (``sodipodi:type="star"``</span>
+<span class="sd">        with ``inkscape:flatsided="true"``), editable with Inkscape's star tool.</span>
+<span class="sd">        Defaults to False.</span>
 <span class="sd">    **kwargs</span>
 <span class="sd">        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`</span>
-<span class="sd">        (:class:`~svgwriter.elements.Path` when rounded).</span>
+<span class="sd">        (:class:`~svgwriter.elements.Path` when rounded or `inkscape`).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    Polygon or Path</span>
-<span class="sd">        The polygon, a path when `corner_radius` rounds it.</span>
+<span class="sd">        The polygon, a path when `corner_radius` rounds it or `inkscape` is set.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If `sides` is below 3.</span>
+<span class="sd">        If `sides` is below 3, or `inkscape` is combined with `corner_radius`.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -511,9 +542,14 @@
 <span class="sd">    6</span>
 <span class="sd">    &gt;&gt;&gt; regular_polygon(0, 0, 10, 5, corner_radius=2).tag</span>
 <span class="sd">    'path'</span>
+<span class="sd">    &gt;&gt;&gt; regular_polygon(0, 0, 10, 6, inkscape=True).get("inkscape:flatsided")</span>
+<span class="sd">    'true'</span>
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="n">sides</span> <span class="o">&lt;</span> <span class="n">MIN_SIDES</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"a polygon needs at least </span><span class="si">{</span><span class="n">MIN_SIDES</span><span class="si">}</span><span class="s2"> sides, got </span><span class="si">{</span><span class="n">sides</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">inkscape</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_inkscape_star</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">r</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">sides</span><span class="p">),</span> <span class="n">sides</span><span class="p">,</span> <span class="n">rotation</span> <span class="o">-</span> <span class="n">QUARTER_TURN</span><span class="p">,</span> <span class="n">corner_radius</span><span class="p">,</span>
+                              <span class="n">flatsided</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">vertices</span> <span class="o">=</span> <span class="n">_ring</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">*</span> <span class="n">sides</span><span class="p">,</span> <span class="n">rotation</span> <span class="o">-</span> <span class="n">QUARTER_TURN</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">corner_radius</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">rounded_outline</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="p">[</span><span class="n">corner_radius</span><span class="p">]</span> <span class="o">*</span> <span class="n">sides</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -521,7 +557,7 @@
 
 
 
-<span class="n">shape</span><span class="p">(</span><span class="s2">"polygon"</span><span class="p">)(</span><span class="n">Polygon</span><span class="o">.</span><span class="n">regular</span><span class="p">)</span>
+<span class="n">shape</span><span class="p">(</span><span class="n">Polygon</span><span class="o">.</span><span class="n">regular</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"polygon"</span><span class="p">)</span>
 </pre></div>
         </article>
       </div>
@@ -554,7 +590,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=1d3a154c"></script>
+</div><script src="../../../_static/documentation_options.js?v=b06a6580"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

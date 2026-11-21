@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.preset._shape - svgwriter 2.1.0</title>
+        <title>svgwriter.preset._shape - svgwriter 2.2.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">svgwriter 2.1.0</div></a>
+      <a href="../../../index.html"><div class="brand">svgwriter 2.2.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.1.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.2.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.1.0</span>
+  <span class="sidebar-versions-label">2.2.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -223,6 +223,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -245,7 +247,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/builder.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/theme.html">Themes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/cli.html">Command line</a></li>
 </ul>
@@ -289,7 +293,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">overload</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._presets</span><span class="w"> </span><span class="kn">import</span> <span class="n">SHAPES</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._roles</span><span class="w"> </span><span class="kn">import</span> <span class="n">with_role</span>
@@ -303,10 +307,21 @@
 <span class="n">E</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">"E"</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">"Element"</span><span class="p">)</span>
 
 
+<span class="nd">@overload</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">"shape"</span><span class="p">,</span>
+          <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span> <span class="o">...</span>
+
+
+<span class="nd">@overload</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">"shape"</span><span class="p">,</span>
+          <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]]:</span> <span class="o">...</span>
+
+
 <div class="viewcode-block" id="shape">
 <a class="viewcode-back" href="../../../reference/builder.html#svgwriter.preset.shape">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">"shape"</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">"""Register a function returning an element as the shape preset *name*.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">"shape"</span><span class="p">,</span>
+          <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">"""Register a function returning an element as a shape preset.</span>
 
 <span class="sd">    The wrapper checks the return type, so plugins fail loudly, and marks the element with a theme *role*;</span>
 <span class="sd">    presentation keywords the caller passes move into the inline style so they keep priority over the role.</span>
@@ -314,8 +329,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    name : str</span>
-<span class="sd">        The name to register the shape under.</span>
+<span class="sd">    function : callable, optional</span>
+<span class="sd">        The function, returning an element. Given when used as a bare decorator.</span>
+<span class="sd">    name : str, optional</span>
+<span class="sd">        The shape name. Defaults to None, which takes the function's name.</span>
 <span class="sd">    role : str or None, optional</span>
 <span class="sd">        Theme role of the shapes built (see :class:`~svgwriter.Theme`). Defaults to ``"shape"`` (filled with</span>
 <span class="sd">        the palette's primary color); None leaves them unthemed.</span>
@@ -325,12 +342,12 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    callable</span>
-<span class="sd">        A decorator that registers the function and returns the checking wrapper.</span>
+<span class="sd">        The checking wrapper, or a decorator that registers the function and returns that wrapper.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If `name` is taken and `replace` is False; the message names the owner.</span>
+<span class="sd">        If the name is taken and `replace` is False; the message names the owner.</span>
 <span class="sd">    TypeError</span>
 <span class="sd">        When the decorated function is called and does not return an element.</span>
 
@@ -342,12 +359,12 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; @svg.preset.shape("disc")</span>
+<span class="sd">    &gt;&gt;&gt; @svg.preset.shape</span>
 <span class="sd">    ... def disc(cx, cy, r, **kwargs):</span>
 <span class="sd">    ...     return svg.Circle(cx, cy, r, **kwargs)</span>
 <span class="sd">    &gt;&gt;&gt; str(disc(0, 0, 2, stroke="red"))</span>
 <span class="sd">    '&lt;circle cx="0" cy="0" r="2" style="stroke:red" class="role-shape"/&gt;'</span>
-<span class="sd">    &gt;&gt;&gt; svg.preset.shape("star")(disc)  # doctest: +ELLIPSIS</span>
+<span class="sd">    &gt;&gt;&gt; svg.preset.shape(name="star")(disc)  # doctest: +ELLIPSIS</span>
 <span class="sd">    Traceback (most recent call last):</span>
 <span class="sd">    ...</span>
 <span class="sd">    ValueError: shape 'star' is already registered by svgwriter.builder._shapes.star (built in); pass replace=True ...</span>
@@ -357,17 +374,19 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">decorate</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
 
+        <span class="n">label</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
+
         <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">E</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"shape </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> returned </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"shape </span><span class="si">{</span><span class="n">label</span><span class="si">!r}</span><span class="s2"> returned </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">with_role</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">SHAPES</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>
+        <span class="n">SHAPES</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">wrapper</span>
 
-    <span class="k">return</span> <span class="n">decorate</span></div>
+    <span class="k">return</span> <span class="n">decorate</span> <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">decorate</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></div>
 
 </pre></div>
         </article>
@@ -401,7 +420,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=1d3a154c"></script>
+</div><script src="../../../_static/documentation_options.js?v=b06a6580"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
