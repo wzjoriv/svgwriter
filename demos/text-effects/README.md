@@ -5,7 +5,7 @@ blows, **sparks** burn and **Snow** falls.
 
 What it shows:
 
-- `svg.text_effects` on ranges of a line: `line[start:end].effect("smoke")` styles only those letters,
+- `svg.effects` on ranges of a line: `line[start:end].effect("smoke")` styles only those letters,
   and every word stays live, selectable text.
 - SMIL animation: the SVG plays in a browser, and the same document renders to a GIF.
 - The theme (`theme.toml`), a component (`components/card.py`, the card with its stars) and a project

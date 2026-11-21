@@ -67,7 +67,7 @@ COLUMNS, GAP, SCALE = 4, 12, 2
 
 def sheet(names: list[str] | None = None) -> svg.Document:
     """One card per theme in a grid, in registration order."""
-    names = names or svg.THEMES.names()
+    names = names or svg.THEMES.list()
     rows = -(-len(names) // COLUMNS)
     doc = svg.Document(COLUMNS * (WIDTH + GAP) - GAP, rows * (HEIGHT + GAP) - GAP)
     for index, name in enumerate(names):
@@ -136,7 +136,7 @@ default.theme.name
 # %%
 if __name__ == "__main__":
     brand.save("brand.toml")
-    for name in svg.THEMES.names():
+    for name in svg.THEMES.list():
         card(name).save(f"themes-{name}.svg")
     sheet().save("14_themes.svg")
     card(brand).save("themes-brand.png", scale=2)

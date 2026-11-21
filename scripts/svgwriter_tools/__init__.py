@@ -72,7 +72,7 @@ def bench(count: int = typer.Option(100_000, help="Elements in the large-tree be
 
 
 @app.command()
-def formats(format: list[str] = typer.Option([], help="Exporter names; every exporter when omitted."),
+def formats(format: list[str] = typer.Option([], help="Format names; every format that writes when omitted."),
             out: Path = typer.Option(Path("build/formats"), help="Where to write the sheets and scores.")) -> None:
     """Export the feature drawing to every format, render each export and round trip, and score them."""
     from ._formats import audit, feature_drawing, write_report

@@ -17,7 +17,7 @@ LINES = (
     "across the Snow plains, where an...",
 )
 EFFECTS = {"Smoke": "smoke", "Metal": "metal", "Wind": "wind", "sparks": "fire", "Snow": "snow"}
-"""The text effect of each word, by name from ``svg.text_effects``."""
+"""The effect of each word, by name from ``svg.effects``."""
 INSET = 16          # card edge to page edge
 LEFT = 64           # first letter of each line
 FIRST = 108         # baseline of the first line
@@ -31,7 +31,7 @@ LEADING = 54        # baseline to baseline
 def passage(doc: svg.Document) -> None:
     """Draw the card and the passage, with an effect on each of the five words."""
     box = doc.root.get("viewBox")
-    sky = card(box.width, box.height, inset=INSET, caption="svg.text_effects")
+    sky = card(box.width, box.height, inset=INSET, caption="svg.effects")
     doc += sky
     sky.children[2].animate.apply(twinkle)
     for row, words in enumerate(LINES):
