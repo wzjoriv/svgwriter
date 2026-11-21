@@ -14,12 +14,12 @@ from svgwriter import builder
 
 # %% [markdown]
 # `PathBuilder` writes path data with chained commands. Relative quadratic curves make a wave,
-# and `builder.arrow_marker` gives it an arrow head at its end.
+# and `svg.markers.arrow` gives it an arrow head at its end, sized in stroke widths.
 
 # %%
 SIZE = 300
 doc = svg.Document(SIZE, SIZE)
-head = builder.arrow_marker("crimson", 6)
+head = svg.markers.arrow(6, color="crimson")
 
 wave = svg.PathBuilder().move_to(20, 150)
 for _ in range(2):

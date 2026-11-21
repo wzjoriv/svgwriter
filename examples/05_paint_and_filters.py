@@ -66,10 +66,10 @@ doc.add(svg.Rect(0, 0, SIZE, SIZE, filter=paper))
 doc
 
 # %% [markdown]
-# `svg.drop_shadow` is a ready-made filter for a soft shadow.
+# `svg.filters.drop_shadow` is a ready-made filter for a soft shadow; `svg.filters` has more.
 
 # %%
-shadow = doc.define(svg.drop_shadow(4, 4, 3, "black", 0.5))
+shadow = doc.define(svg.filters.drop_shadow(4, 4, 3, "black", 0.5))
 doc.add(svg.Rect(20, 20, TILE, TILE, rx=16, fill="teal", filter=shadow))
 doc
 

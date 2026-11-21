@@ -34,7 +34,7 @@ def card(rank: str = "A", suit: str = "♠", hue: float = 220, radius: float = 1
     face = doc.rect(MARGIN, MARGIN, WIDTH, HEIGHT, rx=radius, fill=svg.Color.from_hsl(hue, 0.6, 0.96),
                     stroke=accent, stroke_width=3)
     if glow:
-        face.filter = svg.builder.glow(6)
+        face.filter = svg.filters.glow(6)
     doc.rect(MARGIN + 8, MARGIN + 8, WIDTH - 16, HEIGHT - 16, rx=max(radius - 6, 0), fill="none",
              stroke=accent, stroke_width=1, stroke_dasharray="4 3")
     ink = SUITS[suit]
