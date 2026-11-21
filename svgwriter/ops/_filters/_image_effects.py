@@ -28,7 +28,11 @@ __all__ = ["paint_mask", "primitive_filter"]
 
 
 def _numbers(value: object) -> list[float]:
-    return [float(v) for v in str(value).replace(",", " ").split()] if value is not None else []
+    if value is None:
+        return []
+    if isinstance(value, (list, tuple)):
+        return [float(v) for v in value]
+    return [float(v) for v in str(value).replace(",", " ").split()]
 
 
 def _saturate(s: float) -> list[float]:
