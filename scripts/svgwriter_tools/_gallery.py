@@ -1,5 +1,5 @@
 """
-README gallery: run the examples and render their pictures to PNG (animated ones as GIF).
+README gallery: run the examples and build the demos, and render their pictures to PNG (animated ones as GIF).
 """
 
 from __future__ import annotations
@@ -14,10 +14,13 @@ import tempfile
 from pathlib import Path
 from typing import NamedTuple
 
-__all__ = ["GALLERY", "GALLERY_DIR", "Picture", "build_gallery"]
+__all__ = ["DEMO_DIR", "DEMO_GALLERY", "GALLERY", "GALLERY_DIR", "DemoPicture", "Picture", "build_demos",
+           "build_gallery"]
 
 ROOT = Path(__file__).resolve().parents[2]
 GALLERY_DIR = ROOT / "docs" / "_static" / "examples"
+DEMO_DIR = ROOT / "docs" / "_static" / "demos"
+DEMOS = ROOT / "demos"
 SCALE = 2.0
 SCENE_FPS = 12.0
 SCENE_HOLD = 1.0
@@ -57,6 +60,64 @@ GALLERY = {
     "filter_catalogue": Picture("19_presets", "19_filters.svg"),
     "marker_catalogue": Picture("19_presets", "19_markers.svg", background="white"),
 }
+
+
+class DemoPicture(NamedTuple):
+    """One demo tile: the demo folder, the output format and file that make it, and that format's options.
+
+    The options replace the demo's own for the tile, so animations come out small enough for the README.
+    """
+
+    demo: str
+    format: str
+    file: str
+    options: dict[str, float]
+
+
+DEMO_GALLERY = {
+    "playing-card": DemoPicture("playing-card", "png", "playing-card.png", {"scale": 1}),
+    "calculator-kit": DemoPicture("calculator-kit", "png", "calculator-kit.png", {"scale": 1}),
+    "text-effects": DemoPicture("text-effects", "gif", "text-effects.gif", {"fps": 8, "scale": 0.5}),
+    "planets-explainer": DemoPicture("planets-explainer", "gif", "planets-explainer-Planets.gif",
+                                     {"fps": 8, "scale": 0.375}),
+    "blobs": DemoPicture("blobs", "gif", "blobs.gif", {"fps": 12, "scale": 0.75}),
+    "poster": DemoPicture("poster", "png", "poster.png", {"dpi": 72}),
+}
+
+
+def build_demos(out: Path = DEMO_DIR) -> list[Path]:
+    """Build each demo tile's output in a temporary copy of its project and copy it to *out* as ``<demo>.<ext>``.
+
+    Parameters
+    ----------
+    out : Path, optional
+        Destination folder. Defaults to ``docs/_static/demos``.
+
+    Returns
+    -------
+    list of Path
+        The files written, one per entry of :data:`DEMO_GALLERY`.
+    """
+    import tomlkit
+
+    import svgwriter as svg
+
+    out.mkdir(parents=True, exist_ok=True)
+    written = []
+    with tempfile.TemporaryDirectory(prefix="svgwriter-demos-") as work:
+        for name, picture in DEMO_GALLERY.items():
+            root = Path(work) / picture.demo
+            if not root.exists():
+                shutil.copytree(DEMOS / picture.demo, root, ignore=shutil.ignore_patterns("output", "__pycache__"))
+            manifest = root / "svgwriter.toml"
+            document = tomlkit.parse(manifest.read_text(encoding="utf-8"))
+            document["outputs"][picture.format] = picture.options
+            manifest.write_text(tomlkit.dumps(document), encoding="utf-8")
+            built = {path.name: path for path in svg.Project.load(root).build([picture.format])}
+            target = out / f"{name}{Path(picture.file).suffix}"
+            shutil.copyfile(built[picture.file], target)
+            written.append(target)
+    return written
 
 
 def build_gallery(out: Path = GALLERY_DIR, scale: float = SCALE) -> list[Path]:

@@ -21,10 +21,13 @@ app = typer.Typer(name="svgwriter", help=__doc__, add_completion=False, no_args_
 
 @app.command()
 def gallery() -> None:
-    """Render the README gallery: each example's picture as a PNG (animations as GIF) in docs/_static/examples."""
-    from ._gallery import build_gallery
+    """Render the README gallery: each example's picture and each demo's tile as a PNG (animations as GIF).
 
-    for path in build_gallery():
+    Example pictures go to docs/_static/examples, demo tiles to docs/_static/demos.
+    """
+    from ._gallery import build_demos, build_gallery
+
+    for path in [*build_gallery(), *build_demos()]:
         typer.echo(f"wrote {path.relative_to(Path.cwd()) if path.is_relative_to(Path.cwd()) else path}")
 
 
