@@ -299,7 +299,7 @@
 <p><strong>Round-trip fidelity: 429 / 430.</strong> Each file is parsed, written back, and both versions are rendered
 by skia; the pictures must match. The one difference is a namespace test where skia ignores XML
 namespaces and svgwriter’s output is the correct one. Four files skia cannot read are excluded.</p>
-<p><strong>Rendering: 345 / 434 (79 %)</strong> against the reference PNGs. A test passes when at most 1 % of its
+<p><strong>Rendering: 346 / 434 (80 %)</strong> against the reference PNGs. A test passes when at most 1 % of its
 pixels differ. The suite’s <code class="docutils literal notranslate"><span class="pre">$Revision$</span></code> label and <code class="docutils literal notranslate"><span class="pre">DRAFT</span></code> watermark are bookkeeping, often newer than
 the reference PNG, so they are not compared; animated tests are drawn once their animations have
 settled, the state the references show.</p>
@@ -317,7 +317,7 @@ settled, the state the references show.</p>
 <td class="text-right"><p>74</p></td>
 </tr>
 <tr class="row-odd"><td><p>color</p></td>
-<td class="text-right"><p>4</p></td>
+<td class="text-right"><p>5</p></td>
 <td class="text-right"><p>6</p></td>
 </tr>
 <tr class="row-even"><td><p>conform</p></td>
@@ -391,6 +391,8 @@ settled, the state the references show.</p>
 </tbody>
 </table>
 </div>
+<p>ICC colour profiles (<code class="docutils literal notranslate"><span class="pre">&lt;color-profile&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">icc-color(...)</span></code>, profiled images) need the optional
+<code class="docutils literal notranslate"><span class="pre">color</span></code> extra; <code class="docutils literal notranslate"><span class="pre">color-prof-01-f</span></code> passes with it.</p>
 <p>Many of the remaining misses differ by 1-5 % in text: the suite sets its labels in its own SVG font,
 which svgwriter draws with the nearest installed sans-serif face.</p>
 <section id="out-of-scope">
@@ -403,7 +405,6 @@ viewer, and tests whose reference shows the state after a user action.</p></li>
 <li><p><strong><code class="docutils literal notranslate"><span class="pre">foreignObject</span></code></strong> and the <code class="docutils literal notranslate"><span class="pre">extend</span></code> chapter.</p></li>
 <li><p><strong>SVG fonts</strong> (<code class="docutils literal notranslate"><span class="pre">&lt;font&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;glyph&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;font-face&gt;</span></code> with an SVG source, <code class="docutils literal notranslate"><span class="pre">altGlyph</span></code>): text uses installed
 and registered OpenType fonts.</p></li>
-<li><p><strong>Colour profiles</strong> (<code class="docutils literal notranslate"><span class="pre">color-profile</span></code>, ICC colours).</p></li>
 </ul>
 </section>
 </section>

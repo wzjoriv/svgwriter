@@ -409,16 +409,24 @@
 <div class="viewcode-block" id="Pixels.decode">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.structure.Pixels.decode">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pixels</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pixels</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Decode encoded image bytes into sRGB.</span>
 
 <span class="sd">        Embedded colour information (ICC profile, PNG ``gAMA``/``cHRM``) is applied, so the</span>
-<span class="sd">        pixels look as the file intends.</span>
+<span class="sd">        pixels look as the file intends. ICC profiles go through LittleCMS when the optional</span>
+<span class="sd">        ``color`` extra is installed.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        data : bytes</span>
 <span class="sd">            PNG, JPEG, WebP, GIF, BMP or PNM file contents.</span>
+<span class="sd">        profile : bytes or str, optional</span>
+<span class="sd">            The ``color-profile`` of the image: ICC profile bytes that replace any embedded</span>
+<span class="sd">            profile, ``"sRGB"`` to read the stored values as sRGB, or ``"auto"`` (the default,</span>
+<span class="sd">            also None) to use the embedded profile.</span>
+<span class="sd">        intent : str, optional</span>
+<span class="sd">            SVG ``rendering-intent`` for a profile conversion, such as ``"relative-colorimetric"``.</span>
+<span class="sd">            Defaults to perceptual.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -428,7 +436,7 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If the data is damaged or in an unknown format.</span>
+<span class="sd">            If the data is damaged or in an unknown format, or `profile` is an unknown keyword.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -442,20 +450,7 @@
 
         <span class="k">if</span> <span class="n">is_pnm</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">decode_pnm</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
-        <span class="n">encoded</span> <span class="o">=</span> <span class="n">skia</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">MakeWithCopy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">codec</span> <span class="o">=</span> <span class="n">skia</span><span class="o">.</span><span class="n">Codec</span><span class="o">.</span><span class="n">MakeFromData</span><span class="p">(</span><span class="n">encoded</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
-            <span class="n">codec</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">codec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"could not decode the image data: unknown or damaged format"</span><span class="p">)</span>
-        <span class="n">size</span> <span class="o">=</span> <span class="n">codec</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
-        <span class="n">info</span> <span class="o">=</span> <span class="n">skia</span><span class="o">.</span><span class="n">ImageInfo</span><span class="o">.</span><span class="n">Make</span><span class="p">(</span><span class="n">size</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="n">size</span><span class="o">.</span><span class="n">height</span><span class="p">(),</span> <span class="n">skia</span><span class="o">.</span><span class="n">kRGBA_8888_ColorType</span><span class="p">,</span> <span class="n">skia</span><span class="o">.</span><span class="n">kUnpremul_AlphaType</span><span class="p">,</span>
-                                   <span class="n">skia</span><span class="o">.</span><span class="n">ColorSpace</span><span class="o">.</span><span class="n">MakeSRGB</span><span class="p">())</span>
-        <span class="n">rgba</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">size</span><span class="o">.</span><span class="n">height</span><span class="p">(),</span> <span class="n">size</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="mi">4</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">codec</span><span class="o">.</span><span class="n">getPixels</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">rgba</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">minRowBytes</span><span class="p">())</span> <span class="o">!=</span> <span class="n">skia</span><span class="o">.</span><span class="n">Codec</span><span class="o">.</span><span class="n">Result</span><span class="o">.</span><span class="n">kSuccess</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"could not decode the image data"</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">rgba</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">_profiled_rgba</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">intent</span><span class="p">))</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -649,6 +644,44 @@
         <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">"Pixels(</span><span class="si">{</span><span class="n">rows</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">columns</span><span class="si">}</span><span class="s2">, channels=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">, opaque=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_skia_rgba</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">managed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="n">encoded</span> <span class="o">=</span> <span class="n">skia</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">MakeWithCopy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">codec</span> <span class="o">=</span> <span class="n">skia</span><span class="o">.</span><span class="n">Codec</span><span class="o">.</span><span class="n">MakeFromData</span><span class="p">(</span><span class="n">encoded</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+        <span class="n">codec</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">codec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"could not decode the image data: unknown or damaged format"</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">codec</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">skia</span><span class="o">.</span><span class="n">ImageInfo</span><span class="o">.</span><span class="n">Make</span><span class="p">(</span><span class="n">size</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="n">size</span><span class="o">.</span><span class="n">height</span><span class="p">(),</span> <span class="n">skia</span><span class="o">.</span><span class="n">kRGBA_8888_ColorType</span><span class="p">,</span> <span class="n">skia</span><span class="o">.</span><span class="n">kUnpremul_AlphaType</span><span class="p">,</span>
+                               <span class="n">skia</span><span class="o">.</span><span class="n">ColorSpace</span><span class="o">.</span><span class="n">MakeSRGB</span><span class="p">()</span> <span class="k">if</span> <span class="n">managed</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">rgba</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">size</span><span class="o">.</span><span class="n">height</span><span class="p">(),</span> <span class="n">size</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="mi">4</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">codec</span><span class="o">.</span><span class="n">getPixels</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">rgba</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">minRowBytes</span><span class="p">())</span> <span class="o">!=</span> <span class="n">skia</span><span class="o">.</span><span class="n">Codec</span><span class="o">.</span><span class="n">Result</span><span class="o">.</span><span class="n">kSuccess</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"could not decode the image data"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rgba</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_profiled_rgba</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._icc</span><span class="w"> </span><span class="kn">import</span> <span class="n">hint_missing</span><span class="p">,</span> <span class="n">load_profile</span><span class="p">,</span> <span class="n">pixels_to_srgb</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._icc_constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">AUTO_PROFILE</span><span class="p">,</span> <span class="n">SRGB_PROFILE</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._icc_embedded</span><span class="w"> </span><span class="kn">import</span> <span class="n">embedded_profile</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">SRGB_PROFILE</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_skia_rgba</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">managed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="n">AUTO_PROFILE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"profile must be ICC bytes, 'sRGB' or 'auto', got </span><span class="si">{</span><span class="n">profile</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">profile</span> <span class="k">if</span> <span class="n">profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">embedded_profile</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">parsed</span> <span class="o">=</span> <span class="n">load_profile</span><span class="p">(</span><span class="n">source</span><span class="p">)</span> <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">parsed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">hint_missing</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">_skia_rgba</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">managed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">converted</span> <span class="o">=</span> <span class="n">pixels_to_srgb</span><span class="p">(</span><span class="n">parsed</span><span class="p">,</span> <span class="n">_skia_rgba</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">managed</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">intent</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">converted</span> <span class="k">if</span> <span class="n">converted</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">_skia_rgba</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">managed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_compact_alpha</span><span class="p">(</span><span class="n">alpha</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">:</span>

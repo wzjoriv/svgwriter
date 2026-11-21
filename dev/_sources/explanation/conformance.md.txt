@@ -11,7 +11,7 @@ $ python scripts/dev.py svgwriter conformance --report build/conformance/report.
 by skia; the pictures must match. The one difference is a namespace test where skia ignores XML
 namespaces and svgwriter's output is the correct one. Four files skia cannot read are excluded.
 
-**Rendering: 345 / 434 (79 %)** against the reference PNGs. A test passes when at most 1 % of its
+**Rendering: 346 / 434 (80 %)** against the reference PNGs. A test passes when at most 1 % of its
 pixels differ. The suite's `$Revision$` label and `DRAFT` watermark are bookkeeping, often newer than
 the reference PNG, so they are not compared; animated tests are drawn once their animations have
 settled, the state the references show.
@@ -19,7 +19,7 @@ settled, the state the references show.
 | Chapter | Passed | Total |
 | --- | ---: | ---: |
 | animate | 56 | 74 |
-| color | 4 | 6 |
+| color | 5 | 6 |
 | conform | 2 | 2 |
 | coords | 28 | 28 |
 | filters | 39 | 42 |
@@ -38,6 +38,9 @@ settled, the state the references show.
 | text | 28 | 54 |
 | types | 1 | 2 |
 
+ICC colour profiles (`<color-profile>`, `icc-color(...)`, profiled images) need the optional
+`color` extra; `color-prof-01-f` passes with it.
+
 Many of the remaining misses differ by 1-5 % in text: the suite sets its labels in its own SVG font,
 which svgwriter draws with the nearest installed sans-serif face.
 
@@ -51,4 +54,3 @@ These parts of SVG 1.1 are not supported, so their tests are skipped or expected
 - **`foreignObject`** and the `extend` chapter.
 - **SVG fonts** (`<font>`, `<glyph>`, `<font-face>` with an SVG source, `altGlyph`): text uses installed
   and registered OpenType fonts.
-- **Colour profiles** (`color-profile`, ICC colours).

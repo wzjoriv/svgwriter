@@ -313,6 +313,26 @@ in colors, so a translucent <code class="docutils literal notranslate"><span cla
 </pre></div>
 </div>
 </section>
+<section id="colour-profiles">
+<h2>Colour profiles<a class="headerlink" href="#colour-profiles" title="Link to this heading">¶</a></h2>
+<p>SVG 1.1 colours are sRGB, optionally followed by an <code class="docutils literal notranslate"><span class="pre">icc-color(...)</span></code> in an ICC profile declared with
+<code class="docutils literal notranslate"><span class="pre">&lt;color-profile&gt;</span></code>. With the <a class="reference internal" href="../start/installation.html"><span class="doc">color extra</span></a> installed, rendering converts
+them through the profile; otherwise the sRGB colour before <code class="docutils literal notranslate"><span class="pre">icc-color</span></code> is drawn:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">ColorProfile</span><span class="p">(</span><span class="s2">"print"</span><span class="p">,</span> <span class="s2">"press.icc"</span><span class="p">,</span> <span class="n">rendering_intent</span><span class="o">=</span><span class="s2">"relative-colorimetric"</span><span class="p">))</span>
+<span class="n">ink</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"#2b6cb0"</span><span class="p">)</span><span class="o">.</span><span class="n">with_icc</span><span class="p">(</span><span class="s2">"icc-color(print, 0.9, 0.4, 0, 0.1)"</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">ink</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">icc-color</span></code> works in <code class="docutils literal notranslate"><span class="pre">fill</span></code>, <code class="docutils literal notranslate"><span class="pre">stroke</span></code>, <code class="docutils literal notranslate"><span class="pre">stop-color</span></code>, <code class="docutils literal notranslate"><span class="pre">flood-color</span></code> and <code class="docutils literal notranslate"><span class="pre">lighting-color</span></code>. The profile’s
+<code class="docutils literal notranslate"><span class="pre">xlink:href</span></code> may be a path (relative to the document), a <code class="docutils literal notranslate"><span class="pre">file:</span></code> URL or a <code class="docutils literal notranslate"><span class="pre">data:</span></code> URI. Images use the
+<code class="docutils literal notranslate"><span class="pre">color-profile</span></code> property: <code class="docutils literal notranslate"><span class="pre">auto</span></code> (the default) applies the profile embedded in a PNG (<code class="docutils literal notranslate"><span class="pre">iCCP</span></code>) or JPEG
+(<code class="docutils literal notranslate"><span class="pre">APP2</span></code>), <code class="docutils literal notranslate"><span class="pre">sRGB</span></code> reads the stored values as sRGB, and a profile name or <code class="docutils literal notranslate"><span class="pre">url(#id)</span></code> assigns one:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"scan.png"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">color_profile</span><span class="o">=</span><span class="s2">"print"</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Pixels.decode(data,</span> <span class="pre">profile=...,</span> <span class="pre">intent=...)</span></code> does the same for raw image bytes.</p>
+</section>
 <section id="images-are-numpy-arrays">
 <h2>Images are numpy arrays<a class="headerlink" href="#images-are-numpy-arrays" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">svg.Image(array)</span></code> embeds pixels. They are stored as <code class="docutils literal notranslate"><span class="pre">color</span></code>, a float32 <code class="docutils literal notranslate"><span class="pre">(H,</span> <span class="pre">W,</span> <span class="pre">3)</span></code> array (or
@@ -429,6 +449,7 @@ composites onto a whole image.</p>
             <ul>
 <li><a class="reference internal" href="#">Colors and images</a><ul>
 <li><a class="reference internal" href="#colors">Colors</a></li>
+<li><a class="reference internal" href="#colour-profiles">Colour profiles</a></li>
 <li><a class="reference internal" href="#images-are-numpy-arrays">Images are numpy arrays</a></li>
 <li><a class="reference internal" href="#patterns">Patterns</a></li>
 <li><a class="reference internal" href="#compositing-images">Compositing images</a></li>

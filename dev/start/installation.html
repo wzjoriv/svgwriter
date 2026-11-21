@@ -301,6 +301,18 @@
 <p>svgwriter needs Python 3.10 or newer. It installs <a class="reference external" href="https://kyamagu.github.io/skia-python/">skia-python</a>
 (geometry, text outlines and rendering), numpy (pixels, points and colors as arrays) and uharfbuzz (text
 shaping). Nothing else is needed at runtime.</p>
+<p>Optional extras:</p>
+<ul>
+<li><p><strong>color</strong> for ICC colour profiles: <code class="docutils literal notranslate"><span class="pre">&lt;color-profile&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">icc-color(...)</span></code> paints and images with
+embedded or assigned profiles are converted to sRGB through LittleCMS
+(<a class="reference external" href="https://wzjoriv.github.io/python-lcms2/">python-lcms2</a>):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"pysvgwriter[color]"</span>
+</pre></div>
+</div>
+<p>Without it, <code class="docutils literal notranslate"><span class="pre">icc-color(...)</span></code> draws its sRGB fallback colour and images are drawn as their decoder
+delivers them; a one-time warning says profiles were skipped.</p>
+</li>
+</ul>
 <p>Optional external program:</p>
 <ul class="simple">
 <li><p><strong>ffmpeg</strong> on <code class="docutils literal notranslate"><span class="pre">PATH</span></code> for <a class="reference internal" href="../guides/animation.html"><span class="doc">video export</span></a>. Without it, <code class="docutils literal notranslate"><span class="pre">render_animation</span></code> raises
