@@ -178,18 +178,18 @@ class Length:
     def to_user_units(
         self,
         *,
-        dpi: float = PX_PER_INCH,
+        units_per_inch: float = PX_PER_INCH,
         font_size: float = DEFAULT_FONT_SIZE,
         reference: float | None = None,
     ) -> float:
         """Convert to user units (pixels).
 
-        Absolute units use the dots-per-inch setting; ``em`` and ``ex`` use the font size.
+        Absolute units use `units_per_inch`; ``em`` and ``ex`` use the font size.
 
         Parameters
         ----------
-        dpi : float, optional
-            Pixels per inch for absolute units. Defaults to the library default DPI.
+        units_per_inch : float, optional
+            User units per inch for absolute units. Defaults to 96, as SVG defines.
         font_size : float, optional
             Font size in pixels for ``em`` and ``ex``. Defaults to the library default font size.
         reference : float, optional
@@ -208,7 +208,7 @@ class Length:
         Examples
         --------
         >>> from svgwriter.attributes import Length, Unit
-        >>> Length(1, Unit.IN).to_user_units(dpi=72)
+        >>> Length(1, Unit.IN).to_user_units(units_per_inch=72)
         72.0
         >>> Length(50, Unit.PERCENT).to_user_units(reference=200)
         100.0
@@ -223,7 +223,7 @@ class Length:
             if reference is None:
                 raise ValueError("percentage lengths need a reference length")
             return self.value * reference / 100.0
-        return self.value * dpi / _ABSOLUTE_PER_INCH[self.unit]
+        return self.value * units_per_inch / _ABSOLUTE_PER_INCH[self.unit]
 
     def svg_value(self, precision: int = DEFAULT_PRECISION) -> str:
         """Serialize the length as attribute text.

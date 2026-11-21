@@ -106,7 +106,7 @@ def _raster(format: str) -> Callable[..., bytes]:
 
     exporter.__doc__ = (f"{format.upper()} raster (``scale`` or ``dpi`` with ``units_per_inch``, defaulting to Inkscape's "
                         "``inkscape:export-xdpi`` when the document has one, ``pixels``, ``padding``, ``background``, "
-                        "``quality``" + (", ``icc`` (``'srgb'``, ``'display-p3'`` or RGB profile bytes: pixels are "
+                        "``quality``" + (", ``icc`` (``'srgb'``, ``'display-p3'`` or RGB profile bytes: the sRGB pixels are "
                                          "converted and the profile embedded)" if format in ICC_FORMATS else "")
                         + ")" + ("; ``animate=True`` with ``fps``, ``duration``, ``loop`` writes the SMIL "
                                           "animation" if format in ("png", "webp") else "") + ".")
