@@ -312,48 +312,51 @@ Each one is an ordinary project, as <code class="docutils literal notranslate"><
 and run <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">preview</span></code> to see it live (with its controls, where it has them), or <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">build</span></code> to
 write its outputs into <code class="docutils literal notranslate"><span class="pre">output/</span></code>. The <a class="reference external" href="https://github.com/wzjoriv/svgwriter/tree/main/examples"><code class="docutils literal notranslate"><span class="pre">examples/</span></code></a>
 stay short scripts about one topic each; see <a class="reference internal" href="guides/projects.html"><span class="doc">Projects</span></a> for how projects work.</p>
+<p>Every demo also has a Jupyter notebook beside its <code class="docutils literal notranslate"><span class="pre">main.py</span></code>, named after the demo (<code class="docutils literal notranslate"><span class="pre">&lt;name&gt;/&lt;name&gt;.ipynb</span></code>), that
+shows the code cell by cell with pictures, a panel for the demo’s controls when run, and stills for other
+values. <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/dev.py</span> <span class="pre">svgwriter</span> <span class="pre">demo-notebooks</span> <span class="pre">build</span></code> writes them.</p>
 <section id="playing-card">
 <h2>Playing card<a class="headerlink" href="#playing-card" title="Link to this heading">¶</a></h2>
 <p><img alt="An adjustable playing card" src="_images/playing-card.png" /></p>
 <p><a class="reference external" href="https://github.com/wzjoriv/svgwriter/tree/main/demos/playing-card"><code class="docutils literal notranslate"><span class="pre">demos/playing-card</span></code></a>: a card with
 rank and suit buttons, hue, iridescence, glow, corner radius and width controls
 (<code class="docutils literal notranslate"><span class="pre">&#64;svg.widgets.controls</span></code>), corner indices, pips and court panels built from layout groups, and a sweep of
-the same parameters written as a GIF. Outputs: SVG, PNG, PDF and GIF.</p>
+the same parameters written as a GIF. Outputs: SVG, PNG, PDF and GIF. <a class="reference external" href="https://github.com/wzjoriv/svgwriter/blob/main/demos/playing-card/playing-card.ipynb">Notebook</a>.</p>
 </section>
 <section id="calculator-kit">
 <h2>Calculator kit<a class="headerlink" href="#calculator-kit" title="Link to this heading">¶</a></h2>
 <p><img alt="A calculator UI" src="_images/calculator-kit.png" /></p>
 <p><a class="reference external" href="https://github.com/wzjoriv/svgwriter/tree/main/demos/calculator-kit"><code class="docutils literal notranslate"><span class="pre">demos/calculator-kit</span></code></a>: a calculator
 UI from <code class="docutils literal notranslate"><span class="pre">VStack</span></code>, <code class="docutils literal notranslate"><span class="pre">HStack</span></code> and <code class="docutils literal notranslate"><span class="pre">Grid</span></code>, with controls for the shell style, key shape, keypad layout, display
-font, size and alignment, history line, key font and weight, spacing and palette. Outputs: SVG, PNG and PDF.</p>
+font, size and alignment, history line, key font and weight, spacing and palette. Outputs: SVG, PNG and PDF. <a class="reference external" href="https://github.com/wzjoriv/svgwriter/blob/main/demos/calculator-kit/calculator-kit.ipynb">Notebook</a>.</p>
 </section>
 <section id="text-effects">
 <h2>Text effects<a class="headerlink" href="#text-effects" title="Link to this heading">¶</a></h2>
 <p><img alt="Words that smoke, shine, blow, burn and snow" src="_images/text-effects.gif" /></p>
 <p><a class="reference external" href="https://github.com/wzjoriv/svgwriter/tree/main/demos/text-effects"><code class="docutils literal notranslate"><span class="pre">demos/text-effects</span></code></a>: a passage on a
-night card where five words carry the smoke, metal, wind, fire and snow effects while staying text.
-Outputs: an animated SVG and a GIF.</p>
+night card where five words carry the smoke, metal, wind, fire and snow effects while staying text, with a dropdown per word to swap its effect.
+Outputs: an animated SVG and a GIF. <a class="reference external" href="https://github.com/wzjoriv/svgwriter/blob/main/demos/text-effects/text-effects.ipynb">Notebook</a>.</p>
 </section>
 <section id="planets-explainer">
 <h2>Planets explainer<a class="headerlink" href="#planets-explainer" title="Link to this heading">¶</a></h2>
 <p><img alt="The eight planets with their orbits to scale" src="_images/planets-explainer.gif" /></p>
 <p><a class="reference external" href="https://github.com/wzjoriv/svgwriter/tree/main/demos/planets-explainer"><code class="docutils literal notranslate"><span class="pre">demos/planets-explainer</span></code></a>: two
 scenes, the eight planets on orbits drawn to scale and Betelgeuse beside the Sun with a rolling counter,
-moved by behaviours, SMIL and per-frame updates, then baked. Outputs: MP4 (GIF without ffmpeg), animated
-SVG and PowerPoint.</p>
+moved by behaviours, SMIL and per-frame updates, then baked; a time scale and a choice of scene drive them in the notebook. Outputs: MP4 (GIF without ffmpeg), animated
+SVG and PowerPoint. <a class="reference external" href="https://github.com/wzjoriv/svgwriter/blob/main/demos/planets-explainer/planets-explainer.ipynb">Notebook</a>.</p>
 </section>
 <section id="blobs">
 <h2>Blobs<a class="headerlink" href="#blobs" title="Link to this heading">¶</a></h2>
 <p><img alt="Gooey blobs merging and splitting" src="_images/blobs.gif" /></p>
 <p><a class="reference external" href="https://github.com/wzjoriv/svgwriter/tree/main/demos/blobs"><code class="docutils literal notranslate"><span class="pre">demos/blobs</span></code></a>: metaballs that merge and split
-under the goo filter, moved by a project behaviour on a seamless loop. Outputs: GIF and animated SVG.</p>
+under the goo filter, moved by a project behaviour on a seamless loop, with controls for the number of blobs, their gooeyness and the speed. Outputs: GIF and animated SVG. <a class="reference external" href="https://github.com/wzjoriv/svgwriter/blob/main/demos/blobs/blobs.ipynb">Notebook</a>.</p>
 </section>
 <section id="poster">
 <h2>Poster<a class="headerlink" href="#poster" title="Link to this heading">¶</a></h2>
 <p><img alt="An A4 tide atlas poster" src="_images/poster.png" /></p>
 <p><a class="reference external" href="https://github.com/wzjoriv/svgwriter/tree/main/demos/poster"><code class="docutils literal notranslate"><span class="pre">demos/poster</span></code></a>: an A4 print poster drawn in
-millimetres with typefaces, gradients, patterns, markers, a legend and a tide table. Outputs: a true-size
-PDF, a 300 dpi PNG and an SVG.</p>
+millimetres with typefaces, gradients, patterns, markers, a legend and a tide table, and controls for the theme, an accent hue shift and the title. Outputs: a true-size
+PDF, a 300 dpi PNG and an SVG. <a class="reference external" href="https://github.com/wzjoriv/svgwriter/blob/main/demos/poster/poster.ipynb">Notebook</a>.</p>
 <p>The pictures on this page are built from the demos by <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/dev.py</span> <span class="pre">svgwriter</span> <span class="pre">gallery</span></code>.</p>
 </section>
 </section>
