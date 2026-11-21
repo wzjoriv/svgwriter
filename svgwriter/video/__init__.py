@@ -3,7 +3,9 @@
 svgwriter does not rasterize by itself. A *renderer* is any callable
 ``renderer(document, seconds)`` returning PNG bytes or an
 ``(height, width, 4)`` uint8 RGBA array; frames are piped to ``ffmpeg``.
-The ``"skia"`` renderer is built in.
+The ``"skia"`` renderer is built in. A :class:`Scene` subclass bundles a
+drawing, its ``update`` and its settings, so one file can hold several
+animations.
 
 Example
 -------
@@ -31,9 +33,13 @@ from .animation import (
     unregister_renderer,
 )
 from .frames import Frame, FrameData, RGBAArray, frame_times
+from .loader import SceneError, load_scenes
 from .reader import Video
+from .scene import Scene
 
 __all__ = [
+    "Scene",
+    "SceneError",
     "Video",
     "DEFAULT_FPS",
     "RENDERERS",
@@ -48,6 +54,7 @@ __all__ = [
     "find_ffmpeg",
     "frame_times",
     "iter_frames",
+    "load_scenes",
     "register_renderer",
     "render_animation",
     "resolve_renderer",

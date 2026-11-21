@@ -46,7 +46,7 @@ pixels = doc.rasterize(scale=2)                          # numpy float32 RGBA, s
 | Documents | `doc[0]`, `doc["logo"]`, `for el in doc`; auto-size to content; definitions land in `<defs>` when referenced; `doc.add(x)` takes elements, documents, matplotlib figures and anything with `__svgwriter__`, `_repr_svg_`, `_repr_png_` or `_repr_jpeg_` (see [Adding other objects](#adding-other-objects)); notebook display |
 | Rendering | skia: `rasterize(size=..., padding=...)` to numpy, embedded and linked images, text, CSS `<style>`; deterministic output |
 | Export / import | A registry by name or extension: more than 30 formats from SVG and PNG to PDF, TikZ, DXF, G-code, PowerPoint, Graphviz and Mermaid (see [Export and import](#export-and-import)); `svg.export.register(...)` adds more |
-| Animation | SMIL elements; `doc.render_animation("out.mp4", update=...)` through ffmpeg; `svg.interpolate(a, b, t)` tweens numbers, colors, transforms and morphs any two shapes |
+| Animation | SMIL elements; `doc.render_animation("out.mp4", update=...)` through ffmpeg; `svg.Scene` classes, several per file, rendered by `svgwriter animate`; `svg.interpolate(a, b, t)` tweens numbers, colors, transforms and morphs any two shapes |
 
 ## Geometry in one minute
 
@@ -136,7 +136,7 @@ svg.Document.open("sketch.excalidraw").save("sketch.svg")
 
 ## Examples
 
-[`examples/`](https://github.com/wzjoriv/svgwriter/tree/main/examples) is a twelve-step learning path, from shapes to formats, animation, interop and a logo; each step is a runnable script with a Jupyter notebook next to it that shows the results as pictures (see its [README](https://github.com/wzjoriv/svgwriter/blob/main/examples/README.md)). All pictures below are rendered by svgwriter.
+[`examples/`](https://github.com/wzjoriv/svgwriter/tree/main/examples) is a thirteen-step learning path, from shapes to formats, animation, interop and a logo; each step is a runnable script with a Jupyter notebook next to it that shows the results as pictures (see its [README](https://github.com/wzjoriv/svgwriter/blob/main/examples/README.md)). All pictures below are rendered by svgwriter.
 
 | | | |
 |:---:|:---:|:---:|

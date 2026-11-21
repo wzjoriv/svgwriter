@@ -351,7 +351,54 @@ class Motion:
 
     def morph(self, target: Element, dur: float = DEFAULT_DURATION, *, begin: float = 0.0,
               repeat: float | str | None = None, freeze: bool = True, ease: EaseLike | None = None) -> Motion:
-        """Turn this ``<path>``'s outline into *target*'s (any shape), matching their segments first."""
+        """Turn this ``<path>``'s outline into *target*'s, matching their segments first.
+
+        Both outlines are brought to the same commands and segment count, so
+        the ``d`` attribute can be interpolated; the path's own ``d`` is
+        rewritten to the matched start shape, which looks the same.
+
+        Parameters
+        ----------
+        target : Element
+            Any shape with an outline (``<rect>``, ``<circle>``, ``<path>``...).
+        dur : float, optional
+            Seconds the morph takes. Defaults to 1.0.
+        begin : float, optional
+            Seconds before it starts. Defaults to 0.0.
+        repeat : float or str, optional
+            ``repeatCount``: a number or ``"indefinite"``. Defaults to None (once).
+        freeze : bool, optional
+            Keep the target shape after the end. Defaults to True.
+        ease : str or callable, optional
+            Easing name or curve. Defaults to None (linear).
+
+        Returns
+        -------
+        Motion
+            This object, for chaining.
+
+        Raises
+        ------
+        TypeError
+            If the element is not a ``<path>``; convert it with ``to_path()`` first.
+
+        See Also
+        --------
+        svgwriter.interpolate : The segment matching and blending used here.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> shape = svg.rect(0, 0, 20, 20).to_path()
+        >>> _ = shape.animate.morph(svg.circle(10, 10, 10), 2)
+        >>> anim = shape.find(svg.Animate)
+        >>> anim.get("attributeName"), anim.get("dur")
+        ('d', '2s')
+        >>> svg.circle(0, 0, 1).animate.morph(shape)
+        Traceback (most recent call last):
+        ...
+        TypeError: morph animates a <path>'s d; convert first with element.to_path()
+        """
         from ..ops.interpolate import interpolate
 
         if self.element.tag != "path":

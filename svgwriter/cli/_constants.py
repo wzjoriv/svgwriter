@@ -14,8 +14,7 @@ __all__ = [
     "DEFAULT_TEXT_SIZE",
     "DRAW_LAYOUTS",
     "EXIT_FAILURE",
-    "SCENE_DOCUMENTS",
-    "SCENE_FACTORIES",
+    "FRAME_FORMAT",
     "STROKE_WIDTH",
     "TEXT_MARGIN",
 ]
@@ -24,8 +23,7 @@ DEFAULT_CANVAS: Final = 200.0
 CANVAS_MARGIN: Final = 0.4
 STROKE_WIDTH: Final = 2
 
-SCENE_FACTORIES: Final = ("build", "scene")
-SCENE_DOCUMENTS: Final = ("document", "doc")
+FRAME_FORMAT: Final = "png"
 EXIT_FAILURE: Final = 1
 DEFAULT_TEXT_SIZE: Final = 48.0
 DEFAULT_FONT: Final = "sans-serif"

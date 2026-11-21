@@ -18,7 +18,7 @@ from ._morph import blend_outlines
 if TYPE_CHECKING:
     from ..elements.core import Element
 
-__all__ = ["interpolate"]
+__all__ = ["interpolate", "register_interpolator", "unregister_interpolator"]
 
 T = TypeVar("T")
 
@@ -34,8 +34,10 @@ def interpolate(a: T, b: T, t: float) -> T:
     outlines and holes with holes (a contour without a partner grows from or
     shrinks to its centre), each pair is resampled to one point count and
     started where the points move least, so in-between shapes do not twist.
-    Values that cannot be blended (keywords, different strings) switch at
-    ``t = 0.5``, as SMIL's discrete mode does.
+    Inside elements, attribute values that cannot be blended (keywords,
+    different strings, lists of different lengths) switch at ``t = 0.5``, as
+    SMIL's discrete mode does. Other types are added with
+    :func:`register_interpolator`.
 
     Parameters
     ----------
@@ -49,9 +51,15 @@ def interpolate(a: T, b: T, t: float) -> T:
     object
         A new value; neither input is changed.
 
+    Raises
+    ------
+    TypeError
+        If no rule blends *a* with *b* (for example a number and a color).
+
     See Also
     --------
     svgwriter.Color.mix : Color blending on its own.
+    register_interpolator : Teach interpolate a new type.
 
     Examples
     --------
@@ -65,11 +73,104 @@ def interpolate(a: T, b: T, t: float) -> T:
     >>> morph = svg.interpolate(svg.rect(0, 0, 10, 10), svg.circle(5, 5, 5), 0.5)
     >>> morph.tag
     'path'
+    >>> svg.interpolate(1, "bold", 0.5)
+    Traceback (most recent call last):
+    ...
+    TypeError: cannot interpolate int and str; teach it with svg.register_interpolator
     """
+    blend = _find(a, b)
+    if blend is None:
+        raise TypeError(f"cannot interpolate {type(a).__name__} and {type(b).__name__}; "
+                        "teach it with svg.register_interpolator")
+    return blend(a, b, t)  # type: ignore[no-any-return]
+
+
+def register_interpolator(kind: type | Callable[[object], bool],
+                          blend: Callable[[Any, Any, float], Any]) -> None:
+    """Teach :func:`interpolate` to blend values of a new kind.
+
+    Registered rules are tried before the built-in ones, newest first, so a
+    rule can also replace how a built-in type blends.
+
+    Parameters
+    ----------
+    kind : type or callable
+        A class (instances and subclasses match) or a predicate
+        ``kind(value) -> bool``. A rule applies when both values match.
+    blend : callable
+        ``blend(a, b, t)`` returning the value a fraction *t* from *a* to *b*.
+
+    See Also
+    --------
+    unregister_interpolator : Remove the rule again.
+    interpolate : Uses the rules.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> class Weight(int):
+    ...     pass
+    >>> svg.register_interpolator(Weight, lambda a, b, t: Weight(round(a + (b - a) * t, -2)))
+    >>> svg.interpolate(Weight(400), Weight(700), 0.5)
+    600
+    >>> svg.unregister_interpolator(Weight)
+    """
+    _USER_RULES.insert(0, (kind, _predicate(kind), blend))
+
+
+def unregister_interpolator(kind: type | Callable[[object], bool]) -> None:
+    """Remove the rule registered for *kind* with :func:`register_interpolator`.
+
+    Parameters
+    ----------
+    kind : type or callable
+        The class or predicate given when registering.
+
+    Raises
+    ------
+    KeyError
+        If no rule is registered for *kind*.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> svg.unregister_interpolator(complex)
+    Traceback (most recent call last):
+    ...
+    KeyError: 'no interpolator registered for complex'
+    """
+    for index, (registered, _, _) in enumerate(_USER_RULES):
+        if registered is kind:
+            del _USER_RULES[index]
+            return
+    raise KeyError(f"no interpolator registered for {getattr(kind, '__name__', kind)}")
+
+
+def _predicate(kind: type | Callable[[object], bool]) -> Callable[[object], bool]:
+    if isinstance(kind, type):
+        return lambda value: isinstance(value, kind)
+    return kind
+
+
+def _find(a: object, b: object) -> Callable[[Any, Any, float], Any] | None:
+    for _, matches, blend in _USER_RULES:
+        if matches(a) and matches(b):
+            return blend
+    exact = _EXACT.get(type(a))
+    if exact is not None and _EXACT.get(type(b)) is exact:
+        return exact
     for kind, blend in _RULES:
         if kind(a) and kind(b):
-            return blend(a, b, t)  # type: ignore[no-any-return]
-    return a if t < DISCRETE_SWITCH else b
+            return blend
+    return None
+
+
+def _attribute(a: object, b: object, t: float) -> Any:
+    """Blend two attribute values, switching at ``t = 0.5`` when they do not blend."""
+    blend = _find(a, b)
+    if blend is None:
+        return a if t < DISCRETE_SWITCH else b
+    return blend(a, b, t)
 
 
 def _number(a: float, b: float, t: float) -> float:
@@ -147,6 +248,13 @@ _RULES: Final[list[tuple[Callable[[object], bool], Callable[[Any, Any, float], A
     (_is_color, _color),
 ]
 
+_EXACT: Final[dict[type, Callable[[Any, Any, float], Any]]] = {
+    int: _number, float: _number, Color: _color, Matrix: _matrix, PathData: blend_outlines,
+}
+
+_USER_RULES: Final[list[tuple[type | Callable[[object], bool], Callable[[object], bool],
+                              Callable[[Any, Any, float], Any]]]] = []
+
 
 def _same_shape(a: Element, b: Element) -> bool:
     if type(a) is not type(b) or len(a.children) or len(b.children):
@@ -167,7 +275,7 @@ def _elements(a: Element, b: Element, t: float) -> Element:
             if key in ("id", "transform"):
                 continue
             result.attributes.pop(key, None)
-            value = interpolate(a.attributes.get(key), b.attributes.get(key), t)
+            value = _attribute(a.attributes.get(key), b.attributes.get(key), t)
             if value is not None:
                 result.set(key, value)
     else:
@@ -191,7 +299,7 @@ def _morph(a: Element, b: Element, t: float) -> Element:
     path = Path(data)
     geometry = GEOMETRY_SKIP | _geometry(a) | _geometry(b)
     for key in (set(a.attributes) | set(b.attributes)) - geometry:
-        value = interpolate(a.attributes.get(key), b.attributes.get(key), t)
+        value = _attribute(a.attributes.get(key), b.attributes.get(key), t)
         if value is not None:
             path.set(key, value)
     return path

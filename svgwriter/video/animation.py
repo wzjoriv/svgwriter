@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Final, TypeAlias
 
 from .._internal._registry import Registry
 from .._internal._typing import AnyPath
-from ._constants import TIME_SCALE, TIMECOUNT_RE
+from ._constants import FRAME_PATTERN, FRAME_SUFFIX, TIME_SCALE, TIMECOUNT_RE
 from ._ffmpeg import encode, find_ffmpeg
 from .frames import Frame, FrameData, frame_times, to_frame
 
@@ -286,7 +286,9 @@ def render_animation(
         The drawing.
     path : str or path-like
         Output file; the extension picks the encoder (``.mp4``, ``.gif``,
-        ``.webm``, ``.mov``, ``.apng``, anything else ffmpeg knows).
+        ``.webm``, ``.mov``, ``.apng``, anything else ffmpeg knows). A
+        ``.png`` path writes numbered frames beside it instead:
+        ``intro.png`` becomes ``intro_0000.png``, ``intro_0001.png`` and so on.
     fps : float, optional
         Frames per second. Defaults to 30.0.
     duration : float, optional
@@ -306,7 +308,7 @@ def render_animation(
     Returns
     -------
     pathlib.Path
-        The written file.
+        The written file, or the ``%04d`` pattern of the numbered PNG frames.
 
     Raises
     ------
@@ -333,6 +335,9 @@ def render_animation(
     ffmpeg is required
     """
     executable = find_ffmpeg(ffmpeg)
+    target = Path(path)
+    if target.suffix.lower() == FRAME_SUFFIX:
+        target = target.with_name(FRAME_PATTERN.format(stem=target.stem, suffix=target.suffix))
     frames = iter_frames(document, fps, duration, renderer, update=update)
-    encode(frames, path, fps, executable=executable)
-    return Path(path)
+    encode(frames, target, fps, executable=executable)
+    return target

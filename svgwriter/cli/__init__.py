@@ -5,8 +5,8 @@ Commands
 shapes, elements    list registered composite shapes and element classes
 draw                write a registered shape
 format, info        re-serialize or summarize an SVG file
-animate             render a scene to mp4/gif/webm through ffmpeg
-render              rasterize a scene or SVG file to PNG (skia-python)
+animate             render the scenes of a file to mp4/gif/webm/png frames (ffmpeg)
+render              rasterize scenes or an SVG file to PNG (skia-python)
 outline             write text as glyph outlines (skia-python)
 """
 
@@ -18,11 +18,11 @@ from typing import Final
 
 from .. import __version__
 from ._basic import add_basic_commands
-from ._media import SceneError, add_media_commands, load_scene
+from ._media import add_media_commands
 
 EXIT_ERROR: Final = 2
 
-__all__ = ["SceneError", "build_parser", "load_scene", "main"]
+__all__ = ["build_parser", "main"]
 
 
 def build_parser() -> argparse.ArgumentParser:
