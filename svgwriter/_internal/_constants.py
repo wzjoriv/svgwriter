@@ -109,10 +109,20 @@ __all__ = [
     "LATEX_TEMPLATE",
     "LATIN_EXTENDED_ADDITIONAL",
     "LINK_CACHE",
+    "IMAGE_AXES",
+    "BASE64_SUFFIX",
+    "GZIP_MAGIC",
+    "SVG_DATA_URI",
+    "VIEWPORT_FALLBACK",
     "LUMA",
     "MAC_FALLBACK_FAMILIES",
     "MARKER_DEFAULT_SIZE",
     "MARKER_PROPERTIES",
+    "MARKER_SHORTHAND",
+    "MARKER_CLIP_ID",
+    "MARKABLE",
+    "MARKER_FREE",
+    "URL_OPEN",
     "MATHTEXT_SIZE",
     "MAX_SEGMENTS",
     "MERMAID",
@@ -251,6 +261,11 @@ NOT_RENDERED: Final = frozenset({"defs", "clipPath", "mask", "pattern", "marker"
                                  "radialGradient", "filter", "title", "desc", "metadata", "style", "font",
                                  "font-face", "glyph", "missing-glyph"})
 LINK_CACHE: Final = 64
+VIEWPORT_FALLBACK: Final = 300.0
+SVG_DATA_URI: Final = "data:image/svg+xml"
+BASE64_SUFFIX: Final = ";base64"
+GZIP_MAGIC: Final = b"\x1f\x8b"
+IMAGE_AXES: Final = {"x": 0, "width": 0, "y": 1, "height": 1}
 
 CLOCK_RE: Final = re.compile(r"^\s*(?:(\d+):)?(\d{1,2}):(\d{1,2}(?:\.\d+)?)\s*$")
 EPSILON: Final = 1e-9
@@ -265,6 +280,11 @@ NONE: Final = "none"
 DROPPED_EFFECTS: Final = {"mask": ("mask",), "filter": ("filter",)}
 MARKER_PROPERTIES: Final = ("marker-start", "marker-mid", "marker-end")
 MARKER_DEFAULT_SIZE: Final = 3.0
+MARKER_SHORTHAND: Final = "marker"
+MARKER_CLIP_ID: Final = "svgwriter-marker-viewport-"
+MARKABLE: Final = frozenset({"path", "line", "polyline", "polygon"})
+MARKER_FREE: Final = frozenset({"marker", "defs", "clipPath", "mask", "pattern", "symbol"})
+URL_OPEN: Final = "url(#"
 PERCENT: Final = 100.0
 DEFAULT_SIZE: Final = 16.0
 JOIN_TOLERANCE: Final = 0.01

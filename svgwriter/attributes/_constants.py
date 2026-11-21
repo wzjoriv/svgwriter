@@ -18,11 +18,14 @@ __all__ = [
     "FUNC_IRI_RE",
     "IMPORTANT",
     "LENGTH_RE",
+    "MARKER_LONGHANDS",
     "PLAIN_ATTRIBUTES",
     "PREFIXES",
     "RULE_RE",
     "SEPARATORS",
 ]
+
+MARKER_LONGHANDS: Final = ("marker-start", "marker-mid", "marker-end")
 
 DEGREES_PER: Final = {"deg": 1.0, "rad": 180.0 / math.pi, "grad": 0.9, "turn": 360.0}
 ANGLE_RE: Final = re.compile(r"^\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)\s*(deg|rad|grad|turn)?\s*$")
