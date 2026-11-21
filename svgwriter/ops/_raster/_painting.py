@@ -137,7 +137,7 @@ def paint_tree(
     """
     from ...elements.text import Text
     from ...io.writer import to_string
-    from .._filters._filtered import draw_filtered, needs_engine
+    from .._filters import draw_filtered, needs_engine
     from ._native_text import draw_text
     from ._native_text import native_text as drawable
 

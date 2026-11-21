@@ -18,7 +18,7 @@ from ..pathdata.data import PathData
 from ..transform.matrix import Matrix
 from ._constants import DEFAULT_FAMILY, DEFAULT_FONT_SIZE, GLYPH_CACHE
 from ._skia import from_skia
-from ._text._glyphs import GlyphBox, layout_glyphs
+from ._text import GlyphBox, layout_glyphs
 
 if TYPE_CHECKING:
     from ..elements.shapes import Path
