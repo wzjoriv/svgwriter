@@ -8,6 +8,7 @@ from collections.abc import Iterator
 from typing import TYPE_CHECKING, Any, overload
 
 from ...attributes.names import PRESENTATION_ATTRIBUTES
+from ...transform.matrix import Point
 from ..core import Element
 from ._character import Character, CharacterRange
 from ._clusters import cluster_bounds
@@ -46,6 +47,11 @@ class TextAccess:
         'a bc'
         """
         return "".join(c.char for c in collect(self))
+
+    def _baseline_point(self) -> Point:
+        """Start of the first baseline: the first glyph's origin, or ``(0, 0)`` for empty text."""
+        boxes = self.layout()
+        return Point(boxes[0].x, boxes[0].y) if boxes else Point(0.0, 0.0)
 
     def layout(self) -> list[GlyphBox]:
         """Place every character of the text.

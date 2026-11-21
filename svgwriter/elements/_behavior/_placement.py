@@ -6,11 +6,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from ...pathdata._constants import BOX_POINTS
 from ...pathdata.data import BBox
 from ...transform.matrix import Point
+from ._constants import BASELINE, ORIGIN
 
 if TYPE_CHECKING:
-    from ._transformable import E, PointLike
+    from ._transformable import E, Pivot, PointLike
 
 __all__ = ["Placement"]
 
@@ -39,7 +41,19 @@ class Placement:
     def anchor(self) -> Point:
         """Pivot in local coordinates; the bounding-box centre unless set.
 
-        Assign ``None`` to go back to the centre.
+        Assign a point, or a name read on the element's own box each time,
+        so it follows edits: ``"center"``, ``"top"``, ``"bottom"``,
+        ``"left"``, ``"right"``, ``"top_left"``, ``"top_right"``,
+        ``"bottom_left"``, ``"bottom_right"`` (and the other
+        :meth:`BBox.point` names), ``"origin"`` for local ``(0, 0)``, or,
+        on text, ``"baseline"`` for the start of its first baseline.
+        Assign ``None`` to go back to the centre. The same names work as
+        ``about=`` in every transform method and animation preset.
+
+        Raises
+        ------
+        ValueError
+            On assigning an unknown name; the message lists the valid ones.
 
         Examples
         --------
@@ -47,15 +61,49 @@ class Placement:
         >>> r = svg.rect(0, 0, 10, 4)
         >>> r.anchor
         Point(x=5.0, y=2.0)
+        >>> r.anchor = "bottom"
+        >>> r.anchor
+        Point(x=5.0, y=4.0)
         """
+        if isinstance(self._anchor, str):
+            return self._local_point(self._anchor)
         if self._anchor is not None:
             return Point(*self._anchor)
         box = self.local_bbox()
         return box.center if box is not None else Point(0.0, 0.0)
 
     @anchor.setter
-    def anchor(self, value: PointLike | None) -> None:
+    def anchor(self, value: Pivot | None) -> None:
+        if isinstance(value, str):
+            self._check_point_name(value)
+            self._anchor = value
+            return
         self._anchor = None if value is None else (float(value[0]), float(value[1]))
+
+    def _point_names(self) -> tuple[str, ...]:
+        names = (*BOX_POINTS, ORIGIN)
+        return (*names, BASELINE) if type(self)._baseline_point is not Placement._baseline_point else names
+
+    def _check_point_name(self, name: str) -> None:
+        if name not in self._point_names():
+            raise ValueError(f"unknown pivot {name!r} for <{self.tag}>; choose one of "  # type: ignore[attr-defined]
+                             f"{', '.join(self._point_names())}")
+
+    def _baseline_point(self) -> Point | None:
+        """Start of the first baseline in local coordinates; None for elements without text."""
+        return None
+
+    def _local_point(self, name: str) -> Point:
+        """A named pivot in local coordinates, read on the current local box."""
+        self._check_point_name(name)
+        if name == ORIGIN:
+            return Point(0.0, 0.0)
+        if name == BASELINE:
+            return self._baseline_point()  # type: ignore[return-value]
+        box = self.local_bbox()
+        if box is None:
+            raise TypeError(f"<{self.tag}> has no known size, so it has no {name!r} point")  # type: ignore[attr-defined]
+        return box.point(name)
 
     @property
     def position(self) -> Point:
