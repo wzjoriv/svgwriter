@@ -57,7 +57,8 @@ class Scene:
     -----
     :meth:`build` receives an empty document of the class's size rather than
     returning one, so ``width`` and ``height`` mean one thing and the method
-    holds only drawing code. Keep the elements that :meth:`update` changes on
+    holds only drawing code. It runs when the scene is created, so the
+    elements it stores are there before the first :meth:`update`. Keep the elements that :meth:`update` changes on
     ``self``. :meth:`update` receives absolute time, so frames can be rendered
     in any order and a scene can be saved more than once.
 
@@ -85,6 +86,11 @@ class Scene:
     renderer: ClassVar[Renderer | str] = SCENE_RENDERER
 
     def __init__(self, document: Document | None = None, *, name: str | None = None) -> None:
+        if document is None:
+            from ..document import Document
+
+            document = Document(self.width, self.height)
+            self.build(document)
         self._document = document
         self.name = name or type(self).__name__
 
@@ -92,7 +98,7 @@ class Scene:
         return f"<{type(self).__name__} {self.name!r} {self.width:g}x{self.height:g} at {self.fps:g} fps>"
 
     def build(self, doc: Document) -> None:
-        """Draw the scene into *doc*; called once, on first use of :attr:`document`.
+        """Draw the scene into *doc*; called once, when the scene is created.
 
         Parameters
         ----------
@@ -135,7 +141,6 @@ class Scene:
         ...     def update(self, seconds):
         ...         self.box.x = 100 * seconds
         >>> scene = Slide()
-        >>> _ = scene.document
         >>> scene.update(0.5)
         >>> scene.box.x
         50.0
@@ -143,7 +148,7 @@ class Scene:
 
     @property
     def document(self) -> Document:
-        """The drawing, built on first access.
+        """The drawing the scene animates.
 
         Returns
         -------
@@ -156,11 +161,6 @@ class Scene:
         >>> svg.Scene().document.root.get("viewBox").width
         640.0
         """
-        if self._document is None:
-            from ..document import Document
-
-            self._document = Document(self.width, self.height)
-            self.build(self._document)
         return self._document
 
     def _advance(self, document: Document, seconds: float) -> None:
@@ -233,9 +233,8 @@ class Scene:
         """
         from ..ops.render import render_png
 
-        document = self.document
         self.update(seconds)
-        return render_png(document.at(seconds), scale=scale, background=background)
+        return render_png(self.document.at(seconds), scale=scale, background=background)
 
     def save(self, path: AnyPath | None = None, *, fps: float | None = None, duration: float | None = None,
              renderer: Renderer | str | None = None, ffmpeg: str | None = None) -> Path:
