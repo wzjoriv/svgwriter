@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 
 from .._internal._typing import Opacity
 from ._constants import CONTRAST_OFFSET, DARK_LUMINANCE, DEGREES
-from ._spaces import oklab_to_srgb, srgb_to_oklab
+from ._spaces import oklab_to_srgb
 
 if TYPE_CHECKING:
     from .color import Color, ColorLike
@@ -111,7 +111,7 @@ class ColorAdjustments:
         return self.hue_shift(HALF_TURN)
 
     def grayscale(self) -> Color:
-        """The grey of the same perceived lightness (OKLab lightness, no chroma).
+        """The grey of the same perceived lightness (OKLab lightness of the exact color, no chroma).
 
         Returns
         -------
@@ -126,7 +126,7 @@ class ColorAdjustments:
         """
         from .color import Color
 
-        lightness, _, _ = srgb_to_oklab(self.rgb)  # type: ignore[attr-defined]
+        lightness, _, _ = self.coords("oklab")  # type: ignore[attr-defined]
         r, g, b = (min(max(c, 0.0), 1.0) for c in oklab_to_srgb((lightness, 0.0, 0.0)))
         return Color(r, g, b, self.a)  # type: ignore[attr-defined]
 

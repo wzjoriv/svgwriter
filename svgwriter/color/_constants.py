@@ -16,28 +16,46 @@ __all__ = [
     "CHANNEL_MAX",
     "COLOR_SPACES",
     "CONTRAST_OFFSET",
+    "CONVERT_CACHE",
+    "COORD_TOLERANCE",
+    "CSS_FUNCTIONS",
+    "CSS_SPACE_NAMES",
+    "DE2000_L_MID",
+    "DE2000_L_WIDTH",
+    "DE2000_POW7",
+    "DE2000_ROTATION_ANGLE",
+    "DE2000_ROTATION_CENTRE",
+    "DE2000_ROTATION_WIDTH",
+    "DE2000_SC",
+    "DE2000_SH",
+    "DE2000_SL",
+    "DE2000_T",
     "D50_WHITE",
     "DARK_LUMINANCE",
     "DEGREES",
     "FUNCTION_RE",
     "HEX_LONG",
     "HEX_SHORT",
+    "IDENTITY",
     "ICC_RE",
     "LAB_EPSILON",
     "LAB_KAPPA",
     "LMS_TO_OKLAB",
     "LMS_TO_XYZ",
     "LUMA_WEIGHTS",
+    "MIN_POSTERIZE_STEPS",
     "MIX_SPACES",
     "NAMED_TABLE",
     "OKLAB_TO_LMS",
     "P3_TO_XYZ",
     "PERCENT_MAX",
     "PERCENT_REFERENCE",
+    "POLAR_SPACES",
     "REC2020_ALPHA",
     "REC2020_BETA",
     "REC2020_GAMMA",
     "REC2020_TO_XYZ",
+    "SEPIA",
     "SRGB_DECODE_THRESHOLD",
     "SRGB_ENCODE_THRESHOLD",
     "SRGB_GAMMA",
@@ -46,6 +64,7 @@ __all__ = [
     "SRGB_THRESHOLD",
     "SRGB_TO_XYZ",
     "XYZ_TO_LMS",
+    "WHITE_POINT_ROOT",
     "XYZ_TO_SRGB",
 ]
 
@@ -115,7 +134,37 @@ PERCENT_REFERENCE: Final = {
 """The value that 100% means for each channel of the CSS Color 4 lab-like functions."""
 COLOR_SPACES: Final = frozenset({"srgb", "srgb-linear", "display-p3", "a98-rgb", "rec2020", "xyz", "xyz-d65",
                                  "xyz-d50"})
-MIX_SPACES: Final = frozenset({"srgb", "linear", "oklab", "oklch"})
+CSS_SPACE_NAMES: Final = {"xyz": "xyz-d65"}
+"""``color()`` spaces CSS names differently from the colour space they mean."""
+MIX_SPACES: Final = {"srgb": "srgb", "linear": "srgb-linear", "display-p3": "display-p3", "lab": "lab",
+                     "lch": "lch", "oklab": "oklab", "oklch": "oklch", "xyz": "xyz-d65"}
+"""Each mixing space name and the colour space it interpolates in."""
+POLAR_SPACES: Final = frozenset({"lch", "oklch"})
+"""Spaces whose third channel is a hue in degrees."""
+CSS_FUNCTIONS: Final = frozenset({"lab", "lch", "oklab", "oklch"})
+"""Spaces written by ``to_css`` as their own function rather than ``color(...)``."""
+CONVERT_CACHE: Final = 4096
+COORD_TOLERANCE: Final = 1e-6
+"""How far outside ``0..1`` an sRGB channel may stray from rounding and still count as in gamut."""
+WHITE_POINT_ROOT: Final = "xyz-d65"
+"""The space every conversion passes through when no closer common space exists."""
+
+SEPIA: Final = ((0.393, 0.769, 0.189), (0.349, 0.686, 0.168), (0.272, 0.534, 0.131))
+"""The full-strength sepia matrix of the Filter Effects ``sepia()`` function."""
+IDENTITY: Final = ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))
+MIN_POSTERIZE_STEPS: Final = 2
+
+DE2000_POW7: Final = 25.0 ** 7
+DE2000_L_MID: Final = 50.0
+DE2000_L_WIDTH: Final = 20.0
+DE2000_SC: Final = 0.045
+DE2000_SH: Final = 0.015
+DE2000_SL: Final = 0.015
+DE2000_T: Final = ((-0.17, 1.0, -30.0), (0.24, 2.0, 0.0), (0.32, 3.0, 6.0), (-0.20, 4.0, -63.0))
+"""``(weight, multiple, offset)`` terms ``weight * cos(multiple * hue + offset)`` of the CIEDE2000 hue weighting ``T``."""
+DE2000_ROTATION_CENTRE: Final = 275.0
+DE2000_ROTATION_WIDTH: Final = 25.0
+DE2000_ROTATION_ANGLE: Final = 60.0
 
 LAB_KAPPA: Final = 24389 / 27
 LAB_EPSILON: Final = 216 / 24389

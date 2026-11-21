@@ -1,5 +1,5 @@
 """
-Raster formats: PNG, JPEG, WebP, BMP, GIF and PPM out; ICO and ICNS icon families out and in; raster images and PNM in.
+Raster formats: PNG, JPEG, WebP, BMP, GIF, PPM and TIFF out; ICO and ICNS icon families out and in; raster images and PNM in.
 """
 
 from __future__ import annotations
@@ -8,11 +8,13 @@ from typing import TYPE_CHECKING, Any
 
 from ..._internal._constants import PX_PER_INCH
 from .._registry import register, register_importer
-from ._constants import DEFAULT_GIF_FPS, DEFAULT_QUALITY
+from . import _tiff  # noqa: F401
+from ._constants import DEFAULT_GIF_FPS, DEFAULT_QUALITY, ICC_FORMATS
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from ..._internal._icc_output import IccLike
     from ...color.color import ColorLike
     from ...document import Document
 
@@ -41,15 +43,38 @@ def _animation_encoders() -> dict[str, Any]:
     return {"png": encode_apng, "webp": encode_webp_animation}
 
 
+def _profiled(frames: list[Any], icc: IccLike | None, encoder: Callable[[list[Any]], bytes]) -> bytes:
+    """Encode sRGB *frames*, first converted to the *icc* profile, with the profile embedded."""
+    if icc is None:
+        return encoder(frames)
+    from ..._internal._icc_embedded import embed_profile
+    from ..._internal._icc_output import output_profile, to_profile
+
+    target = output_profile(icc)
+    if target.space != "RGB":
+        raise ValueError(f"PNG and JPEG take RGB profiles, not {target.space}; export CMYK as tiff or pdf")
+    return embed_profile(encoder(frames if target.srgb else [to_profile(frame, target) for frame in frames]), target.data)
+
+
+def _is_srgb(icc: IccLike) -> bool:
+    """Whether *icc* names sRGB, so the rendered pixels are written as they are."""
+    from ..._internal._icc_output import output_profile
+
+    return output_profile(icc).srgb
+
+
 def _raster(format: str) -> Callable[..., bytes]:
     def exporter(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int | None = None,
                  padding: float = 0.0, background: ColorLike | None = None, quality: int = DEFAULT_QUALITY,
                  dpi: float | None = None, animate: bool = False, fps: float = DEFAULT_GIF_FPS,
-                 duration: float | None = None, loop: int = 0, processes: int | None = 1) -> bytes:
+                 duration: float | None = None, loop: int = 0, processes: int | None = 1,
+                 icc: IccLike | None = None) -> bytes:
         from ..._internal._encoders import ENCODERS
         from ..._internal._rgba import to_uint8
         from ...ops.render import encode_image
 
+        if icc is not None and format not in ICC_FORMATS:
+            raise ValueError(f"{format} cannot embed an ICC profile; use one of {', '.join(ICC_FORMATS)} or tiff")
         if format == "jpeg" and background is None:
             background = "white"
         if isinstance(size, int):
@@ -61,7 +86,15 @@ def _raster(format: str) -> Callable[..., bytes]:
             frames = _frames(document, fps, duration, scale=scale, size=size, padding=padding, background=background,
                              processes=processes)
             if frames:
-                return animated[format](frames, fps, loop=loop)
+                return _profiled(frames, icc, lambda done: animated[format](done, fps, loop=loop))
+        if icc is not None and not _is_srgb(icc):
+            from ...ops.render import encode
+
+            still = [to_uint8(document.rasterize(scale=scale, size=size, padding=padding, background=background))]
+            return _profiled(still, icc, lambda done: encode(done[0], format, quality=quality))
+        if icc is not None:
+            image = document.rasterize(scale=scale, size=size, padding=padding, background=background, snapshot=True)
+            return _profiled([image], icc, lambda done: encode_image(done[0], format, quality=quality))
         native = format not in ENCODERS
         image = document.rasterize(scale=scale, size=size, padding=padding, background=background, snapshot=native)
         if not native:
@@ -69,7 +102,9 @@ def _raster(format: str) -> Callable[..., bytes]:
         return encode_image(image, format, quality=quality)
 
     exporter.__doc__ = (f"{format.upper()} raster (``scale`` or ``dpi``, ``size``, ``padding``, ``background``, "
-                        "``quality``)" + ("; ``animate=True`` with ``fps``, ``duration``, ``loop`` writes the SMIL "
+                        "``quality``" + (", ``icc`` (``'srgb'``, ``'display-p3'`` or RGB profile bytes: pixels are "
+                                         "converted and the profile embedded)" if format in ICC_FORMATS else "")
+                        + ")" + ("; ``animate=True`` with ``fps``, ``duration``, ``loop`` writes the SMIL "
                                           "animation" if format in ("png", "webp") else "") + ".")
     return exporter
 

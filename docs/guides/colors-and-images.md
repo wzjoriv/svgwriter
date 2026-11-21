@@ -39,8 +39,35 @@ print(svg.rect(fill=(1, 0, 0, 0.5)))     # fill="#ff0000" fill-opacity="0.5"
 | `device-cmyk(0 1 1 0)` | naive CMYK with no profile |
 
 Comma and space-separated forms both work, `/ alpha` sets the opacity and `none` is a zero channel.
-Colors outside the sRGB gamut (most of Display P3, Rec. 2020 and high-chroma OKLCH) are clipped to it.
 For press-accurate CMYK use an ICC profile: a trailing `icc-color(...)` is kept with the color.
+
+### Wide-gamut colors keep their space
+
+`hex`, `rgba` and the SVG output are always sRGB, so colors outside its gamut (most of Display P3,
+Rec. 2020 and high-chroma OKLCH) are clipped there. The color itself is not: a color parsed from
+`lab()`, `lch()`, `oklab()`, `oklch()` or `color(<space> ...)` keeps its space and exact channels, and
+mixing, tints, shades, differences and `to_css` start from them:
+
+```python
+green = svg.Color.parse("color(display-p3 0 1 0)")
+green.hex, green.space, green.in_gamut            # ('#00ff00', 'display-p3', False)
+green.coords("oklch")                             # exact OKLCH channels, unclipped
+green.mix("white", 0.5, space="display-p3").to_css("display-p3")   # 'color(display-p3 0.5 1 0.5)'
+svg.Color.from_space("oklch", (0.7, 0.3, 145))    # build one directly
+```
+
+Spaces are `srgb`, `srgb-linear`, `display-p3`, `a98-rgb`, `rec2020`, `xyz-d65`, `xyz-d50`, `lab`,
+`lch`, `oklab` and `oklch`. Colors given in sRGB (names, hex, `rgb()`, `hsl()`, tuples) carry no
+`source` and behave exactly as plain sRGB values; conversions are cached.
+
+`to_css(space)` writes CSS text in any of those spaces, plus `hsl` and `hwb`; the default `"srgb"` gives
+the name, hex or `rgba(...)`:
+
+```python
+c = svg.Color.parse("tomato")
+c.to_css(), c.to_css("oklch", precision=3), c.to_css("display-p3")
+# ('tomato', 'oklch(0.696 0.196 32.321)', 'color(display-p3 0.9283 0.4286 0.3199)')
+```
 
 ### Adjusting colors
 
@@ -50,14 +77,23 @@ c.lighten(0.1), c.darken(0.1)          # HSL lightness
 c.saturate(0.2), c.desaturate(0.2)     # HSL saturation
 c.hue_shift(30), c.complement()        # HSL hue
 c.grayscale(), c.invert()              # same perceived lightness; negative
-c.mix("white", 0.3, space="oklch")     # "srgb" (default), "linear", "oklab" or "oklch"
+c.tint(0.3), c.shade(0.3)              # mixed with white or black in OKLab
+c.mix("white", 0.3, space="oklch")     # "srgb" (default), "linear", "display-p3", "lab", "lch",
+                                       # "oklab", "oklch" or "xyz"
+c.posterize(4), c.sepia(0.8)           # 4 levels per channel; the CSS sepia() filter
+c.gamma(2.2)                           # every channel to a power, as feFuncX type="gamma"
 c.contrast("white"), c.is_dark         # WCAG ratio; whether white text reads better
 c.readable()                           # black or white, whichever has more contrast on c
+c.delta("#0f7a70"), c.delta_e2000("#0f7a70")   # OKLab distance; CIEDE2000
 ```
 
 `lighten` and `darken` move HSL lightness: they reach pure white and black at the ends and keep the hue,
-which is what palettes expect. For perceptually even steps mix in OKLCH instead:
-`c.mix("white", 0.2, space="oklch")`. `space="linear"` mixes light as it adds physically.
+which is what palettes expect. `tint` and `shade` mix with white or black in OKLab instead: white and
+black lie on OKLab's neutral axis, so the OKLab hue stays exactly the same and lightness changes in
+perceptually even steps. `space="linear"` mixes light as it adds physically.
+
+`delta` is the Euclidean distance in OKLab (about 0.02 is just noticeable); `delta_e2000` is the
+CIEDE2000 formula on CIE Lab, the standard in print and colour science (about 1 is just noticeable).
 
 ## Colour profiles
 

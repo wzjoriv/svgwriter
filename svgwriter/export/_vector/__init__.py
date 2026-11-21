@@ -9,17 +9,18 @@ from typing import TYPE_CHECKING
 
 import skia
 
-from ..._internal._constants import PX_PER_PT
+from ..._internal._constants import PX_PER_INCH, PX_PER_PT
 from .._registry import register, register_importer
 from ._constants import PDF_LINK_KEY
 
 if TYPE_CHECKING:
+    from ..._internal._icc_output import IccLike
     from ...document import Document
 
 
 @register("pdf", extensions=(".pdf",), multipage=True)
 def pdf(document: Document | Sequence[Document], *, title: str | None = None, author: str | None = None,
-        text: bool = True) -> bytes:
+        text: bool = True, px_per_inch: float = PX_PER_INCH, icc: IccLike | None = None) -> bytes:
     """Vector PDF drawn by skia: shapes stay vector, text stays selectable, images are embedded.
 
     Pages have the document's physical size: a user unit (CSS pixel) is 3/4 of a point, 96 per
@@ -40,11 +41,26 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
         PDF author metadata. Defaults to None.
     text : bool, optional
         Keep text as text where possible; False draws every glyph as an outline. Defaults to True.
+    px_per_inch : float, optional
+        User units per inch of a document sized in pixels or plain numbers: 72 prints one unit as
+        one point. Sizes in ``mm``, ``cm``, ``in``, ``pt`` or ``pc`` are kept. Defaults to 96 (CSS).
+    icc : {"srgb"} or bytes, optional
+        An output intent with this ICC profile: ``"srgb"`` declares the page colours sRGB
+        (as PDF/A expects), CMYK profile bytes name the printing condition (as PDF/X expects).
+        The colours stay sRGB, since skia writes only DeviceRGB, so other RGB profiles are refused.
+        Needs the ``color`` extra. Defaults to None.
 
     Returns
     -------
     bytes
         The PDF file.
+
+    Raises
+    ------
+    ValueError
+        If `px_per_inch` is not above 0 or `icc` is not sRGB or a CMYK profile.
+    ImportError
+        If `icc` is given without the ``color`` extra.
 
     See Also
     --------
@@ -59,6 +75,7 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     from ..._internal._rendering import view_matrix
     from ...ops.render import page_size, paint_tree
     from ._pdf_boxes import exact_media_boxes, page_points
+    from ._units import unit_scale
 
     stream = skia.DynamicMemoryWStream()
     metadata = skia.PDF.Metadata()
@@ -71,15 +88,22 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     for page in document if isinstance(document, Sequence) else [document]:
         with page._prepared():
             width, height = page_size(page)
-            sizes.append((width / PX_PER_PT, height / PX_PER_PT))
+            points = PX_PER_PT / unit_scale(page, px_per_inch)
+            sizes.append((width / points, height / points))
             canvas = pdf_document.beginPage(*page_points(*sizes[-1]))
-            canvas.scale(1 / PX_PER_PT, 1 / PX_PER_PT)
+            canvas.scale(1 / points, 1 / points)
             paint_tree(canvas, page.root, lambda text: text, width, height,
                        view=view_matrix(page, width, height), viewport=True, native_text=text)
         _links(canvas, page)
         pdf_document.endPage()
     pdf_document.close()
-    return exact_media_boxes(bytes(stream.detachAsData()), sizes)
+    data = exact_media_boxes(bytes(stream.detachAsData()), sizes)
+    if icc is None:
+        return data
+    from ..._internal._icc_output import output_profile
+    from ._pdf_intent import with_output_intent
+
+    return with_output_intent(data, output_profile(icc))
 
 
 def _links(canvas: skia.Canvas, page: Document) -> None:
@@ -94,7 +118,7 @@ def _links(canvas: skia.Canvas, page: Document) -> None:
 
 
 @register("tikz", extensions=(".tikz", ".tex"), binary=False)
-def tikz(document: Document, *, standalone: bool = False, text: bool = True) -> str:
+def tikz(document: Document, *, standalone: bool = False, text: bool = True, px_per_inch: float = PX_PER_INCH) -> str:
     """A TikZ picture of the flattened vector content (gradients as shadings; images skipped).
 
     Parameters
@@ -106,6 +130,9 @@ def tikz(document: Document, *, standalone: bool = False, text: bool = True) -> 
     text : bool, optional
         Write text as ``\\node`` commands typeset by LaTeX; False draws the exact glyph outlines.
         Defaults to True.
+    px_per_inch : float, optional
+        User units per inch of a document sized in pixels; 72 draws one unit as one point. Sizes
+        in ``mm``, ``cm``, ``in``, ``pt`` or ``pc`` are kept. Defaults to 96.
 
     Returns
     -------
@@ -126,17 +153,22 @@ def tikz(document: Document, *, standalone: bool = False, text: bool = True) -> 
     """
     from ._tikz import to_tikz
 
-    return to_tikz(document, standalone=standalone, text=text)
+    return to_tikz(document, standalone=standalone, text=text, px_per_inch=px_per_inch)
 
 
 @register("eps", extensions=(".eps", ".ps"))
-def eps(document: Document, *, text: bool = True) -> bytes:
+def eps(document: Document, *, text: bool = True, px_per_inch: float = PX_PER_INCH) -> bytes:
     """Encapsulated PostScript of the flattened vector content (solid paints; images skipped).
 
     Parameters
     ----------
     document : Document
         The document to convert.
+    text : bool, optional
+        Write text with PostScript fonts; False draws the exact glyph outlines. Defaults to True.
+    px_per_inch : float, optional
+        User units per inch of a document sized in pixels; 72 draws one unit as one point. Sizes
+        in ``mm``, ``cm``, ``in``, ``pt`` or ``pc`` are kept. Defaults to 96.
 
     Returns
     -------
@@ -155,7 +187,7 @@ def eps(document: Document, *, text: bool = True) -> bytes:
     """
     from ._eps import to_eps
 
-    return to_eps(document, text=text).encode("ascii")
+    return to_eps(document, text=text, px_per_inch=px_per_inch).encode("ascii")
 
 
 @register_importer("pdf", extensions=(".pdf",), page_option="page")
