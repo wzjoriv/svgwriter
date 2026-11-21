@@ -4,6 +4,8 @@ Plain text and Markdown in: lines and blocks as ``<text>`` elements in one group
 
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable, Mapping
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from ._constants import (
@@ -27,9 +29,96 @@ from ._registry import register_importer
 
 if TYPE_CHECKING:
     from ..document import Document
+    from ..elements.core import Element
     from ..elements.structure import Group
 
-__all__ = ["read_markdown", "read_text"]
+__all__ = ["Figure", "Line", "read_markdown", "read_text", "stack"]
+
+
+@dataclass(frozen=True)
+class Line:
+    """One laid-out line of styled text.
+
+    Attributes
+    ----------
+    runs : tuple of object
+        Strings and ``<tspan>`` runs, in reading order; empty for a blank line.
+    size : float
+        Font size that sets the line's advance, in user units.
+    indent : float
+        Left offset in user units.
+    style : Mapping of str to object
+        Presentation attributes for the ``<text>``.
+
+    Examples
+    --------
+    >>> Line(("hi",)).size
+    16.0
+    """
+
+    runs: tuple[object, ...]
+    size: float = BODY_SIZE
+    indent: float = 0.0
+    style: Mapping[str, object] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class Figure:
+    """A block (a picture or a shape) taking *height* in the text flow.
+
+    Attributes
+    ----------
+    height : float
+        Vertical space the block takes, in user units.
+    make : Callable[[float], Element]
+        Builds the element with its top edge at the given y.
+
+    Examples
+    --------
+    >>> from svgwriter.elements.shapes import Rect
+    >>> Figure(10, lambda y: Rect(0, y, 10, 10)).make(5).get("y")
+    5
+    """
+
+    height: float
+    make: Callable[[float], Element]
+
+
+def stack(blocks: Iterable[Line | Figure], gap: float = 0.0) -> Group:
+    """Lines and figures stacked top to bottom in one sans-serif group.
+
+    Parameters
+    ----------
+    blocks : iterable of Line or Figure
+        The flow, in reading order. Blank lines advance without drawing.
+    gap : float, optional
+        Space added after each figure, in user units. Defaults to 0.
+
+    Returns
+    -------
+    Group
+        One ``<text>`` per line with text and one element per figure.
+
+    Examples
+    --------
+    >>> group = stack([Line(("a",)), Line(()), Line(("b",))])
+    >>> [round(t.get("y"), 1) for t in group]
+    [22.4, 67.2]
+    """
+    from ..elements.structure import Group
+    from ..elements.text import Text
+
+    group = Group(font_family=SANS, font_size=BODY_SIZE)
+    y = 0.0
+    for block in blocks:
+        if isinstance(block, Figure):
+            group.add(block.make(y))
+            y += block.height + gap
+            continue
+        y += block.size * LINE_HEIGHT
+        if any(str(getattr(run, "text_content", run)).strip() for run in block.runs):
+            group.add(Text(*block.runs, x=block.indent, y=y, **block.style))  # type: ignore[arg-type]
+    return group
 
 
 def _document(group: Group) -> Document:
@@ -117,37 +206,27 @@ def read_markdown(data: bytes) -> Document:
     >>> [(t.text_content, t.get("font-size")) for t in doc[0]]
     [('Title', 32.0), ('Some bold text', None), ('• item', None)]
     """
-    from ..elements.structure import Group
-    from ..elements.text import Text
-
-    group = Group(font_family=SANS, font_size=BODY_SIZE)
-    y = 0.0
+    lines: list[Line] = []
     in_code = False
     for line in data.decode("utf-8-sig").splitlines():
         if line.strip().startswith("```"):
             in_code = not in_code
             continue
-        size, x, content, extra = BODY_SIZE, 0.0, line, {}
         if in_code:
-            extra = {"font_family": MONOSPACE, "fill": CODE_FILL, "xml_space": "preserve"}
-            runs: list[object] = [line]
+            lines.append(Line((line,), style={"font_family": MONOSPACE, "fill": CODE_FILL, "xml_space": "preserve"}))
         elif heading := HEADING_RE.match(line):
             size = HEADING_SIZES[len(heading.group(1))]
-            extra = {"font_size": size, "font_weight": "bold"}
-            runs = _runs(heading.group(2))
+            lines.append(Line(tuple(_runs(heading.group(2))), size, style={"font_size": size, "font_weight": "bold"}))
         elif bullet := BULLET_RE.match(line):
-            x = len(bullet.group(1)) // SPACES_PER_LEVEL * INDENT_PER_LEVEL
-            runs = [BULLET, *_runs(bullet.group(2))]
+            indent = len(bullet.group(1)) // SPACES_PER_LEVEL * INDENT_PER_LEVEL
+            lines.append(Line((BULLET, *_runs(bullet.group(2))), indent=indent))
         elif numbered := NUMBERED_RE.match(line):
-            x = len(numbered.group(1)) // SPACES_PER_LEVEL * INDENT_PER_LEVEL
-            runs = [f"{numbered.group(2)}. ", *_runs(numbered.group(3))]
+            indent = len(numbered.group(1)) // SPACES_PER_LEVEL * INDENT_PER_LEVEL
+            lines.append(Line((f"{numbered.group(2)}. ", *_runs(numbered.group(3))), indent=indent))
         else:
             content = line.strip()
-            runs = _runs(content) if content else []
-        y += size * LINE_HEIGHT
-        if runs and any(str(getattr(r, "text_content", r)).strip() for r in runs):
-            group.add(Text(*runs, x=x, y=y, **extra))  # type: ignore[arg-type]
-    return _document(group)
+            lines.append(Line(tuple(_runs(content)) if content else ()))
+    return _document(stack(lines))
 
 
 register_importer("markdown", extensions=(".md", ".markdown"))(read_markdown)
