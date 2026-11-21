@@ -24,7 +24,8 @@ def test_reopened_svg_keeps_roles_positions_fonts_and_theme(tmp_path, typeface, 
     back = svg.Document.open(tmp_path / "card.svg")
     group = back.root.find(svg.Group)
     assert [child.get("class") for child in group] == ["role-surface", "role-title", "role-accent"]
-    assert [child.bounds() for child in group] == placed
+    for child, box in zip(group, placed, strict=True):
+        assert tuple(child.bounds()) == pytest.approx(tuple(box), abs=0.01)
     assert back.to_string() == doc.to_string()
     assert "@font-face" in back.to_string() and typeface.name in back.to_string()
     assert back.theme == svg.Theme.of(theme) if theme == "dark" else back.theme.name == "document"

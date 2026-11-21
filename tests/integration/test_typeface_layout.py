@@ -15,6 +15,10 @@ ASCENT, DESCENT = 0.8, 0.2
 GAP = 2
 
 
+FONT_ENGINE_SLACK = 0.01
+"""Font engines round advances and metrics slightly differently per platform (CoreText, FreeType)."""
+
+
 def advance(glyph: int) -> float:
     return (glyph + 100) * SIZE / EM
 
@@ -24,10 +28,10 @@ def test_vstack_measures_with_the_face_metrics(typeface):
     bold = svg.text("AA", font=typeface, font_size=SIZE, font_weight="bold")
     stack = svg.VStack(regular, bold, gap=GAP)
     line = (ASCENT + DESCENT) * SIZE
-    assert stack.bounds().height == pytest.approx(2 * line + GAP)
-    assert stack.bounds().width == pytest.approx(2 * advance(BOLD_GLYPH))
-    assert bold.bounds().width == pytest.approx(advance(BOLD_GLYPH) + BOLD_GLYPH * SIZE / EM)
-    assert regular.bounds().width == pytest.approx(advance(GLYPH) + GLYPH * SIZE / EM)
+    assert stack.bounds().height == pytest.approx(2 * line + GAP, abs=FONT_ENGINE_SLACK)
+    assert stack.bounds().width == pytest.approx(2 * advance(BOLD_GLYPH), abs=FONT_ENGINE_SLACK)
+    assert bold.bounds().width == pytest.approx(advance(BOLD_GLYPH) + BOLD_GLYPH * SIZE / EM, abs=FONT_ENGINE_SLACK)
+    assert regular.bounds().width == pytest.approx(advance(GLYPH) + GLYPH * SIZE / EM, abs=FONT_ENGINE_SLACK)
 
 
 def test_embed_fonts_after_layout_writes_each_used_face_once(typeface, font_files):
@@ -54,5 +58,5 @@ def test_to_path_of_laid_out_text_keeps_the_placed_outline(typeface):
     stack = svg.VStack(svg.rect(0, 0, 30, 12), text, gap=GAP).translate(5, 5)
     outline = text.to_path()
     assert outline.bounds() == text.bounds()
-    assert outline.bounds().y == pytest.approx(12 + GAP + (ASCENT - 0.7) * SIZE)
+    assert outline.bounds().y == pytest.approx(12 + GAP + (ASCENT - 0.7) * SIZE, abs=FONT_ENGINE_SLACK)
     assert stack.bounds().y == 5
