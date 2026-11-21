@@ -18,6 +18,15 @@ Nothing else is needed at runtime.
 
 Optional extras:
 
+- **cli** for arrow-key prompts in `svgwriter new` (preset, script or notebook, theme, page size) through
+  [questionary](https://questionary.readthedocs.io/):
+
+  ```console
+  $ pip install "pysvgwriter[cli]"
+  ```
+
+  Without it, `svgwriter new` asks for the preset with a numbered menu.
+
 - **widget** for {doc}`notebook panels <../guides/widgets>` (`svg.interact`) through ipywidgets:
 
   ```console

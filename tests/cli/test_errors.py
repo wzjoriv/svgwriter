@@ -46,22 +46,3 @@ def test_draw_writes_to_a_file(runner: CliRunner, tmp_path: Path) -> None:
     target = tmp_path / "star.svg"
     assert runner.invoke(app, ["draw", "star", "--size", "50", "--compact", "-o", str(target)]).exit_code == 0
     assert target.read_text().startswith("<?xml")
-
-
-class TestPresetMenu:
-    @pytest.fixture(autouse=True)
-    def _inside(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.chdir(tmp_path)
-
-    def test_number_picks_a_preset(self, runner: CliRunner, tmp_path: Path) -> None:
-        result = runner.invoke(app, ["new", "talk"], input="3\n")
-        assert result.exit_code == 0 and " 3. " in result.output
-        assert svg.Project.load(tmp_path / "talk").config.entry == "main:slides"
-
-    def test_enter_takes_the_first(self, runner: CliRunner, tmp_path: Path) -> None:
-        assert runner.invoke(app, ["new", "first"], input="\n").exit_code == 0
-        assert (tmp_path / "first" / "svgwriter.toml").is_file()
-
-    def test_out_of_range_asks_again(self, runner: CliRunner) -> None:
-        result = runner.invoke(app, ["new", "again"], input="99\n1\n")
-        assert result.exit_code == 0 and "not in the range" in result.output

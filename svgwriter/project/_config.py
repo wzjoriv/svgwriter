@@ -29,7 +29,7 @@ from ._constants import (
     VIDEO_FORMATS,
 )
 
-__all__ = ["ProjectConfig", "ProjectError", "check_formats", "find_manifest", "read_config"]
+__all__ = ["ProjectConfig", "ProjectError", "check_formats", "check_size", "find_manifest", "read_config"]
 
 SizeSpec = str | PageSize | tuple[Length, Length] | None
 
@@ -131,7 +131,8 @@ def _unknown(source: Path, where: str, keys: Mapping[str, Any], allowed: frozens
             raise ProjectError(f"{source}: unknown key {where}{key!r}; expected one of {', '.join(sorted(allowed))}")
 
 
-def _size(source: Path, value: object) -> SizeSpec:
+def check_size(source: Path, value: object) -> SizeSpec:
+    """*value* as a size spec; a bad one raises :class:`ProjectError` naming *source*."""
     if value is None:
         return None
     try:
@@ -174,6 +175,6 @@ def read_config(start: Path) -> ProjectConfig:
         options[key] = dict(value)
     root = source.parent
     return ProjectConfig(root=root, source=source, name=str(project.get("name", root.name)),
-                         entry=str(project.get("entry", DEFAULT_ENTRY)), size=_size(source, project.get("size")),
+                         entry=str(project.get("entry", DEFAULT_ENTRY)), size=check_size(source, project.get("size")),
                          theme=project.get("theme"), fonts=str(project.get("fonts", FONT_FOLDER)), formats=formats,
                          options=options, output=str(outputs.get("directory", DEFAULT_OUTPUT)))

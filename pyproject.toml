@@ -65,13 +65,16 @@ math = [
 widget = [
     "ipywidgets>=8",
 ]
+cli = [
+    "questionary>=2.0",
+]
 notebook = [
     "nbformat>=5",
     "nbclient>=0.7",
     "ipykernel>=6",
 ]
 test = [
-    "pysvgwriter[office,plot,graph,math,widget]",
+    "pysvgwriter[office,plot,graph,math,widget,cli]",
     "pytest>=7",
     "ezdxf>=1.0",
     "pillow>=10",
