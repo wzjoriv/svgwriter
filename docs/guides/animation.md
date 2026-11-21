@@ -183,6 +183,19 @@ print(frames[5].tag, frames[5].get("fill"))
 In an `update` callback this gives morphs and tweens per frame, for instance
 `doc[0] = svg.interpolate(start, end, time / duration)`.
 
+Attribute values inside elements that cannot blend (keywords such as `none`, font names, lists of different
+lengths) switch halfway, as SMIL does. Called directly on two values it cannot blend, `interpolate` raises
+`TypeError`. Teach it a new type with `svg.register_interpolator`:
+
+```python
+class Weight(int):
+    pass
+
+svg.register_interpolator(Weight, lambda a, b, t: Weight(round(a + (b - a) * t, -2)))
+print(svg.interpolate(Weight(400), Weight(700), 0.5))
+svg.unregister_interpolator(Weight)
+```
+
 ## Video in
 
 `svgwriter.video.Video(path)` reads a video lazily through ffmpeg: `video[i]` is frame `i` as an
