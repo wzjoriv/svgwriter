@@ -254,6 +254,12 @@ doc.save("figure.jpg", icc="display-p3")         # profile in APP2 segments
 # doc.save("print.pdf", icc=open("press.icc", "rb").read())            # PDF/X-style output intent
 ```
 
+Wide-gamut colours (`oklch(...)`, `color(display-p3 ...)`) keep their own space through theme
+palettes, theme expressions, mixing and gradient stops, so they are never clipped before they are
+combined. The pixels, though, are drawn by skia's SVG renderer, which paints in sRGB: a colour outside
+sRGB is clipped to it when drawn, and `icc="display-p3"` then converts those sRGB pixels. The PNG is a
+correctly tagged Display P3 image of the sRGB rendering, not one that reaches the extra P3 gamut.
+
 | Format | `icc=` |
 |---|---|
 | PNG, APNG, JPEG | `"srgb"`, `"display-p3"` or RGB profile bytes; the pixels are converted and the profile embedded |
