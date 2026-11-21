@@ -37,6 +37,7 @@ class Theming:
 
     @contextmanager
     def _prepared(self) -> Generator[None, None, None]:
-        settle(self.root)
-        with self._sized(), applied(self._theme, self.root):
-            yield
+        with applied(self._theme, self.root):
+            settle(self.root)
+            with self._sized():
+                yield
