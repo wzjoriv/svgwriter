@@ -109,7 +109,8 @@ so a row of `"7"` and `"-"` keys lines up.
 
 Lengths are numbers of user units or lengths with units: `"2mm"`, `svg.mm(2)`, `"0.5in"`. In a document
 whose `viewBox` counts in a physical unit, as `svg.Document(size="a4")` does in millimetres, lengths with
-units convert to that unit, so `gap=svg.mm(2)` is two millimetres on paper.
+units convert to that unit, so `gap=svg.mm(2)` is two millimetres on paper, as it is for attributes
+and path tools.
 
 ```python
 import svgwriter as svg

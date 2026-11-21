@@ -33,7 +33,7 @@ print(sorted(svg.export.exporters()))
 | TIFF | `.tif` `.tiff` | ✓ | — | lossless RGBA with the `dpi` written in; `icc=` with a CMYK profile writes CMYK |
 | ICO | `.ico` | ✓ | ✓ | PNG entries at `sizes=`, `padding=`; import takes the largest image |
 | ICNS | `.icns` | ✓ | ✓ | standard and Retina sizes; import takes the largest image |
-| PDF | `.pdf` | ✓ | ✓ | vector (skia); text kept as text, in an embedded font subset; import reads paths, images, clips, text and shadings, `page=`; links stay clickable; a list of documents gives one page each (`page=None` reads all); `icc` output intent; `px_per_inch` |
+| PDF | `.pdf` | ✓ | ✓ | vector (skia); text kept as text, in an embedded font subset; import reads paths, images, clips, text and shadings, `page=`; links stay clickable; a list of documents gives one page each (`page=None` reads all); `icc` output intent; `units_per_inch` |
 | EPS / PostScript | `.eps` `.ps` | ✓ | ✓ | text kept as text (ASCII in standard fonts); no transparency; import is a small PostScript interpreter |
 | TikZ | `.tikz` `.tex` | ✓ | ✓ | `standalone=True` for a compilable document; text kept as `\node`; import reads `\draw`, `\fill`, nodes, grids, shadings, `\foreach` |
 | DXF | `.dxf` | ✓ | ✓ | CAD polylines in mm, one layer per colour; import reads lines, polylines, circles, arcs, ellipses |
@@ -215,7 +215,8 @@ A user unit is a CSS pixel, 96 to the inch, so a point is 4/3 of a unit and a mi
 bounding box, and as a 7560000 × 10692000 EMU PowerPoint slide, and an 8.5 × 11 inch document as a
 612 × 792 pt Letter page. TikZ pictures are drawn at 0.75 bp per unit, Word drawings at 9525 EMU
 per unit, and DXF, HPGL and G-code at 25.4/96 mm per unit. A raster has no physical size: `dpi=`
-sets how many pixels an inch of the document becomes (96 is `scale=1`).
+sets how many pixels an inch of the document becomes (96 is `scale=1`), and `pixels=` asks for an
+exact pixel size instead.
 
 ```python
 a4 = svg.Document(210 * svg.mm, 297 * svg.mm)   # user units are millimetres through the viewBox
@@ -230,12 +231,12 @@ back as 793.7 × 1122.5 units with no `viewBox` scaling).
 
 A drawing made in plain numbers is in CSS pixels, so a 144-unit-wide figure prints 1.5 inches wide.
 When the numbers are meant as points (one unit, one point, as in many plotting tools), pass
-`px_per_inch=72` to `pdf`, `eps` or `tikz`; sizes in `mm`, `cm`, `in`, `pt` or `pc` stay as they are:
+`units_per_inch=72` to `pdf`, `eps`, `tikz` or, together with `dpi=`, to a raster format; sizes in `mm`, `cm`, `in`, `pt` or `pc` stay as they are:
 
 ```python
 chart = svg.Document(144, 72)                     # meant as 2 x 1 inches
 chart.rect(0, 0, 144, 72, fill="none", stroke="black")
-chart.save("chart.pdf", px_per_inch=72)          # 144 x 72 pt
+chart.save("chart.pdf", units_per_inch=72)          # 144 x 72 pt
 chart.save("chart.pdf")                          # 108 x 54 pt: CSS pixels
 ```
 
@@ -252,6 +253,12 @@ doc.save("figure.jpg", icc="display-p3")         # profile in APP2 segments
 # doc.save("press.tif", icc=open("press.icc", "rb").read(), dpi=300)   # CMYK ink for a CMYK profile
 # doc.save("print.pdf", icc=open("press.icc", "rb").read())            # PDF/X-style output intent
 ```
+
+Wide-gamut colours (`oklch(...)`, `color(display-p3 ...)`) keep their own space through theme
+palettes, theme expressions, mixing and gradient stops, so they are never clipped before they are
+combined. The pixels, though, are drawn by skia's SVG renderer, which paints in sRGB: a colour outside
+sRGB is clipped to it when drawn, and `icc="display-p3"` then converts those sRGB pixels. The PNG is a
+correctly tagged Display P3 image of the sRGB rendering, not one that reaches the extra P3 gamut.
 
 | Format | `icc=` |
 |---|---|

@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Attribute values and styles - svgwriter 2.2.0</title>
+        <title>Attribute values and styles - svgwriter 2.3.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.2.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.2.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.3.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.2.0</span>
+  <span class="sidebar-versions-label">2.3.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -218,6 +218,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/colors-and-images.html">Colors and images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/rendering.html">Rendering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/export-import.html">Export and import</a></li>
@@ -247,6 +248,7 @@
 <li class="toctree-l2"><a class="reference internal" href="io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video.html">Animation export</a></li>
@@ -865,6 +867,8 @@ back into a length when the dimensions cancel.</p>
 <span class="go">96.0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">Length</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="s2">"metres"</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">Length</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"ft"</span><span class="p">))</span>
 <span class="go">('1500mm', '24in')</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Length</span><span class="p">(</span><span class="mi">96</span><span class="p">)</span> <span class="o">==</span> <span class="mi">96</span><span class="p">,</span> <span class="n">Length</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"in"</span><span class="p">)</span> <span class="o">==</span> <span class="mi">96</span><span class="p">,</span> <span class="n">Length</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"em"</span><span class="p">)</span> <span class="o">==</span> <span class="mi">16</span>
+<span class="go">(True, True, False)</span>
 </pre></div>
 </div>
 <dl class="py attribute">
@@ -912,13 +916,13 @@ back into a length when the dimensions cancel.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.attributes.Length.to_user_units">
-<span class="sig-name descname"><span class="pre">to_user_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">96.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">16.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/length.html#Length.to_user_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.Length.to_user_units" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">to_user_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">units_per_inch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">96.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">16.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/length.html#Length.to_user_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.Length.to_user_units" title="Link to this definition">¶</a></dt>
 <dd><p>Convert to user units (pixels).</p>
-<p>Absolute units use the dots-per-inch setting; <code class="docutils literal notranslate"><span class="pre">em</span></code> and <code class="docutils literal notranslate"><span class="pre">ex</span></code> use the font size.</p>
+<p>Absolute units use <cite>units_per_inch</cite>; <code class="docutils literal notranslate"><span class="pre">em</span></code> and <code class="docutils literal notranslate"><span class="pre">ex</span></code> use the font size.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dpi</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Pixels per inch for absolute units. Defaults to the library default DPI.</p></li>
+<li><p><strong>units_per_inch</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – User units per inch for absolute units. Defaults to 96, as SVG defines.</p></li>
 <li><p><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Font size in pixels for <code class="docutils literal notranslate"><span class="pre">em</span></code> and <code class="docutils literal notranslate"><span class="pre">ex</span></code>. Defaults to the library default font size.</p></li>
 <li><p><strong>reference</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – The length that <code class="docutils literal notranslate"><span class="pre">100%</span></code> resolves to. Defaults to None.</p></li>
 </ul>
@@ -932,7 +936,7 @@ back into a length when the dimensions cancel.</p>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span><span class="p">,</span> <span class="n">Unit</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Length</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Unit</span><span class="o">.</span><span class="n">IN</span><span class="p">)</span><span class="o">.</span><span class="n">to_user_units</span><span class="p">(</span><span class="n">dpi</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Length</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Unit</span><span class="o">.</span><span class="n">IN</span><span class="p">)</span><span class="o">.</span><span class="n">to_user_units</span><span class="p">(</span><span class="n">units_per_inch</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>
 <span class="go">72.0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Length</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">Unit</span><span class="o">.</span><span class="n">PERCENT</span><span class="p">)</span><span class="o">.</span><span class="n">to_user_units</span><span class="p">(</span><span class="n">reference</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
 <span class="go">100.0</span>
@@ -2271,60 +2275,9 @@ metres and feet are stored as millimetres and inches. Defaults to user units.</p
 <dd><p>Properties that inherit by default (SVG 1.1, appendix N).</p>
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="svgwriter.attributes.cascade.Rule">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Rule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">specificity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">declarations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/attributes/cascade.html#Rule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.cascade.Rule" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>One selector with its declarations.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>selector</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – A single CSS selector (no commas).</p></li>
-<li><p><strong>specificity</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – <code class="docutils literal notranslate"><span class="pre">(ids,</span> <span class="pre">classes,</span> <span class="pre">types)</span></code> counts used to rank competing rules.</p></li>
-<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – Position in the style sheet; later rules win ties.</p></li>
-<li><p><strong>declarations</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a>) – <code class="docutils literal notranslate"><span class="pre">(name,</span> <span class="pre">value,</span> <span class="pre">important)</span></code> triples.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.attributes.cascade.parse_css" title="svgwriter.attributes.cascade.parse_css"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_css</span></code></a></dt><dd><p>Produces rules from CSS text.</p>
-</dd>
-</dl>
-</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.cascade</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_css</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rule</span> <span class="o">=</span> <span class="n">parse_css</span><span class="p">(</span><span class="s2">".a { fill: red }"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rule</span><span class="o">.</span><span class="n">selector</span><span class="p">,</span> <span class="n">rule</span><span class="o">.</span><span class="n">specificity</span><span class="p">,</span> <span class="n">rule</span><span class="o">.</span><span class="n">declarations</span>
-<span class="go">('.a', (0, 1, 0), (('fill', 'red', False),))</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.attributes.cascade.Rule.selector">
-<span class="sig-name descname"><span class="pre">selector</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><a class="headerlink" href="#svgwriter.attributes.cascade.Rule.selector" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.attributes.cascade.Rule.specificity">
-<span class="sig-name descname"><span class="pre">specificity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#svgwriter.attributes.cascade.Rule.specificity" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.attributes.cascade.Rule.order">
-<span class="sig-name descname"><span class="pre">order</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><a class="headerlink" href="#svgwriter.attributes.cascade.Rule.order" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.attributes.cascade.Rule.declarations">
-<span class="sig-name descname"><span class="pre">declarations</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#svgwriter.attributes.cascade.Rule.declarations" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="svgwriter.attributes.cascade.computed">
-<span class="sig-name descname"><span class="pre">computed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><span class="pre">Element</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.attributes.cascade.Rule" title="svgwriter.attributes.cascade.Rule"><span class="pre">Rule</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/cascade.html#computed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.cascade.computed" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">computed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><span class="pre">Element</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.attributes.rules.Rule" title="svgwriter.attributes.rules.Rule"><span class="pre">Rule</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/cascade.html#computed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.cascade.computed" title="Link to this definition">¶</a></dt>
 <dd><p>Return the computed value of a property.</p>
 <p>The value is the one specified on the element, else inherited from the
 nearest ancestor if the property inherits, else the default. The keyword
@@ -2335,7 +2288,7 @@ nearest ancestor if the property inherits, else the default. The keyword
 <li><p><strong>element</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – The element to inspect.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – CSS property name, such as <code class="docutils literal notranslate"><span class="pre">&quot;fill&quot;</span></code>.</p></li>
 <li><p><strong>default</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><em>object</em></a><em>, </em><em>optional</em>) – Returned when no value applies. Defaults to None.</p></li>
-<li><p><strong>rules</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a><em> of </em><a class="reference internal" href="#svgwriter.attributes.cascade.Rule" title="svgwriter.attributes.cascade.Rule"><em>Rule</em></a><em>, </em><em>optional</em>) – Style rules to consult; collected from the element’s document when omitted. Defaults to None.</p></li>
+<li><p><strong>rules</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a><em> of </em><a class="reference internal" href="#svgwriter.attributes.rules.Rule" title="svgwriter.attributes.rules.Rule"><em>Rule</em></a><em>, </em><em>optional</em>) – Style rules to consult; collected from the element’s document when omitted. Defaults to None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -2345,7 +2298,7 @@ nearest ancestor if the property inherits, else the default. The keyword
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">specified</span></code></dt><dd><p>The value set on the element itself.</p>
+<dt><a class="reference internal" href="#svgwriter.attributes.cascade.specified" title="svgwriter.attributes.cascade.specified"><code class="xref py py-obj docutils literal notranslate"><span class="pre">specified</span></code></a></dt><dd><p>The value set on the element itself.</p>
 </dd>
 </dl>
 </div>
@@ -2363,54 +2316,59 @@ nearest ancestor if the property inherits, else the default. The keyword
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="svgwriter.attributes.cascade.frozen_rules">
-<span class="sig-name descname"><span class="pre">frozen_rules</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.15)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/cascade.html#frozen_rules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.cascade.frozen_rules" title="Link to this definition">¶</a></dt>
-<dd><p>Collect each tree’s style rules once for the block, for many lookups while no <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> changes.</p>
-<p>Joins an enclosing block, so nesting is free.</p>
+<dt class="sig sig-object py" id="svgwriter.attributes.cascade.css_declarations">
+<span class="sig-name descname"><span class="pre">css_declarations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><span class="pre">Element</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.attributes.rules.Rule" title="svgwriter.attributes.rules.Rule"><span class="pre">Rule</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/cascade.html#css_declarations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.cascade.css_declarations" title="Link to this definition">¶</a></dt>
+<dd><p>Return the declarations from style rules that apply to an element.</p>
+<p>Conflicts are resolved by <code class="docutils literal notranslate"><span class="pre">!important</span></code>, then specificity, then source order.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Yields<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>None</em></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – The element to style.</p></li>
+<li><p><strong>rules</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a><em> of </em><a class="reference internal" href="#svgwriter.attributes.rules.Rule" title="svgwriter.attributes.rules.Rule"><em>Rule</em></a>) – Candidate rules, as from <cite>rules_of</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>dict of str to str</em> – The winning value for each property.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.cascade</span><span class="w"> </span><span class="kn">import</span> <span class="n">frozen_rules</span><span class="p">,</span> <span class="n">rules_of</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">'&lt;svg xmlns="http://www.w3.org/2000/svg"&gt;&lt;style&gt;.a{fill:red}&lt;/style&gt;&lt;/svg&gt;'</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">frozen_rules</span><span class="p">():</span>
-<span class="gp">... </span>    <span class="n">rules_of</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="ow">is</span> <span class="n">rules_of</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.cascade</span><span class="w"> </span><span class="kn">import</span> <span class="n">css_declarations</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_css</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rect</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">class_</span><span class="o">=</span><span class="s2">"a"</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">"r"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rules</span> <span class="o">=</span> <span class="n">parse_css</span><span class="p">(</span><span class="s2">".a { fill: red } #r { fill: blue }"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">css_declarations</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span>
+<span class="go">{'fill': 'blue'}</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="svgwriter.attributes.cascade.parse_css">
-<span class="sig-name descname"><span class="pre">parse_css</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.attributes.cascade.Rule" title="svgwriter.attributes.cascade.Rule"><span class="pre">Rule</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/cascade.html#parse_css"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.cascade.parse_css" title="Link to this definition">¶</a></dt>
-<dd><p>Parse a style sheet into rules; <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> blocks are skipped.</p>
-<p>A rule with several comma-separated selectors becomes one <cite>Rule</cite> per
-selector. Comments are removed and <code class="docutils literal notranslate"><span class="pre">!important</span></code> is recorded per declaration.</p>
+<dt class="sig sig-object py" id="svgwriter.attributes.cascade.matches">
+<span class="sig-name descname"><span class="pre">matches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><span class="pre">Element</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/cascade.html#matches"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.cascade.matches" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether an element matches a CSS selector.</p>
+<p>Supports type, <code class="docutils literal notranslate"><span class="pre">*</span></code>, <code class="docutils literal notranslate"><span class="pre">#id</span></code>, <code class="docutils literal notranslate"><span class="pre">.class</span></code>, attribute selectors, <code class="docutils literal notranslate"><span class="pre">:first-child</span></code>
+and the descendant, child (<code class="docutils literal notranslate"><span class="pre">&gt;</span></code>), adjacent (<code class="docutils literal notranslate"><span class="pre">+</span></code>) and general (<code class="docutils literal notranslate"><span class="pre">~</span></code>) sibling combinators.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – CSS text.</p></li>
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>optional</em>) – Order number given to the first rule, so rules from several sheets stay ordered. Defaults to 0.</p></li>
+<li><p><strong>element</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – The element to test.</p></li>
+<li><p><strong>selector</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – A single selector, without commas.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>list of Rule</em> – The parsed rules in source order.</p>
+<dd class="field-even"><p><em>bool</em> – True if the element matches.</p>
 </dd>
 </dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.attributes.cascade.rules_of" title="svgwriter.attributes.cascade.rules_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rules_of</span></code></a></dt><dd><p>Collect the rules of every <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> element.</p>
-</dd>
-</dl>
-</div>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.cascade</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_css</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">selector</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">parse_css</span><span class="p">(</span><span class="s2">"rect, .a { fill: red } /* x */ #b{stroke:blue}"</span><span class="p">)]</span>
-<span class="go">['rect', '.a', '#b']</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.cascade</span><span class="w"> </span><span class="kn">import</span> <span class="n">matches</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span><span class="n">class_</span><span class="o">=</span><span class="s2">"icon"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rect</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">matches</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="s2">"g.icon &gt; rect"</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">matches</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="s2">".other rect"</span><span class="p">)</span>
+<span class="go">False</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -2442,8 +2400,149 @@ are case-insensitive (<code class="docutils literal notranslate"><span class="pr
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="svgwriter.attributes.cascade.rules_of">
-<span class="sig-name descname"><span class="pre">rules_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><span class="pre">Element</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.attributes.cascade.Rule" title="svgwriter.attributes.cascade.Rule"><span class="pre">Rule</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/cascade.html#rules_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.cascade.rules_of" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="svgwriter.attributes.cascade.specified">
+<span class="sig-name descname"><span class="pre">specified</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><span class="pre">Element</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.attributes.rules.Rule" title="svgwriter.attributes.rules.Rule"><span class="pre">Rule</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/cascade.html#specified"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.cascade.specified" title="Link to this definition">¶</a></dt>
+<dd><p>Return the value set directly on an element.</p>
+<p>Looks at the inline <code class="docutils literal notranslate"><span class="pre">style</span></code> first, then matching style rules, then the
+presentation attribute. Nothing is inherited.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – The element to inspect.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – CSS property name, such as <code class="docutils literal notranslate"><span class="pre">&quot;fill&quot;</span></code>.</p></li>
+<li><p><strong>rules</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a><em> of </em><a class="reference internal" href="#svgwriter.attributes.rules.Rule" title="svgwriter.attributes.rules.Rule"><em>Rule</em></a><em>, </em><em>optional</em>) – Style rules to consult; collected from the element’s document when omitted. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>object or None</em> – The specified value, or <code class="docutils literal notranslate"><span class="pre">None</span></code> when the element does not set it.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.attributes.cascade.computed" title="svgwriter.attributes.cascade.computed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computed</span></code></a></dt><dd><p>The value after inheritance.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.cascade</span><span class="w"> </span><span class="kn">import</span> <span class="n">specified</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">specified</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">"opacity:.5"</span><span class="p">),</span> <span class="s2">"opacity"</span><span class="p">)</span>
+<span class="go">'.5'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">specified</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Rect</span><span class="p">(),</span> <span class="s2">"fill"</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p id="module-svgwriter.attributes.rules">Style rules: parsing CSS sheets and collecting the rules a tree’s <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> elements and theme carry.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="svgwriter.attributes.rules.Rule">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Rule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">specificity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">declarations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/attributes/rules.html#Rule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.rules.Rule" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>One selector with its declarations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>selector</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – A single CSS selector (no commas).</p></li>
+<li><p><strong>specificity</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – <code class="docutils literal notranslate"><span class="pre">(ids,</span> <span class="pre">classes,</span> <span class="pre">types)</span></code> counts used to rank competing rules.</p></li>
+<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – Position in the style sheet; later rules win ties.</p></li>
+<li><p><strong>declarations</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a>) – <code class="docutils literal notranslate"><span class="pre">(name,</span> <span class="pre">value,</span> <span class="pre">important)</span></code> triples.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.attributes.rules.parse_css" title="svgwriter.attributes.rules.parse_css"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_css</span></code></a></dt><dd><p>Produces rules from CSS text.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_css</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rule</span> <span class="o">=</span> <span class="n">parse_css</span><span class="p">(</span><span class="s2">".a { fill: red }"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rule</span><span class="o">.</span><span class="n">selector</span><span class="p">,</span> <span class="n">rule</span><span class="o">.</span><span class="n">specificity</span><span class="p">,</span> <span class="n">rule</span><span class="o">.</span><span class="n">declarations</span>
+<span class="go">('.a', (0, 1, 0), (('fill', 'red', False),))</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.attributes.rules.Rule.selector">
+<span class="sig-name descname"><span class="pre">selector</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><a class="headerlink" href="#svgwriter.attributes.rules.Rule.selector" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.attributes.rules.Rule.specificity">
+<span class="sig-name descname"><span class="pre">specificity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#svgwriter.attributes.rules.Rule.specificity" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.attributes.rules.Rule.order">
+<span class="sig-name descname"><span class="pre">order</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><a class="headerlink" href="#svgwriter.attributes.rules.Rule.order" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.attributes.rules.Rule.declarations">
+<span class="sig-name descname"><span class="pre">declarations</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#svgwriter.attributes.rules.Rule.declarations" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.attributes.rules.frozen_rules">
+<span class="sig-name descname"><span class="pre">frozen_rules</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.15)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/rules.html#frozen_rules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.rules.frozen_rules" title="Link to this definition">¶</a></dt>
+<dd><p>Collect each tree’s style rules once for the block, for many lookups while no <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> changes.</p>
+<p>Joins an enclosing block, so nesting is free.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>None</em></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">frozen_rules</span><span class="p">,</span> <span class="n">rules_of</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">'&lt;svg xmlns="http://www.w3.org/2000/svg"&gt;&lt;style&gt;.a{fill:red}&lt;/style&gt;&lt;/svg&gt;'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">frozen_rules</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="n">rules_of</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="ow">is</span> <span class="n">rules_of</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.attributes.rules.parse_css">
+<span class="sig-name descname"><span class="pre">parse_css</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.attributes.rules.Rule" title="svgwriter.attributes.rules.Rule"><span class="pre">Rule</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/rules.html#parse_css"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.rules.parse_css" title="Link to this definition">¶</a></dt>
+<dd><p>Parse a style sheet into rules; <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> blocks are skipped.</p>
+<p>A rule with several comma-separated selectors becomes one <cite>Rule</cite> per
+selector. Comments are removed and <code class="docutils literal notranslate"><span class="pre">!important</span></code> is recorded per declaration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – CSS text.</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>optional</em>) – Order number given to the first rule, so rules from several sheets stay ordered. Defaults to 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>list of Rule</em> – The parsed rules in source order.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.attributes.rules.rules_of" title="svgwriter.attributes.rules.rules_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rules_of</span></code></a></dt><dd><p>Collect the rules of every <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> element.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_css</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">selector</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">parse_css</span><span class="p">(</span><span class="s2">"rect, .a { fill: red } /* x */ #b{stroke:blue}"</span><span class="p">)]</span>
+<span class="go">['rect', '.a', '#b']</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.attributes.rules.rules_of">
+<span class="sig-name descname"><span class="pre">rules_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><span class="pre">Element</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.attributes.rules.Rule" title="svgwriter.attributes.rules.Rule"><span class="pre">Rule</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/rules.html#rules_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.rules.rules_of" title="Link to this definition">¶</a></dt>
 <dd><p>Collect the rules of every <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> element under an element.</p>
 <p>Rules a document attaches to its root by class name (its theme’s role styles) come first, for the
 classes the tree uses, so measuring before output sees the same styles as the output.</p>
@@ -2458,13 +2557,13 @@ classes the tree uses, so measuring before output sees the same styles as the ou
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.attributes.cascade.parse_css" title="svgwriter.attributes.cascade.parse_css"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_css</span></code></a></dt><dd><p>Parse a single sheet.</p>
+<dt><a class="reference internal" href="#svgwriter.attributes.rules.parse_css" title="svgwriter.attributes.rules.parse_css"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_css</span></code></a></dt><dd><p>Parse a single sheet.</p>
 </dd>
 </dl>
 </div>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.cascade</span><span class="w"> </span><span class="kn">import</span> <span class="n">rules_of</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">rules_of</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">'&lt;svg xmlns="http://www.w3.org/2000/svg"&gt;&lt;style&gt;.a{fill:red}&lt;/style&gt;&lt;/svg&gt;'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">rule</span><span class="o">.</span><span class="n">selector</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">rules_of</span><span class="p">(</span><span class="n">doc</span><span class="p">)]</span>
 <span class="go">['.a']</span>
@@ -2473,20 +2572,21 @@ classes the tree uses, so measuring before output sees the same styles as the ou
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="svgwriter.attributes.cascade.set_class_rules">
-<span class="sig-name descname"><span class="pre">set_class_rules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><span class="pre">Element</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.attributes.cascade.Rule" title="svgwriter.attributes.cascade.Rule"><span class="pre">Rule</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/cascade.html#set_class_rules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.cascade.set_class_rules" title="Link to this definition">¶</a></dt>
-<dd><p>Attach rules by class name to <em>root</em>; <a class="reference internal" href="#svgwriter.attributes.cascade.rules_of" title="svgwriter.attributes.cascade.rules_of"><code class="xref py py-func docutils literal notranslate"><span class="pre">rules_of()</span></code></a> puts them first for the classes in use.</p>
+<dt class="sig sig-object py" id="svgwriter.attributes.rules.set_class_rules">
+<span class="sig-name descname"><span class="pre">set_class_rules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><span class="pre">Element</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.attributes.rules.Rule" title="svgwriter.attributes.rules.Rule"><span class="pre">Rule</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/rules.html#set_class_rules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.rules.set_class_rules" title="Link to this definition">¶</a></dt>
+<dd><p>Attach rules by class name to <em>root</em>; <a class="reference internal" href="#svgwriter.attributes.rules.rules_of" title="svgwriter.attributes.rules.rules_of"><code class="xref py py-func docutils literal notranslate"><span class="pre">rules_of()</span></code></a> puts them first for the classes in use.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>root</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – The root of a tree.</p></li>
-<li><p><strong>rules</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a><em> of </em><em>str to list</em><em> of </em><a class="reference internal" href="#svgwriter.attributes.cascade.Rule" title="svgwriter.attributes.cascade.Rule"><em>Rule</em></a>) – The rules of each class name, such as a theme’s role styles.</p></li>
+<li><p><strong>rules</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a><em> of </em><em>str to list</em><em> of </em><a class="reference internal" href="#svgwriter.attributes.rules.Rule" title="svgwriter.attributes.rules.Rule"><em>Rule</em></a>) – The rules of each class name, such as a theme’s role styles.</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.cascade</span><span class="w"> </span><span class="kn">import</span> <span class="n">computed</span><span class="p">,</span> <span class="n">parse_css</span><span class="p">,</span> <span class="n">set_class_rules</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.cascade</span><span class="w"> </span><span class="kn">import</span> <span class="n">computed</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_css</span><span class="p">,</span> <span class="n">set_class_rules</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">root</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Svg</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">"a"</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">set_class_rules</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="p">{</span><span class="s2">"a"</span><span class="p">:</span> <span class="n">parse_css</span><span class="p">(</span><span class="s2">".a { fill: red }"</span><span class="p">)})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">computed</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">"fill"</span><span class="p">)</span>
@@ -2738,19 +2838,22 @@ classes the tree uses, so measuring before output sees the same styles as the ou
 <li><a class="reference internal" href="#svgwriter.attributes.units.rad"><code class="docutils literal notranslate"><span class="pre">rad</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.attributes.units.turn"><code class="docutils literal notranslate"><span class="pre">turn</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.attributes.cascade.INHERITED"><code class="docutils literal notranslate"><span class="pre">INHERITED</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.attributes.cascade.Rule"><code class="docutils literal notranslate"><span class="pre">Rule</span></code></a><ul>
-<li><a class="reference internal" href="#svgwriter.attributes.cascade.Rule.selector"><code class="docutils literal notranslate"><span class="pre">Rule.selector</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.attributes.cascade.Rule.specificity"><code class="docutils literal notranslate"><span class="pre">Rule.specificity</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.attributes.cascade.Rule.order"><code class="docutils literal notranslate"><span class="pre">Rule.order</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.attributes.cascade.Rule.declarations"><code class="docutils literal notranslate"><span class="pre">Rule.declarations</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.attributes.cascade.computed"><code class="docutils literal notranslate"><span class="pre">computed()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.attributes.cascade.css_declarations"><code class="docutils literal notranslate"><span class="pre">css_declarations()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.attributes.cascade.matches"><code class="docutils literal notranslate"><span class="pre">matches()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.attributes.cascade.resolve_styles"><code class="docutils literal notranslate"><span class="pre">resolve_styles()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.attributes.cascade.specified"><code class="docutils literal notranslate"><span class="pre">specified()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.attributes.rules.Rule"><code class="docutils literal notranslate"><span class="pre">Rule</span></code></a><ul>
+<li><a class="reference internal" href="#svgwriter.attributes.rules.Rule.selector"><code class="docutils literal notranslate"><span class="pre">Rule.selector</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.attributes.rules.Rule.specificity"><code class="docutils literal notranslate"><span class="pre">Rule.specificity</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.attributes.rules.Rule.order"><code class="docutils literal notranslate"><span class="pre">Rule.order</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.attributes.rules.Rule.declarations"><code class="docutils literal notranslate"><span class="pre">Rule.declarations</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#svgwriter.attributes.cascade.computed"><code class="docutils literal notranslate"><span class="pre">computed()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.attributes.cascade.frozen_rules"><code class="docutils literal notranslate"><span class="pre">frozen_rules()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.attributes.cascade.parse_css"><code class="docutils literal notranslate"><span class="pre">parse_css()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.attributes.cascade.resolve_styles"><code class="docutils literal notranslate"><span class="pre">resolve_styles()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.attributes.cascade.rules_of"><code class="docutils literal notranslate"><span class="pre">rules_of()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.attributes.cascade.set_class_rules"><code class="docutils literal notranslate"><span class="pre">set_class_rules()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.attributes.rules.frozen_rules"><code class="docutils literal notranslate"><span class="pre">frozen_rules()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.attributes.rules.parse_css"><code class="docutils literal notranslate"><span class="pre">parse_css()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.attributes.rules.rules_of"><code class="docutils literal notranslate"><span class="pre">rules_of()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.attributes.rules.set_class_rules"><code class="docutils literal notranslate"><span class="pre">set_class_rules()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -2762,7 +2865,7 @@ classes the tree uses, so measuring before output sees the same styles as the ou
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=b06a6580"></script>
+</div><script src="../_static/documentation_options.js?v=d4a5b5c4"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

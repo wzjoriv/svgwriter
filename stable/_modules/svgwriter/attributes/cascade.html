@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.attributes.cascade - svgwriter 2.2.0</title>
+        <title>svgwriter.attributes.cascade - svgwriter 2.3.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">svgwriter 2.2.0</div></a>
+      <a href="../../../index.html"><div class="brand">svgwriter 2.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.2.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.3.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.2.0</span>
+  <span class="sidebar-versions-label">2.3.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -217,6 +217,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/colors-and-images.html">Colors and images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/rendering.html">Rendering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/export-import.html">Export and import</a></li>
@@ -246,6 +247,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/video.html">Animation export</a></li>
@@ -291,30 +293,22 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">contextvars</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContextVar</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Final</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AT_BLOCK_RE</span><span class="p">,</span>
-    <span class="n">COMMENT_RE</span><span class="p">,</span>
     <span class="n">CSS_DIMENSION_RE</span><span class="p">,</span>
-    <span class="n">IMPORTANT</span><span class="p">,</span>
     <span class="n">MARKER_LONGHANDS</span><span class="p">,</span>
     <span class="n">ROOT_RULES</span><span class="p">,</span>
-    <span class="n">RULE_RE</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._selectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">matches_from</span><span class="p">,</span> <span class="n">specificity</span><span class="p">,</span> <span class="n">split_selector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._selectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">matches_from</span><span class="p">,</span> <span class="n">split_selector</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.names</span><span class="w"> </span><span class="kn">import</span> <span class="n">PRESENTATION_ATTRIBUTES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rule</span><span class="p">,</span> <span class="n">rules_of</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"INHERITED"</span><span class="p">,</span> <span class="s2">"Rule"</span><span class="p">,</span> <span class="s2">"computed"</span><span class="p">,</span> <span class="s2">"frozen_rules"</span><span class="p">,</span> <span class="s2">"parse_css"</span><span class="p">,</span> <span class="s2">"resolve_styles"</span><span class="p">,</span> <span class="s2">"rules_of"</span><span class="p">,</span> <span class="s2">"set_class_rules"</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"INHERITED"</span><span class="p">,</span> <span class="s2">"computed"</span><span class="p">,</span> <span class="s2">"css_declarations"</span><span class="p">,</span> <span class="s2">"matches"</span><span class="p">,</span> <span class="s2">"resolve_styles"</span><span class="p">,</span> <span class="s2">"specified"</span><span class="p">]</span>
 
-<span class="n">_FROZEN</span><span class="p">:</span> <span class="n">ContextVar</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">"svgwriter_frozen_rules"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
 <span class="n">INHERITED</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span>
     <span class="s2">"clip-rule"</span><span class="p">,</span> <span class="s2">"color"</span><span class="p">,</span> <span class="s2">"color-interpolation"</span><span class="p">,</span> <span class="s2">"color-interpolation-filters"</span><span class="p">,</span> <span class="s2">"color-profile"</span><span class="p">,</span> <span class="s2">"color-rendering"</span><span class="p">,</span>
@@ -328,93 +322,8 @@
 <span class="sd">"""Properties that inherit by default (SVG 1.1, appendix N)."""</span>
 
 
-<div class="viewcode-block" id="Rule">
-<a class="viewcode-back" href="../../../reference/attributes.html#svgwriter.attributes.cascade.Rule">[docs]</a>
-<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">Rule</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""One selector with its declarations.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    selector : str</span>
-<span class="sd">        A single CSS selector (no commas).</span>
-<span class="sd">    specificity : tuple of int</span>
-<span class="sd">        ``(ids, classes, types)`` counts used to rank competing rules.</span>
-<span class="sd">    order : int</span>
-<span class="sd">        Position in the style sheet; later rules win ties.</span>
-<span class="sd">    declarations : tuple of tuple</span>
-<span class="sd">        ``(name, value, important)`` triples.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    parse_css : Produces rules from CSS text.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.attributes.cascade import parse_css</span>
-<span class="sd">    &gt;&gt;&gt; rule = parse_css(".a { fill: red }")[0]</span>
-<span class="sd">    &gt;&gt;&gt; rule.selector, rule.specificity, rule.declarations</span>
-<span class="sd">    ('.a', (0, 1, 0), (('fill', 'red', False),))</span>
-<span class="sd">    """</span>
-
-    <span class="n">selector</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">specificity</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
-    <span class="n">order</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">declarations</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span></div>
-
-
-
-<div class="viewcode-block" id="parse_css">
-<a class="viewcode-back" href="../../../reference/attributes.html#svgwriter.attributes.cascade.parse_css">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">parse_css</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""Parse a style sheet into rules; ``@`` blocks are skipped.</span>
-
-<span class="sd">    A rule with several comma-separated selectors becomes one `Rule` per</span>
-<span class="sd">    selector. Comments are removed and ``!important`` is recorded per declaration.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    text : str</span>
-<span class="sd">        CSS text.</span>
-<span class="sd">    start : int, optional</span>
-<span class="sd">        Order number given to the first rule, so rules from several sheets stay ordered. Defaults to 0.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    list of Rule</span>
-<span class="sd">        The parsed rules in source order.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    rules_of : Collect the rules of every ``&lt;style&gt;`` element.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.attributes.cascade import parse_css</span>
-<span class="sd">    &gt;&gt;&gt; [r.selector for r in parse_css("rect, .a { fill: red } /* x */ #b{stroke:blue}")]</span>
-<span class="sd">    ['rect', '.a', '#b']</span>
-<span class="sd">    """</span>
-    <span class="n">text</span> <span class="o">=</span> <span class="n">AT_BLOCK_RE</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="n">COMMENT_RE</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="n">text</span><span class="p">))</span>
-    <span class="n">rules</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">selectors</span><span class="p">,</span> <span class="n">body</span> <span class="ow">in</span> <span class="n">RULE_RE</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-        <span class="n">declarations</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">";"</span><span class="p">):</span>
-            <span class="n">name</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">sep</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
-                <span class="k">continue</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="n">important</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">IMPORTANT</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">important</span><span class="p">:</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[:</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">IMPORTANT</span><span class="p">)]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="n">declarations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">value</span><span class="p">,</span> <span class="n">important</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">selector</span> <span class="ow">in</span> <span class="n">selectors</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">):</span>
-            <span class="n">selector</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">selector</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-            <span class="k">if</span> <span class="n">selector</span><span class="p">:</span>
-                <span class="n">rules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Rule</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="n">specificity</span><span class="p">(</span><span class="n">selector</span><span class="p">),</span> <span class="n">start</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">rules</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">declarations</span><span class="p">)))</span>
-    <span class="k">return</span> <span class="n">rules</span></div>
-
-
-
+<div class="viewcode-block" id="matches">
+<a class="viewcode-back" href="../../../reference/attributes.html#svgwriter.attributes.cascade.matches">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">matches</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">selector</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Return whether an element matches a CSS selector.</span>
 
@@ -445,91 +354,12 @@
 <span class="sd">    False</span>
 <span class="sd">    """</span>
     <span class="n">parts</span> <span class="o">=</span> <span class="n">split_selector</span><span class="p">(</span><span class="n">selector</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="ow">and</span> <span class="n">matches_from</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">parts</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="frozen_rules">
-<a class="viewcode-back" href="../../../reference/attributes.html#svgwriter.attributes.cascade.frozen_rules">[docs]</a>
-<span class="nd">@contextmanager</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">frozen_rules</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""Collect each tree's style rules once for the block, for many lookups while no ``&lt;style&gt;`` changes.</span>
-
-<span class="sd">    Joins an enclosing block, so nesting is free.</span>
-
-<span class="sd">    Yields</span>
-<span class="sd">    ------</span>
-<span class="sd">    None</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.attributes.cascade import frozen_rules, rules_of</span>
-<span class="sd">    &gt;&gt;&gt; doc = svg.parse('&lt;svg xmlns="http://www.w3.org/2000/svg"&gt;&lt;style&gt;.a{fill:red}&lt;/style&gt;&lt;/svg&gt;')</span>
-<span class="sd">    &gt;&gt;&gt; with frozen_rules():</span>
-<span class="sd">    ...     rules_of(doc) is rules_of(doc)</span>
-<span class="sd">    True</span>
-<span class="sd">    """</span>
-    <span class="k">if</span> <span class="n">_FROZEN</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">yield</span>
-        <span class="k">return</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="n">_FROZEN</span><span class="o">.</span><span class="n">set</span><span class="p">({})</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">yield</span>
-    <span class="k">finally</span><span class="p">:</span>
-        <span class="n">_FROZEN</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">token</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="ow">and</span> <span class="n">matches_from</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">parts</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
 
 
 
-<div class="viewcode-block" id="rules_of">
-<a class="viewcode-back" href="../../../reference/attributes.html#svgwriter.attributes.cascade.rules_of">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">rules_of</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""Collect the rules of every ``&lt;style&gt;`` element under an element.</span>
-
-<span class="sd">    Rules a document attaches to its root by class name (its theme's role styles) come first, for the</span>
-<span class="sd">    classes the tree uses, so measuring before output sees the same styles as the output.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    root : Element</span>
-<span class="sd">        The element to search, including itself.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    list of Rule</span>
-<span class="sd">        The rules in document order, numbered consecutively.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    parse_css : Parse a single sheet.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.attributes.cascade import rules_of</span>
-<span class="sd">    &gt;&gt;&gt; doc = svg.parse('&lt;svg xmlns="http://www.w3.org/2000/svg"&gt;&lt;style&gt;.a{fill:red}&lt;/style&gt;&lt;/svg&gt;')</span>
-<span class="sd">    &gt;&gt;&gt; [rule.selector for rule in rules_of(doc)]</span>
-<span class="sd">    ['.a']</span>
-<span class="sd">    """</span>
-    <span class="n">cache</span> <span class="o">=</span> <span class="n">_FROZEN</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">cache</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">id</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="ow">in</span> <span class="n">cache</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">cache</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">root</span><span class="p">)]</span>
-    <span class="n">by_class</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]]</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ROOT_RULES</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-    <span class="n">sheets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">used</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s2">"style"</span><span class="p">:</span>
-            <span class="n">sheets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">children</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">str</span><span class="p">)))</span>
-        <span class="k">if</span> <span class="n">by_class</span><span class="p">:</span>
-            <span class="n">used</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-    <span class="n">rules</span> <span class="o">=</span> <span class="p">[</span><span class="n">rule</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">used</span> <span class="o">&amp;</span> <span class="n">by_class</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">by_class</span><span class="p">[</span><span class="n">name</span><span class="p">]]</span>
-    <span class="k">for</span> <span class="n">css</span> <span class="ow">in</span> <span class="n">sheets</span><span class="p">:</span>
-        <span class="n">rules</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parse_css</span><span class="p">(</span><span class="n">css</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">rules</span><span class="p">)))</span>
-    <span class="k">if</span> <span class="n">cache</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">cache</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">root</span><span class="p">)]</span> <span class="o">=</span> <span class="n">rules</span>
-    <span class="k">return</span> <span class="n">rules</span></div>
-
-
-
+<div class="viewcode-block" id="css_declarations">
+<a class="viewcode-back" href="../../../reference/attributes.html#svgwriter.attributes.cascade.css_declarations">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">css_declarations</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Return the declarations from style rules that apply to an element.</span>
 
@@ -550,7 +380,8 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.attributes.cascade import css_declarations, parse_css</span>
+<span class="sd">    &gt;&gt;&gt; from svgwriter.attributes.cascade import css_declarations</span>
+<span class="sd">    &gt;&gt;&gt; from svgwriter.attributes.rules import parse_css</span>
 <span class="sd">    &gt;&gt;&gt; rect = svg.Rect(class_="a", id="r")</span>
 <span class="sd">    &gt;&gt;&gt; rules = parse_css(".a { fill: red } #r { fill: blue }")</span>
 <span class="sd">    &gt;&gt;&gt; css_declarations(rect, rules)</span>
@@ -564,7 +395,8 @@
             <span class="n">rank</span> <span class="o">=</span> <span class="p">(</span><span class="n">important</span><span class="p">,</span> <span class="n">rule</span><span class="o">.</span><span class="n">specificity</span><span class="p">,</span> <span class="n">rule</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">winners</span> <span class="ow">or</span> <span class="n">rank</span> <span class="o">&gt;=</span> <span class="n">winners</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="n">winners</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">winners</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">winners</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
+
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_inline</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
@@ -577,6 +409,8 @@
             <span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">";"</span><span class="p">))</span> <span class="k">if</span> <span class="n">sep</span><span class="p">}</span>
 
 
+<div class="viewcode-block" id="specified">
+<a class="viewcode-back" href="../../../reference/attributes.html#svgwriter.attributes.cascade.specified">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">specified</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Return the value set directly on an element.</span>
 
@@ -618,7 +452,8 @@
     <span class="n">sheet</span> <span class="o">=</span> <span class="n">css_declarations</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span> <span class="k">if</span> <span class="n">rules</span> <span class="k">else</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">sheet</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">sheet</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">element</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">element</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="computed">
@@ -721,30 +556,6 @@
     <span class="n">root</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">ROOT_RULES</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="set_class_rules">
-<a class="viewcode-back" href="../../../reference/attributes.html#svgwriter.attributes.cascade.set_class_rules">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">set_class_rules</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Attach rules by class name to *root*; :func:`rules_of` puts them first for the classes in use.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    root : Element</span>
-<span class="sd">        The root of a tree.</span>
-<span class="sd">    rules : dict of str to list of Rule</span>
-<span class="sd">        The rules of each class name, such as a theme's role styles.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.attributes.cascade import computed, parse_css, set_class_rules</span>
-<span class="sd">    &gt;&gt;&gt; root = svg.Svg(svg.rect(0, 0, 1, 1, class_="a"))</span>
-<span class="sd">    &gt;&gt;&gt; set_class_rules(root, {"a": parse_css(".a { fill: red }")})</span>
-<span class="sd">    &gt;&gt;&gt; computed(root[0], "fill")</span>
-<span class="sd">    'red'</span>
-<span class="sd">    """</span>
-    <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ROOT_RULES</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span></div>
-
 </pre></div>
         </article>
       </div>
@@ -777,7 +588,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=b06a6580"></script>
+</div><script src="../../../_static/documentation_options.js?v=d4a5b5c4"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

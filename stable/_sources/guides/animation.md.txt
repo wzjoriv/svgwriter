@@ -178,7 +178,8 @@ applied last, unless the animation has `additive="sum"`, which adds to whatever 
 transform preset is additive, so `update` can move an element that a preset is spinning). The
 duration defaults to the end of the last SMIL animation. Python does not run in a browser, so
 `doc.save("x.svg")` keeps only the SMIL; a scene's `save("x.svg")` bakes the Python motion into SMIL
-first (see [Baking](#baking-python-animation-into-smil)). Video, GIF, APNG and WebP exports include both.
+first (see [Baking](#baking-python-animation-into-smil)). Video, GIF, APNG and WebP exports include both,
+and `scene.at(t)` returns the frame at `t` with behaviours, `update` and SMIL applied.
 
 ```python
 class Drift(svg.Scene):
@@ -192,9 +193,7 @@ class Drift(svg.Scene):
         self.dot.cx = 30 + 30 * seconds   # Python moves it
         self.dot.r = 5                    # ignored: the r tween wins
 
-drift = Drift()
-drift.update(1.0)
-frame = drift.document.at(1.0)            # cx 60 from Python, r 20 from SMIL, fully faded in
+frame = Drift().at(1.0)                   # cx 60 from Python, r 20 from SMIL, fully faded in
 ```
 
 ## Video through ffmpeg
@@ -254,7 +253,7 @@ $ python -m svgwriter animate scenes.py                   # every scene to <Name
 $ python -m svgwriter animate scenes.py Intro Outro --format gif
 $ python -m svgwriter animate scenes.py:Intro -o intro.webm
 $ python -m svgwriter animate mypackage.scenes:Intro      # an importable module
-$ python -m svgwriter render scenes.py Intro --time 1.5   # one frame to Intro.png
+$ python -m svgwriter render scenes.py Intro --at 1.5   # one frame to Intro.png
 ```
 
 `--fps`, `--duration` and `--renderer` override the scene's settings. An `.svg` file is accepted too and

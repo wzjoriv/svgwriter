@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Animation - svgwriter 2.2.0</title>
+        <title>Animation - svgwriter 2.3.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.2.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.2.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.3.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.2.0</span>
+  <span class="sidebar-versions-label">2.3.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -218,6 +218,7 @@
 <li class="toctree-l1"><a class="reference internal" href="text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="colors-and-images.html">Colors and images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rendering.html">Rendering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="export-import.html">Export and import</a></li>
@@ -247,6 +248,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/video.html">Animation export</a></li>
@@ -508,7 +510,8 @@ applied last, unless the animation has <code class="docutils literal notranslate
 transform preset is additive, so <code class="docutils literal notranslate"><span class="pre">update</span></code> can move an element that a preset is spinning). The
 duration defaults to the end of the last SMIL animation. Python does not run in a browser, so
 <code class="docutils literal notranslate"><span class="pre">doc.save(&quot;x.svg&quot;)</span></code> keeps only the SMIL; a scene’s <code class="docutils literal notranslate"><span class="pre">save(&quot;x.svg&quot;)</span></code> bakes the Python motion into SMIL
-first (see <a class="reference internal" href="#baking-python-animation-into-smil">Baking</a>). Video, GIF, APNG and WebP exports include both.</p>
+first (see <a class="reference internal" href="#baking-python-animation-into-smil">Baking</a>). Video, GIF, APNG and WebP exports include both,
+and <code class="docutils literal notranslate"><span class="pre">scene.at(t)</span></code> returns the frame at <code class="docutils literal notranslate"><span class="pre">t</span></code> with behaviours, <code class="docutils literal notranslate"><span class="pre">update</span></code> and SMIL applied.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Drift</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
     <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">fps</span> <span class="o">=</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">24</span>     <span class="c1"># duration: 2 s, the last SMIL end</span>
 
@@ -520,9 +523,7 @@ first (see <a class="reference internal" href="#baking-python-animation-into-smi
         <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="o">.</span><span class="n">cx</span> <span class="o">=</span> <span class="mi">30</span> <span class="o">+</span> <span class="mi">30</span> <span class="o">*</span> <span class="n">seconds</span>   <span class="c1"># Python moves it</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="mi">5</span>                    <span class="c1"># ignored: the r tween wins</span>
 
-<span class="n">drift</span> <span class="o">=</span> <span class="n">Drift</span><span class="p">()</span>
-<span class="n">drift</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
-<span class="n">frame</span> <span class="o">=</span> <span class="n">drift</span><span class="o">.</span><span class="n">document</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>            <span class="c1"># cx 60 from Python, r 20 from SMIL, fully faded in</span>
+<span class="n">frame</span> <span class="o">=</span> <span class="n">Drift</span><span class="p">()</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>                   <span class="c1"># cx 60 from Python, r 20 from SMIL, fully faded in</span>
 </pre></div>
 </div>
 </section>
@@ -576,7 +577,7 @@ class stays out of the list. <code class="docutils literal notranslate"><span cl
 <span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>svgwriter<span class="w"> </span>animate<span class="w"> </span>scenes.py<span class="w"> </span>Intro<span class="w"> </span>Outro<span class="w"> </span>--format<span class="w"> </span>gif
 <span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>svgwriter<span class="w"> </span>animate<span class="w"> </span>scenes.py:Intro<span class="w"> </span>-o<span class="w"> </span>intro.webm
 <span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>svgwriter<span class="w"> </span>animate<span class="w"> </span>mypackage.scenes:Intro<span class="w">      </span><span class="c1"># an importable module</span>
-<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>svgwriter<span class="w"> </span>render<span class="w"> </span>scenes.py<span class="w"> </span>Intro<span class="w"> </span>--time<span class="w"> </span><span class="m">1</span>.5<span class="w">   </span><span class="c1"># one frame to Intro.png</span>
+<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>svgwriter<span class="w"> </span>render<span class="w"> </span>scenes.py<span class="w"> </span>Intro<span class="w"> </span>--at<span class="w"> </span><span class="m">1</span>.5<span class="w">   </span><span class="c1"># one frame to Intro.png</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">--fps</span></code>, <code class="docutils literal notranslate"><span class="pre">--duration</span></code> and <code class="docutils literal notranslate"><span class="pre">--renderer</span></code> override the scene’s settings. An <code class="docutils literal notranslate"><span class="pre">.svg</span></code> file is accepted too and
@@ -803,7 +804,7 @@ numpy array. Mix footage with vector animation in <code class="docutils literal 
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=b06a6580"></script>
+</div><script src="../_static/documentation_options.js?v=d4a5b5c4"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

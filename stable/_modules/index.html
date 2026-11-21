@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Overview: module code - svgwriter 2.2.0</title>
+        <title>Overview: module code - svgwriter 2.3.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.2.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.2.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.3.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.2.0</span>
+  <span class="sidebar-versions-label">2.3.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -217,6 +217,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/colors-and-images.html">Colors and images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/rendering.html">Rendering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/export-import.html">Export and import</a></li>
@@ -246,6 +247,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/video.html">Animation export</a></li>
@@ -294,11 +296,12 @@
 <li><a href="svgwriter/attributes/protocols.html">svgwriter.attributes.protocols</a></li>
 <li><a href="svgwriter/attributes/quantity.html">svgwriter.attributes.quantity</a></li>
 <li><a href="svgwriter/attributes/reference.html">svgwriter.attributes.reference</a></li>
+<li><a href="svgwriter/attributes/rules.html">svgwriter.attributes.rules</a></li>
 <li><a href="svgwriter/attributes/style.html">svgwriter.attributes.style</a></li>
 <li><a href="svgwriter/attributes/units.html">svgwriter.attributes.units</a></li>
 <li><a href="svgwriter/attributes/values.html">svgwriter.attributes.values</a></li>
 <li><a href="svgwriter/attributes/viewbox.html">svgwriter.attributes.viewbox</a></li>
-<li><a href="svgwriter/builder/_effects.html">svgwriter.builder._effects</a></li>
+<li><a href="svgwriter/builder/_drawing.html">svgwriter.builder._drawing</a></li>
 <li><a href="svgwriter/builder/_functions.html">svgwriter.builder._functions</a></li>
 <li><a href="svgwriter/builder/_lines.html">svgwriter.builder._lines</a></li>
 <li><a href="svgwriter/builder/_shapes.html">svgwriter.builder._shapes</a></li>
@@ -336,6 +339,10 @@
 <li><a href="svgwriter/elements/text/_text.html">svgwriter.elements.text._text</a></li>
 <li><a href="svgwriter/export/_exchange.html">svgwriter.export._exchange</a></li>
 <li><a href="svgwriter/export/_registry.html">svgwriter.export._registry</a></li>
+<li><a href="svgwriter/filters/_edges.html">svgwriter.filters._edges</a></li>
+<li><a href="svgwriter/filters/_shadows.html">svgwriter.filters._shadows</a></li>
+<li><a href="svgwriter/filters/_surface.html">svgwriter.filters._surface</a></li>
+<li><a href="svgwriter/gradients/_library.html">svgwriter.gradients._library</a></li>
 <li><a href="svgwriter/inkscape/connectors.html">svgwriter.inkscape.connectors</a></li>
 <li><a href="svgwriter/inkscape/guides.html">svgwriter.inkscape.guides</a></li>
 <li><a href="svgwriter/inkscape/hints.html">svgwriter.inkscape.hints</a></li>
@@ -345,6 +352,7 @@
 <li><a href="svgwriter/layout/_frame.html">svgwriter.layout._frame</a></li>
 <li><a href="svgwriter/layout/_grid.html">svgwriter.layout._grid</a></li>
 <li><a href="svgwriter/layout/_stack.html">svgwriter.layout._stack</a></li>
+<li><a href="svgwriter/markers/_library.html">svgwriter.markers._library</a></li>
 <li><a href="svgwriter/ops/_skia.html">svgwriter.ops._skia</a></li>
 <li><a href="svgwriter/ops/_text/_faces.html">svgwriter.ops._text._faces</a></li>
 <li><a href="svgwriter/ops/along.html">svgwriter.ops.along</a></li>
@@ -365,15 +373,21 @@
 <li><a href="svgwriter/pathdata/commands.html">svgwriter.pathdata.commands</a></li>
 <li><a href="svgwriter/pathdata/data.html">svgwriter.pathdata.data</a></li>
 <li><a href="svgwriter/pathdata/parser.html">svgwriter.pathdata.parser</a></li>
+<li><a href="svgwriter/patterns/_geometric.html">svgwriter.patterns._geometric</a></li>
+<li><a href="svgwriter/patterns/_organic.html">svgwriter.patterns._organic</a></li>
 <li><a href="svgwriter/preset/_animation.html">svgwriter.preset._animation</a></li>
 <li><a href="svgwriter/preset/_behavior.html">svgwriter.preset._behavior</a></li>
+<li><a href="svgwriter/preset/_catalogue.html">svgwriter.preset._catalogue</a></li>
 <li><a href="svgwriter/preset/_kinds.html">svgwriter.preset._kinds</a></li>
 <li><a href="svgwriter/preset/_shape.html">svgwriter.preset._shape</a></li>
 <li><a href="svgwriter/preset/_size.html">svgwriter.preset._size</a></li>
+<li><a href="svgwriter/preset/_text_effect.html">svgwriter.preset._text_effect</a></li>
 <li><a href="svgwriter/project/_config.html">svgwriter.project._config</a></li>
 <li><a href="svgwriter/project/_gallery.html">svgwriter.project._gallery</a></li>
 <li><a href="svgwriter/project/presets.html">svgwriter.project.presets</a></li>
 <li><a href="svgwriter/project/project.html">svgwriter.project.project</a></li>
+<li><a href="svgwriter/text_effects/_elements.html">svgwriter.text_effects._elements</a></li>
+<li><a href="svgwriter/text_effects/_materials.html">svgwriter.text_effects._materials</a></li>
 <li><a href="svgwriter/theme/_errors.html">svgwriter.theme._errors</a></li>
 <li><a href="svgwriter/theme/fonts.html">svgwriter.theme.fonts</a></li>
 <li><a href="svgwriter/theme/palette.html">svgwriter.theme.palette</a></li>
@@ -428,7 +442,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=b06a6580"></script>
+</div><script src="../_static/documentation_options.js?v=d4a5b5c4"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

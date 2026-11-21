@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Geometry - svgwriter 2.2.0</title>
+        <title>Geometry - svgwriter 2.3.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.2.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.2.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.3.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.2.0</span>
+  <span class="sidebar-versions-label">2.3.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -218,6 +218,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/colors-and-images.html">Colors and images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/rendering.html">Rendering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/export-import.html">Export and import</a></li>
@@ -247,6 +248,7 @@
 <li class="toctree-l2"><a class="reference internal" href="io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video.html">Animation export</a></li>
@@ -1322,7 +1324,7 @@ Default to the identity (1, 0, 0, 1, 0, 0).</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.transform.Matrix.svg_value">
-<span class="sig-name descname"><span class="pre">svg_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">pivot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#svgwriter.transform.Matrix.svg_value" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">svg_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#svgwriter.transform.Matrix.svg_value" title="Link to this definition">¶</a></dt>
 <dd><p>The shortest <code class="docutils literal notranslate"><span class="pre">transform</span></code> text for this matrix.</p>
 <p>Rigid motions become <code class="docutils literal notranslate"><span class="pre">rotate(a</span> <span class="pre">cx</span> <span class="pre">cy)</span></code>; otherwise the parts of
 <code class="docutils literal notranslate"><span class="pre">translate</span> <span class="pre">rotate</span> <span class="pre">skewX</span> <span class="pre">scale</span></code> that are not identity, falling back
@@ -1331,11 +1333,11 @@ to <code class="docutils literal notranslate"><span class="pre">matrix(...)</spa
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of decimal places. Defaults to the library default precision.</p></li>
-<li><p><strong>pivot</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>)</em><em>, </em><em>optional</em>) – The element’s own pivot (its anchor). When a pure rotation’s
+<li><p><strong>anchor</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>)</em><em>, </em><em>optional</em>) – The element’s anchor. When a pure rotation’s
 centre would fall outside <em>box</em>, the text becomes
 <code class="docutils literal notranslate"><span class="pre">translate(dx</span> <span class="pre">dy)</span> <span class="pre">rotate(a</span> <span class="pre">px</span> <span class="pre">py)</span></code> about this point instead,
 which is what a person would write. Defaults to None.</p></li>
-<li><p><strong>box</strong> (<a class="reference internal" href="#svgwriter.pathdata.BBox" title="svgwriter.pathdata.BBox"><em>BBox</em></a><em>, </em><em>optional</em>) – The element’s local bounding box, used with <em>pivot</em>. Defaults to None.</p></li>
+<li><p><strong>box</strong> (<a class="reference internal" href="#svgwriter.pathdata.BBox" title="svgwriter.pathdata.BBox"><em>BBox</em></a><em>, </em><em>optional</em>) – The element’s local bounding box, used with <em>anchor</em>. Defaults to None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -4120,7 +4122,7 @@ node has both coordinates.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=b06a6580"></script>
+</div><script src="../_static/documentation_options.js?v=d4a5b5c4"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

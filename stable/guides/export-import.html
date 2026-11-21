@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Export and import - svgwriter 2.2.0</title>
+        <title>Export and import - svgwriter 2.3.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.2.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.2.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.3.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.2.0</span>
+  <span class="sidebar-versions-label">2.3.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -218,6 +218,7 @@
 <li class="toctree-l1"><a class="reference internal" href="text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="colors-and-images.html">Colors and images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rendering.html">Rendering</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Export and import</a></li>
@@ -247,6 +248,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/video.html">Animation export</a></li>
@@ -406,7 +408,7 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">.pdf</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
-<td><p>vector (skia); text kept as text, in an embedded font subset; import reads paths, images, clips, text and shadings, <code class="docutils literal notranslate"><span class="pre">page=</span></code>; links stay clickable; a list of documents gives one page each (<code class="docutils literal notranslate"><span class="pre">page=None</span></code> reads all); <code class="docutils literal notranslate"><span class="pre">icc</span></code> output intent; <code class="docutils literal notranslate"><span class="pre">px_per_inch</span></code></p></td>
+<td><p>vector (skia); text kept as text, in an embedded font subset; import reads paths, images, clips, text and shadings, <code class="docutils literal notranslate"><span class="pre">page=</span></code>; links stay clickable; a list of documents gives one page each (<code class="docutils literal notranslate"><span class="pre">page=None</span></code> reads all); <code class="docutils literal notranslate"><span class="pre">icc</span></code> output intent; <code class="docutils literal notranslate"><span class="pre">units_per_inch</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>EPS / PostScript</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.eps</span></code> <code class="docutils literal notranslate"><span class="pre">.ps</span></code></p></td>
@@ -948,7 +950,8 @@ one page and <code class="docutils literal notranslate"><span class="pre">Docume
 bounding box, and as a 7560000 × 10692000 EMU PowerPoint slide, and an 8.5 × 11 inch document as a
 612 × 792 pt Letter page. TikZ pictures are drawn at 0.75 bp per unit, Word drawings at 9525 EMU
 per unit, and DXF, HPGL and G-code at 25.4/96 mm per unit. A raster has no physical size: <code class="docutils literal notranslate"><span class="pre">dpi=</span></code>
-sets how many pixels an inch of the document becomes (96 is <code class="docutils literal notranslate"><span class="pre">scale=1</span></code>).</p>
+sets how many pixels an inch of the document becomes (96 is <code class="docutils literal notranslate"><span class="pre">scale=1</span></code>), and <code class="docutils literal notranslate"><span class="pre">pixels=</span></code> asks for an
+exact pixel size instead.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a4</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">210</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">,</span> <span class="mi">297</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">)</span>   <span class="c1"># user units are millimetres through the viewBox</span>
 <span class="n">a4</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span>
 <span class="n">a4</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"a4.pdf"</span><span class="p">)</span>                               <span class="c1"># prints at 100% on A4</span>
@@ -960,10 +963,10 @@ same size with every shape in the same place, measured in user units (a millimet
 back as 793.7 × 1122.5 units with no <code class="docutils literal notranslate"><span class="pre">viewBox</span></code> scaling).</p>
 <p>A drawing made in plain numbers is in CSS pixels, so a 144-unit-wide figure prints 1.5 inches wide.
 When the numbers are meant as points (one unit, one point, as in many plotting tools), pass
-<code class="docutils literal notranslate"><span class="pre">px_per_inch=72</span></code> to <code class="docutils literal notranslate"><span class="pre">pdf</span></code>, <code class="docutils literal notranslate"><span class="pre">eps</span></code> or <code class="docutils literal notranslate"><span class="pre">tikz</span></code>; sizes in <code class="docutils literal notranslate"><span class="pre">mm</span></code>, <code class="docutils literal notranslate"><span class="pre">cm</span></code>, <code class="docutils literal notranslate"><span class="pre">in</span></code>, <code class="docutils literal notranslate"><span class="pre">pt</span></code> or <code class="docutils literal notranslate"><span class="pre">pc</span></code> stay as they are:</p>
+<code class="docutils literal notranslate"><span class="pre">units_per_inch=72</span></code> to <code class="docutils literal notranslate"><span class="pre">pdf</span></code>, <code class="docutils literal notranslate"><span class="pre">eps</span></code>, <code class="docutils literal notranslate"><span class="pre">tikz</span></code> or, together with <code class="docutils literal notranslate"><span class="pre">dpi=</span></code>, to a raster format; sizes in <code class="docutils literal notranslate"><span class="pre">mm</span></code>, <code class="docutils literal notranslate"><span class="pre">cm</span></code>, <code class="docutils literal notranslate"><span class="pre">in</span></code>, <code class="docutils literal notranslate"><span class="pre">pt</span></code> or <code class="docutils literal notranslate"><span class="pre">pc</span></code> stay as they are:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">chart</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">144</span><span class="p">,</span> <span class="mi">72</span><span class="p">)</span>                     <span class="c1"># meant as 2 x 1 inches</span>
 <span class="n">chart</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"none"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"black"</span><span class="p">)</span>
-<span class="n">chart</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"chart.pdf"</span><span class="p">,</span> <span class="n">px_per_inch</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>          <span class="c1"># 144 x 72 pt</span>
+<span class="n">chart</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"chart.pdf"</span><span class="p">,</span> <span class="n">units_per_inch</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>          <span class="c1"># 144 x 72 pt</span>
 <span class="n">chart</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"chart.pdf"</span><span class="p">)</span>                          <span class="c1"># 108 x 54 pt: CSS pixels</span>
 </pre></div>
 </div>
@@ -980,6 +983,11 @@ profiles are parsed once):</p>
 <span class="c1"># doc.save("print.pdf", icc=open("press.icc", "rb").read())            # PDF/X-style output intent</span>
 </pre></div>
 </div>
+<p>Wide-gamut colours (<code class="docutils literal notranslate"><span class="pre">oklch(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">color(display-p3</span> <span class="pre">...)</span></code>) keep their own space through theme
+palettes, theme expressions, mixing and gradient stops, so they are never clipped before they are
+combined. The pixels, though, are drawn by skia’s SVG renderer, which paints in sRGB: a colour outside
+sRGB is clipped to it when drawn, and <code class="docutils literal notranslate"><span class="pre">icc=&quot;display-p3&quot;</span></code> then converts those sRGB pixels. The PNG is a
+correctly tagged Display P3 image of the sRGB rendering, not one that reaches the extra P3 gamut.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1164,7 +1172,7 @@ interaction is attached by the page, by element id:</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=b06a6580"></script>
+</div><script src="../_static/documentation_options.js?v=d4a5b5c4"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

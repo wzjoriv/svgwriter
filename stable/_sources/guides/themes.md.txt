@@ -49,7 +49,9 @@ rest of the `shape` role.
 | `shadow` | filled with `shadow`; draw it offset behind a shape |
 | `outline`, `grid` | unfilled, thin `border` stroke |
 | `line` | unfilled, `primary` stroke |
-| `arrow.line`, `arrow.head` | `foreground` stroke / fill |
+| `arrow.line`, `arrow.head` | `foreground` stroke / fill; `arrow.head` also fills the [markers](presets.md#markers) |
+| `pattern` | filled with `primary`; the shapes of [patterns](presets.md#patterns) |
+| `filter.shadow`, `filter.ink` | `flood-color` `shadow` / `foreground` of shadow and outline [filters](presets.md#filters) |
 | `dot` | filled with `accent`, thin `primary` ring |
 | `text`, `code` | `foreground` text |
 | `title` | bold `primary` text |

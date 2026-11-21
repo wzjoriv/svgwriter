@@ -16,7 +16,7 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 | `format INPUT [-o FILE] [--compact] [--precision N]` | Parse an SVG file and write it back out |
 | `info INPUT` | Count the elements of an SVG file |
 | `animate SCENE [NAMES ...] [--format F] [--fps N] [-o FILE]` | Render scenes through ffmpeg |
-| `render SCENE [NAMES ...] [--time T] [--scale S] [-o FILE]` | Rasterize scenes or an SVG file to PNG |
+| `render SCENE [NAMES ...] [--at SECONDS] [--scale S] [-o FILE]` | Rasterize scenes or an SVG file to PNG |
 | `outline TEXT [--font F] [--size N] [-o FILE]` | Write text as glyph outlines |
 
 ```{eval-rst}

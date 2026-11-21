@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Document - svgwriter 2.2.0</title>
+        <title>Document - svgwriter 2.3.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.2.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.2.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.3.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.2.0</span>
+  <span class="sidebar-versions-label">2.3.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -218,6 +218,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/colors-and-images.html">Colors and images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/rendering.html">Rendering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/export-import.html">Export and import</a></li>
@@ -247,6 +248,7 @@
 <li class="toctree-l2"><a class="reference internal" href="io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video.html">Animation export</a></li>
@@ -301,7 +303,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="svgwriter.Document">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.Length"><span class="pre">Length</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.Length"><span class="pre">Length</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.PageSize" title="svgwriter.PageSize"><span class="pre">PageSize</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.structure.Svg" title="svgwriter.elements.structure.Svg"><span class="pre">Svg</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="theme.html#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><span class="pre">Theme</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/document.html#Document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Sizing</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Theming</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Typography</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Output</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Access</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">InkscapeData</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ElementFactory</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Building</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sizing</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Theming</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Typography</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Output</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Access</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">InkscapeData</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ElementFactory</span></code></p>
 <p>An SVG document under construction.</p>
 <p>Shortcut methods (<code class="docutils literal notranslate"><span class="pre">doc.circle(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">doc.linear_gradient(...)</span></code>)
 build an element, add it and return it; definitions go into <code class="docutils literal notranslate"><span class="pre">&lt;defs&gt;</span></code>.
@@ -362,6 +364,11 @@ explicitly.</p>
 <span class="go">(Length(value=210.0, unit=&lt;Unit.MM: 'mm'&gt;), 210.0)</span>
 </pre></div>
 </div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.Document.root">
+<span class="sig-name descname"><span class="pre">root</span></span><a class="headerlink" href="#svgwriter.Document.root" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="svgwriter.Document.theme">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">theme</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="theme.html#svgwriter.theme.Theme" title="svgwriter.theme.theme.Theme"><span class="pre">Theme</span></a></span><a class="headerlink" href="#svgwriter.Document.theme" title="Link to this definition">¶</a></dt>
@@ -463,133 +470,6 @@ theme to restyle the document with (by default the one that wrote it is kept).</
 </div>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="svgwriter.Document.current">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">current</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.core._element.Element"><span class="pre">Element</span></a></span><a class="headerlink" href="#svgwriter.Document.current" title="Link to this definition">¶</a></dt>
-<dd><p>the innermost open container.</p>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">current</span> <span class="ow">is</span> <span class="n">doc</span><span class="o">.</span><span class="n">root</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">doc</span><span class="o">.</span><span class="n">group</span><span class="p">()</span> <span class="k">as</span> <span class="n">g</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">current</span> <span class="ow">is</span> <span class="n">g</span><span class="p">)</span>
-<span class="go">True</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Where <a class="reference internal" href="#svgwriter.Document.add" title="svgwriter.Document.add"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add()</span></code></a> inserts</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="svgwriter.Document.defs">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">defs</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="elements.html#svgwriter.elements.structure.Defs" title="svgwriter.elements.structure._containers.Defs"><span class="pre">Defs</span></a></span><a class="headerlink" href="#svgwriter.Document.defs" title="Link to this definition">¶</a></dt>
-<dd><p>The root <code class="docutils literal notranslate"><span class="pre">&lt;defs&gt;</span></code>, created on first use; <code class="docutils literal notranslate"><span class="pre">doc.defs</span> <span class="pre">+=</span> <span class="pre">x</span></code> adds to it.</p>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rect</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">defs</span> <span class="o">+=</span> <span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">"cell"</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">defs</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">defs</span><span class="p">)</span>
-<span class="go">('defs', 1)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.Document.add">
-<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">E</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">E</span></span></span><a class="reference internal" href="../_modules/svgwriter/document.html#Document.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document.add" title="Link to this definition">¶</a></dt>
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SupportsSVG</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.structure.Group" title="svgwriter.elements.structure._containers.Group"><span class="pre">Group</span></a></span></span></dt>
-<dd><p>Add <em>element</em> at the insertion point and return it.</p>
-<p>Objects from other libraries that implement <code class="docutils literal notranslate"><span class="pre">_repr_svg_</span></code> (plots,
-diagrams, formulas) are parsed and added as a <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span></code> holding their
-<code class="docutils literal notranslate"><span class="pre">&lt;svg&gt;</span></code>, so they can be moved and scaled like any group.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>element</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a><em> or </em><a class="reference internal" href="attributes.html#svgwriter.attributes.SupportsSVG" title="svgwriter.attributes.SupportsSVG"><em>SupportsSVG</em></a>) – The element, or an object providing <code class="docutils literal notranslate"><span class="pre">_repr_svg_</span></code>.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Element</em> – The added element; a <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span></code> when a foreign object was converted.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If a <code class="docutils literal notranslate"><span class="pre">_repr_svg_</span></code> object returns no SVG.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.Document.define" title="svgwriter.Document.define"><code class="xref py py-obj docutils literal notranslate"><span class="pre">define</span></code></a></dt><dd><p>Add to <code class="docutils literal notranslate"><span class="pre">&lt;defs&gt;</span></code> instead.</p>
-</dd>
-</dl>
-</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rect</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rect</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rect</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="n">doc</span><span class="o">.</span><span class="n">root</span>
-<span class="go">True</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.Document.define">
-<span class="sig-name descname"><span class="pre">define</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">E</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">E</span></span></span><a class="reference internal" href="../_modules/svgwriter/document.html#Document.define"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document.define" title="Link to this definition">¶</a></dt>
-<dd><p>Put <em>element</em> in <code class="docutils literal notranslate"><span class="pre">&lt;defs&gt;</span></code> (giving it an id) and return it.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>element</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – The element to define; it receives an id if it has none.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Element</em> – The same element, now inside <code class="docutils literal notranslate"><span class="pre">&lt;defs&gt;</span></code>.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.Document.add" title="svgwriter.Document.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a></dt><dd><p>Add at the insertion point instead.</p>
-</dd>
-</dl>
-</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rect</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cell</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cell</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="n">doc</span><span class="o">.</span><span class="n">defs</span><span class="p">,</span> <span class="n">cell</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"rect"</span><span class="p">)</span>
-<span class="go">(True, True)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.Document.title">
-<span class="sig-name descname"><span class="pre">title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.structure.Title" title="svgwriter.elements.structure._descriptive.Title"><span class="pre">Title</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/document.html#Document.title"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document.title" title="Link to this definition">¶</a></dt>
-<dd><p>Add a <code class="docutils literal notranslate"><span class="pre">&lt;title&gt;</span></code> as the first child of the root.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The accessible name of the document.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Title</em> – The new element.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.Document.describe" title="svgwriter.Document.describe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">describe</span></code></a></dt><dd><p>Add a longer description.</p>
-</dd>
-</dl>
-</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Chart"</span><span class="p">)</span><span class="o">.</span><span class="n">children</span>
-<span class="go">['Chart']</span>
-</pre></div>
-</div>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.Document.__getitem__">
 <span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#slice" title="(in Python v3.15)"><span class="pre">slice</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.core._element.Element"><span class="pre">Element</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.core._element.Element"><span class="pre">Element</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#svgwriter.Document.__getitem__" title="Link to this definition">¶</a></dt>
@@ -636,6 +516,41 @@ Objects panel) matches is returned.</p>
 <dt class="sig sig-object py" id="svgwriter.Document.__len__">
 <span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#svgwriter.Document.__len__" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.Document.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.core._element.Element"><span class="pre">Element</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SupportsSVG</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.core._element.Element"><span class="pre">Element</span></a></span></span><a class="headerlink" href="#svgwriter.Document.add" title="Link to this definition">¶</a></dt>
+<dd><p>Add <em>element</em> at the insertion point and return it.</p>
+<p>Objects from other libraries that implement <code class="docutils literal notranslate"><span class="pre">_repr_svg_</span></code> (plots,
+diagrams, formulas) are parsed and added as a <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span></code> holding their
+<code class="docutils literal notranslate"><span class="pre">&lt;svg&gt;</span></code>, so they can be moved and scaled like any group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>element</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a><em> or </em><a class="reference internal" href="attributes.html#svgwriter.attributes.SupportsSVG" title="svgwriter.attributes.SupportsSVG"><em>SupportsSVG</em></a>) – The element, or an object providing <code class="docutils literal notranslate"><span class="pre">_repr_svg_</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Element</em> – The added element; a <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span></code> when a foreign object was converted.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If a <code class="docutils literal notranslate"><span class="pre">_repr_svg_</span></code> object returns no SVG.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.Document.define" title="svgwriter.Document.define"><code class="xref py py-obj docutils literal notranslate"><span class="pre">define</span></code></a></dt><dd><p>Add to <code class="docutils literal notranslate"><span class="pre">&lt;defs&gt;</span></code> instead.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rect</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rect</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="n">doc</span><span class="o">.</span><span class="n">root</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.Document.at">
@@ -716,9 +631,73 @@ and spline timing are treated as their clock-based, linear equivalents.</p>
 </div>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="svgwriter.Document.current">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">current</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.core._element.Element"><span class="pre">Element</span></a></span><a class="headerlink" href="#svgwriter.Document.current" title="Link to this definition">¶</a></dt>
+<dd><p>the innermost open container.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">current</span> <span class="ow">is</span> <span class="n">doc</span><span class="o">.</span><span class="n">root</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">doc</span><span class="o">.</span><span class="n">group</span><span class="p">()</span> <span class="k">as</span> <span class="n">g</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">current</span> <span class="ow">is</span> <span class="n">g</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Where <a class="reference internal" href="#svgwriter.Document.add" title="svgwriter.Document.add"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add()</span></code></a> inserts</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.Document.define">
+<span class="sig-name descname"><span class="pre">define</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">E</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">E</span></span></span><a class="headerlink" href="#svgwriter.Document.define" title="Link to this definition">¶</a></dt>
+<dd><p>Put <em>element</em> in <code class="docutils literal notranslate"><span class="pre">&lt;defs&gt;</span></code> (giving it an id) and return it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>element</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – The element to define; it receives an id if it has none.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Element</em> – The same element, now inside <code class="docutils literal notranslate"><span class="pre">&lt;defs&gt;</span></code>.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.Document.add" title="svgwriter.Document.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a></dt><dd><p>Add at the insertion point instead.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cell</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cell</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="n">doc</span><span class="o">.</span><span class="n">defs</span><span class="p">,</span> <span class="n">cell</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"rect"</span><span class="p">)</span>
+<span class="go">(True, True)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="svgwriter.Document.defs">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">defs</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="elements.html#svgwriter.elements.structure.Defs" title="svgwriter.elements.structure.Defs"><span class="pre">Defs</span></a></span><a class="headerlink" href="#svgwriter.Document.defs" title="Link to this definition">¶</a></dt>
+<dd><p>The root <code class="docutils literal notranslate"><span class="pre">&lt;defs&gt;</span></code>, created on first use; <code class="docutils literal notranslate"><span class="pre">doc.defs</span> <span class="pre">+=</span> <span class="pre">x</span></code> adds to it.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">defs</span> <span class="o">+=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">"cell"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">defs</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">defs</span><span class="p">)</span>
+<span class="go">('defs', 1)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.Document.describe">
-<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.structure.Desc" title="svgwriter.elements.structure._descriptive.Desc"><span class="pre">Desc</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/document.html#Document.describe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document.describe" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.structure.Desc" title="svgwriter.elements.structure._descriptive.Desc"><span class="pre">Desc</span></a></span></span><a class="headerlink" href="#svgwriter.Document.describe" title="Link to this definition">¶</a></dt>
 <dd><p>Add a <code class="docutils literal notranslate"><span class="pre">&lt;desc&gt;</span></code> at the insertion point.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -736,7 +715,8 @@ and spline timing are treated as their clock-based, linear equivalents.</p>
 </dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"A blue square"</span><span class="p">)</span><span class="o">.</span><span class="n">children</span>
 <span class="go">['A blue square']</span>
 </pre></div>
@@ -982,6 +962,36 @@ finds or adds a sublayer.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.Document.nest">
+<span class="sig-name descname"><span class="pre">nest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">E</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.15)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">E</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#svgwriter.Document.nest" title="Link to this definition">¶</a></dt>
+<dd><p>Add <em>element</em> and make it the insertion point inside the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>element</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – The container to add and open.</p>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Element</em> – The same element.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.Document.add" title="svgwriter.Document.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a></dt><dd><p>Add without nesting.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">doc</span><span class="o">.</span><span class="n">nest</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Group</span><span class="p">())</span> <span class="k">as</span> <span class="n">g</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">_</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.Document.open">
 <span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnyPath</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.Document" title="svgwriter.Document"><span class="pre">Document</span></a></span></span><a class="headerlink" href="#svgwriter.Document.open" title="Link to this definition">¶</a></dt>
 <dd><p>Read any registered input format (SVG, SVGZ, PNG, JPEG, …), chosen by extension.</p>
@@ -1061,13 +1071,13 @@ extension of <cite>path</cite>.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.Document.rasterize">
-<span class="sig-name descname"><span class="pre">rasterize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ColorLike</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="headerlink" href="#svgwriter.Document.rasterize" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">rasterize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ColorLike</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="headerlink" href="#svgwriter.Document.rasterize" title="Link to this definition">¶</a></dt>
 <dd><p>Render into a float32 RGBA array (see <a class="reference internal" href="ops.html#svgwriter.ops.rasterize" title="svgwriter.ops.rasterize"><code class="xref py py-func docutils literal notranslate"><span class="pre">svgwriter.ops.rasterize()</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Pixels per user unit. Defaults to 1.0.</p></li>
-<li><p><strong>size</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>) or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>optional</em>) – Output size in pixels as <code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code>, or one int for a square. Defaults to None, which
+<li><p><strong>pixels</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>) or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>optional</em>) – Output size in pixels as <code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code>, or one int for a square. Defaults to None, which
 uses the document size times <cite>scale</cite>.</p></li>
 <li><p><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Margin around the content, in user units. Defaults to 0.0.</p></li>
 <li><p><strong>background</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Background color. Defaults to None (transparent).</p></li>
@@ -1089,7 +1099,7 @@ uses the document size times <cite>scale</cite>.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">Rect</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">rasterize</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">rasterize</span><span class="p">(</span><span class="n">pixels</span><span class="o">=</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 <span class="go">(64, 64, 4)</span>
 </pre></div>
 </div>
@@ -1234,6 +1244,58 @@ extension of <cite>target</cite>, or SVG for streams.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.Document.style">
+<span class="sig-name descname"><span class="pre">style</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">css</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="attributes.html#svgwriter.attributes.StyleSheet" title="svgwriter.attributes.StyleSheet"><span class="pre">StyleSheet</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.structure.StyleElement" title="svgwriter.elements.structure.StyleElement"><span class="pre">StyleElement</span></a></span></span><a class="headerlink" href="#svgwriter.Document.style" title="Link to this definition">¶</a></dt>
+<dd><p>Add a <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> sheet near the top of the document.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>css</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><a class="reference internal" href="attributes.html#svgwriter.attributes.StyleSheet" title="svgwriter.attributes.StyleSheet"><em>StyleSheet</em></a><em>, </em><em>optional</em>) – The stylesheet. Defaults to an empty string.</p></li>
+<li><p><strong>**kwargs</strong> – Forwarded to <a class="reference internal" href="elements.html#svgwriter.elements.structure.StyleElement" title="svgwriter.elements.structure.StyleElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">StyleElement</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>StyleElement</em> – The new element, placed after the <code class="docutils literal notranslate"><span class="pre">&lt;title&gt;</span></code> when there is one.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">".a { fill: red }"</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span>
+<span class="go">'style'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.Document.title">
+<span class="sig-name descname"><span class="pre">title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.structure.Title" title="svgwriter.elements.structure._descriptive.Title"><span class="pre">Title</span></a></span></span><a class="headerlink" href="#svgwriter.Document.title" title="Link to this definition">¶</a></dt>
+<dd><p>Add a <code class="docutils literal notranslate"><span class="pre">&lt;title&gt;</span></code> as the first child of the root.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The accessible name of the document.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Title</em> – The new element.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.Document.describe" title="svgwriter.Document.describe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">describe</span></code></a></dt><dd><p>Add a longer description.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Chart"</span><span class="p">)</span><span class="o">.</span><span class="n">children</span>
+<span class="go">['Chart']</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.Document.to_string">
 <span class="sig-name descname"><span class="pre">to_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#svgwriter.Document.to_string" title="Link to this definition">¶</a></dt>
 <dd><p>Serialize; see <a class="reference internal" href="io.html#svgwriter.io.SerializeOptions" title="svgwriter.io.SerializeOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">svgwriter.io.SerializeOptions</span></code></a>. Auto-sized documents get their size here.</p>
@@ -1291,59 +1353,6 @@ made in this session.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Hi"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">font_family</span><span class="o">=</span><span class="n">serif</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">used_faces</span><span class="p">(</span><span class="n">serif</span><span class="p">))</span>
-<span class="go">1</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.Document.style">
-<span class="sig-name descname"><span class="pre">style</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">css</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="attributes.html#svgwriter.attributes.StyleSheet" title="svgwriter.attributes.StyleSheet"><span class="pre">StyleSheet</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.structure.StyleElement" title="svgwriter.elements.structure.StyleElement"><span class="pre">StyleElement</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/document.html#Document.style"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document.style" title="Link to this definition">¶</a></dt>
-<dd><p>Add a <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> sheet near the top of the document.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>css</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><a class="reference internal" href="attributes.html#svgwriter.attributes.StyleSheet" title="svgwriter.attributes.StyleSheet"><em>StyleSheet</em></a><em>, </em><em>optional</em>) – The stylesheet. Defaults to an empty string.</p></li>
-<li><p><strong>**kwargs</strong> – Forwarded to <a class="reference internal" href="elements.html#svgwriter.elements.structure.StyleElement" title="svgwriter.elements.structure.StyleElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">StyleElement</span></code></a>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>StyleElement</em> – The new element, placed after the <code class="docutils literal notranslate"><span class="pre">&lt;title&gt;</span></code> when there is one.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">".a { fill: red }"</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span>
-<span class="go">'style'</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.Document.nest">
-<span class="sig-name descname"><span class="pre">nest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">E</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.15)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">E</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/document.html#Document.nest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document.nest" title="Link to this definition">¶</a></dt>
-<dd><p>Add <em>element</em> and make it the insertion point inside the block.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>element</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Element" title="svgwriter.elements.Element"><em>Element</em></a>) – The container to add and open.</p>
-</dd>
-<dt class="field-even">Yields<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Element</em> – The same element.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.Document.add" title="svgwriter.Document.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a></dt><dd><p>Add without nesting.</p>
-</dd>
-</dl>
-</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="kn">import</span> <span class="n">Group</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">doc</span><span class="o">.</span><span class="n">nest</span><span class="p">(</span><span class="n">Group</span><span class="p">())</span> <span class="k">as</span> <span class="n">g</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">_</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 <span class="go">1</span>
 </pre></div>
 </div>
@@ -1561,21 +1570,21 @@ across) or <code class="docutils literal notranslate"><span class="pre">-portrai
             <ul>
 <li><a class="reference internal" href="#">Document</a><ul>
 <li><a class="reference internal" href="#svgwriter.Document"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a><ul>
+<li><a class="reference internal" href="#svgwriter.Document.root"><code class="docutils literal notranslate"><span class="pre">Document.root</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.theme"><code class="docutils literal notranslate"><span class="pre">Document.theme</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.from_string"><code class="docutils literal notranslate"><span class="pre">Document.from_string()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.writing"><code class="docutils literal notranslate"><span class="pre">Document.writing()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.Document.current"><code class="docutils literal notranslate"><span class="pre">Document.current</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.Document.defs"><code class="docutils literal notranslate"><span class="pre">Document.defs</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.Document.add"><code class="docutils literal notranslate"><span class="pre">Document.add()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.Document.define"><code class="docutils literal notranslate"><span class="pre">Document.define()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.Document.title"><code class="docutils literal notranslate"><span class="pre">Document.title()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.__getitem__"><code class="docutils literal notranslate"><span class="pre">Document.__getitem__()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.__iadd__"><code class="docutils literal notranslate"><span class="pre">Document.__iadd__()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.__iter__"><code class="docutils literal notranslate"><span class="pre">Document.__iter__()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.__len__"><code class="docutils literal notranslate"><span class="pre">Document.__len__()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.Document.add"><code class="docutils literal notranslate"><span class="pre">Document.add()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.at"><code class="docutils literal notranslate"><span class="pre">Document.at()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.auto_size"><code class="docutils literal notranslate"><span class="pre">Document.auto_size</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.content_bounds"><code class="docutils literal notranslate"><span class="pre">Document.content_bounds()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.Document.current"><code class="docutils literal notranslate"><span class="pre">Document.current</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.Document.define"><code class="docutils literal notranslate"><span class="pre">Document.define()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.Document.defs"><code class="docutils literal notranslate"><span class="pre">Document.defs</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.describe"><code class="docutils literal notranslate"><span class="pre">Document.describe()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.embed_fonts"><code class="docutils literal notranslate"><span class="pre">Document.embed_fonts()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.export"><code class="docutils literal notranslate"><span class="pre">Document.export()</span></code></a></li>
@@ -1586,6 +1595,7 @@ across) or <code class="docutils literal notranslate"><span class="pre">-portrai
 <li><a class="reference internal" href="#svgwriter.Document.guides"><code class="docutils literal notranslate"><span class="pre">Document.guides</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.layer"><code class="docutils literal notranslate"><span class="pre">Document.layer()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.layers"><code class="docutils literal notranslate"><span class="pre">Document.layers</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.Document.nest"><code class="docutils literal notranslate"><span class="pre">Document.nest()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.open"><code class="docutils literal notranslate"><span class="pre">Document.open()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.open_all"><code class="docutils literal notranslate"><span class="pre">Document.open_all()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.rasterize"><code class="docutils literal notranslate"><span class="pre">Document.rasterize()</span></code></a></li>
@@ -1593,10 +1603,10 @@ across) or <code class="docutils literal notranslate"><span class="pre">-portrai
 <li><a class="reference internal" href="#svgwriter.Document.render_png"><code class="docutils literal notranslate"><span class="pre">Document.render_png()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.save"><code class="docutils literal notranslate"><span class="pre">Document.save()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.save_async"><code class="docutils literal notranslate"><span class="pre">Document.save_async()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.Document.style"><code class="docutils literal notranslate"><span class="pre">Document.style()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.Document.title"><code class="docutils literal notranslate"><span class="pre">Document.title()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.to_string"><code class="docutils literal notranslate"><span class="pre">Document.to_string()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.used_faces"><code class="docutils literal notranslate"><span class="pre">Document.used_faces()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.Document.style"><code class="docutils literal notranslate"><span class="pre">Document.style()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.Document.nest"><code class="docutils literal notranslate"><span class="pre">Document.nest()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#named-sizes">Named sizes</a><ul>
@@ -1625,7 +1635,7 @@ across) or <code class="docutils literal notranslate"><span class="pre">-portrai
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=b06a6580"></script>
+</div><script src="../_static/documentation_options.js?v=d4a5b5c4"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
