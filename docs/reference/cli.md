@@ -10,7 +10,7 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 | `build [--format F ...] [--path DIR]` | Write the project's outputs (all of `[outputs] formats`, or the ones given) |
 | `preview [--port N] [--no-open] [--path DIR]` | Serve the outputs on a local page that rebuilds and reloads on save |
 | `presets` | List project presets |
-| `sizes` | List named canvas sizes (`svg.preset.list("size")`) |
+| `sizes` | List named canvas sizes (`svg.preset.size.list()`) |
 | `shapes`, `elements` | List shape presets and element classes |
 | `draw SHAPE [--size N] [--fill C] [-o FILE]` | Write a shape preset as SVG |
 | `format INPUT [-o FILE] [--compact] [--precision N]` | Parse an SVG file and write it back out |
@@ -19,8 +19,13 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 | `render SCENE [NAMES ...] [--at SECONDS] [--scale S] [-o FILE]` | Rasterize scenes or an SVG file to PNG |
 | `outline TEXT [--font F] [--size N] [-o FILE]` | Write text as glyph outlines |
 
+Packages add commands through the `svgwriter.command` entry-point group, and `COMMANDS.register(command)`
+adds one at run time (see [Extending svgwriter](../guides/extending.md)).
+
 ```{eval-rst}
 .. autodata:: svgwriter.tools.cli.app
    :no-value:
 .. autofunction:: svgwriter.tools.cli.main
+.. autodata:: svgwriter.tools.cli.COMMANDS
+   :no-value:
 ```

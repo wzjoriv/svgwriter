@@ -75,7 +75,9 @@ rest of the `shape` role.
 
 Body and caption text in every built-in theme meets WCAG AA contrast (4.5:1) against both `background`
 and `surface`; titles, which are large, meet 3:1. `svg.Theme.get(name)` returns one;
-`svg.THEMES.names()` lists them, and `svg.THEMES.add(name, theme)` registers your own.
+`svg.THEMES.list()` lists them, `svg.THEMES.register(theme)` registers your own under its name, and
+`svg.THEMES.unregister(name)` removes it again. A package can ship themes through the `svgwriter.theme`
+entry-point group (see [Extending svgwriter](extending.md)).
 
 `dracula` and `alucard` follow the Dracula palette (MIT licensed, draculatheme.com); `one-dark` and
 `one-light` follow Atom's One Dark and One Light themes (MIT licensed). Where an official comment grey is

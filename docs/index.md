@@ -46,6 +46,7 @@ guides/themes
 guides/inkscape
 guides/widgets
 guides/projects
+guides/extending
 ```
 
 ```{toctree}

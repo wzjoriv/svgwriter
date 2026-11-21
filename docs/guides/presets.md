@@ -1,7 +1,7 @@
 # Presets
 
 svgwriter ships catalogues of ready-made looks: patterns and gradients to paint with, filters, line
-markers and text effects. Each catalogue is a module of functions that build an ordinary element, so the
+markers and effects. Each catalogue is a module of functions that build an ordinary element, so the
 result is plain SVG you can inspect and edit, and each is open to presets of your own.
 
 | Catalogue | Use it as | Builds |
@@ -10,7 +10,7 @@ result is plain SVG you can inspect and edit, and each is open to presets of you
 | `svg.gradients` | `fill=svg.gradients.sunset()` | `<linearGradient>`, `<radialGradient>` or a `<pattern>` of blends |
 | `svg.filters` | `el.filter = svg.filters.glow(4)` | `<filter>` |
 | `svg.markers` | `marker_end=svg.markers.arrow()` | `<marker>` |
-| `svg.text_effects` | `text[4:9].effect("fire")` | paint, a filter and an animation on live text |
+| `svg.effects` | `shape.effect("neon")`, `text[4:9].effect("fire")` | paint, a filter and an animation on any element, text staying text |
 
 Every definition goes into the document's `<defs>` when an element refers to it; you never add it there
 yourself. The singular names (`svg.pattern`, `svg.filter`, `svg.marker`) stay the element classes; the
@@ -82,22 +82,24 @@ doc.path("M10 70 L110 20 L210 70", fill="none", stroke="black", stroke_width=2,
 Markers are sized in stroke widths, so a thicker line gets a larger head, and turn with the line
 (`orient="auto"`). They take the theme role `arrow.head` unless you pass `color=`.
 
-## Text effects
+## Effects
 
 ```python
 doc = svg.Document(520, 60)
 line = doc.text("A bitter Wind carried sparks", x=10, y=40, font_size=28)
 line[9:13].effect("wind")
-svg.text_effects.fire(line[22:28])               # the same, by function
+svg.effects.fire(line[22:28])               # the same, by function
 doc.save("sparks.gif")
 ```
 
-![Smoke, metal, wind, fire and snow on one sentence](../_static/examples/text_effects.gif)
+![Smoke, metal, wind, fire and snow on one sentence](../_static/examples/effects.gif)
 
 `fire`, `ice`, `smoke`, `metal`, `wind`, `snow`, `neon` and `glitch` each set a gradient or color, a
-filter and a small SMIL animation (`animate=False` leaves it still). The glyphs are never turned into
-outlines: the text stays selectable and searchable, and keeps its font. Effects size themselves to the
-glyphs, so the same effect looks the same at any font size.
+filter and a small SMIL animation (`animate=False` leaves it still), on any element: a shape, group, image
+or text (`svg.circle(0, 0, 20).effect("neon")`). The glyphs of a text are never turned into outlines: the
+text stays selectable and searchable, and keeps its font. Effects size themselves to the element (a text to
+its glyph height, anything else to the shorter side of its bounding box), so the same effect looks the same
+at any size.
 
 On a whole text the effect styles it directly. On a range the characters move onto a copy of the text
 placed just above it (`text[a:b].isolate()`): the copy hides every other character and the original
@@ -124,19 +126,21 @@ def bricks(*, size: float = 12, color: str = "firebrick") -> svg.Pattern:
     return svg.Pattern(mortar, width=size, height=size / 2, pattern_units="userSpaceOnUse")
 
 
-@svg.preset.text_effect
-def ember(text: svg.Text, *, color: str = "#f97316") -> None:
-    text.fill = svg.gradients.blend("#fde68a", color, "#7f1d1d", angle=-90)
-    text.filter = svg.filters.glow(3, color=color)
+@svg.preset.effect
+def ember(element: svg.Element, *, color: str = "#f97316") -> None:
+    element.fill = svg.gradients.blend("#fde68a", color, "#7f1d1d", angle=-90)
+    element.filter = svg.filters.glow(3, color=color)
 
 
 wall = svg.rect(0, 0, 60, 30, fill=svg.patterns.bricks())
 title = svg.Document(200, 50).text("still warm", x=10, y=36, font_size=28)
 title[6:].effect("ember")
-svg.preset.unregister("pattern", "bricks")
-svg.preset.unregister("text_effect", "ember")
+svg.preset.pattern.unregister("bricks")
+svg.preset.effect.unregister("ember")
 ```
 
-A text effect receives a whole `Text` and styles it in place; registering it makes it work on ranges
-too. `svg.preset.list("filter")` lists a catalogue and `svg.preset.get("marker", "arrow")` looks one up
-by name. The functions are documented in the [preset reference](../reference/presets.md).
+An effect receives the element (for a range, the copy holding the range's characters) and styles it in
+place; registering it makes it work on every element and on ranges. An effect that only suits some
+elements raises `TypeError` for the others. `svg.preset.filter.list()` lists a catalogue and `svg.preset.marker.get("arrow")` looks one up
+by name. The functions are documented in the [preset reference](../reference/presets.md); packages can ship presets
+through entry points (see [Extending svgwriter](extending.md)).
