@@ -6,24 +6,32 @@ from __future__ import annotations
 
 import sys
 from collections import Counter
-from typing import Annotated
+from collections.abc import Callable
+from typing import Any
 
-import typer
+import click
 
 from .. import preset
-from .._document.sizes import SIZES
 from ..document import Document
 from ..elements.core import Category, Element
 from ..io.parser import Strictness, parse_file
 from ..io.writer import SerializeOptions
 from ._constants import CANVAS_MARGIN, DEFAULT_CANVAS, DRAW_LAYOUTS, SIZE_COLUMN, STROKE_WIDTH
 
-__all__ = ["Compact", "Output", "Precision", "add_basic_commands", "emit"]
+__all__ = ["PRECISION", "add_basic_commands", "emit", "output_options"]
 
-Output = Annotated[str | None, typer.Option("-o", "--output", help="write here instead of stdout")]
-Compact = Annotated[bool, typer.Option("--compact", help="single-line output, shortest path data")]
-Precision = Annotated[int, typer.Option("--precision", help="significant digits of numbers")]
 PRECISION = SerializeOptions().precision
+
+
+def output_options(command: Callable[..., Any]) -> Callable[..., Any]:
+    """Add ``-o/--output``, ``--compact`` and ``--precision`` to *command*, which receives them as keywords."""
+    for option in (
+        click.option("--precision", type=int, default=PRECISION, show_default=True, help="significant digits of numbers"),
+        click.option("--compact", is_flag=True, help="single-line output, shortest path data"),
+        click.option("-o", "--output", help="write here instead of stdout"),
+    ):
+        command = option(command)
+    return command
 
 
 def emit(root: Element, output: str | None, compact: bool, precision: int) -> None:
@@ -55,37 +63,41 @@ def emit(root: Element, output: str | None, compact: bool, precision: int) -> No
         sys.stdout.write(root.to_string(options=options))
 
 
+@click.command()
 def shapes() -> None:
     """List registered composite shapes."""
     for name in preset.list("shape"):
-        print(name)
+        click.echo(name)
 
 
+@click.command()
 def sizes() -> None:
     """List named canvas sizes (Document(size=...))."""
-    for name in SIZES.names():
-        width, height = SIZES.get(name)
-        print(f"{name:<{SIZE_COLUMN}} {width} x {height}")
+    for name in preset.list("size"):
+        click.echo(f"{name:<{SIZE_COLUMN}} {preset.get('size', name)}")
 
 
+@click.command()
 def elements() -> None:
     """List supported elements by category."""
     for category in Category:
         tags = sorted(Element.registered(category))
         if tags:
-            print(f"{category.name.lower()}: {' '.join(tags)}")
+            click.echo(f"{category.name.lower()}: {' '.join(tags)}")
 
 
-def draw(shape: Annotated[str, typer.Argument(help="a name from `svgwriter shapes`")],
-         size: Annotated[float, typer.Option(help="canvas size")] = DEFAULT_CANVAS,
-         fill: Annotated[str, typer.Option(help="fill color")] = "steelblue",
-         stroke: Annotated[str | None, typer.Option(help="stroke color")] = None,
-         output: Output = None, compact: Compact = False, precision: Precision = PRECISION) -> None:
-    """Render a registered shape."""
+@click.command()
+@click.argument("shape", metavar="SHAPE")
+@click.option("--size", type=float, default=DEFAULT_CANVAS, show_default=True, help="canvas size")
+@click.option("--fill", default="steelblue", show_default=True, help="fill color")
+@click.option("--stroke", help="stroke color")
+@output_options
+def draw(shape: str, size: float, fill: str, stroke: str | None, output: str | None, compact: bool, precision: int) -> None:
+    """Render a registered shape (a name from `svgwriter shapes`)."""
     try:
         factory = preset.get("shape", shape)
     except KeyError as error:
-        raise typer.BadParameter(error.args[0], param_hint="SHAPE") from None
+        raise click.BadParameter(error.args[0], param_hint="SHAPE") from None
     doc = Document(size, size)
     center, radius = size / 2, size * CANVAS_MARGIN
     layout = DRAW_LAYOUTS.get(shape)
@@ -100,32 +112,34 @@ def draw(shape: Annotated[str, typer.Argument(help="a name from `svgwriter shape
     emit(doc.root, output, compact, precision)
 
 
-def format_file(source: Annotated[str, typer.Argument(metavar="INPUT", help="the SVG file")],
-                output: Output = None, compact: Compact = False, precision: Precision = PRECISION) -> None:
+@click.command("format")
+@click.argument("source", metavar="INPUT")
+@output_options
+def format_file(source: str, output: str | None, compact: bool, precision: int) -> None:
     """Parse a file and write it back out."""
     emit(parse_file(source, strictness=Strictness.WARN), output, compact, precision)
 
 
-def info(source: Annotated[str, typer.Argument(metavar="INPUT", help="the SVG file")]) -> None:
+@click.command()
+@click.argument("source", metavar="INPUT")
+def info(source: str) -> None:
     """Count elements in a file."""
     counts = Counter(element.tag for element in parse_file(source).iter())
     for tag, count in counts.most_common():
-        print(f"{count:6d}  {tag}")
+        click.echo(f"{count:6d}  {tag}")
 
 
-def add_basic_commands(app: typer.Typer) -> None:
+def add_basic_commands(app: click.Group) -> None:
     """Register ``shapes``, ``sizes``, ``elements``, ``draw``, ``format`` and ``info``.
 
     Parameters
     ----------
-    app : typer.Typer
+    app : click.Group
         The command line application.
 
     See Also
     --------
     svgwriter.cli._media.add_media_commands : The commands that need ffmpeg or skia.
     """
-    for command in (shapes, sizes, elements, draw):
-        app.command()(command)
-    app.command("format")(format_file)
-    app.command()(info)
+    for command in (shapes, sizes, elements, draw, format_file, info):
+        app.add_command(command)

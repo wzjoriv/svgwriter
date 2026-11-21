@@ -1,7 +1,8 @@
-"""Presets of your own, by kind: animations and shapes, each registered by a decorator and found by name.
+"""Presets of your own, by kind: animations, shapes and canvas sizes, each registered by a decorator and found by name.
 
-Every kind has the same API: a decorator that registers a function (``name=``, ``replace=``), and
-``list(kind)``, ``get(kind, name)`` and ``unregister(kind, name)``. A taken name raises an error naming its
+Animations and shapes register by decorator (``name=``, ``replace=``) and sizes by a call
+(``svg.preset.size(name, width, height)``); every kind has ``list(kind)``, ``get(kind, name)`` and
+``unregister(kind, name)``. A taken name raises an error naming its
 owner, built-in presets included; ``replace=True`` replaces one on purpose.
 
 Example
@@ -21,5 +22,6 @@ from __future__ import annotations
 from ._animation import animation
 from ._kinds import get, list, unregister
 from ._shape import shape
+from ._size import size
 
-__all__ = ["animation", "get", "list", "shape", "unregister"]
+__all__ = ["animation", "get", "list", "shape", "size", "unregister"]
