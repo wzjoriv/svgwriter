@@ -41,7 +41,7 @@ print(sorted(svg.export.exporters()))
 | Excalidraw | `.excalidraw` | ✓ | ✓ | writes outlines, text, images and links; import reads shapes, arrows, text, images and groups (also `.json`) |
 | HTML | `.html` `.htm` | ✓ | ✓ | standalone page with the SVG inline (text kept as text), `css=`, `handlers=`; import reads the first inline `<svg>` |
 | PowerPoint | `.pptx` | ✓ | ✓ | needs `pysvgwriter[office]`; editable shapes and text boxes both ways, `slide=` on import; text kept as text; a list of documents gives one slide each (`slide=None` reads all); `svg.latex` formulas become editable equations |
-| Word | `.docx` | ✓ | ✓ | needs `pysvgwriter[office]`; export is a picture, import reads pictures and drawn shapes (no text); `svg.latex` formulas become editable equations |
+| Word | `.docx` | ✓ | ✓ | needs `pysvgwriter[office]`; editable shapes, pictures and text boxes out; import lays out paragraphs, headings, lists and styled runs as `<text>` with pictures in flow; `svg.latex` formulas become editable equations |
 | Excel | `.xlsx` | ✓ | — | needs `pysvgwriter[office]`; the drawing as a picture |
 | Markdown | `.md` `.markdown` | — | ✓ | headings, lists, code and bold become `<text>` |
 | Plain text | `.txt` `.text` | — | ✓ | one `<text>` per line |
@@ -52,7 +52,7 @@ print(sorted(svg.export.exporters()))
 | LaTeX math | `svg.latex(...)` | — | ✓ | formulas as glyph outlines: TeX (`latex` + `dvisvgm`), else Ziamath (`pysvgwriter[math]`), else matplotlib mathtext |
 | Video frames | `.mp4` `.webm` `.mov` | ✓ | ✓ | needs ffmpeg: `render_animation` writes frames, `svgwriter.video.Video` reads them |
 
-TikZ, EPS, PowerPoint, Excalidraw and the polyline formats work from a flattened copy of the
+TikZ, EPS, PowerPoint, Word, Excalidraw and the polyline formats work from a flattened copy of the
 drawing: transforms, clipping, patterns and markers are worked into the shapes themselves. Masks and
 filters cannot be, so these formats skip them with a warning.
 
@@ -61,29 +61,29 @@ filters cannot be, so these formats skip them with a warning.
 Checked by exporting a drawing with each feature to every format and reading it back. "shapes" means
 the effect is drawn into plain outlines, which look the same but are no longer the effect itself.
 
-| feature | SVG, HTML | PNG and other rasters | PDF | EPS | TikZ | PowerPoint | Word, Excel | Excalidraw | DXF, HPGL, G-code |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| solid fill | yes | yes | yes | yes | yes | yes | picture | yes | outline only |
-| linear, radial gradient | yes | yes | yes | yes (`shfill`) | yes (shading) | yes (radial approximate) | picture | average colour | no |
-| pattern | yes | yes | yes | shapes | shapes | shapes | picture | shapes | outlines |
-| stroke width | yes | yes | yes | yes | yes | yes | picture | yes | no |
-| dashes | yes | yes | shapes | yes | yes | yes | picture | dashed style | no |
-| caps, joins | yes | yes | yes | yes | yes | yes | picture | round | no |
-| fill, stroke opacity | yes | yes | yes | no | yes | yes | picture | one per element | no |
-| group opacity | yes | yes | yes | no | per shape | per shape | picture | per element | no |
-| clipping | yes | yes | yes | shapes | shapes | shapes | picture | shapes | shapes |
-| masks | yes | yes | yes (pixels) | skipped | skipped | skipped | picture | skipped | skipped |
-| filters | yes | yes | yes (pixels) | skipped | skipped | skipped | picture | skipped | skipped |
-| text | text | pixels | text or outlines | text or outlines | text | text boxes | picture | text | outlines |
-| images | yes | yes | yes | yes | skipped | pictures | picture | yes | skipped |
-| transforms | yes | yes | yes | applied | applied | applied | picture | applied | applied |
-| markers | yes | shapes | shapes | shapes | shapes | shapes | picture | shapes | outlines |
-| LaTeX formulas | outlines | pixels | outlines | outlines | outlines | equations | equations (Word) | outlines | outlines |
-| SMIL animation | yes | one frame | one frame | one frame | one frame | one frame | one frame | one frame | one frame |
-| links | yes | no | yes | no | no | on shapes | no | yes | no |
+| feature | SVG, HTML | PNG and other rasters | PDF | EPS | TikZ | PowerPoint | Word | Excel | Excalidraw | DXF, HPGL, G-code |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| solid fill | yes | yes | yes | yes | yes | yes | yes | picture | yes | outline only |
+| linear, radial gradient | yes | yes | yes | yes (`shfill`) | yes (shading) | yes (radial approximate) | yes (radial approximate) | picture | average colour | no |
+| pattern | yes | yes | yes | shapes | shapes | shapes | shapes | picture | shapes | outlines |
+| stroke width | yes | yes | yes | yes | yes | yes | yes | picture | yes | no |
+| dashes | yes | yes | shapes | yes | yes | yes | yes | picture | dashed style | no |
+| caps, joins | yes | yes | yes | yes | yes | yes | yes | picture | round | no |
+| fill, stroke opacity | yes | yes | yes | no | yes | yes | yes | picture | one per element | no |
+| group opacity | yes | yes | yes | no | per shape | per shape | per shape | picture | per element | no |
+| clipping | yes | yes | yes | shapes | shapes | shapes | shapes | picture | shapes | shapes |
+| masks | yes | yes | yes (pixels) | skipped | skipped | skipped | skipped | picture | skipped | skipped |
+| filters | yes | yes | yes (pixels) | skipped | skipped | skipped | skipped | picture | skipped | skipped |
+| text | text | pixels | text or outlines | text or outlines | text | text boxes | text boxes | picture | text | outlines |
+| images | yes | yes | yes | yes | skipped | pictures | pictures | picture | yes | skipped |
+| transforms | yes | yes | yes | applied | applied | applied | applied | picture | applied | applied |
+| markers | yes | shapes | shapes | shapes | shapes | shapes | shapes | picture | shapes | outlines |
+| LaTeX formulas | outlines | pixels | outlines | outlines | outlines | equations | equations | picture | outlines | outlines |
+| SMIL animation | yes | one frame | one frame | one frame | one frame | one frame | one frame | one frame | one frame | one frame |
+| links | yes | no | yes | no | no | on shapes | no | no | yes | no |
 
 "one frame" is the drawing at t = 0, or at `time=`; `render_animation` writes animated GIF and video.
-PowerPoint places pictures by their bounding box, so a rotated or skewed image comes out upright, and
+PowerPoint and Word place pictures by their bounding box, so a rotated or skewed image comes out upright, and
 group opacity is multiplied into each shape's own transparency. A radial gradient becomes a
 PowerPoint path gradient centred on the gradient's centre, which matches circles and differs on
 ellipses. Excalidraw writes every outline as a `line` element, with Excalidraw's own dash pattern;
@@ -199,14 +199,20 @@ mathtext; `engine="tex"`, `"ziamath"` or `"mathtext"` picks one.
   (curves, solid or gradient fill, outline with dashes, caps and joins, transparency, hyperlink), text
   as editable text boxes and images as pictures. In: shapes, pictures and text boxes of a slide
   (`svg.Document.open("deck.pptx", slide=2)`) as native SVG elements, with the same paints and links.
-- `.docx` and `.xlsx` out: the drawing as a picture at its natural size.
+- `.docx` out: the drawing as native Word shapes floating in one paragraph as tall as the drawing,
+  with the same outlines, paints, text boxes and pictures as the PowerPoint export. In: paragraphs,
+  headings (`Title`, `Heading 1`-`6`), bulleted and numbered lists and line breaks laid out top to
+  bottom like Markdown, with each run's bold, italics, underline, strike-through, size, colour and
+  font as a styled `<tspan>`. Inline pictures and shapes take their place in the flow; floating ones
+  keep their position, and their text boxes come back as text. Table cells are read as paragraphs.
+- `.xlsx` out: the drawing as a picture at its natural size.
 
 Formulas made with `svg.latex` remember their source (the group's `data-latex` attribute), so the
 PowerPoint and Word exports write them as native, editable Office equations instead of outlines.
 The LaTeX goes through MathML (`latex2mathml`) to Office Math: fractions, scripts, roots, sums and
 integrals, accents, bars, limits, `\left`/`\right` delimiters, matrices, text and Greek letters.
 Each equation is centred on the box the formula occupied, in Cambria Math at the drawn size; in Word
-it floats over the picture, or becomes an equation paragraph when the drawing holds nothing else.
+it floats over the shapes, or becomes an equation paragraph when the drawing holds nothing else.
 LaTeX with no Office equivalent stays as outlines. Reading a deck back gives an equation's
 characters as plain text, without its layout.
 

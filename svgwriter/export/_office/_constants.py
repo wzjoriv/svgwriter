@@ -4,15 +4,16 @@ Constants for the PowerPoint and Word exporters and readers.
 
 from __future__ import annotations
 
+import re
 from typing import Final
 
 __all__ = [
     "A14_NS", "ALPHA_SCALE", "ANGLE_UNIT", "ASCENT", "A_NS", "BAR_CHARS", "BLANK_LAYOUT", "CAPS",
     "DEFAULT_TEXT_PT", "EMU_PER_POINT", "EMU_PER_UNIT", "EQUATION_ID", "EXTRA_HINT", "GENERIC_FONTS",
-    "GROUP_CHARS", "HALF_POINTS_PER_UNIT", "INLINE_GAP", "JOINS", "LINE_HEIGHT", "MARGIN", "MATHML_NS",
-    "MATH_FONT", "MC_NS", "MITER_SCALE", "M_NS", "NARY_CHARS", "PIC", "PICTURE_SCALE", "POINTS_PER_UNIT",
+    "GROUP_CHARS", "HALF_POINTS_PER_UNIT", "HEADING_STYLE_RE", "HEX_COLOR_RE", "INLINE_GAP", "JOINS", "LINE_HEIGHT", "LIST_STYLE", "MARGIN", "MATHML_NS",
+    "MATH_FONT", "MC_NS", "MITER_SCALE", "M_NS", "NARY_CHARS", "NUMBERED_STYLE", "OFF_VALUES", "PIC", "PICTURE_SCALE", "POINTS_PER_UNIT",
     "PPTX_SIZE_SCALE", "REL",
-    "ROUND_RECT_ADJUST", "SLIDE_MAX_EMU", "SLIDE_MIN_EMU", "USER_UNITS_PER_INCH", "WP", "WPS", "W_NS"
+    "ROUND_RECT_ADJUST", "SLIDE_MAX_EMU", "SLIDE_MIN_EMU", "TITLE_STYLE", "TWIPS_PER_UNIT", "USER_UNITS_PER_INCH", "WP", "WPS", "W_NS"
 ]
 
 EXTRA_HINT: Final = "pip install 'pysvgwriter[office]'"
@@ -55,3 +56,10 @@ ANGLE_UNIT: Final = 60000
 MITER_SCALE: Final = 100000
 CAPS: Final = {"butt": "flat", "round": "rnd", "square": "sq"}
 JOINS: Final = {"miter": "miter", "round": "round", "bevel": "bevel"}
+HEADING_STYLE_RE: Final = re.compile(r"^Heading(\d)$")
+TITLE_STYLE: Final = "Title"
+NUMBERED_STYLE: Final = "ListNumber"
+OFF_VALUES: Final = frozenset({"0", "false", "none", "off"})
+HEX_COLOR_RE: Final = re.compile(r"[0-9A-Fa-f]{6}")
+TWIPS_PER_UNIT: Final = 15
+LIST_STYLE: Final = "List"
