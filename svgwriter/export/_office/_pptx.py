@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import io
 import math
+import warnings
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 from xml.sax.saxutils import escape
@@ -70,33 +71,42 @@ def write_pptx(documents: list[Document]) -> bytes:
     from ..._internal._flatten import flatten
     from ..._internal._layers import pixel_box
     from ._layout import split_equations
+    from ._pptx_anim import slide_animations
 
-    parts = [split_equations(document) for document in documents]
+    animations = [slide_animations(document) for document in documents]
+    parts = [split_equations(animated.document) for animated in animations]
     documents = [rest for rest, _ in parts]
     scenes = [flatten(document, handled=frozenset({"image"}), text=True) for document in documents]
     width, height = max(scene.width for scene in scenes), max(scene.height for scene in scenes)
     scale = _emu_scale(width, height)
     deck = presentation_module.Presentation()
     deck.slide_width, deck.slide_height = round(width * scale), round(height * scale)
-    for scene, (_, equations) in zip(scenes, parts, strict=True):
+    dropped: list[str] = []
+    for scene, (_, equations), animated in zip(scenes, parts, animations, strict=True):
         slide = deck.slides.add_slide(deck.slide_layouts[BLANK_LAYOUT])
         place = _Place(scale, (width - scene.width) / 2, (height - scene.height) / 2)
         for item in scene.painted():
             if isinstance(item, tuple):
                 image, matrix = item
-                slide.shapes.add_picture(io.BytesIO(image.encode("png")), *place.emu(*pixel_box(image, matrix)))
+                picture = slide.shapes.add_picture(io.BytesIO(image.encode("png")),
+                                                   *place.emu(*pixel_box(image, matrix)))
+                animated.attach(picture, image)
             else:
-                _freeform(slide, item, place)
+                animated.attach(_freeform(slide, item, place), item.source)
         for run in scene.texts:
-            _textbox(slide, run, place)
+            animated.attach(_textbox(slide, run, place), run.source)
         for equation in equations:
             _equation(slide, equation, place)
+        dropped += animated.write(slide, (width, height))
+    if dropped:
+        warnings.warn(f"PowerPoint cannot play these animations, dropped: {', '.join(sorted(set(dropped)))}",
+                      stacklevel=3)
     buffer = io.BytesIO()
     deck.save(buffer)
     return buffer.getvalue()
 
 
-def _textbox(slide: Any, run: Any, place: _Place) -> None:
+def _textbox(slide: Any, run: Any, place: _Place) -> Any:
     """One text run as an editable, unwrapped text box whose first baseline sits on the run's baseline."""
     from pptx.dml.color import RGBColor
     from pptx.enum.text import MSO_AUTO_SIZE
@@ -121,6 +131,7 @@ def _textbox(slide: Any, run: Any, place: _Place) -> None:
             fill = font.color._color._xClr  # noqa: SLF001 - python-pptx exposes no text alpha
             alpha = fill.makeelement(_a("alpha"), {"val": str(round(run.opacity * ALPHA_SCALE))})
             fill.append(alpha)
+    return box
 
 
 def text_box(run: Any) -> tuple[float, float, float, float, float, float]:
@@ -191,8 +202,8 @@ def _office_family(family: str) -> str:
     return GENERIC_FONTS.get(first.lower(), first)
 
 
-def _freeform(slide: Any, item: Item, place: _Place) -> None:
-    """One flattened item as a custom-geometry shape with its paints."""
+def _freeform(slide: Any, item: Item, place: _Place) -> Any:
+    """One flattened item as a custom-geometry shape with its paints; None when it has no extent."""
     shapes_module = require("pptx.enum.shapes")
     oxml = require("pptx.oxml")
     from ...ops import from_skia, to_skia
@@ -200,7 +211,7 @@ def _freeform(slide: Any, item: Item, place: _Place) -> None:
     data = from_skia(to_skia(item.data))
     box = data.bbox
     if box is None:
-        return
+        return None
     scale = place.scale
     left, top, _, _ = place.emu(box.x, box.y, 0, 0)
     width, height = max(box.width * scale, 1.0), max(box.height * scale, 1.0)
@@ -226,6 +237,7 @@ def _freeform(slide: Any, item: Item, place: _Place) -> None:
                    item.miter_limit)
     if item.link:
         shape.click_action.hyperlink.address = item.link
+    return shape
 
 
 def _geometry_xml(data: PathData, x0: float, y0: float, scale: float, width: int, height: int) -> str:

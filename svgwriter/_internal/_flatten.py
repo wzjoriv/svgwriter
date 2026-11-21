@@ -53,6 +53,9 @@ class Item:
         The gradient behind the fill, for formats that can write gradients.
     link : str or None
         The ``href`` of the nearest enclosing ``<a>``, for formats that keep links.
+    source : Element or None
+        The element painted, in the flattening's copy of the tree (its
+        ancestors and attributes intact), for formats that keep animation.
 
     See Also
     --------
@@ -82,6 +85,7 @@ class Item:
     dashes: tuple[float, ...]
     shading: Shading | None = None
     link: str | None = None
+    source: Element | None = field(default=None, compare=False, repr=False)
 
 
 @dataclass
@@ -325,6 +329,7 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
                 v * stretch for v in (float(p) for p in str(dashes).replace(",", " ").split())),
             shading=_shading(leaf, matrix @ leaf.t, rules),
             link=link,
+            source=leaf,
         ))
     if color_glyphs and not text and _has_emoji(document):
         skipped.append("colour emoji")

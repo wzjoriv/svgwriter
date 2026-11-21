@@ -8,7 +8,8 @@ import re
 from typing import Final
 
 __all__ = [
-    "A14_NS", "ALPHA_SCALE", "ANGLE_UNIT", "ASCENT", "A_NS", "BAR_CHARS", "BLANK_LAYOUT", "CAPS",
+    "ACCEL_SCALE", "ANIMATION_KEY", "A14_NS", "COLOR_ATTRIBUTES", "EFFECT_PRESETS", "MS_PER_SECOND", "P_NS",
+    "PATH_TOLERANCE", "PERCENT_SCALE", "REPEAT_SCALE", "ALPHA_SCALE", "ANGLE_UNIT", "ASCENT", "A_NS", "BAR_CHARS", "BLANK_LAYOUT", "CAPS",
     "DEFAULT_TEXT_PT", "EMU_PER_POINT", "EMU_PER_UNIT", "EQUATION_ID", "EXTRA_HINT", "GENERIC_FONTS",
     "GROUP_CHARS", "HALF_POINTS_PER_UNIT", "HEADING_STYLE_RE", "HEX_COLOR_RE", "INLINE_GAP", "JOINS", "LINE_HEIGHT", "LIST_STYLE", "MARGIN", "MATHML_NS",
     "MATH_FONT", "MC_NS", "MITER_SCALE", "M_NS", "NARY_CHARS", "NUMBERED_STYLE", "OFF_VALUES", "PIC", "PICTURE_SCALE", "POINTS_PER_UNIT",
@@ -63,3 +64,22 @@ OFF_VALUES: Final = frozenset({"0", "false", "none", "off"})
 HEX_COLOR_RE: Final = re.compile(r"[0-9A-Fa-f]{6}")
 TWIPS_PER_UNIT: Final = 15
 LIST_STYLE: Final = "List"
+P_NS: Final = "http://schemas.openxmlformats.org/presentationml/2006/main"
+ANIMATION_KEY: Final = "data-svgwriter-animation"
+"""Attribute tying animated elements of an export copy to the shapes drawn from them."""
+MS_PER_SECOND: Final = 1000
+REPEAT_SCALE: Final = 1000
+"""PowerPoint ``repeatCount`` is in thousandths."""
+ACCEL_SCALE: Final = 100000
+"""PowerPoint ``accel`` and ``decel`` are in thousandths of a percent."""
+PERCENT_SCALE: Final = 100000
+"""PowerPoint scale factors are in thousandths of a percent."""
+PATH_TOLERANCE: Final = 0.5
+"""Largest gap, in page units, between a motion path's curve and the polyline written for it."""
+EFFECT_PRESETS: Final = {
+    "appear": ("entr", 1), "fade_in": ("entr", 10), "disappear": ("exit", 1), "fade_out": ("exit", 10),
+    "scale": ("emph", 6), "rotate": ("emph", 8), "color": ("emph", 1), "motion": ("path", 0),
+}
+"""PowerPoint ``presetClass`` and ``presetID`` per effect kind (Appear, Fade, Grow/Shrink, Spin, Change Fill Color, Custom Path)."""
+COLOR_ATTRIBUTES: Final = {"fill": "fillcolor", "stroke": "stroke.color"}
+"""SVG paint attributes and the PowerPoint shape properties a colour effect animates."""
