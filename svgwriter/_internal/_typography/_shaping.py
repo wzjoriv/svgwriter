@@ -15,6 +15,7 @@ from .._constants import (
     EMOJI_START,
     LATIN_EXTENDED_ADDITIONAL,
 )
+from .._platform import missing
 from ._fonts import color_font
 
 if TYPE_CHECKING:
@@ -132,7 +133,7 @@ def shape_run(text: str, font: Any) -> list[tuple[PathData, float, ColorGlyphs |
 
     hb = harfbuzz()
     if hb is None:
-        raise ImportError("text shaping needs uharfbuzz; pip install uharfbuzz")
+        raise missing("harfbuzz", "text shaping")
     shaper, units, _, _ = hb_font(font.getTypeface())
     colored = color_font(font.getTypeface())
     buffer = hb.Buffer()

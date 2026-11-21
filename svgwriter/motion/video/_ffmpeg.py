@@ -6,11 +6,11 @@ from __future__ import annotations
 
 import contextlib
 import os
-import shutil
 import subprocess
 import tempfile
 from collections.abc import Iterable, Iterator
 
+from ..._internal._platform import find_executable, missing
 from ..._internal._typing import AnyPath
 from ._constants import FFMPEG, OUTPUTS, STDERR_TAIL
 from .frames import Frame
@@ -44,7 +44,7 @@ def find_ffmpeg(executable: str | None = None) -> str:
     Parameters
     ----------
     executable : str, optional
-        A name or path to look up. Defaults to ``ffmpeg`` on ``PATH``.
+        A name or path to look up. Defaults to ``SVGWRITER_FFMPEG``, else ``ffmpeg`` on ``PATH``.
 
     Returns
     -------
@@ -69,12 +69,10 @@ def find_ffmpeg(executable: str | None = None) -> str:
     ...     print("not found")
     not found
     """
-    found = shutil.which(executable or FFMPEG)
+    found = find_executable(executable or FFMPEG)
     if found is None:
-        raise FFmpegNotFoundError(
-            f"{executable or FFMPEG!r} was not found on PATH; install ffmpeg (https://ffmpeg.org) "
-            "or pass ffmpeg='/path/to/ffmpeg'. Nothing was rendered."
-        )
+        raise missing("ffmpeg", f"{executable or FFMPEG!r} was not found; video (nothing was rendered)",
+                      FFmpegNotFoundError)
     return found
 
 

@@ -12,7 +12,6 @@ __all__ = [
     "DEBOUNCE_SECONDS",
     "DEFAULT_COLOR",
     "ERROR_STYLE",
-    "EXTRA",
     "GIF_SUFFIX",
     "IMAGE_STYLE",
     "PANEL_SUMMARY",
@@ -25,7 +24,6 @@ __all__ = [
     "SWEEP_DURATION",
 ]
 
-EXTRA: Final = "pysvgwriter[widget]"
 CONTROLS_ATTRIBUTE: Final = "__svgwriter_controls__"
 
 SLIDER_STEPS: Final = 100

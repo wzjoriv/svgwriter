@@ -8,8 +8,9 @@ import html
 from collections.abc import Callable, Mapping
 from typing import Any
 
+from ..._internal._platform import missing
 from ._choices import Checkbox, ColorPicker, Dropdown, MultiSelect, Segmented, Swatches, Text, Toggle
-from ._constants import ERROR_STYLE, EXTRA, IMAGE_STYLE, PANEL_SUMMARY, PANEL_WIDTH, SWATCH_SIZE
+from ._constants import ERROR_STYLE, IMAGE_STYLE, PANEL_SUMMARY, PANEL_WIDTH, SWATCH_SIZE
 from ._control import Control
 from ._interact import Changed
 from ._numbers import Number, RangeSlider, Slider
@@ -21,7 +22,7 @@ def _widgets() -> Any:
     try:
         import ipywidgets  # type: ignore[import-untyped]
     except ImportError:
-        raise ImportError(f"svg.interact needs ipywidgets: pip install {EXTRA}") from None
+        raise missing("ipywidgets", "svg.interact") from None
     return ipywidgets
 
 

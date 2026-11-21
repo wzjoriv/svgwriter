@@ -62,7 +62,6 @@ __all__ = [
     "FONT_WEIGHTS",
     "FOREVER",
     "FULL_TURN",
-    "GENERIC_CANDIDATES",
     "GENERIC_FAMILIES",
     "GHOST",
     "GLYPH_CACHE",
@@ -71,7 +70,6 @@ __all__ = [
     "INDEFINITE",
     "INKSCAPE_LABEL",
     "INKSCAPE_NS",
-    "INSTALL_HINT",
     "JOIN_TOLERANCE",
     "KNOWN_NAMESPACES",
     "LATEX",
@@ -102,7 +100,6 @@ __all__ = [
     "URL_REFERENCE_RE",
     "PRIMITIVE_PREFIX",
     "VIEWPORT_FALLBACK",
-    "MAC_FALLBACK_FAMILIES",
     "MARKER_DEFAULT_SIZE",
     "MARKER_PROPERTIES",
     "MARKER_SHORTHAND",
@@ -236,20 +233,8 @@ NON_CONTENT: Final = frozenset({"defs", "style", "title", "desc", "metadata", "n
 BOLD_WEIGHT: Final = 700
 DEFAULT_FAMILY: Final = "sans-serif"
 FONT_CACHE: Final = 64
-GENERIC_CANDIDATES: Final = {
-    "sans-serif": ("Arial", "Helvetica", "Liberation Sans", "Arimo", "DejaVu Sans", "Noto Sans"),
-    "serif": ("Times New Roman", "Georgia", "Times", "Liberation Serif", "DejaVu Serif", "Noto Serif"),
-    "monospace": ("Consolas", "Courier New", "Menlo", "Monaco", "Liberation Mono", "DejaVu Sans Mono",
-                  "Noto Sans Mono", "Courier"),
-    "cursive": ("Comic Sans MS", "Segoe Script", "Apple Chancery", "URW Chancery L"),
-    "fantasy": ("Impact", "Papyrus", "Luminari"),
-}
 GENERIC_FAMILIES: Final = frozenset({"serif", "sans-serif", "monospace", "cursive", "fantasy"})
 GLYPH_CACHE: Final = 8192
-MAC_FALLBACK_FAMILIES: Final = (
-    "Helvetica Neue", "Arial Unicode MS", "PingFang SC", "Hiragino Sans", "Apple SD Gothic Neo",
-    "Kohinoor Devanagari", "Kohinoor Bangla", "Geeza Pro", "Noto Nastaliq Urdu", "Thonburi", "Apple Color Emoji",
-)
 NORMAL_WEIGHT: Final = 400
 NORMAL_WIDTH: Final = 5
 CJK_START: Final = 0xA800
@@ -375,14 +360,6 @@ DOT: Final = "dot"
 MERMAID: Final = "mmdc"
 LATEX: Final = "latex"
 DVISVGM: Final = "dvisvgm"
-INSTALL_HINT: Final = {
-    DOT: "install Graphviz (https://graphviz.org/download/) so that `dot` is on PATH",
-    MERMAID: "install the Mermaid CLI (`npm install -g @mermaid-js/mermaid-cli`) so that `mmdc` is on PATH",
-    LATEX: "install a TeX distribution (TeX Live or MiKTeX) so that `latex` is on PATH",
-    DVISVGM: "install dvisvgm (bundled with TeX Live and MiKTeX) so that `dvisvgm` is on PATH",
-    "plantuml": "install PlantUML so that `plantuml` is on PATH",
-    "d2": "install D2 (https://d2lang.com) so that `d2` is on PATH",
-}
 TIMEOUT_SECONDS: Final = 60
 ENGINES: Final = ("auto", "tex", "ziamath", "mathtext")
 LATEX_TEMPLATE: Final = (r"\documentclass[preview,border=0pt]{{standalone}}" "\n"

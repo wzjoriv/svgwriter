@@ -14,7 +14,7 @@ from typing import Any, BinaryIO, TypeAlias
 
 import skia
 
-from ..._internal._constants import GENERIC_CANDIDATES
+from ..._internal._platform import generic_candidates
 from ..._internal._typography._font_constants import BASE64_MARKER, DATA_URI, REGULAR_SUBFAMILY, SUGGESTIONS
 from ..._internal._typography._font_match import describe
 from ..._internal._typography._font_names import face_count, family_names
@@ -87,7 +87,7 @@ def installed_faces(name: str) -> tuple[str, list[Face]]:
     The font manager names each style, so no font tables are read here.
     """
     manager = skia.FontMgr.RefDefault()
-    for family in (*GENERIC_CANDIDATES.get(name.lower(), ()), name):
+    for family in (*generic_candidates(name), name):
         styles = manager.matchFamily(family)
         if styles.count():
             faces = []

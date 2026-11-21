@@ -12,14 +12,13 @@ from ...._internal._constants import PT_PER_INCH, PX_PER_INCH, PX_PER_PT
 __all__ = [
     "ACCEL_SCALE", "ANIMATION_KEY", "A14_NS", "COLOR_ATTRIBUTES", "EFFECT_PRESETS", "MS_PER_SECOND", "P_NS",
     "PATH_TOLERANCE", "PERCENT_SCALE", "REPEAT_SCALE", "ALPHA_SCALE", "ANGLE_UNIT", "ASCENT", "A_NS", "BAR_CHARS", "BLANK_LAYOUT", "CAPS",
-    "DEFAULT_TEXT_PT", "EMU_PER_INCH", "EMU_PER_POINT", "EMU_PER_UNIT", "EQUATION_ID", "EXTRA_HINT", "GENERIC_FONTS",
+    "DEFAULT_TEXT_PT", "EMU_PER_INCH", "EMU_PER_POINT", "EMU_PER_UNIT", "EQUATION_ID", "GENERIC_FONTS",
     "GROUP_CHARS", "HALF_POINTS_PER_UNIT", "HEADING_STYLE_RE", "HEX_COLOR_RE", "INLINE_GAP", "JOINS", "LINE_HEIGHT", "LIST_STYLE", "MARGIN", "MATHML_NS",
     "MATH_FONT", "MC_NS", "MITER_SCALE", "M_NS", "NARY_CHARS", "NUMBERED_STYLE", "OFF_VALUES", "PIC", "PICTURE_SCALE", "POINTS_PER_UNIT",
     "PPTX_SIZE_SCALE", "REL",
     "ROUND_RECT_ADJUST", "SLIDE_MAX_EMU", "SLIDE_MIN_EMU", "TITLE_STYLE", "TWIPS_PER_UNIT", "WP", "WPS", "W_NS"
 ]
 
-EXTRA_HINT: Final = "pip install 'pysvgwriter[office]'"
 PICTURE_SCALE: Final = 2.0
 WP: Final = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
 WPS: Final = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"

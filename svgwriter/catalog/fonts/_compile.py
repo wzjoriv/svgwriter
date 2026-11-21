@@ -8,10 +8,10 @@ import io
 from dataclasses import dataclass
 from typing import Any
 
+from ..._internal._platform import missing
 from ...model.pathdata import PathData
 from ._constants import (
     CUBIC_TO_QUADRATIC_ERROR,
-    FONTS_EXTRA,
     FS_ITALIC,
     FS_REGULAR,
     ITALIC_STYLES,
@@ -20,7 +20,6 @@ from ._constants import (
     TRUETYPE_FORMATS,
     USE_TYPO_METRICS,
     WEB_FLAVORS,
-    WOFF2_EXTRA,
 )
 from ._outline import draw_contours
 
@@ -106,7 +105,7 @@ def compile_font(info: FontInfo, glyphs: list[GlyphRecord], kerning: dict[tuple[
     try:
         from fontTools.fontBuilder import FontBuilder
     except ImportError as error:
-        raise ImportError(FONTS_EXTRA) from error
+        raise missing("fonttools", "building fonts") from error
     truetype = file_format in TRUETYPE_FORMATS
     builder = FontBuilder(info.units_per_em, isTTF=truetype)
     builder.setupGlyphOrder([glyph.name for glyph in glyphs])
@@ -183,5 +182,5 @@ def _serialize(font: Any, file_format: str) -> bytes:
     try:
         font.save(stream)
     except ImportError as error:
-        raise ImportError(WOFF2_EXTRA) from error
+        raise missing("brotli", "woff2 fonts") from error
     return stream.getvalue()

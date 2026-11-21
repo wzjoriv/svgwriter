@@ -5,13 +5,12 @@ Diagram languages in: Graphviz DOT and Mermaid, drawn by their own command-line 
 from __future__ import annotations
 
 import json
-import os
-import shutil
 import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from ...._internal._constants import DOT, MERMAID
+from ...._internal._platform import find_executable
 from ...._internal._tools import find_tool, run_tool, svg_document
 from .._registry import register_importer
 from ._constants import MERMAID_CONFIG
@@ -93,7 +92,7 @@ def read_mermaid(data: bytes, *, theme: str = "default") -> Document:
     >>> import svgwriter as svg
     >>> # doc = svg.Document.open("flow.mmd"); doc.save("flow.png")
     """
-    if not (os.environ.get("SVGWRITER_MMDC") or shutil.which(MERMAID)):
+    if not find_executable(MERMAID):
         from ._mermaid import flowchart_document
 
         try:

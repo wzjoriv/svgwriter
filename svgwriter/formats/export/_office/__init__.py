@@ -10,8 +10,9 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any
 
 from ...._internal._constants import PX_PER_INCH
+from ...._internal._platform import missing
 from .._registry import register, register_importer
-from ._constants import EXTRA_HINT, PICTURE_SCALE
+from ._constants import PICTURE_SCALE
 
 if TYPE_CHECKING:
     from ....document import Document
@@ -35,7 +36,7 @@ def require(module: str) -> Any:
     try:
         return importlib.import_module(module)
     except ImportError as error:
-        raise OfficeExtraError(f"{module.split('.')[0]} is needed for this format; {EXTRA_HINT}") from error
+        raise missing("office", f"{module.split('.')[0]} for this format", OfficeExtraError) from error
 
 
 @register("pptx", extensions=(".pptx",), multipage=True)
