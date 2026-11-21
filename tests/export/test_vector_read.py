@@ -336,7 +336,7 @@ def test_tikz_node_shapes_and_anchors():
     circle, line, box, up = kinds(doc, "path")
     assert circle.get("fill") == "#ffff00" and circle.bounds().width == pytest.approx(20.0 * TEX_PT)
     assert line.bounds().x == pytest.approx(10.0 + 10.0 * TEX_PT)
-    width = (text_width("Hi", size=10.0) + 4.0) * TEX_PT
+    width = text_width("Hi", size=10.0 * TEX_PT) + 4.0 * TEX_PT
     assert box.bounds().width == pytest.approx(width)
     assert up.bounds().y == pytest.approx(-30.0) and up.bounds().height == pytest.approx(30.0 - box.bounds().height / 2)
 
