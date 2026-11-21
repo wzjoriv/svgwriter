@@ -8,7 +8,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 from ..color.color import Color
-from ._constants import BORDER_MIX, LINE_WIDTH, MUTED_MIX, THIN_LINE_WIDTH
+from ._constants import BORDER_MIX, LINE_WIDTH, MUTED_MIX, SHADOW_ALPHA, THIN_LINE_WIDTH
 
 if TYPE_CHECKING:
     from .palette import Palette
@@ -25,7 +25,11 @@ def _muted(p: Palette) -> Color:
     return p.foreground.mix(p.background, MUTED_MIX)
 
 
-DERIVED_PALETTE: dict[str, Callable[[Palette], Color]] = {"border": _border, "muted": _muted}
+def _shadow(p: Palette) -> Color:
+    return p.foreground.with_alpha(SHADOW_ALPHA)
+
+
+DERIVED_PALETTE: dict[str, Callable[[Palette], Color]] = {"border": _border, "muted": _muted, "shadow": _shadow}
 
 
 def _text(color: str, size: str, weight: str = "regular", family: str = "{fonts.family}") -> dict[str, object]:
@@ -47,14 +51,15 @@ STANDARD_ROLES: dict[str, dict[str, object] | Callable[[Theme], object]] = {
     "box": {"fill": "{palette.surface}", "stroke": "{palette.border}", "stroke-width": THIN_LINE_WIDTH},
     "shape": _fill("{palette.primary}"),
     "accent": _fill("{palette.accent}"),
+    "shadow": _fill("{palette.shadow}"),
     "outline": _stroke("{palette.border}", THIN_LINE_WIDTH),
-    "line": _stroke("{palette.foreground}"),
+    "line": _stroke("{palette.primary}"),
     "grid": _stroke("{palette.border}", THIN_LINE_WIDTH),
-    "dot": _fill("{palette.foreground}"),
+    "dot": {"fill": "{palette.accent}", "stroke": "{palette.primary}", "stroke-width": THIN_LINE_WIDTH},
     "arrow.line": _stroke("{palette.foreground}"),
     "arrow.head": _fill("{palette.foreground}"),
     "text": _text("{palette.foreground}", "text"),
-    "title": _text("{palette.foreground}", "title", "bold"),
+    "title": _text("{palette.primary}", "title", "bold"),
     "subtitle": _text("{palette.muted}", "subtitle"),
     "caption": _text("{palette.muted}", "caption"),
     "code": _text("{palette.foreground}", "text", family="{fonts.monospace}"),

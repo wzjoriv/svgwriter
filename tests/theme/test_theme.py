@@ -7,7 +7,11 @@ import pytest
 import svgwriter as svg
 from svgwriter.theme import Fonts, Palette, ThemeError
 
-BUILTINS = ("light", "dark", "paper", "print", "mono")
+BUILTINS = ("light", "dark", "paper", "print", "mono", "noir", "brutalist", "dracula", "alucard", "one-dark",
+            "one-light")
+AA_TEXT = 4.5
+AA_LARGE_TEXT = 3.0
+LARGE_TEXT_PX = 24.0
 
 
 class TestPalette:
@@ -61,6 +65,30 @@ class TestTheme:
         for role in theme.roles:
             assert theme.style(role)
 
+    @pytest.mark.parametrize("name", BUILTINS)
+    def test_builtin_text_meets_wcag_aa(self, name: str) -> None:
+        theme = svg.Theme.get(name)
+        p = theme.palette
+
+        def contrast(a: svg.Color, b: svg.Color) -> float:
+            low, high = sorted((a.luminance, b.luminance))
+            return (high + 0.05) / (low + 0.05)
+
+        for role in theme.roles:
+            style = theme.style(role)
+            if "font-family" not in style:
+                continue
+            grounds = (p.primary,) if role == "label" else (p.background, p.surface)
+            large = float(str(style["font-size"]).removesuffix("px")) >= LARGE_TEXT_PX
+            for ground in grounds:
+                assert contrast(style["fill"], ground) >= (AA_LARGE_TEXT if large else AA_TEXT), (role, ground.hex)
+
+    @pytest.mark.parametrize("name", BUILTINS)
+    def test_builtin_themes_are_distinct(self, name: str) -> None:
+        styles = {other: (svg.Theme.get(other).style("title")["fill"].hex, svg.Theme.get(other).palette.surface.hex)
+                  for other in BUILTINS}
+        assert list(styles.values()).count(styles[name]) == 1
+
     def test_immutable(self) -> None:
         with pytest.raises(AttributeError, match="immutable"):
             svg.Theme.get("light").name = "x"  # type: ignore[misc]
@@ -69,7 +97,7 @@ class TestTheme:
         light = svg.Theme.get("light")
         red = light.replace(palette={"foreground": "#ff0000"})
         assert red.palette.border != light.palette.border
-        assert red.style("line")["stroke"].hex == "#ff0000"
+        assert red.style("text")["fill"].hex == "#ff0000"
 
     def test_role_property_merge_and_function_roles(self) -> None:
         theme = svg.Theme.get("light").replace(roles={

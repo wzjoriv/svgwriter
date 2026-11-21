@@ -4,10 +4,10 @@
 
 from __future__ import annotations
 
-import enum
 from collections.abc import Sequence
 from typing import Any
 
+from ..._internal._enums import Keyword
 from ..._internal._typing import Self
 from .._behavior import CoreAttributes
 from ..core import Container, ContentModel
@@ -24,7 +24,7 @@ def _numbers(value: Any) -> list[float]:
     return [float(v) for v in str(value).replace(",", " ").split()]
 
 
-class TransferType(str, enum.Enum):
+class TransferType(Keyword):
     """Transfer function types of :class:`FeFunc`.
 
     Examples

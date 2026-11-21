@@ -1,10 +1,12 @@
 """
-README gallery: run the examples and render their pictures to PNG (animated ones are copied as GIF).
+README gallery: run the examples and render their pictures to PNG (animated ones as GIF).
 """
 
 from __future__ import annotations
 
+import io
 import os
+import runpy
 import shutil
 import subprocess
 import sys
@@ -17,15 +19,21 @@ __all__ = ["GALLERY", "GALLERY_DIR", "Picture", "build_gallery"]
 ROOT = Path(__file__).resolve().parents[2]
 GALLERY_DIR = ROOT / "docs" / "_static" / "examples"
 SCALE = 2.0
+SCENE_FPS = 12.0
+SCENE_HOLD = 1.0
 
 
 class Picture(NamedTuple):
-    """One gallery picture: the example that makes it, the file it saves and how to render it."""
+    """One gallery picture: the example that makes it, the file it saves and how to render it.
+
+    A picture with ``scenes`` is a GIF of those scene classes of the example played one after another.
+    """
 
     example: str
-    file: str
+    file: str = ""
     background: str | None = None
     padding: float = 0.0
+    scenes: tuple[str, ...] = ()
 
 
 GALLERY = {
@@ -38,6 +46,10 @@ GALLERY = {
     "animation": Picture("09_animation", "09_animation.gif"),
     "math": Picture("08_math_and_diagrams", "08_math.svg"),
     "flowchart": Picture("08_math_and_diagrams", "08_flowchart.svg", background="white", padding=12),
+    "lighting": Picture("05_paint_and_filters", "05_lighting.svg"),
+    "scenes": Picture("13_scenes", scenes=("Title", "Bars")),
+    "themes": Picture("14_themes", "14_themes.svg"),
+    "powerpoint": Picture("15_powerpoint", "15_powerpoint.svg"),
 }
 
 
@@ -64,6 +76,9 @@ def build_gallery(out: Path = GALLERY_DIR, scale: float = SCALE) -> list[Path]:
     with tempfile.TemporaryDirectory(prefix="svgwriter-gallery-") as work:
         env = {**os.environ, "PYTHONPATH": str(ROOT)}
         for name, picture in GALLERY.items():
+            if picture.scenes:
+                written.append(_scenes_gif(picture, out / f"{name}.gif"))
+                continue
             if picture.example not in ran:
                 script = ROOT / "examples" / f"{picture.example}.py"
                 subprocess.run([sys.executable, str(script)], cwd=work, env=env, check=True, capture_output=True)
@@ -78,6 +93,22 @@ def build_gallery(out: Path = GALLERY_DIR, scale: float = SCALE) -> list[Path]:
             written.append(target)
         written.append(_readme_picture(out, Path(work), scale))
     return written
+
+
+def _scenes_gif(picture: Picture, target: Path) -> Path:
+    """Play *picture*'s scenes one after another, each held on its last frame, and save them as a GIF."""
+    from PIL import Image
+
+    namespace = runpy.run_path(str(ROOT / "examples" / f"{picture.example}.py"), run_name="gallery")
+    frames = []
+    for name in picture.scenes:
+        scene = namespace[name]()
+        clip = [(Image.open(io.BytesIO(frame.data)) if frame.png
+                 else Image.frombytes("RGBA", (frame.width, frame.height), frame.data)).convert("RGB")
+                for frame in scene.frames(fps=SCENE_FPS)]
+        frames += clip + clip[-1:] * int(SCENE_FPS * SCENE_HOLD)
+    frames[0].save(target, save_all=True, append_images=frames[1:], duration=round(1000 / SCENE_FPS), loop=0)
+    return target
 
 
 def _readme_picture(out: Path, work: Path, scale: float) -> Path:

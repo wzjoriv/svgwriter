@@ -4,9 +4,9 @@ Compositing primitives: blend, composite, merge, offset, flood, tile, image.
 
 from __future__ import annotations
 
-import enum
 from typing import Any
 
+from ..._internal._enums import Keyword
 from ..._internal._typing import Opacity
 from ...attributes.viewbox import PreserveAspectRatio
 from ...color.color import Color
@@ -28,7 +28,7 @@ __all__ = [
 ]
 
 
-class BlendMode(str, enum.Enum):
+class BlendMode(Keyword):
     """Blend modes of :class:`FeBlend`.
 
     Examples
@@ -45,7 +45,7 @@ class BlendMode(str, enum.Enum):
     LIGHTEN = "lighten"
 
 
-class CompositeOperator(str, enum.Enum):
+class CompositeOperator(Keyword):
     """Operators of :class:`FeComposite`.
 
     Examples

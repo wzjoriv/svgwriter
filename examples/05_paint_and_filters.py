@@ -1,7 +1,7 @@
 """# Paint and filters
 
 Gradients, patterns, clip paths and masks give shapes their paint; filter primitives add shadows, noise,
-lighting and color changes.
+lighting, distortion, images and color changes.
 
 Run it as ``python 05_paint_and_filters.py`` or open ``05_paint_and_filters.ipynb`` to see each step.
 """
@@ -102,8 +102,41 @@ doc.add(svg.Text("grey", x=100, y=300, font_size=64, fill="purple", filter=grey)
 doc
 
 # %% [markdown]
-# Save both, the second with an XML doctype.
+# ## Light, distortion and images
+#
+# A spot light shines on a star whose blurred alpha is its height map. Turbulence noise drives a
+# displacement map that ripples text. `FeImage` pulls a referenced element into the filter, `FeTile`
+# repeats it, and a composite keeps it inside the circle.
+
+# %%
+STAGE_W, STAGE_H = 420, 160
+stage = svg.Document(STAGE_W, STAGE_H)
+stage.rect(0, 0, STAGE_W, STAGE_H, fill="#0f172a")
+
+height = fe.FeGaussianBlur(5, in_=fe.StandardInput.SOURCE_ALPHA)
+spot = fe.FeDiffuseLighting(
+    fe.FeSpotLight(40, 10, 90, points_at_x=70, points_at_y=80, specular_exponent=4, limiting_cone_angle=40),
+    in_=height, surface_scale=6, diffuse_constant=1.3, lighting_color="#fde68a",
+)
+lit = stage.define(svg.Filter(height, spot, fe.FeComposite(fe.CompositeOperator.IN, in2=fe.StandardInput.SOURCE_ALPHA)))
+stage.add(svg.builder.star(70, 82, 66, 30, fill="white", filter=lit))
+
+ripple = fe.FeTurbulence(0.02, 2, seed=5)
+warp = stage.define(svg.Filter(ripple, fe.FeDisplacementMap(7, svg.Channel.R, svg.Channel.G,
+                                                            in_=fe.StandardInput.SOURCE_GRAPHIC, in2=ripple)))
+stage.text("wave", x=210, y=95, font_size=54, font_weight="bold", fill="#38bdf8", text_anchor="middle", filter=warp)
+
+stage.define(svg.circle(10, 10, 8, fill="#fb7185", id="spot"))
+swatch = fe.FeImage("#spot", x=0, y=0, width=20, height=20)
+wall = stage.define(svg.Filter(swatch, fe.FeTile(in_=swatch), fe.FeComposite(fe.CompositeOperator.IN, in2=fe.StandardInput.SOURCE_ALPHA),
+                               x=0, y=0, width="100%", height="100%", filter_units="userSpaceOnUse"))
+stage.circle(350, 80, 65, fill="white", filter=wall)
+stage
+
+# %% [markdown]
+# Save all three, the filters with an XML doctype.
 
 # %%
 paint.save("05_paint.svg")
 doc.save("05_filters.svg", doctype=True)
+stage.save("05_lighting.svg")

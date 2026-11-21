@@ -4,16 +4,34 @@ Color arithmetic: alpha, lightness, mixing and scaling.
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import replace
 from numbers import Real
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal, TypeAlias
 
 from .._internal._typing import Opacity
+from ._constants import DEGREES, MIX_SPACES
+from ._spaces import (
+    Triple,
+    linear_to_srgb,
+    oklab_to_oklch,
+    oklab_to_srgb,
+    oklch_to_oklab,
+    srgb_to_linear,
+    srgb_to_oklab,
+)
 
 if TYPE_CHECKING:
     from .color import Color, ColorLike
 
-__all__ = ["ColorBlending"]
+__all__ = ["ColorBlending", "MixSpace"]
+
+MixSpace: TypeAlias = Literal["srgb", "linear", "oklab", "oklch"]
+
+
+def _lerp(start: Sequence[float], end: Sequence[float], weight: float) -> Triple:
+    a, b, c = (s + (e - s) * weight for s, e in zip(start, end, strict=True))
+    return (a, b, c)
 
 
 class ColorBlending:
@@ -98,8 +116,8 @@ class ColorBlending:
         """
         return self.lighten(-amount)
 
-    def mix(self, other: ColorLike, weight: Opacity = 0.5) -> Color:
-        """Blend linearly with another color.
+    def mix(self, other: ColorLike, weight: Opacity = 0.5, space: MixSpace = "srgb") -> Color:
+        """Blend with another color in a chosen space.
 
         Parameters
         ----------
@@ -107,27 +125,47 @@ class ColorBlending:
             The color to mix in.
         weight : float, optional
             Share of `other` in the result, from 0 to 1. Defaults to 0.5.
+        space : {"srgb", "linear", "oklab", "oklch"}, optional
+            Where to interpolate: the stored sRGB channels, linear-light sRGB (physically even
+            blending of light), OKLab (perceptually even steps) or OKLCH (OKLab with hue taken the
+            shorter way round, so saturated colors stay saturated). Defaults to ``"srgb"``.
 
         Returns
         -------
         Color
-            The blended color; alpha is blended too.
+            The blended color, clipped to the sRGB gamut; alpha is blended linearly.
 
         Raises
         ------
         ValueError
-            If `other` is not a valid color.
+            If `other` is not a valid color or `space` is unknown.
 
         Examples
         --------
         >>> from svgwriter.color import Color
         >>> Color.parse("red").mix("blue", 0.25).hex
         '#bf0040'
+        >>> Color.parse("red").mix("blue", 0.5, space="oklch").hex
+        '#ba00c2'
         """
         from .color import Color, as_color
 
         other = as_color(other)
-        return Color(*(a + (b - a) * weight for a, b in zip(self.rgba, other.rgba, strict=True)))
+        if space not in MIX_SPACES:
+            raise ValueError(f"unknown mixing space {space!r}; expected one of {sorted(MIX_SPACES)}")
+        alpha = self.a + (other.a - self.a) * weight
+        if space == "srgb":
+            r, g, b = _lerp(self.rgb, other.rgb, weight)
+        elif space == "linear":
+            r, g, b = linear_to_srgb(_lerp(srgb_to_linear(self.rgb), srgb_to_linear(other.rgb), weight))
+        elif space == "oklab":
+            r, g, b = oklab_to_srgb(_lerp(srgb_to_oklab(self.rgb), srgb_to_oklab(other.rgb), weight))
+        else:
+            start, end = oklab_to_oklch(srgb_to_oklab(self.rgb)), oklab_to_oklch(srgb_to_oklab(other.rgb))
+            turn = (end[2] - start[2] + DEGREES / 2) % DEGREES - DEGREES / 2
+            lightness, chroma, _ = _lerp(start, end, weight)
+            r, g, b = oklab_to_srgb(oklch_to_oklab((lightness, chroma, start[2] + turn * weight)))
+        return Color(*(min(max(c, 0.0), 1.0) for c in (r, g, b)), alpha)
 
     def scale(self, factor: float) -> Color:
         """Multiply the color channels by a factor.
