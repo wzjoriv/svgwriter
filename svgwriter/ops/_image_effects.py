@@ -10,10 +10,23 @@ from typing import TYPE_CHECKING, Any
 
 import skia
 
-from ._constants import ALPHA_ONLY, BLEND, COMPOSITE, LUMA, MASK_CANVAS, SOURCE_ALPHA, SOURCE_GRAPHIC
+from ._constants import (
+    ALPHA_ONLY,
+    BLEND,
+    CHANNELS,
+    COLOR_MIXING,
+    COMPOSITE,
+    FRAMED,
+    LINEAR_RGB,
+    LUMA,
+    MASK_CANVAS,
+    SOURCE_ALPHA,
+    SOURCE_GRAPHIC,
+)
 
 if TYPE_CHECKING:
     from ..elements.core import Element
+    from ._filter_frame import Frame
 
 __all__ = ["image_filter", "paint_mask"]
 
@@ -110,13 +123,53 @@ def _primitive(primitive: Element, first: Any, second: Any) -> Any:
     return first
 
 
-def image_filter(filter_element: Element) -> Any:
-    """The ``<filter>`` as one skia image filter for drawing an image; None when it has no primitives."""
+def _linear(made: Any) -> Any:
+    return skia.ImageFilters.ColorFilter(skia.ColorFilters.SRGBToLinearGamma(), made)
+
+
+def _gamma(made: Any) -> Any:
+    return skia.ImageFilters.ColorFilter(skia.ColorFilters.LinearToSRGBGamma(), made)
+
+
+def _framed(primitive: Element, first: Any, second: Any, frame: Frame, area: Any, source_area: Any) -> Any:
+    """The primitives only a framed (user-space) filter can build: images, tiles and displacement."""
+    from ._filter_frame import image_source
+
+    tag = primitive.tag
+    if tag == "feImage":
+        return image_source(primitive, area, frame)
+    if tag == "feTile":
+        return skia.ImageFilters.Tile(source_area, area, first)
+    channels = [CHANNELS.get(str(primitive.get(name, "A")), skia.ColorChannel.kA)
+                for name in ("xChannelSelector", "yChannelSelector")]
+    return skia.ImageFilters.DisplacementMap(*channels, float(primitive.get("scale", 0)), second, first)
+
+
+def image_filter(filter_element: Element, frame: Frame | None = None) -> Any:
+    """The ``<filter>`` as one skia image filter; None when it has no primitives.
+
+    Parameters
+    ----------
+    filter_element : Element
+        The ``<filter>``.
+    frame : Frame, optional
+        The filter's geometry in the filtered element's user space. With it, primitive
+        subregions crop each result, colours mix in ``color-interpolation-filters`` space, and
+        ``feImage``, ``feTile`` and ``feDisplacementMap`` are drawn. Defaults to None.
+
+    Returns
+    -------
+    skia.ImageFilter or None
+        The filter graph; the layer drawn with it is ``SourceGraphic``.
+    """
+    from ..attributes.cascade import computed
     from ..elements.filters.base import FilterPrimitive
 
     results: dict[str, Any] = {SOURCE_GRAPHIC: None}
     results[SOURCE_ALPHA] = skia.ImageFilters.ColorFilter(skia.ColorFilters.Matrix(ALPHA_ONLY), None)
+    regions: dict[str, Any] = {}
     previous: Any = None
+    previous_area = frame.region if frame is not None else None
     built = False
     for primitive in filter_element:
         if not isinstance(primitive, FilterPrimitive):
@@ -127,12 +180,30 @@ def image_filter(filter_element: Element) -> Any:
 
         first = resolve(primitive.get("in"), previous)
         second = resolve(primitive.get("in2"), None)
-        made = _primitive(primitive, first, second)
+        linear = frame is not None and primitive.tag in COLOR_MIXING and str(
+            computed(primitive, "color-interpolation-filters", LINEAR_RGB, [])) == LINEAR_RGB
+        if linear:
+            first, second = _linear(first), _linear(second) if second is not None else None
+        area = source_area = None
+        if frame is not None:
+            source_area = regions.get(str(primitive.get("in")), frame.region) if primitive.get("in") is not None                 else previous_area
+            area = frame.subregion(primitive, frame.region)
+        if frame is not None and primitive.tag in FRAMED:
+            made = _framed(primitive, first, second, frame, area, source_area)
+        else:
+            made = _primitive(primitive, first, second)
         if isinstance(made, tuple):
-            made = skia.ImageFilters.Merge([resolve(name, previous) for name in made[1]])
+            made = skia.ImageFilters.Merge([_linear(resolve(name, previous)) if linear else resolve(name, previous)
+                                            for name in made[1]])
+        if linear:
+            made = _gamma(made)
+        if frame is not None:
+            made = skia.ImageFilters.Tile(area, area, made)
+            previous_area = area
         previous, built = made, True
         if primitive.get("result") is not None:
             results[str(primitive.get("result"))] = made
+            regions[str(primitive.get("result"))] = area
     return previous if built else None
 
 

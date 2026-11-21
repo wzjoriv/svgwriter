@@ -4,6 +4,7 @@ Draw ``<image>`` pixels in z-order around skia's SVG renderer, which cannot load
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -19,11 +20,12 @@ if TYPE_CHECKING:
     from ..elements.structure import Image
     from ..transform.matrix import Matrix
 
-__all__ = ["draw_image", "hidden", "layers"]
+__all__ = ["draw_image", "hidden", "layers", "referenced", "skia_matrix"]
 
 
-def layers(root: Element) -> list[tuple[list[Element], Element | None]]:
-    """Split the paint order into runs of vector leaves, each followed by an image or a text.
+def layers(root: Element, atomic: Callable[[Element], bool] | None = None,
+           ) -> list[tuple[list[Element], Element | None]]:
+    """Split the paint order into runs of vector leaves, each followed by an image, a text or an *atomic* element.
 
     Skia's SVG renderer cannot load images or draw text, so each run is painted by skia and the
     embedded image or ``<text>`` (left in a render copy only to be drawn as real glyphs) that ends
@@ -33,6 +35,9 @@ def layers(root: Element) -> list[tuple[list[Element], Element | None]]:
     ----------
     root : Element
         The tree to split.
+    atomic : callable, optional
+        Elements it accepts (containers included) are drawn separately, as a whole, like
+        images. Defaults to None.
 
     Returns
     -------
@@ -57,8 +62,9 @@ def layers(root: Element) -> list[tuple[list[Element], Element | None]]:
 
     result: list[tuple[list[Element], Element | None]] = []
     run: list[Element] = []
-    for leaf in drawable_order(root):
-        if isinstance(leaf, Text) or (isinstance(leaf, Image) and leaf.pixels is not None):
+    for leaf in drawable_order(root, atomic):
+        if isinstance(leaf, Text) or (isinstance(leaf, Image) and leaf.pixels is not None) or (
+                atomic is not None and atomic(leaf)):
             result.append((run, leaf))
             run = []
         else:
@@ -81,12 +87,13 @@ def _chain(image: Element, root: Element) -> list[Element]:
     return chain[::-1]
 
 
-def _skia_matrix(m: Matrix) -> skia.Matrix:
+def skia_matrix(m: Matrix) -> skia.Matrix:
+    """*m* as a ``skia.Matrix``."""
     return skia.Matrix.MakeAll(m.a, m.c, m.e, m.b, m.d, m.f, 0, 0, 1)
 
 
-def _referenced(element: Element, name: str) -> Element | None:
-    """The element a ``url(#id)`` attribute points at, or None."""
+def referenced(element: Element, name: str) -> Element | None:
+    """The element the ``url(#id)`` attribute *name* of *element* points at, or None."""
     value = element.get(name)
     target = getattr(value, "element", None)
     if target is None and value is not None and str(value).startswith("url(#"):
@@ -94,7 +101,7 @@ def _referenced(element: Element, name: str) -> Element | None:
     return target
 
 
-def hidden(root: Element, keep: list[Element]) -> list[Element]:
+def hidden(root: Element, keep: list[Element], atomic: Callable[[Element], bool] | None = None) -> list[Element]:
     """Leaves of *root* outside *keep*, to hide while painting one layer.
 
     Parameters
@@ -103,6 +110,8 @@ def hidden(root: Element, keep: list[Element]) -> list[Element]:
         The tree being painted.
     keep : list of Element
         The leaves that belong to the layer being painted.
+    atomic : callable, optional
+        Containers it accepts count as one leaf. Defaults to None.
 
     Returns
     -------
@@ -122,7 +131,7 @@ def hidden(root: Element, keep: list[Element]) -> list[Element]:
     ['circle']
     """
     kept = {id(e) for e in keep}
-    return [leaf for leaf in drawable_order(root) if id(leaf) not in kept] + (
+    return [leaf for leaf in drawable_order(root, atomic) if id(leaf) not in kept] + (
         [] if root.tag in CONTAINERS or id(root) in kept else [root]
     )
 
@@ -155,14 +164,14 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
     pixels = np.ascontiguousarray(np.clip(np.rint(premultiplied * CHANNEL_MAX), 0, CHANNEL_MAX).astype(np.uint8))
     picture = skia.Image.fromarray(pixels, colorType=skia.kRGBA_8888_ColorType, alphaType=skia.kPremul_AlphaType)
     canvas.save()
-    canvas.concat(_skia_matrix(view))
+    canvas.concat(skia_matrix(view))
     for node in _chain(image, root):
         if isinstance(node, Transformable):
-            canvas.concat(_skia_matrix(node.t))
+            canvas.concat(skia_matrix(node.t))
         clip = clip_outline(node)
         if clip is not None:
             canvas.clipPath(to_skia(clip), doAntiAlias=True)
-    effects, mask = _referenced(image, "filter"), _referenced(image, "mask")
+    effects, mask = referenced(image, "filter"), referenced(image, "mask")
     layer = skia.Paint()
     if effects is not None:
         layer.setImageFilter(image_filter(effects))

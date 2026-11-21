@@ -116,6 +116,7 @@ __all__ = [
     "BASE64_SUFFIX",
     "GZIP_MAGIC",
     "SVG_DATA_URI",
+    "DATA_URI",
     "VIEWPORT_FALLBACK",
     "LUMA",
     "MAC_FALLBACK_FAMILIES",
@@ -276,6 +277,7 @@ NOT_RENDERED: Final = frozenset({"defs", "clipPath", "mask", "pattern", "marker"
 LINK_CACHE: Final = 64
 VIEWPORT_FALLBACK: Final = 300.0
 SVG_DATA_URI: Final = "data:image/svg+xml"
+DATA_URI: Final = "data:"
 BASE64_SUFFIX: Final = ";base64"
 GZIP_MAGIC: Final = b"\x1f\x8b"
 VIEWPORT_AXES: Final = {"x": 0, "y": 1, "width": 0, "height": 1}

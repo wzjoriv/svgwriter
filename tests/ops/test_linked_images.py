@@ -83,3 +83,25 @@ def test_svg_data_uri_renders(compress: bool) -> None:
     payload = base64.b64encode(gzip.compress(inner) if compress else inner).decode()
     doc = svg.Document.from_string(page(f"data:image/svg+xml;base64,{payload}"))
     assert np.allclose(doc.rasterize()[4, 4], (0, 1, 0, 1), atol=0.02)
+
+
+@pytest.mark.parametrize("ratio, painted, empty", [("xMinYMin meet", (2, 2), (7, 2)), ("xMaxYMax meet", (7, 2), (2, 2)),
+                                                   ("none", (2, 2), None)])
+def test_linked_svg_takes_the_image_aspect_ratio(tmp_path, ratio: str, painted, empty) -> None:
+    (tmp_path / "inner.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4">'
+                                        '<rect width="4" height="4" fill="lime"/></svg>', encoding="utf-8")
+    doc = svg.Document(10, 4)
+    doc.add(svg.Image("inner.svg", 0, 0, 10, 4, preserve_aspect_ratio=ratio))
+    doc.save(tmp_path / "doc.svg")
+    pixels = svg.Document.open(tmp_path / "doc.svg").rasterize()
+    assert np.allclose(pixels[painted[::-1]], (0, 1, 0, 1), atol=0.02)
+    if empty is not None:
+        assert pixels[empty[::-1]][3] == pytest.approx(0)
+
+
+def test_an_image_linking_back_to_its_document_is_not_drawn(tmp_path) -> None:
+    doc = svg.Document(8, 8)
+    doc.rect(0, 0, 8, 8, fill="lime")
+    doc.add(svg.Image("doc.svg", 0, 0, 8, 8, opacity=0.5))
+    doc.save(tmp_path / "doc.svg")
+    assert np.allclose(svg.Document.open(tmp_path / "doc.svg").rasterize()[4, 4], (0, 1, 0, 1), atol=0.02)
