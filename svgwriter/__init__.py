@@ -23,7 +23,8 @@ Sub-packages
 ------------
 model
     The object model: ``elements``, ``attributes``, ``color``, ``pathdata``,
-    ``transform``, ``layout`` and ``theme`` (``svg.Rect``, ``svg.Theme``).
+    ``transform``, ``layout``, ``theme`` and ``batch`` (``svg.Rect``, ``svg.Theme``,
+    ``svg.batch.circles``).
 catalog
     Ready-made content: ``builder``, ``patterns``, ``gradients``, ``filters``,
     ``markers``, ``text_effects``, ``preset`` and ``fonts``
@@ -63,6 +64,7 @@ from .formats import export, inkscape
 from .formats import io as io
 from .formats.io.writer import SerializeOptions, to_string, write
 from .model import attributes as attributes
+from .model import batch as batch
 from .model import color as color
 from .model import elements as elements
 from .model import layout, theme

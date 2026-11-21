@@ -22,6 +22,7 @@ from ..._internal._sentinels import MISSING, MissingType
 from ..._internal._typing import AnyPath
 from ...model.attributes.protocols import TextSink
 from ...model.attributes.values import format_value
+from ...model.batch import Batch
 from ...model.elements.core import Element, UnknownElement
 from ...model.pathdata.data import PathData
 from ...model.transform.matrix import Matrix
@@ -184,7 +185,8 @@ class Writer:
         namespace = getattr(element, "namespace", None)
         tag = f"{names[namespace]}:{element.tag}" if namespace in names else element.tag
         yield pad + self._open_tag(element, extra, names, tag)
-        if not element.children:
+        items = element.item_markup(opts.precision) if isinstance(element, Batch) else []
+        if not element.children and not items:
             yield "/>"
             return
         yield ">"
@@ -199,6 +201,9 @@ class Writer:
             if not inner_inline:
                 yield opts.newline
             yield from self._element(child, depth + 1, declare, inner_inline, names)
+        if items:
+            between = opts.newline + opts.indent * (depth + 1)
+            yield between + between.join(items)
         if not inner_inline:
             yield opts.newline + pad
         yield f"</{tag}>"

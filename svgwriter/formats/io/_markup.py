@@ -42,7 +42,7 @@ def used_namespaces(element: Element) -> tuple[set[str], set[str], set[str]]:
         namespace = getattr(node, "namespace", None)
         if namespace and namespace != SVG_NS:
             element_uris.add(namespace)
-        for key in node.attributes:
+        for key in (*node.attributes, *getattr(node, "item_attributes", ())):
             if key.startswith("{"):
                 attribute_uris.add(key[1:].partition("}")[0])
             elif ":" in key:
