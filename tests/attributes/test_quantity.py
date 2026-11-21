@@ -58,3 +58,20 @@ class TestAssignmentChecks:
             svg.Angle.parse(svg.mm(3))
         with pytest.raises(TypeError, match="needs an angle, got length·angle"):
             svg.rect(0, 0, 1, 1).rotate(svg.mm(1) * svg.deg(1))
+
+
+class TestEquality:
+    def test_user_unit_lengths_equal_numbers(self):
+        assert svg.Length(320) == 320 and hash(svg.Length(320)) == hash(320)
+        assert {svg.Length(5): "a"}[5] == "a"
+
+    def test_absolute_lengths_compare_physically(self):
+        assert svg.inch(1) == 96 and svg.inch(1) == svg.mm(25.4) and hash(svg.inch(1)) == hash(96)
+        assert svg.mm(1) != 1
+
+    def test_relative_lengths_only_equal_themselves(self):
+        assert svg.Length(1, "em") == svg.Length(1, "em") and svg.Length(1, "em") != 16
+
+    def test_angles_and_quantities_follow_numbers(self):
+        assert svg.deg(180) == svg.rad(math.pi) and svg.deg(90) == 90 and hash(svg.deg(90)) == hash(90)
+        assert svg.mm(2) * svg.mm(3) == svg.mm(3) * svg.mm(2) and svg.mm(2) * svg.mm(3) != 6

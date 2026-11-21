@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING, Any
 
 from .._internal._constants import DEFAULT_PRECISION
 from .._internal._numbers import format_number
-from ._constants import ANGLE_ATTRIBUTES, LENGTH_ATTRIBUTES, SUPERSCRIPTS
+from ._constants import ANGLE_ATTRIBUTES, EQUAL_DIGITS, LENGTH_ATTRIBUTES, SUPERSCRIPTS
 
 if TYPE_CHECKING:
     from .angle import Angle
@@ -48,7 +48,7 @@ def dimension_name(length: int, angle: int) -> str:
     return "·".join(parts) or "number"
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True, slots=True, eq=False)
 class Quantity:
     """A value of dimension length^n · angle^m, the result of multiplying or dividing lengths and angles.
 
@@ -217,6 +217,17 @@ class Quantity:
 
     def __abs__(self) -> Quantity:
         return Quantity(abs(self.value), self.length, self.angle, self.length_unit, self.angle_unit)
+
+    def __eq__(self, other: object) -> bool:
+        """Equal dimension and magnitude, like `Length` and plain numbers."""
+        try:
+            right = Quantity.of(other)
+        except (TypeError, ValueError):
+            return NotImplemented
+        return (right.length, right.angle) == (self.length, self.angle) and round(right.value, EQUAL_DIGITS) == round(self.value, EQUAL_DIGITS)
+
+    def __hash__(self) -> int:
+        return hash(round(self.value, EQUAL_DIGITS))
 
     def __lt__(self, other: object) -> bool:
         return self.value < self._same(other, "compare").value
