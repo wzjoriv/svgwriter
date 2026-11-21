@@ -93,6 +93,7 @@ from .color import Color, PaintKeyword, parse_color, parse_paint
 from .document import Document
 from .elements import *  # noqa: F403
 from .elements import __all__ as _elements_all
+from .elements.presets import animation
 from .io.writer import SerializeOptions, to_string, write
 from .ops import interpolate, register_font, register_interpolator, text_to_path, unregister_interpolator
 from .pathdata import BBox, PathBuilder, PathData
@@ -179,6 +180,7 @@ __all__ = [
     "rad",
     "turn",
     "mm",
+    "animation",
     "interpolate",
     "page_size",
     "latex",

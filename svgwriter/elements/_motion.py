@@ -7,7 +7,7 @@ from __future__ import annotations
 import difflib
 import functools
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Concatenate
 
 from .._internal._constants import (
     BLINK_VALUES,
@@ -18,9 +18,10 @@ from .._internal._constants import (
     SUGGESTIONS,
     WRITE_LAG,
 )
-from ._animations import ANIMATIONS
+from .._internal._typing import P
 from ._motion_transform import TransformPresets, timing
 from .animation import Animate, AnimateMotion, Ease, EaseLike, Set
+from .presets import ANIMATIONS
 
 if TYPE_CHECKING:
     from .core import Element
@@ -86,7 +87,7 @@ class Motion(TransformPresets):
     (a name such as ``"ease-in-out"``, a bézier 4-tuple, ``("steps", n)`` or
     a function; see :class:`~svgwriter.Ease`). ``show`` and ``hide`` act at
     one instant, so they take only the moment. Presets added with
-    :func:`~svgwriter.register_animation` are methods too.
+    :func:`@svg.animation <svgwriter.animation>` are methods too.
 
     Parameters
     ----------
@@ -120,18 +121,48 @@ class Motion(TransformPresets):
 
             @functools.wraps(function)
             def preset(*args: Any, **options: Any) -> Motion:
-                function(self, *args, **options)
-                return self
+                return self.apply(function, *args, **options)
 
             return preset
         known = [*ANIMATIONS, *(member for member in dir(Motion) if not member.startswith("_"))]
         close = difflib.get_close_matches(name, known, n=SUGGESTIONS)
         hint = f"; did you mean {' or '.join(map(repr, close))}?" if close else ""
-        raise AttributeError(f"no animation preset {name!r}{hint} (svg.register_animation adds one)", name=name,
-                             obj=self)
+        raise AttributeError(f"no animation preset {name!r}{hint} (@svg.animation adds one)", name=name, obj=self)
 
     def __dir__(self) -> list[str]:
         return sorted({*super().__dir__(), *ANIMATIONS})
+
+    def apply(self, function: Callable[Concatenate[Motion, P], Motion | None], *args: P.args,
+              **kwargs: P.kwargs) -> Motion:
+        """Run an animation function on this element: ``function(self, *args, **kwargs)``.
+
+        Typed with the function's own parameters, so editors complete and check its options. The
+        function need not be registered; :func:`~svgwriter.animation` also makes it
+        ``element.animate.<name>``.
+
+        Parameters
+        ----------
+        function : callable
+            ``function(motion, *, option=default, ...)`` returning the motion or None.
+        *args, **kwargs
+            Passed on to *function*.
+
+        Returns
+        -------
+        Motion
+            This motion, to chain further presets.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> def lift(motion: svg.Motion, *, height: float = 8) -> svg.Motion:
+        ...     return motion.move_by(0, -height)
+        >>> dot = svg.circle(0, 0, 2)
+        >>> dot.animate.apply(lift, height=3).fade_in().element is dot
+        True
+        """
+        function(self, *args, **kwargs)
+        return self
 
     def tween(self, attribute: str, start: Any, end: Any, dur: float = DEFAULT_DURATION, *, begin: float = 0.0,
               repeat: float | str | None = None, freeze: bool = True, ease: EaseLike | None = None) -> Motion:

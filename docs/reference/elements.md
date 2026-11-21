@@ -63,7 +63,7 @@ Element classes. Every class also has a lowercase alias (`svgwriter.circle` is `
 
 ## Animation presets
 
-`element.animate` returns a `Motion`; its methods add SMIL children and chain. `register_animation`
+`element.animate` returns a `Motion`; its methods add SMIL children and chain. `@svg.animation`
 adds presets of your own as more methods.
 
 ```{eval-rst}
@@ -71,6 +71,6 @@ adds presets of your own as more methods.
    :members:
 .. autodata:: svgwriter.ANIMATIONS
    :no-value:
-.. autofunction:: svgwriter.register_animation
+.. autofunction:: svgwriter.animation
 .. autofunction:: svgwriter.unregister_animation
 ```
