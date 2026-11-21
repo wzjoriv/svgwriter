@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from ..pathdata.data import BBox
     from ..transform.matrix import Matrix
 
-__all__ = ["ancestry", "drawable_order", "fit_box", "image_matrix", "pixel_box", "viewport_extent"]
+__all__ = ["ancestry", "drawable_order", "fit_box", "image_matrix", "image_viewport", "pixel_box", "viewport_extent"]
 
 
 def drawable_order(root: Element, atomic: Callable[[Element], bool] | None = None) -> list[Element]:
@@ -164,6 +164,34 @@ def image_matrix(image: Image) -> Matrix:
     )
     fit = fit_box(_number(image.get("width"), columns), _number(image.get("height"), rows), columns, rows, ratio)
     return Matrix.translate(_number(image.get("x")), _number(image.get("y"))) @ fit
+
+
+def image_viewport(image: Image) -> BBox | None:
+    """The ``x``/``y``/``width``/``height`` box of *image* in user units, or None without a size.
+
+    Parameters
+    ----------
+    image : Image
+        An ``<image>`` element.
+
+    Returns
+    -------
+    BBox or None
+        The viewport its picture is fitted into and clipped to.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter._internal._layers import image_viewport
+    >>> image_viewport(svg.Image("a.png", 1, 2, 3, 4))
+    BBox(x=1.0, y=2.0, width=3.0, height=4.0)
+    """
+    from ..pathdata.data import BBox
+
+    if image.get("width") is None or image.get("height") is None:
+        return None
+    return BBox(_number(image.get("x")), _number(image.get("y")), _number(image.get("width")),
+                _number(image.get("height")))
 
 
 def ancestry(element: Element, root: Element) -> tuple[Matrix, float]:

@@ -10,8 +10,8 @@ from typing import TYPE_CHECKING
 import numpy as np
 import skia
 
-from .._internal._constants import CONTAINERS
-from .._internal._layers import ancestry, drawable_order, image_matrix
+from .._internal._constants import CONTAINERS, VISIBLE_OVERFLOW
+from .._internal._layers import ancestry, drawable_order, image_matrix, image_viewport
 from .._internal._tree import clip_outline
 from ._constants import CHANNEL_MAX
 
@@ -137,7 +137,9 @@ def hidden(root: Element, keep: list[Element], atomic: Callable[[Element], bool]
 
 
 def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -> None:
-    """Paint *image* with its transforms, opacity, aspect ratio, clip and mask (filters: ``draw_filtered``).
+    """Paint *image* clipped to its viewport, with transforms, opacity, aspect ratio, clip and mask.
+
+    Filters are applied by ``draw_filtered``, which calls this for the unfiltered picture.
 
     Parameters
     ----------
@@ -175,6 +177,9 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
     canvas.saveLayer(None, skia.Paint())
     m = image_matrix(image)
     canvas.save()
+    box = image_viewport(image)
+    if box is not None and str(image.get("overflow", "hidden")) not in VISIBLE_OVERFLOW:
+        canvas.clipRect(skia.Rect.MakeXYWH(box.x, box.y, box.width, box.height), doAntiAlias=True)
     canvas.concat(skia.Matrix.MakeAll(m.a, m.c, m.e, m.b, m.d, m.f, 0, 0, 1))
     paint = skia.Paint(AntiAlias=True)
     paint.setAlphaf(opacity)

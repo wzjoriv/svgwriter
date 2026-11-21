@@ -120,6 +120,7 @@ __all__ = [
     "VISIBILITY",
     "LINKED_OVERSAMPLE",
     "EXTERNAL_ID_PREFIX",
+    "NESTED_VIEWPORT_ID",
     "URL_REFERENCE_RE",
     "PRIMITIVE_PREFIX",
     "VIEWPORT_FALLBACK",
@@ -286,6 +287,7 @@ DATA_URI: Final = "data:"
 VISIBILITY: Final = "visibility"
 LINKED_OVERSAMPLE: Final = 2.0
 EXTERNAL_ID_PREFIX: Final = "svgwriter-external-"
+NESTED_VIEWPORT_ID: Final = "svgwriter-svg-viewport-"
 URL_REFERENCE_RE: Final = re.compile(r"url\(\s*['\"]?#([^)'\"\s]+)")
 PRIMITIVE_PREFIX: Final = "fe"
 BASE64_SUFFIX: Final = ";base64"

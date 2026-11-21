@@ -18,6 +18,7 @@ from ._markers import expand_markers
 from ._servers import resolve_servers
 from ._tiles import user_space_patterns
 from ._tree import replace_in_parent
+from ._viewports import flatten_viewports
 
 if TYPE_CHECKING:
     from ..attributes.viewbox import ViewBox
@@ -170,6 +171,7 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     expand_uses(copy)
     resolve_keywords(copy)
     resolve_servers(copy)
+    flatten_viewports(copy)
     resolve_links(copy)
     ellipses_as_paths(copy)
     unfilled_lines(copy)
