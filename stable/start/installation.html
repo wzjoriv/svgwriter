@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Installation - svgwriter 2.3.0</title>
+        <title>Installation - svgwriter 2.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.3.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.3.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.4.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.3.0</span>
+  <span class="sidebar-versions-label">2.4.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -209,6 +209,7 @@
 <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos.html">Demos</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul>
@@ -216,6 +217,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/text.html">Text</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/fonts.html">Making fonts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/colors-and-images.html">Colors and images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/effects.html">Filters and effects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/presets.html">Presets</a></li>
@@ -244,6 +246,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/layout.html">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/ops.html">Geometry operations and rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/fonts.html">Fonts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/attributes.html">Attribute values and styles</a></li>
@@ -308,17 +311,17 @@
 </div>
 <p>svgwriter needs Python 3.10 or newer. It installs <a class="reference external" href="https://kyamagu.github.io/skia-python/">skia-python</a>
 (geometry, text outlines and rendering), numpy (pixels, points and colors as arrays), uharfbuzz (text
-shaping) and tomlkit (theme files). Nothing else is needed at runtime.</p>
+shaping), tomlkit (theme files), click (the command line) and
+<a class="reference external" href="https://wzjoriv.github.io/python-lcms2/">python-lcms2</a> (ICC colour profiles through LittleCMS).
+Nothing else is needed at runtime.</p>
 <p>Optional extras:</p>
 <ul>
-<li><p><strong>color</strong> for ICC colour profiles: <code class="docutils literal notranslate"><span class="pre">&lt;color-profile&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">icc-color(...)</span></code> paints and images with
-embedded or assigned profiles are converted to sRGB through LittleCMS
-(<a class="reference external" href="https://wzjoriv.github.io/python-lcms2/">python-lcms2</a>):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"pysvgwriter[color]"</span>
+<li><p><strong>cli</strong> for arrow-key prompts in <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">new</span></code> (preset, script or notebook, theme, page size) through
+<a class="reference external" href="https://questionary.readthedocs.io/">questionary</a>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"pysvgwriter[cli]"</span>
 </pre></div>
 </div>
-<p>Without it, <code class="docutils literal notranslate"><span class="pre">icc-color(...)</span></code> draws its sRGB fallback colour and images are drawn as their decoder
-delivers them; a one-time warning says profiles were skipped.</p>
+<p>Without it, <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">new</span></code> asks for the preset with a numbered menu.</p>
 </li>
 <li><p><strong>widget</strong> for <a class="reference internal" href="../guides/widgets.html"><span class="doc">notebook panels</span></a> (<code class="docutils literal notranslate"><span class="pre">svg.interact</span></code>) through ipywidgets:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"pysvgwriter[widget]"</span>
@@ -384,7 +387,7 @@ delivers them; a one-time warning says profiles were skipped.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=d4a5b5c4"></script>
+</div><script src="../_static/documentation_options.js?v=31bb8259"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

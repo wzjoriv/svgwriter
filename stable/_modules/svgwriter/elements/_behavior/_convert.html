@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.elements._behavior._convert - svgwriter 2.3.0</title>
+        <title>svgwriter.elements._behavior._convert - svgwriter 2.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">svgwriter 2.3.0</div></a>
+      <a href="../../../../index.html"><div class="brand">svgwriter 2.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.3.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.4.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.3.0</span>
+  <span class="sidebar-versions-label">2.4.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
@@ -208,6 +208,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../start/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../start/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../demos.html">Demos</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul>
@@ -215,6 +216,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/text.html">Text</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/fonts.html">Making fonts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/colors-and-images.html">Colors and images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/effects.html">Filters and effects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/presets.html">Presets</a></li>
@@ -243,6 +245,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/layout.html">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/ops.html">Geometry operations and rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/fonts.html">Fonts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/attributes.html">Attribute values and styles</a></li>
@@ -297,7 +300,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVG_NS</span><span class="p">,</span> <span class="n">XLINK_NS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">references_of</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_STROKE_WIDTH</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._transformable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transformable</span>
 
@@ -679,8 +682,7 @@
     <span class="k">while</span> <span class="n">pending</span><span class="p">:</span>
         <span class="n">node</span> <span class="o">=</span> <span class="n">pending</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">iter</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                <span class="n">target</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"element"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">references_of</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Element</span><span class="p">)</span> <span class="ow">and</span> <span class="n">target</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">id</span><span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
                     <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">target</span><span class="p">))</span>
                     <span class="n">found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
@@ -718,7 +720,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=d4a5b5c4"></script>
+</div><script src="../../../../_static/documentation_options.js?v=31bb8259"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

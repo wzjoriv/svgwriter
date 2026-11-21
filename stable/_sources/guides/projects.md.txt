@@ -12,12 +12,25 @@ svgwriter build        # writes every output listed in svgwriter.toml into outpu
 svgwriter presets      # the presets, one line each
 ```
 
-Without `--preset`, `svgwriter new` shows a numbered menu of the presets. The same steps from Python:
+Without `--preset`, `svgwriter new` asks in a terminal. With the optional `cli` extra
+(`pip install "pysvgwriter[cli]"`) it uses arrow-key prompts for the preset (each with its description),
+script or notebook, theme, page size (common names or a custom width and height) and the project name when
+`NAME` is left out; without it, a numbered menu picks the preset. Flags skip their prompts, and input that
+is not a terminal never prompts, so scripts stay non-interactive:
+
+```console
+svgwriter new my-poster --preset poster --theme dracula --size a3
+svgwriter new my-deck --preset slides --notebook --size 1920,1080
+```
+
+`--theme` names a built-in theme that `theme.toml` extends, and `--size` a size name or `WIDTH,HEIGHT`
+(numbers or lengths such as `50cm,70cm`) written to `svgwriter.toml`; both default to the preset's own.
+The same steps from Python:
 
 ```python
 import svgwriter as svg
 
-project = svg.Project.new("my-poster", preset="poster")     # svgwriter new my-poster --preset poster
+project = svg.Project.new("my-poster", preset="poster", theme="dracula", size="a3")   # svgwriter new my-poster --preset poster --theme dracula --size a3
 print([path.name for path in project.build()])             # svgwriter build
 print([path.name for path in project.build(["png"])])      # svgwriter build --format png
 ```

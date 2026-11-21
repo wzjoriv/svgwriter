@@ -16,6 +16,7 @@ $ python scripts/dev.py stub generate            # .pyi stubs (git-ignored; the 
 $ python scripts/dev.py svgwriter conformance    # W3C SVG 1.1 suite (after: svgwriter fetch-suite)
 $ python scripts/dev.py svgwriter bench          # timing of the hot paths
 $ python scripts/dev.py svgwriter formats        # every export and round trip side by side, scored (build/formats)
+$ python scripts/dev.py svgwriter signatures write  # regenerate the element constructors (CI runs: signatures check)
 $ python scripts/dev.py notebooks build          # example notebooks from their cell scripts
 ```
 
@@ -26,4 +27,8 @@ $ python scripts/dev.py notebooks build          # example notebooks from their 
 - NumPy-style docstrings with type hints, and runnable examples for public functions.
 - Named constants live in `_constants.py` modules.
 - Each change has tests next to the code it touches (`tests/` mirrors the package).
+- Element classes get a generated `__init__` that lists every attribute they take, between
+  `# region generated` and `# endregion` markers. Change an attribute group's `__init__` (or
+  `PresentationKeywords`), then run `svgwriter signatures write`; a class's own construction code goes
+  after the `# endregion` line inside its `__init__`.
 - One branch per change; pull requests describe the user-visible change and how it was checked.

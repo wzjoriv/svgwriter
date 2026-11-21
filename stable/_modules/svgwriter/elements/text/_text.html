@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.elements.text._text - svgwriter 2.3.0</title>
+        <title>svgwriter.elements.text._text - svgwriter 2.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">svgwriter 2.3.0</div></a>
+      <a href="../../../../index.html"><div class="brand">svgwriter 2.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.3.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.4.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.3.0</span>
+  <span class="sidebar-versions-label">2.4.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
@@ -208,6 +208,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../start/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../start/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../demos.html">Demos</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul>
@@ -215,6 +216,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/text.html">Text</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/fonts.html">Making fonts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/colors-and-images.html">Colors and images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/effects.html">Filters and effects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/presets.html">Presets</a></li>
@@ -243,6 +245,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/layout.html">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/ops.html">Geometry operations and rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/fonts.html">Fonts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/attributes.html">Attribute values and styles</a></li>
@@ -288,39 +291,40 @@
         <article role="main" id="furo-main-content">
           <h1>Source code for svgwriter.elements.text._text</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">Text content elements.</span>
+<span class="sd">``text`` and the decoration flags.</span>
 <span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">enum</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_PRECISION</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">LengthLike</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._behavior</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ConditionalAttributes</span><span class="p">,</span>
-    <span class="n">CoreAttributes</span><span class="p">,</span>
     <span class="n">GraphicsElement</span><span class="p">,</span>
     <span class="n">PathOperand</span><span class="p">,</span>
-    <span class="n">PresentationAttributes</span><span class="p">,</span>
-    <span class="n">XLinkAttributes</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Category</span><span class="p">,</span> <span class="n">Child</span><span class="p">,</span> <span class="n">Container</span><span class="p">,</span> <span class="n">ContentModel</span><span class="p">,</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Category</span><span class="p">,</span> <span class="n">Child</span><span class="p">,</span> <span class="n">ContentModel</span><span class="p">,</span> <span class="n">Element</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._textaccess</span><span class="w"> </span><span class="kn">import</span> <span class="n">TextAccess</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._textbase</span><span class="w"> </span><span class="kn">import</span> <span class="n">_TextLength</span><span class="p">,</span> <span class="n">_TextPositioning</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">"AltGlyph"</span><span class="p">,</span>
-    <span class="s2">"AltGlyphDef"</span><span class="p">,</span>
-    <span class="s2">"AltGlyphItem"</span><span class="p">,</span>
-    <span class="s2">"GlyphRef"</span><span class="p">,</span>
-    <span class="s2">"TRef"</span><span class="p">,</span>
-    <span class="s2">"TSpan"</span><span class="p">,</span>
-    <span class="s2">"Text"</span><span class="p">,</span>
-    <span class="s2">"TextDecoration"</span><span class="p">,</span>
-    <span class="s2">"TextPath"</span><span class="p">,</span>
-<span class="p">]</span>
+<span class="c1"># region generated by `python scripts/dev.py svgwriter signatures write`: names used by the signatures</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">FillRule</span><span class="p">,</span> <span class="n">LengthAdjust</span><span class="p">,</span> <span class="n">LineCap</span><span class="p">,</span> <span class="n">LineJoin</span><span class="p">,</span> <span class="n">Opacity</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">...attributes.style</span><span class="w"> </span><span class="kn">import</span> <span class="n">StyleLike</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">...color.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">...color.paint</span><span class="w"> </span><span class="kn">import</span> <span class="n">PaintValue</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">...ops.typeface</span><span class="w"> </span><span class="kn">import</span> <span class="n">Typeface</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">...transform.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransformLike</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.._behavior</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pivot</span><span class="p">,</span> <span class="n">XmlSpace</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AttrValue</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">._textbase</span><span class="w"> </span><span class="kn">import</span> <span class="n">Coordinates</span>
+<span class="c1"># endregion</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Text"</span><span class="p">,</span> <span class="s2">"TextDecoration"</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="TextDecoration">
@@ -426,256 +430,140 @@
     <span class="n">geometry_attributes</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
         <span class="p">{</span><span class="s2">"x"</span><span class="p">,</span> <span class="s2">"y"</span><span class="p">,</span> <span class="s2">"dx"</span><span class="p">,</span> <span class="s2">"dy"</span><span class="p">,</span> <span class="s2">"rotate"</span><span class="p">,</span> <span class="s2">"textLength"</span><span class="p">,</span> <span class="s2">"lengthAdjust"</span><span class="p">,</span> <span class="s2">"font-family"</span><span class="p">,</span> <span class="s2">"font-size"</span><span class="p">,</span>
          <span class="s2">"font-weight"</span><span class="p">,</span> <span class="s2">"font-style"</span><span class="p">,</span> <span class="s2">"text-anchor"</span><span class="p">}</span>
-    <span class="p">)</span></div>
+    <span class="p">)</span>
 
-
-
-<div class="viewcode-block" id="TSpan">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.text.TSpan">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">TSpan</span><span class="p">(</span><span class="n">PresentationAttributes</span><span class="p">,</span> <span class="n">ConditionalAttributes</span><span class="p">,</span> <span class="n">CoreAttributes</span><span class="p">,</span> <span class="n">_TextLength</span><span class="p">,</span> <span class="n">_TextPositioning</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"tspan"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">Category</span><span class="o">.</span><span class="n">TEXT_CONTENT</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">ContentModel</span><span class="o">.</span><span class="n">MIXED</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;tspan&gt;``: a sub-run of text with its own position or style.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    *args : str or Element</span>
-<span class="sd">        Character data and nested spans.</span>
-<span class="sd">    x, y, dx, dy : length or sequence of length, optional</span>
-<span class="sd">        Absolute and relative positions.</span>
-<span class="sd">    rotate : float or sequence of float, optional</span>
-<span class="sd">        Per-character rotation in degrees.</span>
-<span class="sd">    text_length : length, optional</span>
-<span class="sd">        Target advance width of the run.</span>
-<span class="sd">    length_adjust : {"spacing", "spacingAndGlyphs"}, optional</span>
-<span class="sd">        How ``text_length`` is met.</span>
-<span class="sd">    decoration : TextDecoration, optional</span>
-<span class="sd">        Written as ``text-decoration``.</span>
-<span class="sd">    **kwargs</span>
-<span class="sd">        Presentation, core and other SVG attributes in Python spelling.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    Text.span : Append a span to a text.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; str(TSpan("a", dx=3, fill="red"))</span>
-<span class="sd">    '&lt;tspan dx="3" fill="red"&gt;a&lt;/tspan&gt;'</span>
-<span class="sd">    """</span></div>
-
-
-
-<div class="viewcode-block" id="TRef">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.text.TRef">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">TRef</span><span class="p">(</span><span class="n">XLinkAttributes</span><span class="p">,</span> <span class="n">PresentationAttributes</span><span class="p">,</span> <span class="n">ConditionalAttributes</span><span class="p">,</span> <span class="n">CoreAttributes</span><span class="p">,</span> <span class="n">_TextPositioning</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"tref"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">Category</span><span class="o">.</span><span class="n">TEXT_CONTENT</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;tref&gt;``: the character data of a referenced element.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    href : str or Element, optional</span>
-<span class="sd">        The referenced element, or its IRI.</span>
-<span class="sd">    x, y, dx, dy : length or sequence of length, optional</span>
-<span class="sd">        Absolute and relative positions.</span>
-<span class="sd">    rotate : float or sequence of float, optional</span>
-<span class="sd">        Per-character rotation in degrees.</span>
-<span class="sd">    **kwargs</span>
-<span class="sd">        Presentation, core and other SVG attributes in Python spelling.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    TSpan : A run with its own character data.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; TRef("#label", x=1).get("x")</span>
-<span class="sd">    1</span>
-<span class="sd">    """</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">href</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">href</span><span class="o">=</span><span class="n">href</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="TextPath">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.text.TextPath">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">TextPath</span><span class="p">(</span><span class="n">XLinkAttributes</span><span class="p">,</span> <span class="n">PresentationAttributes</span><span class="p">,</span> <span class="n">ConditionalAttributes</span><span class="p">,</span> <span class="n">CoreAttributes</span><span class="p">,</span> <span class="n">_TextLength</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"textPath"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">Category</span><span class="o">.</span><span class="n">TEXT_CONTENT</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">ContentModel</span><span class="o">.</span><span class="n">MIXED</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;textPath&gt;``: text laid out along a path.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    *content : str or Element</span>
-<span class="sd">        Character data and spans.</span>
-<span class="sd">    href : str or Element, optional</span>
-<span class="sd">        The path to follow, or its IRI.</span>
-<span class="sd">    start_offset : length, optional</span>
-<span class="sd">        Distance along the path where the text starts.</span>
-<span class="sd">    method : {"align", "stretch"}, optional</span>
-<span class="sd">        How glyphs are fitted to the path.</span>
-<span class="sd">    spacing : {"auto", "exact"}, optional</span>
-<span class="sd">        How glyph spacing is computed.</span>
-<span class="sd">    text_length : length, optional</span>
-<span class="sd">        Target advance width of the text.</span>
-<span class="sd">    **kwargs</span>
-<span class="sd">        Presentation, core and other SVG attributes in Python spelling.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    Text : Text laid out on a straight baseline.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; TextPath("abc", href="#p", start_offset="50%").get("startOffset")</span>
-<span class="sd">    '50%'</span>
-<span class="sd">    """</span>
-
+    <span class="c1"># region generated by `python scripts/dev.py svgwriter signatures write`</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">content</span><span class="p">:</span> <span class="n">Child</span><span class="p">,</span>
-        <span class="n">href</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">start_offset</span><span class="p">:</span> <span class="n">LengthLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">spacing</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Child</span><span class="p">,</span>
+        <span class="n">text_length</span><span class="p">:</span> <span class="n">LengthLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">length_adjust</span><span class="p">:</span> <span class="n">LengthAdjust</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">Coordinates</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">:</span> <span class="n">Coordinates</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dx</span><span class="p">:</span> <span class="n">Coordinates</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dy</span><span class="p">:</span> <span class="n">Coordinates</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rotate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">decoration</span><span class="p">:</span> <span class="n">TextDecoration</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">t</span><span class="p">:</span> <span class="n">TransformLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">transform</span><span class="p">:</span> <span class="n">TransformLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">anchor</span><span class="p">:</span> <span class="n">Pivot</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fill</span><span class="p">:</span> <span class="n">PaintValue</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fill_opacity</span><span class="p">:</span> <span class="n">Opacity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fill_rule</span><span class="p">:</span> <span class="n">FillRule</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stroke</span><span class="p">:</span> <span class="n">PaintValue</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stroke_width</span><span class="p">:</span> <span class="n">LengthLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stroke_opacity</span><span class="p">:</span> <span class="n">Opacity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stroke_linecap</span><span class="p">:</span> <span class="n">LineCap</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stroke_linejoin</span><span class="p">:</span> <span class="n">LineJoin</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stroke_miterlimit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stroke_dasharray</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stroke_dashoffset</span><span class="p">:</span> <span class="n">LengthLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">opacity</span><span class="p">:</span> <span class="n">Opacity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">display</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">visibility</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">clip_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mask</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="nb">filter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">font_family</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">font_size</span><span class="p">:</span> <span class="n">LengthLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">font_weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">text_anchor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">alignment_baseline</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">baseline_shift</span><span class="p">:</span> <span class="n">LengthLike</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">clip</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">clip_rule</span><span class="p">:</span> <span class="n">FillRule</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">color_interpolation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">color_interpolation_filters</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">color_profile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">color_rendering</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">direction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dominant_baseline</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">enable_background</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">flood_color</span><span class="p">:</span> <span class="n">Color</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">flood_opacity</span><span class="p">:</span> <span class="n">Opacity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">font</span><span class="p">:</span> <span class="n">Typeface</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">font_size_adjust</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">font_stretch</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">font_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">font_variant</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">glyph_orientation_horizontal</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">glyph_orientation_vertical</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">image_rendering</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">kerning</span><span class="p">:</span> <span class="n">LengthLike</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">letter_spacing</span><span class="p">:</span> <span class="n">LengthLike</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">lighting_color</span><span class="p">:</span> <span class="n">Color</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">marker</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">marker_end</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">marker_mid</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">marker_start</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">overflow</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pointer_events</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">shape_rendering</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stop_color</span><span class="p">:</span> <span class="n">Color</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stop_opacity</span><span class="p">:</span> <span class="n">Opacity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">text_decoration</span><span class="p">:</span> <span class="n">TextDecoration</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">text_rendering</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">unicode_bidi</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">word_spacing</span><span class="p">:</span> <span class="n">LengthLike</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">writing_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">class_</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">style</span><span class="p">:</span> <span class="n">StyleLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">required_features</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">required_extensions</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">system_language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">external_resources_required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_base</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_space</span><span class="p">:</span> <span class="n">XmlSpace</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">attrs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AttrValue</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">content</span><span class="p">,</span> <span class="n">href</span><span class="o">=</span><span class="n">href</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">start_offset</span><span class="o">=</span><span class="n">start_offset</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="n">spacing</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">"""Create a ``&lt;text&gt;`` element.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *args, text_length, length_adjust, x, y, dx, dy, rotate, decoration</span>
+<span class="sd">            See the class docstring.</span>
+<span class="sd">        t, transform, anchor, fill, fill_opacity, fill_rule, stroke, stroke_width, stroke_opacity, stroke_linecap, stroke_linejoin, stroke_miterlimit, stroke_dasharray, stroke_dashoffset, opacity, display, visibility, color, clip_path, mask, filter, font_family, font_size, font_weight, text_anchor, alignment_baseline, baseline_shift, clip, clip_rule, color_interpolation, color_interpolation_filters, color_profile, color_rendering, direction, dominant_baseline, enable_background, flood_color, flood_opacity, font, font_size_adjust, font_stretch, font_style, font_variant, glyph_orientation_horizontal, glyph_orientation_vertical, image_rendering, kerning, letter_spacing, lighting_color, marker, marker_end, marker_mid, marker_start, overflow, pointer_events, shape_rendering, stop_color, stop_opacity, text_decoration, text_rendering, unicode_bidi, word_spacing, writing_mode, class_, style, required_features, required_extensions, system_language, external_resources_required, xml_base, xml_lang, xml_space, id, attrs</span>
+<span class="sd">            The attribute groups of :class:`~svgwriter.Transformable`, :class:`~svgwriter.PresentationAttributes`, :class:`~svgwriter.StyleAttributes`, :class:`~svgwriter.ConditionalAttributes`, :class:`~svgwriter.ExternalResourcesAttribute`, :class:`~svgwriter.CoreAttributes`, :class:`~svgwriter.Element`. Defaults to None (unset).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Any other SVG attribute in Python spelling, including namespaced and open ones</span>
+<span class="sd">            (``inkscape_label``, ``data_*``).</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">text_length</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"text_length"</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_length</span>
+        <span class="k">if</span> <span class="n">length_adjust</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"length_adjust"</span><span class="p">]</span> <span class="o">=</span> <span class="n">length_adjust</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"x"</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"y"</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="k">if</span> <span class="n">dx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"dx"</span><span class="p">]</span> <span class="o">=</span> <span class="n">dx</span>
+        <span class="k">if</span> <span class="n">dy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"dy"</span><span class="p">]</span> <span class="o">=</span> <span class="n">dy</span>
+        <span class="k">if</span> <span class="n">rotate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"rotate"</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotate</span>
+        <span class="k">if</span> <span class="n">decoration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"decoration"</span><span class="p">]</span> <span class="o">=</span> <span class="n">decoration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forward_common</span><span class="p">(</span>
+            <span class="n">kwargs</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">xml_base</span><span class="p">,</span> <span class="n">xml_lang</span><span class="p">,</span> <span class="n">xml_space</span><span class="p">,</span> <span class="n">required_features</span><span class="p">,</span> <span class="n">required_extensions</span><span class="p">,</span>
+            <span class="n">system_language</span><span class="p">,</span> <span class="n">external_resources_required</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">class_</span><span class="p">,</span> <span class="n">style</span><span class="p">,</span> <span class="n">fill</span><span class="p">,</span>
+            <span class="n">fill_opacity</span><span class="p">,</span> <span class="n">fill_rule</span><span class="p">,</span> <span class="n">stroke</span><span class="p">,</span> <span class="n">stroke_width</span><span class="p">,</span> <span class="n">stroke_opacity</span><span class="p">,</span> <span class="n">stroke_linecap</span><span class="p">,</span> <span class="n">stroke_linejoin</span><span class="p">,</span>
+            <span class="n">stroke_miterlimit</span><span class="p">,</span> <span class="n">stroke_dasharray</span><span class="p">,</span> <span class="n">stroke_dashoffset</span><span class="p">,</span> <span class="n">opacity</span><span class="p">,</span> <span class="n">display</span><span class="p">,</span> <span class="n">visibility</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">clip_path</span><span class="p">,</span>
+            <span class="n">mask</span><span class="p">,</span> <span class="nb">filter</span><span class="p">,</span> <span class="n">font_family</span><span class="p">,</span> <span class="n">font_size</span><span class="p">,</span> <span class="n">font_weight</span><span class="p">,</span> <span class="n">text_anchor</span><span class="p">,</span> <span class="n">alignment_baseline</span><span class="p">,</span> <span class="n">baseline_shift</span><span class="p">,</span>
+            <span class="n">clip</span><span class="p">,</span> <span class="n">clip_rule</span><span class="p">,</span> <span class="n">color_interpolation</span><span class="p">,</span> <span class="n">color_interpolation_filters</span><span class="p">,</span> <span class="n">color_profile</span><span class="p">,</span> <span class="n">color_rendering</span><span class="p">,</span>
+            <span class="n">direction</span><span class="p">,</span> <span class="n">dominant_baseline</span><span class="p">,</span> <span class="n">enable_background</span><span class="p">,</span> <span class="n">flood_color</span><span class="p">,</span> <span class="n">flood_opacity</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span> <span class="n">font_size_adjust</span><span class="p">,</span>
+            <span class="n">font_stretch</span><span class="p">,</span> <span class="n">font_style</span><span class="p">,</span> <span class="n">font_variant</span><span class="p">,</span> <span class="n">glyph_orientation_horizontal</span><span class="p">,</span> <span class="n">glyph_orientation_vertical</span><span class="p">,</span>
+            <span class="n">image_rendering</span><span class="p">,</span> <span class="n">kerning</span><span class="p">,</span> <span class="n">letter_spacing</span><span class="p">,</span> <span class="n">lighting_color</span><span class="p">,</span> <span class="n">marker</span><span class="p">,</span> <span class="n">marker_end</span><span class="p">,</span> <span class="n">marker_mid</span><span class="p">,</span> <span class="n">marker_start</span><span class="p">,</span>
+            <span class="n">overflow</span><span class="p">,</span> <span class="n">pointer_events</span><span class="p">,</span> <span class="n">shape_rendering</span><span class="p">,</span> <span class="n">stop_color</span><span class="p">,</span> <span class="n">stop_opacity</span><span class="p">,</span> <span class="n">text_decoration</span><span class="p">,</span> <span class="n">text_rendering</span><span class="p">,</span>
+            <span class="n">unicode_bidi</span><span class="p">,</span> <span class="n">word_spacing</span><span class="p">,</span> <span class="n">writing_mode</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">anchor</span>
+        <span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="AltGlyph">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.text.AltGlyph">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">AltGlyph</span><span class="p">(</span><span class="n">XLinkAttributes</span><span class="p">,</span> <span class="n">PresentationAttributes</span><span class="p">,</span> <span class="n">ConditionalAttributes</span><span class="p">,</span> <span class="n">CoreAttributes</span><span class="p">,</span> <span class="n">_TextPositioning</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"altGlyph"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">Category</span><span class="o">.</span><span class="n">TEXT_CONTENT</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">ContentModel</span><span class="o">.</span><span class="n">TEXT</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;altGlyph&gt;``: substitute glyphs for its character data.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    text : str, optional</span>
-<span class="sd">        The character data to substitute. Defaults to the empty string.</span>
-<span class="sd">    href : str or Element, optional</span>
-<span class="sd">        An ``altGlyphDef`` or a glyph, or its IRI.</span>
-<span class="sd">    glyph_ref : str, optional</span>
-<span class="sd">        Identifier of the glyph in the referenced font.</span>
-<span class="sd">    format : str, optional</span>
-<span class="sd">        Glyph format of the font.</span>
-<span class="sd">    x, y, dx, dy : length or sequence of length, optional</span>
-<span class="sd">        Absolute and relative positions.</span>
-<span class="sd">    **kwargs</span>
-<span class="sd">        Presentation, core and other SVG attributes in Python spelling.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    AltGlyphDef : The definition ``href`` points at.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; str(AltGlyph("a", glyph_ref="g1"))</span>
-<span class="sd">    '&lt;altGlyph glyphRef="g1"&gt;a&lt;/altGlyph&gt;'</span>
-<span class="sd">    """</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">href</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">glyph_ref</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="p">([</span><span class="n">text</span><span class="p">]</span> <span class="k">if</span> <span class="n">text</span> <span class="k">else</span> <span class="p">[]),</span> <span class="n">href</span><span class="o">=</span><span class="n">href</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">glyph_ref</span><span class="o">=</span><span class="n">glyph_ref</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="GlyphRef">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.text.GlyphRef">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">GlyphRef</span><span class="p">(</span><span class="n">XLinkAttributes</span><span class="p">,</span> <span class="n">PresentationAttributes</span><span class="p">,</span> <span class="n">CoreAttributes</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"glyphRef"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">Category</span><span class="o">.</span><span class="n">TEXT_CONTENT</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">ContentModel</span><span class="o">.</span><span class="n">EMPTY</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;glyphRef&gt;``: one glyph of an ``altGlyphDef``.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    href : str or Element, optional</span>
-<span class="sd">        The glyph, or its IRI.</span>
-<span class="sd">    glyph_ref : str, optional</span>
-<span class="sd">        Identifier of the glyph in the font.</span>
-<span class="sd">    format : str, optional</span>
-<span class="sd">        Glyph format of the font.</span>
-<span class="sd">    x, y, dx, dy : float, optional</span>
-<span class="sd">        Position and offset of the glyph.</span>
-<span class="sd">    **kwargs</span>
-<span class="sd">        Presentation, core and other SVG attributes in Python spelling.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    AltGlyphItem : Groups glyph references into one candidate set.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; GlyphRef("#g", x=1).get("x")</span>
-<span class="sd">    1</span>
-<span class="sd">    """</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">href</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">glyph_ref</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">y</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">dy</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">href</span><span class="o">=</span><span class="n">href</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">glyph_ref</span><span class="o">=</span><span class="n">glyph_ref</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="n">dy</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="AltGlyphItem">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.text.AltGlyphItem">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">AltGlyphItem</span><span class="p">(</span><span class="n">CoreAttributes</span><span class="p">,</span> <span class="n">Container</span><span class="p">[</span><span class="n">GlyphRef</span><span class="p">],</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"altGlyphItem"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">Category</span><span class="o">.</span><span class="n">TEXT_CONTENT</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;altGlyphItem&gt;``: one candidate set of glyph references.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    *children : GlyphRef</span>
-<span class="sd">        The glyph references of the candidate.</span>
-<span class="sd">    **kwargs</span>
-<span class="sd">        Presentation, core and other SVG attributes in Python spelling.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    AltGlyphDef : The container of candidates.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; len(AltGlyphItem(GlyphRef("#a"), GlyphRef("#b")))</span>
-<span class="sd">    2</span>
-<span class="sd">    """</span></div>
-
-
-
-<div class="viewcode-block" id="AltGlyphDef">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.text.AltGlyphDef">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">AltGlyphDef</span><span class="p">(</span><span class="n">CoreAttributes</span><span class="p">,</span> <span class="n">Container</span><span class="p">[</span><span class="n">Element</span><span class="p">],</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"altGlyphDef"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">Category</span><span class="o">.</span><span class="n">TEXT_CONTENT</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;altGlyphDef&gt;``: glyph substitutions for ``altGlyph``.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    *children : Element</span>
-<span class="sd">        Either one sequence of :class:`GlyphRef` or several :class:`AltGlyphItem`.</span>
-<span class="sd">    **kwargs</span>
-<span class="sd">        Presentation, core and other SVG attributes in Python spelling.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    AltGlyph : The element that uses the definition.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; len(AltGlyphDef(AltGlyphItem(GlyphRef("#a"))))</span>
-<span class="sd">    1</span>
-<span class="sd">    """</span></div>
-
+    <span class="c1"># endregion</span>
 </pre></div>
         </article>
       </div>
@@ -708,7 +596,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=d4a5b5c4"></script>
+</div><script src="../../../../_static/documentation_options.js?v=31bb8259"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

@@ -22,6 +22,7 @@ doc.save("badge.png", scale=3)
 
 start/installation
 start/quickstart
+demos
 ```
 
 ```{toctree}
@@ -32,6 +33,7 @@ guides/geometry
 guides/layout
 guides/paths
 guides/text
+guides/fonts
 guides/colors-and-images
 guides/effects
 guides/presets

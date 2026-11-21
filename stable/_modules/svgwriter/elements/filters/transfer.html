@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.elements.filters.transfer - svgwriter 2.3.0</title>
+        <title>svgwriter.elements.filters.transfer - svgwriter 2.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">svgwriter 2.3.0</div></a>
+      <a href="../../../../index.html"><div class="brand">svgwriter 2.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.3.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.4.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.3.0</span>
+  <span class="sidebar-versions-label">2.4.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
@@ -208,6 +208,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../start/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../start/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../demos.html">Demos</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul>
@@ -215,6 +216,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/text.html">Text</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/fonts.html">Making fonts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/colors-and-images.html">Colors and images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/effects.html">Filters and effects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/presets.html">Presets</a></li>
@@ -243,6 +245,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/layout.html">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/ops.html">Geometry operations and rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/fonts.html">Fonts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/attributes.html">Attribute values and styles</a></li>
@@ -288,7 +291,7 @@
         <article role="main" id="furo-main-content">
           <h1>Source code for svgwriter.elements.filters.transfer</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">``feComponentTransfer`` and its ``feFuncR/G/B/A`` children.</span>
+<span class="sd">Transfer functions: the shared ``feFunc*`` base and its types.</span>
 <span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
@@ -299,10 +302,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">Keyword</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Self</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._behavior</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoreAttributes</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Container</span><span class="p">,</span> <span class="n">ContentModel</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SingleInput</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContentModel</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"FeComponentTransfer"</span><span class="p">,</span> <span class="s2">"FeFunc"</span><span class="p">,</span> <span class="s2">"FeFuncA"</span><span class="p">,</span> <span class="s2">"FeFuncB"</span><span class="p">,</span> <span class="s2">"FeFuncG"</span><span class="p">,</span> <span class="s2">"FeFuncR"</span><span class="p">,</span> <span class="s2">"TransferType"</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"FeFunc"</span><span class="p">,</span> <span class="s2">"TransferType"</span><span class="p">]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_numbers</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
@@ -375,7 +377,7 @@
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assign</span><span class="p">(</span>
             <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">,</span>
             <span class="n">table_values</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">table_values</span><span class="p">)</span> <span class="k">if</span> <span class="n">table_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">slope</span><span class="o">=</span><span class="n">slope</span><span class="p">,</span>
@@ -512,113 +514,6 @@
         <span class="k">return</span> <span class="n">c</span></div>
 </div>
 
-
-
-<div class="viewcode-block" id="FeFuncR">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.filters.FeFuncR">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">FeFuncR</span><span class="p">(</span><span class="n">FeFunc</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"feFuncR"</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;feFuncR&gt;``: the transfer function of the red channel.</span>
-
-<span class="sd">    Takes the parameters of :class:`FeFunc`.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; str(svg.FeFuncR.table(0, 1))</span>
-<span class="sd">    '&lt;feFuncR type="table" tableValues="0 1"/&gt;'</span>
-<span class="sd">    """</span></div>
-
-
-
-<div class="viewcode-block" id="FeFuncG">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.filters.FeFuncG">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">FeFuncG</span><span class="p">(</span><span class="n">FeFunc</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"feFuncG"</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;feFuncG&gt;``: the transfer function of the green channel.</span>
-
-<span class="sd">    Takes the parameters of :class:`FeFunc`.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; svg.FeFuncG.tag</span>
-<span class="sd">    'feFuncG'</span>
-<span class="sd">    """</span></div>
-
-
-
-<div class="viewcode-block" id="FeFuncB">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.filters.FeFuncB">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">FeFuncB</span><span class="p">(</span><span class="n">FeFunc</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"feFuncB"</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;feFuncB&gt;``: the transfer function of the blue channel.</span>
-
-<span class="sd">    Takes the parameters of :class:`FeFunc`.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; svg.FeFuncB.tag</span>
-<span class="sd">    'feFuncB'</span>
-<span class="sd">    """</span></div>
-
-
-
-<div class="viewcode-block" id="FeFuncA">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.filters.FeFuncA">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">FeFuncA</span><span class="p">(</span><span class="n">FeFunc</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"feFuncA"</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;feFuncA&gt;``: the transfer function of the alpha channel.</span>
-
-<span class="sd">    Takes the parameters of :class:`FeFunc`.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; svg.FeFuncA.tag</span>
-<span class="sd">    'feFuncA'</span>
-<span class="sd">    """</span></div>
-
-
-
-<div class="viewcode-block" id="FeComponentTransfer">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.filters.FeComponentTransfer">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">FeComponentTransfer</span><span class="p">(</span><span class="n">SingleInput</span><span class="p">,</span> <span class="n">Container</span><span class="p">[</span><span class="n">FeFunc</span><span class="p">],</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"feComponentTransfer"</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;feComponentTransfer&gt;``: per-channel remapping.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    *functions : FeFunc</span>
-<span class="sd">        Channel functions to add as children.</span>
-<span class="sd">    red, green, blue, alpha : FeFunc, optional</span>
-<span class="sd">        Functions for one channel each; they are converted to the matching</span>
-<span class="sd">        ``feFuncR``/``G``/``B``/``A`` element. Default to None.</span>
-<span class="sd">    **kwargs</span>
-<span class="sd">        Sub-region (``x``, ``y``, ``width``, ``height``), ``result``, ``in_``</span>
-<span class="sd">        and other SVG attributes in Python spelling.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    FeColorMatrix : Mix channels with a matrix.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; str(svg.FeComponentTransfer(red=svg.FeFuncR.linear(2)))</span>
-<span class="sd">    '&lt;feComponentTransfer&gt;&lt;feFuncR type="linear" slope="2" intercept="0"/&gt;&lt;/feComponentTransfer&gt;'</span>
-<span class="sd">    """</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">functions</span><span class="p">:</span> <span class="n">FeFunc</span><span class="p">,</span>
-        <span class="n">red</span><span class="p">:</span> <span class="n">FeFunc</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">green</span><span class="p">:</span> <span class="n">FeFunc</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">blue</span><span class="p">:</span> <span class="n">FeFunc</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">alpha</span><span class="p">:</span> <span class="n">FeFunc</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">functions</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="p">((</span><span class="n">red</span><span class="p">,</span> <span class="n">FeFuncR</span><span class="p">),</span> <span class="p">(</span><span class="n">green</span><span class="p">,</span> <span class="n">FeFuncG</span><span class="p">),</span> <span class="p">(</span><span class="n">blue</span><span class="p">,</span> <span class="n">FeFuncB</span><span class="p">),</span> <span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">FeFuncA</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">func</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span> <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_attributes</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">attributes</span><span class="p">))</span></div>
-
 </pre></div>
         </article>
       </div>
@@ -651,7 +546,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=d4a5b5c4"></script>
+</div><script src="../../../../_static/documentation_options.js?v=31bb8259"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

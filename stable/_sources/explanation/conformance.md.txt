@@ -38,8 +38,8 @@ settled, the state the references show.
 | text | 28 | 54 |
 | types | 1 | 2 |
 
-ICC colour profiles (`<color-profile>`, `icc-color(...)`, profiled images) need the optional
-`color` extra; `color-prof-01-f` passes with it.
+ICC colour profiles (`<color-profile>`, `icc-color(...)`, profiled images) go through LittleCMS;
+`color-prof-01-f` passes.
 
 Many of the remaining misses differ by 1-5 % in text: the suite sets its labels in its own SVG font,
 which svgwriter draws with the nearest installed sans-serif face.

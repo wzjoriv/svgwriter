@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#"><link rel="search" title="Search" href="search.html">
         <link rel="prefetch" href="_static/logo.svg" as="image">
 
-    <link rel="shortcut icon" href="_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 --><title>Index - svgwriter 2.3.0</title>
+    <link rel="shortcut icon" href="_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 --><title>Index - svgwriter 2.4.0</title>
 <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">svgwriter 2.3.0</div></a>
+      <a href="index.html"><div class="brand">svgwriter 2.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,10 +191,10 @@
     <img class="sidebar-logo" src="_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.3.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.4.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.3.0</span>
+  <span class="sidebar-versions-label">2.4.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -207,6 +207,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="start/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="start/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul>
@@ -214,6 +215,7 @@
 <li class="toctree-l1"><a class="reference internal" href="guides/layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/text.html">Text</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/fonts.html">Making fonts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/colors-and-images.html">Colors and images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/effects.html">Filters and effects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/presets.html">Presets</a></li>
@@ -242,6 +244,7 @@
 <li class="toctree-l2"><a class="reference internal" href="reference/layout.html">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/ops.html">Geometry operations and rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/fonts.html">Fonts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/attributes.html">Attribute values and styles</a></li>
@@ -331,6 +334,8 @@
         <li><a href="reference/document.html#svgwriter.Document.add">add() (Document method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.animation.Additive">Additive (class in svgwriter.elements.animation)</a>
+</li>
+        <li><a href="reference/fonts.html#svgwriter.fonts.FontBuilder.advance">advance() (FontBuilder method)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.Align">Align (class in svgwriter.attributes)</a>
 </li>
@@ -740,6 +745,8 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.text.CharacterRange">CharacterRange (class in svgwriter.elements.text)</a>
 </li>
+        <li><a href="reference/fonts.html#svgwriter.fonts.FontBuilder.cheatsheet">cheatsheet() (FontBuilder method)</a>
+</li>
         <li><a href="reference/widgets.html#svgwriter.widgets.Checkbox.check">check() (Checkbox method)</a>
 
         <ul>
@@ -1023,6 +1030,8 @@
         <li><a href="reference/ops.html#svgwriter.ops.Face.css">css() (Face method)</a>
 
         <ul>
+          <li><a href="reference/fonts.html#svgwriter.fonts.FontBuilder.css">(FontBuilder method)</a>
+</li>
           <li><a href="reference/attributes.html#svgwriter.attributes.StyleSheet.css">(StyleSheet method)</a>
 </li>
           <li><a href="reference/theme.html#svgwriter.theme.Theme.css">(Theme method)</a>
@@ -1460,6 +1469,8 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.text.Font">Font (class in svgwriter.elements.text)</a>
 </li>
+        <li><a href="reference/fonts.html#svgwriter.fonts.FontBuilder">FontBuilder (class in svgwriter.fonts)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.elements.text.FontFace">FontFace (class in svgwriter.elements.text)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.text.FontFaceFormat">FontFaceFormat (class in svgwriter.elements.text)</a>
@@ -1652,6 +1663,8 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.text.Glyph">Glyph (class in svgwriter.elements.text)</a>
 </li>
+        <li><a href="reference/fonts.html#svgwriter.fonts.FontBuilder.glyph">glyph() (FontBuilder method)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.elements.text.GlyphRef">GlyphRef (class in svgwriter.elements.text)</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.filters.goo">goo() (in module svgwriter.filters)</a>
@@ -1762,6 +1775,10 @@
 </li>
         <li><a href="reference/presets.html#svgwriter.text_effects.ice">ice() (in module svgwriter.text_effects)</a>
 </li>
+        <li><a href="reference/fonts.html#svgwriter.fonts.FontBuilder.icon">icon() (FontBuilder method)</a>
+</li>
+        <li><a href="reference/fonts.html#svgwriter.fonts.FontBuilder.icons">icons (FontBuilder property)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.elements.Element.id">id (Element property)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.TransferType.IDENTITY">IDENTITY (TransferType attribute)</a>
@@ -1814,10 +1831,10 @@
 </li>
         <li><a href="reference/inkscape.html#svgwriter.inkscape.Star.inner">inner (Star property)</a>
 </li>
-        <li><a href="reference/presets.html#svgwriter.filters.inner_shadow">inner_shadow() (in module svgwriter.filters)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/presets.html#svgwriter.filters.inner_shadow">inner_shadow() (in module svgwriter.filters)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.elements.Element.insert">insert() (Element method)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.Typeface.installed">installed (Typeface property)</a>
@@ -1898,6 +1915,8 @@
   <h2>K</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/fonts.html#svgwriter.fonts.FontBuilder.kern">kern() (FontBuilder method)</a>
+</li>
         <li><a href="reference/attributes.html#svgwriter.attributes.Attr.key">key (Attr property)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.transform.MatrixOp.keyword">keyword (MatrixOp attribute)</a>
@@ -2215,6 +2234,8 @@
           <li><a href="reference/export.html#module-svgwriter.export">svgwriter.export</a>
 </li>
           <li><a href="reference/presets.html#module-svgwriter.filters">svgwriter.filters</a>
+</li>
+          <li><a href="reference/fonts.html#module-svgwriter.fonts">svgwriter.fonts</a>
 </li>
           <li><a href="reference/presets.html#module-svgwriter.gradients">svgwriter.gradients</a>
 </li>
@@ -2860,6 +2881,8 @@
         <ul>
           <li><a href="reference/elements.html#svgwriter.elements.Element.save">(Element method)</a>
 </li>
+          <li><a href="reference/fonts.html#svgwriter.fonts.FontBuilder.save">(FontBuilder method)</a>
+</li>
           <li><a href="reference/export.html#svgwriter.export.save">(in module svgwriter.export)</a>
 </li>
           <li><a href="reference/widgets.html#svgwriter.widgets.Interactive.save">(Interactive method)</a>
@@ -2870,6 +2893,8 @@
 </li>
         </ul></li>
         <li><a href="reference/document.html#svgwriter.Document.save_async">save_async() (Document method)</a>
+</li>
+        <li><a href="reference/fonts.html#svgwriter.fonts.FontBuilder.save_css">save_css() (FontBuilder method)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.transform.Scale">Scale (class in svgwriter.transform)</a>
 </li>
@@ -3277,6 +3302,13 @@
 </li>
         </ul></li>
         <li>
+    svgwriter.fonts
+
+        <ul>
+          <li><a href="reference/fonts.html#module-svgwriter.fonts">module</a>
+</li>
+        </ul></li>
+        <li>
     svgwriter.gradients
 
         <ul>
@@ -3668,6 +3700,8 @@
           <li><a href="reference/geometry.html#svgwriter.pathdata.PathData.to_absolute">(PathData method)</a>
 </li>
         </ul></li>
+        <li><a href="reference/fonts.html#svgwriter.fonts.FontBuilder.to_bytes">to_bytes() (FontBuilder method)</a>
+</li>
         <li><a href="reference/color.html#svgwriter.color.Color.to_css">to_css() (Color method)</a>
 </li>
         <li><a href="reference/theme.html#svgwriter.theme.Fonts.to_dict">to_dict() (Fonts method)</a>
@@ -3789,6 +3823,8 @@
         <li><a href="reference/ops.html#svgwriter.ops.Typeface">Typeface (class in svgwriter.ops)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.Face.typeface">typeface (Face attribute)</a>
+</li>
+        <li><a href="reference/fonts.html#svgwriter.fonts.FontBuilder.typeface">typeface() (FontBuilder method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.Motion.typewriter">typewriter() (Motion method)</a>
 </li>
@@ -4210,7 +4246,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=d4a5b5c4"></script>
+</div><script src="_static/documentation_options.js?v=31bb8259"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

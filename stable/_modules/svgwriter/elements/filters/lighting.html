@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.elements.filters.lighting - svgwriter 2.3.0</title>
+        <title>svgwriter.elements.filters.lighting - svgwriter 2.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">svgwriter 2.3.0</div></a>
+      <a href="../../../../index.html"><div class="brand">svgwriter 2.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.3.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.4.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.3.0</span>
+  <span class="sidebar-versions-label">2.4.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
@@ -208,6 +208,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../start/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../start/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../demos.html">Demos</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul>
@@ -215,6 +216,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/text.html">Text</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/fonts.html">Making fonts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/colors-and-images.html">Colors and images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/effects.html">Filters and effects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/presets.html">Presets</a></li>
@@ -243,6 +245,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/layout.html">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/ops.html">Geometry operations and rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/fonts.html">Fonts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/attributes.html">Attribute values and styles</a></li>
@@ -288,29 +291,28 @@
         <article role="main" id="furo-main-content">
           <h1>Source code for svgwriter.elements.filters.lighting</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">Lighting primitives and light sources.</span>
+<span class="sd">Light sources for the lighting filter primitives.</span>
 <span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">...color.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._behavior</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoreAttributes</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Category</span><span class="p">,</span> <span class="n">Child</span><span class="p">,</span> <span class="n">ContentModel</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SingleInput</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Category</span><span class="p">,</span> <span class="n">ContentModel</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">"FeDiffuseLighting"</span><span class="p">,</span>
-    <span class="s2">"FeDistantLight"</span><span class="p">,</span>
-    <span class="s2">"FePointLight"</span><span class="p">,</span>
-    <span class="s2">"FeSpecularLighting"</span><span class="p">,</span>
-    <span class="s2">"FeSpotLight"</span><span class="p">,</span>
-    <span class="s2">"LightSource"</span><span class="p">,</span>
-    <span class="s2">"Vector3"</span><span class="p">,</span>
-<span class="p">]</span>
+<span class="c1"># region generated by `python scripts/dev.py svgwriter signatures write`: names used by the signatures</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.._behavior</span><span class="w"> </span><span class="kn">import</span> <span class="n">XmlSpace</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AttrValue</span>
+<span class="c1"># endregion</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"FeDistantLight"</span><span class="p">,</span> <span class="s2">"FePointLight"</span><span class="p">,</span> <span class="s2">"FeSpotLight"</span><span class="p">,</span> <span class="s2">"LightSource"</span><span class="p">,</span> <span class="s2">"Vector3"</span><span class="p">]</span>
+
 
 <span class="n">Vector3</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
 
@@ -405,9 +407,37 @@
 <span class="sd">    '&lt;feDistantLight azimuth="45" elevation="60"/&gt;'</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">elevation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># region generated by `python scripts/dev.py svgwriter signatures write`</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">azimuth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">elevation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">xml_base</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_space</span><span class="p">:</span> <span class="n">XmlSpace</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">attrs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AttrValue</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a ``&lt;feDistantLight&gt;`` element.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        azimuth, elevation</span>
+<span class="sd">            See the class docstring.</span>
+<span class="sd">        xml_base, xml_lang, xml_space, id, attrs</span>
+<span class="sd">            The attribute groups of :class:`~svgwriter.CoreAttributes`, :class:`~svgwriter.Element`. Defaults to None (unset).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Any other SVG attribute in Python spelling, including namespaced and open ones</span>
+<span class="sd">            (``inkscape_label``, ``data_*``).</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forward_common</span><span class="p">(</span>
+            <span class="n">kwargs</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">xml_base</span><span class="p">,</span> <span class="n">xml_lang</span><span class="p">,</span> <span class="n">xml_space</span>
+        <span class="p">)</span>
+        <span class="c1"># endregion</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">azimuth</span><span class="o">=</span><span class="n">azimuth</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="n">elevation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assign</span><span class="p">(</span><span class="n">azimuth</span><span class="o">=</span><span class="n">azimuth</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="n">elevation</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">directional</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -477,9 +507,38 @@
 <span class="sd">    '&lt;fePointLight x="1" y="2" z="3"/&gt;'</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># region generated by `python scripts/dev.py svgwriter signatures write`</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">z</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">xml_base</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_space</span><span class="p">:</span> <span class="n">XmlSpace</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">attrs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AttrValue</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a ``&lt;fePointLight&gt;`` element.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x, y, z</span>
+<span class="sd">            See the class docstring.</span>
+<span class="sd">        xml_base, xml_lang, xml_space, id, attrs</span>
+<span class="sd">            The attribute groups of :class:`~svgwriter.CoreAttributes`, :class:`~svgwriter.Element`. Defaults to None (unset).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Any other SVG attribute in Python spelling, including namespaced and open ones</span>
+<span class="sd">            (``inkscape_label``, ``data_*``).</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forward_common</span><span class="p">(</span>
+            <span class="n">kwargs</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">xml_base</span><span class="p">,</span> <span class="n">xml_lang</span><span class="p">,</span> <span class="n">xml_space</span>
+        <span class="p">)</span>
+        <span class="c1"># endregion</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assign</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">directional</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -549,6 +608,7 @@
 <span class="sd">    '&lt;feSpotLight x="1" y="2" z="3" pointsAtX="4" pointsAtY="0" pointsAtZ="0"/&gt;'</span>
 <span class="sd">    """</span>
 
+    <span class="c1"># region generated by `python scripts/dev.py svgwriter signatures write`</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -560,118 +620,37 @@
         <span class="n">points_at_z</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">specular_exponent</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">limiting_cone_angle</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_base</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xml_space</span><span class="p">:</span> <span class="n">XmlSpace</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">attrs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AttrValue</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a ``&lt;feSpotLight&gt;`` element.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x, y, z, points_at_x, points_at_y, points_at_z, specular_exponent, limiting_cone_angle</span>
+<span class="sd">            See the class docstring.</span>
+<span class="sd">        xml_base, xml_lang, xml_space, id, attrs</span>
+<span class="sd">            The attribute groups of :class:`~svgwriter.CoreAttributes`, :class:`~svgwriter.Element`. Defaults to None (unset).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Any other SVG attribute in Python spelling, including namespaced and open ones</span>
+<span class="sd">            (``inkscape_label``, ``data_*``).</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forward_common</span><span class="p">(</span>
+            <span class="n">kwargs</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">xml_base</span><span class="p">,</span> <span class="n">xml_lang</span><span class="p">,</span> <span class="n">xml_space</span>
+        <span class="p">)</span>
+        <span class="c1"># endregion</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assign</span><span class="p">(</span>
             <span class="n">points_at_x</span><span class="o">=</span><span class="n">points_at_x</span><span class="p">,</span>
             <span class="n">points_at_y</span><span class="o">=</span><span class="n">points_at_y</span><span class="p">,</span>
             <span class="n">points_at_z</span><span class="o">=</span><span class="n">points_at_z</span><span class="p">,</span>
             <span class="n">specular_exponent</span><span class="o">=</span><span class="n">specular_exponent</span><span class="p">,</span>
             <span class="n">limiting_cone_angle</span><span class="o">=</span><span class="n">limiting_cone_angle</span><span class="p">,</span>
         <span class="p">)</span></div>
-
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">_Lighting</span><span class="p">(</span><span class="n">SingleInput</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">light</span><span class="p">:</span> <span class="n">Child</span><span class="p">,</span>
-        <span class="n">surface_scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">kernel_unit_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">lighting_color</span><span class="p">:</span> <span class="n">Color</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">light</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">surface_scale</span><span class="o">=</span><span class="n">surface_scale</span><span class="p">,</span> <span class="n">kernel_unit_length</span><span class="o">=</span><span class="n">kernel_unit_length</span><span class="p">,</span> <span class="n">lighting_color</span><span class="o">=</span><span class="n">lighting_color</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">light</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LightSource</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""The light-source child, or None if there is none."""</span>
-        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">LightSource</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="FeDiffuseLighting">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.filters.FeDiffuseLighting">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">FeDiffuseLighting</span><span class="p">(</span><span class="n">_Lighting</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"feDiffuseLighting"</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;feDiffuseLighting&gt;``: Lambertian lighting of the alpha bump map.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    *light : LightSource</span>
-<span class="sd">        The light source child.</span>
-<span class="sd">    diffuse_constant : float, optional</span>
-<span class="sd">        Diffuse reflection constant. Defaults to None.</span>
-<span class="sd">    surface_scale : float, optional</span>
-<span class="sd">        Height of the surface for full alpha. Defaults to None.</span>
-<span class="sd">    kernel_unit_length : float or tuple of float, optional</span>
-<span class="sd">        Surface normal sampling distance. Defaults to None.</span>
-<span class="sd">    lighting_color : Color or str, optional</span>
-<span class="sd">        Color of the light. Defaults to None.</span>
-<span class="sd">    **kwargs</span>
-<span class="sd">        Sub-region (``x``, ``y``, ``width``, ``height``), ``result``, ``in_``</span>
-<span class="sd">        and other SVG attributes in Python spelling.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    FeSpecularLighting : Specular highlights.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; str(svg.FeDiffuseLighting(svg.FeDistantLight(45, 60), surface_scale=2))</span>
-<span class="sd">    '&lt;feDiffuseLighting surfaceScale="2"&gt;&lt;feDistantLight azimuth="45" elevation="60"/&gt;&lt;/feDiffuseLighting&gt;'</span>
-<span class="sd">    """</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">light</span><span class="p">:</span> <span class="n">Child</span><span class="p">,</span> <span class="n">diffuse_constant</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">light</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">diffuse_constant</span><span class="o">=</span><span class="n">diffuse_constant</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="FeSpecularLighting">
-<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.filters.FeSpecularLighting">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">FeSpecularLighting</span><span class="p">(</span><span class="n">_Lighting</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"feSpecularLighting"</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""``&lt;feSpecularLighting&gt;``: Phong specular highlights.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    *light : LightSource</span>
-<span class="sd">        The light source child.</span>
-<span class="sd">    specular_constant : float, optional</span>
-<span class="sd">        Specular reflection constant. Defaults to None.</span>
-<span class="sd">    specular_exponent : float, optional</span>
-<span class="sd">        Shininess exponent. Defaults to None.</span>
-<span class="sd">    surface_scale : float, optional</span>
-<span class="sd">        Height of the surface for full alpha. Defaults to None.</span>
-<span class="sd">    kernel_unit_length : float or tuple of float, optional</span>
-<span class="sd">        Surface normal sampling distance. Defaults to None.</span>
-<span class="sd">    lighting_color : Color or str, optional</span>
-<span class="sd">        Color of the light. Defaults to None.</span>
-<span class="sd">    **kwargs</span>
-<span class="sd">        Sub-region (``x``, ``y``, ``width``, ``height``), ``result``, ``in_``</span>
-<span class="sd">        and other SVG attributes in Python spelling.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    FeDiffuseLighting : Diffuse lighting.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; str(svg.FeSpecularLighting(svg.FePointLight(1, 2, 3), specular_exponent=5))</span>
-<span class="sd">    '&lt;feSpecularLighting specularExponent="5"&gt;&lt;fePointLight x="1" y="2" z="3"/&gt;&lt;/feSpecularLighting&gt;'</span>
-<span class="sd">    """</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">light</span><span class="p">:</span> <span class="n">Child</span><span class="p">,</span>
-        <span class="n">specular_constant</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">specular_exponent</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">light</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">specular_constant</span><span class="o">=</span><span class="n">specular_constant</span><span class="p">,</span> <span class="n">specular_exponent</span><span class="o">=</span><span class="n">specular_exponent</span><span class="p">)</span></div>
 
 </pre></div>
         </article>
@@ -705,7 +684,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=d4a5b5c4"></script>
+</div><script src="../../../../_static/documentation_options.js?v=31bb8259"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Projects - svgwriter 2.3.0</title>
+        <title>Projects - svgwriter 2.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.3.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.3.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.4.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.3.0</span>
+  <span class="sidebar-versions-label">2.4.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -209,6 +209,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../start/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../start/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos.html">Demos</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul class="current">
@@ -216,6 +217,7 @@
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="text.html">Text</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fonts.html">Making fonts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="colors-and-images.html">Colors and images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="effects.html">Filters and effects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="presets.html">Presets</a></li>
@@ -244,6 +246,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/layout.html">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/ops.html">Geometry operations and rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/fonts.html">Fonts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/attributes.html">Attribute values and styles</a></li>
@@ -309,10 +312,21 @@ builds. <code class="docutils literal notranslate"><span class="pre">svgwriter</
 <span class="go">svgwriter presets      # the presets, one line each</span>
 </pre></div>
 </div>
-<p>Without <code class="docutils literal notranslate"><span class="pre">--preset</span></code>, <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">new</span></code> shows a numbered menu of the presets. The same steps from Python:</p>
+<p>Without <code class="docutils literal notranslate"><span class="pre">--preset</span></code>, <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">new</span></code> asks in a terminal. With the optional <code class="docutils literal notranslate"><span class="pre">cli</span></code> extra
+(<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;pysvgwriter[cli]&quot;</span></code>) it uses arrow-key prompts for the preset (each with its description),
+script or notebook, theme, page size (common names or a custom width and height) and the project name when
+<code class="docutils literal notranslate"><span class="pre">NAME</span></code> is left out; without it, a numbered menu picks the preset. Flags skip their prompts, and input that
+is not a terminal never prompts, so scripts stay non-interactive:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">svgwriter new my-poster --preset poster --theme dracula --size a3</span>
+<span class="go">svgwriter new my-deck --preset slides --notebook --size 1920,1080</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--theme</span></code> names a built-in theme that <code class="docutils literal notranslate"><span class="pre">theme.toml</span></code> extends, and <code class="docutils literal notranslate"><span class="pre">--size</span></code> a size name or <code class="docutils literal notranslate"><span class="pre">WIDTH,HEIGHT</span></code>
+(numbers or lengths such as <code class="docutils literal notranslate"><span class="pre">50cm,70cm</span></code>) written to <code class="docutils literal notranslate"><span class="pre">svgwriter.toml</span></code>; both default to the preset’s own.
+The same steps from Python:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 
-<span class="n">project</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Project</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">"my-poster"</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">"poster"</span><span class="p">)</span>     <span class="c1"># svgwriter new my-poster --preset poster</span>
+<span class="n">project</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Project</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">"my-poster"</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">"poster"</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="s2">"dracula"</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s2">"a3"</span><span class="p">)</span>   <span class="c1"># svgwriter new my-poster --preset poster --theme dracula --size a3</span>
 <span class="nb">print</span><span class="p">([</span><span class="n">path</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="p">()])</span>             <span class="c1"># svgwriter build</span>
 <span class="nb">print</span><span class="p">([</span><span class="n">path</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="p">([</span><span class="s2">"png"</span><span class="p">])])</span>      <span class="c1"># svgwriter build --format png</span>
 </pre></div>
@@ -600,7 +614,7 @@ values and swaps the outputs in place; <code class="docutils literal notranslate
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=d4a5b5c4"></script>
+</div><script src="../_static/documentation_options.js?v=31bb8259"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

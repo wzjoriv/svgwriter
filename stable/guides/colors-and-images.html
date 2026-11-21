@@ -3,11 +3,11 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Filters and effects" href="effects.html"><link rel="prev" title="Text" href="text.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Filters and effects" href="effects.html"><link rel="prev" title="Making fonts" href="fonts.html">
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Colors and images - svgwriter 2.3.0</title>
+        <title>Colors and images - svgwriter 2.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.3.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.3.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.4.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.3.0</span>
+  <span class="sidebar-versions-label">2.4.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -209,6 +209,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../start/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../start/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos.html">Demos</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul class="current">
@@ -216,6 +217,7 @@
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="text.html">Text</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fonts.html">Making fonts</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Colors and images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="effects.html">Filters and effects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="presets.html">Presets</a></li>
@@ -244,6 +246,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/layout.html">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/ops.html">Geometry operations and rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/fonts.html">Fonts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/attributes.html">Attribute values and styles</a></li>
@@ -407,8 +410,8 @@ CIEDE2000 formula on CIE Lab, the standard in print and colour science (about 1 
 <section id="colour-profiles">
 <h2>Colour profiles<a class="headerlink" href="#colour-profiles" title="Link to this heading">¶</a></h2>
 <p>SVG 1.1 colours are sRGB, optionally followed by an <code class="docutils literal notranslate"><span class="pre">icc-color(...)</span></code> in an ICC profile declared with
-<code class="docutils literal notranslate"><span class="pre">&lt;color-profile&gt;</span></code>. With the <a class="reference internal" href="../start/installation.html"><span class="doc">color extra</span></a> installed, rendering converts
-them through the profile; otherwise the sRGB colour before <code class="docutils literal notranslate"><span class="pre">icc-color</span></code> is drawn:</p>
+<code class="docutils literal notranslate"><span class="pre">&lt;color-profile&gt;</span></code>. Rendering converts them through the profile; without the profile, the sRGB colour
+before <code class="docutils literal notranslate"><span class="pre">icc-color</span></code> is drawn:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 <span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">ColorProfile</span><span class="p">(</span><span class="s2">"print"</span><span class="p">,</span> <span class="s2">"press.icc"</span><span class="p">,</span> <span class="n">rendering_intent</span><span class="o">=</span><span class="s2">"relative-colorimetric"</span><span class="p">))</span>
 <span class="n">ink</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"#2b6cb0"</span><span class="p">)</span><span class="o">.</span><span class="n">with_icc</span><span class="p">(</span><span class="s2">"icc-color(print, 0.9, 0.4, 0, 0.1)"</span><span class="p">)</span>
@@ -497,14 +500,14 @@ composites onto a whole image.</p>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="text.html">
+          <a class="prev-page" href="fonts.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Text</div>
+                <div class="title">Making fonts</div>
                 
               </div>
             </a>
@@ -560,7 +563,7 @@ composites onto a whole image.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=d4a5b5c4"></script>
+</div><script src="../_static/documentation_options.js?v=31bb8259"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
