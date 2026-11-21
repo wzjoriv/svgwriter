@@ -17,35 +17,28 @@ outline             write text as glyph outlines (skia-python)
 
 from __future__ import annotations
 
-import sys
 from collections.abc import Sequence
-from typing import Annotated
 
-import typer
+import click
 
 from .. import __version__
 from ._basic import add_basic_commands
-from ._constants import EXIT_ERROR
+from ._constants import EXIT_ERROR, EXIT_FAILURE
 from ._media import add_media_commands
 from ._project import add_project_commands
 
 __all__ = ["app", "main"]
 
-app = typer.Typer(name="svgwriter", help="Start design projects and build them; write, reformat, inspect and animate SVG 1.1 files.", add_completion=False,
-                  no_args_is_help=True, pretty_exceptions_enable=False)
-"""The ``svgwriter`` application; ``app.command()`` adds a command."""
 
-
-def _version(shown: bool) -> None:
-    if shown:
-        print(f"svgwriter {__version__}")
-        raise typer.Exit()
-
-
-@app.callback()
-def _options(version: Annotated[bool, typer.Option("--version", callback=_version, is_eager=True,
-                                                   help="show the version and exit")] = False) -> None:
-    """Write, reformat, inspect and animate SVG 1.1 files."""
+@click.group(name="svgwriter", invoke_without_command=True,
+             help="Start design projects and build them; write, reformat, inspect and animate SVG 1.1 files.")
+@click.version_option(__version__, "--version", prog_name="svgwriter", message="%(prog)s %(version)s",
+                      help="show the version and exit")
+@click.pass_context
+def app(context: click.Context) -> None:
+    """The ``svgwriter`` application: a :class:`click.Group`; ``app.add_command(command)`` adds a command."""
+    if context.invoked_subcommand is None:
+        click.echo(context.get_help())
 
 
 add_project_commands(app)
@@ -75,10 +68,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     <svg ...</svg>0
     """
     try:
-        app(args=list(argv) if argv is not None else None, prog_name="svgwriter")
-    except SystemExit as done:
-        return done.code if isinstance(done.code, int) else 0
+        status = app.main(args=list(argv) if argv is not None else None, prog_name="svgwriter", standalone_mode=False)
+    except click.ClickException as error:
+        error.show()
+        return error.exit_code
+    except click.Abort:
+        click.secho("Aborted!", fg="red", err=True)
+        return EXIT_FAILURE
     except (OSError, ValueError, TypeError) as error:
-        print(f"svgwriter: error: {error}", file=sys.stderr)
+        click.secho(f"svgwriter: error: {error}", fg="red", err=True)
         return EXIT_ERROR
-    return 0
+    return status if isinstance(status, int) else 0
