@@ -19,7 +19,8 @@ from .._internal._constants import (
     SUGGESTIONS,
     WRITE_LAG,
 )
-from .._internal._presets import ANIMATIONS
+from .._internal._presets import ANIMATIONS, BEHAVIORS
+from .._internal._scenes import scene_of
 from .._internal._typing import P
 from ._motion_transform import TransformPresets, timing
 from .animation import Animate, AnimateMotion, Ease, EaseLike, Set
@@ -88,7 +89,8 @@ class Motion(TransformPresets):
     (a name such as ``"ease-in-out"``, a bézier 4-tuple, ``("steps", n)`` or
     a function; see :class:`~svgwriter.Ease`). ``show`` and ``hide`` act at
     one instant, so they take only the moment. Presets added with
-    :func:`@svg.preset.animation <svgwriter.preset.animation>` are methods too.
+    :func:`@svg.preset.animation <svgwriter.preset.animation>` are methods too, and so are behaviors
+    (:func:`@svg.preset.behavior <svgwriter.preset.behavior>`), which attach to the scene owning the element.
 
     Parameters
     ----------
@@ -128,13 +130,30 @@ class Motion(TransformPresets):
         return preset
 
     def __getattr__(self, name: str) -> Any:
-        close = difflib.get_close_matches(name, ANIMATIONS.names(), n=SUGGESTIONS)
+        if name in BEHAVIORS:
+            return self._attach(name)
+        close = difflib.get_close_matches(name, [*ANIMATIONS.names(), *BEHAVIORS.names()], n=SUGGESTIONS)
         hint = f"; did you mean {' or '.join(map(repr, close))}?" if close else ""
-        raise AttributeError(f"no animation preset {name!r}{hint} (@svg.preset.animation adds one)", name=name,
-                             obj=self)
+        raise AttributeError(f"no animation preset or behavior {name!r}{hint} (@svg.preset.animation or "
+                             "@svg.preset.behavior adds one)", name=name, obj=self)
 
     def __dir__(self) -> list[str]:
-        return sorted({*super().__dir__(), *ANIMATIONS})
+        return sorted({*super().__dir__(), *ANIMATIONS, *BEHAVIORS})
+
+    def _attach(self, name: str) -> Callable[..., Motion]:
+        """``element.animate.<behavior>(**options)``: attach the behavior to the scene owning the element."""
+        function = BEHAVIORS.get(name)
+
+        @functools.wraps(function)
+        def attach(**options: Any) -> Motion:
+            scene = scene_of(self.element)
+            if scene is None:
+                raise ValueError(f"behavior {name!r} runs in a scene: add the <{self.element.tag}> to a Scene's "
+                                 "document first, or call scene.attach(element, function)")
+            scene.attach(self.element, function, **options)
+            return self
+
+        return attach
 
     def apply(self, function: Callable[Concatenate[Motion, P], Motion | None], *args: P.args,
               **kwargs: P.kwargs) -> Motion:

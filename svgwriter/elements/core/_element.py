@@ -165,6 +165,45 @@ class Element(Construction, AttributeAccess, TreeEditing, Queryable, Displayable
 
         return Motion(self)
 
+    @property
+    def home(self) -> Element:
+        """The element as it was when its first behavior was attached: a detached copy to start each frame from.
+
+        A behavior that sets the state from :attr:`home` (``element.t = element.home.t``, then a relative move)
+        computes every frame afresh, so the motion never drifts and frames can be drawn in any order.
+
+        Returns
+        -------
+        Element
+            The copy :meth:`Scene.attach <svgwriter.Scene.attach>` took.
+
+        Raises
+        ------
+        ValueError
+            If no behavior has been attached to this element.
+
+        See Also
+        --------
+        svgwriter.preset.behavior : Write a behavior.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> class Hop(svg.Scene):
+        ...     width, height, duration = 40, 40, 1.0
+        ...     def build(self, doc):
+        ...         self.dot = doc.circle(20, 30, 4).animate.hover(height=10).element
+        >>> scene = Hop()
+        >>> scene.dot.cy = 31
+        >>> float(scene.dot.home.cy)
+        30.0
+        """
+        home = self.__dict__.get("_home")
+        if home is None:
+            raise ValueError(f"<{self.tag}> has no home yet: it is recorded when a behavior is attached "
+                             "(Scene.attach or element.animate.<behavior>)")
+        return home  # type: ignore[no-any-return]
+
     def computed(self, name: str, default: object = None) -> object:
         """The value SVG would use for property *name* (SVG spelling or Python spelling).
 

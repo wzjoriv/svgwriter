@@ -9,7 +9,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, TypeVar, overload
 
 from .._internal._constants import MOTION_HELPERS
-from .._internal._presets import ANIMATIONS
+from .._internal._presets import ANIMATIONS, BEHAVIORS
 
 if TYPE_CHECKING:
     from ..elements import Motion
@@ -26,6 +26,9 @@ def _check(name: str, function: Callable[..., object]) -> None:
     if not name.isidentifier() or name.startswith("_") or name in MOTION_HELPERS:
         raise ValueError(f"animation names are Python identifiers, without a leading underscore and other than "
                          f"{', '.join(sorted(MOTION_HELPERS))}; not {name!r}")
+    if name in BEHAVIORS:
+        raise ValueError(f"{name!r} is a behavior; animations and behaviors share element.animate, "
+                         "so pick another name")
     parameters = list(inspect.signature(function).parameters.values())
     shape = f"def {name}(motion: svg.Motion, *, option: float = 1.0) -> svg.Motion"
     if not parameters or parameters[0].kind not in _POSITIONAL:
