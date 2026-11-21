@@ -316,6 +316,9 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Font</span><span class="p">(</span><span class="n">FontGlyphs</span><span class="p">,</span> <span class="n">PresentationAttributes</span><span class="p">,</span> <span class="n">ExternalResourcesAttribute</span><span class="p">,</span> <span class="n">CoreAttributes</span><span class="p">,</span> <span class="n">Container</span><span class="p">[</span><span class="n">Element</span><span class="p">],</span> <span class="n">tag</span><span class="o">=</span><span class="s2">"font"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">Category</span><span class="o">.</span><span class="n">FONT</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""``&lt;font&gt;``: an SVG font made of glyph outlines.</span>
 
+<span class="sd">    This is the SVG 1.1 element; to set text in TrueType/OpenType font</span>
+<span class="sd">    files, use :class:`~svgwriter.Typeface`.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    *children : Element</span>
@@ -335,6 +338,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    FontFace : The font's descriptors.</span>
 <span class="sd">    Glyph : One character outline.</span>
+<span class="sd">    Typeface : A font family of TrueType/OpenType faces.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>

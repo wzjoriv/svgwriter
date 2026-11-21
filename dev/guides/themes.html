@@ -687,7 +687,8 @@ so threads and async tasks each keep their own; outside any block the default is
 </div>
 <p>Values are text (colors, CSS, references or <code class="docutils literal notranslate"><span class="pre">=</span></code> expressions), numbers, or color arrays: <code class="docutils literal notranslate"><span class="pre">[r,</span> <span class="pre">g,</span> <span class="pre">b]</span></code> or
 <code class="docutils literal notranslate"><span class="pre">[r,</span> <span class="pre">g,</span> <span class="pre">b,</span> <span class="pre">a]</span></code>, either all floats from 0 to 1 or all integers from 0 to 255 (a mix is an error). Font
-sizes and weights are numbers.</p>
+sizes and weights are numbers. <code class="docutils literal notranslate"><span class="pre">fonts.family</span></code> and <code class="docutils literal notranslate"><span class="pre">fonts.monospace</span></code> are a family name or a list of font
+files, relative to the theme file, loaded as an <code class="docutils literal notranslate"><span class="pre">svg.Typeface</span></code> (see <a class="reference internal" href="text.html#typography"><span class="std std-ref">Typography</span></a>).</p>
 <p><code class="docutils literal notranslate"><span class="pre">save</span></code> writes what differs from the theme it <code class="docutils literal notranslate"><span class="pre">extends</span></code>: a variant made with <code class="docutils literal notranslate"><span class="pre">replace</span></code> on a registered theme
 extends that theme, so <code class="docutils literal notranslate"><span class="pre">svg.Theme.get(&quot;dark&quot;).replace(name=&quot;night&quot;).save(path)</span></code> writes two lines. References
 and expressions are written as given, so they stay live; only values given as Python functions are written

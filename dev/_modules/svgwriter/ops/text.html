@@ -296,6 +296,8 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">skia</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ANCHOR_SHIFT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._font_match</span><span class="w"> </span><span class="kn">import</span> <span class="n">FontStyle</span><span class="p">,</span> <span class="n">describe</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._font_names</span><span class="w"> </span><span class="kn">import</span> <span class="n">family_names</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._fonts</span><span class="w"> </span><span class="kn">import</span> <span class="n">font_for</span><span class="p">,</span> <span class="n">registered_typefaces</span><span class="p">,</span> <span class="n">resolve_font</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathData</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..transform.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix</span>
@@ -317,12 +319,16 @@
 
 <div class="viewcode-block" id="register_font">
 <a class="viewcode-back" href="../../../reference/ops.html#svgwriter.ops.register_font">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">register_font</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">family</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">register_font</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">family</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+                  <span class="n">weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="p">:</span> <span class="n">FontStyle</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Make a TrueType/OpenType font file usable by name in ``font_family``.</span>
 
 <span class="sd">    Text layout, measurement, outlines and rendering then use it, without</span>
 <span class="sd">    installing it on the system. Register each style file (regular, bold,</span>
-<span class="sd">    italic) of a family; the closest weight and slant is chosen.</span>
+<span class="sd">    italic) of a family; text picks among them with the CSS font matching</span>
+<span class="sd">    rules, and variable fonts are set to the requested weight. This is the</span>
+<span class="sd">    low-level call under :class:`~svgwriter.ops.Typeface`, which registers</span>
+<span class="sd">    a whole family at once.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -330,7 +336,13 @@
 <span class="sd">        A ``.ttf``/``.otf``/``.ttc`` file or its contents.</span>
 <span class="sd">    family : str, optional</span>
 <span class="sd">        Name to register under. Defaults to None, which uses the family name</span>
-<span class="sd">        stored in the font.</span>
+<span class="sd">        stored in the font (typographic family first, then WWS, then legacy).</span>
+<span class="sd">    weight : float or (float, float), optional</span>
+<span class="sd">        The weight (or variable range) the face stands for, as the</span>
+<span class="sd">        ``font-weight`` descriptor of ``@font-face``. Defaults to None, which</span>
+<span class="sd">        reads it from the font (OS/2 weight class or ``wght`` axis).</span>
+<span class="sd">    style : {"normal", "italic", "oblique"}, optional</span>
+<span class="sd">        The style the face stands for. Defaults to None, which reads it from the font.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -354,8 +366,10 @@
         <span class="n">typeface</span> <span class="o">=</span> <span class="n">skia</span><span class="o">.</span><span class="n">Typeface</span><span class="o">.</span><span class="n">MakeFromFile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">fspath</span><span class="p">(</span><span class="n">source</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">typeface</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"cannot read a font from </span><span class="si">{</span><span class="n">source</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="nb">bytes</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'the data'</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">family</span> <span class="ow">or</span> <span class="n">typeface</span><span class="o">.</span><span class="n">getFamilyName</span><span class="p">()</span>
-    <span class="n">registered_typefaces</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">typeface</span><span class="p">)</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">family_names</span><span class="p">(</span><span class="n">typeface</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">family</span> <span class="ow">or</span> <span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">registered_typefaces</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">typeface</span><span class="p">,</span> <span class="n">describe</span><span class="p">(</span><span class="n">typeface</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">style</span><span class="p">,</span> <span class="n">subfamily</span><span class="o">=</span><span class="n">names</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
     <span class="n">resolve_font</span><span class="o">.</span><span class="n">cache_clear</span><span class="p">()</span>
     <span class="n">font_for</span><span class="o">.</span><span class="n">cache_clear</span><span class="p">()</span>
     <span class="n">glyph_shape</span><span class="o">.</span><span class="n">cache_clear</span><span class="p">()</span>
