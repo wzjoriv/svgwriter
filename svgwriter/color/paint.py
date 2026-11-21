@@ -4,12 +4,12 @@ The ``<paint>`` type used by ``fill`` and ``stroke``.
 
 from __future__ import annotations
 
-import enum
 from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, TypeAlias, Union
 
 from .._internal._constants import DEFAULT_PRECISION
+from .._internal._enums import Keyword
 from ..attributes.reference import FuncIRI, parse_func_iri
 from .color import Color, parse_color
 
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 __all__ = ["Paint", "PaintKeyword", "PaintRef", "PaintValue", "parse_paint"]
 
 
-class PaintKeyword(str, enum.Enum):
+class PaintKeyword(Keyword):
     """The paint keywords that are not colors.
 
     Members compare equal to their SVG text.

@@ -4,7 +4,6 @@ Lengths with units (``10``, ``2.5mm``, ``50%``).
 
 from __future__ import annotations
 
-import enum
 from dataclasses import dataclass
 from functools import lru_cache
 from typing import Any, Final, TypeAlias, overload
@@ -19,6 +18,7 @@ from .._internal._constants import (
     PC_PER_INCH,
     PT_PER_INCH,
 )
+from .._internal._enums import Keyword
 from .._internal._numbers import format_number
 from ._constants import LENGTH_RE
 
@@ -39,7 +39,7 @@ __all__ = [
 ]
 
 
-class Unit(str, enum.Enum):
+class Unit(Keyword):
     """SVG 1.1 length units.
 
     ``NONE`` (also ``USER``) means user units. ``PIXEL`` and ``INCH`` are

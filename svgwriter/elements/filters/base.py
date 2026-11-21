@@ -4,9 +4,9 @@
 
 from __future__ import annotations
 
-import enum
 from typing import Any, TypeAlias, Union
 
+from ..._internal._enums import Keyword
 from ..._internal._typing import Self, Units
 from .._behavior import (
     CoreAttributes,
@@ -28,7 +28,7 @@ __all__ = [
 ]
 
 
-class StandardInput(str, enum.Enum):
+class StandardInput(Keyword):
     """Keywords accepted by ``in`` and ``in2``.
 
     Examples

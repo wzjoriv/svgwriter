@@ -4,10 +4,10 @@ SMIL animation elements.
 
 from __future__ import annotations
 
-import enum
 from collections.abc import Sequence
 from typing import Any, Literal, TypeAlias
 
+from ..._internal._enums import Keyword
 from ...pathdata.builder import PathBuilder
 from ...pathdata.data import PathData
 from .._behavior import ConditionalAttributes, CoreAttributes, ExternalResourcesAttribute, XLinkAttributes
@@ -36,7 +36,7 @@ Clock: TypeAlias = str | float
 RepeatCount: TypeAlias = float | Literal["indefinite"]
 
 
-class Restart(str, enum.Enum):
+class Restart(Keyword):
     """The ``restart`` attribute: when an animation may begin again.
 
     See Also
@@ -54,7 +54,7 @@ class Restart(str, enum.Enum):
     NEVER = "never"
 
 
-class AnimationFill(str, enum.Enum):
+class AnimationFill(Keyword):
     """The animation ``fill`` attribute: the state after the active duration (not paint).
 
     See Also
@@ -71,7 +71,7 @@ class AnimationFill(str, enum.Enum):
     REMOVE = "remove"
 
 
-class CalcMode(str, enum.Enum):
+class CalcMode(Keyword):
     """The ``calcMode`` attribute: how values are interpolated.
 
     See Also
@@ -90,7 +90,7 @@ class CalcMode(str, enum.Enum):
     SPLINE = "spline"
 
 
-class Additive(str, enum.Enum):
+class Additive(Keyword):
     """The ``additive`` attribute: replace the underlying value or add to it.
 
     See Also
@@ -107,7 +107,7 @@ class Additive(str, enum.Enum):
     SUM = "sum"
 
 
-class Accumulate(str, enum.Enum):
+class Accumulate(Keyword):
     """The ``accumulate`` attribute: whether repeats build on the previous end value.
 
     See Also
@@ -124,7 +124,7 @@ class Accumulate(str, enum.Enum):
     SUM = "sum"
 
 
-class TransformType(str, enum.Enum):
+class TransformType(Keyword):
     """The ``type`` of an ``animateTransform``.
 
     See Also

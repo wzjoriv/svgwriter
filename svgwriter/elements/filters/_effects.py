@@ -4,10 +4,10 @@ Pixel-effect primitives: color matrix, convolution, blur, morphology, displaceme
 
 from __future__ import annotations
 
-import enum
 from collections.abc import Sequence
 from typing import Any
 
+from ..._internal._enums import Keyword
 from ._colormatrix import ColorMatrixShortcuts
 from ._constants import COLOR_MATRIX_SIZE
 from .base import FilterPrimitive, SingleInput, TwoInputs
@@ -27,7 +27,7 @@ __all__ = [
 ]
 
 
-class ColorMatrixType(str, enum.Enum):
+class ColorMatrixType(Keyword):
     """Types of :class:`FeColorMatrix`.
 
     Examples
@@ -43,7 +43,7 @@ class ColorMatrixType(str, enum.Enum):
     LUMINANCE_TO_ALPHA = "luminanceToAlpha"
 
 
-class EdgeMode(str, enum.Enum):
+class EdgeMode(Keyword):
     """Edge handling of :class:`FeConvolveMatrix`.
 
     Examples
@@ -58,7 +58,7 @@ class EdgeMode(str, enum.Enum):
     NONE = "none"
 
 
-class Channel(str, enum.Enum):
+class Channel(Keyword):
     """Color channels selectable in :class:`FeDisplacementMap`.
 
     Examples
@@ -78,7 +78,7 @@ class Channel(str, enum.Enum):
     ALPHA = "A"
 
 
-class MorphologyOperator(str, enum.Enum):
+class MorphologyOperator(Keyword):
     """Operators of :class:`FeMorphology`.
 
     Examples
@@ -92,7 +92,7 @@ class MorphologyOperator(str, enum.Enum):
     DILATE = "dilate"
 
 
-class TurbulenceType(str, enum.Enum):
+class TurbulenceType(Keyword):
     """Noise types of :class:`FeTurbulence`.
 
     Examples

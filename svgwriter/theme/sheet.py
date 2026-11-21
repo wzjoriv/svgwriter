@@ -84,7 +84,7 @@ def applied(theme: Theme, root: Element) -> Iterator[None]:
     >>> root = svg.Svg(svg.circle(0, 0, 1).as_role("dot"))
     >>> with applied(svg.Theme.get("mono"), root):
     ...     root[0].css
-    '.role-dot { fill:#000000;stroke:none }'
+    '.role-dot { fill:#000000;stroke:#000000;stroke-width:1px }'
     >>> len(root)
     1
     """

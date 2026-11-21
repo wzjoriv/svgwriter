@@ -110,7 +110,8 @@ def theme_to_toml(theme: Theme) -> str:
     lines += _section("fonts.sizes", dict(fonts.sizes))
     lines += _section("fonts.weights", dict(fonts.weights))
     for role in theme.roles:
-        lines += _section(f"roles.{_key(role)}", dict(theme.style(role)))
+        style = {k: v.svg_value() if isinstance(v, Color) else v for k, v in theme.style(role).items()}
+        lines += _section(f"roles.{_key(role)}", style)
     return "\n".join(lines) + "\n"
 
 
