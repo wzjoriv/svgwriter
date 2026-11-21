@@ -101,6 +101,15 @@ def unfiltered_masks(root: Element) -> None:
         mask.attributes.pop("filter", None)
 
 
+def fixed_layouts(root: Element) -> None:
+    """Turn layout groups into plain groups, so the copy keeps their placement while its text becomes paths."""
+    from ..elements.structure import Group
+
+    for element in root.iter():
+        if element.arranges_children:
+            element.__class__ = Group
+
+
 def drop_foreign(root: Element) -> None:
     """Remove elements from other XML namespaces: they are not SVG, so nothing of them renders."""
     for element in [e for e in root.iter() if getattr(e, "namespace", None) is not None]:
@@ -180,6 +189,7 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     from ..elements import Text
 
     copy = root.clone()
+    fixed_layouts(copy)
     drop_foreign(copy)
     resolve_styles(copy)
     apply_conditions(copy)

@@ -229,6 +229,9 @@ class Placement:
         >>> svg.rect(0, 0, 2, 2).translate(5, 5).bounds()
         BBox(x=5.0, y=5.0, width=2.0, height=2.0)
         """
+        parent = self.parent  # type: ignore[attr-defined]
+        if parent is not None and parent.arranges_children:
+            parent.arrange()
         box = self.local_bbox()
         if box is None:
             return None

@@ -76,6 +76,8 @@ class Element(Construction, AttributeAccess, TreeEditing, Queryable, Displayable
 
     tag: ClassVar[str] = ""
     _auto_id: bool = False
+    arranges_children: ClassVar[bool] = False
+    """True for layout groups, which place their children before any child is measured."""
     _id_owner: Element | None = None
     namespace: ClassVar[str | None] = None
     category: ClassVar[Category] = Category.OTHER

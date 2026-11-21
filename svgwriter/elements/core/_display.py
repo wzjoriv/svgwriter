@@ -45,7 +45,9 @@ class Displayable:
         '<circle cx="0" cy="0" r="1"/>'
         """
         from ...io.writer import to_string
+        from ...layout import settle
 
+        settle(self)
         return to_string(self, **options)
 
     def save(self, target: AnyPath | TextSink, **options: Any) -> None:
@@ -72,7 +74,9 @@ class Displayable:
         '<circle cx="0" cy="0" r="1"/>'
         """
         from ...io.writer import write
+        from ...layout import settle
 
+        settle(self)
         write(self, target, **options)
 
     def _preview(self) -> Any:
