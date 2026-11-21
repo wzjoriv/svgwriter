@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <name>Run svgwriter Code</name>
+  <id>org.svgwriter.script</id>
+  <dependency type="file" location="inx">svgwriter_extension.py</dependency>
+  <param name="tab" type="notebook">
+    <page name="code" gui-text="Code">
+      <label appearance="header">This box runs Python code on your drawing.</label>
+      <label>Only run code you wrote or trust: it has the same access to your computer as Inkscape. Names: doc (the drawing as an svgwriter Document), svg (the svgwriter module), selection (selected objects), math.</label>
+      <param name="code" type="string" appearance="multiline" gui-text="Python code:">for element in selection:
+    element.rotate(30)</param>
+      <param name="script" type="path" mode="file" filetypes="py" gui-text="Or run a .py file:"></param>
+    </page>
+    <page name="help" gui-text="Help">
+      <label>Examples:</label>
+      <label translatable="no">doc["star"].rotate(30)</label>
+      <label translatable="no">doc["Logo"].scale(1.5)</label>
+      <label translatable="no">for c in doc.root.find_all(svg.Circle): c.r *= 2</label>
+      <label>Elements are found by id or by their Inkscape label. Errors appear with the line that raised them. Tick Live preview to see the result before applying it.</label>
+    </page>
+  </param>
+  <effect needs-live-preview="true">
+    <object-type>all</object-type>
+    <effects-menu>
+      <submenu name="svgwriter"/>
+    </effects-menu>
+  </effect>
+  <script>
+    <command location="inx" interpreter="python">svgwriter_script.py</command>
+  </script>
+</inkscape-extension>
