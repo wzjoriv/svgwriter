@@ -5,8 +5,8 @@
 from __future__ import annotations
 
 import os
-from contextlib import nullcontext
 from collections.abc import Mapping, Sequence
+from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
 
