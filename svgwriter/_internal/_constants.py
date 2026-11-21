@@ -121,6 +121,12 @@ __all__ = [
     "LINKED_OVERSAMPLE",
     "EXTERNAL_ID_PREFIX",
     "NESTED_VIEWPORT_ID",
+    "LINEAR_RGB",
+    "LINEAR_STOP_STEPS",
+    "SRGB_GAMMA",
+    "SRGB_LINEAR_SLOPE",
+    "SRGB_OFFSET",
+    "SRGB_THRESHOLD",
     "URL_REFERENCE_RE",
     "PRIMITIVE_PREFIX",
     "VIEWPORT_FALLBACK",
@@ -288,6 +294,12 @@ VISIBILITY: Final = "visibility"
 LINKED_OVERSAMPLE: Final = 2.0
 EXTERNAL_ID_PREFIX: Final = "svgwriter-external-"
 NESTED_VIEWPORT_ID: Final = "svgwriter-svg-viewport-"
+LINEAR_RGB: Final = "linearRGB"
+LINEAR_STOP_STEPS: Final = 16
+SRGB_GAMMA: Final = 2.4
+SRGB_LINEAR_SLOPE: Final = 12.92
+SRGB_OFFSET: Final = 0.055
+SRGB_THRESHOLD: Final = 0.04045
 URL_REFERENCE_RE: Final = re.compile(r"url\(\s*['\"]?#([^)'\"\s]+)")
 PRIMITIVE_PREFIX: Final = "fe"
 BASE64_SUFFIX: Final = ";base64"

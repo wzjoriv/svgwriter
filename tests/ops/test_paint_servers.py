@@ -75,3 +75,10 @@ def test_pattern_tiles_land_where_the_units_say(pattern: str) -> None:
     pixels = draw(pattern + '<rect x="10" y="10" width="100" height="100" fill="url(#p)"/>', size=120)
     assert np.allclose(pixels[20, 20], LIME, atol=0.02) and np.allclose(pixels[60, 60], LIME, atol=0.02)
     assert np.allclose(pixels[28, 28], WHITE, atol=0.02)
+
+
+@pytest.mark.parametrize("space, middle", [("sRGB", 0.5), ("linearRGB", 0.735)])
+def test_gradient_blends_in_its_color_interpolation_space(space: str, middle: float) -> None:
+    pixels = draw(f'<linearGradient id="g" color-interpolation="{space}"><stop offset="0" stop-color="black"/>'
+                  '<stop offset="1" stop-color="white"/></linearGradient><rect width="100" height="100" fill="url(#g)"/>')
+    assert pixels[50, 50, 0] == pytest.approx(middle, abs=0.03)

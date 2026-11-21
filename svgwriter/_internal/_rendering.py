@@ -16,6 +16,7 @@ from ._layers import ancestry, drawable_order
 from ._links import resolve_links
 from ._markers import expand_markers
 from ._servers import resolve_servers
+from ._stops import linear_rgb_stops
 from ._tiles import user_space_patterns
 from ._tree import replace_in_parent
 from ._viewports import flatten_viewports
@@ -171,6 +172,7 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     expand_uses(copy)
     resolve_keywords(copy)
     resolve_servers(copy)
+    linear_rgb_stops(copy)
     flatten_viewports(copy)
     resolve_links(copy)
     ellipses_as_paths(copy)
