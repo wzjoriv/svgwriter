@@ -11,15 +11,15 @@ from typing import TYPE_CHECKING
 import numpy as np
 import skia
 
-from .._internal._constants import CONTAINERS, VISIBLE_OVERFLOW
-from .._internal._render._layers import ancestry, drawable_order, image_matrix, image_viewport
-from .._internal._tree import clip_outline
-from ._constants import CHANNEL_MAX, CONCEALED
+from ..._internal._constants import CONTAINERS, VISIBLE_OVERFLOW
+from ..._internal._render._layers import ancestry, drawable_order, image_matrix, image_viewport
+from ..._internal._tree import clip_outline
+from .._constants import CHANNEL_MAX, CONCEALED
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
-    from ..elements.structure import Image
-    from ..transform.matrix import Matrix
+    from ...elements.core import Element
+    from ...elements.structure import Image
+    from ...transform.matrix import Matrix
 
 __all__ = ["concealed", "draw_image", "hidden", "layers", "referenced", "skia_matrix"]
 
@@ -53,13 +53,13 @@ def layers(root: Element, atomic: Callable[[Element], bool] | None = None,
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.ops._layers import layers
+    >>> from svgwriter.ops._raster._layers import layers
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 5, 5)
     >>> [(len(run), image) for run, image in layers(doc.root)]
     [(1, None)]
     """
-    from ..elements import Image, Text
+    from ...elements import Image, Text
 
     result: list[tuple[list[Element], Element | None]] = []
     run: list[Element] = []
@@ -123,7 +123,7 @@ def hidden(root: Element, keep: list[Element], atomic: Callable[[Element], bool]
     --------
     >>> import svgwriter as svg
     >>> from svgwriter._internal._render._layers import drawable_order
-    >>> from svgwriter.ops._layers import hidden
+    >>> from svgwriter.ops._raster._layers import hidden
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 5, 5)
     >>> _ = doc.circle(5, 5, 2)
@@ -157,7 +157,7 @@ def concealed(leaves: list[Element]) -> Generator[None, None, None]:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.ops._layers import concealed
+    >>> from svgwriter.ops._raster._layers import concealed
     >>> rect = svg.Rect(filter="url(#f)")
     >>> with concealed([rect]):
     ...     rect.get("display"), rect.get("filter")
@@ -196,9 +196,9 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
     --------
     layers : Decide which images are drawn separately.
     """
-    from ..elements import Transformable
-    from ._filters._image_effects import paint_mask
-    from ._skia import to_skia
+    from ...elements import Transformable
+    from .._filters._image_effects import paint_mask
+    from .._skia import to_skia
 
     _, opacity = ancestry(image, root)
     rgba = image.rgba()

@@ -13,9 +13,9 @@ import skia
 from .._internal._render._rendering import view_matrix
 from ..attributes.length import Length, Unit
 from ..attributes.viewbox import ViewBox
-from ._canvas import make_surface, paint_svg, read_pixels
 from ._constants import CHANNEL_MAX, DEFAULT_QUALITY, FORMATS
-from ._painting import paint_tree, render_tree
+from ._raster._canvas import make_surface, paint_svg, read_pixels
+from ._raster._painting import paint_tree, render_tree
 
 if TYPE_CHECKING:
     from ..color.color import ColorLike

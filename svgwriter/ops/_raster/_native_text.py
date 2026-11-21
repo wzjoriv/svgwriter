@@ -14,8 +14,8 @@ from typing import TYPE_CHECKING, Any
 
 import skia
 
-from ..transform.matrix import Matrix
-from ._constants import (
+from ...transform.matrix import Matrix
+from .._constants import (
     DEFAULT_FONT_SIZE,
     EFFECTS,
     MISSING_GLYPH,
@@ -25,9 +25,9 @@ from ._constants import (
 )
 
 if TYPE_CHECKING:
-    from ..color.color import Color
-    from ..elements.core import Element
-    from ..elements.text import Text
+    from ...color.color import Color
+    from ...elements.core import Element
+    from ...elements.text import Text
 
 __all__ = ["draw_text", "native_text"]
 
@@ -51,13 +51,13 @@ def native_text(text: Text) -> bool:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.ops._native_text import native_text
+    >>> from svgwriter.ops._raster._native_text import native_text
     >>> native_text(svg.Text("hi", fill="red"))
     True
     >>> native_text(svg.Text("hi", filter="url(#blur)"))
     False
     """
-    from ..attributes.cascade import computed
+    from ...attributes.cascade import computed
 
     node: Element | None = text
     while node is not None:
@@ -103,16 +103,16 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix, *, o
     --------
     >>> import skia
     >>> import svgwriter as svg
-    >>> from svgwriter.ops._native_text import draw_text
+    >>> from svgwriter.ops._raster._native_text import draw_text
     >>> surface = skia.Surface(40, 20)
     >>> text = svg.Text("hi", x=0, y=15)
     >>> draw_text(surface.getCanvas(), text, text, svg.Matrix())
     """
-    from .._internal._render._layers import ancestry
-    from .._internal._tree import clip_outline
-    from ..elements import Transformable
+    from ..._internal._render._layers import ancestry
+    from ..._internal._tree import clip_outline
+    from ...elements import Transformable
+    from .._skia import to_skia
     from ._layers import _chain, skia_matrix
-    from ._skia import to_skia
 
     _, opacity = ancestry(text, root)
     canvas.save()
@@ -150,9 +150,9 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix, *, o
 
 def _draw_color(canvas: skia.Canvas, box: Any, opacity: float, searchable: bool) -> None:
     """Draw the colour glyphs of *box* at its place and angle; only the fill's opacity applies to them."""
-    from .._internal._flat._flatten import _number
-    from .._internal._flat._paints import _paint
-    from .._internal._typography._emoji import draw_glyphs
+    from ..._internal._flat._flatten import _number
+    from ..._internal._flat._paints import _paint
+    from ..._internal._typography._emoji import draw_glyphs
 
     if _paint(box.source, "fill", "black", []) is None:
         return
@@ -170,7 +170,7 @@ def _hidden_text(canvas: skia.Canvas, color: Any, place: Matrix, alpha: float) -
 
     The single shaped glyph of a skin-tone, keycap or ZWJ emoji maps to no characters in the PDF.
     """
-    from .._internal._typography._emoji import draw_glyphs
+    from ..._internal._typography._emoji import draw_glyphs
 
     glyphs = list(color.font.textToGlyphs(color.text))
     small = color.font.makeWithSize(color.font.getSize() / len(glyphs))
@@ -187,9 +187,9 @@ def _solid_alpha(alpha: float) -> skia.Paint:
 
 def _glyph_font(box: Any) -> Any:
     """The skia font that draws *box* as one glyph, or None when it must be an outline."""
-    from .._internal._typography._fonts import font_for, font_size, font_weight
-    from .._internal._typography._shaping import needs_shaping
-    from ..attributes.cascade import computed
+    from ..._internal._typography._fonts import font_for, font_size, font_weight
+    from ..._internal._typography._shaping import needs_shaping
+    from ...attributes.cascade import computed
 
     if needs_shaping(box.char) or box.source is None:
         return None
@@ -218,7 +218,7 @@ def _flush(canvas: skia.Canvas, pending: list[tuple[Any, Any, skia.RSXform]], op
     The fill is real text; a stroke is drawn over it from the glyph outlines, so the text is written
     once and copies cleanly.
     """
-    from ._skia import to_skia
+    from .._skia import to_skia
 
     if not pending:
         return
@@ -256,9 +256,9 @@ def _natural(boxes: list[Any], font: Any) -> bool:
 
 def _paints(source: Element, opacity: float) -> tuple[skia.Paint | None, skia.Paint | None]:
     """Fill and stroke paints for *source* (None where it is unpainted)."""
-    from .._internal._flat._flatten import _number
-    from .._internal._flat._paints import _paint
-    from ..attributes.cascade import computed
+    from ..._internal._flat._flatten import _number
+    from ..._internal._flat._paints import _paint
+    from ...attributes.cascade import computed
 
     fill_paint = stroke_paint = None
     group = opacity * _number(source, "opacity", 1.0, []) if source.tag != "text" else opacity

@@ -118,7 +118,7 @@ def resolve_links(root: Element) -> None:
 
     See Also
     --------
-    svgwriter.ops._layers.layers : Split a resolved tree into vector runs and embedded images.
+    svgwriter.ops._raster._layers.layers : Split a resolved tree into vector runs and embedded images.
 
     Examples
     --------

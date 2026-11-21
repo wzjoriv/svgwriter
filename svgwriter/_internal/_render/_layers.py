@@ -39,7 +39,7 @@ def drawable_order(root: Element, atomic: Callable[[Element], bool] | None = Non
 
     See Also
     --------
-    svgwriter.ops._layers.layers : Group the same leaves into runs around embedded images.
+    svgwriter.ops._raster._layers.layers : Group the same leaves into runs around embedded images.
 
     Examples
     --------
