@@ -5,11 +5,14 @@ Shared ``<text>``/``<tspan>`` bases: per-character positioning and ``textLength`
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Any, TypeAlias
+from typing import TYPE_CHECKING, Any, TypeAlias
 
 from ..._internal._typing import LengthAdjust
 from ...attributes.length import LengthLike
 from ..core import Child, Element
+
+if TYPE_CHECKING:
+    from ._text import TextDecoration
 
 __all__ = ["Coordinates"]
 
@@ -23,7 +26,7 @@ def _coords(value: Coordinates | None) -> Any:
 
 
 class _TextPositioning(Element):
-    """``x``, ``y``, ``dx``, ``dy`` and ``rotate``, each a number or list."""
+    """``x``, ``y``, ``dx``, ``dy`` and ``rotate``, each a number or list, and ``decoration`` for ``text-decoration``."""
 
     def __init__(
         self,
@@ -33,9 +36,9 @@ class _TextPositioning(Element):
         dx: Coordinates | None = None,
         dy: Coordinates | None = None,
         rotate: float | Sequence[float] | None = None,
+        decoration: TextDecoration | str | None = None,
         **kwargs: Any,
     ) -> None:
-        decoration = kwargs.pop("decoration", None)
         super().__init__(*args, **kwargs)
         self._assign(x=_coords(x), y=_coords(y), dx=_coords(dx), dy=_coords(dy), rotate=_coords(rotate))
         if decoration is not None:
