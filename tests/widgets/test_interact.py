@@ -143,18 +143,30 @@ def test_notebook_backend_widgets() -> None:
         "text": svg.widgets.Text("hi").titled("text"), "color": svg.widgets.ColorPicker("#ff000080").titled("color"),
     }
     view = Interactive(lambda **kw: svg.circle(5, 5, 5), controls, panel, delay=0)
-    rows = panel._box.children[0].children
+    rows = panel._box.children[2].children
     rows[0].children[1].children[0].value = 7.0
     assert rows[0].children[1].children[1].value == "7mm"
     rows[5].children[1].value = 4
     rows[7].children[1].value = (0, 1)
     rows[8].children[1].children[1].click()
-    rows[3].value = True
+    rows[3].children[1].value = True
     assert view.values["r"] == 7.0 and view.values["pick"] == "e" and view.values["many"] == ("x", "y")
     assert view.values["chip"] == "blue" and view.values["on"] is True
     assert "<svg" in panel._image.value and panel._error.value == ""
     panel.fail("bad <thing>")
     assert "bad &lt;thing&gt;" in panel._error.value
     panel.show()
+    assert type(rows[6].children[1]).__name__ == "ToggleButtons"
+    assert type(rows[5].children[1]).__name__ == "Dropdown"
     with pytest.raises(TypeError, match="no notebook input"):
         _ipywidgets._input(_ipywidgets._widgets(), svg.widgets.Control(), None, print)
+
+
+@pytest.mark.parametrize(("count", "kind"), [(6, "ToggleButtons"), (7, "Dropdown")])
+def test_segmented_layout_by_option_count(count: int, kind: str) -> None:
+    pytest.importorskip("ipywidgets")
+    from svgwriter.tools.widgets import _ipywidgets
+
+    control = svg.widgets.Segmented([str(n) for n in range(count)])
+    shown = _ipywidgets._input(_ipywidgets._widgets(), control, control.initial, print)
+    assert type(shown).__name__ == kind

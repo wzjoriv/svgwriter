@@ -1,5 +1,5 @@
 """
-The notebook backend: one ipywidgets input per control, the drawing beside them and errors under it.
+The notebook backend: one ipywidgets input per control, the drawing above them and errors under it.
 """
 
 from __future__ import annotations
@@ -8,8 +8,19 @@ import html
 from collections.abc import Callable, Mapping
 from typing import Any
 
-from ._choices import Checkbox, ColorPicker, Dropdown, MultiSelect, Segmented, Swatches, Text, Toggle
-from ._constants import ERROR_STYLE, EXTRA, IMAGE_STYLE, PANEL_SUMMARY, PANEL_WIDTH, SWATCH_SIZE
+from ._choices import ColorPicker, Dropdown, MultiSelect, Segmented, Swatches, Text, Toggle
+from ._constants import (
+    ERROR_STYLE,
+    EXTRA,
+    GRID_COLUMNS,
+    GRID_GAP,
+    IMAGE_RULE,
+    IMAGE_STYLE,
+    LABEL_WIDTH,
+    PANEL_SUMMARY,
+    READOUT_WIDTH,
+    SWATCH_SIZE,
+)
 from ._control import Control
 from ._interact import Changed
 from ._numbers import Number, RangeSlider, Slider
@@ -33,9 +44,10 @@ def _slider(w: Any, control: Slider | RangeSlider, value: Any) -> tuple[Any, Any
     else:
         kind = w.IntSlider if whole else w.FloatSlider
         widget = kind(value=value, min=control.min, max=control.max, step=control.step, readout=False)
-    readout = w.Label(control.text(value))
+    widget.layout = w.Layout(width="auto", min_width="0", flex="1 1 0")
+    readout = w.Label(control.text(value), layout=w.Layout(width=READOUT_WIDTH, flex="none"))
     widget.observe(lambda change: setattr(readout, "value", control.text(change.new)), names="value")
-    return widget, w.HBox([widget, readout])
+    return widget, w.HBox([widget, readout], layout=w.Layout(flex="1 1 0", min_width="0"))
 
 
 def _swatches(w: Any, control: Swatches, value: Any, changed: Callable[[int], None]) -> Any:
@@ -53,7 +65,7 @@ def _swatches(w: Any, control: Swatches, value: Any, changed: Callable[[int], No
     for position, button in enumerate(buttons):
         button.on_click(lambda _, position=position: pick(position))
     buttons[control.index(value)].icon = "check"
-    return w.HBox(buttons)
+    return w.HBox(buttons, layout=w.Layout(flex_flow="row wrap"))
 
 
 def _input(w: Any, control: Control, value: Any, send: Callable[[Any], None]) -> Any:
@@ -67,12 +79,13 @@ def _input(w: Any, control: Control, value: Any, send: Callable[[Any], None]) ->
         if isinstance(control, MultiSelect):
             widget = w.SelectMultiple(options=options, value=tuple(control.index(item) for item in value))
             return _observe(widget, lambda raw: send(list(raw)))
-        kind = w.ToggleButtons if isinstance(control, Segmented) else w.Dropdown
-        widget = shown = kind(options=options, value=control.index(value))
-    elif isinstance(control, Checkbox):
-        widget = shown = w.Checkbox(value=value, indent=False)
+        if isinstance(control, Segmented) and control.compact:
+            widget = shown = w.ToggleButtons(options=options, value=control.index(value),
+                                             style={"button_width": "auto"})
+        else:
+            widget = shown = w.Dropdown(options=options, value=control.index(value))
     elif isinstance(control, Toggle):
-        widget = shown = w.ToggleButton(value=value, description=control.label or "")
+        widget = shown = w.Checkbox(value=value, indent=False)
     elif isinstance(control, ColorPicker):
         widget = shown = w.ColorPicker(value=value[:7], concise=False)
     elif isinstance(control, Number):
@@ -92,7 +105,7 @@ def _observe(widget: Any, send: Callable[[Any], None]) -> Any:
 
 
 class NotebookBackend:
-    """Controls as ipywidgets in a column, the drawing to their right and the last error under it."""
+    """The drawing on top, fit to the cell, the last error under it and the controls in a wrapping grid."""
 
     def __init__(self) -> None:
         self._w = _widgets()
@@ -102,21 +115,20 @@ class NotebookBackend:
         self._summary = ""
 
     def panel(self, controls: Mapping[str, Control], values: Mapping[str, Any], changed: Changed) -> None:
-        """Build one row per control."""
+        """Build one labelled row per control."""
         w = self._w
         rows = []
         for name, control in controls.items():
             shown = _input(w, control, values[name], lambda raw, name=name: changed(name, raw))
-            title = w.Label(control.label or name, layout=w.Layout(min_width="96px"))
-            rows.append(w.HBox([title, shown]) if not isinstance(control, Toggle) or isinstance(control, Checkbox)
-                        else shown)
+            title = w.Label(control.label or name, layout=w.Layout(width=LABEL_WIDTH, min_width=LABEL_WIDTH))
+            rows.append(w.HBox([title, shown], layout=w.Layout(align_items="center", min_width="0")))
         self._summary = PANEL_SUMMARY.format(names=", ".join(c.label or n for n, c in controls.items()))
-        column = w.VBox(rows, layout=w.Layout(width=PANEL_WIDTH, min_width=PANEL_WIDTH))
-        self._box = w.HBox([column, w.VBox([self._image, self._error])])
+        grid = w.GridBox(rows, layout=w.Layout(grid_template_columns=GRID_COLUMNS, grid_gap=GRID_GAP, width="100%"))
+        self._box = w.VBox([self._image, self._error, grid], layout=w.Layout(width="100%"))
 
     def draw(self, svg: str) -> None:
         """Replace the drawing."""
-        self._image.value = f'<div style="{IMAGE_STYLE}">{svg}</div>'
+        self._image.value = f'{IMAGE_RULE}<div class="svgwriter-drawing" style="{IMAGE_STYLE}">{svg}</div>'
 
     def fail(self, message: str | None) -> None:
         """Show or clear the error."""
