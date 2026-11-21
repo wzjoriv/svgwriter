@@ -1,57 +1,17 @@
 """
-ICC colour management through the optional ``lcms2`` package: profiles, colours and pixels to sRGB.
+ICC colour management through the ``lcms2`` package: profiles, colours and pixels to sRGB.
 """
 
 from __future__ import annotations
 
-import warnings
 from functools import lru_cache
 from typing import Any
 
 import numpy as np
 
-from ._icc_constants import DEFAULT_INTENT, INTENTS, LCMS_HINT, PROFILE_CACHE, SPACE_SCALES
+from ._icc_constants import DEFAULT_INTENT, INTENTS, PROFILE_CACHE, SPACE_SCALES
 
-__all__ = ["color_to_srgb", "hint_missing", "lcms_available", "load_profile", "pixels_to_srgb"]
-
-_HINTED: list[bool] = []
-
-
-def lcms_available() -> bool:
-    """Whether the optional ``lcms2`` package can be imported.
-
-    Returns
-    -------
-    bool
-        True when ICC profiles can be applied.
-
-    Examples
-    --------
-    >>> from svgwriter._internal._color._icc import lcms_available
-    >>> isinstance(lcms_available(), bool)
-    True
-    """
-    try:
-        import lcms2  # noqa: F401
-    except ImportError:
-        return False
-    return True
-
-
-def hint_missing() -> None:
-    """Warn once per session that ICC profiles are skipped because ``lcms2`` is missing.
-
-    Examples
-    --------
-    >>> from svgwriter._internal._color._icc import hint_missing, lcms_available
-    >>> if lcms_available():
-    ...     hint_missing()
-    """
-    if _HINTED or lcms_available():
-        return
-    _HINTED.append(True)
-    warnings.warn(LCMS_HINT, stacklevel=3)
-
+__all__ = ["color_to_srgb", "load_profile", "pixels_to_srgb"]
 
 @lru_cache(maxsize=PROFILE_CACHE)
 def load_profile(data: bytes) -> Any:
@@ -65,7 +25,7 @@ def load_profile(data: bytes) -> Any:
     Returns
     -------
     lcms2.Profile or None
-        The profile, or None when ``lcms2`` is missing or the data is not a valid profile.
+        The profile, or None when the data is not a valid profile.
 
     Examples
     --------
@@ -73,10 +33,8 @@ def load_profile(data: bytes) -> Any:
     >>> load_profile(b"not a profile") is None
     True
     """
-    try:
-        from lcms2 import Profile
-    except ImportError:
-        return None
+    from lcms2 import Profile
+
     try:
         return Profile.from_bytes(data)
     except Exception:
@@ -106,12 +64,9 @@ def color_to_srgb(profile: Any, components: list[float], intent: str | None = No
 
     Examples
     --------
-    >>> from svgwriter._internal._color._icc import color_to_srgb, lcms_available
-    >>> if lcms_available():
-    ...     from lcms2 import Profile
-    ...     print([round(c, 2) for c in color_to_srgb(Profile.srgb(), [1, 0, 0])])
-    ... else:
-    ...     print([1.0, 0.0, 0.0])
+    >>> from lcms2 import Profile
+    >>> from svgwriter._internal._color._icc import color_to_srgb
+    >>> print([round(c, 2) for c in color_to_srgb(Profile.srgb(), [1, 0, 0])])
     [1.0, 0.0, 0.0]
     """
     if len(components) != profile.channels:
@@ -146,12 +101,9 @@ def pixels_to_srgb(profile: Any, rgba: np.ndarray, intent: str | None = None) ->
     Examples
     --------
     >>> import numpy as np
-    >>> from svgwriter._internal._color._icc import lcms_available, pixels_to_srgb
-    >>> if lcms_available():
-    ...     from lcms2 import Profile
-    ...     print(pixels_to_srgb(Profile.srgb(), np.full((1, 1, 4), 200, np.uint8)).tolist())
-    ... else:
-    ...     print([[[200, 200, 200, 200]]])
+    >>> from lcms2 import Profile
+    >>> from svgwriter._internal._color._icc import pixels_to_srgb
+    >>> print(pixels_to_srgb(Profile.srgb(), np.full((1, 1, 4), 200, np.uint8)).tolist())
     [[[200, 200, 200, 200]]]
     """
     try:

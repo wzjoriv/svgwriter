@@ -286,18 +286,6 @@ class TestCli:
         assert main(["new", "flyer", "--preset", "poster"]) == 2
         assert "not empty" in capsys.readouterr().err
 
-    def test_new_without_preset_asks(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
-                                     capsys: pytest.CaptureFixture[str]) -> None:
-        import io
-
-        from svgwriter.cli import main
-
-        monkeypatch.chdir(tmp_path)
-        monkeypatch.setattr("sys.stdin", io.StringIO("3\n"))
-        assert main(["new", "talk"]) == 0
-        assert " 3. slides" in capsys.readouterr().out
-        assert svg.Project.load(tmp_path / "talk").config.entry == "main:slides"
-
     def test_build_outside_a_project(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
                                      capsys: pytest.CaptureFixture[str]) -> None:
         from svgwriter.cli import main

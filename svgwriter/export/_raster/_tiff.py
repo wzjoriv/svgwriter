@@ -38,7 +38,7 @@ def tiff(document: Document, *, scale: float = 1.0, pixels: tuple[int, int] | in
     icc : {"srgb", "display-p3"} or bytes, optional
         Output profile, embedded in the file: ``"srgb"`` tags the pixels as sRGB,
         ``"display-p3"`` or RGB profile bytes convert them, and CMYK profile bytes (a press or
-        printer profile) write CMYK ink. Needs the ``color`` extra. Defaults to None, untagged sRGB.
+        printer profile) write CMYK ink. Defaults to None, untagged sRGB.
 
     Returns
     -------
@@ -47,8 +47,6 @@ def tiff(document: Document, *, scale: float = 1.0, pixels: tuple[int, int] | in
 
     Raises
     ------
-    ImportError
-        If `icc` is given without the ``color`` extra.
     ValueError
         If `icc` is not a readable RGB or CMYK profile.
 

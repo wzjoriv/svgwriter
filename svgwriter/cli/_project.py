@@ -9,7 +9,17 @@ from pathlib import Path
 import click
 
 from ..project import PRESETS, Project
-from ._constants import PRESET_COLUMN, PREVIEW_PORT
+from ._constants import DEFAULT_PRESET, PRESET_COLUMN, PREVIEW_PORT
+from ._prompts import (
+    ask_name,
+    ask_notebook,
+    ask_preset,
+    ask_size,
+    ask_theme,
+    has_questionary,
+    interactive,
+    parse_size,
+)
 
 __all__ = ["add_project_commands"]
 
@@ -27,15 +37,32 @@ def _choose_preset() -> str:
 
 
 @click.command()
-@click.argument("name")
-@click.option("--preset", help="starter project (`svgwriter presets`); without it, a menu asks")
-@click.option("--notebook", is_flag=True, help="write main.ipynb instead of main.py")
-def new(name: str, preset: str | None, notebook: bool) -> None:
+@click.argument("name", required=False)
+@click.option("--preset", help="starter project (`svgwriter presets`); without it, a prompt asks")
+@click.option("--notebook/--script", default=None, help="write main.ipynb instead of main.py")
+@click.option("--theme", help="built-in theme that theme.toml extends (default: the preset's own)")
+@click.option("--size", help="size name or WIDTH,HEIGHT written to svgwriter.toml (default: the preset's own)")
+def new(name: str | None, preset: str | None, notebook: bool | None, theme: str | None, size: str | None) -> None:
     """Start a design project from a preset.
 
-    NAME is the folder to create and the project name.
+    NAME is the folder to create and the project name. In a terminal, missing choices are asked with
+    arrow keys when questionary is installed (`pip install "pysvgwriter[cli]"`) and with a numbered menu
+    otherwise; elsewhere they take the preset's defaults.
     """
-    project = Project.new(name, preset or _choose_preset(), notebook=notebook)
+    asking = interactive()
+    fancy = asking and has_questionary()
+    if name is None:
+        if not asking:
+            raise click.UsageError("missing argument NAME")
+        name = ask_name() if fancy else click.prompt("Project name")
+    if preset is None:
+        preset = (ask_preset() if fancy else _choose_preset()) if asking else DEFAULT_PRESET
+    choice: str | list[float | str] | None = parse_size(size) if size is not None else None
+    if fancy:
+        notebook = ask_notebook() if notebook is None else notebook
+        theme = ask_theme() if theme is None else theme
+        choice = ask_size() if size is None else choice
+    project = Project.new(name, preset, notebook=bool(notebook), theme=theme, size=choice)
     click.echo(f"created {project.root}")
     click.echo(f"next: cd {name} && svgwriter preview")
 

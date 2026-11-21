@@ -69,8 +69,7 @@ def with_output_intent(data: bytes, target: OutputProfile) -> bytes:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._color._icc import lcms_available
-    >>> data = svg.export.export(svg.Document(4, 4), "pdf", icc="srgb") if lcms_available() else b"/OutputIntents"
+    >>> data = svg.export.export(svg.Document(4, 4), "pdf", icc="srgb")
     >>> b"/OutputIntents" in data
     True
     """

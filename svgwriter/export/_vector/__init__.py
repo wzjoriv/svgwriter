@@ -48,7 +48,7 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
         An output intent with this ICC profile: ``"srgb"`` declares the page colours sRGB
         (as PDF/A expects), CMYK profile bytes name the printing condition (as PDF/X expects).
         The colours stay sRGB, since skia writes only DeviceRGB, so other RGB profiles are refused.
-        Needs the ``color`` extra. Defaults to None.
+        Defaults to None.
 
     Returns
     -------
@@ -59,8 +59,6 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     ------
     ValueError
         If `units_per_inch` is not above 0 or `icc` is not sRGB or a CMYK profile.
-    ImportError
-        If `icc` is given without the ``color`` extra.
 
     See Also
     --------

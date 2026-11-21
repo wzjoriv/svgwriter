@@ -7,12 +7,15 @@ from __future__ import annotations
 import difflib
 import json
 import os
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Final
+from typing import Any, Final
+
+import tomlkit
 
 from .._internal._registry import Registry
-from ._config import ProjectError
+from ._config import ProjectError, check_size
 from ._constants import (
     BUILTIN_PRESETS,
     DOT_PREFIX,
@@ -21,8 +24,11 @@ from ._constants import (
     PLACEHOLDERS,
     TEMPLATE_SUFFIX,
     TEMPLATES,
+    THEME_FILE,
 )
 from ._notebook import notebook_of
+
+SizeChoice = str | Sequence[float | str]
 
 __all__ = ["PRESETS", "Preset", "create", "find_preset", "register_preset", "unregister_preset"]
 
@@ -166,8 +172,33 @@ def _render(data: bytes, values: dict[str, str]) -> bytes:
     return text.encode("utf-8")
 
 
+def _unstyled(table: Any, key: str, value: object) -> None:
+    table[key] = value
+    trivia = table.item(key).trivia
+    trivia.comment = trivia.comment_ws = ""
+
+
+def _chosen(files: dict[Path, bytes], size: SizeChoice | None, theme: str | None) -> None:
+    from ..theme import THEMES
+
+    manifest, theme_file = Path(MANIFEST), Path(THEME_FILE)
+    if size is not None:
+        check_size(manifest, size if isinstance(size, str) else list(size))
+        document = tomlkit.parse(files[manifest].decode("utf-8"))
+        _unstyled(document["project"], "size", size if isinstance(size, str) else list(size))
+        files[manifest] = tomlkit.dumps(document).encode("utf-8")
+    if theme is None:
+        return
+    if theme not in THEMES:
+        raise ProjectError(f"unknown theme {theme!r}; themes: {', '.join(THEMES.names())}")
+    target, key = (theme_file, None) if theme_file in files else (manifest, "theme")
+    document = tomlkit.parse(files[target].decode("utf-8"))
+    _unstyled(document if key is None else document["project"], key or "extends", theme)
+    files[target] = tomlkit.dumps(document).encode("utf-8")
+
+
 def create(path: str | os.PathLike[str], preset: str = "blank", *, notebook: bool = False,
-           name: str | None = None) -> Path:
+           name: str | None = None, theme: str | None = None, size: SizeChoice | None = None) -> Path:
     """Write a new project folder from *preset*; return the folder (see :meth:`svgwriter.Project.new`)."""
     folder = Path(path)
     chosen = find_preset(preset)
@@ -179,6 +210,7 @@ def create(path: str | os.PathLike[str], preset: str = "blank", *, notebook: boo
         for source in sorted(layer.directory.rglob("*")):
             if source.is_file() and "__pycache__" not in source.parts:
                 files[_target_name(source.relative_to(layer.directory))] = _render(source.read_bytes(), values)
+    _chosen(files, size, theme)
     if notebook:
         script = files.pop(Path("main.py"), None)
         if script is None:
