@@ -47,7 +47,7 @@ A blend between distant colors in sRGB, the space SVG interpolates in, turns gre
 gradient presets sample extra stops in OKLCH, so `blend("red", "blue")` passes through a clear violet.
 `angle=` sets the direction (0 left to right, 90 top to bottom). Gradients are in bounding-box units and
 stretch to the shape; `mesh` layers a radial blend from each corner. Stop colors are numbers, so theme
-defaults come from the current theme when the gradient is built (`with svg.Theme.get("dark"):`).
+defaults come from the current theme when the gradient is built (`with svg.themes.get("dark"):`).
 
 ## Filters
 

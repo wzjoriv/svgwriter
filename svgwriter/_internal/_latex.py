@@ -10,6 +10,7 @@ import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from ..errors import DiagramToolError
 from ._constants import (
     DISPLAY_SCALE,
     DVISVGM,
@@ -27,7 +28,7 @@ from ._constants import (
     TEX_SIZE,
     ZIAMATH_SIZE,
 )
-from ._tools import DiagramToolError, find_tool, run_tool, svg_document
+from ._tools import find_tool, run_tool, svg_document
 
 if TYPE_CHECKING:
     from ..model.elements.structure import Group

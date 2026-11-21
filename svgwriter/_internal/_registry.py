@@ -11,33 +11,15 @@ import warnings
 from collections.abc import Callable, Iterator
 from typing import Concatenate, Generic, TypeVar, overload
 
+from ..errors import UnknownNameError
 from ._constants import ENTRY_POINT_PREFIX, SUGGESTIONS
 from ._typing import P
 
-__all__ = ["Registry", "UnknownNameError", "chainable", "owner_of"]
+__all__ = ["Registry", "chainable", "owner_of"]
 
 T = TypeVar("T")
 S = TypeVar("S")
 
-
-class UnknownNameError(KeyError, ValueError):
-    """A name that no registry entry has; the message suggests the closest names.
-
-    It is both a ``KeyError`` (a failed lookup) and a ``ValueError`` (a bad argument value), so either
-    ``except`` catches it.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> try:
-    ...     svg.Theme.get("drak")
-    ... except svg.UnknownNameError as error:
-    ...     print(error)
-    unknown theme 'drak'; did you mean 'dark'?
-    """
-
-    def __str__(self) -> str:
-        return str(self.args[0]) if self.args else ""
 
 
 def owner_of(item: object) -> str:
@@ -70,7 +52,7 @@ class Registry(Generic[T]):
     Examples
     --------
     >>> import svgwriter as svg
-    >>> "dark" in svg.THEMES.list(), svg.THEMES.group
+    >>> "dark" in svg.themes.list(), svg.themes.group
     (True, 'svgwriter.theme')
     """
 

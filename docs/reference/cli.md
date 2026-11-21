@@ -19,13 +19,13 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 | `render SCENE [NAMES ...] [--at SECONDS] [--scale S] [-o FILE]` | Rasterize scenes or an SVG file to PNG |
 | `outline TEXT [--font F] [--size N] [-o FILE]` | Write text as glyph outlines |
 
-Packages add commands through the `svgwriter.command` entry-point group, and `COMMANDS.register(command)`
+Packages add commands through the `svgwriter.command` entry-point group, and `commands.register(command)`
 adds one at run time (see [Extending svgwriter](../guides/extending.md)).
 
 ```{eval-rst}
 .. autodata:: svgwriter.tools.cli.app
    :no-value:
 .. autofunction:: svgwriter.tools.cli.main
-.. autodata:: svgwriter.tools.cli.COMMANDS
+.. autodata:: svgwriter.tools.cli.commands
    :no-value:
 ```

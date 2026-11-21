@@ -113,5 +113,5 @@ class TestAnyElement:
             svg.effects.fire("hot")
 
     def test_unknown_name_suggests(self) -> None:
-        with pytest.raises(svg.UnknownNameError, match="did you mean 'neon'"):
+        with pytest.raises(svg.errors.UnknownNameError, match="did you mean 'neon'"):
             svg.rect(0, 0, 1, 1).effect("nein")

@@ -11,7 +11,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, ClassVar, Final
 
 from ..._internal._constants import SUGGESTIONS
-from ..._internal._registry import Registry, UnknownNameError
+from ..._internal._registry import Registry
+from ...errors import UnknownNameError
 from ._constants import DEFAULT_PAGE_OPTION, EXTENSION_DOT
 
 if TYPE_CHECKING:
@@ -36,8 +37,10 @@ class Format:
     name : str
         The format name, given as ``format=`` (stored lower-case).
     extensions : tuple of str, optional
-        File extensions that select the format, the format's own first (``(".svg", ".svgz")``: ``.svgz``
-        goes to a format that lists it first, such as ``svgz``). Defaults to ().
+        File extensions that select the format for reading and writing; when two formats list one, the
+        format that lists it first wins (``.jpg``, ``.jpeg``). Defaults to ().
+    read_extensions : tuple of str, optional
+        Further extensions that select the format for reading only (``(".json",)``). Defaults to ().
     binary : bool, optional
         Whether :meth:`write` returns ``bytes`` (otherwise ``str``). Defaults to True.
     multipage : bool, optional
@@ -77,25 +80,27 @@ class Format:
     >>> _ = doc.circle(5, 5, 2)
     >>> doc.export("count"), len(svg.Document.from_string("3", "count"))
     ('1', 3)
-    >>> svg.FORMATS.writer("tally.count").description
+    >>> svg.formats.writer("tally.count").description
     'The number of top-level elements.'
-    >>> _ = svg.FORMATS.unregister("count")
+    >>> _ = svg.formats.unregister("count")
     """
 
     name: ClassVar[str] = ""
     extensions: ClassVar[tuple[str, ...]] = ()
+    read_extensions: ClassVar[tuple[str, ...]] = ()
     binary: ClassVar[bool] = True
     multipage: ClassVar[bool] = False
     page_option: ClassVar[str | None] = None
 
-    def __init_subclass__(cls, *, name: str | None = None, extensions: tuple[str, ...] = (), binary: bool = True,
-                          multipage: bool = False, page_option: str = DEFAULT_PAGE_OPTION, replace: bool = False,
-                          **kwargs: Any) -> None:
+    def __init_subclass__(cls, *, name: str | None = None, extensions: tuple[str, ...] = (),
+                          read_extensions: tuple[str, ...] = (), binary: bool = True, multipage: bool = False,
+                          page_option: str = DEFAULT_PAGE_OPTION, replace: bool = False, **kwargs: Any) -> None:
         super().__init_subclass__(**kwargs)
         if name is None:
             return
         cls.name = name.lower()
         cls.extensions = _extensions(extensions)
+        cls.read_extensions = _extensions(read_extensions)
         cls.binary = binary
         cls.multipage = multipage
         cls.page_option = page_option if multipage else None
@@ -162,9 +167,9 @@ class FormatRegistry(Registry[Format]):
     Examples
     --------
     >>> import svgwriter as svg
-    >>> svg.FORMATS.writer("drawing.pdf").name, svg.FORMATS.reader(".svgz").name
+    >>> svg.formats.writer("drawing.pdf").name, svg.formats.reader(".svgz").name
     ('pdf', 'svg')
-    >>> {"svg", "png", "pdf"} <= set(svg.FORMATS.writers()), "image" in svg.FORMATS.readers()
+    >>> {"svg", "png", "pdf"} <= set(svg.formats.writers()), "image" in svg.formats.readers()
     (True, True)
     """
 
@@ -206,7 +211,7 @@ class FormatRegistry(Registry[Format]):
         UnknownNameError
             If no writable format matches; the message suggests the closest names.
         """
-        return self._match(key, "write", lambda found: found.writable)
+        return self._match(key, "write", lambda found: found.writable, lambda found: found.extensions)
 
     def reader(self, key: str | os.PathLike[str]) -> Format:
         """The format that reads a name, an extension (``".svg"``, ``"svg"``) or a file path.
@@ -226,9 +231,11 @@ class FormatRegistry(Registry[Format]):
         UnknownNameError
             If no readable format matches; the message suggests the closest names.
         """
-        return self._match(key, "read", lambda found: found.readable)
+        return self._match(key, "read", lambda found: found.readable,
+                           lambda found: found.extensions + found.read_extensions)
 
-    def _match(self, key: str | os.PathLike[str], way: str, able: Callable[[Format], bool]) -> Format:
+    def _match(self, key: str | os.PathLike[str], way: str, able: Callable[[Format], bool],
+               extensions: Callable[[Format], tuple[str, ...]]) -> Format:
         """The format *able* to handle *key*: by name, then by its own extension, then by any extension."""
         text = os.fspath(key)
         lowered = text.lower()
@@ -242,13 +249,13 @@ class FormatRegistry(Registry[Format]):
             candidates = [found for found in map(self.get, self._names(plugins=plugins)) if able(found)]
             for primary in (True, False):
                 for found in candidates:
-                    if suffix in (found.extensions[:1] if primary else found.extensions):
+                    if suffix in (found.extensions[:1] if primary else extensions(found)):
                         return found
-        names = sorted({found.name for found in candidates} | {e for found in candidates for e in found.extensions})
+        names = sorted({found.name for found in candidates} | {e for found in candidates for e in extensions(found)})
         close = difflib.get_close_matches(suffix if path_like else lowered, names, n=SUGGESTIONS)
         hint = f"; did you mean {' or '.join(map(repr, close))}?" if close else ""
         listing = "readers" if way == "read" else "writers"
-        raise UnknownNameError(f"no format can {way} {text!r}{hint} (svg.FORMATS.{listing}() lists them)")
+        raise UnknownNameError(f"no format can {way} {text!r}{hint} (svg.formats.{listing}() lists them)")
 
 
 def _load_builtins() -> None:

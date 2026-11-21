@@ -7,7 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .._internal._presets import SIZES
-from .._internal._registry import UnknownNameError
+from ..errors import UnknownNameError
 from ..model.attributes.length import Length, LengthLike, Unit
 from ._constants import BUILTIN_SIZES, IDENTIFIER_SEPARATORS, LANDSCAPE_SUFFIX, PORTRAIT_SUFFIX
 
@@ -187,7 +187,7 @@ def page_size(size: str | PageSize) -> tuple[Length, Length]:
     >>> svg.page_size("a44")
     Traceback (most recent call last):
     ...
-    svgwriter._internal._registry.UnknownNameError: unknown size 'a44'; did you mean 'a4'? (svg.preset.size.list() lists every size)
+    svgwriter.errors.UnknownNameError: unknown size 'a44'; did you mean 'a4'? (svg.preset.size.list() lists every size)
     """
     if isinstance(size, PageSize):
         return size.lengths

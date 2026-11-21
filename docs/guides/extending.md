@@ -6,11 +6,11 @@ Everything svgwriter finds by name lives in a registry, and every registry works
 | --- | --- |
 | `@registry.register`, `@registry.register(name=..., replace=True)`, `registry.register(item)` | adds an entry, under its own name unless `name=` is given |
 | `registry.list()` | every name, built-in ones first |
-| `registry.get(name)` | the entry; an unknown name raises `svg.UnknownNameError` suggesting the closest names |
+| `registry.get(name)` | the entry; an unknown name raises `svg.errors.UnknownNameError` suggesting the closest names |
 | `registry.unregister(name)` | removes an entry you added; a built-in you replaced comes back |
 
 A taken name raises `ValueError` naming the function or module that owns it, built-ins included;
-`replace=True` replaces one on purpose. `svg.UnknownNameError` is both a `KeyError` and a `ValueError`.
+`replace=True` replaces one on purpose. `svg.errors.UnknownNameError` is both a `KeyError` and a `ValueError`.
 
 | Registry | Entries | Entry-point group |
 | --- | --- | --- |
@@ -20,10 +20,10 @@ A taken name raises `ValueError` naming the function or module that owns it, bui
 | `svg.preset.size` | page sizes for `Document(size=...)` | `svgwriter.size` |
 | `svg.preset.pattern`, `filter`, `gradient`, `marker` | functions returning that definition, joining `svg.patterns` and the others | `svgwriter.pattern`, ... |
 | `svg.preset.effect` | `f(element, *, option=default)` styling any element (`el.effect(name)`) | `svgwriter.effect` |
-| `svg.THEMES` | `svg.Theme` instances | `svgwriter.theme` |
+| `svg.themes` | `svg.Theme` instances | `svgwriter.theme` |
 | `svg.FORMATS` | `svg.Format` subclasses (one instance each) | `svgwriter.format` |
-| `svg.RENDERERS` | `f(document, seconds)` returning PNG bytes or an RGBA array | `svgwriter.renderer` |
-| `svg.project.PRESETS` | `svg.project.Preset` starter folders (`svgwriter new --preset`) | `svgwriter.project_preset` |
+| `svg.renderers` | `f(document, seconds)` returning PNG bytes or an RGBA array | `svgwriter.renderer` |
+| `svg.project.presets` | `svg.project.Preset` starter folders (`svgwriter new --preset`) | `svgwriter.project_preset` |
 | `svgwriter` command line | click commands | `svgwriter.command` |
 
 `svg.preset.KINDS` maps each preset kind to its registry.
@@ -78,10 +78,10 @@ for kind, name in [("animation", "bob"), ("behavior", "drift"), ("shape", "badge
 ## Themes
 
 ```python
-brand = svg.Theme.get("light").replace(name="brand", palette={"primary": "#ff6600"})
-svg.THEMES.register(brand)
+brand = svg.themes.get("light").replace(name="brand", palette={"primary": "#ff6600"})
+svg.themes.register(brand)
 doc = svg.Document(100, 100, theme="brand")
-svg.THEMES.unregister("brand")
+svg.themes.unregister("brand")
 ```
 
 ## Formats
@@ -95,7 +95,7 @@ class Count(svg.Format, name="count", extensions=(".count",), binary=False):
 
 
 doc.save("figure.count")
-svg.FORMATS.unregister("count")
+svg.formats.unregister("count")
 ```
 
 See [Export and import](export-import.md#your-own-formats) for reading, multi-page formats and lookups.
@@ -103,13 +103,13 @@ See [Export and import](export-import.md#your-own-formats) for reading, multi-pa
 ## Renderers
 
 ```python
-@svg.RENDERERS.register(name="flat")
+@svg.renderers.register(name="flat")
 def flat(document: svg.Document, seconds: float) -> bytes:
     return document.at(seconds).export("png")
 
 
 # svgwriter animate scene.py --renderer flat
-svg.RENDERERS.unregister("flat")
+svg.renderers.unregister("flat")
 ```
 
 ## Project presets
@@ -120,8 +120,8 @@ from pathlib import Path
 folder = Path("badge-preset")
 folder.mkdir(exist_ok=True)
 (folder / "README.md").write_text("# {{ project_name }}\n", encoding="utf-8")
-svg.project.PRESETS.register(svg.project.Preset("badge", "A round badge", folder, extends="blank"))
-svg.project.PRESETS.unregister("badge")
+svg.project.presets.register(svg.project.Preset("badge", "A round badge", folder, extends="blank"))
+svg.project.presets.unregister("badge")
 ```
 
 ## Command-line commands
@@ -163,6 +163,6 @@ hello = "svgwriter_hello:hello"
 ```
 
 Entry points load the first time a registry is listed or asked for a name it does not have, so they
-cost nothing until then, and a built-in lookup such as `svg.Theme.get("dark")` never loads them. A plugin
+cost nothing until then, and a built-in lookup such as `svg.themes.get("dark")` never loads them. A plugin
 that fails to import is reported once as a `RuntimeWarning` naming the entry point, and the rest of
 svgwriter keeps working.

@@ -40,9 +40,9 @@ class TestGradients:
         assert max(middle.r, middle.g, middle.b) > 0.5
 
     def test_theme_gradient_follows_the_current_theme(self) -> None:
-        with svg.Theme.get("dark"):
+        with svg.themes.get("dark"):
             dark = svg.gradients.theme()
-        assert dark[0].get("stop-color") == svg.Theme.get("dark").palette.primary
+        assert dark[0].get("stop-color") == svg.themes.get("dark").palette.primary
 
     def test_angle_sets_the_direction(self) -> None:
         down = svg.gradients.blend("red", "blue", angle=90)

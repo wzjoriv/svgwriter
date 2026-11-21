@@ -10,27 +10,12 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
+from ...errors import SceneError
 from ._constants import SCENE_RUN_NAME, SCENE_SCRIPT, SCENE_SVG
 from .scene import Scene
 
-__all__ = ["SceneError", "load_scenes"]
+__all__ = ["load_scenes"]
 
-
-class SceneError(ValueError):
-    """A source defines no scene, or no scene with a requested name.
-
-    Subclasses :class:`ValueError`.
-
-    See Also
-    --------
-    load_scenes : Raises it.
-
-    Examples
-    --------
-    >>> from svgwriter.motion.video import SceneError
-    >>> issubclass(SceneError, ValueError)
-    True
-    """
 
 
 def _split(source: str) -> tuple[str, str | None]:
@@ -107,7 +92,7 @@ def load_scenes(source: str | Path, names: Sequence[str] = ()) -> list[Scene]:
     >>> [scene.name for scene in load_scenes("svgwriter.motion.video.scene:Scene")]
     Traceback (most recent call last):
     ...
-    svgwriter.motion.video.loader.SceneError: 'Scene' in svgwriter.motion.video.scene is not a scene
+    svgwriter.errors.SceneError: 'Scene' in svgwriter.motion.video.scene is not a scene
     """
     text = str(source)
     if Path(text).suffix.lower() == SCENE_SVG:

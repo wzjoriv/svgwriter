@@ -48,10 +48,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from . import ops
+from . import errors, ops
 from ._document.sizes import PageSize, page_size, size
 from ._internal._constants import SUGGESTIONS as _SUGGESTIONS
-from ._internal._registry import Registry, UnknownNameError
+from ._internal._registry import Registry
 from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
 from .aliases import filter as filter  # noqa: A004, E402
@@ -63,7 +63,7 @@ from .catalog.fonts import FontBuilder
 from .document import Document
 from .formats import export, inkscape
 from .formats import io as io
-from .formats.export import FORMATS, Format
+from .formats.export import Format
 from .formats.io.writer import SerializeOptions, to_string, write
 from .model import attributes as attributes
 from .model import color as color
@@ -105,10 +105,10 @@ from .model.elements import *  # noqa: F403
 from .model.elements import __all__ as _elements_all
 from .model.layout import Grid, HStack, Spacer, VStack
 from .model.pathdata import BBox, PathBuilder, PathData
-from .model.theme import THEMES, Theme
+from .model.theme import Theme, themes
 from .model.transform import Matrix, Point, Transform
 from .motion import video
-from .motion.video import RENDERERS, FFmpegNotFoundError, Scene
+from .motion.video import Scene, renderers
 from .ops import (
     Typeface,
     distribute,
@@ -125,7 +125,7 @@ from .tools.widgets import interact, sweep
 if TYPE_CHECKING:
     from ._internal._latex import latex
     from .formats.io import write_async
-    from .formats.io.parser import Strictness, SVGParseError, parse, parse_file
+    from .formats.io.parser import Strictness, parse, parse_file
 
 __version__ = "2.4.0"
 __author__ = "Josue N Rivera"
@@ -135,7 +135,6 @@ _LAZY = {
     "parse": ("formats.io.parser", "parse"),
     "parse_file": ("formats.io.parser", "parse_file"),
     "Strictness": ("formats.io.parser", "Strictness"),
-    "SVGParseError": ("formats.io.parser", "SVGParseError"),
     "write_async": ("formats.io", "write_async"),
 }
 
@@ -165,11 +164,9 @@ def __dir__() -> list[str]:
 
 __all__ = [
     "BBox",
-    "FFmpegNotFoundError",
     "FontBuilder",
     "IRI",
     "Point",
-    "SVGParseError",
     "Scene",
     "Align",
     "Color",
@@ -188,7 +185,7 @@ __all__ = [
     "Strictness",
     "Style",
     "StyleSheet",
-    "THEMES",
+    "themes",
     "Theme",
     "Transform",
     "Typeface",
@@ -241,10 +238,9 @@ __all__ = [
     "percent",
     "pt",
     "px",
-    "RENDERERS",
+    "renderers",
     "Registry",
-    "UnknownNameError",
-    "FORMATS",
+    "errors",
     "Format",
     "size",
     "text_to_path",

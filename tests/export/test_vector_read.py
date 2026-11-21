@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter.formats.export import FORMATS
+from svgwriter import formats
 
 TOLERANCE = 0.01
 PT = 96 / 72
@@ -38,7 +38,7 @@ def assert_same_geometry(original: svg.Document, back: svg.Document) -> None:
 def test_round_trip(name: str) -> None:
     doc = drawing()
     data = doc.export(name)
-    back = FORMATS.reader(name).read(data.encode() if isinstance(data, str) else data)
+    back = formats.reader(name).read(data.encode() if isinstance(data, str) else data)
     assert_same_geometry(doc, back)
     assert paints(back) == [("#ff0000", "None"), ("none", "#0000ff"), ("#00aa00", "None"), ("#000000", "None")]
     assert back[1].get("stroke-width") == pytest.approx(2)
@@ -48,7 +48,7 @@ def test_round_trip(name: str) -> None:
 @pytest.mark.parametrize("name", ["pdf", "tikz"])
 def test_round_trip_keeps_opacity(name: str) -> None:
     data = drawing().export(name)
-    back = FORMATS.reader(name).read(data.encode() if isinstance(data, str) else data)
+    back = formats.reader(name).read(data.encode() if isinstance(data, str) else data)
     assert back[3].get("opacity") == pytest.approx(0.5) and back[0].get("opacity") is None
 
 
@@ -57,7 +57,7 @@ def test_round_trip_dashes_and_fill_with_stroke(name: str) -> None:
     doc = svg.Document(50, 50)
     doc.rect(5, 5, 20, 20, fill="yellow", stroke="purple", stroke_width=3, stroke_dasharray="4 2")
     data = doc.export(name)
-    back = FORMATS.reader(name).read(data.encode() if isinstance(data, str) else data)
+    back = formats.reader(name).read(data.encode() if isinstance(data, str) else data)
     path, = back
     assert (path.get("fill"), path.get("stroke"), path.get("stroke-dasharray")) == ("#ffff00", "#800080", "4 2")
 
@@ -103,7 +103,7 @@ BT /F1 12 Tf (ignored text with re f) Tj ET
 
 class TestPdf:
     def test_flate_form_state_and_colors(self) -> None:
-        doc = FORMATS.reader("pdf").read(pdf_file([PAGE_ONE, b"0 g 0 0 5 5 re f"], [FORM]))
+        doc = formats.reader("pdf").read(pdf_file([PAGE_ONE, b"0 g 0 0 5 5 re f"], [FORM]))
         assert (doc.root.get("width"), doc.root.get("height")) == pytest.approx((100 * PT, 50 * PT))
         line, square, curve, text, form = doc
         assert text.tag == "text" and text.text_content == "ignored text with re f" and text.get("font-size") == 12
@@ -127,11 +127,11 @@ class TestPdf:
     def test_uncompressed_stream_without_catalog(self) -> None:
         data = (b"%PDF-1.1\n1 0 obj << /Type /Page /MediaBox [0 0 20 20] /Contents 2 0 R >> endobj\n"
                 b"2 0 obj << /Length 999 >> stream\n0.5 G 2 2 m 18 18 l S\nendstream endobj\n")
-        line, = FORMATS.reader("pdf").read(data)
+        line, = formats.reader("pdf").read(data)
         assert line.get("stroke") == "#808080" and line.bounds() == pytest.approx(tuple(v * PT for v in (2, 2, 16, 16)))
 
     def test_bad_input(self) -> None:
-        reader = FORMATS.reader("pdf").read
+        reader = formats.reader("pdf").read
         with pytest.raises(ValueError, match="not a PDF"):
             reader(b"hello world")
         with pytest.raises(ValueError, match="no pages"):
@@ -156,7 +156,7 @@ showpage
 
 class TestEps:
     def test_procedures_and_operators(self) -> None:
-        doc = FORMATS.reader("eps").read(EPS_PROCEDURES)
+        doc = formats.reader("eps").read(EPS_PROCEDURES)
         box, circle, dashed, rotated = doc
         assert box.get("fill") == "#808080" and box.bounds() == pytest.approx(tuple(v * PT for v in (10, 70, 20, 20)))
         assert circle.get("stroke") == "#0000ff" and circle.bounds() == pytest.approx(tuple(v * PT for v in (40, 40, 20, 20)), abs=TOLERANCE)
@@ -165,7 +165,7 @@ class TestEps:
         assert rotated.bounds() == pytest.approx(tuple(v * PT for v in (80, 80, 10, 10)))
 
     def test_arcn_and_relative_curve(self) -> None:
-        doc = FORMATS.reader("eps").read(b"%!PS\n0 0 moveto 10 0 rlineto 10 0 10 180 0 arcn 0 10 0 10 10 10 rcurveto stroke")
+        doc = formats.reader("eps").read(b"%!PS\n0 0 moveto 10 0 rlineto 10 0 10 180 0 arcn 0 10 0 10 10 10 rcurveto stroke")
         path, = doc
         assert (path.bounds().width, path.bounds().height) == pytest.approx((30 * PT, 10 * PT), abs=TOLERANCE)
 
@@ -175,13 +175,13 @@ class TestEps:
         /Glyphs 2 dict dup begin /l {0 0 moveto 99 99 lineto stroke} def end def
         << /k 5 >> begin 0 0 moveto k k l end
         1 0 0 setrgbcolor gsave fill grestore 0 setgray stroke"""
-        path, = FORMATS.reader("eps").read(program)
+        path, = formats.reader("eps").read(program)
         assert (path.get("fill"), path.get("stroke")) == ("#ff0000", "#000000")
         assert path.bounds().width == pytest.approx(5 * PT)
 
     def test_bad_input(self) -> None:
         with pytest.raises(ValueError, match="not PostScript"):
-            FORMATS.reader("eps").read(b"\x00\x01garbage")
+            formats.reader("eps").read(b"\x00\x01garbage")
 
     @pytest.mark.parametrize("angle", [0, 30, 90])
     def test_exported_image_round_trip(self, angle: int) -> None:
@@ -190,7 +190,7 @@ class TestEps:
         doc = svg.Document(100, 80)
         original = doc.add(svg.Image(pixels, 20, 10, 36, 24, preserve_aspect_ratio="none"))
         original.t = svg.Matrix.rotate(angle, 38, 22)
-        back = FORMATS.reader("eps").read(svg.export.export(doc, "eps"))
+        back = formats.reader("eps").read(svg.export.export(doc, "eps"))
         image = next(e for e in back.root.iter() if e.tag == "image")
         assert image.bounds() == pytest.approx(original.bounds(), abs=0.5)
         assert image.rgba()[0, 0].tolist() == pytest.approx([1, 0, 0, 1], abs=0.02)
@@ -198,19 +198,19 @@ class TestEps:
 
     def test_image_from_procedure(self) -> None:
         program = b"%!PS\n%%BoundingBox: 0 0 20 10\n20 10 scale 2 1 8 [2 0 0 1 0 0] {<ff00>} image"
-        image = next(e for e in FORMATS.reader("eps").read(program).root.iter() if e.tag == "image")
+        image = next(e for e in formats.reader("eps").read(program).root.iter() if e.tag == "image")
         assert image.rgba()[0, :, 0].tolist() == pytest.approx([1, 0])
 
     def test_text_font_and_position(self) -> None:
         program = b"%!PS\n%%BoundingBox: 0 0 100 50\n/Helvetica-Bold findfont 12 scalefont setfont 10 10 moveto (Hi) show"
-        text = next(e for e in FORMATS.reader("eps").read(program).root.iter() if e.tag == "text")
+        text = next(e for e in formats.reader("eps").read(program).root.iter() if e.tag == "text")
         assert text.text_content == "Hi" and text.get("font-size") == 12
         assert text.get("font-family") == "Helvetica" and text.get("font-weight") == "bold"
         assert text.t.apply(0, 0) == pytest.approx((10 * PT, 40 * PT))
 
     def test_text_advances_current_point(self) -> None:
         program = b"%!PS\n%%BoundingBox: 0 0 100 50\n/Times-Roman 10 selectfont 5 5 moveto (AB) show (C) show"
-        first, second = (e for e in FORMATS.reader("eps").read(program).root.iter() if e.tag == "text")
+        first, second = (e for e in formats.reader("eps").read(program).root.iter() if e.tag == "text")
         assert second.t.apply(0, 0)[0] > first.t.apply(0, 0)[0] + 5
 
     def test_clip_intersects_and_restores(self) -> None:
@@ -219,9 +219,9 @@ class TestEps:
 gsave 10 10 moveto 60 10 lineto 60 60 lineto 10 60 lineto closepath clip
 newpath 30 30 moveto 90 30 lineto 90 90 lineto 30 90 lineto closepath clip
 newpath 0 0 100 100 rectfill grestore 1 0 0 setrgbcolor 0 0 5 5 rectfill"""
-        clipped, plain = FORMATS.reader("eps").read(program)
+        clipped, plain = formats.reader("eps").read(program)
         assert clipped.get("clip-path") is not None and plain.get("clip-path") is None
-        assert "M40 53.3333 L80 53.3333 L80 93.3333 L40 93.3333 Z" in FORMATS.reader("eps").read(program).export("svg")
+        assert "M40 53.3333 L80 53.3333 L80 93.3333 L40 93.3333 Z" in formats.reader("eps").read(program).export("svg")
 
 
 TIKZ = r"""
@@ -245,7 +245,7 @@ TIKZ = r"""
 class TestTikz:
     def test_hand_written(self) -> None:
         cm = 96 / 2.54
-        triangle, circle, square, label, curve, dot = FORMATS.reader("tikz").read(TIKZ.encode())
+        triangle, circle, square, label, curve, dot = formats.reader("tikz").read(TIKZ.encode())
         assert label.text_content == "label"
         assert triangle.get("stroke") == "#ff0000" and triangle.get("stroke-width") == pytest.approx(0.8 * TEX_PT) and triangle.get("fill") == "none"
         assert triangle.bounds() == pytest.approx((0, -cm, 2 * cm, cm))
@@ -256,13 +256,13 @@ class TestTikz:
         assert dot.bounds().width == pytest.approx(6 * TEX_PT, abs=TOLERANCE) and dot.get("fill") == "#336699"
 
     def test_bounding_box_sets_the_page(self) -> None:
-        doc = FORMATS.reader("tikz").read(rb"\begin{tikzpicture}[x=0.75bp,y=-0.75bp]\useasboundingbox (0,0) rectangle (40,20);"
+        doc = formats.reader("tikz").read(rb"\begin{tikzpicture}[x=0.75bp,y=-0.75bp]\useasboundingbox (0,0) rectangle (40,20);"
                                              rb"\fill (5,5) rectangle (10,10);\end{tikzpicture}")
         assert doc.root.view_box == (0, 0, 40, 20) and doc[0].bounds() == pytest.approx((5, 5, 5, 5))
 
     def test_bad_input(self) -> None:
         with pytest.raises(ValueError, match="not TikZ"):
-            FORMATS.reader("tikz").read(b"just some text")
+            formats.reader("tikz").read(b"just some text")
 
 
 class TestPdfContent:
@@ -270,7 +270,7 @@ class TestPdfContent:
         doc = svg.Document(100, 60)
         doc.add(svg.Image(np.ones((4, 6, 3)) * [1, 0, 0], 10, 10, 30, 20))
         doc.circle(70, 30, 20, fill="teal").clip(svg.rect(60, 20, 30, 30))
-        back = FORMATS.reader("pdf").read(svg.export.export(doc, "pdf"))
+        back = formats.reader("pdf").read(svg.export.export(doc, "pdf"))
         tags = [e.tag for e in back.root.iter()]
         assert "image" in tags and "clipPath" in tags
         image = next(e for e in back.root.iter() if e.tag == "image")
@@ -280,7 +280,7 @@ class TestPdfContent:
     def test_text_position_and_font(self) -> None:
         page = b"BT /F2 20 Tf 1 0 0 1 10 30 Tm (Hi) Tj ET"
         data = pdf_file([page], [], fonts={"F2": "ABCDEF+Helvetica-Bold"})
-        text = next(e for e in FORMATS.reader("pdf").read(data).root.iter() if e.tag == "text")
+        text = next(e for e in formats.reader("pdf").read(data).root.iter() if e.tag == "text")
         assert text.text_content == "Hi" and text.get("font-size") == 20 and text.get("font-weight") == "bold"
         assert text.get("font-family") == "Helvetica"
 
@@ -380,17 +380,17 @@ def test_tikz_foreach_unrolls():
 
 
 def test_pdf_page_sized_clips_are_dropped() -> None:
-    from svgwriter.formats.export import FORMATS
+    from svgwriter import formats
 
     content = b"q 0 0 100 50 re W n 0 0 1 rg 10 10 20 20 re f Q q 0 0 100 50 re W n 1 0 0 rg 40 10 20 20 re f Q"
     pdf = pdf_file([content])
-    doc = FORMATS.reader("pdf").read(pdf)
+    doc = formats.reader("pdf").read(pdf)
     assert not [e for e in doc.root.iter() if e.tag == "clipPath"]
     assert len([e for e in doc.root.iter() if e.tag == "path"]) == 2
 
 
 def test_pdf_smaller_clips_are_kept() -> None:
-    from svgwriter.formats.export import FORMATS
+    from svgwriter import formats
 
-    doc = FORMATS.reader("pdf").read(pdf_file([b"q 0 0 30 30 re W n 1 0 0 rg 0 0 100 50 re f Q"]))
+    doc = formats.reader("pdf").read(pdf_file([b"q 0 0 30 30 re W n 1 0 0 rg 0 0 100 50 re f Q"]))
     assert [e for e in doc.root.iter() if e.tag == "clipPath"]

@@ -18,7 +18,7 @@ from .commands import (
     VLineTo,
 )
 from .data import BBox, PathData, PathDataLike
-from .parser import PathSyntaxError, iter_commands, parse_path
+from .parser import iter_commands, parse_path
 
 __all__ = [
     "ArcTo",
@@ -33,7 +33,6 @@ __all__ = [
     "PathCommand",
     "PathData",
     "PathDataLike",
-    "PathSyntaxError",
     "QuadTo",
     "SmoothCurveTo",
     "SmoothQuadTo",

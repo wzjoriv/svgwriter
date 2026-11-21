@@ -11,8 +11,8 @@ from typing import Any
 import click
 
 from ...model.attributes.length import Length
-from ...model.theme import THEMES
-from ..project import PRESETS
+from ...model.theme import themes
+from ..project import presets
 from ._constants import COMMON_SIZES, CUSTOM_SIZE, KEEP_CHOICE, PRESET_COLUMN, SIZE_SEPARATOR
 
 __all__ = ["ask_name", "ask_notebook", "ask_preset", "ask_size", "ask_theme", "has_questionary", "interactive",
@@ -91,8 +91,8 @@ def ask_preset() -> str:
     """Ask for a preset with arrow keys; each choice shows its description."""
     import questionary
 
-    choices = [questionary.Choice(f"{name:<{PRESET_COLUMN}} {PRESETS.get(name).description}", name)
-               for name in PRESETS.list()]
+    choices = [questionary.Choice(f"{name:<{PRESET_COLUMN}} {presets.get(name).description}", name)
+               for name in presets.list()]
     return str(_answer(questionary.select("Preset", choices=choices)))
 
 
@@ -108,7 +108,7 @@ def ask_theme() -> str | None:
     """Ask for a built-in theme to extend; None keeps the preset's own."""
     import questionary
 
-    choices = [questionary.Choice(KEEP_CHOICE, KEEP_CHOICE), *(questionary.Choice(name, name) for name in THEMES.list())]
+    choices = [questionary.Choice(KEEP_CHOICE, KEEP_CHOICE), *(questionary.Choice(name, name) for name in themes.list())]
     picked = _answer(questionary.select("Theme", choices=choices))
     return None if picked == KEEP_CHOICE else picked
 

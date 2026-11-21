@@ -263,7 +263,7 @@ def read_icon(data: bytes) -> Document:
     --------
     >>> import svgwriter as svg
     >>> data = svg.export.export(svg.Document(8, 8), "ico", sizes=(16,))
-    >>> svg.FORMATS.reader(".ico").read(data).root.view_box.width
+    >>> svg.formats.reader(".ico").read(data).root.view_box.width
     16
     """
     from ._icons import read_icon as read
@@ -292,7 +292,7 @@ def read_image(data: bytes) -> Document:
     --------
     >>> import svgwriter as svg
     >>> png = svg.export.export(svg.Document(4, 2), "png")
-    >>> doc = svg.FORMATS.reader(".png").read(png)
+    >>> doc = svg.formats.reader(".png").read(png)
     >>> doc.root.view_box.width, len(doc)
     (4, 1)
     """
@@ -326,7 +326,7 @@ def read_pnm(data: bytes) -> Document:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> doc = svg.FORMATS.reader(".pgm").read(b"P2\\n2 1\\n255\\n0 255\\n")
+    >>> doc = svg.formats.reader(".pgm").read(b"P2\\n2 1\\n255\\n0 255\\n")
     >>> doc.root.view_box.width, len(doc)
     (2, 1)
     """

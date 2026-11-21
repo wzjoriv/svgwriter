@@ -21,7 +21,7 @@ class TestPresets:
             doc += [builder.outline(1, 1, 18, 18), builder.dashed_line(0, 10, 20, 10), builder.dot(10, 10)]
             doc += builder.star(10, 10, 5, stroke="red")
             text = doc.to_string()
-            theme = svg.Theme.get(name)
+            theme = svg.themes.get(name)
             for role in ("outline", "line", "dot", "shape"):
                 assert str(theme.css([role])) in text
 

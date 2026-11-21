@@ -7,10 +7,10 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import TYPE_CHECKING
 
+from ...errors import ThemeError
 from ..attributes.style import Style
 from ..color.color import Color
 from ._constants import LENGTH_PROPERTIES, OPACITY_PROPERTIES, REFERENCE_RE, ROLE_NAME_RE
-from ._errors import ThemeError
 from ._expression import evaluate, is_expression
 
 if TYPE_CHECKING:

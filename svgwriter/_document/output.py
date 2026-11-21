@@ -330,7 +330,8 @@ class Output:
         ...     [page.root.get("width") for page in svg.Document.open_all(path)]
         [10.0, 20.0]
         """
-        from ..formats.export import FORMATS, load
+        from ..formats.export import load
+        from ..formats.export._format import FORMATS
 
         page_option = FORMATS.reader(format or path).page_option
         if page_option is not None:

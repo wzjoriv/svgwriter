@@ -198,7 +198,7 @@ class TestParser:
 
 
 def test_parse_rejects_non_svg_root_but_accepts_fragments():
-    with pytest.raises(svg.SVGParseError, match="not an SVG element"):
+    with pytest.raises(svg.errors.SVGParseError, match="not an SVG element"):
         svg.parse("<html/>")
     assert svg.parse('<circle r="2"/>').tag == "circle"
 

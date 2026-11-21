@@ -24,4 +24,5 @@ video
 widgets
 project
 cli
+errors
 ```

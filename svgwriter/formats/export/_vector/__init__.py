@@ -224,7 +224,7 @@ def read_pdf(data: bytes, *, page: int | None = 0) -> Document | list[Document]:
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, fill="red")
     >>> data = svg.export.export(doc, "pdf")
-    >>> svg.FORMATS.reader(".pdf").read(data)[0].get("fill")
+    >>> svg.formats.reader(".pdf").read(data)[0].get("fill")
     '#ff0000'
     """
     from ._pdf_read import page_count
@@ -271,7 +271,7 @@ def read_tikz(data: bytes) -> Document:
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, fill="red")
     >>> data = svg.export.export(doc, "tikz").encode()
-    >>> svg.FORMATS.reader(".tex").read(data)[0].get("fill")
+    >>> svg.formats.reader(".tex").read(data)[0].get("fill")
     '#ff0000'
     """
     from ._tikz_read import read_tikz as read
@@ -315,7 +315,7 @@ def read_eps(data: bytes) -> Document:
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, fill="red")
     >>> data = svg.export.export(doc, "eps")
-    >>> svg.FORMATS.reader(".eps").read(data)[0].get("fill")
+    >>> svg.formats.reader(".eps").read(data)[0].get("fill")
     '#ff0000'
     """
     from ._eps_read import read_eps as read

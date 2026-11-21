@@ -21,7 +21,7 @@ def test_pptx_shapes_keep_paint_alpha_and_pictures():
     shapes = list(deck.slides[0].shapes)
     kinds = sorted(type(s).__name__ for s in shapes)
     assert kinds == ["Picture", "Shape"]
-    back = svg.FORMATS.reader("pptx").read(svg.export.export(_doc(), "pptx"))
+    back = svg.formats.reader("pptx").read(svg.export.export(_doc(), "pptx"))
     path = next(e for e in back if e.tag == "path")
     assert path.get("fill-opacity") == pytest.approx(0.5) and path.get("stroke-width") == pytest.approx(4)
     assert any(e.tag == "image" for e in back)
@@ -39,11 +39,11 @@ def test_pptx_reads_text_boxes_and_presets():
     oval.fill.fore_color.rgb = pptx.dml.color.RGBColor(0, 128, 0)
     buffer = io.BytesIO()
     deck.save(buffer)
-    back = svg.FORMATS.reader("pptx").read(buffer.getvalue())
+    back = svg.formats.reader("pptx").read(buffer.getvalue())
     tags = [e.tag for e in back.root.iter() if e.tag in ("text", "path")]
     assert "text" in tags and "path" in tags
     with pytest.raises(IndexError, match="slides"):
-        svg.FORMATS.reader("pptx").read(buffer.getvalue(), slide=3)
+        svg.formats.reader("pptx").read(buffer.getvalue(), slide=3)
 
 
 def test_excel_holds_a_picture():

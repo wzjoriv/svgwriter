@@ -127,7 +127,7 @@ class Document(Building, Sizing, Theming, Typography, Output, Access, InkscapeDa
         text : str or bytes
             The source; ``str`` is encoded as UTF-8 for formats read as bytes.
         format : str, optional
-            A format name or extension (see ``svg.FORMATS.readers()``). Defaults to ``"svg"``.
+            A format name or extension (see ``svg.formats.readers()``). Defaults to ``"svg"``.
         strictness : Strictness, optional
             How SVG treats unknown elements and unsupported attributes. Defaults to
             ``Strictness.LENIENT``. SVG only.
@@ -166,7 +166,7 @@ class Document(Building, Sizing, Theming, Typography, Output, Access, InkscapeDa
         from .formats.io.parser import Strictness, parse
 
         if format.lower() != "svg":
-            from .formats.export import FORMATS
+            from .formats.export._format import FORMATS
 
             if strictness is not None:
                 raise TypeError("strictness= applies to SVG only")

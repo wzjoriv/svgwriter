@@ -15,7 +15,7 @@ doc.save("figure.pdf")
 doc.save("figure.tex", standalone=True)
 data = doc.export("eps")                      # bytes or str, without a file
 again = svg.Document.open("figure.svg")
-print(svg.FORMATS.writers(), svg.FORMATS.readers())
+print(svg.formats.writers(), svg.formats.readers())
 ```
 
 | Format | Extension(s) | Export | Import | Notes |
@@ -294,14 +294,14 @@ class Lines(svg.Format, name="lines", extensions=(".lines",), binary=False):
 
 doc.save("figure.lines")
 again = svg.Document.open("figure.lines")
-svg.FORMATS.unregister("lines")                      # plugins and tests can clean up
+svg.formats.unregister("lines")                      # plugins and tests can clean up
 ```
 
 `binary=True` (the default) means `write` returns `bytes`; `multipage=True` means `write` also takes a
 list of documents and `read` returns a list when its page option (`page_option=`, `"page"` by default)
-is None. `svg.FORMATS.writer(path)` and `svg.FORMATS.reader(path)` find a format by name, extension or
-file path; a format lists its own extension first, so `.svgz` writes SVGZ while the `svg` format still
-reads it. A package can ship formats through the `svgwriter.format` entry-point group (see
+is None. `svg.formats.writer(path)` and `svg.formats.reader(path)` find a format by name, extension or
+file path. `read_extensions=` adds extensions the format only reads: the `svg` format also reads `.svgz`
+while `.svgz` writes through the `svgz` format, and Excalidraw also reads `.json`. A package can ship formats through the `svgwriter.format` entry-point group (see
 [Extending svgwriter](extending.md)).
 
 ## Diagrams

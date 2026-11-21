@@ -15,7 +15,8 @@ import tomlkit
 
 from ..._internal._constants import ENTRY_POINT_PREFIX
 from ..._internal._registry import Registry
-from ._config import ProjectError, check_size
+from ...errors import ProjectError
+from ._config import check_size
 from ._constants import (
     BUILTIN_PRESETS,
     DOT_PREFIX,
@@ -30,7 +31,7 @@ from ._notebook import notebook_of
 
 SizeChoice = str | Sequence[float | str]
 
-__all__ = ["PRESETS", "Preset", "ProjectPresets", "create"]
+__all__ = ["presets", "Preset", "ProjectPresets", "create"]
 
 
 @dataclass(frozen=True)
@@ -55,7 +56,7 @@ class Preset:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> svg.project.PRESETS.get("poster").extends
+    >>> svg.project.presets.get("poster").extends
     'blank'
     """
 
@@ -76,9 +77,9 @@ class ProjectPresets(Registry[Preset]):
     --------
     >>> import svgwriter as svg, tempfile
     >>> with tempfile.TemporaryDirectory() as folder:
-    ...     preset = svg.project.PRESETS.register(svg.project.Preset("badge", "A round badge", folder, "blank"))
-    ...     print("badge" in svg.project.PRESETS.list())
-    ...     _ = svg.project.PRESETS.unregister("badge")
+    ...     preset = svg.project.presets.register(svg.project.Preset("badge", "A round badge", folder, "blank"))
+    ...     print("badge" in svg.project.presets.list())
+    ...     _ = svg.project.presets.unregister("badge")
     True
     """
 
@@ -91,15 +92,15 @@ class ProjectPresets(Registry[Preset]):
         return Preset(name, item.description, path, item.extends)
 
 
-PRESETS: Final = ProjectPresets("preset", group=ENTRY_POINT_PREFIX + "project_preset")
+presets: Final = ProjectPresets("preset", group=ENTRY_POINT_PREFIX + "project_preset")
 """Every project preset by name; ``svgwriter presets`` lists them."""
 
 
 def _find(name: str) -> Preset:
     """The preset registered as *name*; an unknown name raises :class:`ProjectError` listing the presets."""
-    found = PRESETS.find(name)
+    found = presets.find(name)
     if found is None:
-        raise ProjectError(f"{PRESETS.unknown(name)}; presets: {', '.join(PRESETS.list())}")
+        raise ProjectError(f"{presets.unknown(name)}; presets: {', '.join(presets.list())}")
     return found
 
 
@@ -133,7 +134,7 @@ def _unstyled(table: Any, key: str, value: object) -> None:
 
 
 def _chosen(files: dict[Path, bytes], size: SizeChoice | None, theme: str | None) -> None:
-    from ...model.theme import THEMES
+    from ...model.theme import themes
 
     manifest, theme_file = Path(MANIFEST), Path(THEME_FILE)
     if size is not None:
@@ -143,8 +144,8 @@ def _chosen(files: dict[Path, bytes], size: SizeChoice | None, theme: str | None
         files[manifest] = tomlkit.dumps(document).encode("utf-8")
     if theme is None:
         return
-    if theme not in THEMES:
-        raise ProjectError(f"unknown theme {theme!r}; themes: {', '.join(THEMES.list())}")
+    if theme not in themes:
+        raise ProjectError(f"unknown theme {theme!r}; themes: {', '.join(themes.list())}")
     target, key = (theme_file, None) if theme_file in files else (manifest, "theme")
     document = tomlkit.parse(files[target].decode("utf-8"))
     _unstyled(document if key is None else document["project"], key or "extends", theme)
@@ -180,4 +181,4 @@ def create(path: str | os.PathLike[str], preset: str = "blank", *, notebook: boo
 
 
 for _name, (_description, _extends) in BUILTIN_PRESETS.items():
-    PRESETS.add_builtin(_name, Preset(_name, _description, TEMPLATES / _name, _extends))
+    presets.add_builtin(_name, Preset(_name, _description, TEMPLATES / _name, _extends))

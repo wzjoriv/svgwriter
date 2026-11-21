@@ -93,7 +93,7 @@ doc.add(Badge()).translate(150, 10).scale(0.5)          # also: doc.add(fig) for
 ## Export and import
 
 Formats are found by name or file extension: `doc.save("figure.pdf")`, `svg.Document.open("figure.pdf")`,
-`doc.export("eps")` for bytes. `svg.FORMATS.writers()` and `svg.FORMATS.readers()` list the formats.
+`doc.export("eps")` for bytes. `svg.formats.writers()` and `svg.formats.readers()` list the formats.
 
 | Format | Extension(s) | Export | Import | Notes |
 |---|---|:---:|:---:|---|

@@ -2,11 +2,11 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter.formats.export import FORMATS
+from svgwriter import formats
 
 
 def _round_trip(doc):
-    return FORMATS.reader("pdf").read(svg.export.export(doc, "pdf"))
+    return formats.reader("pdf").read(svg.export.export(doc, "pdf"))
 
 
 def test_gradients_come_back_as_gradients():

@@ -50,7 +50,7 @@ def test_gcode_mill_and_laser() -> None:
 
 
 def test_extension_lookup() -> None:
-    assert {svg.FORMATS.writer(f"a{e}").name for e in (".dxf", ".plt", ".nc", ".gcode")} == {"dxf", "hpgl", "gcode"}
+    assert {svg.formats.writer(f"a{e}").name for e in (".dxf", ".plt", ".nc", ".gcode")} == {"dxf", "hpgl", "gcode"}
 
 
 def test_matplotlib_figures_can_be_added() -> None:
@@ -125,7 +125,7 @@ def test_round_trip_keeps_position_and_page(fmt):
 
     doc = svg.Document(100, 50)
     doc.rect(10, 5, 20, 10, stroke="black", fill="none")
-    back = svg.FORMATS.reader(fmt).read(svg.export.export(doc, fmt).encode())
+    back = svg.formats.reader(fmt).read(svg.export.export(doc, fmt).encode())
     box = back[0].bounds()
     assert (box.x, box.y, box.width, box.height) == pytest.approx((10, 5, 20, 10), abs=1e-3)
     assert (back.root.view_box.width, back.root.view_box.height) == pytest.approx((100, 50), abs=1e-3)
@@ -136,5 +136,5 @@ def test_hpgl_without_page_flips_about_drawing_top():
 
     doc = svg.Document(100, 50)
     doc.rect(10, 5, 20, 10, stroke="black", fill="none")
-    back = svg.FORMATS.reader("hpgl").read(svg.export.export(doc, "hpgl").encode())
+    back = svg.formats.reader("hpgl").read(svg.export.export(doc, "hpgl").encode())
     assert back[0].bounds().y == pytest.approx(0, abs=1e-3)

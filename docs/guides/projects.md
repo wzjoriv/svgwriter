@@ -139,9 +139,9 @@ folder = pathlib.Path("badge-preset")
 folder.mkdir()
 (folder / "svgwriter.toml").write_text('[project]\nname = "{{ project_name }}"\nsize = "icon"\n'
                                        '[outputs]\nformats = ["svg", "png"]\n', encoding="utf-8")
-svg.project.PRESETS.register(svg.project.Preset("badge", "A 512 x 512 app icon", folder, extends="blank"))
-print(svg.project.PRESETS.list())
-svg.project.PRESETS.unregister("badge")
+svg.project.presets.register(svg.project.Preset("badge", "A 512 x 512 app icon", folder, extends="blank"))
+print(svg.project.presets.list())
+svg.project.presets.unregister("badge")
 ```
 
 In a preset folder, a `-tpl` suffix is dropped from file names (`main.py-tpl` becomes `main.py`, so the

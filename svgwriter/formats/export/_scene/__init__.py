@@ -63,7 +63,7 @@ def read_excalidraw(data: bytes) -> Document:
     --------
     >>> import svgwriter as svg
     >>> data = svg.export.export(svg.Document(4, 4), "excalidraw").encode()
-    >>> svg.FORMATS.reader(".excalidraw").read(data).root.tag
+    >>> svg.formats.reader(".excalidraw").read(data).root.tag
     'svg'
     """
     from ._excalidraw import read_excalidraw as read
@@ -71,6 +71,8 @@ def read_excalidraw(data: bytes) -> Document:
     return read(data.decode("utf-8"))
 
 
-class ExcalidrawFormat(Format, name="excalidraw", extensions=(".excalidraw", ".json"), binary=False):
+class ExcalidrawFormat(
+    Format, name="excalidraw", extensions=(".excalidraw",), read_extensions=(".json",), binary=False
+):
     write = staticmethod(excalidraw)
     read = staticmethod(read_excalidraw)

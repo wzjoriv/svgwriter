@@ -93,7 +93,7 @@ def read_svg(data: bytes, **options: Any) -> Document:
     --------
     >>> import svgwriter as svg
     >>> data = svg.export.export(svg.Document(4, 4), "svgz")
-    >>> svg.FORMATS.reader(".svgz").read(data).root.tag
+    >>> svg.formats.reader(".svgz").read(data).root.tag
     'svg'
     """
     from ...document import Document
@@ -103,7 +103,7 @@ def read_svg(data: bytes, **options: Any) -> Document:
     return Document.from_string(data, **options)
 
 
-class SvgFormat(Format, name="svg", extensions=(".svg", ".svgz"), binary=False):
+class SvgFormat(Format, name="svg", extensions=(".svg",), read_extensions=(".svgz",), binary=False):
     write = staticmethod(svg_text)
     read = staticmethod(read_svg)
 

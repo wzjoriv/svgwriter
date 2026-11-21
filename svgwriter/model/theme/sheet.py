@@ -8,9 +8,9 @@ from collections.abc import Generator
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
+from ...errors import ThemeError
 from ._constants import ROLE_CLASS_PREFIX, SHEET_THEME_NAME, STYLE_ID
-from ._errors import ThemeError
-from .theme import THEMES, Theme
+from .theme import Theme, themes
 
 if TYPE_CHECKING:
     from ..attributes.rules import Rule
@@ -44,7 +44,7 @@ def used_roles(theme: Theme, root: Element) -> list[str]:
     >>> import svgwriter as svg
     >>> from svgwriter.model.theme.sheet import used_roles
     >>> g = svg.group(svg.circle(0, 0, 1).as_role("dot"), svg.rect(0, 0, 1, 1).as_role("box"))
-    >>> used_roles(svg.Theme.get("light"), g)
+    >>> used_roles(svg.themes.get("light"), g)
     ['box', 'dot']
     """
     by_class = {Theme.class_name(role): role for role in theme.roles}
@@ -83,7 +83,7 @@ def applied(theme: Theme, root: Element) -> Generator[None, None, None]:
     >>> import svgwriter as svg
     >>> from svgwriter.model.theme.sheet import applied
     >>> root = svg.Svg(svg.circle(0, 0, 1).as_role("dot"))
-    >>> with applied(svg.Theme.get("mono"), root):
+    >>> with applied(svg.themes.get("mono"), root):
     ...     root[0].css
     '.role-dot { fill:#000000;stroke:#000000;stroke-width:1px }'
     >>> len(root)
@@ -147,8 +147,8 @@ def sheet_theme(root: Element) -> Theme | None:
     if not isinstance(sheet, StyleElement):
         return None
     css = sheet.css
-    for name in THEMES.list():
-        theme = THEMES.get(name)
+    for name in themes.list():
+        theme = themes.get(name)
         try:
             roles = used_roles(theme, root)
         except ThemeError:
@@ -181,7 +181,7 @@ def role_rules(theme: Theme) -> dict[str, list[Rule]]:
     --------
     >>> import svgwriter as svg
     >>> from svgwriter.model.theme.sheet import role_rules
-    >>> role_rules(svg.Theme.get("mono"))["role-dot"][0].declarations[0]
+    >>> role_rules(svg.themes.get("mono"))["role-dot"][0].declarations[0]
     ('fill', '#000000', False)
     """
     from ..attributes.rules import parse_css

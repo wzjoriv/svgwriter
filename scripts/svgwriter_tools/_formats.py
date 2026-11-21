@@ -139,7 +139,7 @@ def _readable(name: str) -> bool:
     import svgwriter as svg
 
     try:
-        svg.FORMATS.reader(svg.FORMATS.get(name).extensions[0])
+        svg.formats.reader(svg.formats.get(name).extensions[0])
     except ValueError:
         return False
     return True
@@ -148,7 +148,7 @@ def _readable(name: str) -> bool:
 def _load(name: str, data: bytes, work: Path) -> Document:
     import svgwriter as svg
 
-    suffix = svg.FORMATS.get(name).extensions[0]
+    suffix = svg.formats.get(name).extensions[0]
     path = work / f"export{suffix}"
     path.write_bytes(data)
     return svg.Document.open(path)
@@ -173,7 +173,7 @@ def audit(document: Document, formats: list[str] | None = None) -> tuple[np.ndar
 
     reference = _rasterize(document)
     results = []
-    for name in formats or sorted(svg.FORMATS.writers()):
+    for name in formats or sorted(svg.formats.writers()):
         result = Result(name)
         with tempfile.TemporaryDirectory(prefix=f"svgwriter-{name}-") as folder, warnings.catch_warnings():
             warnings.simplefilter("ignore")

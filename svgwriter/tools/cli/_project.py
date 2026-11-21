@@ -8,7 +8,7 @@ from pathlib import Path
 
 import click
 
-from ..project import PRESETS, Project
+from .. import project
 from ._constants import DEFAULT_PRESET, PRESET_COLUMN, PREVIEW_PORT
 from ._prompts import (
     ask_name,
@@ -29,9 +29,9 @@ PROJECT_PATH = click.option("--path", type=click.Path(path_type=Path), default=P
 
 def _choose_preset() -> str:
     """Ask for a preset with a numbered menu."""
-    names = PRESETS.list()
+    names = project.presets.list()
     for index, name in enumerate(names, 1):
-        click.echo(f"{index:>2}. {name:<{PRESET_COLUMN}} {PRESETS.get(name).description}")
+        click.echo(f"{index:>2}. {name:<{PRESET_COLUMN}} {project.presets.get(name).description}")
     choice = click.prompt("Preset", default=1, type=click.IntRange(1, len(names)))
     return names[choice - 1]
 
@@ -62,8 +62,8 @@ def new(name: str | None, preset: str | None, notebook: bool | None, theme: str 
         notebook = ask_notebook() if notebook is None else notebook
         theme = ask_theme() if theme is None else theme
         choice = ask_size() if size is None else choice
-    project = Project.new(name, preset, notebook=bool(notebook), theme=theme, size=choice)
-    click.echo(f"created {project.root}")
+    created = project.Project.new(name, preset, notebook=bool(notebook), theme=theme, size=choice)
+    click.echo(f"created {created.root}")
     click.echo(f"next: cd {name} && svgwriter preview")
 
 
@@ -73,15 +73,15 @@ def new(name: str | None, preset: str | None, notebook: bool | None, theme: str 
 @PROJECT_PATH
 def build(formats: tuple[str, ...], path: Path) -> None:
     """Write the project's outputs into its output folder."""
-    for written in Project.load(path).build(list(formats) or None):
+    for written in project.Project.load(path).build(list(formats) or None):
         click.echo(written)
 
 
 @click.command()
 def presets() -> None:
     """List project presets."""
-    for name in PRESETS.list():
-        click.echo(f"{name:<{PRESET_COLUMN}} {PRESETS.get(name).description}")
+    for name in project.presets.list():
+        click.echo(f"{name:<{PRESET_COLUMN}} {project.presets.get(name).description}")
 
 
 @click.command()
@@ -90,9 +90,9 @@ def presets() -> None:
 @PROJECT_PATH
 def preview(port: int, open_browser: bool, path: Path) -> None:
     """Serve the outputs on a local page that rebuilds and reloads on every save."""
-    project = Project.load(path)
-    click.echo(f"previewing {project.name} at http://127.0.0.1:{port}/ (Ctrl+C stops)")
-    project.serve(port, open_browser=open_browser)
+    loaded = project.Project.load(path)
+    click.echo(f"previewing {loaded.name} at http://127.0.0.1:{port}/ (Ctrl+C stops)")
+    loaded.serve(port, open_browser=open_browser)
 
 
 def add_project_commands(app: click.Group) -> None:

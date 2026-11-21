@@ -10,8 +10,9 @@ from pathlib import Path
 import click
 
 from ...document import Document
-from ...motion.video import FFmpegError, FFmpegNotFoundError, Scene, SceneError, load_scenes
-from ...motion.video.animation import DEFAULT_FPS, RENDERERS
+from ...errors import FFmpegError, FFmpegNotFoundError, SceneError
+from ...motion.video import Scene, load_scenes
+from ...motion.video.animation import DEFAULT_FPS, renderers
 from ._basic import emit, output_options
 from ._constants import DEFAULT_FONT, DEFAULT_TEXT_SIZE, EXIT_FAILURE, FRAME_FORMAT, TEXT_MARGIN
 
@@ -64,7 +65,7 @@ def _targets(source: str, names: Sequence[str], output: str | None,
 @click.option("--fps", type=float, help=f"frames per second (default: the scene's fps, {DEFAULT_FPS:g} unless set)")
 @click.option("--duration", type=float, help="seconds (default: the scene's duration or the SMIL animation length)")
 @click.option("--renderer",
-              help=f"registered name ({', '.join(RENDERERS.list())}) or module:function (default: the scene's)")
+              help=f"registered name ({', '.join(renderers.list())}) or module:function (default: the scene's)")
 @click.option("--ffmpeg", help="ffmpeg executable (default: found on PATH)")
 def animate(source: str, names: tuple[str, ...], output: str | None, extension: str | None, list_: bool,
             fps: float | None, duration: float | None, renderer: str | None, ffmpeg: str | None) -> None:

@@ -5,12 +5,12 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter.model.theme import ThemeError
+from svgwriter.errors import ThemeError
 
 
 @pytest.mark.parametrize("name", ["light", "dark", "paper", "print", "mono"])
 def test_round_trip(name: str, tmp_path: Path) -> None:
-    theme = svg.Theme.get(name).replace(roles={"badge": {"fill": "{palette.accent}"}})
+    theme = svg.themes.get(name).replace(roles={"badge": {"fill": "{palette.accent}"}})
     path = tmp_path / "theme.toml"
     theme.save(path)
     assert svg.Theme.load(path) == theme
@@ -40,14 +40,14 @@ stroke-width = 3
 [roles.label]
 font-size = "{fonts.sizes.title}"
 """)
-    assert theme.name == "brand" and theme.palette.background == svg.Theme.get("paper").palette.background
+    assert theme.name == "brand" and theme.palette.background == svg.themes.get("paper").palette.background
     assert theme.style("arrow.head")["fill"].hex == "#123456"
     assert theme.style("arrow.line")["stroke-width"] == "3px"
     assert theme.style("label")["font-size"] == "30px" and theme.fonts.family == "Georgia, serif"
 
 
 def test_quoted_keys_written() -> None:
-    text = svg.Theme.get("light").replace(roles={"arrow.tip": {"fill": "red"}}).to_toml()
+    text = svg.themes.get("light").replace(roles={"arrow.tip": {"fill": "red"}}).to_toml()
     assert text == 'name = "light"\nextends = "light"\n\n[roles."arrow.tip"]\nfill = "red"\n'
 
 
@@ -122,7 +122,7 @@ def test_name_and_extends_kept() -> None:
 
 
 def test_references_kept_and_functions_resolved() -> None:
-    theme = svg.Theme.get("dark").replace(
+    theme = svg.themes.get("dark").replace(
         name="night", palette={"accent": "{palette.primary}", "glow": lambda p: p.primary.with_alpha(0.5)},
         roles={"badge": {"fill": "{palette.glow}", "stroke-width": lambda t: t.fonts.sizes["caption"] / 5}})
     text = theme.to_toml()
@@ -132,26 +132,26 @@ def test_references_kept_and_functions_resolved() -> None:
 
 
 def test_variant_of_registered_variant_extends_it() -> None:
-    svg.THEMES.register(svg.Theme.get("light").replace(name="brand-test", palette={"primary": "navy"}))
+    svg.themes.register(svg.themes.get("light").replace(name="brand-test", palette={"primary": "navy"}))
     try:
-        variant = svg.Theme.get("brand-test").replace(name="brand-2")
-        assert svg.Theme.get("brand-test").extends == "light" and variant.extends == "brand-test"
+        variant = svg.themes.get("brand-test").replace(name="brand-2")
+        assert svg.themes.get("brand-test").extends == "light" and variant.extends == "brand-test"
         assert variant.to_toml() == 'name = "brand-2"\nextends = "brand-test"\n'
     finally:
-        svg.THEMES.unregister("brand-test")
+        svg.themes.unregister("brand-test")
 
 
 def test_unregistered_theme_written_in_full() -> None:
-    theme = svg.Theme("site", dict(svg.Theme.get("paper").palette.sources), roles={"hero": {"fill": "red"}})
+    theme = svg.Theme("site", dict(svg.themes.get("paper").palette.sources), roles={"hero": {"fill": "red"}})
     text = theme.to_toml()
     assert "extends" not in text and "[palette]" in text and "[roles.hero]" in text
     assert svg.Theme.from_toml(text) == theme
 
 
 def test_missing_base_and_file_errors(tmp_path: Path) -> None:
-    svg.THEMES.register(svg.Theme.get("light").replace(name="gone-test"))
-    variant = svg.Theme.get("gone-test").replace(name="child")
-    svg.THEMES.unregister("gone-test")
+    svg.themes.register(svg.themes.get("light").replace(name="gone-test"))
+    variant = svg.themes.get("gone-test").replace(name="child")
+    svg.themes.unregister("gone-test")
     with pytest.raises(ThemeError, match="extends: unknown theme 'gone-test'"):
         variant.to_toml()
     path = tmp_path / "broken.toml"

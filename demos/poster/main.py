@@ -17,7 +17,7 @@ SHORE = 172                           # where the sea meets the legend
 STATIONS = (("Gull Point", 30, 132), ("The Narrows", 76, 148), ("Seal Rock", 120, 122),
             ("Long Strand", 158, 154), ("Lantern", 188, 132))
 
-THEMES = {
+themes = {
     "project": {},
     "night": {"background": "#0f1b24", "foreground": "#eef2f4", "muted": "#9fb0b8", "border": "#33505f"},
     "blueprint": {"background": "#16397a", "foreground": "#e8f0ff", "muted": "#a9c1ee", "border": "#4f78c4",
@@ -35,14 +35,14 @@ ACCENTS = ("primary", "secondary", "accent")
 
 # %%
 @svg.widgets.controls(
-    theme=svg.widgets.Segmented(list(THEMES), value="project"),
+    theme=svg.widgets.Segmented(list(themes), value="project"),
     hue=svg.widgets.Slider(-180, 180, step=5, value=0, format="{:.0f}°", label="accent hue shift"),
     title=svg.widgets.Text("Tide"),
 )
 def poster(doc: svg.Document, *, theme: str = "project", hue: float = 0, title: str = "Tide") -> svg.Document:
     """Draw the poster in the chosen theme, with its accent colours turned *hue* degrees."""
     if theme != "project":
-        doc.theme = doc.theme.replace(palette=THEMES[theme])
+        doc.theme = doc.theme.replace(palette=themes[theme])
     if hue:
         palette = doc.theme.palette
         doc.theme = doc.theme.replace(palette={name: palette[name].hue_shift(hue) for name in ACCENTS})

@@ -6,7 +6,7 @@ import re
 import pytest
 
 import svgwriter as svg
-from svgwriter.formats.export import FORMATS
+from svgwriter import formats
 
 A4_PT = (595.28, 841.89)
 A4_EMU = (7560000, 10692000)
@@ -61,7 +61,7 @@ def test_a_round_trip_keeps_the_page_size_and_the_shape_position(name):
         pytest.importorskip("pptx")
     original = a4()
     data = original.export(name)
-    back = FORMATS.reader(name).read(data if isinstance(data, bytes) else data.encode())
+    back = formats.reader(name).read(data if isinstance(data, bytes) else data.encode())
     width, height = (210 * PX_PER_MM, 297 * PX_PER_MM)
     assert (back.root.get("width"), back.root.get("height")) == pytest.approx((width, height), abs=0.01)
     assert tuple(back[0].bounds()) == pytest.approx(tuple(v * PX_PER_MM for v in BOX_MM), abs=0.01)
@@ -70,19 +70,19 @@ def test_a_round_trip_keeps_the_page_size_and_the_shape_position(name):
 def test_a_foreign_pdf_point_reads_as_four_thirds_of_a_user_unit():
     data = (b"%PDF-1.1\n1 0 obj << /Type /Page /MediaBox [0 0 72 36] /Contents 2 0 R >> endobj\n"
             b"2 0 obj << /Length 999 >> stream\n0 0 18 9 re f\nendstream endobj\n")
-    doc = FORMATS.reader("pdf").read(data)
+    doc = formats.reader("pdf").read(data)
     assert (doc.root.get("width"), doc.root.get("height")) == pytest.approx((96, 48))
     assert tuple(doc[0].bounds()) == pytest.approx((0, 36, 24, 12))
 
 
 def test_a_foreign_eps_point_reads_as_four_thirds_of_a_user_unit():
-    doc = FORMATS.reader("eps").read(b"%!PS\n%%BoundingBox: 0 0 72 36\n0 0 18 9 rectfill")
+    doc = formats.reader("eps").read(b"%!PS\n%%BoundingBox: 0 0 72 36\n0 0 18 9 rectfill")
     assert (doc.root.get("width"), doc.root.get("height")) == pytest.approx((96, 48))
     assert tuple(doc[0].bounds()) == pytest.approx((0, 36, 24, 12))
 
 
 def test_a_foreign_tikz_centimetre_reads_as_its_user_units():
-    doc = FORMATS.reader("tikz").read(rb"\begin{tikzpicture}\fill (0,0) rectangle (2.54,1);\end{tikzpicture}")
+    doc = formats.reader("tikz").read(rb"\begin{tikzpicture}\fill (0,0) rectangle (2.54,1);\end{tikzpicture}")
     assert doc[0].bounds().width == pytest.approx(96)
 
 

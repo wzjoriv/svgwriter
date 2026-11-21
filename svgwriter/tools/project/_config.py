@@ -12,7 +12,8 @@ from typing import Any
 import tomlkit
 
 from ..._document.sizes import PageSize, page_size
-from ...formats.export import FORMATS
+from ...errors import ProjectError
+from ...formats.export._format import FORMATS
 from ...model.attributes.length import Length
 from ._constants import (
     ANIMATED_FORMATS,
@@ -29,22 +30,10 @@ from ._constants import (
     VIDEO_FORMATS,
 )
 
-__all__ = ["ProjectConfig", "ProjectError", "check_formats", "check_size", "find_manifest", "read_config"]
+__all__ = ["ProjectConfig", "check_formats", "check_size", "find_manifest", "read_config"]
 
 SizeSpec = str | PageSize | tuple[Length, Length] | None
 
-
-class ProjectError(ValueError):
-    """A project file is missing or invalid, or its entry cannot be loaded; the message names the file.
-
-    Subclasses :class:`ValueError`.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> issubclass(svg.project.ProjectError, ValueError)
-    True
-    """
 
 
 @dataclass(frozen=True)

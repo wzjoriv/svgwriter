@@ -10,24 +10,15 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any
 
 from ...._internal._constants import PX_PER_INCH
+from ....errors import OfficeExtraError
 from .._format import Format
 from ._constants import EXTRA_HINT, PICTURE_SCALE
 
 if TYPE_CHECKING:
     from ....document import Document
 
-__all__ = ["OfficeExtraError"]
+__all__: list[str] = []
 
-
-class OfficeExtraError(ImportError):
-    """The library for an Office format is not installed.
-
-    Examples
-    --------
-    >>> from svgwriter.formats.export._office import OfficeExtraError
-    >>> issubclass(OfficeExtraError, ImportError)
-    True
-    """
 
 
 def require(module: str) -> Any:
@@ -85,7 +76,7 @@ def pptx(document: Document | Sequence[Document]) -> bytes:
     >>> svg.export.export(doc, "pptx")[:2]
     b'PK'
     >>> deck = svg.export.export([doc, svg.Document(20, 20)], "pptx")
-    >>> len(svg.FORMATS.reader("pptx").read(deck, slide=None))
+    >>> len(svg.formats.reader("pptx").read(deck, slide=None))
     2
     """
     from ._pptx import write_pptx
@@ -127,7 +118,7 @@ def read_pptx(data: bytes, *, slide: int | None = 0) -> Document | list[Document
     >>> import svgwriter as svg
     >>> doc = svg.Document(40, 20)
     >>> _ = doc.circle(20, 10, 8, fill="red")
-    >>> back = svg.FORMATS.reader("pptx").read(svg.export.export(doc, "pptx"))
+    >>> back = svg.formats.reader("pptx").read(svg.export.export(doc, "pptx"))
     >>> [e.tag for e in back]
     ['path']
     """
@@ -266,7 +257,7 @@ def read_docx(data: bytes) -> Document:
     >>> import svgwriter as svg
     >>> doc = svg.Document(40, 20)
     >>> _ = doc.rect(0, 0, 40, 20, fill="teal")
-    >>> back = svg.FORMATS.reader("docx").read(svg.export.export(doc, "docx"))
+    >>> back = svg.formats.reader("docx").read(svg.export.export(doc, "docx"))
     >>> [e.tag for e in back]
     ['path']
     """

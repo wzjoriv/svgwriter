@@ -9,8 +9,9 @@ from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import TYPE_CHECKING, Final, TypeAlias
 
-from ..._internal._registry import Registry, UnknownNameError
+from ..._internal._registry import Registry
 from ..._internal._typing import AnyPath
+from ...errors import UnknownNameError
 from ._constants import FRAME_PATTERN, FRAME_SUFFIX, TIME_SCALE, TIMECOUNT_RE
 from ._ffmpeg import encode, find_ffmpeg
 from .frames import Frame, FrameData, frame_times, to_frame
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
 
 __all__ = [
     "DEFAULT_FPS",
-    "RENDERERS",
+    "renderers",
     "Renderer",
     "Update",
     "animation_duration",
@@ -37,18 +38,18 @@ Update: TypeAlias = "Callable[[Document, float], object]"
 
 DEFAULT_FPS: Final = 30.0
 
-RENDERERS: Final[Registry[Callable[[Document, float], FrameData]]] = Registry("renderer")
-"""Renderers by name, chosen with ``renderer="name"``: ``@svg.RENDERERS.register`` adds one.
+renderers: Final[Registry[Callable[[Document, float], FrameData]]] = Registry("renderer")
+"""Renderers by name, chosen with ``renderer="name"``: ``@svg.renderers.register`` adds one.
 
 Examples
 --------
 >>> import svgwriter as svg
->>> @svg.RENDERERS.register(name="myraster")
+>>> @svg.renderers.register(name="myraster")
 ... def render(document, seconds):
 ...     return document.render_png()
->>> svg.RENDERERS.get("myraster") is render
+>>> svg.renderers.get("myraster") is render
 True
->>> _ = svg.RENDERERS.unregister("myraster")
+>>> _ = svg.renderers.unregister("myraster")
 """
 
 
@@ -58,7 +59,7 @@ def _skia(document: Document, seconds: float) -> FrameData:
     return render_frame(document, seconds)
 
 
-RENDERERS.add_builtin("skia", _skia)
+renderers.add_builtin("skia", _skia)
 
 
 def resolve_renderer(renderer: Renderer | str | None) -> Renderer:
@@ -86,7 +87,7 @@ def resolve_renderer(renderer: Renderer | str | None) -> Renderer:
 
     See Also
     --------
-    RENDERERS : Register a named renderer.
+    renderers : Register a named renderer.
 
     Examples
     --------
@@ -96,21 +97,21 @@ def resolve_renderer(renderer: Renderer | str | None) -> Renderer:
     >>> resolve_renderer("nope")
     Traceback (most recent call last):
     ...
-    svgwriter._internal._registry.UnknownNameError: unknown renderer 'nope'; registered: skia
+    svgwriter.errors.UnknownNameError: unknown renderer 'nope'; registered: skia
     """
     if callable(renderer):
         return renderer
     if renderer is None:
-        names = ", ".join(RENDERERS.list())
+        names = ", ".join(renderers.list())
         raise ValueError(
             "no renderer given; pass renderer=callable(document, seconds) returning PNG bytes or an RGBA array, "
             f"a registered name ({names}) or 'module:function'"
         )
     module_name, sep, attribute = renderer.partition(":")
     if not sep:
-        found = RENDERERS.find(renderer)
+        found = renderers.find(renderer)
         if found is None:
-            raise UnknownNameError(f"{RENDERERS.unknown(renderer)}; registered: {', '.join(RENDERERS.list())}")
+            raise UnknownNameError(f"{renderers.unknown(renderer)}; registered: {', '.join(renderers.list())}")
         return found
     found = getattr(importlib.import_module(module_name), attribute)
     if not callable(found):
@@ -284,7 +285,8 @@ def render_animation(
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.motion.video import FFmpegNotFoundError, render_animation
+    >>> from svgwriter.errors import FFmpegNotFoundError
+    >>> from svgwriter.motion.video import render_animation
     >>> doc = svg.Document(8, 6)
     >>> try:
     ...     render_animation(doc, "out.gif", duration=1, renderer="skia", ffmpeg="no-such-ffmpeg")

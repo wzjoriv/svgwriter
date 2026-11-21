@@ -43,7 +43,7 @@ def test_theme_switch_restyles_without_moving_shapes(theme):
     before = bar.bounds()
     doc.theme = theme
     text = doc.to_string()
-    assert svg.Theme.get(theme).palette.surface.hex in text
+    assert svg.themes.get(theme).palette.surface.hex in text
     assert bar.bounds().x == before.x
 
 
@@ -66,7 +66,7 @@ def test_exports_place_the_laid_out_shapes_alike(theme):
 
     pixels = doc.rasterize()
     background = pixels[0, 0]
-    accent = svg.Theme.get(theme).palette.accent
+    accent = svg.themes.get(theme).palette.accent
     assert tuple(pixels[40, 45, :3]) == pytest.approx(accent.rgb, abs=1 / 255)
     assert tuple(pixels[25, 10]) == pytest.approx(tuple(background), abs=1e-6)
 

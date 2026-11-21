@@ -312,7 +312,7 @@ class TestStructure:
         parsed = svg.parse('<svg xmlns="http://www.w3.org/2000/svg"><foreignObject/><rect onclick="go()" cursor="hand"/></svg>')
         assert isinstance(parsed.children[0], UnknownElement)
         assert parsed.find(svg.Rect).attributes == {}  # type: ignore[union-attr]
-        with pytest.raises(svg.SVGParseError):
+        with pytest.raises(svg.errors.SVGParseError):
             svg.parse('<svg xmlns="http://www.w3.org/2000/svg"><rect onclick="go()"/></svg>', strictness=svg.Strictness.STRICT)
 
 

@@ -133,7 +133,7 @@ def read_dxf(data: bytes, **options: Any) -> Document:
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
     >>> data = svg.export.export(doc, "dxf").encode()
-    >>> len(svg.FORMATS.reader(".dxf").read(data)) > 0
+    >>> len(svg.formats.reader(".dxf").read(data)) > 0
     True
     """
     from ._cnc_read import read_dxf as read
@@ -166,7 +166,7 @@ def read_hpgl(data: bytes, **options: Any) -> Document:
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
     >>> data = svg.export.export(doc, "hpgl").encode()
-    >>> len(svg.FORMATS.reader(".hpgl").read(data)) > 0
+    >>> len(svg.formats.reader(".hpgl").read(data)) > 0
     True
     """
     from ._cnc_read import read_hpgl as read
@@ -199,7 +199,7 @@ def read_gcode(data: bytes, **options: Any) -> Document:
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, stroke="black", fill="none")
     >>> data = svg.export.export(doc, "gcode").encode()
-    >>> len(svg.FORMATS.reader(".gcode").read(data)) > 0
+    >>> len(svg.formats.reader(".gcode").read(data)) > 0
     True
     """
     from ._cnc_read import read_gcode as read

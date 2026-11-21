@@ -14,7 +14,7 @@ animate             render the scenes of a file to mp4/gif/webm/png frames (ffmp
 render              rasterize scenes or an SVG file to PNG (skia-python)
 outline             write text as glyph outlines (skia-python)
 
-Packages add commands through the ``svgwriter.command`` entry-point group (see :data:`COMMANDS`).
+Packages add commands through the ``svgwriter.command`` entry-point group (see :data:`commands`).
 """
 
 from __future__ import annotations
@@ -31,34 +31,34 @@ from ._constants import EXIT_ERROR, EXIT_FAILURE
 from ._media import add_media_commands
 from ._project import add_project_commands
 
-__all__ = ["COMMANDS", "app", "main"]
+__all__ = ["commands", "app", "main"]
 
-COMMANDS: Final[Registry[click.Command]] = Registry("command")
-"""Commands beside the built-in ones: ``COMMANDS.register(command)``, or the ``svgwriter.command`` entry points.
+commands: Final[Registry[click.Command]] = Registry("command")
+"""Commands beside the built-in ones: ``commands.register(command)``, or the ``svgwriter.command`` entry points.
 
 Examples
 --------
 >>> import click
->>> from svgwriter.tools.cli import COMMANDS, main
->>> @COMMANDS.register
+>>> from svgwriter.tools.cli import commands, main
+>>> @commands.register
 ... @click.command(help="Say hello.")
 ... def hello() -> None:
 ...     click.echo("hello")
 >>> main(["hello"])
 hello
 0
->>> _ = COMMANDS.unregister("hello")
+>>> _ = commands.unregister("hello")
 """
 
 
 class _Commands(click.Group):
-    """The built-in commands, then the ones in :data:`COMMANDS`."""
+    """The built-in commands, then the ones in :data:`commands`."""
 
     def list_commands(self, ctx: click.Context) -> list[str]:
-        return sorted({*super().list_commands(ctx), *COMMANDS.list()})
+        return sorted({*super().list_commands(ctx), *commands.list()})
 
     def get_command(self, ctx: click.Context, cmd_name: str) -> click.Command | None:
-        return super().get_command(ctx, cmd_name) or COMMANDS.find(cmd_name)
+        return super().get_command(ctx, cmd_name) or commands.find(cmd_name)
 
 
 @click.group(name="svgwriter", cls=_Commands, invoke_without_command=True,

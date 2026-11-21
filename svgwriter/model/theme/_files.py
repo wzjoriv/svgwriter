@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from ..._internal._typing import AnyPath
-from ._errors import ThemeError
+from ...errors import ThemeError
 from ._toml_read import theme_from_toml
 from ._toml_write import theme_to_toml
 
@@ -48,7 +48,7 @@ class ThemeFiles:
         >>> import svgwriter as svg, tempfile, pathlib
         >>> with tempfile.TemporaryDirectory() as folder:
         ...     path = pathlib.Path(folder) / "night.toml"
-        ...     svg.Theme.get("dark").replace(name="night").save(path)
+        ...     svg.themes.get("dark").replace(name="night").save(path)
         ...     svg.Theme.load(path).name
         'night'
         """
@@ -71,7 +71,7 @@ class ThemeFiles:
         >>> import svgwriter as svg, tempfile, pathlib
         >>> with tempfile.TemporaryDirectory() as folder:
         ...     path = pathlib.Path(folder) / "night.toml"
-        ...     svg.Theme.get("dark").replace(name="night").save(path)
+        ...     svg.themes.get("dark").replace(name="night").save(path)
         ...     print(path.read_text(encoding="utf-8"))
         name = "night"
         extends = "dark"

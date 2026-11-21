@@ -7,6 +7,7 @@ import pytest
 
 import svgwriter as svg
 from svgwriter._internal._registry import Registry
+from svgwriter.formats.export._format import FORMATS
 
 
 def _points(*items: tuple[str, str]) -> list[metadata.EntryPoint]:
@@ -43,7 +44,7 @@ class TestRegistry:
     def test_unknown_names(self) -> None:
         widgets: Registry[object] = Registry("widget")
         widgets.register(print, name="slider")
-        with pytest.raises(svg.UnknownNameError, match="unknown widget 'slidr'; did you mean 'slider'") as raised:
+        with pytest.raises(svg.errors.UnknownNameError, match="unknown widget 'slidr'; did you mean 'slider'") as raised:
             widgets.get("slidr")
         assert isinstance(raised.value, KeyError) and isinstance(raised.value, ValueError)
         assert str(raised.value).startswith("unknown")
@@ -76,13 +77,13 @@ class TestRegistry:
         assert widgets.get("knob") is print
 
     def test_every_registry_has_the_same_methods(self) -> None:
-        registries = [*svg.preset.KINDS.values(), svg.THEMES, svg.FORMATS, svg.RENDERERS, svg.project.PRESETS]
+        registries = [*svg.preset.KINDS.values(), svg.themes, FORMATS, svg.renderers, svg.project.presets]
         for registry in registries:
             assert isinstance(registry, Registry) and registry.group == f"svgwriter.{registry.kind}" or \
-                registry is svg.project.PRESETS
+                registry is svg.project.presets
             names = registry.list()
             assert names and registry.get(names[0]) is not None
-        assert svg.project.PRESETS.group == "svgwriter.project_preset"
+        assert svg.project.presets.group == "svgwriter.project_preset"
 
 
 def test_top_level_typos_suggest() -> None:

@@ -23,12 +23,11 @@ under [Composite shapes and effects](builder.md)) add your own to these catalogu
 
 ## Registries
 
-Every registry (the preset kinds, `svg.THEMES`, `svg.FORMATS`, `svg.RENDERERS`, `svg.project.PRESETS` and
-the command line's `COMMANDS`) is a `Registry`; see [Extending svgwriter](../guides/extending.md).
+Every registry (the preset kinds, `svg.themes`, `svg.FORMATS`, `svg.renderers`, `svg.project.presets` and
+the command line's `commands`) is a `Registry`; see [Extending svgwriter](../guides/extending.md).
 
 ```{eval-rst}
 .. autoclass:: svgwriter.Registry
    :members: register, list, get, unregister, find
 
-.. autoexception:: svgwriter.UnknownNameError
 ```

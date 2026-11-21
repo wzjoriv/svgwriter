@@ -33,7 +33,7 @@ def export(document: Document | Sequence[Document], format: str, *, seconds: flo
         :meth:`Document.at`) instead of the document as written. Defaults to
         None, which keeps animations (formats without animation show t = 0).
     **options
-        Passed to the exporter function (see each format in :data:`~svgwriter.FORMATS`).
+        Passed to the exporter function (see each format in ``svg.formats``).
 
     Returns
     -------
@@ -57,7 +57,7 @@ def export(document: Document | Sequence[Document], format: str, *, seconds: flo
     >>> svg.export.export(doc, "png")[:4] == bytes.fromhex("89504e47")
     True
     >>> deck = svg.export.export([doc, svg.Document(8, 2)], "pdf")
-    >>> len(svg.FORMATS.reader("pdf").read(deck, page=None))
+    >>> len(svg.formats.reader("pdf").read(deck, page=None))
     2
     """
     exporter = FORMATS.writer(format)
