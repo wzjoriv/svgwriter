@@ -5,7 +5,7 @@ Filter geometry in an element's user space: the filter region, primitive subregi
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -101,6 +101,8 @@ class Frame:
         ``primitiveUnits`` is ``objectBoundingBox``.
     element_source : callable
         Draws a referenced element (``feImage`` with ``#id``) as a picture in this space.
+    inputs : dict of str to skia.ImageFilter
+        The standard inputs besides the source (``BackgroundImage``, ``FillPaint``, ...) the filter reads.
     """
 
     box: BBox | None
@@ -108,6 +110,7 @@ class Frame:
     viewport: tuple[float, float]
     bounding: bool
     element_source: Callable[[Element], Any]
+    inputs: dict[str, Any] = field(default_factory=dict)
 
     @property
     def scale(self) -> tuple[float, float]:

@@ -77,6 +77,7 @@ def image_filter(filter_element: Element, frame: Frame) -> Any:
 
     results: dict[str, Any] = {SOURCE_GRAPHIC: None,
                                SOURCE_ALPHA: skia.ImageFilters.ColorFilter(skia.ColorFilters.Matrix(ALPHA_ONLY), None)}
+    results.update(frame.inputs)
     regions: dict[str, skia.Rect] = {}
     previous: Any = None
     previous_area = frame.region
