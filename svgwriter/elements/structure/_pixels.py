@@ -122,7 +122,10 @@ class Pixels(PixelCompositing, Drawable):
 
     @classmethod
     def decode(cls, data: bytes) -> Pixels:
-        """Decode encoded image bytes.
+        """Decode encoded image bytes into sRGB.
+
+        Embedded colour information (ICC profile, PNG ``gAMA``/``cHRM``) is applied, so the
+        pixels look as the file intends.
 
         Parameters
         ----------
@@ -159,7 +162,8 @@ class Pixels(PixelCompositing, Drawable):
         if codec is None:
             raise ValueError("could not decode the image data: unknown or damaged format")
         size = codec.getInfo()
-        info = skia.ImageInfo.Make(size.width(), size.height(), skia.kRGBA_8888_ColorType, skia.kUnpremul_AlphaType)
+        info = skia.ImageInfo.Make(size.width(), size.height(), skia.kRGBA_8888_ColorType, skia.kUnpremul_AlphaType,
+                                   skia.ColorSpace.MakeSRGB())
         rgba = np.zeros((size.height(), size.width(), 4), np.uint8)
         if codec.getPixels(info, rgba, info.minRowBytes()) != skia.Codec.Result.kSuccess:
             raise ValueError("could not decode the image data")

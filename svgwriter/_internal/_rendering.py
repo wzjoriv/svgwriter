@@ -33,6 +33,7 @@ __all__ = [
     "page_box",
     "renderable_copy",
     "unfilled_lines",
+    "unfiltered_masks",
     "view_matrix",
 ]
 
@@ -72,6 +73,12 @@ def unfilled_lines(root: Element) -> None:
     """Give every ``<line>`` ``fill="none"``: a line has no interior, but skia paints its fill as a hairline."""
     for line in [e for e in root.iter() if e.tag == "line"]:
         line.attributes["fill"] = NONE
+
+
+def unfiltered_masks(root: Element) -> None:
+    """Drop ``filter`` from every ``<mask>``: a mask is not rendered itself, so no filter applies to it."""
+    for mask in [e for e in root.iter() if e.tag == "mask"]:
+        mask.attributes.pop("filter", None)
 
 
 def outlined(text: Text) -> Element:
@@ -129,6 +136,7 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     resolve_links(copy)
     ellipses_as_paths(copy)
     unfilled_lines(copy)
+    unfiltered_masks(copy)
     expand_image_patterns(copy)
     user_space_patterns(copy)
     expand_markers(copy)

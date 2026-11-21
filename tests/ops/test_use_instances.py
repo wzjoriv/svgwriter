@@ -46,3 +46,9 @@ def test_image_linking_back_to_its_own_file_is_skipped(tmp_path):
                     '<image xlink:href="loop.svg" x="50" y="50" width="40" height="40"/></svg>', encoding="utf-8")
     pixels = svg.Document.open(page).rasterize()
     assert pixels[5, 5].round(2).tolist() == [0.0, 1.0, 0.0, 1.0]
+
+
+def test_used_svg_keeps_its_own_position():
+    body = ('<defs><svg id="s" x="50" y="0" width="50" height="50"><rect width="100%" height="100%" fill="lime"/>'
+            '</svg></defs><use xlink:href="#s"/>')
+    assert _pixel(body, (75, 25), (25, 25)) == [[0.0, 1.0, 0.0, 1.0], [0.0, 0.0, 0.0, 0.0]]

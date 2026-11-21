@@ -173,18 +173,22 @@ def _viewport(use: Element, target: Element, root: Element, serial: int) -> list
     content.attributes.update((k, v) for k, v in target.attributes.items()
                               if k not in USE_GEOMETRY and k not in ("viewBox", "preserveAspectRatio", "overflow"))
     content.t = matrix  # type: ignore[attr-defined]
-    if str(target.get("overflow", "hidden")) in VISIBLE_OVERFLOW or not (width and height):
-        return [content]
-    clip = ClipPath(Rect(0, 0, width, height), id=f"svgwriter-use-viewport-{serial}")
     holder = Group(content)
+    if target.tag == "svg":
+        holder.attributes["transform"] = (f"translate({_size(use, target, 'x', view.width if view else 0.0, own=True)} "
+                                          f"{_size(use, target, 'y', view.height if view else 0.0, own=True)})")
+    if str(target.get("overflow", "hidden")) in VISIBLE_OVERFLOW or not (width and height):
+        return [holder]
+    clip = ClipPath(Rect(0, 0, width, height), id=f"svgwriter-use-viewport-{serial}")
     holder.attributes["clip-path"] = f"url(#{clip.id})"
     return [clip, holder]
 
 
-def _size(use: Element, target: Element, name: str, viewport: float) -> float:
+def _size(use: Element, target: Element, name: str, viewport: float, *, own: bool = False) -> float:
+    """A ``<use>`` viewport length, the ``<use>``'s value winning unless *own* asks for the target's."""
     from ..attributes.length import Length, Unit
 
-    value = use.get(name)
+    value = None if own else use.get(name)
     value = target.get(name) if value is None else value
     if value is None:
         return viewport
