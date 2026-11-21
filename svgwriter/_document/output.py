@@ -12,14 +12,14 @@ import numpy as np
 
 from .._internal._drawable import ascii_markup
 from .._internal._typing import AnyPath
-from ..elements.core import Element
+from ..model.elements.core import Element
 from ..video.animation import DEFAULT_FPS
 from ._constants import INLINE_STYLE
 
 if TYPE_CHECKING:
-    from ..attributes.protocols import TextSink
-    from ..color.color import ColorLike
     from ..document import Document
+    from ..model.attributes.protocols import TextSink
+    from ..model.color.color import ColorLike
     from ..video.animation import Renderer, Update
 
 

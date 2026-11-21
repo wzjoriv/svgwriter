@@ -8,13 +8,13 @@ import math
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
-from ...color.color import Color
+from ...model.color.color import Color
 from ._constants import BEZIER_ARC_FACTOR, DEFAULT_MITER, MAX_ARC_SEGMENT
 
 if TYPE_CHECKING:
     from ...document import Document
-    from ...elements.shapes import Path
-    from ...transform.matrix import Matrix
+    from ...model.elements.shapes import Path
+    from ...model.transform.matrix import Matrix
 
 __all__ = ["Outline", "Shape", "cmyk_to_rgb", "string_end", "to_document"]
 
@@ -91,7 +91,7 @@ class Outline:
 
     Examples
     --------
-    >>> from svgwriter.transform.matrix import IDENTITY
+    >>> from svgwriter.model.transform.matrix import IDENTITY
     >>> from svgwriter.export._vector._reading import Outline
     >>> outline = Outline()
     >>> outline.rect(IDENTITY, 0, 0, 2, 1)
@@ -227,7 +227,7 @@ def _style(shape: Shape) -> dict[str, object]:
 
 def _path(shape: Shape) -> Path:
     """A ``<path>`` element drawing *shape*."""
-    from ...elements.shapes import Path
+    from ...model.elements.shapes import Path
 
     path = Path(**_style(shape))
     for op, args in shape.ops:

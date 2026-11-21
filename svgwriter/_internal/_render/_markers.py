@@ -19,8 +19,8 @@ from .._constants import (
 )
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
-    from ...transform.matrix import Matrix
+    from ...model.elements.core import Element
+    from ...model.transform.matrix import Matrix
 
 __all__ = ["expand_markers", "vertices"]
 
@@ -53,8 +53,8 @@ def vertices(data: Any) -> list[Vertex]:
     >>> [(x, y, i, o) for x, y, i, o in vertices(svg.PathData("M0 0 L10 0 L10 10"))]
     [(0.0, 0.0, 0.0, 0.0), (10.0, 0.0, 0.0, 90.0), (10.0, 10.0, 90.0, 90.0)]
     """
+    from ...model.pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
     from ...ops import from_skia, to_skia
-    from ...pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
 
     points: list[list[Any]] = []
     current = start = (0.0, 0.0)
@@ -93,7 +93,7 @@ def _bisect(incoming: float, outgoing: float) -> float:
 
 
 def _number(marker: Element, name: str, default: float) -> float:
-    from ...attributes.length import Length
+    from ...model.attributes.length import Length
 
     value = marker.get(name)
     return float(Length.parse(value).to_user_units()) if value is not None else default
@@ -101,8 +101,8 @@ def _number(marker: Element, name: str, default: float) -> float:
 
 def _content_matrix(marker: Element) -> Matrix:
     """The marker's ``viewBox`` mapped into its ``markerWidth`` by ``markerHeight`` viewport."""
-    from ...attributes.viewbox import PreserveAspectRatio, ViewBox
-    from ...transform.matrix import IDENTITY, Matrix
+    from ...model.attributes.viewbox import PreserveAspectRatio, ViewBox
+    from ...model.transform.matrix import IDENTITY, Matrix
     from ._layers import fit_box
 
     box = marker.get("viewBox")
@@ -120,7 +120,7 @@ def _content_matrix(marker: Element) -> Matrix:
 
 def _placement(marker: Element, x: float, y: float, angle: float, stroke_width: float) -> Matrix:
     """The marker viewport's space to the shape's space at one vertex, ``refX``/``refY`` on the vertex."""
-    from ...transform.matrix import Matrix
+    from ...model.transform.matrix import Matrix
 
     matrix = Matrix.translate(x, y) @ Matrix.rotate(angle)
     if str(marker.get("markerUnits") or "strokeWidth") == "strokeWidth":
@@ -131,8 +131,8 @@ def _placement(marker: Element, x: float, y: float, angle: float, stroke_width: 
 
 def _instance(marker: Element, rules: list, serial: int) -> list[Element]:
     """The marker's content in its viewport, inheriting from the marker and clipped unless overflow shows it."""
-    from ...attributes.cascade import INHERITED, computed
-    from ...elements import ClipPath, Group, Rect
+    from ...model.attributes.cascade import INHERITED, computed
+    from ...model.elements import ClipPath, Group, Rect
 
     content = Group(*(child.clone() for child in marker))
     for name in INHERITED - {*MARKER_PROPERTIES, MARKER_SHORTHAND}:
@@ -151,8 +151,8 @@ def _instance(marker: Element, rules: list, serial: int) -> list[Element]:
 
 def _marker_of(shape: Element, name: str, rules: list, ids: dict[str, Element]) -> Element | None:
     """The ``<marker>`` that property *name* puts on *shape*."""
-    from ...attributes.cascade import computed
-    from ...elements import Marker
+    from ...model.attributes.cascade import computed
+    from ...model.elements import Marker
 
     value = computed(shape, name, None, rules)
     marker = getattr(value, "element", None) or ids.get(str(value or "").strip()[len(URL_OPEN):-1])
@@ -163,7 +163,7 @@ def expand_markers(root: Element) -> None:
     """Replace the markers on paths, lines, polylines and polygons by placed copies of their content.
 
     Marker properties inherit (the ``marker`` shorthand is CSS only, so it is expanded by
-    :func:`~svgwriter.attributes.cascade.resolve_styles` and ignored as an attribute), the content inherits from the ``<marker>`` (not the shape), and
+    :func:`~svgwriter.model.attributes.cascade.resolve_styles` and ignored as an attribute), the content inherits from the ``<marker>`` (not the shape), and
     the content is clipped to the marker viewport unless its ``overflow`` shows it.
 
     Parameters
@@ -183,10 +183,10 @@ def expand_markers(root: Element) -> None:
     >>> [e.tag for e in copy if e.tag != "defs"]
     ['path', 'g']
     """
-    from ...attributes.cascade import computed
-    from ...attributes.length import Length
-    from ...attributes.rules import rules_of
-    from ...elements import Group
+    from ...model.attributes.cascade import computed
+    from ...model.attributes.length import Length
+    from ...model.attributes.rules import rules_of
+    from ...model.elements import Group
 
     rules = rules_of(root)
     ids = {str(e.get("id")): e for e in root.iter() if e.get("id")}

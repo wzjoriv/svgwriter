@@ -12,7 +12,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import svgwriter as svg  # noqa: E402
-from svgwriter.elements import Element  # noqa: E402
+from svgwriter.model.elements import Element  # noqa: E402
 
 SVG_NS = "{http://www.w3.org/2000/svg}"
 

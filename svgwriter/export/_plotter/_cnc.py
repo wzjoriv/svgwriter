@@ -11,8 +11,8 @@ from ..._internal._numbers import format_number
 from ._constants import DEFAULT_TOLERANCE, HPGL_UNITS_PER_MM, MM_PER_USER_UNIT, PRECISION
 
 if TYPE_CHECKING:
-    from ...color.color import Color
     from ...document import Document
+    from ...model.color.color import Color
 
 __all__ = ["to_dxf", "to_gcode", "to_hpgl"]
 

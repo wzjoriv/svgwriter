@@ -12,8 +12,8 @@ from .._units import dpi_scale
 
 if TYPE_CHECKING:
     from ..._internal._color._icc_output import IccLike
-    from ...color.color import ColorLike
     from ...document import Document
+    from ...model.color.color import ColorLike
 
 __all__ = ["tiff"]
 

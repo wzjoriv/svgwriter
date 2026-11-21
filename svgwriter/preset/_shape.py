@@ -13,7 +13,7 @@ from .._internal._roles import with_role
 from .._internal._typing import P
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
+    from ..model.elements.core import Element
 
 __all__ = ["shape"]
 
@@ -83,7 +83,7 @@ def shape(function: Callable[P, E] | None = None, /, *, name: str | None = None,
     """
 
     def decorate(func: Callable[P, E]) -> Callable[P, E]:
-        from ..elements.core import Element
+        from ..model.elements.core import Element
 
         label = name or func.__name__
 

@@ -179,7 +179,7 @@ def _unstyled(table: Any, key: str, value: object) -> None:
 
 
 def _chosen(files: dict[Path, bytes], size: SizeChoice | None, theme: str | None) -> None:
-    from ..theme import THEMES
+    from ..model.theme import THEMES
 
     manifest, theme_file = Path(MANIFEST), Path(THEME_FILE)
     if size is not None:

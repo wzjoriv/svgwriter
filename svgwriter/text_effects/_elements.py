@@ -4,7 +4,8 @@ Text effects of the elements: fire, ice, smoke and snow.
 
 from __future__ import annotations
 
-from ..elements import (
+from ..gradients import blend
+from ..model.elements import (
     Channel,
     ColorMatrixType,
     CompositeOperator,
@@ -21,7 +22,6 @@ from ..elements import (
     Text,
     TurbulenceType,
 )
-from ..gradients import blend
 from ..preset import text_effect
 from ._constants import (
     FIRE_COLORS,

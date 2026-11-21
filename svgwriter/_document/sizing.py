@@ -9,8 +9,8 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING, TypeVar
 
 from .._internal._typing import Self
-from ..elements.core import Element
-from ..pathdata.data import BBox
+from ..model.elements.core import Element
+from ..model.pathdata.data import BBox
 
 if TYPE_CHECKING:
     pass

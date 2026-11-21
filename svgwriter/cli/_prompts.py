@@ -10,9 +10,9 @@ from typing import Any
 
 import click
 
-from ..attributes.length import Length
+from ..model.attributes.length import Length
+from ..model.theme import THEMES
 from ..project import PRESETS
-from ..theme import THEMES
 from ._constants import COMMON_SIZES, CUSTOM_SIZE, KEEP_CHOICE, PRESET_COLUMN, SIZE_SEPARATOR
 
 __all__ = ["ask_name", "ask_notebook", "ask_preset", "ask_size", "ask_theme", "has_questionary", "interactive",

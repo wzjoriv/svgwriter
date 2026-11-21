@@ -9,14 +9,14 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any, TypeVar, overload
 
 from .._internal._tree import attach_cursor
-from ..elements.core import Element
-from ..elements.structure import Desc, Title
+from ..model.elements.core import Element
+from ..model.elements.structure import Desc, Title
 from .ingest import SupportsSVG, to_element
 
 if TYPE_CHECKING:
     from .._internal._typing import Stack
-    from ..attributes.style import StyleSheet
-    from ..elements.structure import Defs, Group, StyleElement, Svg
+    from ..model.attributes.style import StyleSheet
+    from ..model.elements.structure import Defs, Group, StyleElement, Svg
 
 __all__ = ["Building"]
 
@@ -202,7 +202,7 @@ class Building:
         css : str or StyleSheet, optional
             The stylesheet. Defaults to an empty string.
         **kwargs
-            Forwarded to :class:`~svgwriter.elements.structure.StyleElement`.
+            Forwarded to :class:`~svgwriter.model.elements.structure.StyleElement`.
 
         Returns
         -------
@@ -216,7 +216,7 @@ class Building:
         >>> doc.style(".a { fill: red }").tag
         'style'
         """
-        from ..elements.structure import StyleElement
+        from ..model.elements.structure import StyleElement
 
         return self.root.insert(1 if self.root.children and isinstance(self.root.children[0], Title) else 0, StyleElement(css, **kwargs))
 

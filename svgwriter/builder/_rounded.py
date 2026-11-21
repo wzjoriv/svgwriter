@@ -8,8 +8,8 @@ import math
 from collections.abc import Sequence
 from typing import Any
 
-from ..elements.shapes import Path
-from ..pathdata.builder import PathBuilder
+from ..model.elements.shapes import Path
+from ..model.pathdata.builder import PathBuilder
 from ._constants import ROUNDING_EPSILON
 
 __all__ = ["rounded_outline"]
@@ -43,7 +43,7 @@ def rounded_outline(points: Sequence[Vertex], radii: Sequence[float], **kwargs: 
     radii : sequence of float
         Fillet radius for each vertex.
     **kwargs
-        Presentation attributes forwarded to :class:`~svgwriter.elements.Path`.
+        Presentation attributes forwarded to :class:`~svgwriter.model.elements.Path`.
 
     Returns
     -------

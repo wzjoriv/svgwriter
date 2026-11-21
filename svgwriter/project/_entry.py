@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from .._internal._presets import KINDS
-from ..theme import Theme
+from ..model.theme import Theme
 from ..video import Scene
 from ._config import ProjectConfig, ProjectError
 from ._constants import DEFAULT_NOTEBOOK_OBJECT, FONT_SUFFIXES, NOTEBOOK_SUFFIX

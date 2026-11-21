@@ -15,15 +15,15 @@ from ..._internal._constants import OBJECT_BOUNDING_BOX, PERCENT, USER_SPACE, VI
 from .._constants import CHANNEL_MAX, FILTER_REGION_DEFAULT
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
-    from ...pathdata.data import BBox
+    from ...model.elements.core import Element
+    from ...model.pathdata.data import BBox
 
 __all__ = ["Frame", "filter_region", "image_source"]
 
 
 def _length(value: object, extent: float, bounding: bool, origin: float) -> float:
     """One region coordinate: a fraction (or percentage) of *extent* past *origin*, or a user length."""
-    from ...attributes.length import Length, Unit
+    from ...model.attributes.length import Length, Unit
 
     length = Length.parse(value)
     if bounding:
@@ -68,7 +68,7 @@ def filter_region(filter_element: Element, box: BBox | None, viewport: tuple[flo
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.pathdata.data import BBox
+    >>> from svgwriter.model.pathdata.data import BBox
     >>> from svgwriter.ops._filters._filter_frame import filter_region
     >>> filter_region(svg.Filter(), BBox(0, 0, 10, 10), (100, 100)).width()
     12.0
@@ -156,7 +156,7 @@ class Frame:
 
 def _fitted(columns: int, rows: int, area: skia.Rect, ratio_text: object) -> skia.Rect:
     from ..._internal._render._layers import fit_box
-    from ...attributes.viewbox import PreserveAspectRatio
+    from ...model.attributes.viewbox import PreserveAspectRatio
 
     ratio = ratio_text if isinstance(ratio_text, PreserveAspectRatio) else (
         PreserveAspectRatio.parse(str(ratio_text)) if ratio_text is not None else PreserveAspectRatio())
@@ -181,7 +181,7 @@ def image_source(primitive: Element, area: skia.Rect, frame: Frame) -> Any:
     skia.ImageFilter or None
         The source.
     """
-    from ...elements.structure import Pixels
+    from ...model.elements.structure import Pixels
 
     link = primitive.attributes.get("xlink:href")
     if isinstance(link, Pixels):

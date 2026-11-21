@@ -23,7 +23,7 @@ from __future__ import annotations
 import math
 
 from .._internal._presets import BEHAVIORS
-from ..elements import Transformable
+from ..model.elements import Transformable
 from ._constants import (
     BREATHE_AMOUNT,
     BREATHE_PERIOD,

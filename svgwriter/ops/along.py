@@ -10,13 +10,13 @@ from typing import TYPE_CHECKING, TypeVar
 
 import skia
 
-from ..transform.matrix import Point
+from ..model.transform.matrix import Point
 from ._constants import MEASURE_PRECISION
 from ._skia import Geometry
 from .measure import _lengths, _skia_path
 
 if TYPE_CHECKING:
-    from ..elements import Transformable
+    from ..model.elements import Transformable
 
 __all__ = ["distribute", "frames", "sample"]
 

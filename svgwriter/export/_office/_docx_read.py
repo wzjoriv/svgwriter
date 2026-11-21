@@ -33,7 +33,7 @@ from ._pptx_read import outline
 
 if TYPE_CHECKING:
     from ...document import Document
-    from ...elements.core import Element
+    from ...model.elements.core import Element
 
 __all__ = ["read_docx"]
 
@@ -142,7 +142,7 @@ class _Reader:
 
     def _run(self, run: Any) -> list[tuple[Any, float | None]]:
         """One ``<w:r>`` as styled text pieces, breaks and figures."""
-        from ...elements.text import TSpan
+        from ...model.elements.text import TSpan
 
         style, size = _run_style(run.find(_w("rPr")))
         pieces: list[tuple[Any, float | None]] = []
@@ -173,7 +173,7 @@ class _Reader:
 
 
 def _group(elements: list[Element]) -> Element:
-    from ...elements.structure import Group
+    from ...model.elements.structure import Group
 
     return elements[0] if len(elements) == 1 else Group(*elements)
 
@@ -259,7 +259,7 @@ def _items(holder: Any, parts: Any, x: float, y: float, width: float, height: fl
 
 def _picture(holder: Any, parts: Any, x: float, y: float, width: float, height: float) -> Any:
     """An ``<image>`` for a picture whose bytes are in the package, or None."""
-    from ...elements.structure import Image, Pixels
+    from ...model.elements.structure import Image, Pixels
 
     blip = next(holder.iter(_a("blip")), None)
     target = blip.get(f"{{{REL}}}embed") if blip is not None else None

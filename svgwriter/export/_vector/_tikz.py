@@ -30,8 +30,8 @@ from ._constants import (
 )
 
 if TYPE_CHECKING:
-    from ...color.color import Color
     from ...document import Document
+    from ...model.color.color import Color
 
 __all__ = ["to_tikz"]
 

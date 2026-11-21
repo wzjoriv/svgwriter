@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ..elements import Element
+from ..model.elements import Element
 from ._compile import FontInfo, GlyphRecord, compile_font
 from ._constants import (
     CSS_FORMATS,

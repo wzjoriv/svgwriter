@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ..._internal._constants import PX_PER_PT
-from ...transform.matrix import Matrix
+from ...model.transform.matrix import Matrix
 from ._eps_machine import _Machine
 from ._eps_syntax import _bounding_box, _parse, _postscript
 from ._reading import to_document

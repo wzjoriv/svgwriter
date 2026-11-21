@@ -71,7 +71,7 @@ print(doc["Sun"] is sun, "Sun" in doc)
 ## Rotation centres
 
 When an object's rotation centre was moved in Inkscape (`inkscape:transform-center-x` and `-y`), it
-becomes the element's {attr}`~svgwriter.elements.Transformable.anchor`, so `rotate`, `scale` and
+becomes the element's {attr}`~svgwriter.model.elements.Transformable.anchor`, so `rotate`, `scale` and
 animations turn around the same point. Writing an Inkscape document stores the anchor back for Inkscape.
 Inkscape keeps the centre as an offset from the middle of the bounding box, in user units with y pointing
 up; svgwriter converts both ways.

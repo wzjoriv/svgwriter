@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from ..._internal._constants import PX_PER_PT
-from ...transform.matrix import Matrix
+from ...model.transform.matrix import Matrix
 from ._constants import ENCRYPT_RE, HEADER_WINDOW, PDF_HEADER
 from ._pdf_objects import _content, _inherited, _media_box, _objects, _pages
 from ._pdf_painter import _Painter

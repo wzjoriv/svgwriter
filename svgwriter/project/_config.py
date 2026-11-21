@@ -12,8 +12,8 @@ from typing import Any
 import tomlkit
 
 from .._document.sizes import PageSize, page_size
-from ..attributes.length import Length
 from ..export import exporters
+from ..model.attributes.length import Length
 from ._constants import (
     ANIMATED_FORMATS,
     DEFAULT_ENTRY,

@@ -8,9 +8,9 @@ from collections.abc import Iterable
 from typing import Any, TypeVar
 
 from .._internal._roles import with_role
-from ..color.color import Color
-from ..elements import Pattern, Rect
-from ..elements.core import Element
+from ..model.color.color import Color
+from ..model.elements import Pattern, Rect
+from ..model.elements.core import Element
 from ._constants import FALLBACK_INK
 
 __all__ = ["ink", "tile"]

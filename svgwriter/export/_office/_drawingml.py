@@ -11,8 +11,8 @@ from ._constants import A_NS, ALPHA_SCALE, ANGLE_UNIT, CAPS, JOINS, MITER_SCALE
 
 if TYPE_CHECKING:
     from ..._internal._flat._paints import Shading
-    from ...elements.core import Element
-    from ...pathdata.data import BBox
+    from ...model.elements.core import Element
+    from ...model.pathdata.data import BBox
 
 __all__ = ["gradient_xml", "line_style", "read_gradient", "read_line_style"]
 
@@ -213,8 +213,8 @@ def read_gradient(fill: Any, left: float, top: float, width: float, height: floa
     >>> gradient.tag, gradient.get("x1"), gradient.get("x2")
     ('linearGradient', 0.0, 100.0)
     """
-    from ...color.color import Color
-    from ...elements.paint import LinearGradient, RadialGradient, Stop
+    from ...model.color.color import Color
+    from ...model.elements.paint import LinearGradient, RadialGradient, Stop
 
     stops = []
     for entry in fill.iter(_a("gs")):

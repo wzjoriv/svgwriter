@@ -6,11 +6,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ...transform.matrix import Matrix
+from ...model.transform.matrix import Matrix
 from ._constants import AXIAL, EXPONENTIAL, IDENTITY_MATRIX, RADIAL, SHADING, STITCHING, TILING
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
+    from ...model.elements.core import Element
     from ._pdf_painter import _Painter
 
 __all__ = ["fill_with_pattern", "gradient", "paint_shading", "pattern_paint"]
@@ -53,8 +53,8 @@ def _stops(objects: dict[Any, Any], function: Any, low: float = 0.0,
 
 def gradient(objects: dict[Any, Any], shading: Any, matrix: Matrix) -> Element | None:
     """An axial or radial shading as a ``userSpaceOnUse`` gradient carrying *matrix*, or None if unsupported."""
-    from ...color.color import Color
-    from ...elements.paint import LinearGradient, RadialGradient, Stop
+    from ...model.color.color import Color
+    from ...model.elements.paint import LinearGradient, RadialGradient, Stop
     from ._pdf_objects import _resolve
 
     info = shading.info if hasattr(shading, "info") else shading
@@ -109,7 +109,7 @@ def pattern_paint(painter: _Painter, pattern: Any) -> Element | None:
 
 def _tiling(painter: _Painter, pattern: Any, matrix: Matrix) -> Element | None:
     """A tiling pattern's cell drawn by a nested painter into a ``<pattern>``."""
-    from ...elements.paint import Pattern
+    from ...model.elements.paint import Pattern
     from ._pdf_objects import _decode, _resolve
     from ._pdf_painter import _Painter
     from ._reading import Shape, _path

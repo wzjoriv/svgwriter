@@ -9,7 +9,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Final
 
-from ...transform.matrix import Matrix
+from ...model.transform.matrix import Matrix
 from ._constants import BLACK, CAP_NAMES, HAIRLINE, JOIN_NAMES, MAX_STEPS, PS_MAX_DEPTH, SAVE_OBJECT
 from ._eps_images import _colorimage, _filter, _image
 from ._eps_paths import (

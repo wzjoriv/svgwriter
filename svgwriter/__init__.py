@@ -81,14 +81,12 @@ from . import (
     fonts,
     gradients,
     inkscape,
-    layout,
     markers,
     ops,
     patterns,
     preset,
     project,
     text_effects,
-    theme,
     video,
     widgets,
 )
@@ -97,7 +95,17 @@ from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
 from .aliases import filter as filter  # noqa: A004, E402
 from .aliases import set as set
-from .attributes import (
+from .builder import drawing
+from .document import Document
+from .fonts import FontBuilder
+from .io.writer import SerializeOptions, to_string, write
+from .model import attributes as attributes
+from .model import color as color
+from .model import elements as elements
+from .model import layout, theme
+from .model import pathdata as pathdata
+from .model import transform as transform
+from .model.attributes import (
     IRI,
     Align,
     Angle,
@@ -125,15 +133,14 @@ from .attributes import (
     rad,
     turn,
 )
-from .attributes.units import angle, length
-from .builder import drawing
-from .color import Color, PaintKeyword, parse_color, parse_paint
-from .document import Document
-from .elements import *  # noqa: F403
-from .elements import __all__ as _elements_all
-from .fonts import FontBuilder
-from .io.writer import SerializeOptions, to_string, write
-from .layout import Grid, HStack, Spacer, VStack
+from .model.attributes.units import angle, length
+from .model.color import Color, PaintKeyword, parse_color, parse_paint
+from .model.elements import *  # noqa: F403
+from .model.elements import __all__ as _elements_all
+from .model.layout import Grid, HStack, Spacer, VStack
+from .model.pathdata import BBox, PathBuilder, PathData
+from .model.theme import THEMES, Theme
+from .model.transform import Matrix, Point, Transform
 from .ops import (
     Typeface,
     distribute,
@@ -143,10 +150,7 @@ from .ops import (
     text_to_path,
     unregister_interpolator,
 )
-from .pathdata import BBox, PathBuilder, PathData
 from .project import Project
-from .theme import THEMES, Theme
-from .transform import Matrix, Point, Transform
 from .video import FFmpegNotFoundError, Scene, register_renderer
 from .widgets import interact, sweep
 

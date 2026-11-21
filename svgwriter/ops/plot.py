@@ -12,14 +12,14 @@ from ._constants import CLOSEPOLY, CURVE4, LINETO, MOVETO, POINTS_PER_UNIT
 
 if TYPE_CHECKING:
     from ..document import Document
-    from ..elements.core import Element
+    from ..model.elements.core import Element
 
 __all__ = ["to_matplotlib"]
 
 
 def _codes(data: Any) -> tuple[np.ndarray, np.ndarray]:
     """Vertices and matplotlib path codes for path data (curves as cubic Béziers)."""
-    from ..pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
+    from ..model.pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
     from ._skia import from_skia, to_skia
 
     vertices: list[tuple[float, float]] = []

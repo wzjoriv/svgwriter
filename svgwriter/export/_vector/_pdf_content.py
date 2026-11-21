@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, Final
 
 import numpy as np
 
-from ...transform.matrix import Matrix
+from ...model.transform.matrix import Matrix
 from ._constants import (
     BF_CHAR_RE,
     BF_RANGE_RE,
@@ -37,7 +37,7 @@ def _filters(info: dict[str, Any]) -> list[str]:
 
 def _samples(painter: _Painter, stream: Any) -> np.ndarray | None:
     """An image XObject's pixels as straight RGBA floats, or None for unsupported encodings."""
-    from ...elements.structure import Pixels
+    from ...model.elements.structure import Pixels
     from ._pdf_objects import _resolve
 
     info = stream.info
@@ -80,7 +80,7 @@ def _samples(painter: _Painter, stream: Any) -> np.ndarray | None:
 
 def draw_image(painter: _Painter, stream: Any) -> None:
     """``Do`` on an image XObject: an ``<image>`` mapped through the CTM onto the unit square."""
-    from ...elements.structure import Image
+    from ...model.elements.structure import Image
 
     pixels = _samples(painter, stream)
     if pixels is None:
@@ -190,7 +190,7 @@ def _next_line(painter: _Painter, operands: list[Any], resources: dict[str, Any]
 
 def _show(painter: _Painter, text: str) -> None:
     """Add a ``<text>`` run at the current text position and advance by its measured width."""
-    from ...elements.text import Text
+    from ...model.elements.text import Text
     from ...ops.text import text_width
     from ._reading import _hex
 

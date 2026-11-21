@@ -7,8 +7,8 @@ from __future__ import annotations
 from typing import NamedTuple
 
 from .._internal._tree import resolve
-from ..elements.core import Element
-from ..pathdata.builder import PathBuilder
+from ..model.elements.core import Element
+from ..model.pathdata.builder import PathBuilder
 from ._constants import (
     CONNECTION_END,
     CONNECTION_START,

@@ -10,8 +10,8 @@ from typing import overload
 from .._internal._constants import NON_CONTENT
 from .._internal._tree import element_list
 from .._internal._typing import Self
-from ..elements.core import Element
 from ..inkscape import by_label
+from ..model.elements.core import Element
 from .ingest import SupportsSVG, to_element
 
 __all__ = ["Access"]

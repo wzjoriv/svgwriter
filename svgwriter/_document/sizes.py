@@ -7,7 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .._internal._presets import SIZES
-from ..attributes.length import Length, LengthLike, Unit
+from ..model.attributes.length import Length, LengthLike, Unit
 from ._constants import BUILTIN_SIZES, IDENTIFIER_SEPARATORS, LANDSCAPE_SUFFIX, PORTRAIT_SUFFIX
 
 __all__ = ["PageSize", "page_size", "size"]

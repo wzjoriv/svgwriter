@@ -13,7 +13,7 @@ from ._pptx_timing import timing_xml
 
 if TYPE_CHECKING:
     from ...document import Document
-    from ...elements.core import Element
+    from ...model.elements.core import Element
 
 __all__ = ["SlideAnimations", "slide_animations"]
 
@@ -112,7 +112,7 @@ def slide_animations(document: Document) -> SlideAnimations:
     from ..._internal._render._layers import ancestry
     from ..._internal._render._rendering import view_matrix
     from ...document import Document
-    from ...elements.animation import AnimationElement
+    from ...model.elements.animation import AnimationElement
     from ...ops.render import page_size
 
     copy = Document(root=document.root.clone(), theme=document.theme)

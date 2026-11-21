@@ -22,7 +22,7 @@ from ._layers import ancestry, viewport_extent
 
 if TYPE_CHECKING:
     from ...document import Document
-    from ...elements.core import Element
+    from ...model.elements.core import Element
 
 __all__ = ["base_uri", "resolve_links"]
 
@@ -51,7 +51,7 @@ _LOADING: set[str] = set()
 
 @lru_cache(maxsize=LINK_CACHE)
 def _load(path: str, mtime: float, width: float, height: float, ratio: str, density: float) -> Any:
-    from ...elements.structure import Pixels
+    from ...model.elements.structure import Pixels
 
     if path.lower().endswith((".svg", ".svgz")):
         from ...export import load
@@ -71,7 +71,7 @@ def _rasterized(document: Document, width: float, height: float, ratio: str, den
     document without a ``viewBox`` is drawn unscaled and clipped to the viewport. *density* is
     pixels per user unit.
     """
-    from ...elements.structure import Pixels
+    from ...model.elements.structure import Pixels
 
     root = document.root
     if root.get("viewBox") is None:
@@ -131,7 +131,7 @@ def resolve_links(root: Element) -> None:
     from urllib.request import url2pathname
 
     from ...document import Document
-    from ...elements.structure import Image, Pixels
+    from ...model.elements.structure import Image, Pixels
 
     effects = [e for e in root.iter() if e.tag == "feImage" and isinstance(e.attributes.get("xlink:href"), str)
                and not str(e.attributes["xlink:href"]).startswith("#")]
@@ -179,7 +179,7 @@ def resolve_links(root: Element) -> None:
 
 def _absolute_geometry(image: Element) -> None:
     """Rewrite percentage ``x``/``y``/``width``/``height`` of *image* as user units of its viewport."""
-    from ...attributes.length import Length, Unit
+    from ...model.attributes.length import Length, Unit
 
     extent = None
     for name, axis in VIEWPORT_AXES.items():
@@ -198,7 +198,7 @@ def _ratio(image: Element) -> str:
 
 
 def _length(value: object) -> float:
-    from ...attributes.length import Length
+    from ...model.attributes.length import Length
 
     try:
         return Length.parse(value).to_user_units() if value is not None else 0.0

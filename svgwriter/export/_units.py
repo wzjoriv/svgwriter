@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from .._internal._constants import PX_PER_INCH
-from ..attributes.length import Length
+from ..model.attributes.length import Length
 from ._constants import PHYSICAL_UNITS
 
 if TYPE_CHECKING:

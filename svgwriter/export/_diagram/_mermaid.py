@@ -34,7 +34,7 @@ from ._constants import (
 
 if TYPE_CHECKING:
     from ...document import Document
-    from ...elements.structure import Group
+    from ...model.elements.structure import Group
 
 __all__ = ["Flowchart", "parse_flowchart", "draw_flowchart"]
 
@@ -269,7 +269,7 @@ def _place(chart: Flowchart, layers: list[list[str]]) -> None:
 
 
 def _shape(node: Node) -> Any:
-    from ...elements.shapes import Circle, Polygon, Rect
+    from ...model.elements.shapes import Circle, Polygon, Rect
 
     x, y, w, h = node.x, node.y, node.width, node.height
     left, top, right, bottom = x - w / 2, y - h / 2, x + w / 2, y + h / 2
@@ -309,8 +309,8 @@ def _clip_to(node: Node, toward: tuple[float, float]) -> tuple[float, float]:
 
 def draw_flowchart(chart: Flowchart) -> Group:
     """Lay out and draw a parsed flowchart as a group of editable shapes, edges and labels."""
-    from ...elements.structure import Group
-    from ...elements.text import Text
+    from ...model.elements.structure import Group
+    from ...model.elements.text import Text
 
     _measure(chart)
     _place(chart, _order(chart, _ranks(chart)))

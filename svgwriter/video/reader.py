@@ -24,7 +24,7 @@ from ._ffmpeg import FFmpegError, find_ffmpeg
 
 if TYPE_CHECKING:
     from .._internal._typing import AnyPath
-    from ..elements.structure import Image
+    from ..model.elements.structure import Image
 
 __all__ = ["Video"]
 
@@ -128,13 +128,13 @@ class Video:
 
     def at(self, seconds: float) -> Image:
         """The frame shown at *seconds* as an ``<image>`` at pixel size, placed at the origin."""
-        from ..elements.structure import Image
+        from ..model.elements.structure import Image
 
         return Image(self.array_at(seconds))
 
     def __getitem__(self, index: int) -> Image:
         """``video[i]``: frame *i* as an ``<image>``."""
-        from ..elements.structure import Image
+        from ..model.elements.structure import Image
 
         return Image(self.frame(index))
 

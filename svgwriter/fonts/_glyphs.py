@@ -4,9 +4,9 @@ Glyph records from drawings: names, placement in font units and the glyphs every
 
 from __future__ import annotations
 
-from ..elements import Element
-from ..pathdata import PathData
-from ..transform import Matrix
+from ..model.elements import Element
+from ..model.pathdata import PathData
+from ..model.transform import Matrix
 from ._compile import FontInfo, GlyphRecord
 from ._constants import FONT_FORMATS, NOTDEF, NOTDEF_INSET, NOTDEF_WIDTH, PRIVATE_USE_END, SPACE, SPACE_WIDTH
 from ._outline import painted_outline

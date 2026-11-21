@@ -7,7 +7,7 @@ import pytest
 
 import svgwriter as svg
 from svgwriter import aliases
-from svgwriter.elements import Element, ElementFactory, GraphicsContainer
+from svgwriter.model.elements import Element, ElementFactory, GraphicsContainer
 from tests.conftest import roundtrip, wellformed
 
 SHORTCUTS_PLACED = {
@@ -63,7 +63,7 @@ class TestAliases:
         assert svg.path is svg.Path and svg.svg is svg.Svg and svg.a is svg.A
 
     def test_subpackage_still_importable_under_alias_name(self) -> None:
-        from svgwriter.pathdata import PathBuilder
+        from svgwriter.model.pathdata import PathBuilder
 
         assert PathBuilder().move_to(0, 0).build()
 

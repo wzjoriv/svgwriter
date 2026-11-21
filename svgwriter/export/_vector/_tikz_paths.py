@@ -7,7 +7,7 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING, Any
 
-from ...transform.matrix import IDENTITY
+from ...model.transform.matrix import IDENTITY
 from ._constants import (
     ANCHORS,
     BASE_ANCHORS,
@@ -183,7 +183,7 @@ class _PathReader:
     def node(self, coordinate: bool, tokens: list[tuple[str, str]], i: int) -> int:
         """A ``node`` or ``coordinate`` read after its keyword: placed ``at`` a point, along the last segment
         for ``pos``/``midway``, or at the current point; its text, border and name become extra shapes and places."""
-        from ...elements.text import Text
+        from ...model.elements.text import Text
         from ._reading import _hex
 
         pairs, name, at, content, i = _read_node(tokens, i, coordinate)

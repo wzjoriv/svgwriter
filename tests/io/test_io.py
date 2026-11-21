@@ -8,7 +8,6 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter.elements import UnknownElement
 from svgwriter.io import (
     SerializeOptions,
     Strictness,
@@ -18,6 +17,7 @@ from svgwriter.io import (
     iter_chunks,
     write_many_async,
 )
+from svgwriter.model.elements import UnknownElement
 
 from ..conftest import SVG_NS, wellformed
 

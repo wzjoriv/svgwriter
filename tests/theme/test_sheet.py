@@ -4,8 +4,8 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter.theme import ThemeError
-from svgwriter.theme.sheet import STYLE_ID
+from svgwriter.model.theme import ThemeError
+from svgwriter.model.theme.sheet import STYLE_ID
 
 
 def _themed(theme: str = "dark") -> svg.Document:

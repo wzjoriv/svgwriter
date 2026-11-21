@@ -4,7 +4,7 @@ import math
 
 import pytest
 
-from svgwriter.transform import (
+from svgwriter.model.transform import (
     IDENTITY,
     Matrix,
     MatrixOp,

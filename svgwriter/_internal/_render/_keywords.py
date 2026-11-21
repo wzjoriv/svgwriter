@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 from .._constants import COLOR_OPACITIES, COLOR_PROPERTIES, CURRENT_COLOR, INHERIT, LEGACY_COLOR_RE, NONE
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
+    from ...model.elements.core import Element
 
 __all__ = ["resolve_colors", "resolve_keywords"]
 
@@ -23,7 +23,7 @@ def resolve_keywords(root: Element) -> None:
     """Replace ``inherit`` by the parent's computed value and ``currentColor`` by the computed ``color``.
 
     Works in place on a tree whose styles are already presentation attributes (see
-    :func:`~svgwriter.attributes.cascade.resolve_styles`), so renderers that know neither
+    :func:`~svgwriter.model.attributes.cascade.resolve_styles`), so renderers that know neither
     keyword for a property (``stop-color`` and ``stop-opacity`` above all) draw it right.
     An ``inherit`` with nothing to inherit is dropped, leaving the initial value.
 
@@ -42,7 +42,7 @@ def resolve_keywords(root: Element) -> None:
     >>> str(rect.get("fill")), str(rect.get("stroke"))
     ('red', 'blue')
     """
-    from ...attributes.cascade import computed
+    from ...model.attributes.cascade import computed
 
     for element in list(root.iter()):
         for name, value in list(element.attributes.items()):
@@ -78,7 +78,7 @@ def resolve_colors(root: Element) -> None:
     >>> rect.get("fill"), rect.get("fill-opacity")
     ('#00c800', 0.25)
     """
-    from ...color.color import Color
+    from ...model.color.color import Color
 
     for element in root.iter():
         for name in COLOR_PROPERTIES & element.attributes.keys():

@@ -7,9 +7,9 @@ from __future__ import annotations
 import math
 from typing import Any, TypeVar
 
-from ..elements.core import Element
-from ..elements.shapes import Path, Polygon
-from ..pathdata.builder import PathBuilder
+from ..model.elements.core import Element
+from ..model.elements.shapes import Path, Polygon
+from ..model.pathdata.builder import PathBuilder
 from ..preset import shape
 from ._constants import (
     ARROW_HEAD_ANGLE,
@@ -77,8 +77,8 @@ def star(
         Build a path carrying Inkscape's star parameters (``sodipodi:type="star"``),
         so the star stays editable with Inkscape's star tool. Defaults to False.
     **kwargs
-        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`
-        (:class:`~svgwriter.elements.Path` when rounded or `inkscape`).
+        Presentation attributes forwarded to :class:`~svgwriter.model.elements.Polygon`
+        (:class:`~svgwriter.model.elements.Path` when rounded or `inkscape`).
 
     Returns
     -------
@@ -126,7 +126,7 @@ def gear(cx: float, cy: float, radius: float, teeth: int = DEFAULT_TEETH, **kwar
     teeth : int, optional
         Number of teeth. Defaults to 12.
     **kwargs
-        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`.
+        Presentation attributes forwarded to :class:`~svgwriter.model.elements.Polygon`.
 
     Returns
     -------
@@ -161,7 +161,7 @@ def arrow(x1: float, y1: float, x2: float, y2: float, head: float = DEFAULT_HEAD
     head : float, optional
         Length of each head stroke. Defaults to 10.0.
     **kwargs
-        Presentation attributes forwarded to :class:`~svgwriter.elements.Path`;
+        Presentation attributes forwarded to :class:`~svgwriter.model.elements.Path`;
         ``fill`` defaults to ``"none"``.
 
     Returns
@@ -220,8 +220,8 @@ def regular_polygon(
         with ``inkscape:flatsided="true"``), editable with Inkscape's star tool.
         Defaults to False.
     **kwargs
-        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`
-        (:class:`~svgwriter.elements.Path` when rounded or `inkscape`).
+        Presentation attributes forwarded to :class:`~svgwriter.model.elements.Polygon`
+        (:class:`~svgwriter.model.elements.Path` when rounded or `inkscape`).
 
     Returns
     -------

@@ -9,7 +9,7 @@ import re
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
-from ...transform.matrix import IDENTITY, Matrix
+from ...model.transform.matrix import IDENTITY, Matrix
 from ._constants import (
     DEFAULT_UNIT,
     EVENT_RE,

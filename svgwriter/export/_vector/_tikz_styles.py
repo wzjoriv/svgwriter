@@ -9,7 +9,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Final
 
-from ...color.color import as_color
+from ...model.color.color import as_color
 from ._constants import (
     BLACK,
     COLORLET_RE,
@@ -136,7 +136,7 @@ class _Style:
 
 def _shading(shades: dict[str, RGB], angle: float) -> tuple[Any, RGB]:
     """A TikZ shading as an SVG gradient over the shape's box, with its average colour as the solid stand-in."""
-    from ...elements.paint import LinearGradient, RadialGradient, Stop
+    from ...model.elements.paint import LinearGradient, RadialGradient, Stop
     from ._reading import _hex
 
     if "inner" in shades or "outer" in shades:

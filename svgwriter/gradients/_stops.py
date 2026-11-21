@@ -8,8 +8,8 @@ import math
 from collections.abc import Sequence
 from typing import Any
 
-from ..color.color import Color, ColorLike, as_color
-from ..elements import LinearGradient, Stop
+from ..model.color.color import Color, ColorLike, as_color
+from ..model.elements import LinearGradient, Stop
 from ._constants import SAMPLES, SPACE
 
 __all__ = ["linear", "palette_color", "smooth_stops"]

@@ -7,7 +7,7 @@ import pytest
 import svgwriter as svg
 from svgwriter._internal._flat._flatten import polylines
 from svgwriter.export._plotter._constants import MM_PER_USER_UNIT
-from svgwriter.pathdata import PathData
+from svgwriter.model.pathdata import PathData
 
 
 def drawing() -> svg.Document:

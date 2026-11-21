@@ -4,8 +4,9 @@ Text effects of materials and motion: metal, wind, neon and glitch.
 
 from __future__ import annotations
 
-from ..color.color import ColorLike, as_color
-from ..elements import (
+from ..gradients import blend, metallic
+from ..model.color.color import ColorLike, as_color
+from ..model.elements import (
     ColorMatrixType,
     CompositeOperator,
     FeColorMatrix,
@@ -18,9 +19,8 @@ from ..elements import (
     StandardInput,
     Text,
 )
-from ..gradients import blend, metallic
+from ..model.theme import Theme
 from ..preset import text_effect
-from ..theme import Theme
 from ._constants import (
     GLITCH_COLORS,
     GLITCH_DURATION,

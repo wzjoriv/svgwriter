@@ -8,12 +8,12 @@ from typing import TYPE_CHECKING, Any, TypeAlias, Union
 
 import skia
 
-from ..pathdata.commands import ArcTo, ClosePath, CurveTo, LineTo, MoveTo, QuadTo
-from ..pathdata.data import PathData
+from ..model.pathdata.commands import ArcTo, ClosePath, CurveTo, LineTo, MoveTo, QuadTo
+from ..model.pathdata.data import PathData
 from ._constants import CONIC_SUBDIVISION, EVENODD
 
 if TYPE_CHECKING:
-    from ..elements import PathOperand
+    from ..model.elements import PathOperand
 
 __all__ = [
     "Geometry",
@@ -52,7 +52,7 @@ def geometry_data(item: Geometry) -> tuple[PathData, bool]:
     >>> evenodd
     False
     """
-    from ..elements import PathOperand
+    from ..model.elements import PathOperand
 
     if isinstance(item, PathOperand):
         return item.outline(), str(item.get("fill-rule", "")) == EVENODD

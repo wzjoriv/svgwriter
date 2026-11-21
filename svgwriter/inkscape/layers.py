@@ -6,8 +6,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..elements.core import Element
-from ..elements.structure import Group
+from ..model.elements.core import Element
+from ..model.elements.structure import Group
 from ._constants import GROUP_MODE, LABEL, LAYER
 
 __all__ = ["by_label", "is_layer", "layers", "new_layer"]

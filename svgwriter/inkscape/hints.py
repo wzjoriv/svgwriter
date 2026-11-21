@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ..elements.core import Element
+from ..model.elements.core import Element
 from ._constants import DOCUMENT_UNITS, EXPORT_FILENAME, EXPORT_XDPI, EXPORT_YDPI
 from .guides import namedview
 

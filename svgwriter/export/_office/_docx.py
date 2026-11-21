@@ -30,8 +30,8 @@ from ._pptx import _geometry_xml, _office_family, text_box
 
 if TYPE_CHECKING:
     from ..._internal._flat._flatten import Item
-    from ...color.color import Color
     from ...document import Document
+    from ...model.color.color import Color
     from ._layout import Equation
 
 __all__ = ["write_docx"]

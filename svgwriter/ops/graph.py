@@ -25,7 +25,7 @@ from ._constants import (
 from ._graph_adapters import ADAPTERS, GraphAdapter, adapter_for
 
 if TYPE_CHECKING:
-    from ..elements.structure import Group
+    from ..model.elements.structure import Group
 
 __all__ = ["draw_graph", "is_graph"]
 
@@ -156,8 +156,8 @@ def draw_graph(graph: Any, *, layout: Layout = "spring", size: float = GRAPH_SIZ
     >>> len([c for c in picture[1] if c.tag == "circle"])  # doctest: +SKIP
     3
     """
-    from ..elements.structure import Group
-    from ..elements.text import Text
+    from ..model.elements.structure import Group
+    from ..model.elements.text import Text
 
     adapter = adapter_for(graph)
     if adapter is None:

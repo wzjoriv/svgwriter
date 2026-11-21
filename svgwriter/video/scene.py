@@ -17,8 +17,8 @@ from .animation import DEFAULT_FPS, Renderer, animation_duration, iter_frames, r
 from .frames import Frame
 
 if TYPE_CHECKING:
-    from ..color.color import ColorLike
     from ..document import Document
+    from ..model.color.color import ColorLike
 
 __all__ = ["Scene"]
 

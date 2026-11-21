@@ -8,8 +8,8 @@ import math
 from typing import Any
 
 from .._internal._typing import Opacity
-from ..color.color import Color
-from ..elements import (
+from ..model.color.color import Color
+from ..model.elements import (
     CompositeOperator,
     FeComposite,
     FeGaussianBlur,
@@ -18,7 +18,7 @@ from ..elements import (
     Filter,
     StandardInput,
 )
-from ..elements.core import Element
+from ..model.elements.core import Element
 from ..preset import filter
 from ._constants import (
     DEFAULT_BLUR,

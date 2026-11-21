@@ -5,9 +5,9 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter.theme import Palette, ThemeError
-from svgwriter.theme._constants import MAX_EXPRESSION_DEPTH, MAX_EXPRESSION_LENGTH, MAX_REFERENCE_DEPTH
-from svgwriter.theme._expression import evaluate, is_expression
+from svgwriter.model.theme import Palette, ThemeError
+from svgwriter.model.theme._constants import MAX_EXPRESSION_DEPTH, MAX_EXPRESSION_LENGTH, MAX_REFERENCE_DEPTH
+from svgwriter.model.theme._expression import evaluate, is_expression
 
 LIGHT = svg.Theme.get("light")
 SIZES = {"fonts.sizes.text": 14.0, "fonts.sizes.caption": 11.0}

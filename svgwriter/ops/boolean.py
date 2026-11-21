@@ -9,8 +9,8 @@ import warnings
 
 import skia
 
-from ..pathdata.commands import ClosePath
-from ..pathdata.data import PathData
+from ..model.pathdata.commands import ClosePath
+from ..model.pathdata.data import PathData
 from ._constants import OPEN_BOOLEAN_WARNING
 from ._skia import Geometry, from_skia, geometry_data, to_skia
 

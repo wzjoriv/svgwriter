@@ -12,7 +12,7 @@ from .._internal._constants import MOTION_HELPERS
 from .._internal._presets import ANIMATIONS, BEHAVIORS
 
 if TYPE_CHECKING:
-    from ..elements import Motion
+    from ..model.elements import Motion
 
 __all__ = ["animation"]
 

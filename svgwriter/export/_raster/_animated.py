@@ -30,7 +30,7 @@ __all__ = ["encode_apng", "encode_webp_animation"]
 
 
 def _encode_png(frame: np.ndarray) -> bytes:
-    from ...elements.structure import Pixels
+    from ...model.elements.structure import Pixels
 
     return Pixels.from_array(frame).encode("png")
 
@@ -153,7 +153,7 @@ def encode_webp_animation(frames: Sequence[np.ndarray], fps: float, *, loop: int
     >>> data[:4], data[8:12], b"ANIM" in data
     (b'RIFF', b'WEBP', True)
     """
-    from ...elements.structure import Pixels
+    from ...model.elements.structure import Pixels
 
     if not len(frames):
         raise ValueError("an animation needs at least one frame")

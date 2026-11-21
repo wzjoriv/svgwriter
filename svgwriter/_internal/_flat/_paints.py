@@ -13,16 +13,16 @@ from .._constants import NONE, PERCENT
 from .._tree import resolve
 
 if TYPE_CHECKING:
-    from ...color.color import Color
-    from ...elements.core import Element
-    from ...transform.matrix import Matrix
+    from ...model.color.color import Color
+    from ...model.elements.core import Element
+    from ...model.transform.matrix import Matrix
 
 __all__ = ["Shading"]
 
 
 def _paint(element: Element, name: str, default: str, rules: list) -> Color | None:
-    from ...attributes.cascade import computed
-    from ...color.color import Color, as_color
+    from ...model.attributes.cascade import computed
+    from ...model.color.color import Color, as_color
 
     value = computed(element, name, default, rules)
     text = str(value.svg_value() if hasattr(value, "svg_value") else value).strip()
@@ -45,9 +45,9 @@ def _paint(element: Element, name: str, default: str, rules: list) -> Color | No
 
 def _stops(server: Element, rules: list) -> list[tuple[float, Color]]:
     """The ``(offset, colour)`` stops of a gradient, offsets clamped to ``0..1``."""
-    from ...attributes.cascade import computed
-    from ...attributes.length import Length
-    from ...color.color import as_color
+    from ...model.attributes.cascade import computed
+    from ...model.attributes.length import Length
+    from ...model.color.color import as_color
 
     return [(min(max(float(Length.parse(stop.get("offset", 0)).value) / (PERCENT if "%" in str(stop.get("offset", ""))
              else 1.0), 0.0), 1.0), as_color(str(computed(stop, "stop-color", "black", rules))))
@@ -56,7 +56,7 @@ def _stops(server: Element, rules: list) -> list[tuple[float, Color]]:
 
 def _mean_color(stops: list[tuple[float, Color]]) -> Color:
     """The average colour along a gradient's axis: the solid colour that stands in for it."""
-    from ...color.color import Color
+    from ...model.color.color import Color
 
     offsets = np.maximum.accumulate([0.0, *(offset for offset, _ in stops), 1.0])
     colors = np.array([stops[0][1].rgb, *(color.rgb for _, color in stops), stops[-1][1].rgb])
@@ -88,9 +88,9 @@ class Shading:
 
 def _shading(element: Element, to_page: Matrix, rules: list) -> Shading | None:
     """The gradient behind ``fill``, when it is a linear or radial gradient with stops."""
-    from ...attributes.cascade import computed
-    from ...attributes.length import Length
-    from ...transform.matrix import Matrix
+    from ...model.attributes.cascade import computed
+    from ...model.attributes.length import Length
+    from ...model.transform.matrix import Matrix
 
     value = computed(element, "fill", "black", rules)
     if not str(getattr(value, "svg_value", lambda: value)()).startswith("url("):

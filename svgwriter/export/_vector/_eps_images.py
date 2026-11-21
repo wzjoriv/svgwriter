@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-from ...transform.matrix import Matrix
+from ...model.transform.matrix import Matrix
 from ._constants import (
     CHANNEL_MAX,
     CMYK_CHANNELS,
@@ -50,7 +50,7 @@ def _source_bytes(machine: _Machine, source: Any, need: int, depth: int) -> byte
 
 def _place_image(machine: _Machine, depth: int, operands: list[Any], sources: list[Any], channels: int) -> None:
     """Add an ``Image`` for 8-bit samples read from *sources* (one interleaved source, or one per channel)."""
-    from ...elements.structure import Image
+    from ...model.elements.structure import Image
 
     width, height, bits, matrix = operands
     if int(bits) != SUPPORTED_BITS or not isinstance(matrix, list) or width < 1 or height < 1:

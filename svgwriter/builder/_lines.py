@@ -7,8 +7,8 @@ from __future__ import annotations
 import math
 from typing import Any
 
-from ..elements.shapes import Path
-from ..pathdata.builder import PathBuilder
+from ..model.elements.shapes import Path
+from ..model.pathdata.builder import PathBuilder
 from ..preset import shape
 from ._constants import (
     FULL_TURN,
@@ -61,7 +61,7 @@ def grid(
         Distance between lines, or ``(horizontal, vertical)`` distances. Lines start at the
         top-left corner and stop at the last one that fits.
     **kwargs
-        Presentation attributes forwarded to :class:`~svgwriter.elements.Path`;
+        Presentation attributes forwarded to :class:`~svgwriter.model.elements.Path`;
         ``fill`` defaults to ``"none"``.
 
     Returns
@@ -119,7 +119,7 @@ def spiral(cx: float, cy: float, *, turns: float, start_radius: float, end_radiu
     start_radius, end_radius : float
         Distance from the center at the start and at the end.
     **kwargs
-        Presentation attributes forwarded to :class:`~svgwriter.elements.Path`;
+        Presentation attributes forwarded to :class:`~svgwriter.model.elements.Path`;
         ``fill`` defaults to ``"none"``.
 
     Returns
@@ -269,7 +269,7 @@ def wave(
         Shape of the wave. Sine and triangle start on the centerline and rise first; square starts at
         the crest; sawtooth starts at the trough and ramps up. Defaults to ``"sine"``.
     **kwargs
-        Presentation attributes forwarded to :class:`~svgwriter.elements.Path`;
+        Presentation attributes forwarded to :class:`~svgwriter.model.elements.Path`;
         ``fill`` defaults to ``"none"``.
 
     Returns

@@ -9,7 +9,7 @@ from collections.abc import Callable
 from dataclasses import replace
 from typing import TYPE_CHECKING, Any
 
-from ...transform.matrix import Matrix
+from ...model.transform.matrix import Matrix
 from ._pdf_painter import _intersect
 from ._reading import Outline
 

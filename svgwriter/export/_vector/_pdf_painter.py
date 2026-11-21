@@ -9,7 +9,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Any, Final
 
-from ...transform.matrix import Matrix
+from ...model.transform.matrix import Matrix
 from ._constants import BLACK, CAP_NAMES, CLIP_TOLERANCE, HAIRLINE, JOIN_NAMES, PAINTS, PDF_MAX_DEPTH
 from ._pdf_content import CONTENT_HANDLERS, draw_image
 from ._pdf_objects import Name, Stream, _decode, _numbers, _operations, _resolve
@@ -260,8 +260,8 @@ def _intersect(current: list[Op] | None, ops: list[Op]) -> list[Op]:
 
 def _operations_of(data: Any) -> list[Op]:
     """Path data as ``M``/``L``/``C``/``Z`` operations."""
+    from ...model.pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
     from ...ops import from_skia, to_skia
-    from ...pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
 
     ops: list[Op] = []
     here = (0.0, 0.0)

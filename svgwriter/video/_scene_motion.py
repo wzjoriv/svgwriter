@@ -15,7 +15,7 @@ from .animation import animation_duration
 
 if TYPE_CHECKING:
     from ..document import Document
-    from ..elements.core import Element
+    from ..model.elements.core import Element
 
 __all__ = ["SceneMotion"]
 

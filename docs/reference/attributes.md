@@ -3,18 +3,18 @@
 Lengths, viewBox, styles, CSS cascade and attribute names.
 
 ```{eval-rst}
-.. automodule:: svgwriter.attributes
+.. automodule:: svgwriter.model.attributes
    :members:
 
-.. automodule:: svgwriter.attributes.quantity
+.. automodule:: svgwriter.model.attributes.quantity
    :members: check_dimension, dimension_name
 
-.. automodule:: svgwriter.attributes.units
+.. automodule:: svgwriter.model.attributes.units
    :members: length, angle
 
-.. automodule:: svgwriter.attributes.cascade
+.. automodule:: svgwriter.model.attributes.cascade
    :members:
 
-.. automodule:: svgwriter.attributes.rules
+.. automodule:: svgwriter.model.attributes.rules
    :members:
 ```

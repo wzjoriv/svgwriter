@@ -54,7 +54,7 @@ def read_pptx(data: bytes, index: int | None) -> Document | list[Document]:
 
 def _read_shape(parent: Any, shape: Any, drawn: dict[int, list[Any]]) -> None:
     """Add *shape* (recursing into groups) to *parent* as native elements, listed in *drawn* by shape id."""
-    from ...elements.structure import A, Group, Image, Pixels
+    from ...model.elements.structure import A, Group, Image, Pixels
 
     left, top = (shape.left or 0) / EMU_PER_UNIT, (shape.top or 0) / EMU_PER_UNIT
     width, height = (shape.width or 0) / EMU_PER_UNIT, (shape.height or 0) / EMU_PER_UNIT
@@ -122,7 +122,7 @@ def outline(properties: Any, left: float, top: float, width: float, height: floa
     >>> outline(sp, 0, 0, 10, 5).get("fill").hex
     '#ff0000'
     """
-    from ...elements.shapes import Path
+    from ...model.elements.shapes import Path
 
     custom, preset = properties.find(_a("custGeom")), properties.find(_a("prstGeom"))
     if custom is not None:
@@ -155,7 +155,7 @@ def outline(properties: Any, left: float, top: float, width: float, height: floa
 
 def _solid(fill: Any) -> Any:
     """The color of an ``<a:solidFill>`` with an explicit RGB value, alpha included, or None."""
-    from ...color.color import Color
+    from ...model.color.color import Color
 
     rgb = fill.find(_a("srgbClr")) if fill is not None else None
     if rgb is None:
@@ -167,7 +167,7 @@ def _solid(fill: Any) -> Any:
 
 def _custom_path(geometry: Any, left: float, top: float, width: float, height: float) -> Any:
     """The ``<a:path>`` commands mapped from their own ``w``/``h`` box onto the shape."""
-    from ...pathdata.builder import PathBuilder
+    from ...model.pathdata.builder import PathBuilder
 
     builder = PathBuilder()
     for path in geometry.iter(_a("path")):
@@ -193,7 +193,7 @@ def _custom_path(geometry: Any, left: float, top: float, width: float, height: f
 
 def _preset_path(name: str | None, left: float, top: float, width: float, height: float) -> Any:
     """Outlines of the common preset shapes."""
-    from ...elements.shapes import Ellipse, Line, Rect
+    from ...model.elements.shapes import Ellipse, Line, Rect
 
     if name == "rect":
         return Rect(left, top, width, height).local_outline()
@@ -209,8 +209,8 @@ def _preset_path(name: str | None, left: float, top: float, width: float, height
 
 def _text(shape: Any, left: float, top: float) -> Any:
     """A text box's paragraphs as one ``<text>`` per line, with font, weight, style and colour, or None."""
-    from ...elements.structure import Group
-    from ...elements.text import Text
+    from ...model.elements.structure import Group
+    from ...model.elements.text import Text
 
     if not getattr(shape, "has_text_frame", False) or not (
             shape.text_frame.text.strip() or _math_text(shape.text_frame._txBody)):
@@ -237,7 +237,7 @@ def _text(shape: Any, left: float, top: float) -> Any:
 
 def _equation(shape: Any, left: float, top: float, group: Any) -> Any:
     """An equation box as its characters centred in the box, at the equation's own size."""
-    from ...elements.text import Text
+    from ...model.elements.text import Text
 
     body = shape.text_frame._txBody  # noqa: SLF001 - equations are not exposed by python-pptx
     sizes = [int(node.get("sz")) for node in body.iter(_a("rPr")) if node.get("sz")]

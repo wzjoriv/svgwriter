@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 from .._internal._constants import SODIPODI_NS
 from .._internal._numbers import format_number
-from ..elements.core import Element, UnknownElement
+from ..model.elements.core import Element, UnknownElement
 from ._constants import (
     FALSE,
     GUIDE_COLOR,

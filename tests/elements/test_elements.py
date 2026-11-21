@@ -3,11 +3,11 @@ from __future__ import annotations
 import pytest
 
 import svgwriter as svg
-from svgwriter.attributes import Length, Style
-from svgwriter.color import Color, PaintKeyword, PaintRef
-from svgwriter.elements import Category, ContentModel, Element, UnknownElement
-from svgwriter.pathdata import BBox, PathData
-from svgwriter.transform import Transform
+from svgwriter.model.attributes import Length, Style
+from svgwriter.model.color import Color, PaintKeyword, PaintRef
+from svgwriter.model.elements import Category, ContentModel, Element, UnknownElement
+from svgwriter.model.pathdata import BBox, PathData
+from svgwriter.model.transform import Transform
 
 from ..conftest import SVG_NS, make, roundtrip, wellformed
 

@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import Any
 
 from .._internal._roles import with_role
-from ..elements.shapes import Circle, Line, Rect
+from ..model.elements.shapes import Circle, Line, Rect
 from ._constants import DASH_PATTERN, DOT_RADIUS, FALLBACK_INK
 
 __all__ = ["dashed_line", "dot", "outline"]
@@ -23,7 +23,7 @@ def outline(x: float, y: float, width: float, height: float, **kwargs: Any) -> R
     width, height : float
         Size.
     **kwargs
-        Forwarded to :class:`~svgwriter.elements.Rect`; presentation attributes keep priority over the role.
+        Forwarded to :class:`~svgwriter.model.elements.Rect`; presentation attributes keep priority over the role.
 
     Returns
     -------
@@ -47,7 +47,7 @@ def dashed_line(x1: float, y1: float, x2: float, y2: float, **kwargs: Any) -> Li
     x1, y1, x2, y2 : float
         End points.
     **kwargs
-        Forwarded to :class:`~svgwriter.elements.Line`; presentation attributes keep priority over the role.
+        Forwarded to :class:`~svgwriter.model.elements.Line`; presentation attributes keep priority over the role.
 
     Returns
     -------
@@ -77,7 +77,7 @@ def dot(cx: float, cy: float, r: float = DOT_RADIUS, **kwargs: Any) -> Circle:
     r : float, optional
         Radius. Defaults to 2.
     **kwargs
-        Forwarded to :class:`~svgwriter.elements.Circle`; presentation attributes keep priority over the role.
+        Forwarded to :class:`~svgwriter.model.elements.Circle`; presentation attributes keep priority over the role.
 
     Returns
     -------

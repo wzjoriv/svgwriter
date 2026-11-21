@@ -6,10 +6,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..color.color import Color, ColorLike, as_color
-from ..elements import LinearGradient, Pattern, RadialGradient, Rect, Stop
+from ..model.color.color import Color, ColorLike, as_color
+from ..model.elements import LinearGradient, Pattern, RadialGradient, Rect, Stop
+from ..model.theme import Theme
 from ..preset import gradient
-from ..theme import Theme
 from ._constants import (
     IRIDESCENT_CHROMA,
     IRIDESCENT_LIGHTNESS,

@@ -20,11 +20,11 @@ from .._internal._constants import (
 from .._internal._escape import escape_attribute, escape_text
 from .._internal._sentinels import MISSING, MissingType
 from .._internal._typing import AnyPath
-from ..attributes.protocols import TextSink
-from ..attributes.values import format_value
-from ..elements.core import Element, UnknownElement
-from ..pathdata.data import PathData
-from ..transform.matrix import Matrix
+from ..model.attributes.protocols import TextSink
+from ..model.attributes.values import format_value
+from ..model.elements.core import Element, UnknownElement
+from ..model.pathdata.data import PathData
+from ..model.transform.matrix import Matrix
 from ._constants import DEFAULT_ENCODING, FOREIGN_PREFIX, NAMESPACE_DECLARATION
 from ._inkscape import transform_center
 from ._markup import default_namespaces, inline_content, open_text, ordered, used_namespaces

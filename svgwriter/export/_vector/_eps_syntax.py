@@ -7,7 +7,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from ...transform.matrix import Matrix
+from ...model.transform.matrix import Matrix
 from ._constants import (
     BOUNDS_RE,
     DOS_EPS_HEADER,

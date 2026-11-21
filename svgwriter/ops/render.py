@@ -11,14 +11,14 @@ import numpy as np
 import skia
 
 from .._internal._render._rendering import view_matrix
-from ..attributes.length import Length, Unit
-from ..attributes.viewbox import ViewBox
+from ..model.attributes.length import Length, Unit
+from ..model.attributes.viewbox import ViewBox
 from ._constants import CHANNEL_MAX, DEFAULT_QUALITY, FORMATS
 from ._raster import make_surface, paint_svg, paint_tree, read_pixels, render_tree
 
 if TYPE_CHECKING:
-    from ..color.color import ColorLike
     from ..document import Document
+    from ..model.color.color import ColorLike
 
 __all__ = [
     "DEFAULT_SIZE",
@@ -388,7 +388,7 @@ def render_frame(document: Document, seconds: float) -> np.ndarray:
     ((2, 4, 4), 'uint8')
     """
     from .._internal._animation._smil import snapshot
-    from ..elements.animation import AnimationElement
+    from ..model.elements.animation import AnimationElement
 
     if document.root.find(AnimationElement) is not None:
         document = snapshot(document, seconds)

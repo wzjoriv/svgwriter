@@ -10,17 +10,17 @@ from collections.abc import Callable, Sequence
 from typing import TYPE_CHECKING, Any, cast
 
 from .._internal._constants import ANIMATED_DEFAULTS, EPSILON
-from ..attributes.cascade import INHERITED
-from ..attributes.style import Style
-from ..elements.animation import Animate, AnimateTransform, AnimationElement, Set
+from ..model.attributes.cascade import INHERITED
+from ..model.attributes.style import Style
+from ..model.elements.animation import Animate, AnimateTransform, AnimationElement, Set
 from ._bake_record import Record, Tape, label
 from ._bake_series import Vector, colors, fill, number, numbers, parts, runs, simplify, template
 from ._constants import BAKE_DISCRETE, BAKE_HIDDEN, BAKE_INITIAL, BAKE_PARTS, BAKE_VISIBILITY, BAKE_VISIBLE
 
 if TYPE_CHECKING:
     from ..document import Document
-    from ..elements.core import Element
-    from ..transform.matrix import Matrix
+    from ..model.elements.core import Element
+    from ..model.transform.matrix import Matrix
 
 __all__ = ["bake_document", "bake_times"]
 
@@ -32,7 +32,7 @@ def bake_times(fps: float, duration: float) -> list[float]:
 
 
 def _hex(rgb: Vector) -> str:
-    from ..color.color import Color
+    from ..model.color.color import Color
 
     return Color(*(min(max(channel, 0.0), 1.0) for channel in rgb)).hex
 

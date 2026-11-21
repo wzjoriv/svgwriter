@@ -12,7 +12,7 @@ import skia
 from .._constants import LIGHT_SOURCES, SPOT_CUTOFF
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
+    from ...model.elements.core import Element
     from ._filter_frame import Frame
 
 __all__ = ["lighting_filter"]
@@ -20,8 +20,8 @@ __all__ = ["lighting_filter"]
 
 def _color(primitive: Element, linear: bool) -> int:
     """The ``lighting-color`` of *primitive* as a skia colour, in linear light when *linear*."""
-    from ...attributes.cascade import computed
-    from ...color.color import as_color
+    from ...model.attributes.cascade import computed
+    from ...model.color.color import as_color
 
     text = str(computed(primitive, "lighting-color", "white", []))
     if text == "currentColor":

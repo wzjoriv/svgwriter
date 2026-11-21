@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ..transform import Matrix
+from ..model.transform import Matrix
 from ._compile import FontInfo, GlyphRecord
 from ._constants import (
     CHEAT_CELL,

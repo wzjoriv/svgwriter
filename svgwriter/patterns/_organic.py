@@ -9,8 +9,8 @@ import random
 from collections.abc import Callable
 from typing import Any
 
-from ..color.color import Color
-from ..elements import Pattern, Polygon, Rect
+from ..model.color.color import Color
+from ..model.elements import Pattern, Polygon, Rect
 from ..preset import pattern
 from ._constants import (
     DEFAULT_GAP,

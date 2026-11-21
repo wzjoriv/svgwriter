@@ -10,7 +10,7 @@ import pytest
 
 import svgwriter as svg
 from svgwriter._internal._color._icc_embedded import embedded_profile
-from svgwriter.elements.structure import Pixels
+from svgwriter.model.elements.structure import Pixels
 
 SWATCH = (40, 150, 60)
 

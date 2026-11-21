@@ -12,7 +12,7 @@ from .._internal._presets import TEXT_EFFECTS
 from .._internal._typing import P
 
 if TYPE_CHECKING:
-    from ..elements import Character, CharacterRange, Text
+    from ..model.elements import Character, CharacterRange, Text
 
 __all__ = ["text_effect"]
 
@@ -23,7 +23,7 @@ Effect: TypeAlias = Callable[Concatenate[Target, P], "Text"]
 
 def _text_of(target: Target) -> Text:
     """The element an effect styles: the text itself, or a layer showing only the range's characters."""
-    from ..elements import Text
+    from ..model.elements import Text
 
     if isinstance(target, Text):
         return target

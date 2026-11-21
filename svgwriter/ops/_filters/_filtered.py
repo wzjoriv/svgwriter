@@ -17,8 +17,8 @@ from .._raster import concealed, draw_image, hidden, paint_svg, referenced, skia
 from ._filter_inputs import background_layer, standard_inputs
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
-    from ...transform.matrix import Matrix
+    from ...model.elements.core import Element
+    from ...model.transform.matrix import Matrix
 
 __all__ = ["draw_filtered", "needs_engine"]
 
@@ -44,7 +44,7 @@ def needs_engine(element: Element) -> bool:
     >>> needs_engine(svg.Rect())
     False
     """
-    from ...elements.structure import Image
+    from ...model.elements.structure import Image
 
     effects = referenced(element, "filter") if element.get("filter") is not None else None
     if effects is None:
@@ -104,7 +104,7 @@ def draw_filtered(canvas: skia.Canvas, element: Element, root: Element, wrap: Ca
     --------
     svgwriter.ops._filters._filter_graph.image_filter : The filter graph.
     """
-    from ...elements.structure import Image
+    from ...model.elements.structure import Image
     from ._filter_frame import Frame, filter_region
     from ._filter_graph import image_filter
 

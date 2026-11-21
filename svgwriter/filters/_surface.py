@@ -6,8 +6,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..color.color import Color, as_color
-from ..elements import (
+from ..model.color.color import Color, as_color
+from ..model.elements import (
     ColorMatrixType,
     CompositeOperator,
     FeColorMatrix,
@@ -21,8 +21,8 @@ from ..elements import (
     StandardInput,
     TurbulenceType,
 )
+from ..model.theme import Theme
 from ..preset import filter
-from ..theme import Theme
 from ._constants import (
     ALPHA_ROW,
     GRAIN_AMOUNT,

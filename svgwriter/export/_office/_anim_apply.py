@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any
 from ..._internal._constants import FOREVER
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
+    from ...model.elements.core import Element
     from ._anim_smil import Effect
 
 __all__ = ["apply_effect"]

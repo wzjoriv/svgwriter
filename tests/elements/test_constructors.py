@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 import svgwriter as svg
-from svgwriter.pathdata import BBox
+from svgwriter.model.pathdata import BBox
 
 
 def test_rect_from_corners_center_and_square() -> None:
@@ -43,22 +43,22 @@ def test_rect_outline_has_no_redundant_closing_segment() -> None:
 
 
 def test_builder_extend_continues_from_the_current_point() -> None:
-    from svgwriter.pathdata import PathBuilder
+    from svgwriter.model.pathdata import PathBuilder
 
     b = PathBuilder().move_to(1, 1).extend("l2 0 L5 5").extend("M9 9 h1")
     assert str(b.build()) == "M1 1 l2 0 L5 5 M9 9 h1"
 
 
 def test_points_after_close_restart_from_the_subpath_start() -> None:
-    from svgwriter.pathdata import PathData
+    from svgwriter.model.pathdata import PathData
 
     pts = list(PathData("M10 10 L20 10 L20 20 Z L10 0").points())
     assert pts[-1] == (10, 0) and pts[-2] == (20, 20)
 
 
 def test_small_fixes() -> None:
-    from svgwriter.color import PaintKeyword
-    from svgwriter.transform import Transform
+    from svgwriter.model.color import PaintKeyword
+    from svgwriter.model.transform import Transform
 
     assert str(PaintKeyword.NONE) == "none"
     with pytest.raises(TypeError):

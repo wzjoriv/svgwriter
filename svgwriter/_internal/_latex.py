@@ -30,7 +30,7 @@ from ._constants import (
 from ._tools import DiagramToolError, find_tool, run_tool, svg_document
 
 if TYPE_CHECKING:
-    from ..elements.structure import Group
+    from ..model.elements.structure import Group
 
 __all__ = ["latex"]
 
@@ -72,7 +72,7 @@ def latex(source: str, *, display: bool = False, preamble: str = "", engine: str
     >>> import svgwriter as svg
     >>> # formula = svg.latex(r"\int_0^1 x^2\,dx = \frac{1}{3}").place(50, 20)
     """
-    from ..elements.structure import Group
+    from ..model.elements.structure import Group
 
     if engine not in ENGINES:
         raise ValueError(f"unknown engine {engine!r}; use one of {', '.join(ENGINES)}")
@@ -121,8 +121,8 @@ def _ziamath(source: str, display: bool) -> Group | None:
         import ziamath
     except ImportError:
         return None
-    from ..elements.structure import Group
     from ..io.parser import parse
+    from ..model.elements.structure import Group
 
     if "$" in source:
         rendered = ziamath.Latex(source, size=ZIAMATH_SIZE).svg()
@@ -157,9 +157,9 @@ def _mathtext(source: str, display: bool) -> Group | None:
         from matplotlib.textpath import TextPath
     except ImportError:
         return None
-    from ..elements.shapes import Path
-    from ..elements.structure import Group
-    from ..pathdata.builder import PathBuilder
+    from ..model.elements.shapes import Path
+    from ..model.elements.structure import Group
+    from ..model.pathdata.builder import PathBuilder
 
     text = source if "$" in source else f"${source}$"
     try:

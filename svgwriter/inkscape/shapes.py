@@ -8,9 +8,9 @@ import math
 from typing import Any
 
 from .._internal._numbers import format_number
-from ..elements.core import Element
-from ..elements.shapes import Path
-from ..transform.matrix import Point
+from ..model.elements.core import Element
+from ..model.elements.shapes import Path
+from ..model.transform.matrix import Point
 from ._constants import (
     ANGLE_PRECISION,
     ARC_ATTRIBUTES,

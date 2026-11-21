@@ -23,7 +23,7 @@ from ._image_effects import primitive_filter
 from ._lighting import lighting_filter
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
+    from ...model.elements.core import Element
     from ._filter_frame import Frame
 
 __all__ = ["image_filter"]
@@ -74,8 +74,8 @@ def image_filter(filter_element: Element, frame: Frame) -> Any:
     --------
     svgwriter.ops._filters._filtered.draw_filtered : Paints an element through the graph.
     """
-    from ...attributes.cascade import computed
-    from ...elements.filters.base import FilterPrimitive
+    from ...model.attributes.cascade import computed
+    from ...model.elements.filters.base import FilterPrimitive
 
     results: dict[str, Any] = {SOURCE_GRAPHIC: None,
                                SOURCE_ALPHA: skia.ImageFilters.ColorFilter(skia.ColorFilters.Matrix(ALPHA_ONLY), None)}

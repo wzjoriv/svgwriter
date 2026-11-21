@@ -14,7 +14,7 @@ from ..._internal._flat._flatten import Item, flatten, to_cubic
 from ..._internal._flat._paints import Shading
 from ..._internal._numbers import format_number
 from ..._internal._typography._emoji import color_glyph_images
-from ...transform.matrix import Matrix
+from ...model.transform.matrix import Matrix
 from .._units import unit_scale
 from ._constants import (
     AXIAL,
@@ -35,8 +35,8 @@ from ._constants import (
 )
 
 if TYPE_CHECKING:
-    from ...color.color import Color
     from ...document import Document
+    from ...model.color.color import Color
 
 __all__ = ["to_eps"]
 

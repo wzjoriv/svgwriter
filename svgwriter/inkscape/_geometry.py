@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import math
 
-from ..pathdata.builder import PathBuilder
+from ..model.pathdata.builder import PathBuilder
 from ._constants import HANDLE_REACH, MAX_ARC_SEGMENTS, MIN_RADIUS, QUARTER_TURNS
 
 __all__ = ["arc_outline", "star_outline"]

@@ -11,8 +11,8 @@ from typing import Final
 
 from .._internal._constants import SVG_NS, XLINK_NS, XML_NS
 from .._internal._typing import AnyPath
-from ..attributes.names import UNSUPPORTED_ATTRIBUTES
-from ..elements.core import Category, ContentModel, Element, UnknownElement
+from ..model.attributes.names import UNSUPPORTED_ATTRIBUTES
+from ..model.elements.core import Category, ContentModel, Element, UnknownElement
 from ._inkscape import read_transform_centers
 
 __all__ = ["SVGParseError", "Strictness", "parse", "parse_file"]
@@ -154,7 +154,7 @@ def parse(source: str | bytes, *, strictness: Strictness = Strictness.LENIENT) -
     other namespaces keep the prefix the source declared (``inkscape:label``),
     and those declarations stay on the root, so writing the tree again uses the
     same prefixes. Inkscape rotation centres (``inkscape:transform-center-x`` and
-    ``-y``) become the element's :attr:`~svgwriter.elements.Transformable.anchor`.
+    ``-y``) become the element's :attr:`~svgwriter.model.elements.Transformable.anchor`.
 
     Parameters
     ----------
@@ -167,7 +167,7 @@ def parse(source: str | bytes, *, strictness: Strictness = Strictness.LENIENT) -
     Returns
     -------
     Element
-        The root, usually an :class:`~svgwriter.elements.Svg`.
+        The root, usually an :class:`~svgwriter.model.elements.Svg`.
 
     Raises
     ------
@@ -220,7 +220,7 @@ def parse_file(path: AnyPath, *, strictness: Strictness = Strictness.LENIENT) ->
     Returns
     -------
     Element
-        The root, usually an :class:`~svgwriter.elements.Svg`.
+        The root, usually an :class:`~svgwriter.model.elements.Svg`.
 
     Raises
     ------

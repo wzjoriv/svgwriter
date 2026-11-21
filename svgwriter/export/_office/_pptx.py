@@ -31,9 +31,9 @@ from ._drawingml import gradient_xml, line_style
 
 if TYPE_CHECKING:
     from ..._internal._flat._flatten import Item
-    from ...color.color import Color
     from ...document import Document
-    from ...pathdata.data import PathData
+    from ...model.color.color import Color
+    from ...model.pathdata.data import PathData
     from ._layout import Equation
 
 
@@ -242,7 +242,7 @@ def _freeform(slide: Any, item: Item, place: _Place) -> Any:
 
 def _geometry_xml(data: PathData, x0: float, y0: float, scale: float, width: int, height: int) -> str:
     """``<a:custGeom>`` with the path in shape-local EMU."""
-    from ...pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
+    from ...model.pathdata.commands import ClosePath, CurveTo, LineTo, MoveTo, QuadTo
 
     def point(x: float, y: float) -> str:
         return f'<a:pt x="{round((x - x0) * scale)}" y="{round((y - y0) * scale)}"/>'

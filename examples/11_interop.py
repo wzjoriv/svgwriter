@@ -12,7 +12,7 @@ import importlib.util
 import numpy as np
 
 import svgwriter as svg
-from svgwriter.elements.structure import Pixels
+from svgwriter.model.elements.structure import Pixels
 
 # %% [markdown]
 # A board of three columns by two rows. Each cell is added and placed by its top-left corner with

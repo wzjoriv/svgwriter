@@ -7,12 +7,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from .._internal._typography._fonts import font_weight
-from ..attributes.cascade import computed
-from ..attributes.rules import rules_of
-from ..elements.core import Category
+from ..model.attributes.cascade import computed
+from ..model.attributes.rules import rules_of
+from ..model.elements.core import Category
 
 if TYPE_CHECKING:
-    from ..elements.structure import StyleElement
+    from ..model.elements.structure import StyleElement
     from ..ops.typeface import Face, Typeface
 
 __all__ = ["Typography"]

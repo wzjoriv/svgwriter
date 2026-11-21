@@ -21,7 +21,7 @@ from .._constants import (
 )
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
+    from ...model.elements.core import Element
 
 __all__ = ["background_layer", "standard_inputs"]
 
@@ -84,8 +84,8 @@ def background_layer(element: Element, order: list[Element]) -> list[Element] | 
 
 def _paint_rect(element: Element, region: skia.Rect, name: str) -> Element:
     """A rectangle over *region* painted with *element*'s computed fill or stroke."""
-    from ...attributes.cascade import computed
-    from ...elements.shapes import Rect
+    from ...model.attributes.cascade import computed
+    from ...model.elements.shapes import Rect
 
     value = computed(element, name, "black" if name == "fill" else "none", [])
     opacity = computed(element, f"{name}-opacity", 1.0, [])

@@ -6,9 +6,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..elements import Element, GraphicsContainer, PathOperand
+from ..model.elements import Element, GraphicsContainer, PathOperand
+from ..model.pathdata import ClosePath, CurveTo, LineTo, MoveTo, PathData, QuadTo
 from ..ops import from_skia, simplify, stroke_to_path, to_skia, union
-from ..pathdata import ClosePath, CurveTo, LineTo, MoveTo, PathData, QuadTo
 
 __all__ = ["draw_contours", "painted_outline"]
 

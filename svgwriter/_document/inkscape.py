@@ -19,7 +19,7 @@ from ..inkscape import (
 )
 
 if TYPE_CHECKING:
-    from ..elements.structure import Group
+    from ..model.elements.structure import Group
 
 __all__ = ["InkscapeData"]
 

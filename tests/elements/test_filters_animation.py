@@ -5,7 +5,7 @@ import math
 import pytest
 
 import svgwriter as svg
-from svgwriter.elements.filters import (
+from svgwriter.model.elements.filters import (
     BlendMode,
     Channel,
     ColorMatrixType,

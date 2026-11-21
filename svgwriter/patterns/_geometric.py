@@ -6,8 +6,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..color.color import Color
-from ..elements import Circle, Pattern, Rect
+from ..model.color.color import Color
+from ..model.elements import Circle, Pattern, Rect
 from ..preset import pattern
 from ._constants import DEFAULT_ANGLE, DEFAULT_GAP, DOT_RADIUS, LINE_WIDTH, ROLE
 from ._tile import ink, tile

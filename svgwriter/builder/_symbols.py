@@ -6,8 +6,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..elements.shapes import Path, Polygon
-from ..pathdata.builder import PathBuilder
+from ..model.elements.shapes import Path, Polygon
+from ..model.pathdata.builder import PathBuilder
 from ..preset import shape
 from ._constants import (
     CALLOUT_RADIUS,
@@ -33,7 +33,7 @@ def heart(cx: float, cy: float, size: float, **kwargs: Any) -> Path:
     size : float
         Width of the heart; its height is 95% of that.
     **kwargs
-        Presentation attributes forwarded to :class:`~svgwriter.elements.Path`.
+        Presentation attributes forwarded to :class:`~svgwriter.model.elements.Path`.
 
     Returns
     -------
@@ -90,7 +90,7 @@ def callout(
     corner_radius : float, optional
         Radius of the body's corners. Defaults to 8.0.
     **kwargs
-        Presentation attributes forwarded to :class:`~svgwriter.elements.Path`.
+        Presentation attributes forwarded to :class:`~svgwriter.model.elements.Path`.
 
     Returns
     -------
@@ -145,7 +145,7 @@ def cross(cx: float, cy: float, size: float, *, thickness: float | None = None, 
     thickness : float, optional
         Width of each arm. Defaults to a third of `size`.
     **kwargs
-        Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`.
+        Presentation attributes forwarded to :class:`~svgwriter.model.elements.Polygon`.
 
     Returns
     -------

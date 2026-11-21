@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..elements.core import Element
+from ..model.elements.core import Element
 from ._constants import CENTER_TOLERANCE, CENTER_X, CENTER_Y
 
 __all__ = ["read_transform_centers", "transform_center"]

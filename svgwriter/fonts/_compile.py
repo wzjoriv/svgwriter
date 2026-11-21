@@ -8,7 +8,7 @@ import io
 from dataclasses import dataclass
 from typing import Any
 
-from ..pathdata import PathData
+from ..model.pathdata import PathData
 from ._constants import (
     CUBIC_TO_QUADRATIC_ERROR,
     FONTS_EXTRA,

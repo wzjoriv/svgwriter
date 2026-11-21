@@ -13,9 +13,9 @@ import click
 
 from .. import preset
 from ..document import Document
-from ..elements.core import Category, Element
 from ..io.parser import Strictness, parse_file
 from ..io.writer import SerializeOptions
+from ..model.elements.core import Category, Element
 from ._constants import CANVAS_MARGIN, DEFAULT_CANVAS, DRAW_LAYOUTS, SIZE_COLUMN, STROKE_WIDTH
 
 __all__ = ["PRECISION", "add_basic_commands", "emit", "output_options"]

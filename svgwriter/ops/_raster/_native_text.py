@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Any
 
 import skia
 
-from ...transform.matrix import Matrix
+from ...model.transform.matrix import Matrix
 from .._constants import (
     DEFAULT_FONT_SIZE,
     EFFECTS,
@@ -25,9 +25,9 @@ from .._constants import (
 )
 
 if TYPE_CHECKING:
-    from ...color.color import Color
-    from ...elements.core import Element
-    from ...elements.text import Text
+    from ...model.color.color import Color
+    from ...model.elements.core import Element
+    from ...model.elements.text import Text
 
 __all__ = ["draw_text", "native_text"]
 
@@ -57,7 +57,7 @@ def native_text(text: Text) -> bool:
     >>> native_text(svg.Text("hi", filter="url(#blur)"))
     False
     """
-    from ...attributes.cascade import computed
+    from ...model.attributes.cascade import computed
 
     node: Element | None = text
     while node is not None:
@@ -110,7 +110,7 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix, *, o
     """
     from ..._internal._render._layers import ancestry
     from ..._internal._tree import clip_outline
-    from ...elements import Transformable
+    from ...model.elements import Transformable
     from .._skia import to_skia
     from ._layers import _chain, skia_matrix
 
@@ -189,7 +189,7 @@ def _glyph_font(box: Any) -> Any:
     """The skia font that draws *box* as one glyph, or None when it must be an outline."""
     from ..._internal._typography._fonts import font_for, font_size, font_weight
     from ..._internal._typography._shaping import needs_shaping
-    from ...attributes.cascade import computed
+    from ...model.attributes.cascade import computed
 
     if needs_shaping(box.char) or box.source is None:
         return None
@@ -258,7 +258,7 @@ def _paints(source: Element, opacity: float) -> tuple[skia.Paint | None, skia.Pa
     """Fill and stroke paints for *source* (None where it is unpainted)."""
     from ..._internal._flat._flatten import _number
     from ..._internal._flat._paints import _paint
-    from ...attributes.cascade import computed
+    from ...model.attributes.cascade import computed
 
     fill_paint = stroke_paint = None
     group = opacity * _number(source, "opacity", 1.0, []) if source.tag != "text" else opacity

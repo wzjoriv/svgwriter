@@ -5,7 +5,7 @@ import math
 import pytest
 
 import svgwriter as svg
-from svgwriter.pathdata import (
+from svgwriter.model.pathdata import (
     ArcTo,
     BBox,
     ClosePath,
@@ -23,7 +23,7 @@ from svgwriter.pathdata import (
     endpoint_to_center,
     parse_path,
 )
-from svgwriter.transform import Point
+from svgwriter.model.transform import Point
 
 ALL_COMMANDS = "M10,20 l5-5 h3 v.5.5 C1 2 3 4 5 6 s1 1 2 2 Q1 1 2 2 t3 3 a5 5 30 1 0 10 10 z m1 1 2 2 L4 4 H1 V2 c1 1 1 1 1 1 S1 1 1 1 q1 1 1 1 T1 1 A1 1 0 0 1 3 3 Z"
 

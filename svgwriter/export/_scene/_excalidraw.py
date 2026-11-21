@@ -28,7 +28,7 @@ from ._constants import (
 
 if TYPE_CHECKING:
     from ...document import Document
-    from ...elements.core import Element
+    from ...model.elements.core import Element
 
 __all__ = ["read_excalidraw", "to_excalidraw"]
 
@@ -57,7 +57,7 @@ def _style(item: dict[str, Any]) -> dict[str, Any]:
 
 
 def _arrowhead(tip: tuple[float, float], before: tuple[float, float], style: dict[str, Any]) -> Element:
-    from ...elements.shapes import Path
+    from ...model.elements.shapes import Path
 
     angle = math.atan2(tip[1] - before[1], tip[0] - before[0])
     spread = math.radians(ARROW_SPREAD)
@@ -67,9 +67,9 @@ def _arrowhead(tip: tuple[float, float], before: tuple[float, float], style: dic
 
 
 def _element(item: dict[str, Any], files: dict[str, Any]) -> Element | None:
-    from ...elements.shapes import Ellipse, Path, Polygon, Rect
-    from ...elements.structure import Group, Image
-    from ...elements.text import Text
+    from ...model.elements.shapes import Ellipse, Path, Polygon, Rect
+    from ...model.elements.structure import Group, Image
+    from ...model.elements.text import Text
 
     kind = item.get("type")
     x, y = float(item.get("x", 0)), float(item.get("y", 0))
@@ -160,7 +160,7 @@ def read_excalidraw(text: str) -> Document:
     1
     """
     from ...document import Document
-    from ...elements.structure import A, Group
+    from ...model.elements.structure import A, Group
 
     scene = json.loads(text)
     if scene.get("type") != "excalidraw":

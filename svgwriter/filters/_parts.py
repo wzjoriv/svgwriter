@@ -8,9 +8,9 @@ from typing import Any
 
 from .._internal._roles import with_role
 from .._internal._typing import Opacity
-from ..color.color import Color
-from ..elements import FeFlood, Filter
-from ..elements.core import Element
+from ..model.color.color import Color
+from ..model.elements import FeFlood, Filter
+from ..model.elements.core import Element
 from ._constants import FILTER_EXTENT, FILTER_MARGIN, SRGB
 
 __all__ = ["flood", "region"]

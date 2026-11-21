@@ -12,8 +12,8 @@ from ..._internal._animation._timing import clock
 from ._constants import COLOR_ATTRIBUTES, PATH_TOLERANCE
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
-    from ...transform.matrix import Matrix
+    from ...model.elements.core import Element
+    from ...model.transform.matrix import Matrix
 
 __all__ = ["Effect", "smil_effect"]
 
@@ -132,7 +132,7 @@ def _transform(animation: Element, values: list[str], frame: Matrix) -> dict[str
 
 def _motion(animation: Element, frame: Matrix) -> dict[str, Any] | None:
     from ..._internal._flat._flatten import polylines
-    from ...pathdata.data import PathData
+    from ...model.pathdata.data import PathData
 
     path = animation.get("path")
     if path is None:
@@ -143,7 +143,7 @@ def _motion(animation: Element, frame: Matrix) -> dict[str, Any] | None:
 
 def _fields(animation: Element, frame: Matrix) -> dict[str, Any] | None:
     """The kind-specific fields of an effect; ``{}`` for a pivot step with no effect of its own."""
-    from ...color.color import as_color
+    from ...model.color.color import as_color
 
     name = str(animation.get("attributeName", ""))
     values = _values(animation)

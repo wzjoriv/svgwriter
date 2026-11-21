@@ -19,7 +19,7 @@ from .._constants import (
 )
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
+    from ...model.elements.core import Element
 
 __all__ = ["expand_uses"]
 
@@ -51,7 +51,7 @@ def expand_uses(root: Element) -> None:
     >>> [(e.tag, [c.tag for c in e]) for e in copy if e.tag != "defs"]
     [('g', ['circle'])]
     """
-    from ...elements.structure import Use
+    from ...model.elements.structure import Use
 
     for use in _cyclic([e for e in root.iter() if isinstance(e, Use)]):
         if use.parent is not None:
@@ -72,7 +72,7 @@ def expand_uses(root: Element) -> None:
 
 def _cyclic(uses: list[Element]) -> list[Element]:
     """The uses whose references lead back to themselves, which SVG treats as errors and does not render."""
-    from ...elements.structure import Use
+    from ...model.elements.structure import Use
 
     targets = {id(use): use.referenced() for use in uses}
     state: dict[int, bool] = {}
@@ -118,8 +118,8 @@ def _external(use: Element) -> Element | None:
 
 @lru_cache(maxsize=LINK_CACHE)
 def _document(path: str, mtime: float) -> Element | None:
-    from ...attributes.cascade import resolve_styles
     from ...document import Document
+    from ...model.attributes.cascade import resolve_styles
 
     root = Document.open(path).root
     resolve_styles(root)
@@ -136,8 +136,8 @@ def _encloses(target: Element, use: Element) -> bool:
 
 
 def _replace(use: Element, target: Element, root: Element, serial: int) -> None:
-    from ...elements import Group
-    from ...transform.matrix import Matrix
+    from ...model.elements import Group
+    from ...model.transform.matrix import Matrix
     from .._tree import replace_in_parent
     from ._layers import _number
 
@@ -163,7 +163,7 @@ def _imported(instances: list[Element], source: Element, serial: int) -> Element
     References inside *instances* and inside the copied resources are rewritten to the new ids,
     so an external gradient, pattern, clip path, mask, filter or marker keeps its meaning.
     """
-    from ...elements import Defs
+    from ...model.elements import Defs
 
     prefix = f"{EXTERNAL_ID_PREFIX}{serial}-"
     taken: dict[str, Element] = {}
@@ -197,9 +197,9 @@ def _instance(target: Element) -> Element:
 
 def _viewport(use: Element, target: Element, root: Element, serial: int) -> list[Element]:
     """The children of a ``<symbol>`` or ``<svg>`` fitted into the ``<use>``'s viewport, clipped when overflow hides."""
-    from ...attributes.viewbox import PreserveAspectRatio, ViewBox
-    from ...elements import ClipPath, Group, Rect
-    from ...transform.matrix import IDENTITY, Matrix
+    from ...model.attributes.viewbox import PreserveAspectRatio, ViewBox
+    from ...model.elements import ClipPath, Group, Rect
+    from ...model.transform.matrix import IDENTITY, Matrix
     from ._layers import fit_box
 
     view = root.get("viewBox")
@@ -231,7 +231,7 @@ def _viewport(use: Element, target: Element, root: Element, serial: int) -> list
 
 def _size(use: Element, target: Element, name: str, viewport: float, *, own: bool = False) -> float:
     """A ``<use>`` viewport length, the ``<use>``'s value winning unless *own* asks for the target's."""
-    from ...attributes.length import Length, Unit
+    from ...model.attributes.length import Length, Unit
 
     value = None if own else use.get(name)
     value = target.get(name) if value is None else value

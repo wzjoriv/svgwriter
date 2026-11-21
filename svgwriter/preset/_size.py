@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from .._document.sizes import PageSize
 from .._internal._presets import SIZES
-from ..attributes.length import LengthLike
+from ..model.attributes.length import LengthLike
 
 __all__ = ["size"]
 

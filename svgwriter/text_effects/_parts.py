@@ -8,9 +8,9 @@ from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from typing import Any
 
-from ..color.color import Color
-from ..elements import Animate, CompositeOperator, FeComposite, FeFlood, Filter, StandardInput, Text
-from ..elements.core import Element
+from ..model.color.color import Color
+from ..model.elements import Animate, CompositeOperator, FeComposite, FeFlood, Filter, StandardInput, Text
+from ..model.elements.core import Element
 from ._constants import REFERENCE_HEIGHT, REGION_EXTENT, REGION_MARGIN, REGION_PAD
 
 __all__ = ["Fit", "fit", "loop", "tinted"]

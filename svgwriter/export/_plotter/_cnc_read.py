@@ -41,7 +41,7 @@ def _document(strokes: list[Stroke], unit_mm: float, page: tuple[float, float] |
     the drawing's top and the document fits the drawing.
     """
     from ...document import Document
-    from ...elements.shapes import Path
+    from ...model.elements.shapes import Path
 
     drawn = [(color, points, closed) for color, points, closed in strokes if len(points) >= 2]
     top = page[1] if page else max((y for _, points, _ in drawn for _, y in points), default=0.0)

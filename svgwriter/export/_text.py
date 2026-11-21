@@ -29,8 +29,8 @@ from ._registry import register_importer
 
 if TYPE_CHECKING:
     from ..document import Document
-    from ..elements.core import Element
-    from ..elements.structure import Group
+    from ..model.elements.core import Element
+    from ..model.elements.structure import Group
 
 __all__ = ["Figure", "Line", "read_markdown", "read_text", "stack"]
 
@@ -75,7 +75,7 @@ class Figure:
 
     Examples
     --------
-    >>> from svgwriter.elements.shapes import Rect
+    >>> from svgwriter.model.elements.shapes import Rect
     >>> Figure(10, lambda y: Rect(0, y, 10, 10)).make(5).get("y")
     5
     """
@@ -105,8 +105,8 @@ def stack(blocks: Iterable[Line | Figure], gap: float = 0.0) -> Group:
     >>> [round(t.get("y"), 1) for t in group]
     [22.4, 67.2]
     """
-    from ..elements.structure import Group
-    from ..elements.text import Text
+    from ..model.elements.structure import Group
+    from ..model.elements.text import Text
 
     group = Group(font_family=SANS, font_size=BODY_SIZE)
     y = 0.0
@@ -149,8 +149,8 @@ def read_text(data: bytes) -> Document:
     >>> [line.text_content for line in doc[0]]
     ['first line', 'second line']
     """
-    from ..elements.structure import Group
-    from ..elements.text import Text
+    from ..model.elements.structure import Group
+    from ..model.elements.text import Text
 
     group = Group(font_family=SANS, font_size=BODY_SIZE)
     y = BODY_SIZE
@@ -171,7 +171,7 @@ def _plain(text: str) -> str:
 
 def _runs(text: str, **base: object) -> list[object]:
     """``**bold**`` spans as bold ``<tspan>`` runs, the rest as plain strings."""
-    from ..elements.text import TSpan
+    from ..model.elements.text import TSpan
 
     parts: list[object] = []
     position = 0

@@ -9,13 +9,13 @@ from typing import TYPE_CHECKING
 from .._constants import NESTED_VIEWPORT_ID, PERCENT, USE_GEOMETRY, VISIBLE_OVERFLOW
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
+    from ...model.elements.core import Element
 
 __all__ = ["flatten_viewports"]
 
 
 def _length(element: Element, name: str, extent: float, default: str) -> float:
-    from ...attributes.length import Length, Unit
+    from ...model.attributes.length import Length, Unit
 
     length = Length.parse(element.get(name, default))
     return length.value * extent / PERCENT if length.unit is Unit.PERCENT else float(length.to_user_units())
@@ -23,8 +23,8 @@ def _length(element: Element, name: str, extent: float, default: str) -> float:
 
 def _matrix_text(element: Element, width: float, height: float) -> str | None:
     """The ``viewBox`` mapping of *element* into its *width* by *height* viewport, as transform text."""
-    from ...attributes.viewbox import PreserveAspectRatio, ViewBox
-    from ...transform.matrix import Matrix
+    from ...model.attributes.viewbox import PreserveAspectRatio, ViewBox
+    from ...model.transform.matrix import Matrix
     from ._layers import fit_box
 
     box = element.get("viewBox")
@@ -60,7 +60,7 @@ def flatten_viewports(root: Element) -> None:
     >>> [e.tag for e in doc.root.iter()]
     ['svg', 'clipPath', 'rect', 'g', 'g', 'rect']
     """
-    from ...elements import ClipPath, Group, Rect
+    from ...model.elements import ClipPath, Group, Rect
     from .._tree import replace_in_parent
     from ._layers import viewport_extent
 

@@ -18,14 +18,14 @@ from ._document.theming import Theming
 from ._document.typography import Typography
 from ._internal._tree import attach_cursor
 from ._internal._typing import AnyPath, Stack
-from .elements.core import Element, ElementFactory
-from .elements.structure import Svg
-from .theme.sheet import sheet_theme
-from .theme.theme import Theme
+from .model.elements.core import Element, ElementFactory
+from .model.elements.structure import Svg
+from .model.theme.sheet import sheet_theme
+from .model.theme.theme import Theme
 
 if TYPE_CHECKING:
-    from .attributes.length import Length
     from .io.parser import Strictness
+    from .model.attributes.length import Length
 
 __all__ = ["Document"]
 
@@ -57,7 +57,7 @@ class Document(Building, Sizing, Theming, Typography, Output, Access, InkscapeDa
         the theme sheet of an existing `root`, else takes :meth:`Theme.current() <svgwriter.Theme.current>`
         (``"light"`` outside a ``with theme:`` block).
     **kwargs
-        Forwarded to :class:`~svgwriter.elements.Svg`.
+        Forwarded to :class:`~svgwriter.model.elements.Svg`.
 
     Raises
     ------
@@ -68,7 +68,7 @@ class Document(Building, Sizing, Theming, Typography, Output, Access, InkscapeDa
 
     See Also
     --------
-    svgwriter.elements.Svg : The root element wrapped by a document.
+    svgwriter.model.elements.Svg : The root element wrapped by a document.
     svgwriter.preset.size : Add a named size.
 
     Notes

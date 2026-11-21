@@ -7,9 +7,9 @@ from __future__ import annotations
 from typing import Any
 
 from .._internal._roles import with_role
-from ..color.color import Color
-from ..elements import Circle, Marker, Polygon, Rect
-from ..elements.core import Element
+from ..model.color.color import Color
+from ..model.elements import Circle, Marker, Polygon, Rect
+from ..model.elements.core import Element
 from ..preset import marker
 from ._constants import BAR_WIDTH, BOX, CHEVRON_WIDTH, FALLBACK_INK, MARKER_SIZE, ROLE
 

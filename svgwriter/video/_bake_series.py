@@ -12,7 +12,7 @@ from .._internal._constants import EPSILON, NUMBER_RE
 from ._constants import BAKE_DIGITS, BAKE_PLACEHOLDER, DEGREES_PER_TURN
 
 if TYPE_CHECKING:
-    from ..transform.matrix import Matrix
+    from ..model.transform.matrix import Matrix
 
 __all__ = ["Vector", "colors", "fill", "number", "numbers", "parts", "runs", "simplify", "template"]
 
@@ -82,7 +82,7 @@ def runs(values: Sequence[str]) -> list[tuple[int, int]]:
 
 def colors(values: Sequence[str]) -> list[Vector] | None:
     """Every value as ``(r, g, b)`` in ``0..1``, or None unless all of them are plain colours."""
-    from ..color.color import as_color
+    from ..model.color.color import as_color
 
     found = []
     for value in values:

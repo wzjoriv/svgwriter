@@ -7,7 +7,7 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING
 
-from ...transform.matrix import Matrix
+from ...model.transform.matrix import Matrix
 from ._constants import DEFAULT_FONT, DEFAULT_TEXT_SIZE, STYLE_RE
 from ._eps_syntax import _Font, _Underflow
 from ._pdf_content import _clip
@@ -60,7 +60,7 @@ def _move_current(machine: _Machine, x: float, y: float) -> None:
 
 def _run(machine: _Machine, text: str) -> tuple[float, float]:
     """Draw *text* at the current point; the user-space advance of its measured width."""
-    from ...elements.text import Text
+    from ...model.elements.text import Text
     from ...ops.text import text_width
 
     current = machine.outline.user_current(machine.state.ctm)

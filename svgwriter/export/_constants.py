@@ -7,7 +7,7 @@ from __future__ import annotations
 import re
 from typing import Final
 
-from ..attributes.length import Unit
+from ..model.attributes.length import Unit
 
 __all__ = [
     "PHYSICAL_UNITS",

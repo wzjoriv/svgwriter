@@ -12,7 +12,7 @@ from typing import Final
 
 import numpy as np
 
-from ..elements.filters import BlendMode, CompositeOperator
+from ..model.elements.filters import BlendMode, CompositeOperator
 from ._constants import ARITHMETIC_TERMS
 
 __all__ = ["Operator", "composite_rgba", "resolve_operator"]
@@ -136,7 +136,7 @@ def composite_rgba(
 
     See Also
     --------
-    svgwriter.elements.structure.Pixels.composite : Composite the pixels of images.
+    svgwriter.model.elements.structure.Pixels.composite : Composite the pixels of images.
 
     Notes
     -----

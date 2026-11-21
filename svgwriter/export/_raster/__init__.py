@@ -16,8 +16,8 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from ..._internal._color._icc_output import IccLike
-    from ...color.color import ColorLike
     from ...document import Document
+    from ...model.color.color import ColorLike
 
 
 def _frames(document: Document, fps: float, duration: float | None, **options: Any) -> list[Any]:
@@ -165,7 +165,7 @@ def gif(document: Document, *, scale: float = 1.0, pixels: tuple[int, int] | int
     """
     from ..._internal._codecs._gif import encode_gif, encode_gif_animation
     from ..._internal._codecs._rgba import to_uint8
-    from ...elements.animation import AnimationElement
+    from ...model.elements.animation import AnimationElement
     from ...video.animation import animation_duration
 
     del quality
@@ -306,7 +306,7 @@ def read_image(data: bytes) -> Document:
     >>> doc.root.view_box.width, len(doc)
     (4, 1)
     """
-    from ...elements.structure import Pixels
+    from ...model.elements.structure import Pixels
 
     return _image_document(Pixels.decode(data))
 
@@ -342,7 +342,7 @@ def read_pnm(data: bytes) -> Document:
     (2, 1)
     """
     from ..._internal._codecs._pnm import decode_pnm
-    from ...elements.structure import Pixels
+    from ...model.elements.structure import Pixels
 
     return _image_document(Pixels.from_array(decode_pnm(data)))
 
@@ -350,7 +350,7 @@ def read_pnm(data: bytes) -> Document:
 def _image_document(pixels: Any) -> Document:
     """A document sized to the pixels, holding them as one ``<image>``."""
     from ...document import Document
-    from ...elements.structure import Image
+    from ...model.elements.structure import Image
 
     rows, columns = pixels.shape
     document = Document(columns, rows)

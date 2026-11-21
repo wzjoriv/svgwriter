@@ -110,4 +110,5 @@ def test_all_names_exist(name: str) -> None:
         assert hasattr(module, exported), f"{name}.__all__ lists missing {exported!r}"
         value = getattr(module, exported)
         if isinstance(value, ModuleType):
-            assert value.__name__ == f"{name}.{exported}", f"{name}.{exported} is {value.__name__}"
+            owner, _, leaf = value.__name__.rpartition(".")
+            assert leaf == exported and (owner == name or owner.startswith(f"{name}.")), f"{name}.{exported} is {value.__name__}"

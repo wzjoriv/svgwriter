@@ -15,7 +15,7 @@ from .._internal._presets import FILTERS, GRADIENTS, MARKERS, PATTERNS, PresetRe
 from .._internal._typing import P
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
+    from ..model.elements.core import Element
 
 __all__ = ["filter", "gradient", "marker", "pattern"]
 
@@ -24,7 +24,7 @@ Decorator = Callable[[Callable[P, E]], Callable[P, E]]
 
 
 def _types(kind: str) -> tuple[type, ...]:
-    from ..elements import Filter, LinearGradient, Marker, Pattern, RadialGradient
+    from ..model.elements import Filter, LinearGradient, Marker, Pattern, RadialGradient
 
     return {"pattern": (Pattern,), "filter": (Filter,), "gradient": (LinearGradient, RadialGradient, Pattern),
             "marker": (Marker,)}[kind]

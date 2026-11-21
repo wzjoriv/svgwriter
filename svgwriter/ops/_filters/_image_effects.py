@@ -22,7 +22,7 @@ from .._constants import (
 )
 
 if TYPE_CHECKING:
-    from ...elements.core import Element
+    from ...model.elements.core import Element
 
 __all__ = ["paint_mask", "primitive_filter"]
 
@@ -79,7 +79,7 @@ def _linear_transfer(primitive: Element) -> list[float] | None:
 
 
 def _flood(primitive: Element) -> Any:
-    from ...color.color import as_color
+    from ...model.color.color import as_color
 
     color = as_color(primitive.get("flood-color", "black")).with_alpha(float(primitive.get("flood-opacity", 1)))
     red, green, blue, alpha = color.uint8

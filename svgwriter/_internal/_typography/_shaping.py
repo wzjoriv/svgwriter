@@ -18,7 +18,7 @@ from .._constants import (
 from ._fonts import color_font
 
 if TYPE_CHECKING:
-    from ...pathdata import PathData
+    from ...model.pathdata import PathData
 
 __all__ = ["ColorGlyphs", "harfbuzz", "hb_font", "needs_shaping", "shape_run"]
 
@@ -126,9 +126,9 @@ def shape_run(text: str, font: Any) -> list[tuple[PathData, float, ColorGlyphs |
     >>> [advance > 0 for _, advance, _ in shape_run("ab", font_for("a", "sans-serif", 16))]
     [False, True]
     """
+    from ...model.pathdata import PathData
+    from ...model.transform import Matrix
     from ...ops import from_skia
-    from ...pathdata import PathData
-    from ...transform import Matrix
 
     hb = harfbuzz()
     if hb is None:

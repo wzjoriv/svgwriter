@@ -4,9 +4,9 @@ Palettes, fonts and role styles; see the [Themes guide](../guides/themes.md). `s
 `svg.THEMES` are also available at the top level.
 
 ```{eval-rst}
-.. automodule:: svgwriter.theme
+.. automodule:: svgwriter.model.theme
    :members:
 
-.. automodule:: svgwriter.theme.sheet
+.. automodule:: svgwriter.model.theme.sheet
    :members:
 ```

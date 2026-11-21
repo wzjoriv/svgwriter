@@ -28,7 +28,7 @@ class Drawable:
 
 def color_swatch(color: Any) -> Any:
     """A square of the color over a checkerboard, so transparency shows."""
-    from ..elements.structure import Group
+    from ..model.elements.structure import Group
 
     half = SWATCH / 2
     group = Group()
@@ -41,14 +41,14 @@ def color_swatch(color: Any) -> Any:
 
 def path_picture(data: Any) -> Any:
     """The outline drawn with a thin stroke and no fill."""
-    from ..elements.shapes import Path
+    from ..model.elements.shapes import Path
 
     return Path(data, fill="none", stroke=OUTLINE, stroke_width=STROKE)
 
 
 def box_picture(box: Any) -> Any:
     """The box as a dashed rectangle with its corner marked."""
-    from ..elements.structure import Group
+    from ..model.elements.structure import Group
 
     group = Group()
     group.rect(box.x, box.y, box.width, box.height, fill="none", stroke=OUTLINE, stroke_width=STROKE,
@@ -59,7 +59,7 @@ def box_picture(box: Any) -> Any:
 
 def matrix_picture(matrix: Any) -> Any:
     """A unit grid before (light) and after (dark) the transform, with the transformed x axis marked."""
-    from ..elements.structure import Group
+    from ..model.elements.structure import Group
 
     size = GRID * GRID_STEP
     group = Group()
@@ -77,7 +77,7 @@ def matrix_picture(matrix: Any) -> Any:
 
 def pixels_picture(pixels: Any) -> Any:
     """The pixels as an ``<image>`` at their size."""
-    from ..elements.structure import Image
+    from ..model.elements.structure import Image
 
     return Image(pixels.rgba())
 
