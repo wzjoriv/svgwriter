@@ -1,5 +1,6 @@
 """
-Preset registries: one per kind (animation, behavior, shape), with built-in entries that users may replace on purpose.
+Preset registries: one per kind (animation, behavior, shape, size, pattern, filter, gradient, marker,
+text effect), with built-in entries that users may replace on purpose.
 """
 
 from __future__ import annotations
@@ -10,7 +11,21 @@ from typing import Any, Final
 
 from ._constants import SUGGESTIONS
 
-__all__ = ["ANIMATIONS", "BEHAVIORS", "KINDS", "SHAPES", "SIZES", "PresetRegistry", "owner_of"]
+__all__ = [
+    "ANIMATIONS",
+    "BEHAVIORS",
+    "FILTERS",
+    "GRADIENTS",
+    "KINDS",
+    "MARKERS",
+    "PATTERNS",
+    "SHAPES",
+    "SIZES",
+    "TEXT_EFFECTS",
+    "PresetRegistry",
+    "catalogue",
+    "owner_of",
+]
 
 Preset = Callable[..., Any]
 
@@ -89,8 +104,32 @@ class PresetRegistry:
         return len(self.names())
 
 
+def catalogue(registry: PresetRegistry, module: str) -> tuple[Callable[[str], Preset], Callable[[], list[str]]]:
+    """``__getattr__`` and ``__dir__`` for a catalogue module answering with *registry*'s presets by name.
+
+    Looking presets up at access time keeps replacements (``replace=True``) and user presets visible.
+    """
+
+    def lookup(name: str) -> Preset:
+        if name.startswith("__") or name not in registry:
+            hint = registry.unknown(name) if not name.startswith("__") else ""
+            raise AttributeError(f"module {module!r} has no attribute {name!r}" + (f" ({hint})" if hint else ""))
+        return registry.get(name)
+
+    def names() -> list[str]:
+        return sorted(registry.names())
+
+    return lookup, names
+
+
 ANIMATIONS: Final = PresetRegistry("animation")
 BEHAVIORS: Final = PresetRegistry("behavior")
 SHAPES: Final = PresetRegistry("shape")
 SIZES: Final = PresetRegistry("size")
-KINDS: Final = {"animation": ANIMATIONS, "behavior": BEHAVIORS, "shape": SHAPES, "size": SIZES}
+PATTERNS: Final = PresetRegistry("pattern")
+FILTERS: Final = PresetRegistry("filter")
+GRADIENTS: Final = PresetRegistry("gradient")
+MARKERS: Final = PresetRegistry("marker")
+TEXT_EFFECTS: Final = PresetRegistry("text_effect")
+KINDS: Final = {"animation": ANIMATIONS, "behavior": BEHAVIORS, "shape": SHAPES, "size": SIZES, "pattern": PATTERNS,
+                "filter": FILTERS, "gradient": GRADIENTS, "marker": MARKERS, "text_effect": TEXT_EFFECTS}

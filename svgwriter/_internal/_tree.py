@@ -43,14 +43,16 @@ def resolve(element: Element, value: Any) -> Element | None:
     from ..elements.core import Element
 
     target = getattr(value, "element", None)
-    if isinstance(target, Element):
+    root = element.root()
+    if isinstance(target, Element) and target.root() is root:
         return target
     if value is None:
         return None
     text = str(value.svg_value() if hasattr(value, "svg_value") else value).strip()
     if text.startswith("url(") and text.endswith(")"):
         text = text[4:-1].strip("'\" ")
-    return element.root().get_element_by_id(text[1:]) if text.startswith("#") else None
+    found = root.get_element_by_id(text[1:]) if text.startswith("#") else None
+    return found if found is not None or not isinstance(target, Element) else target
 
 
 def clip_outline(element: Element) -> PathData | None:

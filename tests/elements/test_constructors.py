@@ -63,8 +63,8 @@ def test_small_fixes() -> None:
     assert str(PaintKeyword.NONE) == "none"
     with pytest.raises(TypeError):
         hash(Transform.rotate(5))
-    glow = svg.builder.glow(5)
-    assert glow.get("x") == "-20%" and glow.get("width") is not None
+    glow = svg.filters.glow(5)
+    assert glow.get("x") == "-50%" and glow.get("width") is not None
 
 
 class TestUnknownAttributeHints:

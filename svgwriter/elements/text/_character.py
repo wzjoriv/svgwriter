@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any, NoReturn
 
 from ...attributes.names import PRESENTATION_ATTRIBUTES, svg_name
 from ._clusters import cluster_bounds
+from ._isolate import RangeEffects
 from ._textlayout import collect, number_list
 
 if TYPE_CHECKING:
@@ -22,7 +23,7 @@ if TYPE_CHECKING:
 __all__ = ["Character", "CharacterRange"]
 
 
-class _Characters:
+class _Characters(RangeEffects):
     """Shared behaviour of the characters ``[start, stop)`` of a text."""
 
     __slots__ = ("start", "stop", "text")

@@ -1,7 +1,7 @@
 # Composite shapes and effects
 
-Presets that build a ready-to-draw element from a few numbers: shapes, lines, shadows, glows and
-markers. Every preset forwards keyword arguments to the element it builds, so `fill=`, `stroke=` and
+Presets that build a ready-to-draw element from a few numbers: shapes and lines. Shadows, glows and
+markers are in the [preset libraries](presets.md). Every preset forwards keyword arguments to the element it builds, so `fill=`, `stroke=` and
 `id=` work as they do on the plain classes, and the result takes transforms, `place(...)` and boolean
 operations like any other element.
 
@@ -32,8 +32,8 @@ cutout = badge - builder.cross(180, 85, 14)
 
 Presets carry a [theme role](../guides/themes.md), so they follow the document theme: registered shapes
 are `shape` (filled with the palette's primary color), `callout` is `box`, `arrow` is `arrow.line`, `grid`
-is `grid`, `spiral` and `wave` are `line`; `outline`, `dashed_line`, `dot` and the default `arrow_marker`
-head are `outline`, `line`, `dot` and `arrow.head`. Presentation keywords you pass go into the inline
+is `grid`, `spiral` and `wave` are `line`; `outline`, `dashed_line` and `dot`
+are `outline`, `line` and `dot`. Presentation keywords you pass go into the inline
 `style`, so they win over the role. `grid`, `spiral` and `wave` return open paths with `fill="none"`.
 `wave` takes `kind="sine"` (smooth cubic segments), `"square"`, `"triangle"` or `"sawtooth"`.
 
@@ -66,7 +66,8 @@ positional arguments, options as keyword-only arguments, and style attributes pa
 `**kwargs` to the element. A package can publish presets by defining them with `svg.preset.shape` in a
 module; importing that module registers them. `svg.preset.get("shape", name)` then looks a preset up by
 name, and `svg.preset.list("shape")` lists everything available. Animation presets work the same way
-(see the [animation guide](../guides/animation.md)).
+(see the [animation guide](../guides/animation.md)), and so do patterns, filters, gradients, markers and
+text effects (see the [Presets guide](../guides/presets.md)).
 
 ## Preset functions
 

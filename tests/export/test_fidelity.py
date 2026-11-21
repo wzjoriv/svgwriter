@@ -217,7 +217,7 @@ def test_markers_from_a_parsed_file_render(tmp_path) -> None:
     import svgwriter as svg
 
     doc = svg.Document(60, 30)
-    marker = doc.defs.add(svg.builder.arrow_marker(id="tip"))
+    marker = doc.defs.add(svg.markers.arrow(id="tip"))
     doc.add(svg.path("M5 15 L50 15", stroke="black", stroke_width=2, marker_end=marker))
     path = tmp_path / "markers.svg"
     doc.save(path)

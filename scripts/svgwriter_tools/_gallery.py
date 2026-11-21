@@ -50,6 +50,12 @@ GALLERY = {
     "scenes": Picture("13_scenes", scenes=("Title", "Bars")),
     "themes": Picture("14_themes", "14_themes.svg"),
     "powerpoint": Picture("15_powerpoint", "15_powerpoint.svg"),
+    "text_effects": Picture("19_presets", "19_sentence.gif"),
+    "goo": Picture("19_presets", "19_goo.gif"),
+    "pattern_catalogue": Picture("19_presets", "19_patterns.svg"),
+    "gradient_catalogue": Picture("19_presets", "19_gradients.svg"),
+    "filter_catalogue": Picture("19_presets", "19_filters.svg"),
+    "marker_catalogue": Picture("19_presets", "19_markers.svg", background="white"),
 }
 
 

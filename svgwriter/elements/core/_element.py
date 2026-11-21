@@ -4,6 +4,7 @@ The ``Element`` base class and the element registry.
 
 from __future__ import annotations
 
+import functools
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, ClassVar, Literal, TypeAlias, TypeVar, Union, overload
 
@@ -17,6 +18,7 @@ from ._constants import INSTANCE_FIELDS, OPEN_PREFIXES
 from ._construct import Construction
 from ._display import Displayable
 from ._errors import UnknownAttributeError, UnknownKeywordError
+from ._factory import _Shortcut
 from ._forward import forward_common
 from ._query import Queryable
 from ._tree import TreeEditing
@@ -40,6 +42,12 @@ AttrValue = Any
 _ABSENT: Any = object()
 Child: TypeAlias = Union["Element", str]
 
+
+
+@functools.cache
+def _shortcut(cls: type, name: str) -> bool:
+    """Whether *name* on *cls* is a child-building shortcut (``g.filter(...)``), so assigning sets the attribute."""
+    return any(isinstance(klass.__dict__.get(name), _Shortcut) for klass in cls.__mro__)
 
 class Element(Construction, AttributeAccess, TreeEditing, Queryable, Displayable, Composable):
     """Base class for every SVG element.
@@ -139,10 +147,13 @@ class Element(Construction, AttributeAccess, TreeEditing, Queryable, Displayable
         raise UnknownAttributeError(type(self).__name__, name, type(self))
 
     def __setattr__(self, name: str, value: AttrValue) -> None:
-        if name in INSTANCE_FIELDS or name.startswith("_") and not name.endswith("_") or hasattr(type(self), name):
+        if name in INSTANCE_FIELDS or name.startswith("_") and not name.endswith("_"):
             object.__setattr__(self, name, value)
             return
         key = svg_name(name)
+        if hasattr(type(self), name) and not (key in KNOWN_ATTRIBUTES and _shortcut(type(self), name)):
+            object.__setattr__(self, name, value)
+            return
         if key not in KNOWN_ATTRIBUTES and key not in self.attributes:
             raise UnknownAttributeError(type(self).__name__, name)
         self.set(key, value)
