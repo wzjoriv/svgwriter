@@ -10,7 +10,16 @@ from typing import TYPE_CHECKING, Any
 
 import skia
 
-from ._constants import BLEND, CHANNEL_MAX, COMPOSITE, CONVOLVE_ORDER, EDGE_MODES, LUMA, MASK_CANVAS
+from ._constants import (
+    BLEND,
+    CHANNEL_MAX,
+    COMPOSITE,
+    CONVOLVE_ORDER,
+    COVERAGE_WHITE,
+    EDGE_MODES,
+    LUMA,
+    MASK_CANVAS,
+)
 
 if TYPE_CHECKING:
     from ..elements.core import Element
@@ -75,7 +84,11 @@ def _flood(primitive: Element) -> Any:
 
 
 def _convolve(primitive: Element, first: Any) -> Any:
-    """``feConvolveMatrix``: the kernel turned 180 degrees (skia correlates), normalised; skia biases in 0..255."""
+    """``feConvolveMatrix``: the kernel turned 180 degrees (skia correlates), normalised.
+
+    Without ``preserveAlpha`` the bias is scaled by the source alpha, so it lifts only
+    what is painted; skia adds a bias uniformly, in 0..255, which serves ``preserveAlpha``.
+    """
     order = [int(v) for v in _numbers(primitive.get("order"))] or [CONVOLVE_ORDER]
     columns, rows = order[0], order[-1]
     kernel = _numbers(primitive.get("kernelMatrix"))
@@ -85,12 +98,17 @@ def _convolve(primitive: Element, first: Any) -> Any:
     target = (int(primitive.get("targetX", columns // 2)), int(primitive.get("targetY", rows // 2)))
     mode = EDGE_MODES.get(str(primitive.get("edgeMode", "duplicate")), skia.TileMode.kClamp)
     keep_alpha = str(primitive.get("preserveAlpha", "false")) == "true"
-    return skia.ImageFilters.MatrixConvolution(
-        skia.ISize(columns, rows), kernel[::-1], 1.0 / divisor, float(primitive.get("bias", 0)) * CHANNEL_MAX,
+    bias = float(primitive.get("bias", 0))
+    convolved = skia.ImageFilters.MatrixConvolution(
+        skia.ISize(columns, rows), kernel[::-1], 1.0 / divisor, bias * CHANNEL_MAX if keep_alpha else 0.0,
         skia.IPoint(columns - 1 - target[0], rows - 1 - target[1]), mode, not keep_alpha, first)
+    if keep_alpha or not bias:
+        return convolved
+    coverage = skia.ImageFilters.ColorFilter(skia.ColorFilters.Matrix(COVERAGE_WHITE), first)
+    return skia.ImageFilters.Arithmetic(0.0, 1.0, bias, 0.0, True, coverage, convolved)
 
 
-def primitive_filter(primitive: Element, first: Any, second: Any) -> Any:
+def primitive_filter(primitive: Element, first: Any, second: Any, scale: tuple[float, float] = (1.0, 1.0)) -> Any:
     """One ``fe*`` element as a skia image filter reading *first* (and *second*).
 
     Parameters
@@ -99,6 +117,9 @@ def primitive_filter(primitive: Element, first: Any, second: Any) -> Any:
         The primitive.
     first, second : skia.ImageFilter or None
         Its ``in`` and ``in2`` inputs (None is the layer being filtered).
+    scale : tuple of (float, float), optional
+        User units per primitive unit along x and y: the bounding box size when
+        ``primitiveUnits`` is ``objectBoundingBox``. Defaults to ``(1.0, 1.0)``.
 
     Returns
     -------
@@ -108,9 +129,10 @@ def primitive_filter(primitive: Element, first: Any, second: Any) -> Any:
     tag = primitive.tag
     if tag == "feGaussianBlur":
         sx, *rest = _numbers(primitive.get("stdDeviation", 0)) or [0.0]
-        return skia.ImageFilters.Blur(sx, rest[0] if rest else sx, skia.TileMode.kDecal, first)
+        return skia.ImageFilters.Blur(sx * scale[0], (rest[0] if rest else sx) * scale[1], skia.TileMode.kDecal, first)
     if tag == "feOffset":
-        return skia.ImageFilters.Offset(float(primitive.get("dx", 0)), float(primitive.get("dy", 0)), first)
+        return skia.ImageFilters.Offset(float(primitive.get("dx", 0)) * scale[0], float(primitive.get("dy", 0)) * scale[1],
+                                        first)
     if tag in ("feColorMatrix", "feComponentTransfer"):
         matrix = _color_matrix(primitive) if tag == "feColorMatrix" else _linear_transfer(primitive)
         return skia.ImageFilters.ColorFilter(skia.ColorFilters.Matrix(matrix), first) if matrix else first
@@ -119,7 +141,7 @@ def primitive_filter(primitive: Element, first: Any, second: Any) -> Any:
     if tag == "feMorphology":
         rx, *rest = _numbers(primitive.get("radius", 0)) or [0.0]
         make = skia.ImageFilters.Dilate if str(primitive.get("operator", "erode")) == "dilate" else skia.ImageFilters.Erode
-        return make(rx, rest[0] if rest else rx, first)
+        return make(rx * scale[0], (rest[0] if rest else rx) * scale[1], first)
     if tag == "feBlend":
         return skia.ImageFilters.Xfermode(BLEND.get(str(primitive.get("mode", "normal")), skia.BlendMode.kSrcOver),
                                           second, first)

@@ -11,7 +11,7 @@ $ python scripts/dev.py svgwriter conformance --report build/conformance/report.
 by skia; the pictures must match. The one difference is a namespace test where skia ignores XML
 namespaces and svgwriter's output is the correct one. Four files skia cannot read are excluded.
 
-**Rendering: 333 / 434 (77 %)** against the reference PNGs. A test passes when at most 1 % of its
+**Rendering: 345 / 434 (79 %)** against the reference PNGs. A test passes when at most 1 % of its
 pixels differ. The suite's `$Revision$` label and `DRAFT` watermark are bookkeeping, often newer than
 the reference PNG, so they are not compared; animated tests are drawn once their animations have
 settled, the state the references show.
@@ -22,7 +22,7 @@ settled, the state the references show.
 | color | 4 | 6 |
 | conform | 2 | 2 |
 | coords | 28 | 28 |
-| filters | 28 | 42 |
+| filters | 39 | 42 |
 | fonts | 3 | 17 |
 | imp | 1 | 1 |
 | linking | 10 | 12 |
@@ -30,7 +30,7 @@ settled, the state the references show.
 | metadata | 1 | 1 |
 | painting | 31 | 31 |
 | paths | 19 | 19 |
-| pservers | 30 | 33 |
+| pservers | 31 | 33 |
 | render | 3 | 8 |
 | shapes | 22 | 22 |
 | struct | 43 | 48 |

@@ -4,15 +4,18 @@ Filtered elements drawn around skia's SVG renderer, for filters it cannot run.
 
 from __future__ import annotations
 
+import math
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 import skia
 
-from .._internal._layers import ancestry, viewport_extent
+from .._internal._constants import OBJECT_BOUNDING_BOX, USER_SPACE
+from .._internal._layers import ancestry, drawable_order, viewport_extent
 from ._canvas import paint_svg
-from ._constants import DISPLAY, ENGINE_PRIMITIVES, PICTURE_BOUNDS
-from ._layers import draw_image, hidden, referenced, skia_matrix
+from ._constants import ENGINE_PRIMITIVES, OPACITY, PICTURE_BOUNDS, STANDARD_INPUTS
+from ._filter_inputs import background_layer, standard_inputs
+from ._layers import concealed, draw_image, hidden, referenced, skia_matrix
 
 if TYPE_CHECKING:
     from ..elements.core import Element
@@ -32,8 +35,8 @@ def needs_engine(element: Element) -> bool:
     Returns
     -------
     bool
-        True for a filtered embedded image, which that renderer cannot draw, and for a filter
-        holding ``feImage``, ``feTile`` or ``feConvolveMatrix``.
+        True for a filtered embedded image, which that renderer cannot draw, for a filter in
+        bounding-box ``primitiveUnits`` and for one holding a primitive it cannot run.
 
     Examples
     --------
@@ -47,25 +50,36 @@ def needs_engine(element: Element) -> bool:
     effects = referenced(element, "filter") if element.get("filter") is not None else None
     if effects is None:
         return False
-    return (isinstance(element, Image) and element.pixels is not None) or any(
-        getattr(child, "tag", None) in ENGINE_PRIMITIVES for child in effects)
+    return (isinstance(element, Image) and element.pixels is not None) or str(
+        effects.get("primitiveUnits", USER_SPACE)) == OBJECT_BOUNDING_BOX or any(
+        getattr(child, "tag", None) in ENGINE_PRIMITIVES or any(
+            str(child.get(name)) in STANDARD_INPUTS for name in ("in", "in2")) for child in effects.iter())
 
 
 def _painted(root: Element, wrap: Callable[[str], str], others: list[Element], extra: Element | None = None) -> str:
     """*root* serialized with *others* hidden (and *extra* appended at the top level)."""
     from ..io.writer import to_string
 
-    for leaf in others:
-        leaf.attributes[DISPLAY] = "none"
     if extra is not None:
         root.add(extra)
     try:
-        return wrap(to_string(root, xml_declaration=False, pretty=False))
+        with concealed(others):
+            return wrap(to_string(root, xml_declaration=False, pretty=False))
     finally:
         if extra is not None:
             root.remove(extra)
-        for leaf in others:
-            leaf.attributes.pop(DISPLAY, None)
+
+
+def _lineage(element: Element, root: Element) -> list[Element]:
+    """*element* and its ancestors up to *root* (an outer ``<svg>`` root excluded)."""
+    lineage: list[Element] = []
+    node: Element | None = element
+    while node is not None and not (node is root and root.tag == "svg"):
+        lineage.append(node)
+        if node is root:
+            break
+        node = node.parent
+    return lineage
 
 
 def draw_filtered(canvas: skia.Canvas, element: Element, root: Element, wrap: Callable[[str], str],
@@ -120,17 +134,29 @@ def draw_filtered(canvas: skia.Canvas, element: Element, root: Element, wrap: Ca
         paint_svg(recording, _painted(root, wrap, hidden(root, [], atomic=needs_engine), copy), width, height)
         return recorder.finishRecordingAsPicture()
 
-    bounding = str(effects.get("primitiveUnits", "userSpaceOnUse")) == "objectBoundingBox"
-    graph = image_filter(effects, Frame(box, region, viewport, bounding, element_source))
+    def background() -> skia.Picture:
+        recorder = skia.PictureRecorder()
+        recording = recorder.beginRecording(skia.Rect(-PICTURE_BOUNDS, -PICTURE_BOUNDS, PICTURE_BOUNDS, PICTURE_BOUNDS))
+        layer = background_layer(element, drawable_order(root, needs_engine))
+        if layer:
+            recording.concat(skia_matrix(matrix.inverse()))
+            paint_svg(recording, _painted(root, wrap, hidden(root, layer, atomic=needs_engine)), width, height)
+        return recorder.finishRecordingAsPicture()
+
+    bounding = str(effects.get("primitiveUnits", USER_SPACE)) == OBJECT_BOUNDING_BOX
+    inputs = standard_inputs(effects, element, region, element_source, background)
+    graph = image_filter(effects, Frame(box, region, viewport, bounding, element_source, inputs))
     others = hidden(root, [element], atomic=needs_engine)
-    saved = {name: element.attributes.pop(name) for name in ("filter", "opacity") if name in element.attributes}
+    lineage = _lineage(element, root)
+    opacities = [node.attributes.pop(OPACITY, None) for node in lineage]
+    saved = {name: element.attributes.pop(name) for name in ("filter",) if name in element.attributes}
     try:
         canvas.save()
         canvas.concat(skia_matrix(matrix))
         canvas.clipRect(region, doAntiAlias=True)
         layer = skia.Paint()
         layer.setImageFilter(graph)
-        layer.setAlphaf(float(saved.get("opacity", 1.0)))
+        layer.setAlphaf(math.prod(float(value) for value in opacities if value is not None))
         canvas.saveLayer(None, layer)
         canvas.concat(skia_matrix(matrix.inverse()))
         if isinstance(element, Image) and element.pixels is not None:
@@ -141,3 +167,6 @@ def draw_filtered(canvas: skia.Canvas, element: Element, root: Element, wrap: Ca
         canvas.restore()
     finally:
         element.attributes.update(saved)
+        for node, value in zip(lineage, opacities, strict=True):
+            if value is not None:
+                node.attributes[OPACITY] = value
