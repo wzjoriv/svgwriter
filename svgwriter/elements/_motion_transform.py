@@ -30,6 +30,7 @@ if TYPE_CHECKING:
 __all__ = ["TransformPresets", "timing"]
 
 PointLike = tuple[float, float]
+Pivot = PointLike | str
 
 
 def _pair(x: float, y: float) -> str:
@@ -52,8 +53,9 @@ class TransformPresets:
     transform and after earlier transform presets, so they compose: two
     ``rotate(30)`` one after the other end at 60 degrees. Pivots follow the
     static transform methods: the element's :attr:`~svgwriter.elements.Transformable.anchor`
-    (its bounding-box centre unless set), or ``about=(x, y)`` in parent
-    coordinates (local ones with ``local=True``).
+    (its bounding-box centre unless set), ``about="bottom"`` and the other
+    anchor names, or ``about=(x, y)`` in parent coordinates (local ones
+    with ``local=True``).
 
     SMIL applies these animations in the element's own frame, after its
     transform. On an element that is only moved, rotated or scaled evenly,
@@ -68,14 +70,14 @@ class TransformPresets:
     def _add(self, animation: Element) -> Motion:
         raise NotImplementedError
 
-    def _pivot(self, about: PointLike | None = None, local: bool = False) -> tuple[float, float]:
+    def _pivot(self, about: Pivot | None = None, local: bool = False) -> tuple[float, float]:
         """The pivot in the element's own coordinates, where SMIL transforms apply."""
         element: Any = self.element
         if not hasattr(element, "_pivot"):
             box = element.local_bbox() if hasattr(element, "local_bbox") else None
             return (box.x + box.width / 2, box.y + box.height / 2) if box is not None else (0.0, 0.0)
         point: Point = element._pivot(about, True)
-        if about is not None and not local:
+        if about is not None and not isinstance(about, str) and not local:
             point = element.t.inverse().apply(point.x, point.y)
         return point.x, point.y
 
@@ -107,7 +109,7 @@ class TransformPresets:
         return self._add(AnimateTransform("translate", attribute_name="transform", values=f"{back};{back}",
                                           additive="sum", **held))
 
-    def rotate(self, angle: float, dur: float = DEFAULT_DURATION, *, about: PointLike | None = None,
+    def rotate(self, angle: float, dur: float = DEFAULT_DURATION, *, about: Pivot | None = None,
                local: bool = False, begin: float = 0.0, repeat: float | str | None = None, freeze: bool = True,
                ease: EaseLike | None = None) -> Motion:
         """Turn by *angle* degrees from wherever the element is, about its anchor.
@@ -118,8 +120,10 @@ class TransformPresets:
             Degrees; positive turns clockwise on screen, as :meth:`Transformable.rotate`.
         dur : float, optional
             Seconds the turn takes. Defaults to 1.0.
-        about : (float, float), optional
-            Pivot, in parent coordinates (local ones with *local*). Defaults
+        about : str or (float, float), optional
+            Pivot: a name such as ``"bottom"`` or ``"top_left"`` (see
+            :attr:`~svgwriter.elements.Transformable.anchor`), or a point in
+            parent coordinates (local ones with *local*). Defaults
             to the element's anchor, so ``el.rotate(a)`` and
             ``el.animate.rotate(a)`` turn about the same point.
         local : bool, optional
@@ -154,13 +158,15 @@ class TransformPresets:
         >>> _ = bar.animate.rotate(90, 2).rotate(-45, begin=2)
         >>> [a.get("to") for a in bar.children]
         ['90 20 5', '-45 20 5']
+        >>> svg.rect(0, 0, 40, 10).animate.rotate(90, about="bottom_left").element.children[0].get("to")
+        '90 0 10'
         """
         cx, cy = self._pivot(about, local)
         return self._transform("rotate", f"0 {_pair(cx, cy)}", f"{angle:g} {_pair(cx, cy)}", dur, begin,
                                repeat, freeze, ease)
 
     def scale(self, factor: float | tuple[float, float], dur: float = DEFAULT_DURATION, *,
-              about: PointLike | None = None, local: bool = False, begin: float = 0.0,
+              about: Pivot | None = None, local: bool = False, begin: float = 0.0,
               repeat: float | str | None = None, freeze: bool = True, ease: EaseLike | None = None) -> Motion:
         """Scale by *factor* from the element's current size, about its anchor.
 
@@ -170,8 +176,8 @@ class TransformPresets:
             One factor for both axes, or ``(sx, sy)``; negative values mirror.
         dur : float, optional
             Seconds it takes. Defaults to 1.0.
-        about : (float, float), optional
-            Fixed point, in parent coordinates (local ones with *local*).
+        about : str or (float, float), optional
+            Fixed point: a name or a point, as for :meth:`rotate`.
             Defaults to the element's anchor.
         local : bool, optional
             Read *about* in the element's own coordinates. Defaults to False.
@@ -199,7 +205,7 @@ class TransformPresets:
         return self._about([("scale", values)], self._pivot(about, local), dur, begin, repeat, freeze, ease)
 
     def skew(self, x: float = 0.0, y: float = 0.0, dur: float = DEFAULT_DURATION, *,
-             about: PointLike | None = None, local: bool = False, begin: float = 0.0,
+             about: Pivot | None = None, local: bool = False, begin: float = 0.0,
              repeat: float | str | None = None, freeze: bool = True, ease: EaseLike | None = None) -> Motion:
         """Skew by *x* then *y* degrees from the element's current shape, about its anchor.
 
@@ -209,8 +215,8 @@ class TransformPresets:
             Skew angles along x and y, as :meth:`Transformable.skew`. Defaults to 0.
         dur : float, optional
             Seconds it takes. Defaults to 1.0.
-        about : (float, float), optional
-            Fixed point, in parent coordinates (local ones with *local*).
+        about : str or (float, float), optional
+            Fixed point: a name or a point, as for :meth:`rotate`.
             Defaults to the element's anchor.
         local : bool, optional
             Read *about* in the element's own coordinates. Defaults to False.
@@ -292,26 +298,26 @@ class TransformPresets:
                                freeze, ease)
 
     def spin(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, repeat: float | str | None = None,
-             turns: float = 1.0, about: PointLike | None = None, local: bool = False, freeze: bool = True,
+             turns: float = 1.0, about: Pivot | None = None, local: bool = False, freeze: bool = True,
              ease: EaseLike | None = None) -> Motion:
         """Rotate by *turns* full turns about the anchor (or *about*, as for :meth:`rotate`)."""
         return self.rotate(FULL_TURN * turns, dur, about=about, local=local, begin=begin, repeat=repeat,
                            freeze=freeze, ease=ease)
 
     def grow(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, repeat: float | str | None = None,
-             about: PointLike | None = None, local: bool = False, freeze: bool = True,
+             about: Pivot | None = None, local: bool = False, freeze: bool = True,
              ease: EaseLike | None = None) -> Motion:
         """Scale up from nothing to full size about the anchor (or *about*, as for :meth:`scale`)."""
         return self._about([("scale", "0;1")], self._pivot(about, local), dur, begin, repeat, freeze, ease)
 
     def shrink(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, repeat: float | str | None = None,
-               about: PointLike | None = None, local: bool = False, freeze: bool = True,
+               about: Pivot | None = None, local: bool = False, freeze: bool = True,
                ease: EaseLike | None = None) -> Motion:
         """Scale down from full size to nothing about the anchor (or *about*, as for :meth:`scale`)."""
         return self._about([("scale", "1;0")], self._pivot(about, local), dur, begin, repeat, freeze, ease)
 
     def pulse(self, dur: float = DEFAULT_DURATION, *, begin: float = 0.0, repeat: float | str | None = FOREVER,
-              scale: float = PULSE_SCALE, about: PointLike | None = None, local: bool = False,
+              scale: float = PULSE_SCALE, about: Pivot | None = None, local: bool = False,
               ease: EaseLike | None = None) -> Motion:
         """Swell slightly and back about the anchor, by default forever."""
         return self._about([("scale", f"1;{scale:g};1")], self._pivot(about, local), dur, begin, repeat, False,

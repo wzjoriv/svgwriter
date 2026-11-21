@@ -128,6 +128,23 @@ class BBox(NamedTuple):
     bottom_center = property(lambda self: self.point("bottom_center"), doc="Middle of the bottom edge.")
     bottom_right = property(lambda self: self.point("bottom_right"), doc="Corner at ``(right, bottom)``.")
 
+    @staticmethod
+    def point_names() -> tuple[str, ...]:
+        """The names :meth:`point` accepts.
+
+        Returns
+        -------
+        tuple of str
+            Centre, corners, edge middles and edge names.
+
+        Examples
+        --------
+        >>> from svgwriter.pathdata import BBox
+        >>> BBox.point_names()[:3]
+        ('center', 'top_left', 'top_center')
+        """
+        return tuple(BOX_POINTS)
+
     def point(self, name: str) -> Point:
         """A named point of the box.
 

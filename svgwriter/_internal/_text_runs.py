@@ -5,7 +5,7 @@ Text kept as text for vector exports: laid-out runs with their font, colour and 
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 from ._constants import DEFAULT_SIZE, JOIN_TOLERANCE
@@ -41,6 +41,8 @@ class TextRun:
         Fill opacity with group opacity included.
     width : float
         Advance width of the run.
+    source : Element or None
+        The ``<text>`` the run belongs to.
     """
 
     text: str
@@ -52,6 +54,7 @@ class TextRun:
     fill: Color | None
     opacity: float
     width: float
+    source: Element | None = field(default=None, compare=False, repr=False)
 
 
 def _font(source: Element, rules: list[Any]) -> tuple[str, float, bool, bool]:
@@ -144,4 +147,13 @@ def _run(boxes: list[Any], page: Matrix, opacity: float, rules: list[Any], font:
     fill = paint(first.source, "fill", "black", rules)
     alpha = opacity * number(first.source, "fill-opacity", 1.0, rules) * number(first.source, "opacity", 1.0, rules)
     width = last.x + last.advance - first.x if first.angle == 0 else math.fsum(b.advance for b in boxes)
-    return TextRun("".join(b.char for b in boxes).rstrip(), frame, size, family, bold, italic, fill, alpha, width)
+    return TextRun("".join(b.char for b in boxes).rstrip(), frame, size, family, bold, italic, fill, alpha, width,
+                   _text_of(first.source))
+
+
+def _text_of(element: Element) -> Element:
+    """The ``<text>`` holding *element* (itself, or the ancestor of a ``tspan``)."""
+    node: Element | None = element
+    while node is not None and node.tag != "text":
+        node = node.parent
+    return node if node is not None else element

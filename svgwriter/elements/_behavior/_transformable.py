@@ -16,9 +16,10 @@ from ..core import Child, Element
 from ._moves import TransformMethods, _as_matrix
 from ._placement import Placement
 
-__all__ = ["PointLike", "Transformable", "children_bbox", "offset"]
+__all__ = ["Pivot", "PointLike", "Transformable", "children_bbox", "offset"]
 
 PointLike = tuple[float, float] | Point
+Pivot = PointLike | str
 E = TypeVar("E", bound="Transformable")
 
 
@@ -123,14 +124,14 @@ class Transformable(Placement, TransformMethods, Element):
 
     transform_attribute: ClassVar[str] = "transform"
     __array_ufunc__ = None
-    _anchor: tuple[float, float] | None = None
+    _anchor: tuple[float, float] | str | None = None
 
     def __init__(
         self,
         *args: Child,
         t: TransformLike | None = None,
         transform: TransformLike | None = None,
-        anchor: PointLike | None = None,
+        anchor: Pivot | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)

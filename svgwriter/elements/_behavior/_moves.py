@@ -12,7 +12,7 @@ from ...transform.ops import TransformOp
 from ...transform.transform import Transform, TransformLike, as_transform
 
 if TYPE_CHECKING:
-    from ._transformable import E, PointLike
+    from ._transformable import E, Pivot
 
 __all__ = ["TransformMethods"]
 
@@ -28,12 +28,15 @@ class TransformMethods:
 
     __slots__ = ()
 
-    def _pivot(self, about: PointLike | None, local: bool) -> Point:
+    def _pivot(self, about: Pivot | None, local: bool) -> Point:
+        if isinstance(about, str):
+            point = self._local_point(about)
+            return point if local else self.t.apply(*point)
         if about is not None:
             return Point(float(about[0]), float(about[1]))
         return self.anchor if local else self.position
 
-    def _compose(self: E, op: Matrix, local: bool, about: PointLike | None = None, pivot: bool = True) -> E:
+    def _compose(self: E, op: Matrix, local: bool, about: Pivot | None = None, pivot: bool = True) -> E:
         if pivot:
             p = self._pivot(about, local)
             op = Matrix.translate(p.x, p.y) @ op @ Matrix.translate(-p.x, -p.y)
@@ -70,16 +73,17 @@ class TransformMethods:
         """
         return self._compose(Matrix.translate(dx, dy), local, pivot=False)
 
-    def rotate(self: E, degrees: float, *, about: PointLike | None = None, local: bool = False) -> E:
+    def rotate(self: E, degrees: float, *, about: Pivot | None = None, local: bool = False) -> E:
         """Rotate by *degrees* (clockwise on screen) and return ``self``.
 
         Parameters
         ----------
         degrees : float
             Angle; positive turns from +x towards +y.
-        about : (float, float), optional
-            Pivot; in parent coordinates, or local ones with *local*.
-            Defaults to the :attr:`anchor`.
+        about : str or (float, float), optional
+            Pivot: a point name (see :attr:`anchor`), read on the element's
+            own box, or a point in parent coordinates (local ones with
+            *local*). Defaults to the :attr:`anchor`.
         local : bool, optional
             Compose in the element's own frame. Defaults to False.
 
@@ -93,11 +97,13 @@ class TransformMethods:
         >>> import svgwriter as svg
         >>> svg.rect(0, 0, 10, 10).rotate(90).bounds()
         BBox(x=0.0, y=0.0, width=10.0, height=10.0)
+        >>> svg.rect(0, 0, 10, 10).rotate(90, about="top_left").bounds()
+        BBox(x=-10.0, y=0.0, width=10.0, height=10.0)
         """
         return self._compose(Matrix.rotate(degrees), local, about)
 
     def scale(
-        self: E, sx: float, sy: float | None = None, *, about: PointLike | None = None, local: bool = False
+        self: E, sx: float, sy: float | None = None, *, about: Pivot | None = None, local: bool = False
     ) -> E:
         """Scale by *sx* and *sy* (default *sx*) about the anchor and return ``self``.
 
@@ -105,8 +111,8 @@ class TransformMethods:
         ----------
         sx, sy : float
             Factors along x and y; negative values mirror. *sy* defaults to *sx*.
-        about : (float, float), optional
-            Fixed point. Defaults to the :attr:`anchor`.
+        about : str or (float, float), optional
+            Fixed point, as for :meth:`rotate`. Defaults to the :attr:`anchor`.
         local : bool, optional
             Scale along the element's own axes instead of the parent's. Defaults to False.
 
@@ -124,7 +130,7 @@ class TransformMethods:
         return self._compose(Matrix.scale(sx, sy), local, about)
 
     def skew(
-        self: E, x_degrees: float = 0.0, y_degrees: float = 0.0, *, about: PointLike | None = None,
+        self: E, x_degrees: float = 0.0, y_degrees: float = 0.0, *, about: Pivot | None = None,
         local: bool = False,
     ) -> E:
         """Skew along x then y by angles in degrees about the anchor and return ``self``.
@@ -133,8 +139,8 @@ class TransformMethods:
         ----------
         x_degrees, y_degrees : float, optional
             Skew angles along x and y. Defaults to 0.
-        about : (float, float), optional
-            Fixed point. Defaults to the :attr:`anchor`.
+        about : str or (float, float), optional
+            Fixed point, as for :meth:`rotate`. Defaults to the :attr:`anchor`.
         local : bool, optional
             Compose in the element's own frame. Defaults to False.
 
@@ -151,13 +157,13 @@ class TransformMethods:
         """
         return self._compose(Matrix.skew_y(y_degrees) @ Matrix.skew_x(x_degrees), local, about)
 
-    def flip_x(self: E, *, about: PointLike | None = None, local: bool = False) -> E:
+    def flip_x(self: E, *, about: Pivot | None = None, local: bool = False) -> E:
         """Mirror left-right (across the vertical line through the anchor) and return ``self``.
 
         Parameters
         ----------
-        about : (float, float), optional
-            Point on the mirror line. Defaults to the :attr:`anchor`.
+        about : str or (float, float), optional
+            Point on the mirror line, as for :meth:`rotate`. Defaults to the :attr:`anchor`.
         local : bool, optional
             Compose in the element's own frame. Defaults to False.
 
@@ -178,13 +184,13 @@ class TransformMethods:
         """
         return self.scale(-1, 1, about=about, local=local)
 
-    def flip_y(self: E, *, about: PointLike | None = None, local: bool = False) -> E:
+    def flip_y(self: E, *, about: Pivot | None = None, local: bool = False) -> E:
         """Mirror top-bottom (across the horizontal line through the anchor) and return ``self``.
 
         Parameters
         ----------
-        about : (float, float), optional
-            Point on the mirror line. Defaults to the :attr:`anchor`.
+        about : str or (float, float), optional
+            Point on the mirror line, as for :meth:`rotate`. Defaults to the :attr:`anchor`.
         local : bool, optional
             Compose in the element's own frame. Defaults to False.
 
