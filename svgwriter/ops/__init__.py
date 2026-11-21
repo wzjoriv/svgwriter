@@ -19,7 +19,7 @@ from ._skia import Geometry, from_skia, to_skia
 from .boolean import BooleanOp, combine, difference, intersection, simplify, union, xor
 from .composite import Operator, composite_rgba, resolve_operator
 from .graph import draw_graph
-from .interpolate import interpolate
+from .interpolate import interpolate, register_interpolator, unregister_interpolator
 from .measure import (
     Cap,
     Join,
@@ -58,6 +58,7 @@ __all__ = [
     "rasterize_many",
     "render_png",
     "register_font",
+    "register_interpolator",
     "render_svg",
     "resolve_operator",
     "simplify",
@@ -66,6 +67,7 @@ __all__ = [
     "tangent_at_length",
     "text_outline",
     "text_to_path",
+    "unregister_interpolator",
     "text_width",
     "to_matplotlib",
     "to_skia",
