@@ -33,6 +33,15 @@ def _text_of(target: Target) -> Text:
     return isolate()
 
 
+def _keep_over_roles(text: Text) -> None:
+    """Move the paint an effect set into the inline style when *text* has classes, such as theme roles.
+
+    Class rules in CSS win over presentation attributes, so a role's fill would otherwise hide the effect's.
+    """
+    if text.classes:
+        text.to_css()
+
+
 @overload
 def text_effect(function: Styler[P], /, *, name: str | None = None, replace: bool = False) -> Effect[P]: ...
 
@@ -100,6 +109,7 @@ def text_effect(function: Styler[P] | None = None, /, *, name: str | None = None
         def effect(target: Target, /, *args: P.args, **kwargs: P.kwargs) -> Text:
             text = _text_of(target)
             func(text, *args, **kwargs)
+            _keep_over_roles(text)
             return text
 
         TEXT_EFFECTS.add(label, effect, replace=replace)
