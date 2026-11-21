@@ -133,7 +133,8 @@ doc.save("figure.pdf", text=False)     # glyph outlines only
 ```
 
 PDF, EPS and TikZ read back as filled and stroked `<path>` elements with solid colours or gradients,
-stroke width, dashes, caps, joins and opacity, in points with y pointing down. The PDF reader scans for objects (a
+stroke width, dashes, caps, joins and opacity, in user units with y pointing down (see
+[Physical size](#physical-size)). The PDF reader scans for objects (a
 broken xref table does not matter), inflates `/FlateDecode` streams, follows Form XObjects and `gs`
 alpha, and reads page 1 unless you pass `page=`. Images, clipping paths and text come in as
 `<image>`, `clip-path` and `<text>`. Text is decoded through the font's `/ToUnicode` map, which most
@@ -199,6 +200,27 @@ widest and the tallest drawing, and smaller drawings are centred on their slides
 hold one drawing and raise `ValueError` for a list. The low-level `load` returns the list too when
 the page option is `None` (`page=None` for PDF, `slide=None` for PowerPoint); `Document.open` reads
 one page and `Document.open_all` reads every page, or wraps a single-page file in a list of one.
+
+## Physical size
+
+A user unit is a CSS pixel, 96 to the inch, so a point is 4/3 of a unit and a millimetre is
+96/25.4. Formats with a physical page keep the document's true size: a
+`svg.Document(210 * svg.mm, 297 * svg.mm)` exports as a 595.28 × 841.89 pt A4 PDF page and EPS
+bounding box, and as a 7560000 × 10692000 EMU PowerPoint slide, and an 8.5 × 11 inch document as a
+612 × 792 pt Letter page. TikZ pictures are drawn at 0.75 bp per unit, Word drawings at 9525 EMU
+per unit, and DXF, HPGL and G-code at 25.4/96 mm per unit. A raster has no physical size: `dpi=`
+sets how many pixels an inch of the document becomes (96 is `scale=1`).
+
+```python
+a4 = svg.Document(210 * svg.mm, 297 * svg.mm)   # user units are millimetres through the viewBox
+a4.rect(20, 30, 50, 10, fill="red")
+a4.save("a4.pdf")                               # prints at 100% on A4
+```
+
+Readers work the other way: a PDF or EPS point reads as 4/3 of a unit and a TikZ `1cm` as
+96/2.54, so a file made elsewhere opens at its real size and an exported file reads back at the
+same size with every shape in the same place, measured in user units (a millimetre document comes
+back as 793.7 × 1122.5 units with no `viewBox` scaling).
 
 ## Your own formats
 

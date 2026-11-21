@@ -846,7 +846,8 @@ reader of the file may lack the fonts:</p>
 </pre></div>
 </div>
 <p>PDF, EPS and TikZ read back as filled and stroked <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> elements with solid colours or gradients,
-stroke width, dashes, caps, joins and opacity, in points with y pointing down. The PDF reader scans for objects (a
+stroke width, dashes, caps, joins and opacity, in user units with y pointing down (see
+<a class="reference internal" href="#physical-size">Physical size</a>). The PDF reader scans for objects (a
 broken xref table does not matter), inflates <code class="docutils literal notranslate"><span class="pre">/FlateDecode</span></code> streams, follows Form XObjects and <code class="docutils literal notranslate"><span class="pre">gs</span></code>
 alpha, and reads page 1 unless you pass <code class="docutils literal notranslate"><span class="pre">page=</span></code>. Images, clipping paths and text come in as
 <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">clip-path</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;text&gt;</span></code>. Text is decoded through the font’s <code class="docutils literal notranslate"><span class="pre">/ToUnicode</span></code> map, which most
@@ -925,6 +926,25 @@ widest and the tallest drawing, and smaller drawings are centred on their slides
 hold one drawing and raise <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> for a list. The low-level <code class="docutils literal notranslate"><span class="pre">load</span></code> returns the list too when
 the page option is <code class="docutils literal notranslate"><span class="pre">None</span></code> (<code class="docutils literal notranslate"><span class="pre">page=None</span></code> for PDF, <code class="docutils literal notranslate"><span class="pre">slide=None</span></code> for PowerPoint); <code class="docutils literal notranslate"><span class="pre">Document.open</span></code> reads
 one page and <code class="docutils literal notranslate"><span class="pre">Document.open_all</span></code> reads every page, or wraps a single-page file in a list of one.</p>
+</section>
+<section id="physical-size">
+<h2>Physical size<a class="headerlink" href="#physical-size" title="Link to this heading">¶</a></h2>
+<p>A user unit is a CSS pixel, 96 to the inch, so a point is 4/3 of a unit and a millimetre is
+96/25.4. Formats with a physical page keep the document’s true size: a
+<code class="docutils literal notranslate"><span class="pre">svg.Document(210</span> <span class="pre">*</span> <span class="pre">svg.mm,</span> <span class="pre">297</span> <span class="pre">*</span> <span class="pre">svg.mm)</span></code> exports as a 595.28 × 841.89 pt A4 PDF page and EPS
+bounding box, and as a 7560000 × 10692000 EMU PowerPoint slide, and an 8.5 × 11 inch document as a
+612 × 792 pt Letter page. TikZ pictures are drawn at 0.75 bp per unit, Word drawings at 9525 EMU
+per unit, and DXF, HPGL and G-code at 25.4/96 mm per unit. A raster has no physical size: <code class="docutils literal notranslate"><span class="pre">dpi=</span></code>
+sets how many pixels an inch of the document becomes (96 is <code class="docutils literal notranslate"><span class="pre">scale=1</span></code>).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a4</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">210</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">,</span> <span class="mi">297</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">)</span>   <span class="c1"># user units are millimetres through the viewBox</span>
+<span class="n">a4</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span>
+<span class="n">a4</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"a4.pdf"</span><span class="p">)</span>                               <span class="c1"># prints at 100% on A4</span>
+</pre></div>
+</div>
+<p>Readers work the other way: a PDF or EPS point reads as 4/3 of a unit and a TikZ <code class="docutils literal notranslate"><span class="pre">1cm</span></code> as
+96/2.54, so a file made elsewhere opens at its real size and an exported file reads back at the
+same size with every shape in the same place, measured in user units (a millimetre document comes
+back as 793.7 × 1122.5 units with no <code class="docutils literal notranslate"><span class="pre">viewBox</span></code> scaling).</p>
 </section>
 <section id="your-own-formats">
 <h2>Your own formats<a class="headerlink" href="#your-own-formats" title="Link to this heading">¶</a></h2>
@@ -1068,6 +1088,7 @@ interaction is attached by the page, by element id:</p>
 <li><a class="reference internal" href="#text-stays-text">Text stays text</a></li>
 <li><a class="reference internal" href="#page-sizes">Page sizes</a></li>
 <li><a class="reference internal" href="#pages-and-slides">Pages and slides</a></li>
+<li><a class="reference internal" href="#physical-size">Physical size</a></li>
 <li><a class="reference internal" href="#your-own-formats">Your own formats</a></li>
 <li><a class="reference internal" href="#diagrams">Diagrams</a></li>
 <li><a class="reference internal" href="#office-files">Office files</a></li>

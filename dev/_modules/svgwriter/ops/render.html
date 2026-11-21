@@ -308,6 +308,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">"DEFAULT_SIZE"</span><span class="p">,</span>
     <span class="s2">"document_size"</span><span class="p">,</span>
+    <span class="s2">"page_size"</span><span class="p">,</span>
     <span class="s2">"encode"</span><span class="p">,</span>
     <span class="s2">"encode_image"</span><span class="p">,</span>
     <span class="s2">"paint_tree"</span><span class="p">,</span>
@@ -351,11 +352,41 @@
 <span class="sd">    &gt;&gt;&gt; document_size(svg.Document(40, 20))</span>
 <span class="sd">    (40.0, 20.0)</span>
 <span class="sd">    """</span>
+    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">page_size</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">width</span><span class="p">))),</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">height</span><span class="p">)))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">page_size</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">Document</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Exact page size in user units (CSS pixels, 96 per inch): ``width``/``height``, else the ``viewBox`` size, else 300.</span>
+
+<span class="sd">    Unlike :func:`document_size` the size is not rounded, so vector formats keep the physical</span>
+<span class="sd">    size: a ``210mm`` wide document is 793.7 user units, 595.28 points.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    document : Document</span>
+<span class="sd">        The document to measure.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (float, float)</span>
+<span class="sd">        Width and height in user units.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    document_size : The size rounded up to whole pixels for rasters.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">    &gt;&gt;&gt; from svgwriter.ops.render import page_size</span>
+<span class="sd">    &gt;&gt;&gt; [round(v, 2) for v in page_size(svg.Document(210 * svg.mm, 297 * svg.mm))]</span>
+<span class="sd">    [793.7, 1122.52]</span>
+<span class="sd">    """</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">root</span>
     <span class="n">box</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">view_box</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">_dimension</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"width"</span><span class="p">),</span> <span class="n">box</span><span class="o">.</span><span class="n">width</span> <span class="k">if</span> <span class="n">box</span> <span class="k">else</span> <span class="n">DEFAULT_SIZE</span><span class="p">)</span>
-    <span class="n">h</span> <span class="o">=</span> <span class="n">_dimension</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"height"</span><span class="p">),</span> <span class="n">box</span><span class="o">.</span><span class="n">height</span> <span class="k">if</span> <span class="n">box</span> <span class="k">else</span> <span class="n">DEFAULT_SIZE</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">w</span><span class="p">))),</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">h</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">_dimension</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"width"</span><span class="p">),</span> <span class="n">box</span><span class="o">.</span><span class="n">width</span> <span class="k">if</span> <span class="n">box</span> <span class="k">else</span> <span class="n">DEFAULT_SIZE</span><span class="p">),</span>
+            <span class="n">_dimension</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"height"</span><span class="p">),</span> <span class="n">box</span><span class="o">.</span><span class="n">height</span> <span class="k">if</span> <span class="n">box</span> <span class="k">else</span> <span class="n">DEFAULT_SIZE</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="render_svg">
