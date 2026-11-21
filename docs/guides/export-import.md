@@ -165,10 +165,15 @@ poster.rect(10, 10, 190, 277, fill="none", stroke="black", stroke_width=0.5)
 poster.save("poster.png", dpi=150)                   # 1241 x 1755 pixels
 wide = svg.Document(size="a4-landscape")             # any name turns with -landscape or -portrait
 slide = svg.Document(size="slide-16:9")              # 1280 x 720, PowerPoint's default slide size
-svg.register_size("poster-50x70", "50cm", "70cm")
-print(svg.SIZES.names()[:6], [str(side) for side in svg.page_size("poster-50x70-landscape")])
-svg.unregister_size("poster-50x70")
+typed = svg.Document(size=svg.size.letter.landscape)  # svg.size.<name> is a PageSize (width, height, units)
+svg.preset.size("poster-50x70", "50cm", "70cm")         # your own, also svg.size.poster_50x70
+print(svg.preset.list("size")[:6], svg.size.poster_50x70.landscape)
+svg.preset.unregister("size", "poster-50x70")
 ```
+
+`svg.size.<name>` gives a `PageSize` for every registered size with the name turned into an identifier
+(`svg.size.slide_16_9`, `svg.size.instagram_story`), so an editor completes it; `.landscape` and `.portrait`
+turn it. `Document(size=...)`, `Scene.size` and a project's `size` take a name or a `PageSize`.
 
 | Kind | Names |
 |---|---|

@@ -12,7 +12,6 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
-from .._document.sizes import SIZES
 from .._internal._presets import KINDS
 from ..theme import Theme
 from ..video import Scene
@@ -59,7 +58,7 @@ def project_scope(root: Path) -> Iterator[None]:
     """
     root = root.resolve()
     shadowed = {name: sys.modules.pop(name) for name in _local_names(root) if name in sys.modules}
-    presets, sizes = {kind: registry.state() for kind, registry in KINDS.items()}, set(SIZES)
+    presets = {kind: registry.state() for kind, registry in KINDS.items()}
     writes_bytecode = sys.dont_write_bytecode
     sys.dont_write_bytecode = True
     sys.path.insert(0, str(root))
@@ -75,8 +74,6 @@ def project_scope(root: Path) -> Iterator[None]:
         sys.modules.update(shadowed)
         for kind, state in presets.items():
             KINDS[kind].restore(state)
-        for name in set(SIZES) - sizes:
-            SIZES.remove(name)
 
 
 def entry_parts(config: ProjectConfig) -> tuple[str, str]:

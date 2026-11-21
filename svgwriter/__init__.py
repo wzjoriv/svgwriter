@@ -63,7 +63,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from . import export, ops, preset, project, theme, video
-from ._document.sizes import SIZES, page_size, register_size, unregister_size
+from ._document.sizes import PageSize, page_size, size
 from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
 from .aliases import filter as filter  # noqa: A004, E402
@@ -122,7 +122,7 @@ if TYPE_CHECKING:
     from .io import write_async
     from .io.parser import Strictness, SVGParseError, parse, parse_file
 
-__version__ = "1.3.0"
+__version__ = "2.0.0"
 __author__ = "Josue N Rivera"
 
 _LAZY = {
@@ -160,7 +160,6 @@ __all__ = [
     "IRI",
     "Point",
     "SVGParseError",
-    "SIZES",
     "Scene",
     "Align",
     "Color",
@@ -169,6 +168,7 @@ __all__ = [
     "Length",
     "Matrix",
     "MeetOrSlice",
+    "PageSize",
     "PaintKeyword",
     "PathBuilder",
     "PathData",
@@ -207,7 +207,6 @@ __all__ = [
     "latex",
     "parse",
     "register_font",
-    "register_size",
     "register_interpolator",
     "parse_color",
     "parse_file",
@@ -221,10 +220,10 @@ __all__ = [
     "pt",
     "px",
     "register_renderer",
+    "size",
     "text_to_path",
     "theme",
     "unregister_interpolator",
-    "unregister_size",
     "to_string",
     "video",
     "write",

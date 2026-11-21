@@ -8,10 +8,12 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar
 
-from .._document.sizes import page_size
+from .._document.sizes import PageSize, page_size
+from .._internal._scenes import adopt
 from .._internal._typing import AnyPath
-from ._constants import SCENE_FORMAT, SCENE_HEIGHT, SCENE_RENDERER, SCENE_WIDTH
-from .animation import DEFAULT_FPS, Renderer, iter_frames, render_animation
+from ._constants import BAKE_DOCUMENTS, SCENE_FORMAT, SCENE_HEIGHT, SCENE_RENDERER, SCENE_WIDTH
+from ._scene_motion import SceneMotion
+from .animation import DEFAULT_FPS, Renderer, animation_duration, iter_frames, render_animation
 from .frames import Frame
 
 if TYPE_CHECKING:
@@ -21,13 +23,14 @@ if TYPE_CHECKING:
 __all__ = ["Scene"]
 
 
-class Scene:
+class Scene(SceneMotion):
     """An animation: a drawing built once, then changed over time.
 
     Subclass it, set the class attributes and override :meth:`build` and,
-    for procedural motion, :meth:`update`. SMIL animations in the drawing
-    play as well. One file can hold several scenes; ``svgwriter animate``
-    renders each one.
+    for procedural motion, :meth:`update`; :meth:`attach` adds reusable
+    behaviors. SMIL animations in the drawing play as well. Saving as SVG or
+    PowerPoint bakes the Python motion into SMIL (:meth:`bake`). One file
+    can hold several scenes; ``svgwriter animate`` renders each one.
 
     Parameters
     ----------
@@ -41,9 +44,9 @@ class Scene:
     ----------
     width, height : float
         Size of the document handed to :meth:`build`. Default 640 by 360.
-    size : str or None
-        A named size instead (``"video-1080p"``, ``"instagram-story"``, ... see
-        :data:`~svgwriter.SIZES`); it sets `width` and `height`. Default None.
+    size : str, PageSize or None
+        A named size instead (``"video-1080p"``, ``svg.size.instagram_story``, ... see
+        :data:`~svgwriter.size`); it sets `width` and `height`. Default None.
     fps : float
         Frames per second. Default 30.0.
     duration : float or None
@@ -89,7 +92,7 @@ class Scene:
 
     width: ClassVar[float] = SCENE_WIDTH
     height: ClassVar[float] = SCENE_HEIGHT
-    size: ClassVar[str | None] = None
+    size: ClassVar[str | PageSize | None] = None
     fps: ClassVar[float] = DEFAULT_FPS
     duration: ClassVar[float | None] = None
     renderer: ClassVar[Renderer | str] = SCENE_RENDERER
@@ -102,13 +105,17 @@ class Scene:
             cls.size = None
 
     def __init__(self, document: Document | None = None, *, name: str | None = None) -> None:
-        if document is None:
-            from ..document import Document
+        from ..document import Document
 
-            document = Document(size=self.size) if self.size else Document(self.width, self.height)
-            self.build(document)
-        self._document = document
+        self._behaviors = []
         self.name = name or type(self).__name__
+        built = document is None
+        if document is None:
+            document = Document(size=self.size) if self.size else Document(self.width, self.height)
+        self._document = document
+        adopt(document.root, self)
+        if built:
+            self.build(document)
 
     def __repr__(self) -> str:
         return f"<{type(self).__name__} {self.name!r} {self.width:g}x{self.height:g} at {self.fps:g} fps>"
@@ -137,7 +144,7 @@ class Scene:
         """
 
     def update(self, seconds: float) -> None:
-        """Set the drawing to its state at *seconds*; called before every frame.
+        """Set the drawing to its state at *seconds*; called before every frame, after the behaviors.
 
         Parameters
         ----------
@@ -178,9 +185,6 @@ class Scene:
         640.0
         """
         return self._document
-
-    def _advance(self, document: Document, seconds: float) -> None:
-        self.update(seconds)
 
     def frames(self, *, fps: float | None = None, duration: float | None = None,
                renderer: Renderer | str | None = None) -> Iterator[Frame]:
@@ -249,21 +253,23 @@ class Scene:
         """
         from ..ops.render import render_png
 
-        self.update(seconds)
+        self._advance(self.document, seconds)
         return render_png(self.document.at(seconds), scale=scale, background=background)
 
     def save(self, path: AnyPath | None = None, *, fps: float | None = None, duration: float | None = None,
              renderer: Renderer | str | None = None, ffmpeg: str | None = None) -> Path:
-        """Render the scene and encode it with ffmpeg.
+        """Render the scene and encode it with ffmpeg, or bake it into an animated SVG or PowerPoint deck.
 
         Parameters
         ----------
         path : str or path-like, optional
             Output file; the extension picks the format (``.mp4``, ``.gif``,
             ``.webm``, ``.mov``, ``.apng``; ``.png`` writes numbered frames).
+            ``.svg``, ``.svgz``, ``.html`` and ``.pptx`` save :meth:`bake`'s
+            document instead, without ffmpeg.
             Defaults to ``<name>.mp4`` in the current folder.
         fps : float, optional
-            Overrides the class's ``fps``.
+            Overrides the class's ``fps`` (the sampling rate when baking).
         duration : float, optional
             Overrides the class's ``duration``.
         renderer : callable or str, optional
@@ -298,11 +304,20 @@ class Scene:
         svgwriter.video._ffmpeg.FFmpegNotFoundError: ...
         """
         target = Path(path) if path is not None else Path(f"{self.name}.{SCENE_FORMAT}")
+        if target.suffix.lower() in BAKE_DOCUMENTS:
+            self.bake(fps, duration=duration).save(target)
+            return target
         return render_animation(self.document, target, fps or self.fps, duration or self.duration,
                                 renderer or self.renderer, update=self._advance, ffmpeg=ffmpeg)
 
+    def _shown(self) -> Document:
+        """What a notebook displays: the baked document when Python moves the drawing, else the drawing."""
+        if self._moves() and (self.duration or animation_duration(self.document)):
+            return self.bake()
+        return self.document
+
     def _repr_svg_(self) -> str:
-        return self.document._repr_svg_()
+        return self._shown()._repr_svg_()
 
     def _repr_html_(self) -> str:
-        return self.document._repr_html_()
+        return self._shown()._repr_html_()

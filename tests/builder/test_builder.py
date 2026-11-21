@@ -95,7 +95,7 @@ class TestRegistry:
             svg.preset.unregister("shape", "star")
 
     def test_unknown_kind(self) -> None:
-        with pytest.raises(ValueError, match="kinds: animation, shape"):
+        with pytest.raises(ValueError, match="kinds: animation, behavior, shape"):
             svg.preset.list("pattern")
 
 
