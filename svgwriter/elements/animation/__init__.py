@@ -7,20 +7,15 @@ from __future__ import annotations
 
 from ._easing import Ease, EaseLike
 from ._elements import (
-    Accumulate,
-    Additive,
     Animate,
     AnimateColor,
     AnimateMotion,
     AnimateTransform,
     AnimationElement,
-    AnimationFill,
-    CalcMode,
     MPath,
-    Restart,
     Set,
-    TransformType,
 )
+from ._keywords import Accumulate, Additive, AnimationFill, CalcMode, Restart, TransformType
 
 __all__ = [
     "Accumulate",
