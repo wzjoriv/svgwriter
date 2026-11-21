@@ -8,6 +8,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import TypeAlias
 
+from .._internal._constants import PAGE_LENGTH_DIGITS
+from .._internal._page import page_unit
 from ..attributes.length import Length, Unit
 from ..elements.core import Element
 
@@ -43,16 +45,8 @@ def user_scale(element: Element) -> float:
     >>> user_scale(svg.group())
     1.0
     """
-    root = element.root()
-    width, box = root.attributes.get("width"), root.attributes.get("viewBox")
-    if root.tag != "svg" or width is None or box is None:
-        return 1.0
-    length = Length.parse(width)
-    if not length.absolute:
-        return 1.0
-    pixels = length.to_user_units()
-    return float(root.view_box.width) / pixels if pixels else 1.0
-
+    unit = page_unit(element)
+    return 1.0 if unit is None else unit[1] / Length(1, unit[0]).to_user_units()
 
 def resolve(value: LayoutLength, scale: float = 1.0) -> float:
     """*value* in user units: numbers as given, lengths with units through *scale*.
@@ -85,7 +79,7 @@ def resolve(value: LayoutLength, scale: float = 1.0) -> float:
         return length.value
     if length.unit is Unit.PERCENT:
         raise ValueError(f"layout lengths cannot be percentages, got {length}")
-    return length.to_user_units() * scale
+    return round(length.to_user_units() * scale, PAGE_LENGTH_DIGITS)
 
 
 def pair(value: LayoutLength | Sequence[LayoutLength], scale: float = 1.0) -> tuple[float, float]:

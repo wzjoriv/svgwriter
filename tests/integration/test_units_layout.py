@@ -24,11 +24,44 @@ def test_layout_lengths_count_in_page_millimetres():
     assert [box.bounds().y for box in boxes] == pytest.approx([10, 35, 60])
 
 
-def test_attribute_quantities_follow_svg_units_inside_the_page():
+def test_attribute_lengths_count_in_page_millimetres():
     doc = svg.Document(size="a4")
-    bar = doc.rect(svg.mm(5), 0, svg.cm(1), 2, stroke_width=svg.pt(1))
-    assert 'width="1cm"' in doc.to_string()
-    assert bar.bounds().width == pytest.approx(svg.cm(1).to_user_units())
+    bar = doc.rect(svg.mm(5), 0, svg.cm(1), "1in", stroke_width=svg.pt(1))
+    assert 'x="5" y="0" width="10" height="25.4"' in doc.to_string()
+    assert bar.bounds().width == 10 and bar.stroke_width == pytest.approx(25.4 / 72)
+
+
+def test_lengths_set_before_joining_the_page_convert_on_arrival():
+    doc = svg.Document(size="a4")
+    bar = svg.rect(0, 0, svg.mm(20), svg.mm(5), style=svg.Style(stroke_width=svg.mm(2)))
+    doc += svg.group(bar)
+    assert (bar.attributes["width"], bar.style["stroke-width"]) == (20, 2)
+
+
+def test_svg_text_keeps_svg_units():
+    doc = svg.Document.from_string('<svg xmlns="http://www.w3.org/2000/svg" width="210mm" height="297mm" '
+                                   'viewBox="0 0 210 297"><rect width="20mm" height="1"/></svg>')
+    assert 'width="20mm"' in doc.to_string()
+
+
+def test_path_tools_take_page_millimetres():
+    doc = svg.Document(size="a4")
+    square = doc.rect(0, 0, 40, 40)
+    assert square.round_corners(svg.mm(3)).bounds().width == pytest.approx(40)
+    assert square.between(0, svg.mm(10), by="length").total_length() == pytest.approx(10)
+
+
+def test_a_20mm_rect_is_20mm_in_the_pdf_and_the_browser_render():
+    doc = svg.Document(size="a4")
+    doc.rect(0, 0, svg.mm(20), svg.mm(20), fill="black")
+    content = re.search(rb"stream\r?\n(.*?)endstream", doc.export("pdf"), re.S).group(1)
+    scale = float(re.findall(rb"([\d.]+) 0 0 [\d.]+ [-\d.]+ [-\d.]+ cm", content)[-1])
+    width = float(re.search(rb"[\d.]+ [\d.]+ ([\d.]+) [\d.]+ re", content).group(1))
+    assert width * scale == pytest.approx(20 * PT_PER_MM, abs=0.01)
+    doc.rect(0, 30, svg.mm(210), 1, fill="black")
+    pixels = svg.ops.render_svg(doc.to_string(), 800, 1200)[..., 3] > 0.5
+    square, page = pixels[:20].any(axis=0).sum(), pixels[100:].any(axis=0).sum()
+    assert square / page == pytest.approx(20 / 210, abs=0.005)
 
 
 def test_pdf_page_is_exactly_a4_whatever_px_per_inch():

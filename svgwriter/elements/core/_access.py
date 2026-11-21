@@ -12,7 +12,8 @@ from ..._internal._constants import INKSCAPE_LABEL
 from ..._internal._ids import next_id
 from ..._internal._registry import chainable
 from ..._internal._typing import ElementId
-from ...attributes.names import PRESENTATION_ATTRIBUTES, UNSUPPORTED_ATTRIBUTES, svg_name
+from ...attributes.length import Length, Unit
+from ...attributes.names import LENGTH_ATTRIBUTES, PRESENTATION_ATTRIBUTES, UNSUPPORTED_ATTRIBUTES, svg_name
 from ...attributes.quantity import check_dimension
 from ...attributes.reference import IRI, FuncIRI
 from ...attributes.style import Style
@@ -252,6 +253,7 @@ class AttributeAccess:
         if key == "font" and _is_typeface(value):
             key = "font-family"
         check_dimension(key, value)
+        value = self._page_value(key, value)
         if key in COLOR_ATTRIBUTES and isinstance(value, str):
             if not (key == "fill" and self.category is Category.ANIMATION):
                 _check_paint(key, value)
@@ -270,6 +272,22 @@ class AttributeAccess:
         self._store(key, value)
         if getattr(value, "element", None) is not None:
             self._define_references(self)
+
+    def _page_value(self, key: str, value: AttrValue) -> AttrValue:
+        """A length attribute given in Python, in user units of the page this element is on."""
+        from ..._internal._page import page_length, page_unit
+
+        if key not in LENGTH_ATTRIBUTES:
+            return value
+        if isinstance(value, str):
+            try:
+                parsed = Length.parse(value)
+            except (TypeError, ValueError):
+                return value
+            value = parsed if parsed.absolute and parsed.unit is not Unit.NONE else value
+        if isinstance(value, Length) and self.parent is not None:
+            return page_length(value, page_unit(self))
+        return value
 
     def _inline_style(self) -> Style | None:
         """The inline ``style`` declarations, or None when there is no ``style`` attribute."""

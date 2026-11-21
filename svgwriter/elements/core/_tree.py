@@ -63,6 +63,9 @@ class TreeEditing:
             if child.parent is not None:
                 child.parent.remove(child)
             child.parent = self
+            from ..._internal._page import adopt_page_lengths, page_unit
+
+            adopt_page_lengths(child, page_unit(self))
         else:
             raise TypeError(f"cannot append {type(child).__name__}")
         self.children.append(child)
