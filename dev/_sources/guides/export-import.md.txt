@@ -79,10 +79,30 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 | transforms | yes | yes | yes | applied | applied | applied | applied | picture | applied | applied |
 | markers | yes | shapes | shapes | shapes | shapes | shapes | shapes | picture | shapes | outlines |
 | LaTeX formulas | outlines | pixels | outlines | outlines | outlines | equations | equations | picture | outlines | outlines |
-| SMIL animation | yes | one frame | one frame | one frame | one frame | one frame | one frame | one frame | one frame | one frame |
+| SMIL animation | yes | one frame | one frame | one frame | one frame | slide effects, both ways | one frame | one frame | one frame | one frame |
 | links | yes | no | yes | no | no | on shapes | no | no | yes | no |
 
 "one frame" is the drawing at t = 0, or at `time=`; `render_animation` writes animated GIF and video.
+
+PowerPoint keeps SMIL as slide effects that start with the slide, each at its own `begin` (no clicks
+needed), and reading a deck turns them back into `element.animate` presets:
+
+| SMIL (preset) | PowerPoint effect |
+| --- | --- |
+| opacity 0 to 1, 1 to 0 (`fade_in`, `fade_out`) | Fade entrance, Fade exit |
+| `set visibility` (`show`, `hide`) | Appear, Disappear |
+| translate or `animateMotion` (`move_by`, `move_to`, `slide_in`, `follow`, `bounce`, `shake`) | custom motion path |
+| rotate (`rotate`, `spin`) | Spin |
+| scale (`scale`, `grow`, `shrink`, `pulse`) | Grow/Shrink |
+| fill or stroke colour (`tween("fill", ...)`, two-colour `color_cycle`) | colour change of the fill or the line |
+
+`begin`, `dur`, `repeat`, `freeze` and there-and-back values (`pulse`, `color_cycle`) carry over; an
+ease becomes PowerPoint's accelerate and decelerate fractions, so curves are approximated. Shapes with
+an entrance effect are drawn in their visible state, since PowerPoint hides them until the effect.
+PowerPoint spins and scales about the shape's centre, so a named or custom pivot (`about=`, `anchor`)
+other than the centre is not kept, and motion paths are followed without turning. Anything else
+(`morph`, `draw`, `create`, `write`, `wipe`, `typewriter`, `skew`, `blink`, sync-based `begin`) is
+dropped with one warning that lists it.
 PowerPoint and Word place pictures by their bounding box, so a rotated or skewed image comes out upright, and
 group opacity is multiplied into each shape's own transparency. A radial gradient becomes a
 PowerPoint path gradient centred on the gradient's centre, which matches circles and differs on
@@ -197,8 +217,9 @@ mathtext; `engine="tex"`, `"ziamath"` or `"mathtext"` picks one.
 
 - `.pptx` out: one slide per drawing (a list gives a deck), each outline an editable PowerPoint shape
   (curves, solid or gradient fill, outline with dashes, caps and joins, transparency, hyperlink), text
-  as editable text boxes and images as pictures. In: shapes, pictures and text boxes of a slide
-  (`svg.Document.open("deck.pptx", slide=2)`) as native SVG elements, with the same paints and links.
+  as editable text boxes, images as pictures and SMIL as slide effects. In: shapes, pictures, text
+  boxes and effects of a slide (`svg.Document.open("deck.pptx", slide=2)`) as native SVG elements and
+  presets, with the same paints and links.
 - `.docx` out: the drawing as native Word shapes floating in one paragraph as tall as the drawing,
   with the same outlines, paints, text boxes and pictures as the PowerPoint export. In: paragraphs,
   headings (`Title`, `Heading 1`-`6`), bulleted and numbered lists and line breaks laid out top to

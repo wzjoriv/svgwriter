@@ -1928,6 +1928,23 @@ applied first) and also accepts single operations and matrices.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.pathdata.BBox.point_names">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">point_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/pathdata/data.html#BBox.point_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.pathdata.BBox.point_names" title="Link to this definition">¶</a></dt>
+<dd><p>The names <a class="reference internal" href="#svgwriter.pathdata.BBox.point" title="svgwriter.pathdata.BBox.point"><code class="xref py py-meth docutils literal notranslate"><span class="pre">point()</span></code></a> accepts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>tuple of str</em> – Centre, corners, edge middles and edge names.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.pathdata</span><span class="w"> </span><span class="kn">import</span> <span class="n">BBox</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">BBox</span><span class="o">.</span><span class="n">point_names</span><span class="p">()[:</span><span class="mi">3</span><span class="p">]</span>
+<span class="go">('center', 'top_left', 'top_center')</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.pathdata.BBox.point">
 <span class="sig-name descname"><span class="pre">point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.transform.Point" title="svgwriter.transform.matrix.Point"><span class="pre">Point</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/pathdata/data.html#BBox.point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.pathdata.BBox.point" title="Link to this definition">¶</a></dt>
 <dd><p>A named point of the box.</p>
@@ -3939,6 +3956,7 @@ node has both coordinates.</p>
 <li><a class="reference internal" href="#svgwriter.pathdata.BBox.bottom_left"><code class="docutils literal notranslate"><span class="pre">BBox.bottom_left</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.pathdata.BBox.bottom_center"><code class="docutils literal notranslate"><span class="pre">BBox.bottom_center</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.pathdata.BBox.bottom_right"><code class="docutils literal notranslate"><span class="pre">BBox.bottom_right</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.pathdata.BBox.point_names"><code class="docutils literal notranslate"><span class="pre">BBox.point_names()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.pathdata.BBox.point"><code class="docutils literal notranslate"><span class="pre">BBox.point()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.pathdata.BBox.union"><code class="docutils literal notranslate"><span class="pre">BBox.union()</span></code></a></li>
 </ul>

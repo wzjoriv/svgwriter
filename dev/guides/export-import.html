@@ -729,7 +729,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>one frame</p></td>
 <td><p>one frame</p></td>
 <td><p>one frame</p></td>
-<td><p>one frame</p></td>
+<td><p>slide effects, both ways</p></td>
 <td><p>one frame</p></td>
 <td><p>one frame</p></td>
 <td><p>one frame</p></td>
@@ -750,7 +750,45 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 </tbody>
 </table>
 </div>
-<p>“one frame” is the drawing at t = 0, or at <code class="docutils literal notranslate"><span class="pre">time=</span></code>; <code class="docutils literal notranslate"><span class="pre">render_animation</span></code> writes animated GIF and video.
+<p>“one frame” is the drawing at t = 0, or at <code class="docutils literal notranslate"><span class="pre">time=</span></code>; <code class="docutils literal notranslate"><span class="pre">render_animation</span></code> writes animated GIF and video.</p>
+<p>PowerPoint keeps SMIL as slide effects that start with the slide, each at its own <code class="docutils literal notranslate"><span class="pre">begin</span></code> (no clicks
+needed), and reading a deck turns them back into <code class="docutils literal notranslate"><span class="pre">element.animate</span></code> presets:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>SMIL (preset)</p></th>
+<th class="head"><p>PowerPoint effect</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>opacity 0 to 1, 1 to 0 (<code class="docutils literal notranslate"><span class="pre">fade_in</span></code>, <code class="docutils literal notranslate"><span class="pre">fade_out</span></code>)</p></td>
+<td><p>Fade entrance, Fade exit</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">visibility</span></code> (<code class="docutils literal notranslate"><span class="pre">show</span></code>, <code class="docutils literal notranslate"><span class="pre">hide</span></code>)</p></td>
+<td><p>Appear, Disappear</p></td>
+</tr>
+<tr class="row-even"><td><p>translate or <code class="docutils literal notranslate"><span class="pre">animateMotion</span></code> (<code class="docutils literal notranslate"><span class="pre">move_by</span></code>, <code class="docutils literal notranslate"><span class="pre">move_to</span></code>, <code class="docutils literal notranslate"><span class="pre">slide_in</span></code>, <code class="docutils literal notranslate"><span class="pre">follow</span></code>, <code class="docutils literal notranslate"><span class="pre">bounce</span></code>, <code class="docutils literal notranslate"><span class="pre">shake</span></code>)</p></td>
+<td><p>custom motion path</p></td>
+</tr>
+<tr class="row-odd"><td><p>rotate (<code class="docutils literal notranslate"><span class="pre">rotate</span></code>, <code class="docutils literal notranslate"><span class="pre">spin</span></code>)</p></td>
+<td><p>Spin</p></td>
+</tr>
+<tr class="row-even"><td><p>scale (<code class="docutils literal notranslate"><span class="pre">scale</span></code>, <code class="docutils literal notranslate"><span class="pre">grow</span></code>, <code class="docutils literal notranslate"><span class="pre">shrink</span></code>, <code class="docutils literal notranslate"><span class="pre">pulse</span></code>)</p></td>
+<td><p>Grow/Shrink</p></td>
+</tr>
+<tr class="row-odd"><td><p>fill or stroke colour (<code class="docutils literal notranslate"><span class="pre">tween(&quot;fill&quot;,</span> <span class="pre">...)</span></code>, two-colour <code class="docutils literal notranslate"><span class="pre">color_cycle</span></code>)</p></td>
+<td><p>colour change of the fill or the line</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">begin</span></code>, <code class="docutils literal notranslate"><span class="pre">dur</span></code>, <code class="docutils literal notranslate"><span class="pre">repeat</span></code>, <code class="docutils literal notranslate"><span class="pre">freeze</span></code> and there-and-back values (<code class="docutils literal notranslate"><span class="pre">pulse</span></code>, <code class="docutils literal notranslate"><span class="pre">color_cycle</span></code>) carry over; an
+ease becomes PowerPoint’s accelerate and decelerate fractions, so curves are approximated. Shapes with
+an entrance effect are drawn in their visible state, since PowerPoint hides them until the effect.
+PowerPoint spins and scales about the shape’s centre, so a named or custom pivot (<code class="docutils literal notranslate"><span class="pre">about=</span></code>, <code class="docutils literal notranslate"><span class="pre">anchor</span></code>)
+other than the centre is not kept, and motion paths are followed without turning. Anything else
+(<code class="docutils literal notranslate"><span class="pre">morph</span></code>, <code class="docutils literal notranslate"><span class="pre">draw</span></code>, <code class="docutils literal notranslate"><span class="pre">create</span></code>, <code class="docutils literal notranslate"><span class="pre">write</span></code>, <code class="docutils literal notranslate"><span class="pre">wipe</span></code>, <code class="docutils literal notranslate"><span class="pre">typewriter</span></code>, <code class="docutils literal notranslate"><span class="pre">skew</span></code>, <code class="docutils literal notranslate"><span class="pre">blink</span></code>, sync-based <code class="docutils literal notranslate"><span class="pre">begin</span></code>) is
+dropped with one warning that lists it.
 PowerPoint and Word place pictures by their bounding box, so a rotated or skewed image comes out upright, and
 group opacity is multiplied into each shape’s own transparency. A radial gradient becomes a
 PowerPoint path gradient centred on the gradient’s centre, which matches circles and differs on
@@ -885,8 +923,9 @@ mathtext; <code class="docutils literal notranslate"><span class="pre">engine=&q
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">.pptx</span></code> out: one slide per drawing (a list gives a deck), each outline an editable PowerPoint shape
 (curves, solid or gradient fill, outline with dashes, caps and joins, transparency, hyperlink), text
-as editable text boxes and images as pictures. In: shapes, pictures and text boxes of a slide
-(<code class="docutils literal notranslate"><span class="pre">svg.Document.open(&quot;deck.pptx&quot;,</span> <span class="pre">slide=2)</span></code>) as native SVG elements, with the same paints and links.</p></li>
+as editable text boxes, images as pictures and SMIL as slide effects. In: shapes, pictures, text
+boxes and effects of a slide (<code class="docutils literal notranslate"><span class="pre">svg.Document.open(&quot;deck.pptx&quot;,</span> <span class="pre">slide=2)</span></code>) as native SVG elements and
+presets, with the same paints and links.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.docx</span></code> out: the drawing as native Word shapes floating in one paragraph as tall as the drawing,
 with the same outlines, paints, text boxes and pictures as the PowerPoint export. In: paragraphs,
 headings (<code class="docutils literal notranslate"><span class="pre">Title</span></code>, <code class="docutils literal notranslate"><span class="pre">Heading</span> <span class="pre">1</span></code>-<code class="docutils literal notranslate"><span class="pre">6</span></code>), bulleted and numbered lists and line breaks laid out top to

@@ -297,9 +297,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">._moves</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransformMethods</span><span class="p">,</span> <span class="n">_as_matrix</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._placement</span><span class="w"> </span><span class="kn">import</span> <span class="n">Placement</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"PointLike"</span><span class="p">,</span> <span class="s2">"Transformable"</span><span class="p">,</span> <span class="s2">"children_bbox"</span><span class="p">,</span> <span class="s2">"offset"</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Pivot"</span><span class="p">,</span> <span class="s2">"PointLike"</span><span class="p">,</span> <span class="s2">"Transformable"</span><span class="p">,</span> <span class="s2">"children_bbox"</span><span class="p">,</span> <span class="s2">"offset"</span><span class="p">]</span>
 
 <span class="n">PointLike</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">Point</span>
+<span class="n">Pivot</span> <span class="o">=</span> <span class="n">PointLike</span> <span class="o">|</span> <span class="nb">str</span>
 <span class="n">E</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">"E"</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">"Transformable"</span><span class="p">)</span>
 
 
@@ -406,14 +407,14 @@
 
     <span class="n">transform_attribute</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"transform"</span>
     <span class="n">__array_ufunc__</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">_anchor</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">_anchor</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Child</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">TransformLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">transform</span><span class="p">:</span> <span class="n">TransformLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">anchor</span><span class="p">:</span> <span class="n">PointLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">anchor</span><span class="p">:</span> <span class="n">Pivot</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
