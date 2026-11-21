@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import replace
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Final
 
 import tomlkit
@@ -18,7 +19,7 @@ from ._errors import ThemeError
 from ._resolve import resolve_value
 from ._roles import DERIVED_PALETTE, STANDARD_ROLES
 from ._toml_read import parse_document, read_value
-from .fonts import Fonts
+from .fonts import Fonts, family_data
 
 if TYPE_CHECKING:
     from .theme import Theme
@@ -62,6 +63,12 @@ class _Table:
     def __init__(self, table: Any | None, make: Callable[[], Any]) -> None:
         self._table = table
         self._make = make
+
+    def get(self, key: str) -> object:
+        """The plain value the file holds for *key*, or None."""
+        if self._table is None or key not in self._table:
+            return None
+        return self._table[key].unwrap()
 
     @property
     def exists(self) -> bool:
@@ -128,12 +135,22 @@ def _write_palette(theme: Theme, base: Theme | None, palette: _Table) -> None:
 def _write_fonts(theme: Theme, base: Theme | None, fonts: _Table) -> None:
     base_fonts = base.fonts if base is not None else Fonts()
     for key in ("family", "monospace"):
-        fonts.put(key, getattr(theme.fonts, key), getattr(theme.fonts, key), getattr(base_fonts, key))
+        value = family_data(getattr(theme.fonts, key))
+        if not _same_files(fonts, key, value):
+            fonts.put(key, value, value, family_data(getattr(base_fonts, key)))
     for key in FONT_TABLES:
         table, base_table = getattr(theme.fonts, key), getattr(base_fonts, key)
         entries = fonts.child(key)
         for name, value in table.items():
             entries.put(name, value, value, base_table.get(name, _MISSING))
+
+
+def _same_files(fonts: _Table, key: str, value: object) -> bool:
+    """Whether the file already lists the same font files (as written, often relative) for *key*."""
+    current = fonts.get(key)
+    if not isinstance(value, list) or not isinstance(current, list):
+        return False
+    return [Path(str(item)).name for item in current] == [Path(item).name for item in value]
 
 
 def _role_properties(theme: Theme, source: object) -> Style:

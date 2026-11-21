@@ -104,6 +104,7 @@ from .elements import *  # noqa: F403
 from .elements import __all__ as _elements_all
 from .io.writer import SerializeOptions, to_string, write
 from .ops import (
+    Typeface,
     distribute,
     interpolate,
     register_font,
@@ -181,6 +182,7 @@ __all__ = [
     "THEMES",
     "Theme",
     "Transform",
+    "Typeface",
     "Unit",
     "ViewBox",
     "__author__",

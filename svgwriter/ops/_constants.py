@@ -4,6 +4,7 @@ Constants for ``svgwriter.ops``: defaults, tables and patterns.
 
 from __future__ import annotations
 
+import re
 from typing import Final
 
 import skia
@@ -23,6 +24,7 @@ __all__ = [
     "CONIC_SUBDIVISION",
     "CURVE4",
     "DEFAULT_FAMILY",
+    "FAMILY_IDENTIFIER",
     "DEFAULT_FONT_SIZE",
     "DEFAULT_QUALITY",
     "DEFAULT_STROKE_WIDTH",
@@ -210,3 +212,4 @@ FORMATS: Final = {"png": skia.kPNG, "jpeg": skia.kJPEG, "jpg": skia.kJPEG, "webp
 
 DEFAULT_FAMILY: Final = "sans-serif"
 GLYPH_CACHE: Final = 8192
+FAMILY_IDENTIFIER: Final = re.compile(r"[A-Za-z_][\w-]*(?: [A-Za-z_][\w-]*)*")

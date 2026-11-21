@@ -7,11 +7,30 @@ from __future__ import annotations
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from types import MappingProxyType
+from typing import TYPE_CHECKING, Union
 
 from ._constants import FONT_FAMILY, FONT_SIZES, FONT_WEIGHTS, MONOSPACE_FAMILY
 from ._errors import ThemeError
 
-__all__ = ["Fonts"]
+if TYPE_CHECKING:
+    from ..ops.typeface import Typeface
+
+__all__ = ["Family", "Fonts"]
+
+Family = Union[str, "Typeface"]
+"""A CSS ``font-family`` list or a :class:`~svgwriter.Typeface`."""
+
+
+def family_data(value: Family) -> str | list[str]:
+    """A family as theme files write it: the name, or the font files of a typeface loaded from files."""
+    from ..ops.typeface import Typeface
+
+    if not isinstance(value, Typeface):
+        return value
+    sources = [face.source for face in value.faces]
+    if value.installed or None in sources:
+        return value.name
+    return [str(source) for source in sources]
 
 
 @dataclass(frozen=True)
@@ -20,10 +39,12 @@ class Fonts:
 
     Parameters
     ----------
-    family : str, optional
-        CSS ``font-family`` of ordinary text. Defaults to a sans-serif stack.
-    monospace : str, optional
-        CSS ``font-family`` of code. Defaults to a monospace stack.
+    family : str or Typeface, optional
+        CSS ``font-family`` of ordinary text, or a :class:`~svgwriter.Typeface`
+        (registered for rendering, embeddable with ``Document.embed_fonts``).
+        Defaults to a sans-serif stack.
+    monospace : str or Typeface, optional
+        CSS ``font-family`` of code, or a typeface. Defaults to a monospace stack.
     sizes : mapping of str to float, optional
         Named font sizes such as ``"text"`` and ``"title"``. Defaults to text 14, title 24,
         subtitle 18 and caption 11.
@@ -44,8 +65,8 @@ class Fonts:
     700
     """
 
-    family: str = FONT_FAMILY
-    monospace: str = MONOSPACE_FAMILY
+    family: Family = FONT_FAMILY
+    monospace: Family = MONOSPACE_FAMILY
     sizes: Mapping[str, float] = field(default_factory=lambda: dict(FONT_SIZES))
     weights: Mapping[str, int] = field(default_factory=lambda: dict(FONT_WEIGHTS))
 
@@ -53,13 +74,13 @@ class Fonts:
         object.__setattr__(self, "sizes", MappingProxyType(dict(self.sizes)))
         object.__setattr__(self, "weights", MappingProxyType(dict(self.weights)))
 
-    def replace(self, *, family: str | None = None, monospace: str | None = None,
+    def replace(self, *, family: Family | None = None, monospace: Family | None = None,
                 sizes: Mapping[str, float] | None = None, weights: Mapping[str, int] | None = None) -> Fonts:
         """A copy with some values replaced; ``sizes`` and ``weights`` merge by name.
 
         Parameters
         ----------
-        family, monospace : str, optional
+        family, monospace : str or Typeface, optional
             New families. Defaults to None, which keeps the current ones.
         sizes, weights : mapping, optional
             Entries to replace or add. Defaults to None.
@@ -117,7 +138,8 @@ class Fonts:
         Returns
         -------
         dict
-            ``family``, ``monospace``, ``sizes`` and ``weights``.
+            ``family``, ``monospace``, ``sizes`` and ``weights``; a typeface loaded
+            from files is written as the list of its files.
 
         Examples
         --------
@@ -125,5 +147,5 @@ class Fonts:
         >>> sorted(Fonts().to_dict())
         ['family', 'monospace', 'sizes', 'weights']
         """
-        return {"family": self.family, "monospace": self.monospace,
+        return {"family": family_data(self.family), "monospace": family_data(self.monospace),
                 "sizes": dict(self.sizes), "weights": dict(self.weights)}
