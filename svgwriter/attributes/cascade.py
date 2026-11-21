@@ -4,6 +4,9 @@ CSS style sheets and computed values: parsing, selector matching and inheritance
 
 from __future__ import annotations
 
+from collections.abc import Iterator
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
@@ -14,7 +17,9 @@ from .names import PRESENTATION_ATTRIBUTES
 if TYPE_CHECKING:
     from ..elements.core import Element
 
-__all__ = ["INHERITED", "Rule", "computed", "parse_css", "resolve_styles", "rules_of"]
+__all__ = ["INHERITED", "Rule", "computed", "frozen_rules", "parse_css", "resolve_styles", "rules_of"]
+
+_FROZEN: ContextVar[dict[int, list[Rule]] | None] = ContextVar("svgwriter_frozen_rules", default=None)
 
 INHERITED: Final = frozenset({
     "clip-rule", "color", "color-interpolation", "color-interpolation-filters", "color-profile", "color-rendering",
@@ -142,6 +147,35 @@ def matches(element: Element, selector: str) -> bool:
     return bool(parts) and matches_from(element, parts, len(parts) - 1)
 
 
+@contextmanager
+def frozen_rules() -> Iterator[None]:
+    """Collect each tree's style rules once for the block, for many lookups while no ``<style>`` changes.
+
+    Joins an enclosing block, so nesting is free.
+
+    Yields
+    ------
+    None
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.attributes.cascade import frozen_rules, rules_of
+    >>> doc = svg.parse('<svg xmlns="http://www.w3.org/2000/svg"><style>.a{fill:red}</style></svg>')
+    >>> with frozen_rules():
+    ...     rules_of(doc) is rules_of(doc)
+    True
+    """
+    if _FROZEN.get() is not None:
+        yield
+        return
+    token = _FROZEN.set({})
+    try:
+        yield
+    finally:
+        _FROZEN.reset(token)
+
+
 def rules_of(root: Element) -> list[Rule]:
     """Collect the rules of every ``<style>`` element under an element.
 
@@ -167,10 +201,15 @@ def rules_of(root: Element) -> list[Rule]:
     >>> [rule.selector for rule in rules_of(doc)]
     ['.a']
     """
+    cache = _FROZEN.get()
+    if cache is not None and id(root) in cache:
+        return cache[id(root)]
     rules: list[Rule] = []
     for style in root.iter("style"):
         css = "".join(c for c in style.children if isinstance(c, str))
         rules.extend(parse_css(css, start=len(rules)))
+    if cache is not None:
+        cache[id(root)] = rules
     return rules
 
 
