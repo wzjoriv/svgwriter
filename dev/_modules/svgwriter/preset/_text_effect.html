@@ -212,6 +212,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../start/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../start/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos.html">Demos</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul>
@@ -326,6 +327,15 @@
     <span class="k">return</span> <span class="n">isolate</span><span class="p">()</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_keep_over_roles</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Move the paint an effect set into the inline style when *text* has classes, such as theme roles.</span>
+
+<span class="sd">    Class rules in CSS win over presentation attributes, so a role's fill would otherwise hide the effect's.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">classes</span><span class="p">:</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">to_css</span><span class="p">()</span>
+
+
 <span class="nd">@overload</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">text_effect</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Styler</span><span class="p">[</span><span class="n">P</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Effect</span><span class="p">[</span><span class="n">P</span><span class="p">]:</span> <span class="o">...</span>
 
@@ -395,6 +405,7 @@
         <span class="k">def</span><span class="w"> </span><span class="nf">effect</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Target</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Text</span><span class="p">:</span>
             <span class="n">text</span> <span class="o">=</span> <span class="n">_text_of</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
             <span class="n">func</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">_keep_over_roles</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">text</span>
 
         <span class="n">TEXT_EFFECTS</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">effect</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>

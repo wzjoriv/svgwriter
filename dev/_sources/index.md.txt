@@ -22,6 +22,7 @@ doc.save("badge.png", scale=3)
 
 start/installation
 start/quickstart
+demos
 ```
 
 ```{toctree}

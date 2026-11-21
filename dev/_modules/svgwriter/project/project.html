@@ -212,6 +212,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../start/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../start/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos.html">Demos</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul>
@@ -299,6 +300,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">nullcontext</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
@@ -456,8 +458,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">formats</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Draw the project and write its outputs into the output folder.</span>
 
-<span class="sd">        Fonts in the font folder are registered first, the theme applies to every page and scene, and the</span>
-<span class="sd">        project's code runs in the project folder, so relative paths such as ``assets/data/values.csv`` work.</span>
+<span class="sd">        Fonts in the font folder are registered first, the theme applies to every page and scene (also to</span>
+<span class="sd">        scenes the entry module makes when it is imported), and the project's code runs in the project folder, so relative paths such as ``assets/data/values.csv`` work.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -504,8 +506,9 @@
             <span class="k">with</span> <span class="n">working_directory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">write_outputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">items_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span> <span class="n">theme</span><span class="p">,</span> <span class="n">chosen</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">project_scope</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">),</span> <span class="n">working_directory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">write_outputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">items_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">load_object</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)),</span> <span class="n">theme</span><span class="p">,</span> <span class="n">chosen</span><span class="p">,</span>
-                                 <span class="n">values</span><span class="p">)</span></div>
+            <span class="k">with</span> <span class="n">theme</span> <span class="k">if</span> <span class="n">theme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">nullcontext</span><span class="p">():</span>
+                <span class="n">entry</span> <span class="o">=</span> <span class="n">load_object</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">write_outputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">items_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">entry</span><span class="p">),</span> <span class="n">theme</span><span class="p">,</span> <span class="n">chosen</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Project.controls">
