@@ -54,6 +54,7 @@ VALUES = (0.4, 0.9, 0.6, 0.75)
 BAR = 40
 GAP = 25
 BASELINE = 160
+TALLEST = 140
 
 
 class Bars(_Card):
@@ -66,8 +67,8 @@ class Bars(_Card):
 
     def update(self, seconds: float) -> None:
         progress = min(seconds / self.duration, 1.0)
-        for bar, value in zip(self.bars, VALUES):
-            height = value * 140 * progress
+        for bar, value in zip(self.bars, VALUES, strict=True):
+            height = value * TALLEST * progress
             bar.y = BASELINE - height
             bar.height = height
 
