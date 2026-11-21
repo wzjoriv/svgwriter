@@ -2,12 +2,12 @@
 
 A project is a folder for one design: the code that draws it, its theme, its assets and the files it
 builds. `svgwriter new` starts one from a preset, `svgwriter build` writes every output, and
-`svgwriter preview` shows them in a browser page that rebuilds and reloads whenever you save.
+`svgwriter preview` shows them on a live browser page that redraws as you move its controls or save a file.
 
 ```console
 svgwriter new my-poster --preset poster
 cd my-poster
-svgwriter preview      # browser page that refreshes on save (Ctrl+C stops)
+svgwriter preview      # live page: redraws on every control change and save (Ctrl+C stops)
 svgwriter build        # writes every output listed in svgwriter.toml into output/
 svgwriter presets      # the presets, one line each
 ```
@@ -89,6 +89,8 @@ gif = { fps = 12, scale = 0.5 }
 | `outputs.formats` | `["svg", "png"]` | Any export format name, plus `gif`, `mp4`, `webm`, `mov` for animations |
 | `outputs.directory` | `"output"` | Where outputs go |
 | `outputs.<format>` | none | Exporter options for that format, such as `png = { scale = 2 }` |
+
+A `[preview]` table configures `svgwriter preview`; see [Live preview](#live-preview).
 
 An unknown key or a bad value stops the build with the file and the key in the message. Teams that
 already keep a `pyproject.toml` can put the same tables under `[tool.svgwriter]` instead:
@@ -176,11 +178,49 @@ so they follow `theme.toml`.
 
 ## Live preview
 
-`svgwriter preview` serves `http://127.0.0.1:8000/` (`--port` to change it, `--no-open` to skip the
-browser). It polls the project's files twice a second; when one changes it rebuilds, and the page
-reloads itself. A failed build shows its traceback under the last outputs that worked until the next
-save fixes it. It uses only the standard library.
+`svgwriter preview` serves `http://127.0.0.1:8000/` and opens it in a browser (`--port` and
+`--open/--no-open` override the manifest). The page shows the drawing large at the top, with a tab per
+page or scene when there are several, and the controls the entry declares with `@svg.widgets.controls` in
+a panel: on the right in wide windows, below the drawing in narrow or portrait ones. It uses only the
+standard library and plain HTML, follows the system's light or dark mode, and every control works from the
+keyboard.
 
-An entry that declares controls with `@svg.widgets.controls` gets a form above the outputs: sliders,
-buttons, colour pickers and switches as plain HTML inputs. Each change rebuilds the project with the new
-values and swaps the outputs in place; `svgwriter build` uses the starting values. See {doc}`widgets`.
+Moving a control redraws only what the page shows, in memory: each page as SVG, each scene as animated SVG
+with its behaviors baked into SMIL. No output file is written, so a slider tick costs one drawing, not a
+build. The page waits for a short pause in the input (`debounce_ms`) and keeps only the newest request:
+values that arrive while a drawing runs are merged, the latest win, and a stale answer is dropped. The
+status line under the drawing gives the time each drawing took; an error shows its traceback there too,
+under the last drawing that worked, until a change fixes it.
+
+The project's code is imported once and reused for every control change. Saving a file imports it again,
+so edits always show, and the page updates without a reload. Once the project has been quiet for a second
+after a save, the output files are written as `svgwriter build` writes them; the **Build outputs** button
+in the header writes them on demand, with the current control values. `svgwriter build` uses the
+controls' starting values. See {doc}`widgets`.
+
+```toml
+[preview]
+pages = ["cover", "cover-Intro"]   # which pages and scenes to show, in this order
+background = "checker"            # "checker", "light", "dark" or a colour such as "#20242c"
+layout = "auto"                   # controls on the "right", at the "bottom", or "auto"
+fit = "contain"                   # scale the drawing to its area, or "actual" size
+port = 8000
+open = true                       # open a browser on start
+debounce_ms = 80                  # pause after a control moves before drawing
+build_on_save = true              # write the outputs after a save
+formats_on_build = ["svg"]        # what saves and Build outputs write
+```
+
+| Key | Default | Meaning |
+|---|---|---|
+| `preview.pages` | all | Names of the pages and scenes to show, in order: the output name without its extension (`card`, `card-2`, `card-Sweep`) |
+| `preview.background` | `"checker"` | Behind the drawing: `"checker"`, `"light"`, `"dark"` or a colour |
+| `preview.layout` | `"auto"` | Controls on the `"right"`, at the `"bottom"`, or `"auto"`: right when the window is wide, bottom otherwise |
+| `preview.fit` | `"contain"` | `"contain"` scales the drawing to its area, keeping its proportions; `"actual"` shows it at its own size |
+| `preview.port` | `8000` | The local port |
+| `preview.open` | `true` | Open the page in a browser on start |
+| `preview.debounce_ms` | `80` | Milliseconds the page waits after a control moves |
+| `preview.build_on_save` | `true` | Write the output files after a save |
+| `preview.formats_on_build` | `outputs.formats` | The formats that saves and the Build outputs button write |
+
+In a `pyproject.toml` the table is `[tool.svgwriter.preview]`.

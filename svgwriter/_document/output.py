@@ -222,7 +222,7 @@ class Output:
     def export(self, format: str, **options: Any) -> bytes | str:
         """This document in *format* (``"png"``, ``"pdf"``, ``"tikz"``, ... or an extension).
 
-        See :func:`svgwriter.formats.export.exporters` for the registered formats.
+        ``svg.formats.writers()`` lists the formats.
 
         Parameters
         ----------

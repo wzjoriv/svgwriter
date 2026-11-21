@@ -14,7 +14,7 @@ from ...motion.video import Scene
 from ..widgets import Control, controls_of
 from ._build import write_outputs
 from ._config import ProjectConfig, check_formats, read_config
-from ._constants import DEFAULT_PORT, NOTEBOOK_SUFFIX
+from ._constants import NOTEBOOK_SUFFIX
 from ._entry import (
     entry_parts,
     items_of,
@@ -271,30 +271,34 @@ class Project:
         """
         return Preview(self.build(formats), self.name)
 
-    def serve(self, port: int = DEFAULT_PORT, *, open_browser: bool = True) -> None:
+    def serve(self, port: int | None = None, *, open_browser: bool | None = None) -> None:
         """Serve a live preview at ``http://127.0.0.1:<port>`` until interrupted (Ctrl+C).
 
-        The project is rebuilt whenever one of its files changes, and the page reloads itself; a failed build
-        shows its traceback under the last outputs that worked. Controls the entry declares
-        (:func:`svgwriter.tools.widgets.controls`) appear as a form above the outputs, which rebuild as they change.
+        The page shows every page and scene as SVG, drawn in memory. Controls the entry declares
+        (:func:`svgwriter.tools.widgets.controls`) appear in a panel beside or below the drawing, and the drawing
+        follows them as they move. Saving a file imports the project again and redraws; once the project has been
+        quiet for a moment the output files are written too, as the page's Build outputs button does. A failed
+        drawing shows its traceback under the last drawing that worked. The manifest's ``[preview]`` table
+        (:class:`~svgwriter.tools.project.PreviewConfig`) sets the layout, backdrop, port and more.
 
         Parameters
         ----------
         port : int, optional
-            The local port. Defaults to 8000.
+            The local port. Defaults to None, ``[preview] port`` (8000).
         open_browser : bool, optional
-            Open the page in the default browser. Defaults to True.
+            Open the page in the default browser. Defaults to None, ``[preview] open`` (True).
 
         See Also
         --------
-        preview : The same outputs inline in a notebook.
+        preview : The output files inline in a notebook.
 
         Examples
         --------
         >>> import svgwriter as svg
         >>> svg.Project.load().serve()  # doctest: +SKIP
         """
-        from ._server import LiveServer
+        from ._server import LiveProject, LiveServer
 
-        LiveServer(self.root, lambda values: Project.load(self.root).build(values=values), self.name, port,
-                   controls=lambda: Project.load(self.root).controls()).serve(open_browser)
+        settings = self.config.preview
+        server = LiveServer(LiveProject(self.root), settings.port if port is None else port)
+        server.serve(settings.open if open_browser is None else open_browser)

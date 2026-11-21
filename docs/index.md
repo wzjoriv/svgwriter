@@ -39,6 +39,7 @@ guides/effects
 guides/presets
 guides/documents
 guides/rendering
+guides/batches
 guides/export-import
 guides/animation
 guides/logos

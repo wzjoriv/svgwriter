@@ -10,7 +10,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from contextlib import nullcontext
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 from ..._document.sizes import PageSize
 from ..._internal._codecs._gif import encode_gif_animation
@@ -25,7 +25,14 @@ from ._config import ProjectConfig
 from ._constants import ANIMATED_FORMATS, BAKED_FORMATS, DEFAULT_GIF_FPS, KEEPS_ANIMATION, VIDEO_FORMATS
 from ._entry import Item
 
-__all__ = ["control_arguments", "write_outputs"]
+__all__ = ["View", "control_arguments", "page_views", "scene_views", "write_outputs"]
+
+
+class View(NamedTuple):
+    """One drawing the live preview shows: a page or a scene, named as its SVG output, and its SVG text."""
+
+    name: str
+    svg: str
 
 
 def _extension(format: str) -> str:
@@ -72,6 +79,14 @@ def _gif(scene: Scene, options: Mapping[str, Any]) -> bytes | None:
     return encode_gif_animation(frames, fps, loop=int(options.get("loop", 0)))
 
 
+def _baked(scene: Scene, options: Mapping[str, Any]) -> Document | None:
+    """The scene with its behaviors baked into SMIL; None when nothing moves."""
+    duration = options.get("duration")
+    if duration or scene.duration or animation_duration(scene.document):
+        return scene.bake(options.get("fps"), duration=duration)
+    return None
+
+
 def _write_scene(scene: Scene, target: Path, format: str, options: Mapping[str, Any]) -> Path:
     if format in VIDEO_FORMATS:
         return scene.save(target, fps=options.get("fps"), duration=options.get("duration"),
@@ -81,9 +96,8 @@ def _write_scene(scene: Scene, target: Path, format: str, options: Mapping[str, 
         if data is not None:
             target.write_bytes(data)
             return target
-    duration = options.get("duration")
-    if format in BAKED_FORMATS and (duration or scene.duration or animation_duration(scene.document)):
-        baked = scene.bake(options.get("fps"), duration=duration)
+    baked = _baked(scene, options) if format in BAKED_FORMATS else None
+    if baked is not None:
         return save(baked, target, format, **{k: v for k, v in options.items() if k not in ("fps", "duration")})
     scene._advance(scene.document, 0.0)
     return save(scene.document, target, format, **options)
@@ -106,6 +120,47 @@ def _write_pages(pages: Sequence[Document], targets: list[Path], format: str, op
     return [save(page, target, format, **options) for page, target in zip(pages, targets, strict=True)]
 
 
+def _scenes(items: Sequence[Item]) -> list[Scene]:
+    return [item if isinstance(item, Scene) else item() for item in items
+            if isinstance(item, Scene) or isinstance(item, type) and issubclass(item, Scene)]
+
+
+def _pages(config: ProjectConfig, items: Sequence[Item], values: Mapping[str, Any]) -> list[Document]:
+    return [_page(config, item, values) for item in items if not isinstance(item, (Scene, type))]
+
+
+def _scene_stem(config: ProjectConfig, scene: Scene, scenes: int, pages: int) -> str:
+    return config.name if scenes == 1 and not pages else f"{config.name}-{scene.name}"
+
+
+def page_views(config: ProjectConfig, items: Sequence[Item], theme: Theme | None,
+               values: Mapping[str, Any]) -> list[View]:
+    """Draw the page functions of *items* with *values* and return their SVG, without writing a file.
+
+    Pages are named as :func:`write_outputs` names their SVG files; animations stay in the SVG.
+    """
+    with theme if theme is not None else nullcontext():
+        pages = _pages(config, items, values)
+        return [View(name, page.to_string()) for name, page in zip(_numbered(config.name, len(pages), ""), pages,
+                                                                     strict=True)]
+
+
+def scene_views(config: ProjectConfig, items: Sequence[Item], theme: Theme | None) -> list[View]:
+    """Each scene of *items* as animated SVG (its behaviors baked into SMIL), without writing a file."""
+    options = config.options.get("svg", {})
+    pages = sum(1 for item in items if not isinstance(item, (Scene, type)))
+    with theme if theme is not None else nullcontext():
+        scenes = _scenes(items)
+        views = []
+        for scene in scenes:
+            baked = _baked(scene, options)
+            if baked is None:
+                scene._advance(scene.document, 0.0)
+            views.append(View(_scene_stem(config, scene, len(scenes), pages),
+                              (baked if baked is not None else scene.document).to_string()))
+    return views
+
+
 def write_outputs(config: ProjectConfig, items: Sequence[Item], theme: Theme | None,
                   formats: Sequence[str], values: Mapping[str, Any] | None = None) -> list[Path]:
     """Draw every page and scene with the project's size and theme, then write each format; return the files.
@@ -115,9 +170,8 @@ def write_outputs(config: ProjectConfig, items: Sequence[Item], theme: Theme | N
     folder = config.root / config.output
     folder.mkdir(parents=True, exist_ok=True)
     with theme if theme is not None else nullcontext():
-        scenes = [item if isinstance(item, Scene) else item() for item in items
-                  if isinstance(item, Scene) or isinstance(item, type) and issubclass(item, Scene)]
-        pages = [_page(config, item, values or {}) for item in items if not isinstance(item, (Scene, type))]
+        scenes = _scenes(items)
+        pages = _pages(config, items, values or {})
     written: list[Path] = []
     for format in formats:
         options = config.options.get(format, {})
@@ -128,6 +182,6 @@ def write_outputs(config: ProjectConfig, items: Sequence[Item], theme: Theme | N
             names = _numbered(config.name, 1 if one_file else len(pages), extension)
             written += _write_pages(pages, [folder / name for name in names], format, options)
         for scene in scenes:
-            stem = config.name if len(scenes) == 1 and not pages else f"{config.name}-{scene.name}"
+            stem = _scene_stem(config, scene, len(scenes), len(pages))
             written.append(_write_scene(scene, folder / f"{stem}{extension}", format, options))
     return written

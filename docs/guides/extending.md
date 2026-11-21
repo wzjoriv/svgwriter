@@ -21,7 +21,7 @@ A taken name raises `ValueError` naming the function or module that owns it, bui
 | `svg.preset.pattern`, `filter`, `gradient`, `marker` | functions returning that definition, joining `svg.patterns` and the others | `svgwriter.pattern`, ... |
 | `svg.preset.effect` | `f(element, *, option=default)` styling any element (`el.effect(name)`) | `svgwriter.effect` |
 | `svg.themes` | `svg.Theme` instances | `svgwriter.theme` |
-| `svg.FORMATS` | `svg.Format` subclasses (one instance each) | `svgwriter.format` |
+| `svg.formats` | `svg.Format` subclasses (one instance each) | `svgwriter.format` |
 | `svg.renderers` | `f(document, seconds)` returning PNG bytes or an RGBA array | `svgwriter.renderer` |
 | `svg.project.presets` | `svg.project.Preset` starter folders (`svgwriter new --preset`) | `svgwriter.project_preset` |
 | `svgwriter` command line | click commands | `svgwriter.command` |

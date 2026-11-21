@@ -244,10 +244,10 @@ class TestPreview:
         import time
         import urllib.request
 
-        from svgwriter.tools.project._server import LiveServer
+        from svgwriter.tools.project._server import LiveProject, LiveServer
 
         project = svg.Project.new(tmp_path / "live")
-        server = LiveServer(project.root, lambda values: svg.Project.load(project.root).build(["svg"]), "live", 0)
+        server = LiveServer(LiveProject(project.root), 0)
         thread = threading.Thread(target=server.serve, kwargs={"open_browser": False}, daemon=True)
         thread.start()
         try:
@@ -255,7 +255,7 @@ class TestPreview:
             while server.version == 0 and time.monotonic() < deadline:
                 time.sleep(0.05)
             page = urllib.request.urlopen(server.url).read().decode("utf-8")
-            assert "live.svg" in page and "fetch('/version')" in page
+            assert '"name": "live"' in page and "fetch('/version')" in page
             assert urllib.request.urlopen(server.url + "version").read() == b"1"
             main = project.root / "main.py"
             main.write_text(main.read_text(encoding="utf-8").replace("build(doc", "build(doc ", 1), encoding="utf-8")
@@ -263,9 +263,11 @@ class TestPreview:
                 time.sleep(0.05)
             assert server.version >= 2
             (project.root / "main.py").write_text("raise RuntimeError('broken on purpose')\n", encoding="utf-8")
-            while "broken on purpose" not in server.page and time.monotonic() < deadline:
+            while "broken on purpose" not in server.error and time.monotonic() < deadline:
                 time.sleep(0.05)
-            assert "build failed" in server.page
+            assert "broken on purpose" in server.page() and server.views[0].name == "live"
+            server.submit({})
+            assert "broken on purpose" in server.error and server.views[0].name == "live"
         finally:
             server.close()
             thread.join(5)

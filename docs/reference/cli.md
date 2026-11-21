@@ -8,7 +8,7 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 |---|---|
 | `new [NAME] [--preset P] [--notebook/--script] [--theme T] [--size S]` | Create a project folder from a preset; in a terminal, what the flags leave out is asked with arrow keys (`pysvgwriter[cli]`) or a numbered preset menu; elsewhere the preset's defaults apply |
 | `build [--format F ...] [--path DIR]` | Write the project's outputs (all of `[outputs] formats`, or the ones given) |
-| `preview [--port N] [--no-open] [--path DIR]` | Serve the outputs on a local page that rebuilds and reloads on save |
+| `preview [--port N] [--open/--no-open] [--path DIR]` | Serve a live page that redraws as controls move and files change |
 | `presets` | List project presets |
 | `sizes` | List named canvas sizes (`svg.preset.size.list()`) |
 | `shapes`, `elements` | List shape presets and element classes |

@@ -6,6 +6,7 @@ Design projects: the manifest, building, previews and presets. See the {doc}`../
 .. autoclass:: svgwriter.Project
    :members:
 .. autoclass:: svgwriter.tools.project.ProjectConfig
+.. autoclass:: svgwriter.tools.project.PreviewConfig
 .. autoclass:: svgwriter.tools.project.Preview
    :members: paths
 .. autoclass:: svgwriter.tools.project.Preset

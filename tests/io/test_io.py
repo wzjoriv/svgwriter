@@ -8,10 +8,10 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
+from svgwriter.errors import SVGParseError
 from svgwriter.formats.io import (
     SerializeOptions,
     Strictness,
-    SVGParseError,
     Writer,
     aiter_chunks,
     iter_chunks,
