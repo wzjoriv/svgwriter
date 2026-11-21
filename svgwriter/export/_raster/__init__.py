@@ -53,7 +53,14 @@ def _profiled(frames: list[Any], icc: IccLike | None, encoder: Callable[[list[An
     target = output_profile(icc)
     if target.space != "RGB":
         raise ValueError(f"PNG and JPEG take RGB profiles, not {target.space}; export CMYK as tiff or pdf")
-    return embed_profile(encoder([to_profile(frame, target) for frame in frames]), target.data)
+    return embed_profile(encoder(frames if target.srgb else [to_profile(frame, target) for frame in frames]), target.data)
+
+
+def _is_srgb(icc: IccLike) -> bool:
+    """Whether *icc* names sRGB, so the rendered pixels are written as they are."""
+    from ..._internal._icc_output import output_profile
+
+    return output_profile(icc).srgb
 
 
 def _raster(format: str) -> Callable[..., bytes]:
@@ -80,11 +87,14 @@ def _raster(format: str) -> Callable[..., bytes]:
                              processes=processes)
             if frames:
                 return _profiled(frames, icc, lambda done: animated[format](done, fps, loop=loop))
-        if icc is not None:
+        if icc is not None and not _is_srgb(icc):
             from ...ops.render import encode
 
             still = [to_uint8(document.rasterize(scale=scale, size=size, padding=padding, background=background))]
             return _profiled(still, icc, lambda done: encode(done[0], format, quality=quality))
+        if icc is not None:
+            image = document.rasterize(scale=scale, size=size, padding=padding, background=background, snapshot=True)
+            return _profiled([image], icc, lambda done: encode_image(done[0], format, quality=quality))
         native = format not in ENCODERS
         image = document.rasterize(scale=scale, size=size, padding=padding, background=background, snapshot=native)
         if not native:
