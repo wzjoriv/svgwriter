@@ -227,6 +227,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -247,6 +248,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/builder.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli.html">Command line</a></li>
 </ul>
 </li>
 </ul>
@@ -342,6 +345,19 @@ transform <code class="docutils literal notranslate"><span class="pre">t</span><
 </pre></div>
 </div>
 </section>
+<section id="start-a-project">
+<h2>Start a project<a class="headerlink" href="#start-a-project" title="Link to this heading">¶</a></h2>
+<p>For a design with its own theme, components and outputs, start a project folder from a preset and let
+the command line build it:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">svgwriter new my-poster --preset poster      # or: blank, slides, animation (--notebook for main.ipynb)</span>
+<span class="go">cd my-poster</span>
+<span class="go">svgwriter preview                            # a browser page that reloads on every save</span>
+<span class="go">svgwriter build                              # PDF, SVG and PNG into output/</span>
+</pre></div>
+</div>
+<p>Named sizes work in any document: <code class="docutils literal notranslate"><span class="pre">svg.Document(size=&quot;a4&quot;)</span></code> draws in millimetres. See
+<a class="reference internal" href="../guides/projects.html"><span class="doc">Projects</span></a>.</p>
+</section>
 <section id="more-examples">
 <h2>More examples<a class="headerlink" href="#more-examples" title="Link to this heading">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">examples/</span></code> folder of the repository is a numbered learning path of runnable scripts (<code class="docutils literal notranslate"><span class="pre">examples/01_basic_shapes.py</span></code> to <code class="docutils literal notranslate"><span class="pre">examples/15_powerpoint.py</span></code>), each with a Jupyter notebook beside it (<code class="docutils literal notranslate"><span class="pre">examples/&lt;name&gt;.ipynb</span></code>) that shows the results as pictures.</p>
@@ -409,6 +425,7 @@ transform <code class="docutils literal notranslate"><span class="pre">t</span><
 <li><a class="reference internal" href="#combine-and-measure">Combine and measure</a></li>
 <li><a class="reference internal" href="#render-and-export">Render and export</a></li>
 <li><a class="reference internal" href="#read-it-back">Read it back</a></li>
+<li><a class="reference internal" href="#start-a-project">Start a project</a></li>
 <li><a class="reference internal" href="#more-examples">More examples</a></li>
 </ul>
 </li>

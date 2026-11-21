@@ -226,6 +226,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -246,6 +247,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/builder.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli.html">Command line</a></li>
 </ul>
 </li>
 </ul>
@@ -289,6 +292,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Concatenate</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._roles</span><span class="w"> </span><span class="kn">import</span> <span class="n">with_role</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Opacity</span><span class="p">,</span> <span class="n">P</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..color.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..document</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span>
@@ -314,7 +318,6 @@
     <span class="n">FILTER_MARGIN</span><span class="p">,</span>
     <span class="n">MARKER_SIZE</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._roles</span><span class="w"> </span><span class="kn">import</span> <span class="n">with_role</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"arrow_marker"</span><span class="p">,</span> <span class="s2">"drawing"</span><span class="p">,</span> <span class="s2">"drop_shadow"</span><span class="p">,</span> <span class="s2">"glow"</span><span class="p">]</span>
 

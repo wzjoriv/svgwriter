@@ -226,6 +226,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -246,6 +247,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/builder.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli.html">Command line</a></li>
 </ul>
 </li>
 </ul>
@@ -289,6 +292,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">ClassVar</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._document.sizes</span><span class="w"> </span><span class="kn">import</span> <span class="n">page_size</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyPath</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">SCENE_FORMAT</span><span class="p">,</span> <span class="n">SCENE_HEIGHT</span><span class="p">,</span> <span class="n">SCENE_RENDERER</span><span class="p">,</span> <span class="n">SCENE_WIDTH</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.animation</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_FPS</span><span class="p">,</span> <span class="n">Renderer</span><span class="p">,</span> <span class="n">iter_frames</span><span class="p">,</span> <span class="n">render_animation</span>
@@ -323,6 +327,9 @@
 <span class="sd">    ----------</span>
 <span class="sd">    width, height : float</span>
 <span class="sd">        Size of the document handed to :meth:`build`. Default 640 by 360.</span>
+<span class="sd">    size : str or None</span>
+<span class="sd">        A named size instead (``"video-1080p"``, ``"instagram-story"``, ... see</span>
+<span class="sd">        :data:`~svgwriter.SIZES`); it sets `width` and `height`. Default None.</span>
 <span class="sd">    fps : float</span>
 <span class="sd">        Frames per second. Default 30.0.</span>
 <span class="sd">    duration : float or None</span>
@@ -360,19 +367,31 @@
 <span class="sd">    &gt;&gt;&gt; scene.render(0.5)[:4]</span>
 <span class="sd">    b'\\x89PNG'</span>
 <span class="sd">    &gt;&gt;&gt; scene.save("grow.gif")  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; class Story(svg.Scene):</span>
+<span class="sd">    ...     size = "instagram-story"</span>
+<span class="sd">    &gt;&gt;&gt; Story.width, Story.height</span>
+<span class="sd">    (1080.0, 1920.0)</span>
 <span class="sd">    """</span>
 
     <span class="n">width</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">SCENE_WIDTH</span>
     <span class="n">height</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">SCENE_HEIGHT</span>
+    <span class="n">size</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">fps</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_FPS</span>
     <span class="n">duration</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">renderer</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Renderer</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">SCENE_RENDERER</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init_subclass__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"size"</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="p">(</span><span class="n">side</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">page_size</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>  <span class="c1"># type: ignore[arg-type]</span>
+        <span class="k">elif</span> <span class="s2">"width"</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span> <span class="ow">or</span> <span class="s2">"height"</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">document</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">..document</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span>
 
-            <span class="n">document</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+            <span class="n">document</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="k">else</span> <span class="n">Document</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_document</span> <span class="o">=</span> <span class="n">document</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>

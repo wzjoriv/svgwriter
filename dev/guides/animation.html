@@ -227,6 +227,7 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -247,6 +248,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/builder.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli.html">Command line</a></li>
 </ul>
 </li>
 </ul>
@@ -377,6 +380,41 @@ A shape without a stroke is drawn with its fill color, every contour of a shape 
 <span class="n">badge</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">uncreate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="presets-of-your-own">
+<h2>Presets of your own<a class="headerlink" href="#presets-of-your-own" title="Link to this heading">¶</a></h2>
+<p>A reusable animation is a typed function decorated with <code class="docutils literal notranslate"><span class="pre">&#64;svg.preset.animation</span></code>. Its first positional
+parameter is the element’s <code class="docutils literal notranslate"><span class="pre">Motion</span></code> (what <code class="docutils literal notranslate"><span class="pre">el.animate</span></code> returns), every option is keyword-only with a
+default, and it returns the motion so calls chain:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">animation</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bob</span><span class="p">(</span><span class="n">motion</span><span class="p">:</span> <span class="n">svg</span><span class="o">.</span><span class="n">Motion</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="n">dur</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">begin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">ease</span><span class="p">:</span> <span class="n">svg</span><span class="o">.</span><span class="n">EaseLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">svg</span><span class="o">.</span><span class="n">Motion</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Rise by *height* and come back down."""</span>
+    <span class="n">half</span> <span class="o">=</span> <span class="n">dur</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">motion</span><span class="o">.</span><span class="n">move_by</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">height</span><span class="p">,</span> <span class="n">half</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="n">begin</span><span class="p">,</span> <span class="n">ease</span><span class="o">=</span><span class="n">ease</span><span class="p">)</span><span class="o">.</span><span class="n">move_by</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">half</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="n">begin</span> <span class="o">+</span> <span class="n">half</span><span class="p">,</span>
+                                                                            <span class="n">ease</span><span class="o">=</span><span class="n">ease</span><span class="p">)</span>
+
+
+<span class="n">dot</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">)</span>
+<span class="n">dot</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">bob</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">fade_out</span><span class="p">(</span><span class="n">begin</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>   <span class="c1"># typed: editors complete and check the options</span>
+<span class="n">dot</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">bob</span><span class="p">(</span><span class="n">begin</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>                              <span class="c1"># by name, like the built-in presets</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Group</span><span class="p">()</span>
+<span class="n">row</span> <span class="o">+=</span> <span class="p">[</span><span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">20</span> <span class="o">+</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">index</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>
+<span class="n">row</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">stagger</span><span class="p">(</span><span class="s2">"bob"</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="s2">"animation"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"animation"</span><span class="p">,</span> <span class="s2">"bob"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The shape is checked when the function is decorated, so a mistake fails at once with a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>
+showing the expected signature. Returning None is accepted too; <code class="docutils literal notranslate"><span class="pre">apply</span></code> returns the motion either way.
+<code class="docutils literal notranslate"><span class="pre">&#64;svg.preset.animation(name=&quot;hop&quot;)</span></code> registers under another name. A taken name raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> naming
+the function that owns it, built-in presets included; <code class="docutils literal notranslate"><span class="pre">replace=True</span></code> replaces one on purpose (a
+replacement can still call the original as <code class="docutils literal notranslate"><span class="pre">svg.Motion.spin(motion,</span> <span class="pre">...)</span></code>), and unregistering the
+replacement brings the built-in back. <code class="docutils literal notranslate"><span class="pre">svg.preset.list(&quot;animation&quot;)</span></code> lists the built-in presets and
+yours, and an unknown name in <code class="docutils literal notranslate"><span class="pre">el.animate.&lt;name&gt;</span></code> raises <code class="docutils literal notranslate"><span class="pre">AttributeError</span></code> suggesting the closest ones.
+<code class="docutils literal notranslate"><span class="pre">Motion.apply</span></code> also runs functions that are not registered at all.</p>
+<p>In a <a class="reference internal" href="projects.html"><span class="std std-doc">project</span></a>, presets live in the <code class="docutils literal notranslate"><span class="pre">animations/</span></code> folder and are registered when it is
+imported.</p>
 </section>
 <section id="easing">
 <h2>Easing<a class="headerlink" href="#easing" title="Link to this heading">¶</a></h2>
@@ -640,6 +678,7 @@ numpy array. Mix footage with vector animation in <code class="docutils literal 
 <li><a class="reference internal" href="#">Animation</a><ul>
 <li><a class="reference internal" href="#smil-in-the-document">SMIL in the document</a></li>
 <li><a class="reference internal" href="#presets">Presets</a></li>
+<li><a class="reference internal" href="#presets-of-your-own">Presets of your own</a></li>
 <li><a class="reference internal" href="#easing">Easing</a></li>
 <li><a class="reference internal" href="#playing-smil">Playing SMIL</a></li>
 <li><a class="reference internal" href="#python-updates-and-smil-together">Python updates and SMIL together</a></li>

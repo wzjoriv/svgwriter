@@ -227,6 +227,7 @@
 <li class="toctree-l1"><a class="reference internal" href="animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -247,6 +248,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/builder.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli.html">Command line</a></li>
 </ul>
 </li>
 </ul>
@@ -861,6 +864,50 @@ and xcolor mixes, the common line options, shadings (<code class="docutils liter
 </pre></div>
 </div>
 </section>
+<section id="page-sizes">
+<h2>Page sizes<a class="headerlink" href="#page-sizes" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">size=</span></code> names a canvas instead of a width and height. Paper and card sizes keep their real units, so the
+<code class="docutils literal notranslate"><span class="pre">viewBox</span></code> counts in millimetres or inches and plain numbers inside are millimetres or inches; screen sizes
+are pixels. <code class="docutils literal notranslate"><span class="pre">dpi=</span></code> on raster exports then gives the real size in pixels:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">poster</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">"a4"</span><span class="p">)</span>                     <span class="c1"># 210 x 297 mm; coordinates are millimetres</span>
+<span class="n">poster</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">190</span><span class="p">,</span> <span class="mi">277</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"none"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">stroke_width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">poster</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"poster.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>                   <span class="c1"># 1241 x 1755 pixels</span>
+<span class="n">wide</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">"a4-landscape"</span><span class="p">)</span>             <span class="c1"># any name turns with -landscape or -portrait</span>
+<span class="n">slide</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">"slide-16:9"</span><span class="p">)</span>              <span class="c1"># 1280 x 720, PowerPoint's default slide size</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">register_size</span><span class="p">(</span><span class="s2">"poster-50x70"</span><span class="p">,</span> <span class="s2">"50cm"</span><span class="p">,</span> <span class="s2">"70cm"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">SIZES</span><span class="o">.</span><span class="n">names</span><span class="p">()[:</span><span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">side</span><span class="p">)</span> <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">svg</span><span class="o">.</span><span class="n">page_size</span><span class="p">(</span><span class="s2">"poster-50x70-landscape"</span><span class="p">)])</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">unregister_size</span><span class="p">(</span><span class="s2">"poster-50x70"</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Kind</p></th>
+<th class="head"><p>Names</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Paper (mm)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">a0</span></code> to <code class="docutils literal notranslate"><span class="pre">a6</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Paper (in)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">letter</span></code>, <code class="docutils literal notranslate"><span class="pre">legal</span></code>, <code class="docutils literal notranslate"><span class="pre">tabloid</span></code>, <code class="docutils literal notranslate"><span class="pre">business-card</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Slides and video (px)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">slide-16:9</span></code>, <code class="docutils literal notranslate"><span class="pre">slide-4:3</span></code>, <code class="docutils literal notranslate"><span class="pre">video-720p</span></code>, <code class="docutils literal notranslate"><span class="pre">video-1080p</span></code>, <code class="docutils literal notranslate"><span class="pre">youtube-thumbnail</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Social images (px)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">instagram-post</span></code>, <code class="docutils literal notranslate"><span class="pre">instagram-portrait</span></code>, <code class="docutils literal notranslate"><span class="pre">instagram-story</span></code>, <code class="docutils literal notranslate"><span class="pre">og-image</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Icons (px)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">favicon</span></code>, <code class="docutils literal notranslate"><span class="pre">apple-touch-icon</span></code>, <code class="docutils literal notranslate"><span class="pre">icon</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">sizes</span></code> lists them with their dimensions, <code class="docutils literal notranslate"><span class="pre">Scene</span></code> subclasses take the same names
+(<code class="docutils literal notranslate"><span class="pre">size</span> <span class="pre">=</span> <span class="pre">&quot;instagram-story&quot;</span></code>), and <a class="reference internal" href="projects.html"><span class="std std-doc">project files</span></a> use them for <code class="docutils literal notranslate"><span class="pre">size</span></code>.</p>
+</section>
 <section id="pages-and-slides">
 <h2>Pages and slides<a class="headerlink" href="#pages-and-slides" title="Link to this heading">¶</a></h2>
 <p>PDF and PowerPoint hold several drawings. Pass a list to <code class="docutils literal notranslate"><span class="pre">export</span></code> or <code class="docutils literal notranslate"><span class="pre">save</span></code> to write one page or
@@ -1019,6 +1066,7 @@ interaction is attached by the page, by element id:</p>
 <li><a class="reference internal" href="#">Export and import</a><ul>
 <li><a class="reference internal" href="#what-each-format-keeps">What each format keeps</a></li>
 <li><a class="reference internal" href="#text-stays-text">Text stays text</a></li>
+<li><a class="reference internal" href="#page-sizes">Page sizes</a></li>
 <li><a class="reference internal" href="#pages-and-slides">Pages and slides</a></li>
 <li><a class="reference internal" href="#your-own-formats">Your own formats</a></li>
 <li><a class="reference internal" href="#diagrams">Diagrams</a></li>

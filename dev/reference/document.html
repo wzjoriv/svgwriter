@@ -227,6 +227,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -247,6 +248,8 @@
 <li class="toctree-l2"><a class="reference internal" href="builder.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html">Command line</a></li>
 </ul>
 </li>
 </ul>
@@ -294,7 +297,7 @@
 <p>The document, its shortcuts and its export entry points.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="svgwriter.Document">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.structure.Svg" title="svgwriter.elements.structure._containers.Svg"><span class="pre">Svg</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="theme.html#svgwriter.theme.Theme" title="svgwriter.theme.theme.Theme"><span class="pre">Theme</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/document.html#Document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.Length"><span class="pre">Length</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.Length"><span class="pre">Length</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.structure.Svg" title="svgwriter.elements.structure.Svg"><span class="pre">Svg</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="theme.html#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><span class="pre">Theme</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/document.html#Document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Document" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Sizing</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Theming</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Output</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Access</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ElementFactory</span></code></p>
 <p>An SVG document under construction.</p>
 <p>Shortcut methods (<code class="docutils literal notranslate"><span class="pre">doc.circle(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">doc.linear_gradient(...)</span></code>)
@@ -303,14 +306,24 @@ Containers returned by shortcuts nest when used with <code class="docutils liter
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Canvas size; a matching <code class="docutils literal notranslate"><span class="pre">viewBox</span></code> is added unless one is given.
+<li><p><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> or </em><a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.Length"><em>Length</em></a><em>, </em><em>optional</em>) – Canvas size; a matching <code class="docutils literal notranslate"><span class="pre">viewBox</span></code> is added unless one is given.
 Defaults to None, which sizes the canvas from the content on output.</p></li>
-<li><p><strong>height</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Canvas size; a matching <code class="docutils literal notranslate"><span class="pre">viewBox</span></code> is added unless one is given.
+<li><p><strong>height</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> or </em><a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.Length"><em>Length</em></a><em>, </em><em>optional</em>) – Canvas size; a matching <code class="docutils literal notranslate"><span class="pre">viewBox</span></code> is added unless one is given.
 Defaults to None, which sizes the canvas from the content on output.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – A named size instead of <cite>width</cite> and <cite>height</cite>: <code class="docutils literal notranslate"><span class="pre">&quot;a4&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;letter&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;slide-16:9&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;instagram-post&quot;</span></code>, … (see <a class="reference internal" href="#svgwriter.SIZES" title="svgwriter.SIZES"><code class="xref py py-data docutils literal notranslate"><span class="pre">SIZES</span></code></a>), with
+<code class="docutils literal notranslate"><span class="pre">-landscape</span></code> or <code class="docutils literal notranslate"><span class="pre">-portrait</span></code> appended to turn it. Paper sizes are in millimetres or
+inches, so the <code class="docutils literal notranslate"><span class="pre">viewBox</span></code> counts in those units. Defaults to None.</p></li>
 <li><p><strong>root</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.structure.Svg" title="svgwriter.elements.structure.Svg"><em>Svg</em></a><em>, </em><em>optional</em>) – Use an existing root instead of creating one. Defaults to None.</p></li>
 <li><p><strong>theme</strong> (<a class="reference internal" href="theme.html#svgwriter.theme.Theme" title="svgwriter.theme.Theme"><em>Theme</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Styles elements marked with <code class="docutils literal notranslate"><span class="pre">as_role</span></code>. Defaults to None, which takes
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">Theme.current()</span></code> (<code class="docutils literal notranslate"><span class="pre">&quot;light&quot;</span></code> outside a <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">theme:</span></code> block).</p></li>
 <li><p><strong>**kwargs</strong> – Forwarded to <code class="xref py py-class docutils literal notranslate"><span class="pre">Svg</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If <cite>size</cite> is given together with <cite>width</cite> or <cite>height</cite>.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If <cite>size</cite> is not a registered name.</p></li>
 </ul>
 </dd>
 </dl>
@@ -318,6 +331,8 @@ Defaults to None, which sizes the canvas from the content on output.</p></li>
 <p class="admonition-title">See also</p>
 <dl class="simple">
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.elements.Svg</span></code></dt><dd><p>The root element wrapped by a document.</p>
+</dd>
+<dt><a class="reference internal" href="#svgwriter.register_size" title="svgwriter.register_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.register_size</span></code></a></dt><dd><p>Add a named size.</p>
 </dd>
 </dl>
 </div>
@@ -338,6 +353,9 @@ explicitly.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">+=</span> <span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">root</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tag</span>
 <span class="go">'rect'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">page</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">"a4"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">page</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"width"</span><span class="p">),</span> <span class="n">page</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"viewBox"</span><span class="p">)</span><span class="o">.</span><span class="n">width</span>
+<span class="go">(Length(value=210.0, unit=&lt;Unit.MM: 'mm'&gt;), 210.0)</span>
 </pre></div>
 </div>
 <dl class="py property">
@@ -1139,6 +1157,115 @@ extension of <cite>target</cite>, or SVG for streams.</p></li>
 
 </dd></dl>
 
+<section id="named-sizes">
+<h2>Named sizes<a class="headerlink" href="#named-sizes" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Document(size=&quot;a4&quot;)</span></code>, <code class="docutils literal notranslate"><span class="pre">Scene.size</span></code> and project files take a name from <code class="docutils literal notranslate"><span class="pre">svg.SIZES</span></code>; <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">sizes</span></code>
+lists them. Paper and card sizes are in millimetres or inches, so the <code class="docutils literal notranslate"><span class="pre">viewBox</span></code> counts in those units;
+screen sizes are pixels. Append <code class="docutils literal notranslate"><span class="pre">-landscape</span></code> or <code class="docutils literal notranslate"><span class="pre">-portrait</span></code> to any name to turn it.</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="svgwriter.SIZES">
+<span class="sig-name descname"><span class="pre">SIZES</span></span><a class="headerlink" href="#svgwriter.SIZES" title="Link to this definition">¶</a></dt>
+<dd><p>Ordered name -&gt; object mapping populated by a decorator.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.page_size">
+<span class="sig-name descname"><span class="pre">page_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.length.Length"><span class="pre">Length</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.length.Length"><span class="pre">Length</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/_document/sizes.html#page_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.page_size" title="Link to this definition">¶</a></dt>
+<dd><p>The width and height registered as <em>name</em>, turned for a <code class="docutils literal notranslate"><span class="pre">-landscape</span></code> or <code class="docutils literal notranslate"><span class="pre">-portrait</span></code> suffix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – A name from <a class="reference internal" href="#svgwriter.SIZES" title="svgwriter.SIZES"><code class="xref py py-data docutils literal notranslate"><span class="pre">SIZES</span></code></a> (<code class="docutils literal notranslate"><span class="pre">&quot;a4&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;letter&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;slide-16:9&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;instagram-story&quot;</span></code>,
+…), optionally followed by <code class="docutils literal notranslate"><span class="pre">-landscape</span></code> (long side across) or <code class="docutils literal notranslate"><span class="pre">-portrait</span></code> (long side down).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>tuple of Length</em> – <code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the name is unknown; the message suggests the closest names.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.register_size" title="svgwriter.register_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_size</span></code></a></dt><dd><p>Add a size.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">side</span><span class="p">)</span> <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">svg</span><span class="o">.</span><span class="n">page_size</span><span class="p">(</span><span class="s2">"a4-landscape"</span><span class="p">)]</span>
+<span class="go">['297mm', '210mm']</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">page_size</span><span class="p">(</span><span class="s2">"a44"</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">unknown size 'a44'; did you mean 'a4'? (svg.SIZES.names() lists every size)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.register_size">
+<span class="sig-name descname"><span class="pre">register_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.length.Length"><span class="pre">Length</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.length.Length"><span class="pre">Length</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/_document/sizes.html#register_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.register_size" title="Link to this definition">¶</a></dt>
+<dd><p>Add a named canvas size for <code class="docutils literal notranslate"><span class="pre">Document(size=name)</span></code>, <code class="docutils literal notranslate"><span class="pre">Scene.size</span></code> and project files.</p>
+<p>Sizes with a physical unit (<code class="docutils literal notranslate"><span class="pre">&quot;210mm&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.inch(11)</span></code>) make documents whose <code class="docutils literal notranslate"><span class="pre">viewBox</span></code> counts
+in that unit, so drawing coordinates are millimetres or inches; plain numbers are pixels. Every
+name also works with <code class="docutils literal notranslate"><span class="pre">-landscape</span></code> and <code class="docutils literal notranslate"><span class="pre">-portrait</span></code> appended.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name, such as <code class="docutils literal notranslate"><span class="pre">&quot;poster-50x70&quot;</span></code>.</p></li>
+<li><p><strong>width</strong> (<a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.Length"><em>Length</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The size: a <code class="xref py py-class docutils literal notranslate"><span class="pre">Length</span></code>, length text such as <code class="docutils literal notranslate"><span class="pre">&quot;50cm&quot;</span></code>, or pixels.</p></li>
+<li><p><strong>height</strong> (<a class="reference internal" href="attributes.html#svgwriter.attributes.Length" title="svgwriter.attributes.Length"><em>Length</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The size: a <code class="xref py py-class docutils literal notranslate"><span class="pre">Length</span></code>, length text such as <code class="docutils literal notranslate"><span class="pre">&quot;50cm&quot;</span></code>, or pixels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If <em>name</em> is taken, or the two lengths have different units.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.unregister_size" title="svgwriter.unregister_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unregister_size</span></code></a></dt><dd><p>Remove it again.</p>
+</dd>
+<dt><a class="reference internal" href="#svgwriter.page_size" title="svgwriter.page_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">page_size</span></code></a></dt><dd><p>Look a size up.</p>
+</dd>
+<dt><a class="reference internal" href="#svgwriter.SIZES" title="svgwriter.SIZES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SIZES</span></code></a></dt><dd><p>Every registered size.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">register_size</span><span class="p">(</span><span class="s2">"poster-50x70"</span><span class="p">,</span> <span class="s2">"50cm"</span><span class="p">,</span> <span class="s2">"70cm"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">"poster-50x70-landscape"</span><span class="p">)</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"viewBox"</span><span class="p">)</span><span class="o">.</span><span class="n">width</span>
+<span class="go">70.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">unregister_size</span><span class="p">(</span><span class="s2">"poster-50x70"</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.unregister_size">
+<span class="sig-name descname"><span class="pre">unregister_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/_document/sizes.html#unregister_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.unregister_size" title="Link to this definition">¶</a></dt>
+<dd><p>Remove a size added with <a class="reference internal" href="#svgwriter.register_size" title="svgwriter.register_size"><code class="xref py py-func docutils literal notranslate"><span class="pre">register_size()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The registered name.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#KeyError" title="(in Python v3.15)"><strong>KeyError</strong></a> – If no size has that name.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">register_size</span><span class="p">(</span><span class="s2">"square"</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">unregister_size</span><span class="p">(</span><span class="s2">"square"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">"square"</span> <span class="ow">in</span> <span class="n">svg</span><span class="o">.</span><span class="n">SIZES</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
 </section>
 
         </article>
@@ -1227,6 +1354,13 @@ extension of <cite>target</cite>, or SVG for streams.</p></li>
 <li><a class="reference internal" href="#svgwriter.Document.to_string"><code class="docutils literal notranslate"><span class="pre">Document.to_string()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.style"><code class="docutils literal notranslate"><span class="pre">Document.style()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.nest"><code class="docutils literal notranslate"><span class="pre">Document.nest()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#named-sizes">Named sizes</a><ul>
+<li><a class="reference internal" href="#svgwriter.SIZES"><code class="docutils literal notranslate"><span class="pre">SIZES</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.page_size"><code class="docutils literal notranslate"><span class="pre">page_size()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.register_size"><code class="docutils literal notranslate"><span class="pre">register_size()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.unregister_size"><code class="docutils literal notranslate"><span class="pre">unregister_size()</span></code></a></li>
 </ul>
 </li>
 </ul>

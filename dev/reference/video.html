@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="prev" title="Themes" href="theme.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Project" href="project.html"><link rel="prev" title="Themes" href="theme.html">
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
@@ -227,6 +227,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/logos.html">Logos and icons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -247,6 +248,8 @@
 <li class="toctree-l2"><a class="reference internal" href="builder.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="theme.html">Themes</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html">Command line</a></li>
 </ul>
 </li>
 </ul>
@@ -343,6 +346,8 @@ renders each one.</p>
 <dt class="field-even">Variables<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>height</strong> (<a class="reference internal" href="#svgwriter.video.Scene.width" title="svgwriter.video.Scene.width"><em>width</em></a><em>,</em>) – Size of the document handed to <a class="reference internal" href="#svgwriter.video.Scene.build" title="svgwriter.video.Scene.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build()</span></code></a>. Default 640 by 360.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>None</em>) – A named size instead (<code class="docutils literal notranslate"><span class="pre">&quot;video-1080p&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;instagram-story&quot;</span></code>, … see
+<a class="reference internal" href="document.html#svgwriter.SIZES" title="svgwriter.SIZES"><code class="xref py py-data docutils literal notranslate"><span class="pre">SIZES</span></code></a>); it sets <cite>width</cite> and <cite>height</cite>. Default None.</p></li>
 <li><p><strong>fps</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Frames per second. Default 30.0.</p></li>
 <li><p><strong>duration</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> or </em><em>None</em>) – Seconds to render. Default None, the end of the SMIL animations.</p></li>
 <li><p><strong>renderer</strong> (<em>callable</em><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – <code class="docutils literal notranslate"><span class="pre">renderer(document,</span> <span class="pre">seconds)</span></code>, a registered name or
@@ -380,6 +385,10 @@ in any order and a scene can be saved more than once.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)[:</span><span class="mi">4</span><span class="p">]</span>
 <span class="go">b'\x89PNG'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"grow.gif"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Story</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">size</span> <span class="o">=</span> <span class="s2">"instagram-story"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Story</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">Story</span><span class="o">.</span><span class="n">height</span>
+<span class="go">(1080.0, 1920.0)</span>
 </pre></div>
 </div>
 <dl class="py attribute">
@@ -390,6 +399,11 @@ in any order and a scene can be saved more than once.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="svgwriter.video.Scene.height">
 <span class="sig-name descname"><span class="pre">height</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">360.0</span></span><a class="headerlink" href="#svgwriter.video.Scene.height" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.video.Scene.size">
+<span class="sig-name descname"><span class="pre">size</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#svgwriter.video.Scene.size" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1151,7 +1165,15 @@ import path.</p>
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="project.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Project</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="theme.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
@@ -1197,6 +1219,7 @@ import path.</p>
 <li><a class="reference internal" href="#svgwriter.video.Scene"><code class="docutils literal notranslate"><span class="pre">Scene</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.video.Scene.width"><code class="docutils literal notranslate"><span class="pre">Scene.width</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.video.Scene.height"><code class="docutils literal notranslate"><span class="pre">Scene.height</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.video.Scene.size"><code class="docutils literal notranslate"><span class="pre">Scene.size</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.video.Scene.fps"><code class="docutils literal notranslate"><span class="pre">Scene.fps</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.video.Scene.duration"><code class="docutils literal notranslate"><span class="pre">Scene.duration</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.video.Scene.renderer"><code class="docutils literal notranslate"><span class="pre">Scene.renderer</span></code></a></li>
