@@ -117,6 +117,7 @@ __all__ = [
     "GZIP_MAGIC",
     "SVG_DATA_URI",
     "DATA_URI",
+    "VISIBILITY",
     "VIEWPORT_FALLBACK",
     "LUMA",
     "MAC_FALLBACK_FAMILIES",
@@ -278,6 +279,7 @@ LINK_CACHE: Final = 64
 VIEWPORT_FALLBACK: Final = 300.0
 SVG_DATA_URI: Final = "data:image/svg+xml"
 DATA_URI: Final = "data:"
+VISIBILITY: Final = "visibility"
 BASE64_SUFFIX: Final = ";base64"
 GZIP_MAGIC: Final = b"\x1f\x8b"
 VIEWPORT_AXES: Final = {"x": 0, "y": 1, "width": 0, "height": 1}

@@ -9,7 +9,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 from ._conditions import apply_conditions
-from ._constants import NONE
+from ._constants import CONTAINERS, NONE, VISIBILITY
 from ._instances import expand_uses
 from ._keywords import resolve_keywords
 from ._layers import ancestry, drawable_order, resolve_links
@@ -28,6 +28,7 @@ if TYPE_CHECKING:
 
 __all__ = [
     "ellipses_as_paths",
+    "leaf_visibility",
     "expand_image_patterns",
     "outlined",
     "page_box",
@@ -79,6 +80,17 @@ def unfiltered_masks(root: Element) -> None:
     """Drop ``filter`` from every ``<mask>``: a mask is not rendered itself, so no filter applies to it."""
     for mask in [e for e in root.iter() if e.tag == "mask"]:
         mask.attributes.pop("filter", None)
+
+
+def leaf_visibility(root: Element) -> None:
+    """Move ``visibility`` from containers onto their children, which may override it (skia hides them all)."""
+    for element in root.iter():
+        if element.tag not in CONTAINERS or VISIBILITY not in element.attributes:
+            continue
+        value = element.attributes.pop(VISIBILITY)
+        for child in element:
+            if not isinstance(child, str):
+                child.attributes.setdefault(VISIBILITY, value)
 
 
 def outlined(text: Text) -> Element:
@@ -137,6 +149,7 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     ellipses_as_paths(copy)
     unfilled_lines(copy)
     unfiltered_masks(copy)
+    leaf_visibility(copy)
     expand_image_patterns(copy)
     user_space_patterns(copy)
     expand_markers(copy)

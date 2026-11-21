@@ -16,3 +16,13 @@ def test_filter_on_a_mask_is_ignored() -> None:
     pixels = doc.rasterize(background="white")
     assert np.allclose(pixels[25, 25], (0, 1, 0, 1), atol=0.02)
     assert np.allclose(pixels[75, 75], (1, 1, 1, 1), atol=0.02)
+
+
+def test_visible_child_of_a_hidden_group_is_drawn() -> None:
+    doc = svg.Document.from_string(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><g visibility="hidden">'
+        '<rect width="50" height="100" fill="red"/><rect x="50" width="50" height="100" fill="lime" '
+        'visibility="visible"/></g></svg>')
+    pixels = doc.rasterize(background="white")
+    assert np.allclose(pixels[50, 25], (1, 1, 1, 1), atol=0.02)
+    assert np.allclose(pixels[50, 75], (0, 1, 0, 1), atol=0.02)

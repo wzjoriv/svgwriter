@@ -18,6 +18,7 @@ __all__ = [
     "FUNC_IRI_RE",
     "IMPORTANT",
     "LENGTH_RE",
+    "CSS_DIMENSION_RE",
     "MARKER_LONGHANDS",
     "PLAIN_ATTRIBUTES",
     "PREFIXES",
@@ -36,6 +37,7 @@ AT_BLOCK_RE: Final = re.compile(r"@[^{;]+(\{(?:[^{}]|\{[^{}]*\})*\}|;)")
 COMPOUND_RE: Final = re.compile(r"(\*|[A-Za-z][\w-]*)|#([\w-]+)|\.([\w-]+)|\[([\w:-]+)(?:([~|]?=)\"?([^\"\]]*)\"?)?\]|(:[\w-]+(?:\([^)]*\))?)")
 IMPORTANT: Final = "!important"
 
+CSS_DIMENSION_RE: Final = re.compile(r"^\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)([A-Za-z]+)\s*$")
 LENGTH_RE: Final = re.compile(
     r"^\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)\s*(px|pt|pc|mm|cm|in|em|ex|%)?\s*$"
 )

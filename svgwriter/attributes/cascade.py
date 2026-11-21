@@ -7,7 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
-from ._constants import AT_BLOCK_RE, COMMENT_RE, IMPORTANT, MARKER_LONGHANDS, RULE_RE
+from ._constants import AT_BLOCK_RE, COMMENT_RE, CSS_DIMENSION_RE, IMPORTANT, MARKER_LONGHANDS, RULE_RE
 from ._selectors import matches_from, specificity, split_selector
 from .names import PRESENTATION_ATTRIBUTES
 
@@ -322,7 +322,8 @@ def resolve_styles(root: Element) -> None:
     The tree is modified in place: matching rule declarations and inline
     ``style`` values are written as attributes and the ``style`` attribute is
     removed. Renderers that ignore CSS then see the same result. The CSS-only ``marker``
-    shorthand becomes ``marker-start``, ``marker-mid`` and ``marker-end``.
+    shorthand becomes ``marker-start``, ``marker-mid`` and ``marker-end``, and CSS units, which
+    are case-insensitive (``20PX``), are written in the lower case attributes require.
 
     Parameters
     ----------
@@ -350,4 +351,5 @@ def resolve_styles(root: Element) -> None:
         element.attributes.pop("style", None)
         for name, value in values.items():
             if name in PRESENTATION_ATTRIBUTES or name in ("transform",):
-                element.attributes[name] = value
+                dimension = CSS_DIMENSION_RE.match(str(value))
+                element.attributes[name] = (dimension[1] + dimension[2].lower()) if dimension else value
