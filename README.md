@@ -47,7 +47,7 @@ pixels = doc.rasterize(scale=2)                          # numpy float32 RGBA, s
 | Themes | `svg.Theme` palettes, fonts and role styles; `el.as_role("box")` marks elements, the document writes one CSS rule per role so the SVG stays restylable; `light`, `dark`, `paper`, `print`, `mono` built in; `theme.replace(...)` variants, TOML theme files, `with theme:` defaults |
 | Rendering | skia: `rasterize(size=..., padding=...)` to numpy, embedded and linked images, text, CSS `<style>`; deterministic output |
 | Export / import | A registry by name or extension: more than 30 formats from SVG and PNG to PDF, TikZ, DXF, G-code, PowerPoint, Graphviz and Mermaid (see [Export and import](#export-and-import)); `svg.export.register(...)` adds more |
-| Animation | SMIL elements; `doc.render_animation("out.mp4", update=...)` through ffmpeg; `svg.interpolate(a, b, t)` tweens numbers, colors, transforms and morphs any two shapes |
+| Animation | SMIL elements; `doc.render_animation("out.mp4", update=...)` through ffmpeg; `svg.Scene` classes, several per file, rendered by `svgwriter animate`; `svg.interpolate(a, b, t)` tweens numbers, colors, transforms and morphs any two shapes |
 
 ## Geometry in one minute
 
@@ -137,7 +137,7 @@ svg.Document.open("sketch.excalidraw").save("sketch.svg")
 
 ## Examples
 
-[`examples/`](https://github.com/wzjoriv/svgwriter/tree/main/examples) is a twelve-step learning path, from shapes to formats, animation, interop and a logo; each step is a runnable script with a Jupyter notebook next to it that shows the results as pictures (see its [README](https://github.com/wzjoriv/svgwriter/blob/main/examples/README.md)). All pictures below are rendered by svgwriter.
+[`examples/`](https://github.com/wzjoriv/svgwriter/tree/main/examples) is a fourteen-step learning path, from shapes to formats, animation, scenes, interop, a logo and themes; each step is a runnable script with a Jupyter notebook next to it that shows the results as pictures (see its [README](https://github.com/wzjoriv/svgwriter/blob/main/examples/README.md)). All pictures below are rendered by svgwriter.
 
 | | | |
 |:---:|:---:|:---:|

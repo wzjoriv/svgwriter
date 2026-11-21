@@ -12,8 +12,7 @@ import skia
 from .._internal._rendering import renderable_copy
 from ..transform.matrix import IDENTITY, Matrix
 from ._canvas import make_surface, paint_svg, read_pixels
-from ._constants import DISPLAY
-from ._layers import draw_image, hidden, layers
+from ._layers import concealed, draw_image, hidden, layers
 
 if TYPE_CHECKING:
     from ..attributes.viewbox import ViewBox
@@ -150,11 +149,8 @@ def paint_tree(
     parts = layers(root, needs_engine)
     for run, item in parts:
         if run or len(parts) == 1:
-            for leaf in hidden(root, run, needs_engine) if len(parts) > 1 else ():
-                leaf.attributes[DISPLAY] = "none"
-            paint_svg(canvas, wrap(to_string(root, xml_declaration=False, pretty=False)), width, height)
-            for leaf in hidden(root, run, needs_engine) if len(parts) > 1 else ():
-                leaf.attributes.pop(DISPLAY, None)
+            with concealed(hidden(root, run, needs_engine) if len(parts) > 1 else []):
+                paint_svg(canvas, wrap(to_string(root, xml_declaration=False, pretty=False)), width, height)
         if item is not None and needs_engine(item):
             draw_filtered(canvas, item, root, wrap, (width, height), view)
         elif isinstance(item, Text):

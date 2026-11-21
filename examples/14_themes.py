@@ -3,7 +3,7 @@
 One drawing in five built-in themes, a variant of a theme, a theme read from a file, and a theme made
 the default for a block of code.
 
-Run it as ``python 13_themes.py`` or open ``13_themes.ipynb`` to see each step.
+Run it as ``python 14_themes.py`` or open ``14_themes.ipynb`` to see each step.
 """
 
 import svgwriter as svg

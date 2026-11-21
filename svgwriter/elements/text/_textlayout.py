@@ -67,14 +67,14 @@ class Char:
     local: dict[int, int]
 
 
-def _units(value: object, reference: float) -> float:
+def _units(value: object, reference: float, size: float) -> float:
     length = Length.parse(value)
     if length.unit is Unit.PERCENT:
         return length.value * reference / PERCENT
-    return length.to_user_units()
+    return length.to_user_units(font_size=size)
 
 
-def number_list(value: object, reference: float = 0.0) -> list[float]:
+def number_list(value: object, reference: float = 0.0, size: float = DEFAULT_FONT_SIZE) -> list[float]:
     """Convert an SVG number or length list to floats.
 
     Accepts a string such as ``"1 2,3"``, a single number or a sequence of
@@ -86,6 +86,8 @@ def number_list(value: object, reference: float = 0.0) -> list[float]:
         The list to convert; ``None`` gives an empty list.
     reference : float, optional
         Value that percentages resolve against. Defaults to 0.0.
+    size : float, optional
+        The font size ``em`` and ``ex`` resolve against. Defaults to the default font size.
 
     Returns
     -------
@@ -98,14 +100,16 @@ def number_list(value: object, reference: float = 0.0) -> list[float]:
     [1.0, 2.0, 3.0]
     >>> number_list("50%", 200)
     [100.0]
+    >>> number_list("2em", size=24)
+    [48.0]
     """
     if value is None:
         return []
     if isinstance(value, (list, tuple)):
-        return [_units(v, reference) for v in value]
+        return [_units(v, reference, size) for v in value]
     if isinstance(value, (int, float)):
         return [float(value)]
-    return [_units(v, reference) for v in str(value).replace(",", " ").split()]
+    return [_units(v, reference, size) for v in str(value).replace(",", " ").split()]
 
 
 def _raw(element: Element, chain: tuple[Element, ...], out: list[tuple[str, tuple[Element, ...], int, int]]) -> None:
@@ -175,14 +179,16 @@ def _viewport(element: Element) -> tuple[float, float]:
 class _Lists:
     """Per-element positioning lists, parsed once per layout."""
 
-    def __init__(self, width: float, height: float) -> None:
+    def __init__(self, width: float, height: float, rules: list[Rule]) -> None:
         self.reference = {"x": width, "dx": width, "y": height, "dy": height, "rotate": 0.0}
+        self.rules = rules
         self.cache: dict[tuple[int, str], list[float]] = {}
 
     def of(self, element: Element, name: str) -> list[float]:
         key = (id(element), name)
         if key not in self.cache:
-            self.cache[key] = number_list(element.get(name), self.reference[name])
+            size = font_size(computed(element, "font-size", DEFAULT_FONT_SIZE, self.rules))
+            self.cache[key] = number_list(element.get(name), self.reference[name], size)
         return self.cache[key]
 
     def value(self, char: Char, name: str) -> float | None:
@@ -225,7 +231,7 @@ def layout(text: Element, rules: list[Rule] | None = None) -> list[GlyphBox]:
         root = text.root()
         rules = rules_of(root) if root is not text else []
     chars = collect(text)
-    lists = _Lists(*_viewport(text))
+    lists = _Lists(*_viewport(text), rules)
     fonts: dict[int, tuple[Any, ...]] = {}
     spacings: dict[int, tuple[float, float]] = {}
     boxes: list[GlyphBox] = []

@@ -83,3 +83,42 @@ def test_filtered_image_runs_through_the_engine() -> None:
                   '<feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 1  0 0 0 0 0  0 0 0 1 0"/></filter>'
                   f'<image width="100" height="100" xlink:href="{png_uri((1, 0, 0))}" filter="url(#f)"/>')
     assert np.allclose(pixels[50, 50], LIME, atol=0.02)
+
+
+@pytest.mark.parametrize("primitive, lime, white", [
+    ('<feOffset dx="0.25" dy="0.25"/>', (65, 65), (25, 25)),
+    ('<feMorphology operator="dilate" radius="0.25"/>', (15, 15), (5, 5)),
+    ('<feGaussianBlur stdDeviation="0.25"/>', (40, 68), (40, 97)),
+])
+def test_bounding_box_primitive_units_scale_primitive_lengths(primitive: str, lime: tuple[int, int],
+                                                              white: tuple[int, int]) -> None:
+    pixels = draw('<filter id="f" primitiveUnits="objectBoundingBox" x="-1" y="-1" width="3" height="3">'
+                  f'{primitive}</filter><rect x="20" y="20" width="40" height="40" fill="lime" filter="url(#f)"/>')
+    assert pixels[lime][0] < 0.9 and np.allclose(pixels[white], WHITE, atol=0.02)
+
+
+def test_fe_image_fits_its_unclipped_subregion() -> None:
+    pixels = draw(f'<filter id="f" x="0" y="0" width="1" height="1"><feImage width="100" '
+                  f'xlink:href="{png_uri((0, 1, 0))}"/></filter>'
+                  '<rect width="50" height="50" fill="red" filter="url(#f)"/>')
+    assert np.allclose(pixels[25, 10], WHITE, atol=0.02) and np.allclose(pixels[25, 40], LIME, atol=0.02)
+
+
+@pytest.mark.parametrize("space, moved", [("linearRGB", False), ("sRGB", True)])
+def test_fe_displacement_map_reads_its_map_in_the_interpolation_space(space: str, moved: bool) -> None:
+    half_in_linear_light = 0.7354
+    pixels = draw(f'<defs><rect id="t" x="40" y="40" width="20" height="20" fill="lime"/></defs>'
+                  f'<filter id="f" x="0" y="0" width="1" height="1" color-interpolation-filters="{space}">'
+                  f'<feImage result="m" xlink:href="{png_uri((half_in_linear_light,) * 3)}"/>'
+                  '<feImage xlink:href="#t" result="t"/><feDisplacementMap in="t" in2="m" scale="40" '
+                  'xChannelSelector="R" yChannelSelector="G"/></filter><rect width="100" height="100" filter="url(#f)"/>')
+    assert np.allclose(pixels[57, 57], WHITE if moved else LIME, atol=0.05)
+
+
+def test_fe_convolve_matrix_bias_lifts_only_painted_pixels() -> None:
+    doc = svg.Document.from_string(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="f" filterUnits="userSpaceOnUse" '
+        'x="0" y="0" width="100" height="100"><feConvolveMatrix kernelMatrix="0 0 0 0 1 0 0 0 0" bias="1"/></filter>'
+        '<g filter="url(#f)"><rect width="50" height="100" fill="black"/></g></svg>')
+    pixels = doc.rasterize()
+    assert np.allclose(pixels[50, 25], WHITE, atol=0.02) and pixels[50, 75, 3] == pytest.approx(0.0)

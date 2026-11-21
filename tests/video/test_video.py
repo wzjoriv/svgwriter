@@ -10,7 +10,7 @@ import pytest
 
 import svgwriter as svg
 from svgwriter import video
-from svgwriter.cli import load_scene, main
+from svgwriter.cli import main
 from svgwriter.video import _ffmpeg
 from svgwriter.video.frames import to_frame
 
@@ -109,6 +109,7 @@ class TestRenderers:
 
         assert video.resolve_renderer("test-solid") is render
         assert svg.register_renderer is video.register_renderer
+        video.unregister_renderer("test-solid")
 
     def test_iter_frames_and_update(self) -> None:
         seen: list[float] = []
@@ -167,6 +168,11 @@ class TestEncoding:
         written = _doc().render_animation(target, fps=8, duration=0.5, renderer=solid_png)
         assert written == target and target.stat().st_size > 0
 
+    def test_png_path_writes_numbered_frames(self, tmp_path: Path) -> None:
+        written = video.render_animation(_doc(), tmp_path / "intro.png", 4, 0.75, gray_array)
+        assert written.name == "intro_%04d.png"
+        assert sorted(p.name for p in tmp_path.glob("intro_*.png")) == ["intro_0000.png", "intro_0001.png", "intro_0002.png"]
+
     def test_rgba_frames_encode(self, tmp_path: Path) -> None:
         target = tmp_path / "gray.mp4"
         video.render_animation(_doc(), target, 5, 1, gray_array)
@@ -201,66 +207,82 @@ class TestEncoding:
 
 SCENE = '''
 import svgwriter as svg
-FPS = 4
-DURATION = 1.0
-def build():
-    doc = svg.Document(16, 12)
-    doc.circle(8, 6, 3)
-    return doc
-def update(doc, t):
-    doc.root.find(svg.Circle).r = 3 + t
+
+class Grow(svg.Scene):
+    width, height, fps, duration = 16, 12, 4, 1.0
+    renderer = "tests.video.test_video:solid_png"
+
+    def build(self, doc):
+        self.dot = doc.circle(8, 6, 3)
+
+    def update(self, seconds):
+        self.dot.r = 3 + seconds
+
+class Fade(Grow):
+    pass
 '''
 
 
+@pytest.fixture
+def script(tmp_path: Path) -> Path:
+    path = tmp_path / "scenes.py"
+    path.write_text(SCENE, encoding="utf-8")
+    return path
+
+
 class TestAnimateCommand:
-    def test_load_scene(self, tmp_path: Path) -> None:
-        script = tmp_path / "scene.py"
-        script.write_text(SCENE, encoding="utf-8")
-        doc, update, settings = load_scene(script)
-        assert isinstance(doc, svg.Document) and update is not None and settings == {"fps": 4, "duration": 1.0}
-        variable = tmp_path / "var.py"
-        variable.write_text("import svgwriter as svg\ndocument = svg.Document(4, 4)\n", encoding="utf-8")
-        assert load_scene(variable)[1] is None
-        svg_file = tmp_path / "pic.svg"
-        _doc().save(svg_file)
-        assert load_scene(svg_file)[0].root.find(svg.Circle) is not None
+    def test_list(self, script: Path, capsys: pytest.CaptureFixture[str]) -> None:
+        assert main(["animate", str(script), "--list"]) == 0
+        assert capsys.readouterr().out.split() == ["Grow", "Fade"]
+        assert main(["animate", f"{script}:Fade", "--list"]) == 0
+        assert capsys.readouterr().out.split() == ["Fade"]
 
     def test_bad_scene(self, tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
-        script = tmp_path / "empty.py"
-        script.write_text("x = 1\n", encoding="utf-8")
-        assert main(["animate", str(script), "--renderer", "tests.video.test_video:solid_png", "-o", str(tmp_path / "a.mp4")]) == 1
-        assert "must define build()" in capsys.readouterr().err
+        empty = tmp_path / "empty.py"
+        empty.write_text("x = 1\n", encoding="utf-8")
+        assert main(["animate", str(empty)]) == 1
+        assert "defines no svgwriter.Scene" in capsys.readouterr().err
 
-    def test_missing_ffmpeg(self, tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
-        script = tmp_path / "scene.py"
-        script.write_text(SCENE, encoding="utf-8")
-        code = main(["animate", str(script), "--renderer", "tests.video.test_video:solid_png", "--ffmpeg", "no-such-ffmpeg-xyz"])
+    def test_out_needs_one_scene(self, script: Path, capsys: pytest.CaptureFixture[str]) -> None:
+        assert main(["animate", str(script), "-o", "x.gif"]) == 1
+        assert "2 scenes" in capsys.readouterr().err
+
+    def test_missing_ffmpeg(self, script: Path, capsys: pytest.CaptureFixture[str]) -> None:
+        code = main(["animate", str(script), "Grow", "--ffmpeg", "no-such-ffmpeg-xyz"])
         assert code == 1 and "was not found" in capsys.readouterr().err
 
-    def test_missing_renderer(self, tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
-        if FFMPEG is None:
-            pytest.skip("ffmpeg is checked first")
-        script = tmp_path / "scene.py"
-        script.write_text(SCENE, encoding="utf-8")
-        assert main(["animate", str(script), "-o", str(tmp_path / "a.mp4")]) == 1
-        assert "no renderer given" in capsys.readouterr().err
+    @needs_ffmpeg
+    def test_animate_every_scene(self, script: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+                                 capsys: pytest.CaptureFixture[str]) -> None:
+        monkeypatch.chdir(tmp_path)
+        assert main(["animate", str(script), "--format", "gif", "--fps", "6"]) == 0
+        assert capsys.readouterr().out.split() == ["Grow.gif", "Fade.gif"]
+        assert (tmp_path / "Grow.gif").stat().st_size > 0 and (tmp_path / "Fade.gif").stat().st_size > 0
 
     @needs_ffmpeg
-    def test_animate(self, tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
-        script = tmp_path / "scene.py"
-        script.write_text(SCENE, encoding="utf-8")
+    def test_animate_named_to_file(self, script: Path, tmp_path: Path) -> None:
         target = tmp_path / "out.gif"
-        assert main(["animate", str(script), "--renderer", "tests.video.test_video:solid_png", "--out", str(target), "--fps", "6"]) == 0
-        assert target.stat().st_size > 0 and str(target) in capsys.readouterr().out
+        assert main(["animate", str(script), "Fade", "--out", str(target)]) == 0
+        assert target.stat().st_size > 0
 
 
 class TestRenderAndOutlineCommands:
-    def test_render(self, tmp_path: Path) -> None:
-        script = tmp_path / "scene.py"
-        script.write_text(SCENE, encoding="utf-8")
+    def test_render(self, script: Path, tmp_path: Path) -> None:
         target = tmp_path / "frame.png"
-        assert main(["render", str(script), "-o", str(target), "--time", "0.5", "--scale", "2", "--background", "white"]) == 0
+        assert main(["render", str(script), "Grow", "-o", str(target), "--time", "0.5", "--scale", "2", "--background", "white"]) == 0
         assert target.read_bytes().startswith(b"\x89PNG")
+
+    def test_render_every_scene_and_svg(self, script: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.chdir(tmp_path)
+        assert main(["render", str(script)]) == 0
+        assert (tmp_path / "Grow.png").exists() and (tmp_path / "Fade.png").exists()
+        _doc().save(tmp_path / "pic.svg")
+        assert main(["render", "pic.svg"]) == 0
+        assert (tmp_path / "pic.png").read_bytes().startswith(b"\x89PNG")
+
+    def test_render_unknown_name(self, script: Path, capsys: pytest.CaptureFixture[str]) -> None:
+        assert main(["render", str(script), "Nope"]) == 1
+        assert "'Nope'" in capsys.readouterr().err
 
     def test_outline(self, tmp_path: Path) -> None:
         target = tmp_path / "hi.svg"

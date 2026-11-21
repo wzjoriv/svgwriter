@@ -93,11 +93,11 @@ from .document import Document
 from .elements import *  # noqa: F403
 from .elements import __all__ as _elements_all
 from .io.writer import SerializeOptions, to_string, write
-from .ops import interpolate, register_font, text_to_path
+from .ops import interpolate, register_font, register_interpolator, text_to_path, unregister_interpolator
 from .pathdata import BBox, PathBuilder, PathData
 from .theme import THEMES, Theme
 from .transform import Matrix, Point, Transform
-from .video import FFmpegNotFoundError, register_renderer
+from .video import FFmpegNotFoundError, Scene, register_renderer
 
 if TYPE_CHECKING:
     from ._internal._latex import latex
@@ -143,6 +143,7 @@ __all__ = [
     "Point",
     "SVGParseError",
     "SHAPES",
+    "Scene",
     "Align",
     "Color",
     "Document",
@@ -180,6 +181,7 @@ __all__ = [
     "latex",
     "parse",
     "register_font",
+    "register_interpolator",
     "parse_color",
     "parse_file",
     "parse_paint",
@@ -192,6 +194,7 @@ __all__ = [
     "shape_factory",
     "text_to_path",
     "theme",
+    "unregister_interpolator",
     "to_string",
     "video",
     "write",

@@ -31,13 +31,12 @@ if TYPE_CHECKING:
 
 __all__ = [
     "drop_foreign",
-    "ellipses_as_paths",
     "leaf_visibility",
     "expand_image_patterns",
     "outlined",
     "page_box",
     "renderable_copy",
-    "unfilled_lines",
+    "shapes_as_paths",
     "unfiltered_masks",
     "view_matrix",
     "void_filters",
@@ -60,25 +59,39 @@ def expand_image_patterns(root: Element) -> None:
                 continue
 
 
-def ellipses_as_paths(root: Element) -> None:
-    """Replace ``<ellipse>`` by an equal ``<path>`` (skia's SVG renderer paints gradients on ellipses black)."""
-    from ..elements.shapes import Ellipse, Path
+def shapes_as_paths(root: Element) -> None:
+    """Replace ``<ellipse>`` and ``<line>`` by equal ``<path>`` elements.
 
-    for ellipse in [e for e in root.iter() if isinstance(e, Ellipse)]:
-        parent = ellipse.parent
+    Skia's SVG renderer paints gradients on both black. A line has no interior, so its path
+    gets ``fill="none"`` (skia would paint the fill as a hairline).
+
+    Parameters
+    ----------
+    root : Element
+        A render copy; it is changed in place.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter._internal._rendering import shapes_as_paths
+    >>> group = svg.group(svg.Line(0, 0, 5, 5, fill="red"))
+    >>> shapes_as_paths(group)
+    >>> group[0].tag, group[0].get("fill")
+    ('path', 'none')
+    """
+    from ..elements.shapes import Ellipse, Line, Path
+
+    for shape in [e for e in root.iter() if isinstance(e, (Ellipse, Line))]:
+        parent = shape.parent
         if parent is None:
             continue
-        path = Path(ellipse.local_outline())
-        path.attributes.update((k, v) for k, v in ellipse.attributes.items() if k not in ellipse.geometry_attributes)
-        index = parent.children.index(ellipse)
-        parent.remove(ellipse)
+        path = Path(shape.local_outline())
+        path.attributes.update((k, v) for k, v in shape.attributes.items() if k not in shape.geometry_attributes)
+        if isinstance(shape, Line):
+            path.attributes["fill"] = NONE
+        index = parent.children.index(shape)
+        parent.remove(shape)
         parent.insert(index, path)
-
-
-def unfilled_lines(root: Element) -> None:
-    """Give every ``<line>`` ``fill="none"``: a line has no interior, but skia paints its fill as a hairline."""
-    for line in [e for e in root.iter() if e.tag == "line"]:
-        line.attributes["fill"] = NONE
 
 
 def unfiltered_masks(root: Element) -> None:
@@ -175,8 +188,7 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     linear_rgb_stops(copy)
     flatten_viewports(copy)
     resolve_links(copy)
-    ellipses_as_paths(copy)
-    unfilled_lines(copy)
+    shapes_as_paths(copy)
     unfiltered_masks(copy)
     leaf_visibility(copy)
     void_filters(copy)

@@ -5,7 +5,7 @@ Filter geometry in an element's user space: the filter region, primitive subregi
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -101,6 +101,8 @@ class Frame:
         ``primitiveUnits`` is ``objectBoundingBox``.
     element_source : callable
         Draws a referenced element (``feImage`` with ``#id``) as a picture in this space.
+    inputs : dict of str to skia.ImageFilter
+        The standard inputs besides the source (``BackgroundImage``, ``FillPaint``, ...) the filter reads.
     """
 
     box: BBox | None
@@ -108,6 +110,29 @@ class Frame:
     viewport: tuple[float, float]
     bounding: bool
     element_source: Callable[[Element], Any]
+    inputs: dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def scale(self) -> tuple[float, float]:
+        """User units per primitive unit along x and y: the box size in bounding-box units, else 1."""
+        if self.bounding and self.box is not None:
+            return (self.box.width, self.box.height)
+        return (1.0, 1.0)
+
+    def placement(self, primitive: Element) -> skia.Rect:
+        """The primitive subregion of *primitive* as given, before clipping; where ``feImage`` fits its picture.
+
+        Parameters
+        ----------
+        primitive : Element
+            An ``fe*`` element; the coordinates it leaves out come from the filter region.
+
+        Returns
+        -------
+        skia.Rect
+            The unclipped subregion.
+        """
+        return _rect(primitive, self.box, self.viewport, self.bounding, self.region) or self.region
 
     def subregion(self, primitive: Element, default: skia.Rect) -> skia.Rect:
         """The primitive subregion of *primitive*, clipped to the filter region.

@@ -10,7 +10,7 @@ from typing import Final
 
 import numpy as np
 
-from ._constants import (
+from ._codec_constants import (
     BMP_BI_BITFIELDS,
     BMP_BITS_PER_PIXEL,
     BMP_FILE_HEADER_SIZE,

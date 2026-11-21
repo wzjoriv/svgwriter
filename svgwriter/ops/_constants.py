@@ -73,11 +73,35 @@ __all__ = [
     "EDGE_MODES",
     "PICTURE_BOUNDS",
     "SOURCE_GRAPHIC",
+    "LIGHT_SOURCES",
+    "SPOT_CUTOFF",
+    "LIGHTING",
+    "CONCEALED",
+    "BACKGROUND_IMAGE",
+    "BACKGROUND_ALPHA",
+    "FILL_PAINT",
+    "STROKE_PAINT",
+    "PAINT_INPUTS",
+    "STANDARD_INPUTS",
+    "ENABLE_BACKGROUND",
+    "NEW_BACKGROUND",
+    "OPACITY",
+    "DISPLACEMENT",
+    "COVERAGE_WHITE",
 ]
 
 SOURCE_GRAPHIC: Final = "SourceGraphic"
 SOURCE_ALPHA: Final = "SourceAlpha"
+BACKGROUND_IMAGE: Final = "BackgroundImage"
+BACKGROUND_ALPHA: Final = "BackgroundAlpha"
+FILL_PAINT: Final = "FillPaint"
+STROKE_PAINT: Final = "StrokePaint"
+PAINT_INPUTS: Final = frozenset({FILL_PAINT, STROKE_PAINT})
+STANDARD_INPUTS: Final = frozenset({BACKGROUND_IMAGE, BACKGROUND_ALPHA, FILL_PAINT, STROKE_PAINT})
+ENABLE_BACKGROUND: Final = "enable-background"
+NEW_BACKGROUND: Final = "new"
 ALPHA_ONLY: Final = [0.0] * 15 + [0.0, 0.0, 0.0, 1.0, 0.0]
+COVERAGE_WHITE: Final = [0.0, 0.0, 0.0, 0.0, 1.0] * 3 + [0.0, 0.0, 0.0, 1.0, 0.0]
 LUMA: Final = (0.2125, 0.7154, 0.0721)
 BLEND: Final = {"normal": skia.BlendMode.kSrcOver, "multiply": skia.BlendMode.kMultiply,
                 "screen": skia.BlendMode.kScreen, "darken": skia.BlendMode.kDarken,
@@ -87,15 +111,20 @@ COMPOSITE: Final = {"over": skia.BlendMode.kSrcOver, "in": skia.BlendMode.kSrcIn
 MASK_CANVAS: Final = 1e6
 PICTURE_BOUNDS: Final = 1e6
 FILTER_REGION_DEFAULT: Final = (-0.1, 1.2)
-ENGINE_PRIMITIVES: Final = frozenset({"feImage", "feTile", "feConvolveMatrix"})
+ENGINE_PRIMITIVES: Final = frozenset({"feImage", "feTile", "feConvolveMatrix", "feDiffuseLighting", "feSpecularLighting"})
 CHANNELS: Final = {"R": skia.ColorChannel.kR, "G": skia.ColorChannel.kG, "B": skia.ColorChannel.kB,
                    "A": skia.ColorChannel.kA}
 LINEAR_RGB: Final = "linearRGB"
 CONVOLVE_ORDER: Final = 3
 EDGE_MODES: Final = {"duplicate": skia.TileMode.kClamp, "wrap": skia.TileMode.kRepeat, "none": skia.TileMode.kDecal}
-FRAMED: Final = frozenset({"feImage", "feTile", "feDisplacementMap"})
+LIGHT_SOURCES: Final = frozenset({"feDistantLight", "fePointLight", "feSpotLight"})
+LIGHTING: Final = frozenset({"feDiffuseLighting", "feSpecularLighting"})
+SPOT_CUTOFF: Final = 90.0
+DISPLACEMENT: Final = "feDisplacementMap"
+FRAMED: Final = frozenset({"feImage", "feTile", DISPLACEMENT})
 COLOR_MIXING: Final = frozenset({"feBlend", "feComposite", "feMerge", "feGaussianBlur", "feColorMatrix",
-                                 "feComponentTransfer", "feMorphology", "feConvolveMatrix"})
+                                 "feComponentTransfer", "feMorphology", "feConvolveMatrix",
+                                 "feDiffuseLighting", "feSpecularLighting"})
 
 CHANNEL_MAX: Final = 255
 
@@ -150,6 +179,8 @@ POINTS_PER_UNIT: Final = 0.75
 
 DEFAULT_QUALITY: Final = 90
 DISPLAY: Final = "display"
+OPACITY: Final = "opacity"
+CONCEALED: Final = (DISPLAY, "filter")
 PIXEL_EPSILON: Final = 1e-6
 FORMATS: Final = {"png": skia.kPNG, "jpeg": skia.kJPEG, "jpg": skia.kJPEG, "webp": skia.kWEBP}
 

@@ -82,3 +82,9 @@ def test_gradient_blends_in_its_color_interpolation_space(space: str, middle: fl
     pixels = draw(f'<linearGradient id="g" color-interpolation="{space}"><stop offset="0" stop-color="black"/>'
                   '<stop offset="1" stop-color="white"/></linearGradient><rect width="100" height="100" fill="url(#g)"/>')
     assert pixels[50, 50, 0] == pytest.approx(middle, abs=0.03)
+
+
+def test_gradient_strokes_a_line_across_its_bounding_box() -> None:
+    pixels = draw('<linearGradient id="g"><stop offset="0" stop-color="lime"/><stop offset="1" stop-color="blue"/>'
+                  '</linearGradient><line x1="90" y1="10" x2="10" y2="90" stroke="url(#g)" stroke-width="10"/>')
+    assert np.allclose(pixels[88, 12], LIME, atol=0.1) and np.allclose(pixels[12, 88], BLUE, atol=0.1)
