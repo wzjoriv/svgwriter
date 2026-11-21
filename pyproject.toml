@@ -64,6 +64,10 @@ math = [
 color = [
     "python-lcms2>=0.3.1",
 ]
+fonts = [
+    "fonttools>=4.40",
+    "brotli>=1.0",
+]
 widget = [
     "ipywidgets>=8",
 ]

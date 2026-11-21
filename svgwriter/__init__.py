@@ -50,6 +50,8 @@ layout
     Stacks and grids that place their children by size (VStack, HStack, Grid).
 theme
     Palettes, fonts and role styles applied as CSS classes (``Theme``).
+fonts
+    Fonts from drawings: glyphs, icons and kerning written as OTF, TTF, WOFF and WOFF2 (``FontBuilder``).
 ops
     Boolean operations, text outlines, measurement, rendering and image
     compositing (skia).
@@ -76,6 +78,7 @@ from typing import TYPE_CHECKING, Any
 from . import (
     export,
     filters,
+    fonts,
     gradients,
     inkscape,
     layout,
@@ -128,6 +131,7 @@ from .color import Color, PaintKeyword, parse_color, parse_paint
 from .document import Document
 from .elements import *  # noqa: F403
 from .elements import __all__ as _elements_all
+from .fonts import FontBuilder
 from .io.writer import SerializeOptions, to_string, write
 from .layout import Grid, HStack, Spacer, VStack
 from .ops import (
@@ -186,6 +190,7 @@ def __dir__() -> list[str]:
 __all__ = [
     "BBox",
     "FFmpegNotFoundError",
+    "FontBuilder",
     "IRI",
     "Point",
     "SVGParseError",
@@ -242,6 +247,7 @@ __all__ = [
     "parse_paint",
     "export",
     "filters",
+    "fonts",
     "gradients",
     "inkscape",
     "layout",
