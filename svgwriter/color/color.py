@@ -16,6 +16,7 @@ from .._internal._constants import COLOR_ALIASES, DEFAULT_PRECISION
 from .._internal._drawable import Drawable, color_swatch
 from .._internal._numbers import format_number
 from .._internal._typing import N
+from ._adjust import ColorAdjustments
 from ._blending import ColorBlending
 from ._channels import ColorChannels
 from ._constants import (
@@ -59,7 +60,7 @@ def clamp(value: N, low: N, high: N) -> N:
 
 
 @dataclass(frozen=True)
-class Color(ColorChannels, ColorBlending, Drawable):
+class Color(ColorChannels, ColorBlending, ColorAdjustments, Drawable):
     """An sRGB color with straight alpha; every channel is a float in ``0..1``.
 
     Colors are immutable, support ``+`` (even mix), ``*`` and ``/`` (scaling),
@@ -125,7 +126,7 @@ class Color(ColorChannels, ColorBlending, Drawable):
 
     @classmethod
     def parse(cls, text: str) -> Color:
-        """Parse a name, ``#rgb[a]``, ``#rrggbb[aa]``, ``rgb[a](...)`` or ``hsl[a](...)``.
+        """Parse a name, hex or CSS Color 4 function (see :func:`parse_color`).
 
         Parameters
         ----------
@@ -338,14 +339,21 @@ def as_color(value: ColorLike) -> Color:
 
 @lru_cache(maxsize=256)
 def parse_color(text: str) -> Color:
-    """Parse a color keyword, hex, ``rgb[a](...)`` or ``hsl[a](...)``.
+    """Parse a color keyword, hex or CSS Color 4 function into sRGB.
 
-    An optional trailing ``icc-color(...)`` is preserved. Results are cached.
+    Functions: ``rgb()``/``rgba()`` (numbers are 0..255, percentages 0..100%), ``hsl()``/``hsla()``,
+    ``hwb()``, ``hsv()``/``hsva()``, ``lab()``, ``lch()``, ``oklab()``, ``oklch()``,
+    ``color(<space> r g b)`` with ``srgb``, ``srgb-linear``, ``display-p3``, ``a98-rgb``, ``rec2020``,
+    ``xyz``/``xyz-d65`` or ``xyz-d50``, and ``device-cmyk()``. Both the comma syntax and the modern
+    space-separated syntax with ``/ alpha`` work; ``none`` stands for a zero channel; hues take
+    ``deg``, ``rad``, ``grad`` or ``turn``. Colors outside the sRGB gamut are clipped to it.
+    ``device-cmyk()`` is the naive formula with no profile; real CMYK goes through a trailing
+    ``icc-color(...)``, which is preserved. Results are cached.
 
     Parameters
     ----------
     text : str
-        Color text such as ``"tomato"``, ``"#f80"``, ``"rgb(255 0 0)"`` or ``"hsl(120, 100%, 50%)"``.
+        Color text such as ``"tomato"``, ``"#f80"``, ``"rgb(255 0 0 / 50%)"`` or ``"oklch(62.8% 0.2577 29.23)"``.
 
     Returns
     -------

@@ -25,6 +25,40 @@ in colors, so a translucent `fill`, `stroke`, `stop-color` or `flood-color` also
 print(svg.rect(fill=(1, 0, 0, 0.5)))     # fill="#ff0000" fill-opacity="0.5"
 ```
 
+### CSS Color 4 text
+
+`Color.parse` (and every color argument) reads the CSS Color 4 functions and converts them to sRGB:
+
+| Syntax | Channels |
+| --- | --- |
+| `rgb(255 0 0 / 50%)`, `rgba(255, 0, 0, 0.5)` | numbers are 0..255, percentages 0..100% |
+| `hsl(120 100% 50%)`, `hsv(...)`, `hwb(120 20% 30%)` | hue (`deg`, `rad`, `grad`, `turn`), then percentages |
+| `lab(54.29 80.8 69.89)`, `lch(54.29 106.84 40.85)` | CIE Lab/LCH on a D50 white |
+| `oklab(0.628 0.2249 0.1258)`, `oklch(62.8% 0.2577 29.23)` | OKLab/OKLCH |
+| `color(display-p3 1 0 0)` | `srgb`, `srgb-linear`, `display-p3`, `a98-rgb`, `rec2020`, `xyz`/`xyz-d65`, `xyz-d50` |
+| `device-cmyk(0 1 1 0)` | naive CMYK with no profile |
+
+Comma and space-separated forms both work, `/ alpha` sets the opacity and `none` is a zero channel.
+Colors outside the sRGB gamut (most of Display P3, Rec. 2020 and high-chroma OKLCH) are clipped to it.
+For press-accurate CMYK use an ICC profile: a trailing `icc-color(...)` is kept with the color.
+
+### Adjusting colors
+
+```python
+c = svg.Color.parse("#0f766e")
+c.lighten(0.1), c.darken(0.1)          # HSL lightness
+c.saturate(0.2), c.desaturate(0.2)     # HSL saturation
+c.hue_shift(30), c.complement()        # HSL hue
+c.grayscale(), c.invert()              # same perceived lightness; negative
+c.mix("white", 0.3, space="oklch")     # "srgb" (default), "linear", "oklab" or "oklch"
+c.contrast("white"), c.is_dark         # WCAG ratio; whether white text reads better
+c.readable()                           # black or white, whichever has more contrast on c
+```
+
+`lighten` and `darken` move HSL lightness: they reach pure white and black at the ends and keep the hue,
+which is what palettes expect. For perceptually even steps mix in OKLCH instead:
+`c.mix("white", 0.2, space="oklch")`. `space="linear"` mixes light as it adds physically.
+
 ## Images are numpy arrays
 
 `svg.Image(array)` embeds pixels. They are stored as `color`, a float32 `(H, W, 3)` array (or
