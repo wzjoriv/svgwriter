@@ -144,7 +144,7 @@ class FeColorMatrix(ColorMatrixShortcuts, SingleInput, tag="feColorMatrix"):
         super().__init__(**kwargs)
         if type is ColorMatrixType.MATRIX and isinstance(values, (list, tuple)) and len(values) != COLOR_MATRIX_SIZE:
             raise ValueError(f"a color matrix needs {COLOR_MATRIX_SIZE} values")
-        self.update(type=type, values=tuple(values) if isinstance(values, (list, tuple)) else values)
+        self._assign(type=type, values=tuple(values) if isinstance(values, (list, tuple)) else values)
 
 
 class FeConvolveMatrix(SingleInput, tag="feConvolveMatrix"):
@@ -200,7 +200,7 @@ class FeConvolveMatrix(SingleInput, tag="feConvolveMatrix"):
         columns, rows = (order, order) if isinstance(order, int) else order
         if kernel_matrix and len(kernel_matrix) != columns * rows:
             raise ValueError(f"kernel needs {columns * rows} values, got {len(kernel_matrix)}")
-        self.update(
+        self._assign(
             order=order,
             kernel_matrix=tuple(kernel_matrix) or None,
             divisor=divisor,
@@ -233,7 +233,7 @@ class FeGaussianBlur(SingleInput, tag="feGaussianBlur"):
 
     def __init__(self, std_deviation: float | tuple[float, float] = 0, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        self.update(std_deviation=std_deviation)
+        self._assign(std_deviation=std_deviation)
 
 
 class FeMorphology(SingleInput, tag="feMorphology"):
@@ -263,7 +263,7 @@ class FeMorphology(SingleInput, tag="feMorphology"):
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self.update(operator=operator, radius=radius)
+        self._assign(operator=operator, radius=radius)
 
 
 class FeDisplacementMap(TwoInputs, tag="feDisplacementMap"):
@@ -294,7 +294,7 @@ class FeDisplacementMap(TwoInputs, tag="feDisplacementMap"):
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self.update(scale=scale, x_channel_selector=x_channel_selector, y_channel_selector=y_channel_selector)
+        self._assign(scale=scale, x_channel_selector=x_channel_selector, y_channel_selector=y_channel_selector)
 
 
 class FeTurbulence(FilterPrimitive, tag="feTurbulence"):
@@ -334,7 +334,7 @@ class FeTurbulence(FilterPrimitive, tag="feTurbulence"):
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self.update(
+        self._assign(
             base_frequency=base_frequency,
             num_octaves=num_octaves,
             seed=seed,

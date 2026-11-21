@@ -110,7 +110,7 @@ class FeDistantLight(LightSource, tag="feDistantLight"):
 
     def __init__(self, azimuth: float = 0, elevation: float = 0, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        self.update(azimuth=azimuth, elevation=elevation)
+        self._assign(azimuth=azimuth, elevation=elevation)
 
     @property
     def directional(self) -> bool:
@@ -176,7 +176,7 @@ class FePointLight(LightSource, tag="fePointLight"):
 
     def __init__(self, x: float = 0, y: float = 0, z: float = 0, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        self.update(x=x, y=y, z=z)
+        self._assign(x=x, y=y, z=z)
 
     @property
     def directional(self) -> bool:
@@ -254,7 +254,7 @@ class FeSpotLight(FePointLight, tag="feSpotLight"):
         **kwargs: Any,
     ) -> None:
         super().__init__(x, y, z, **kwargs)
-        self.update(
+        self._assign(
             points_at_x=points_at_x,
             points_at_y=points_at_y,
             points_at_z=points_at_z,
@@ -273,7 +273,7 @@ class _Lighting(SingleInput):
         **kwargs: Any,
     ) -> None:
         super().__init__(*light, **kwargs)
-        self.update(surface_scale=surface_scale, kernel_unit_length=kernel_unit_length, lighting_color=lighting_color)
+        self._assign(surface_scale=surface_scale, kernel_unit_length=kernel_unit_length, lighting_color=lighting_color)
 
     @property
     def light(self) -> LightSource | None:
@@ -313,7 +313,7 @@ class FeDiffuseLighting(_Lighting, tag="feDiffuseLighting"):
 
     def __init__(self, *light: Child, diffuse_constant: float | None = None, **kwargs: Any) -> None:
         super().__init__(*light, **kwargs)
-        self.update(diffuse_constant=diffuse_constant)
+        self._assign(diffuse_constant=diffuse_constant)
 
 
 class FeSpecularLighting(_Lighting, tag="feSpecularLighting"):
@@ -356,4 +356,4 @@ class FeSpecularLighting(_Lighting, tag="feSpecularLighting"):
         **kwargs: Any,
     ) -> None:
         super().__init__(*light, **kwargs)
-        self.update(specular_constant=specular_constant, specular_exponent=specular_exponent)
+        self._assign(specular_constant=specular_constant, specular_exponent=specular_exponent)

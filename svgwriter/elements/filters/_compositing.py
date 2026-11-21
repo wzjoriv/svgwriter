@@ -83,7 +83,7 @@ class FeBlend(TwoInputs, tag="feBlend"):
 
     def __init__(self, mode: BlendMode = BlendMode.NORMAL, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        self.update(mode=None if mode is BlendMode.NORMAL else mode)
+        self._assign(mode=None if mode is BlendMode.NORMAL else mode)
 
 
 class FeComposite(TwoInputs, tag="feComposite"):
@@ -117,7 +117,7 @@ class FeComposite(TwoInputs, tag="feComposite"):
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self.update(operator=operator, k1=k1, k2=k2, k3=k3, k4=k4)
+        self._assign(operator=operator, k1=k1, k2=k2, k3=k3, k4=k4)
 
 
 class FeOffset(SingleInput, tag="feOffset"):
@@ -140,7 +140,7 @@ class FeOffset(SingleInput, tag="feOffset"):
 
     def __init__(self, dx: float = 0, dy: float = 0, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        self.update(dx=dx, dy=dy)
+        self._assign(dx=dx, dy=dy)
 
 
 class FeFlood(FilterPrimitive, tag="feFlood"):
@@ -165,7 +165,7 @@ class FeFlood(FilterPrimitive, tag="feFlood"):
 
     def __init__(self, flood_color: Color | str | None = None, flood_opacity: Opacity | None = None, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        self.update(flood_color=flood_color, flood_opacity=flood_opacity)
+        self._assign(flood_color=flood_color, flood_opacity=flood_opacity)
 
 
 class FeTile(SingleInput, tag="feTile"):
@@ -213,7 +213,7 @@ class FeImage(XLinkAttributes, ExternalResourcesAttribute, FilterPrimitive, tag=
         **kwargs: Any,
     ) -> None:
         super().__init__(href=href, **kwargs)
-        self.update(preserve_aspect_ratio=preserve_aspect_ratio)
+        self._assign(preserve_aspect_ratio=preserve_aspect_ratio)
 
 
 class FeMergeNode(CoreAttributes, tag="feMergeNode", content=ContentModel.ELEMENTS):
@@ -236,7 +236,7 @@ class FeMergeNode(CoreAttributes, tag="feMergeNode", content=ContentModel.ELEMEN
     def __init__(self, in_: FilterInput | None = None, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         remember_source(self, "in", in_)
-        self.update(in_=resolve_input(in_))
+        self._assign(in_=resolve_input(in_))
 
 
 class FeMerge(FilterPrimitive, Container[FeMergeNode], tag="feMerge"):

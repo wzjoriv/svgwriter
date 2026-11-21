@@ -72,7 +72,7 @@ class Font(FontGlyphs, PresentationAttributes, ExternalResourcesAttribute, CoreA
         **kwargs: Any,
     ) -> None:
         super().__init__(*children, **kwargs)
-        self.update(
+        self._assign(
             horiz_origin_x=horiz_origin_x,
             horiz_origin_y=horiz_origin_y,
             horiz_adv_x=horiz_adv_x,
@@ -125,7 +125,7 @@ class Glyph(_GlyphBase, tag="glyph"):
         **kwargs: Any,
     ) -> None:
         super().__init__(d=d, **kwargs)
-        self.update(unicode=unicode, glyph_name=glyph_name, orientation=orientation, arabic_form=arabic_form, lang=lang)
+        self._assign(unicode=unicode, glyph_name=glyph_name, orientation=orientation, arabic_form=arabic_form, lang=lang)
 
 
 class MissingGlyph(_GlyphBase, tag="missing-glyph"):
@@ -256,7 +256,7 @@ class FontFace(CoreAttributes, Container[Element], tag="font-face", category=Cat
         **descriptors: Any,
     ) -> None:
         super().__init__(*children, **descriptors)
-        self.update(
+        self._assign(
             font_family=font_family,
             font_style=font_style,
             font_variant=font_variant,
@@ -315,7 +315,7 @@ class FontFaceFormat(CoreAttributes, tag="font-face-format", category=Category.F
 
     def __init__(self, string: str | None = None, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        self.update(string=string)
+        self._assign(string=string)
 
 
 class FontFaceUri(XLinkAttributes, CoreAttributes, Container[FontFaceFormat], tag="font-face-uri", category=Category.FONT):
@@ -366,4 +366,4 @@ class FontFaceName(CoreAttributes, tag="font-face-name", category=Category.FONT,
 
     def __init__(self, name: str | None = None, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        self.update(name=name)
+        self._assign(name=name)

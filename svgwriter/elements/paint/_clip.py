@@ -63,7 +63,7 @@ class ClipPath(
 
     def __init__(self, *children: Child, clip_path_units: Units | None = None, **kwargs: Any) -> None:
         super().__init__(*children, **kwargs)
-        self.update(clip_path_units=clip_path_units)
+        self._assign(clip_path_units=clip_path_units)
 
     def local_bbox(self) -> BBox | None:
         """Box around the clipping shapes.
@@ -141,7 +141,7 @@ class Mask(
         **kwargs: Any,
     ) -> None:
         super().__init__(*children, **kwargs)
-        self.update(mask_units=mask_units, mask_content_units=mask_content_units)
+        self._assign(mask_units=mask_units, mask_content_units=mask_content_units)
 
 
 class Marker(
@@ -194,7 +194,7 @@ class Marker(
         **kwargs: Any,
     ) -> None:
         super().__init__(*children, **kwargs)
-        self.update(
+        self._assign(
             ref_x=ref_x,
             ref_y=ref_y,
             marker_units=marker_units,

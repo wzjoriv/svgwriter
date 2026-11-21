@@ -85,7 +85,7 @@ class Image(
             super().__init__(x=x, y=y, width=width, height=height, **kwargs)
             self.attributes[HREF] = Pixels.from_array(source, alpha)
             self._default_size()
-        self.update(preserve_aspect_ratio=preserve_aspect_ratio)
+        self._assign(preserve_aspect_ratio=preserve_aspect_ratio)
 
     @classmethod
     def open(cls, path: str | os.PathLike[str], **kwargs: Any) -> Image:

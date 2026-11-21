@@ -81,7 +81,7 @@ class FeFunc(CoreAttributes, content=ContentModel.ELEMENTS):
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self.update(
+        self._assign(
             type=type,
             table_values=tuple(table_values) if table_values is not None else None,
             slope=slope,

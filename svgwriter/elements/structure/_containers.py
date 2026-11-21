@@ -77,7 +77,7 @@ class Svg(
         **kwargs: Any,
     ) -> None:
         super().__init__(*children, **kwargs)
-        self.update(
+        self._assign(
             version=version,
             base_profile=base_profile,
             zoom_and_pan=zoom_and_pan,
@@ -362,7 +362,7 @@ class A(PathOperand, GraphicsElement, XLinkAttributes, GraphicsContainer, tag="a
 
     def __init__(self, *children: Child, href: str | Element | None = None, target: str | None = None, **kwargs: Any) -> None:
         super().__init__(*children, href=href, **kwargs)
-        self.update(target=target)
+        self._assign(target=target)
 
     def local_bbox(self) -> BBox | None:
         """Box around the link's children.

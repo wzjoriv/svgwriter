@@ -34,7 +34,7 @@ class _GlyphBase(PresentationAttributes, CoreAttributes, Container[Element], cat
             d = d.build()
         elif isinstance(d, str):
             d = PathData(d)
-        self.update(d=d, horiz_adv_x=horiz_adv_x, vert_origin_x=vert_origin_x, vert_origin_y=vert_origin_y, vert_adv_y=vert_adv_y)
+        self._assign(d=d, horiz_adv_x=horiz_adv_x, vert_origin_x=vert_origin_x, vert_origin_y=vert_origin_y, vert_adv_y=vert_adv_y)
 
 
 class _Kern(CoreAttributes, category=Category.FONT, content=ContentModel.EMPTY):
@@ -49,7 +49,7 @@ class _Kern(CoreAttributes, category=Category.FONT, content=ContentModel.EMPTY):
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self.update(u1=u1, g1=g1, u2=u2, g2=g2, k=k)
+        self._assign(u1=u1, g1=g1, u2=u2, g2=g2, k=k)
 
     @classmethod
     def pair(cls, first: str, second: str, k: float, **kwargs: Any) -> Self:

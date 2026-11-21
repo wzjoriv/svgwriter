@@ -120,7 +120,7 @@ class Element(Construction, AttributeAccess, TreeEditing, Queryable, Displayable
             key = svg_name(name)
             if key not in KNOWN_ATTRIBUTES and key not in UNSUPPORTED_ATTRIBUTES and not key.startswith(OPEN_PREFIXES):
                 raise UnknownKeywordError(type(self).__name__, name)
-        self.update(**extra)
+        self._assign(**extra)
         self.extend(children)
 
     def __getattr__(self, name: str) -> AttrValue:

@@ -39,7 +39,7 @@ class _AttributeTarget(Element):
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
-        self.update(attribute_name=attribute_name, attribute_type=attribute_type)
+        self._assign(attribute_name=attribute_name, attribute_type=attribute_type)
 
 
 class _ValueAnimation(Element):
@@ -61,7 +61,7 @@ class _ValueAnimation(Element):
         super().__init__(*args, **kwargs)
         if isinstance(key_splines, (list, tuple)):
             key_splines = ";".join(" ".join(f"{n:g}" for n in spline) for spline in key_splines)
-        self.update(
+        self._assign(
             values=_list(values),
             from_=from_,
             to=to,

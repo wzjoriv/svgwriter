@@ -105,7 +105,7 @@ class FilterPrimitive(Positioned, PresentationAttributes, CoreAttributes, catego
 
     def __init__(self, *args: Child, result: str | None = None, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.update(result=result)
+        self._assign(result=result)
 
     @property
     def result(self) -> str:
@@ -267,7 +267,7 @@ class Filter(
         **kwargs: Any,
     ) -> None:
         super().__init__(*primitives, **kwargs)
-        self.update(filter_units=filter_units, primitive_units=primitive_units, filter_res=filter_res)
+        self._assign(filter_units=filter_units, primitive_units=primitive_units, filter_res=filter_res)
         self.collect()
 
     def collect(self) -> Self:

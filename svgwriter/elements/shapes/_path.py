@@ -71,7 +71,7 @@ class Path(PathCommands, Shape, tag="path"):
     def __init__(self, d: PathDataLike | PathBuilder = "", *, path_length: float | None = None, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self.d = d  # type: ignore[assignment]
-        self.update(path_length=path_length)
+        self._assign(path_length=path_length)
 
     @property
     def connects(self) -> Connection | None:

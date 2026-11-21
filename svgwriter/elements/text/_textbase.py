@@ -37,7 +37,7 @@ class _TextPositioning(Element):
     ) -> None:
         decoration = kwargs.pop("decoration", None)
         super().__init__(*args, **kwargs)
-        self.update(x=_coords(x), y=_coords(y), dx=_coords(dx), dy=_coords(dy), rotate=_coords(rotate))
+        self._assign(x=_coords(x), y=_coords(y), dx=_coords(dx), dy=_coords(dy), rotate=_coords(rotate))
         if decoration is not None:
             self.set("text-decoration", decoration)
 
@@ -80,7 +80,7 @@ class _TextLength(Element):
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
-        self.update(text_length=text_length, length_adjust=length_adjust)
+        self._assign(text_length=text_length, length_adjust=length_adjust)
 
 
 def _all_text(element: Element) -> str:

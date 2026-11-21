@@ -231,7 +231,7 @@ class TextPath(XLinkAttributes, PresentationAttributes, ConditionalAttributes, C
         **kwargs: Any,
     ) -> None:
         super().__init__(*content, href=href, **kwargs)
-        self.update(start_offset=start_offset, method=method, spacing=spacing)
+        self._assign(start_offset=start_offset, method=method, spacing=spacing)
 
 
 class AltGlyph(XLinkAttributes, PresentationAttributes, ConditionalAttributes, CoreAttributes, _TextPositioning, tag="altGlyph", category=Category.TEXT_CONTENT, content=ContentModel.TEXT):
@@ -272,7 +272,7 @@ class AltGlyph(XLinkAttributes, PresentationAttributes, ConditionalAttributes, C
         **kwargs: Any,
     ) -> None:
         super().__init__(*([text] if text else []), href=href, **kwargs)
-        self.update(glyph_ref=glyph_ref, format=format)
+        self._assign(glyph_ref=glyph_ref, format=format)
 
 
 class GlyphRef(XLinkAttributes, PresentationAttributes, CoreAttributes, tag="glyphRef", category=Category.TEXT_CONTENT, content=ContentModel.EMPTY):
@@ -314,7 +314,7 @@ class GlyphRef(XLinkAttributes, PresentationAttributes, CoreAttributes, tag="gly
         **kwargs: Any,
     ) -> None:
         super().__init__(href=href, **kwargs)
-        self.update(glyph_ref=glyph_ref, format=format, x=x, y=y, dx=dx, dy=dy)
+        self._assign(glyph_ref=glyph_ref, format=format, x=x, y=y, dx=dx, dy=dy)
 
 
 class AltGlyphItem(CoreAttributes, Container[GlyphRef], tag="altGlyphItem", category=Category.TEXT_CONTENT):

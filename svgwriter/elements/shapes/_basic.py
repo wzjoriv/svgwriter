@@ -78,7 +78,7 @@ class Rect(RectConstructors, Shape, tag="rect"):
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self.update(x=x, y=y, width=width, height=height, rx=rx, ry=ry)
+        self._assign(x=x, y=y, width=width, height=height, rx=rx, ry=ry)
 
     @property
     def bbox(self) -> BBox:
@@ -164,7 +164,7 @@ class Circle(Shape, tag="circle"):
 
     def __init__(self, cx: LengthLike = 0, cy: LengthLike = 0, r: LengthLike = 0, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        self.update(cx=cx, cy=cy, r=r)
+        self._assign(cx=cx, cy=cy, r=r)
 
     @classmethod
     def from_bbox(cls, box: BBox, **kwargs: Any) -> Self:
@@ -254,7 +254,7 @@ class Ellipse(Shape, tag="ellipse"):
         self, cx: LengthLike = 0, cy: LengthLike = 0, rx: LengthLike = 0, ry: LengthLike = 0, **kwargs: Any
     ) -> None:
         super().__init__(**kwargs)
-        self.update(cx=cx, cy=cy, rx=rx, ry=ry)
+        self._assign(cx=cx, cy=cy, rx=rx, ry=ry)
 
     @classmethod
     def from_bbox(cls, box: BBox, **kwargs: Any) -> Self:
@@ -331,7 +331,7 @@ class Line(Shape, tag="line"):
         self, x1: LengthLike = 0, y1: LengthLike = 0, x2: LengthLike = 0, y2: LengthLike = 0, **kwargs: Any
     ) -> None:
         super().__init__(**kwargs)
-        self.update(x1=x1, y1=y1, x2=x2, y2=y2)
+        self._assign(x1=x1, y1=y1, x2=x2, y2=y2)
 
     @property
     def length(self) -> float:

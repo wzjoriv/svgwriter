@@ -240,6 +240,9 @@ class AttributeAccess:
         >>> styled.attributes["style"], styled.has("fill")
         (Style({'fill': 'blue'}), False)
         """
+        self._set(name, value)
+
+    def _set(self, name: str, value: AttrValue) -> None:
         key = name if name.startswith("{") else svg_name(name)
         if key in UNSUPPORTED_ATTRIBUTES:
             raise ValueError(
@@ -327,9 +330,16 @@ class AttributeAccess:
         >>> r.get("fill")
         'red'
         """
-        for name, value in {**(attributes or {}), **kwargs}.items():
+        for name, value in (attributes or {}).items():
             if value is not None:
-                self.set(name, value)
+                self._set(name, value)
+        self._assign(**kwargs)
+
+    def _assign(self, **values: AttrValue) -> None:
+        """Set each value that is not None: ``update`` without the chaining, for constructors."""
+        for name, value in values.items():
+            if value is not None:
+                self._set(name, value)
 
     @overload
     def get(self, name: str) -> AttrValue | None: ...

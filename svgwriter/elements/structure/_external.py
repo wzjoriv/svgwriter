@@ -47,7 +47,7 @@ class StyleElement(CoreAttributes, tag="style", content=ContentModel.TEXT):
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self.update(type=type, media=media, title=title)
+        self._assign(type=type, media=media, title=title)
         self.css = css  # type: ignore[assignment]
 
     @property
@@ -91,7 +91,7 @@ class View(FitToViewBox, ExternalResourcesAttribute, CoreAttributes, tag="view",
 
     def __init__(self, *, view_target: str | None = None, zoom_and_pan: str | None = None, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        self.update(view_target=view_target, zoom_and_pan=zoom_and_pan)
+        self._assign(view_target=view_target, zoom_and_pan=zoom_and_pan)
 
 
 class ColorProfile(XLinkAttributes, CoreAttributes, tag="color-profile", content=ContentModel.ELEMENTS):
@@ -127,4 +127,4 @@ class ColorProfile(XLinkAttributes, CoreAttributes, tag="color-profile", content
         **kwargs: Any,
     ) -> None:
         super().__init__(href=href, **kwargs)
-        self.update(local=local, name=name, rendering_intent=rendering_intent)
+        self._assign(local=local, name=name, rendering_intent=rendering_intent)

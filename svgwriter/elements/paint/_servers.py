@@ -63,7 +63,7 @@ class Stop(PresentationAttributes, CoreAttributes, tag="stop", category=Category
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self.update(offset=offset, stop_color=stop_color, stop_opacity=stop_opacity)
+        self._assign(offset=offset, stop_color=stop_color, stop_opacity=stop_opacity)
 
 
 class Gradient(
@@ -112,7 +112,7 @@ class Gradient(
         **kwargs: Any,
     ) -> None:
         super().__init__(*stops, **kwargs)
-        self.update(gradient_units=gradient_units, spread_method=spread_method)
+        self._assign(gradient_units=gradient_units, spread_method=spread_method)
 
     transform_attribute: ClassVar[str] = "gradientTransform"
 
@@ -154,7 +154,7 @@ class LinearGradient(Gradient, tag="linearGradient"):
         **kwargs: Any,
     ) -> None:
         super().__init__(*stops, **kwargs)
-        self.update(x1=x1, y1=y1, x2=x2, y2=y2)
+        self._assign(x1=x1, y1=y1, x2=x2, y2=y2)
 
     def local_bbox(self) -> BBox | None:
         """Box spanned by the gradient vector.
@@ -264,7 +264,7 @@ class RadialGradient(Gradient, tag="radialGradient"):
         **kwargs: Any,
     ) -> None:
         super().__init__(*stops, **kwargs)
-        self.update(cx=cx, cy=cy, r=r, fx=fx, fy=fy)
+        self._assign(cx=cx, cy=cy, r=r, fx=fx, fy=fy)
 
     def local_bbox(self) -> BBox | None:
         """Box of the gradient's outer circle.
@@ -330,7 +330,7 @@ class Pattern(
         **kwargs: Any,
     ) -> None:
         super().__init__(*children, **kwargs)
-        self.update(pattern_units=pattern_units, pattern_content_units=pattern_content_units)
+        self._assign(pattern_units=pattern_units, pattern_content_units=pattern_content_units)
 
     transform_attribute: ClassVar[str] = "patternTransform"
 

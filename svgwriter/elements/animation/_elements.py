@@ -86,7 +86,7 @@ class AnimationElement(
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
-        self.update(
+        self._assign(
             begin=_clock(begin),
             dur=_clock(dur),
             end=_clock(end),
@@ -172,7 +172,7 @@ class Set(AnimationElement, _AttributeTarget, tag="set"):
 
     def __init__(self, attribute_name: str | None = None, to: Any = None, **kwargs: Any) -> None:
         super().__init__(attribute_name=attribute_name, **kwargs)
-        self.update(to=to)
+        self._assign(to=to)
 
 
 class AnimateColor(AnimationElement, _ValueAnimation, _AttributeTarget, tag="animateColor"):
@@ -215,7 +215,7 @@ class AnimateTransform(SpinShortcut, AnimationElement, _ValueAnimation, _Attribu
     def __init__(self, type: TransformType = TransformType.TRANSLATE, **kwargs: Any) -> None:
         kwargs.setdefault("attribute_name", "transform")
         super().__init__(**kwargs)
-        self.update(type=type)
+        self._assign(type=type)
 
 
 class MPath(XLinkAttributes, ExternalResourcesAttribute, CoreAttributes, tag="mpath", category=Category.ANIMATION):
@@ -291,7 +291,7 @@ class AnimateMotion(AnimationElement, _ValueAnimation, tag="animateMotion", cont
             path = path.build()
         elif isinstance(path, str):
             path = PathData(path)
-        self.update(path=path, key_points=_list(key_points), rotate=rotate, origin=origin)
+        self._assign(path=path, key_points=_list(key_points), rotate=rotate, origin=origin)
         if ease is not None:
             listed = any(self.get(name) is not None for name in ("values", "from", "to", "by"))
             apply_ease(self, ease, "values" if listed else "keyPoints")
