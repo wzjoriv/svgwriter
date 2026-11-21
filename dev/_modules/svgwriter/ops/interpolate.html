@@ -226,6 +226,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/rendering.html">Rendering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/batches.html">Performance and batches</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/logos.html">Logos and icons</a></li>
@@ -247,6 +248,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/elements.html">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/geometry.html">Geometry</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/layout.html">Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/batch.html">Batches</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/ops.html">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/fonts.html">Fonts</a></li>
@@ -332,6 +334,8 @@
 <span class="sd">    outlines and holes with holes (a contour without a partner grows from or</span>
 <span class="sd">    shrinks to its centre), each pair is resampled to one point count and</span>
 <span class="sd">    started where the points move least, so in-between shapes do not twist.</span>
+<span class="sd">    Two batches (:mod:`svgwriter.batch &lt;svgwriter.model.batch&gt;`) of the same</span>
+<span class="sd">    size blend every item at once.</span>
 <span class="sd">    Inside elements, attribute values that cannot be blended (keywords,</span>
 <span class="sd">    different strings, lists of different lengths) switch at ``t = 0.5``, as</span>
 <span class="sd">    SMIL's discrete mode does. Other types are added with</span>
@@ -537,6 +541,12 @@
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"array"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_batch</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..model.batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Batch</span>
+
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Batch</span><span class="p">)</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_is_element</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..model.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
 
@@ -548,6 +558,7 @@
     <span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">),</span> <span class="n">_matrix</span><span class="p">),</span>
     <span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">PathData</span><span class="p">),</span> <span class="n">blend_outlines</span><span class="p">),</span>
     <span class="p">(</span><span class="n">_is_array</span><span class="p">,</span> <span class="n">_array</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">_is_batch</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">_blend</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">)),</span>
     <span class="p">(</span><span class="n">_is_element</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">_elements</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">)),</span>
     <span class="p">(</span><span class="n">_is_sequence</span><span class="p">,</span> <span class="n">_sequence</span><span class="p">),</span>
     <span class="p">(</span><span class="n">_is_color</span><span class="p">,</span> <span class="n">_color</span><span class="p">),</span>

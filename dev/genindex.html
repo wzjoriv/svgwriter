@@ -225,6 +225,7 @@
 <li class="toctree-l1"><a class="reference internal" href="guides/presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/rendering.html">Rendering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/batches.html">Performance and batches</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/logos.html">Logos and icons</a></li>
@@ -246,6 +247,7 @@
 <li class="toctree-l2"><a class="reference internal" href="reference/elements.html">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/geometry.html">Geometry</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/layout.html">Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/batch.html">Batches</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/ops.html">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/fonts.html">Fonts</a></li>
@@ -397,6 +399,8 @@
           <li><a href="reference/attributes.html#svgwriter.model.attributes.units.AngleUnit">(class in svgwriter.model.attributes.units)</a>
 </li>
         </ul></li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.Batch.animate">animate (Batch property)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.Animate">Animate (class in svgwriter.model.elements.animation)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.animate">animate (Element property)</a>
@@ -429,10 +433,10 @@
           <li><a href="reference/geometry.html#svgwriter.model.transform.Transform.apply">(Transform method)</a>
 </li>
         </ul></li>
-        <li><a href="reference/geometry.html#svgwriter.model.transform.Matrix.apply_points">apply_points() (Matrix method)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.model.transform.Matrix.apply_points">apply_points() (Matrix method)</a>
+</li>
         <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Arc">Arc (class in svgwriter.formats.inkscape)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.PathBuilder.arc_to">arc_to() (PathBuilder method)</a>
@@ -573,6 +577,12 @@
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.markers.bar">bar() (in module svgwriter.catalog.markers)</a>
 </li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.BatchMotion.batch">batch (BatchMotion attribute)</a>
+</li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.Batch">Batch (class in svgwriter.model.batch)</a>
+</li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.BatchMotion">BatchMotion (class in svgwriter.model.batch)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.model.elements.shapes.Circle.bbox">bbox (Circle property)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox">BBox (class in svgwriter.model.pathdata)</a>
@@ -593,12 +603,12 @@
           <li><a href="reference/elements.html#svgwriter.model.elements.shapes.Shape.bbox">(Shape property)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/builder.html#svgwriter.catalog.preset.behavior">behavior() (in module svgwriter.catalog.preset)</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.filters.bevel">bevel() (in module svgwriter.catalog.filters)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/export.html#svgwriter.formats.export.Exporter.binary">binary (Exporter attribute)</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.gradients.blend">blend() (in module svgwriter.catalog.gradients)</a>
@@ -801,6 +811,8 @@
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.PathBuilder.circle">circle() (PathBuilder method)</a>
 </li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.circles">circles() (in module svgwriter.model.batch)</a>
+</li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.clamp">clamp() (Angle method)</a>
 
         <ul>
@@ -817,9 +829,11 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.paint.ClipPath">ClipPath (class in svgwriter.model.elements.paint)</a>
 </li>
-        <li><a href="reference/elements.html#svgwriter.model.elements.Element.clone">clone() (Element method)</a>
+        <li><a href="reference/batch.html#svgwriter.model.batch.Batch.clone">clone() (Batch method)</a>
 
         <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Element.clone">(Element method)</a>
+</li>
           <li><a href="reference/layout.html#svgwriter.model.layout.Frame.clone">(Frame method)</a>
 </li>
           <li><a href="reference/elements.html#svgwriter.model.elements.structure.Pixels.clone">(Pixels method)</a>
@@ -857,8 +871,6 @@
           <li><a href="reference/geometry.html#svgwriter.model.pathdata.VLineTo.code">(VLineTo attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.Control.code">code() (Control method)</a>
 
         <ul>
@@ -873,6 +885,8 @@
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.Slider.code">(Slider method)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.Filter.collect">collect() (Filter method)</a>
 </li>
         <li><a href="reference/color.html#svgwriter.model.color.Color">Color (class in svgwriter.model.color)</a>
@@ -887,15 +901,23 @@
         </ul></li>
         <li><a href="reference/elements.html#svgwriter.Motion.color_cycle">color_cycle() (Motion method)</a>
 </li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.colormap">colormap() (in module svgwriter.model.batch)</a>
+</li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.colormaps">colormaps() (in module svgwriter.model.batch)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.ColorMatrixType">ColorMatrixType (class in svgwriter.model.elements.filters)</a>
 </li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.ColorPicker">ColorPicker (class in svgwriter.tools.widgets)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.structure.ColorProfile">ColorProfile (class in svgwriter.model.elements.structure)</a>
 </li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.Batch.column">column() (Batch method)</a>
+</li>
         <li><a href="reference/layout.html#svgwriter.model.layout.Grid.columns">columns (Grid property)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.combine">combine() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.Batch.compact">compact (Batch property)</a>
 </li>
         <li><a href="reference/io.html#svgwriter.formats.io.SerializeOptions.compact_paths">compact_paths (SerializeOptions attribute)</a>
 </li>
@@ -1308,6 +1330,8 @@
         <li><a href="reference/attributes.html#svgwriter.model.attributes.units.ex">ex (in module svgwriter.model.attributes.units)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.EX">EX (Unit attribute)</a>
+</li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.Batch.expand">expand() (Batch method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.PathOperand.expand_pattern">expand_pattern() (PathOperand method)</a>
 </li>
@@ -1835,13 +1859,15 @@
 </li>
         <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Star.inner">inner (Star property)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/presets.html#svgwriter.catalog.filters.inner_shadow">inner_shadow() (in module svgwriter.catalog.filters)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.insert">insert() (Element method)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/ops.html#svgwriter.ops.Typeface.installed">installed (Typeface property)</a>
+</li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.instances">instances() (in module svgwriter.model.batch)</a>
 </li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.RangeSlider.integer">integer (RangeSlider attribute)</a>
 </li>
@@ -1884,6 +1910,14 @@
         <li><a href="reference/color.html#svgwriter.model.color.Color.is_light">is_light (Color property)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.transform.Matrix.isclose">isclose() (Matrix method)</a>
+</li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.Batch.item_attributes">item_attributes (Batch property)</a>
+</li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.Batch.item_markup">item_markup() (Batch method)</a>
+</li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.Batch.item_type">item_type (Batch property)</a>
+</li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.Batch.items">items (Batch property)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.iter">iter() (Element method)</a>
 </li>
@@ -2033,9 +2067,11 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.FeFunc.linear">linear() (FeFunc class method)</a>
 </li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.paint.LinearGradient">LinearGradient (class in svgwriter.model.elements.paint)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="reference/elements.html#svgwriter.model.elements.paint.LinearGradient">LinearGradient (class in svgwriter.model.elements.paint)</a>
+        <li><a href="reference/batch.html#svgwriter.model.batch.lines">lines() (in module svgwriter.model.batch)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.LineTo">LineTo (class in svgwriter.model.pathdata)</a>
 </li>
@@ -2240,6 +2276,8 @@
           <li><a href="reference/attributes.html#module-svgwriter.model.attributes.rules">svgwriter.model.attributes.rules</a>
 </li>
           <li><a href="reference/attributes.html#module-svgwriter.model.attributes.units">svgwriter.model.attributes.units</a>
+</li>
+          <li><a href="reference/batch.html#module-svgwriter.model.batch">svgwriter.model.batch</a>
 </li>
           <li><a href="reference/color.html#module-svgwriter.model.color">svgwriter.model.color</a>
 </li>
@@ -2522,10 +2560,10 @@
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.PC">PC (Unit attribute)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.units.percent">percent (in module svgwriter.model.attributes.units)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.PERCENT">PERCENT (Unit attribute)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.PIXEL">PIXEL (Unit attribute)</a>
@@ -2550,11 +2588,17 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.shapes.Polyline.points">points (Polyline property)</a>
 </li>
-        <li><a href="reference/geometry.html#svgwriter.model.pathdata.PathData.points">points() (PathData method)</a>
+        <li><a href="reference/batch.html#svgwriter.model.batch.points">points() (in module svgwriter.model.batch)</a>
+
+        <ul>
+          <li><a href="reference/geometry.html#svgwriter.model.pathdata.PathData.points">(PathData method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements.shapes.Polygon">Polygon (class in svgwriter.model.elements.shapes)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.shapes.Polyline">Polyline (class in svgwriter.model.elements.shapes)</a>
+</li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.polylines">polylines() (in module svgwriter.model.batch)</a>
 </li>
         <li><a href="reference/document.html#svgwriter.PageSize.portrait">portrait (PageSize property)</a>
 </li>
@@ -2659,6 +2703,8 @@
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.Recorder">Recorder (class in svgwriter.tools.widgets)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.shapes.Rect">Rect (class in svgwriter.model.elements.shapes)</a>
+</li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.rects">rects() (in module svgwriter.model.batch)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.Channel.RED">RED (Channel attribute)</a>
 </li>
@@ -2934,9 +2980,11 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.Set">Set (class in svgwriter.model.elements.animation)</a>
 </li>
-        <li><a href="reference/elements.html#svgwriter.model.elements.Element.set">set() (Element method)</a>
+        <li><a href="reference/batch.html#svgwriter.model.batch.Batch.set">set() (Batch method)</a>
 
         <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Element.set">(Element method)</a>
+</li>
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.Recorder.set">(Recorder method)</a>
 </li>
         </ul></li>
@@ -2949,6 +2997,8 @@
         <li><a href="reference/layout.html#svgwriter.model.layout.settle">settle() (in module svgwriter.model.layout)</a>
 </li>
         <li><a href="reference/color.html#svgwriter.model.color.Color.shade">shade() (Color method)</a>
+</li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.Batch.shape">shape (Batch property)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.shapes.Shape">Shape (class in svgwriter.model.elements.shapes)</a>
 </li>
@@ -3313,6 +3363,13 @@
 </li>
         </ul></li>
         <li>
+    svgwriter.model.batch
+
+        <ul>
+          <li><a href="reference/batch.html#module-svgwriter.model.batch">module</a>
+</li>
+        </ul></li>
+        <li>
     svgwriter.model.color
 
         <ul>
@@ -3667,6 +3724,8 @@
         <li><a href="reference/elements.html#svgwriter.model.elements.text.TextDecoration">TextDecoration (class in svgwriter.model.elements.text)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.text.TextPath">TextPath (class in svgwriter.model.elements.text)</a>
+</li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.texts">texts() (in module svgwriter.model.batch)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.TextSink">TextSink (class in svgwriter.model.attributes)</a>
 </li>

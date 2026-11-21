@@ -227,6 +227,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/rendering.html">Rendering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/batches.html">Performance and batches</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/logos.html">Logos and icons</a></li>
@@ -248,6 +249,7 @@
 <li class="toctree-l2"><a class="reference internal" href="elements.html">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="geometry.html">Geometry</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layout.html">Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="batch.html">Batches</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color.html">Colors</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fonts.html">Fonts</a></li>
@@ -971,7 +973,7 @@ next to its fonts stays small.</p></li>
 <dd><p>Tight bounding box computed from the curves, not from samples.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to measure.</p>
+<dd class="field-odd"><p><strong>item</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to measure.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>BBox</em> – The smallest axis-aligned box around the outline.</p>
@@ -998,9 +1000,9 @@ When that leaves the result empty a warning says so.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>first</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Outlines in user units; each element’s own <code class="docutils literal notranslate"><span class="pre">transform</span></code> and
+<li><p><strong>first</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Outlines in user units; each element’s own <code class="docutils literal notranslate"><span class="pre">transform</span></code> and
 <code class="docutils literal notranslate"><span class="pre">fill-rule</span></code> are honoured.</p></li>
-<li><p><strong>second</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Outlines in user units; each element’s own <code class="docutils literal notranslate"><span class="pre">transform</span></code> and
+<li><p><strong>second</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Outlines in user units; each element’s own <code class="docutils literal notranslate"><span class="pre">transform</span></code> and
 <code class="docutils literal notranslate"><span class="pre">fill-rule</span></code> are honoured.</p></li>
 <li><p><strong>op</strong> (<a class="reference internal" href="#svgwriter.ops.BooleanOp" title="svgwriter.ops.BooleanOp"><em>BooleanOp</em></a>) – The operation.</p></li>
 </ul>
@@ -1080,7 +1082,7 @@ definitions on premultiplied color.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to test.</p></li>
+<li><p><strong>item</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to test.</p></li>
 <li><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The point, in the outline’s user units.</p></li>
 <li><p><strong>y</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The point, in the outline’s user units.</p></li>
 </ul>
@@ -1107,7 +1109,7 @@ definitions on premultiplied color.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline.</p></li>
+<li><p><strong>item</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline.</p></li>
 <li><p><strong>tolerance</strong> (<a class="reference internal" href="attributes.html#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.Angle"><em>Angle</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Turns at or below this (degrees for a number) count as smooth. Defaults to 0.01 degrees.</p></li>
 </ul>
 </dd>
@@ -1143,7 +1145,7 @@ places are spaced as in <cite>sample</cite>. The shapes are moved in place.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>shapes</strong> (<em>sequence</em><em> of </em><em>elements</em>) – The shapes, in the order they go along the path.</p></li>
-<li><p><strong>along</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The path to follow.</p></li>
+<li><p><strong>along</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The path to follow.</p></li>
 <li><p><strong>orient</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – Also turn each shape so its +x axis follows the path. Defaults to True.</p></li>
 </ul>
 </dd>
@@ -1172,7 +1174,7 @@ steps that do not repeat the start; an open one includes both ends.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to walk.</p></li>
+<li><p><strong>item</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to walk.</p></li>
 <li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – How many places; at least 1.</p></li>
 </ul>
 </dd>
@@ -1205,8 +1207,8 @@ steps that do not repeat the start; an open one includes both ends.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>first</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to keep and the outline to subtract.</p></li>
-<li><p><strong>second</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to keep and the outline to subtract.</p></li>
+<li><p><strong>first</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to keep and the outline to subtract.</p></li>
+<li><p><strong>second</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to keep and the outline to subtract.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1339,6 +1341,8 @@ attributes; anything else is morphed as outlines: outlines pair with
 outlines and holes with holes (a contour without a partner grows from or
 shrinks to its centre), each pair is resampled to one point count and
 started where the points move least, so in-between shapes do not twist.
+Two batches (<a class="reference internal" href="batch.html#module-svgwriter.model.batch" title="svgwriter.model.batch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">svgwriter.batch</span></code></a>) of the same
+size blend every item at once.
 Inside elements, attribute values that cannot be blended (keywords,
 different strings, lists of different lengths) switch at <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">0.5</span></code>, as
 SMIL’s discrete mode does. Other types are added with
@@ -1393,8 +1397,8 @@ SMIL’s discrete mode does. Other types are added with
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>first</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outlines to intersect.</p></li>
-<li><p><strong>second</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outlines to intersect.</p></li>
+<li><p><strong>first</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outlines to intersect.</p></li>
+<li><p><strong>second</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outlines to intersect.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1426,7 +1430,7 @@ SMIL’s discrete mode does. Other types are added with
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to walk along.</p></li>
+<li><p><strong>item</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to walk along.</p></li>
 <li><p><strong>distance</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Distance from the start in user units.</p></li>
 </ul>
 </dd>
@@ -1756,7 +1760,7 @@ smoothly, a fillet’s reach from the vertex.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline.</p></li>
+<li><p><strong>item</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline.</p></li>
 <li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Fillet radius in user units.</p></li>
 <li><p><strong>where</strong> (<em>callable</em><em>, </em><em>iterable</em><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – Which corners: None for all, a predicate taking a <cite>Corner</cite>, or vertex
 numbers (<code class="docutils literal notranslate"><span class="pre">Corner.index</span></code>). Defaults to None.</p></li>
@@ -1792,7 +1796,7 @@ numbers (<code class="docutils literal notranslate"><span class="pre">Corner.ind
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to walk.</p></li>
+<li><p><strong>item</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to walk.</p></li>
 <li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – How many points; at least 1.</p></li>
 </ul>
 </dd>
@@ -1822,7 +1826,7 @@ spans several subpaths keeps them as separate pieces.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to cut.</p></li>
+<li><p><strong>item</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to cut.</p></li>
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Distances from the start in user units, clamped to <code class="docutils literal notranslate"><span class="pre">0..total_length</span></code>.</p></li>
 <li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Distances from the start in user units, clamped to <code class="docutils literal notranslate"><span class="pre">0..total_length</span></code>.</p></li>
 </ul>
@@ -1855,7 +1859,7 @@ spans several subpaths keeps them as separate pieces.</p>
 <dd><p>Equivalent outline with no self-intersections or overlaps.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to clean up.</p>
+<dd class="field-odd"><p><strong>item</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to clean up.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>PathData</em> – An outline that fills the same area.</p>
@@ -1925,7 +1929,7 @@ decoding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to stroke.</p></li>
+<li><p><strong>item</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to stroke.</p></li>
 <li><p><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Stroke width in user units. Defaults to 1.0.</p></li>
 <li><p><strong>cap</strong> (<em>{&quot;butt&quot;</em><em>, </em><em>&quot;round&quot;</em><em>, </em><em>&quot;square&quot;}</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">stroke-linecap</span></code> value. Defaults to “butt”.</p></li>
 <li><p><strong>join</strong> (<em>{&quot;miter&quot;</em><em>, </em><em>&quot;round&quot;</em><em>, </em><em>&quot;bevel&quot;}</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">stroke-linejoin</span></code> value. Defaults to “miter”.</p></li>
@@ -1958,7 +1962,7 @@ decoding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to walk along.</p></li>
+<li><p><strong>item</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to walk along.</p></li>
 <li><p><strong>distance</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Distance from the start in user units; clamped to <code class="docutils literal notranslate"><span class="pre">0..total_length</span></code>.</p></li>
 </ul>
 </dd>
@@ -2193,7 +2197,7 @@ converts.</p>
 <dd><p>Length of every subpath added together, like <code class="docutils literal notranslate"><span class="pre">getTotalLength()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to measure.</p>
+<dd class="field-odd"><p><strong>item</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to measure.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>float</em> – Length in user units.</p>
@@ -2222,8 +2226,8 @@ converts.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>first</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The first outline.</p></li>
-<li><p><strong>*others</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Further outlines to add.</p></li>
+<li><p><strong>first</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The first outline.</p></li>
+<li><p><strong>*others</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Further outlines to add.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -2257,8 +2261,8 @@ converts.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>first</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outlines to compare.</p></li>
-<li><p><strong>second</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Image.shape" title="svgwriter.model.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outlines to compare.</p></li>
+<li><p><strong>first</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outlines to compare.</p></li>
+<li><p><strong>second</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch.shape" title="svgwriter.model.batch.Batch.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outlines to compare.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

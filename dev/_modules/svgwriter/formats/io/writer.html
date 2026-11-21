@@ -226,6 +226,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/rendering.html">Rendering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/batches.html">Performance and batches</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/logos.html">Logos and icons</a></li>
@@ -247,6 +248,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/elements.html">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/geometry.html">Geometry</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/layout.html">Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/batch.html">Batches</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/ops.html">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/fonts.html">Fonts</a></li>
@@ -318,6 +320,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyPath</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...model.attributes.protocols</span><span class="w"> </span><span class="kn">import</span> <span class="n">TextSink</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...model.attributes.values</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_value</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...model.batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Batch</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...model.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">UnknownElement</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...model.pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathData</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...model.transform.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix</span>
@@ -485,7 +488,8 @@
         <span class="n">namespace</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="s2">"namespace"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">tag</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">names</span><span class="p">[</span><span class="n">namespace</span><span class="p">]</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">element</span><span class="o">.</span><span class="n">tag</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">namespace</span> <span class="ow">in</span> <span class="n">names</span> <span class="k">else</span> <span class="n">element</span><span class="o">.</span><span class="n">tag</span>
         <span class="k">yield</span> <span class="n">pad</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_open_tag</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">extra</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">tag</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">element</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">item_markup</span><span class="p">(</span><span class="n">opts</span><span class="o">.</span><span class="n">precision</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">Batch</span><span class="p">)</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">element</span><span class="o">.</span><span class="n">children</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">items</span><span class="p">:</span>
             <span class="k">yield</span> <span class="s2">"/&gt;"</span>
             <span class="k">return</span>
         <span class="k">yield</span> <span class="s2">"&gt;"</span>
@@ -500,6 +504,9 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">inner_inline</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">opts</span><span class="o">.</span><span class="n">newline</span>
             <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_element</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">declare</span><span class="p">,</span> <span class="n">inner_inline</span><span class="p">,</span> <span class="n">names</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">items</span><span class="p">:</span>
+            <span class="n">between</span> <span class="o">=</span> <span class="n">opts</span><span class="o">.</span><span class="n">newline</span> <span class="o">+</span> <span class="n">opts</span><span class="o">.</span><span class="n">indent</span> <span class="o">*</span> <span class="p">(</span><span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">between</span> <span class="o">+</span> <span class="n">between</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inner_inline</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">opts</span><span class="o">.</span><span class="n">newline</span> <span class="o">+</span> <span class="n">pad</span>
         <span class="k">yield</span> <span class="sa">f</span><span class="s2">"&lt;/</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">&gt;"</span>
