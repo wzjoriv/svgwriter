@@ -28,10 +28,8 @@ from .animation import (
     Update,
     animation_duration,
     iter_frames,
-    register_renderer,
     render_animation,
     resolve_renderer,
-    unregister_renderer,
 )
 from .frames import Frame, FrameData, RGBAArray, frame_times
 from .loader import SceneError, load_scenes
@@ -57,8 +55,6 @@ __all__ = [
     "frame_times",
     "iter_frames",
     "load_scenes",
-    "register_renderer",
     "render_animation",
     "resolve_renderer",
-    "unregister_renderer",
 ]

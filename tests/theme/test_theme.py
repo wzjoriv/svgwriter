@@ -61,7 +61,7 @@ class TestTheme:
     @pytest.mark.parametrize("name", BUILTINS)
     def test_builtins_resolve_every_role(self, name: str) -> None:
         theme = svg.Theme.get(name)
-        assert theme.name == name and set(svg.THEMES.names()) >= set(BUILTINS)
+        assert theme.name == name and set(svg.THEMES.list()) >= set(BUILTINS)
         for role in theme.roles:
             assert theme.style(role)
 

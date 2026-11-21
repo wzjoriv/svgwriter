@@ -10,6 +10,8 @@ from typing import Final
 from ...model.attributes.length import Unit
 
 __all__ = [
+    "DEFAULT_PAGE_OPTION",
+    "EXTENSION_DOT",
     "PHYSICAL_UNITS",
     "BODY_SIZE",
     "BOLD_RE",
@@ -82,3 +84,5 @@ SPACES_PER_LEVEL: Final = 2
 
 PHYSICAL_UNITS: Final = frozenset({Unit.MM, Unit.CM, Unit.IN, Unit.PT, Unit.PC})
 """Page size units that fix the printed size, so ``units_per_inch`` leaves them alone."""
+DEFAULT_PAGE_OPTION: Final = "page"
+EXTENSION_DOT: Final = "."

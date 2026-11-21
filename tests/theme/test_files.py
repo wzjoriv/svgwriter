@@ -132,13 +132,13 @@ def test_references_kept_and_functions_resolved() -> None:
 
 
 def test_variant_of_registered_variant_extends_it() -> None:
-    svg.THEMES.add("brand-test", svg.Theme.get("light").replace(name="brand-test", palette={"primary": "navy"}))
+    svg.THEMES.register(svg.Theme.get("light").replace(name="brand-test", palette={"primary": "navy"}))
     try:
         variant = svg.Theme.get("brand-test").replace(name="brand-2")
         assert svg.Theme.get("brand-test").extends == "light" and variant.extends == "brand-test"
         assert variant.to_toml() == 'name = "brand-2"\nextends = "brand-test"\n'
     finally:
-        svg.THEMES.remove("brand-test")
+        svg.THEMES.unregister("brand-test")
 
 
 def test_unregistered_theme_written_in_full() -> None:
@@ -149,9 +149,9 @@ def test_unregistered_theme_written_in_full() -> None:
 
 
 def test_missing_base_and_file_errors(tmp_path: Path) -> None:
-    svg.THEMES.add("gone-test", svg.Theme.get("light").replace(name="gone-test"))
+    svg.THEMES.register(svg.Theme.get("light").replace(name="gone-test"))
     variant = svg.Theme.get("gone-test").replace(name="child")
-    svg.THEMES.remove("gone-test")
+    svg.THEMES.unregister("gone-test")
     with pytest.raises(ThemeError, match="extends: unknown theme 'gone-test'"):
         variant.to_toml()
     path = tmp_path / "broken.toml"

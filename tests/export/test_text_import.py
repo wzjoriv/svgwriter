@@ -21,7 +21,7 @@ def test_extensions_route(tmp_path):
     target = tmp_path / "notes.md"
     target.write_text("# Hi", encoding="utf-8")
     assert svg.Document.open(target)[0][0].text_content == "Hi"
-    assert svg.export.find_importer("x.txt").name == "text"
+    assert svg.FORMATS.reader("x.txt").name == "text"
 
 
 def test_generic_families_resolve_to_real_fonts():

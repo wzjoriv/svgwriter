@@ -48,7 +48,8 @@ def _framed(primitive: Element, first: Any, second: Any, frame: Frame, area: ski
         return skia.ImageFilters.Tile(source_area, area, first)
     channels = [CHANNELS.get(str(primitive.get(name, "A")), skia.ColorChannel.kA)
                 for name in ("xChannelSelector", "yChannelSelector")]
-    return skia.ImageFilters.DisplacementMap(*channels, float(primitive.get("scale", 0)), second, first)
+    color = first if first is not None else skia.ImageFilters.Offset(0, 0, None)
+    return skia.ImageFilters.DisplacementMap(*channels, float(primitive.get("scale", 0)), second, color)
 
 
 def image_filter(filter_element: Element, frame: Frame) -> Any:

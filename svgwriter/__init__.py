@@ -26,7 +26,7 @@ model
     ``transform``, ``layout`` and ``theme`` (``svg.Rect``, ``svg.Theme``).
 catalog
     Ready-made content: ``builder``, ``patterns``, ``gradients``, ``filters``,
-    ``markers``, ``text_effects``, ``preset`` and ``fonts``
+    ``markers``, ``effects``, ``preset`` and ``fonts``
     (``fill=svg.patterns.stripes()``, ``svg.FontBuilder``).
 formats
     Files: ``export`` (format registry by name or extension), ``io``
@@ -50,17 +50,20 @@ from typing import TYPE_CHECKING, Any
 
 from . import ops
 from ._document.sizes import PageSize, page_size, size
+from ._internal._constants import SUGGESTIONS as _SUGGESTIONS
+from ._internal._registry import Registry, UnknownNameError
 from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
 from .aliases import filter as filter  # noqa: A004, E402
 from .aliases import set as set
 from .catalog import builder as builder
-from .catalog import filters, fonts, gradients, markers, patterns, preset, text_effects
+from .catalog import effects, filters, fonts, gradients, markers, patterns, preset
 from .catalog.builder import drawing
 from .catalog.fonts import FontBuilder
 from .document import Document
 from .formats import export, inkscape
 from .formats import io as io
+from .formats.export import FORMATS, Format
 from .formats.io.writer import SerializeOptions, to_string, write
 from .model import attributes as attributes
 from .model import color as color
@@ -105,7 +108,7 @@ from .model.pathdata import BBox, PathBuilder, PathData
 from .model.theme import THEMES, Theme
 from .model.transform import Matrix, Point, Transform
 from .motion import video
-from .motion.video import FFmpegNotFoundError, Scene, register_renderer
+from .motion.video import RENDERERS, FFmpegNotFoundError, Scene
 from .ops import (
     Typeface,
     distribute,
@@ -149,7 +152,11 @@ def __getattr__(name: str) -> Any:
         value = getattr(importlib.import_module(f".{module_name}", __name__), attribute)
         globals()[name] = value
         return value
-    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    import difflib
+
+    close = difflib.get_close_matches(name, __dir__(), n=_SUGGESTIONS)
+    hint = f"; did you mean {' or '.join(map(repr, close))}?" if close else ""
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}{hint}")
 
 
 def __dir__() -> list[str]:
@@ -215,6 +222,7 @@ __all__ = [
     "parse_file",
     "parse_paint",
     "export",
+    "effects",
     "filters",
     "fonts",
     "gradients",
@@ -233,9 +241,12 @@ __all__ = [
     "percent",
     "pt",
     "px",
-    "register_renderer",
+    "RENDERERS",
+    "Registry",
+    "UnknownNameError",
+    "FORMATS",
+    "Format",
     "size",
-    "text_effects",
     "text_to_path",
     "theme",
     "unregister_interpolator",

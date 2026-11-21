@@ -14,7 +14,7 @@ def bob(motion: svg.Motion, *, height: float = 8.0, dur: float = 1.0, begin: flo
 def registered():
     assert svg.preset.animation(bob) is bob
     yield "bob"
-    svg.preset.unregister("animation", "bob")
+    svg.preset.animation.unregister("bob")
 
 
 class TestAnimationPreset:
@@ -35,11 +35,11 @@ class TestAnimationPreset:
     def test_by_name(self, registered: str) -> None:
         dot = svg.circle(0, 0, 2)
         assert dot.animate.bob(height=4).element is dot and len(dot.children) == 2
-        assert "bob" in svg.preset.list("animation") and "bob" in dir(dot.animate)
-        assert dot.animate.bob.__name__ == "bob" and svg.preset.get("animation", "bob") is bob
+        assert "bob" in svg.preset.animation.list() and "bob" in dir(dot.animate)
+        assert dot.animate.bob.__name__ == "bob" and svg.preset.animation.get("bob") is bob
 
     def test_builtins_are_listed(self) -> None:
-        names = svg.preset.list("animation")
+        names = svg.preset.animation.list()
         assert {"fade_in", "spin", "bounce", "morph"} <= set(names)
         assert not {"apply", "stagger"} & set(names)
 
@@ -52,7 +52,7 @@ class TestAnimationPreset:
             assert callable(jump)
             assert svg.rect().animate.hop().element.children[0].tag == "animateTransform"
         finally:
-            svg.preset.unregister("animation", "hop")
+            svg.preset.animation.unregister("hop")
 
     def test_stagger_uses_user_presets(self, registered: str) -> None:
         group = svg.Group()
@@ -74,11 +74,11 @@ class TestAnimationPreset:
     def test_signature_checked(self, function) -> None:
         with pytest.raises(TypeError, match="animation 'bad'"):
             svg.preset.animation(name="bad")(function)
-        assert "bad" not in svg.preset.list("animation")
+        assert "bad" not in svg.preset.animation.list()
 
     def test_var_keyword_allowed(self) -> None:
         svg.preset.animation(name="forward")(lambda motion, **timing: motion.fade_in(**timing))
-        svg.preset.unregister("animation", "forward")
+        svg.preset.animation.unregister("forward")
 
     def test_taken_names_name_their_owner(self, registered: str) -> None:
         with pytest.raises(ValueError, match=r"'spin' is already registered by svgwriter\..*spin \(built in\)"):
@@ -94,7 +94,7 @@ class TestAnimationPreset:
             return bob(motion, height=height)
 
         svg.preset.animation(name="bob", replace=True)(taller)
-        assert svg.preset.get("animation", "bob") is taller
+        assert svg.preset.animation.get("bob") is taller
 
         def slow_spin(motion: svg.Motion, *, dur: float = 9.0) -> svg.Motion:
             return svg.Motion.spin(motion, dur)
@@ -105,7 +105,7 @@ class TestAnimationPreset:
             dot.animate.spin()
             assert dot.children[0].get("dur") == "9s"
         finally:
-            svg.preset.unregister("animation", "spin")
+            svg.preset.animation.unregister("spin")
         dot = svg.circle(0, 0, 2)
         dot.animate.spin()
         assert dot.children[0].get("dur") != "9s"
@@ -120,6 +120,6 @@ class TestAnimationPreset:
 
     def test_unregister_unknown(self) -> None:
         with pytest.raises(KeyError, match="unknown animation"):
-            svg.preset.unregister("animation", "never")
+            svg.preset.animation.unregister("never")
         with pytest.raises(KeyError, match="built in"):
-            svg.preset.unregister("animation", "fade_in")
+            svg.preset.animation.unregister("fade_in")

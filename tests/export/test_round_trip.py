@@ -32,7 +32,7 @@ def test_round_trip_renders_like_the_original(fmt: str, tolerance: float) -> Non
     if fmt == "pptx":
         pytest.importorskip("pptx")
     data = svg.export.export(original, fmt)
-    back = svg.export.find_importer(IMPORTER.get(fmt, fmt)).function(data.encode() if isinstance(data, str) else data)
+    back = svg.FORMATS.reader(IMPORTER.get(fmt, fmt)).read(data.encode() if isinstance(data, str) else data)
     if fmt not in SCALED:
         back.root.set("viewBox", original.root.get("viewBox"))
     back.root.set("width", SIZE[0])
@@ -69,7 +69,7 @@ def test_patterns_survive_vector_export(fmt):
     doc = svg.Document(*SIZE)
     doc.circle(30, 30, 25, fill=dots, stroke="black")
     data = svg.export.export(doc, fmt)
-    back = svg.export.find_importer(fmt).function(data.encode() if isinstance(data, str) else data)
+    back = svg.FORMATS.reader(fmt).read(data.encode() if isinstance(data, str) else data)
     back.root.set("viewBox", doc.root.get("viewBox"))
     back.root.set("width", SIZE[0])
     back.root.set("height", SIZE[1])

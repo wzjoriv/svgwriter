@@ -46,13 +46,13 @@ def test_mixed_scripts_shape_each_in_its_own_font() -> None:
 
 
 def test_pptx_keeps_text_as_editable_boxes() -> None:
-    from svgwriter.formats.export import export, find_importer
+    from svgwriter.formats.export import FORMATS, export
 
     doc = svg.Document(300, 120)
     doc.text("Hello slide", x=20, y=40, font_size=24, fill="red", font_weight="bold")
     turned = doc.text("turned", x=150, y=90, font_size=18, font_style="italic")
     turned.rotate(-20, about=(150, 90))
-    back = find_importer("pptx").function(export(doc, "pptx"))
+    back = FORMATS.reader("pptx").read(export(doc, "pptx"))
     texts = [element for element in back.root.iter() if element.tag == "text"]
     assert [text.text_content for text in texts] == ["Hello slide", "turned"]
     assert float(texts[0].get("y")) == 40
@@ -94,12 +94,12 @@ def test_pdf_outlines_text_it_cannot_keep() -> None:
 def test_pdf_text_matches_outline_render() -> None:
     import numpy as np
 
-    from svgwriter.formats.export import export, find_importer
+    from svgwriter.formats.export import FORMATS, export
 
     doc = svg.Document(120, 40)
     doc.rect(0, 0, 120, 40, fill="white")
     doc.text("Hello", x=10, y=28, font_size=20, fill="red")
-    read = find_importer("pdf").function
+    read = FORMATS.reader("pdf").read
     back = read(export(doc, "pdf"))
     texts = [element for element in back.root.iter() if element.tag == "text"]
     assert [text.text_content for text in texts] == ["Hello"]

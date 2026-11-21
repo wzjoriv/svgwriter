@@ -6,13 +6,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from .._registry import register, register_importer
+from .._format import Format
 
 if TYPE_CHECKING:
     from ....document import Document
 
 
-@register("excalidraw", extensions=(".excalidraw",), binary=False)
 def excalidraw(document: Document, **options: Any) -> str:
     """Excalidraw scene JSON (outlines as line elements).
 
@@ -43,7 +42,6 @@ def excalidraw(document: Document, **options: Any) -> str:
     return to_excalidraw(document, **options)
 
 
-@register_importer("excalidraw", extensions=(".excalidraw", ".json"))
 def read_excalidraw(data: bytes) -> Document:
     """Excalidraw scene JSON as native SVG shapes, text and images.
 
@@ -65,9 +63,14 @@ def read_excalidraw(data: bytes) -> Document:
     --------
     >>> import svgwriter as svg
     >>> data = svg.export.export(svg.Document(4, 4), "excalidraw").encode()
-    >>> svg.export.find_importer(".excalidraw").function(data).root.tag
+    >>> svg.FORMATS.reader(".excalidraw").read(data).root.tag
     'svg'
     """
     from ._excalidraw import read_excalidraw as read
 
     return read(data.decode("utf-8"))
+
+
+class ExcalidrawFormat(Format, name="excalidraw", extensions=(".excalidraw", ".json"), binary=False):
+    write = staticmethod(excalidraw)
+    read = staticmethod(read_excalidraw)

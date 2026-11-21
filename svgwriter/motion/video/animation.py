@@ -9,7 +9,7 @@ from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import TYPE_CHECKING, Final, TypeAlias
 
-from ..._internal._registry import Registry
+from ..._internal._registry import Registry, UnknownNameError
 from ..._internal._typing import AnyPath
 from ._constants import FRAME_PATTERN, FRAME_SUFFIX, TIME_SCALE, TIMECOUNT_RE
 from ._ffmpeg import encode, find_ffmpeg
@@ -25,10 +25,8 @@ __all__ = [
     "Update",
     "animation_duration",
     "iter_frames",
-    "register_renderer",
     "render_animation",
     "resolve_renderer",
-    "unregister_renderer",
 ]
 
 Renderer: TypeAlias = "Callable[[Document, float], FrameData]"
@@ -40,6 +38,18 @@ Update: TypeAlias = "Callable[[Document, float], object]"
 DEFAULT_FPS: Final = 30.0
 
 RENDERERS: Final[Registry[Callable[[Document, float], FrameData]]] = Registry("renderer")
+"""Renderers by name, chosen with ``renderer="name"``: ``@svg.RENDERERS.register`` adds one.
+
+Examples
+--------
+>>> import svgwriter as svg
+>>> @svg.RENDERERS.register(name="myraster")
+... def render(document, seconds):
+...     return document.render_png()
+>>> svg.RENDERERS.get("myraster") is render
+True
+>>> _ = svg.RENDERERS.unregister("myraster")
+"""
 
 
 def _skia(document: Document, seconds: float) -> FrameData:
@@ -48,62 +58,7 @@ def _skia(document: Document, seconds: float) -> FrameData:
     return render_frame(document, seconds)
 
 
-RENDERERS.add("skia", _skia)
-
-
-def register_renderer(name: str) -> Callable[[Renderer], Renderer]:
-    """Decorator registering a renderer so it can be chosen by *name*.
-
-    A rasterizer package can register itself on import, after which
-    ``renderer="myraster"`` selects it everywhere a renderer is accepted.
-
-    Parameters
-    ----------
-    name : str
-        The name to register the renderer under.
-
-    Returns
-    -------
-    callable
-        A decorator that registers the function and returns it unchanged.
-
-    See Also
-    --------
-    resolve_renderer : Look a registered renderer up again.
-
-    Examples
-    --------
-    >>> from svgwriter.motion.video import register_renderer, resolve_renderer, unregister_renderer
-    >>> @register_renderer("myraster")
-    ... def render(document, seconds):
-    ...     return document.render_png()
-    >>> resolve_renderer("myraster") is render
-    True
-    >>> unregister_renderer("myraster")
-    """
-    return RENDERERS.register(name)  # type: ignore[return-value]
-
-
-def unregister_renderer(name: str) -> None:
-    """Remove the renderer registered under *name*.
-
-    Parameters
-    ----------
-    name : str
-        The name given to :func:`register_renderer`.
-
-    Raises
-    ------
-    KeyError
-        When no renderer has that name.
-
-    Examples
-    --------
-    >>> from svgwriter.motion.video import register_renderer, unregister_renderer
-    >>> _ = register_renderer("tmp")(lambda document, seconds: b"")
-    >>> unregister_renderer("tmp")
-    """
-    RENDERERS.remove(name)
+RENDERERS.add_builtin("skia", _skia)
 
 
 def resolve_renderer(renderer: Renderer | str | None) -> Renderer:
@@ -123,13 +78,15 @@ def resolve_renderer(renderer: Renderer | str | None) -> Renderer:
     Raises
     ------
     ValueError
-        If `renderer` is None or an unregistered name without a colon.
+        If `renderer` is None.
+    UnknownNameError
+        If `renderer` is an unregistered name without a colon; the message suggests the closest names.
     TypeError
         If a ``"module:function"`` path names something that is not callable.
 
     See Also
     --------
-    register_renderer : Add a named renderer.
+    RENDERERS : Register a named renderer.
 
     Examples
     --------
@@ -139,21 +96,22 @@ def resolve_renderer(renderer: Renderer | str | None) -> Renderer:
     >>> resolve_renderer("nope")
     Traceback (most recent call last):
     ...
-    ValueError: unknown renderer 'nope'; registered: skia
+    svgwriter._internal._registry.UnknownNameError: unknown renderer 'nope'; registered: skia
     """
     if callable(renderer):
         return renderer
     if renderer is None:
-        names = ", ".join(RENDERERS.names())
+        names = ", ".join(RENDERERS.list())
         raise ValueError(
             "no renderer given; pass renderer=callable(document, seconds) returning PNG bytes or an RGBA array, "
             f"a registered name ({names}) or 'module:function'"
         )
-    if renderer in RENDERERS:
-        return RENDERERS.get(renderer)
     module_name, sep, attribute = renderer.partition(":")
     if not sep:
-        raise ValueError(f"unknown renderer {renderer!r}; registered: {', '.join(RENDERERS.names())}")
+        found = RENDERERS.find(renderer)
+        if found is None:
+            raise UnknownNameError(f"{RENDERERS.unknown(renderer)}; registered: {', '.join(RENDERERS.list())}")
+        return found
     found = getattr(importlib.import_module(module_name), attribute)
     if not callable(found):
         raise TypeError(f"{renderer!r} is not callable")

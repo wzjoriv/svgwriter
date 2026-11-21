@@ -9,7 +9,7 @@ import svgwriter as svg
 from tests.conftest import wellformed
 
 CATALOGUES = {"pattern": svg.patterns, "filter": svg.filters, "gradient": svg.gradients, "marker": svg.markers,
-              "text_effect": svg.text_effects}
+              "effect": svg.effects}
 ENTRIES = [(kind, name) for kind, module in CATALOGUES.items() for name in module.__all__]
 
 
@@ -35,8 +35,8 @@ def _drawing(kind: str, name: str) -> svg.Document:
 @pytest.mark.parametrize(("kind", "name"), ENTRIES)
 class TestEveryPreset:
     def test_listed_and_named(self, kind: str, name: str) -> None:
-        assert name in svg.preset.list(kind)
-        assert getattr(CATALOGUES[kind], name) is svg.preset.get(kind, name)
+        assert name in svg.preset.KINDS[kind].list()
+        assert getattr(CATALOGUES[kind], name) is svg.preset.KINDS[kind].get(name)
 
     def test_writes_wellformed_svg(self, kind: str, name: str) -> None:
         wellformed(_drawing(kind, name).to_string())
@@ -66,7 +66,7 @@ class TestCatalogues:
         try:
             assert svg.patterns.bricks is bricks and "bricks" in dir(svg.patterns)
         finally:
-            svg.preset.unregister("pattern", "bricks")
+            svg.preset.pattern.unregister("bricks")
         assert "bricks" not in dir(svg.patterns)
 
     def test_replacing_a_builtin_answers_with_the_replacement(self) -> None:
@@ -77,7 +77,7 @@ class TestCatalogues:
         try:
             assert svg.filters.blur is sharp
         finally:
-            svg.preset.unregister("filter", "blur")
+            svg.preset.filter.unregister("blur")
         assert svg.filters.blur is not sharp
 
     @pytest.mark.parametrize("kind", ["pattern", "filter", "gradient", "marker"])
@@ -92,7 +92,7 @@ class TestCatalogues:
             with pytest.raises(TypeError, match=f"{kind} 'broken' returned Circle"):
                 broken()
         finally:
-            svg.preset.unregister(kind, "broken")
+            svg.preset.KINDS[kind].unregister("broken")
 
     def test_taken_name_names_the_owner(self) -> None:
         with pytest.raises(ValueError, match="built in"):

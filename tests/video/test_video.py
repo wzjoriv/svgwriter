@@ -103,13 +103,13 @@ class TestRenderers:
             video.resolve_renderer("tests.video.test_video:WIDTH")
 
     def test_register(self) -> None:
-        @video.register_renderer("test-solid")
+        @svg.RENDERERS.register(name="test-solid")
         def render(document: svg.Document, seconds: float) -> bytes:
             return solid_png(document, seconds)
 
         assert video.resolve_renderer("test-solid") is render
-        assert svg.register_renderer is video.register_renderer
-        video.unregister_renderer("test-solid")
+        assert svg.RENDERERS is video.RENDERERS
+        assert svg.RENDERERS.unregister("test-solid") is render
 
     def test_iter_frames_and_update(self) -> None:
         seen: list[float] = []

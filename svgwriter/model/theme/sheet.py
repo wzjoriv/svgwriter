@@ -147,7 +147,7 @@ def sheet_theme(root: Element) -> Theme | None:
     if not isinstance(sheet, StyleElement):
         return None
     css = sheet.css
-    for name in THEMES.names():
+    for name in THEMES.list():
         theme = THEMES.get(name)
         try:
             roles = used_roles(theme, root)

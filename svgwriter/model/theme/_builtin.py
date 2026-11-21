@@ -16,4 +16,4 @@ def register_builtins() -> None:
     """Register every built-in theme: its palette, font changes and role changes over the standard ones."""
     for name, spec in BUILTIN_THEMES.items():
         base = Theme(name, spec["palette"], Fonts().replace(**spec.get("fonts", {})))
-        THEMES.add(name, base.replace(roles=spec.get("roles", {})))
+        THEMES.add_builtin(name, base.replace(roles=spec.get("roles", {})))

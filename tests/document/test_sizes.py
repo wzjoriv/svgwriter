@@ -53,20 +53,20 @@ class TestRegistry:
     def test_register_and_remove(self) -> None:
         added = svg.preset.size("square-card", "60mm", svg.mm(60))
         try:
-            assert "square-card" in svg.preset.list("size")
-            assert svg.preset.get("size", "square-card") == added == svg.PageSize(60.0, 60.0, svg.Unit.MM)
+            assert "square-card" in svg.preset.size.list()
+            assert svg.preset.size.get("square-card") == added == svg.PageSize(60.0, 60.0, svg.Unit.MM)
             assert str(svg.page_size("square-card")[0]) == "60mm"
             with pytest.raises(ValueError, match="already registered"):
                 svg.preset.size("square-card", 1, 1)
             assert svg.preset.size("square-card", 1, 2, replace=True).height == 2.0
         finally:
-            svg.preset.unregister("size", "square-card")
+            svg.preset.size.unregister("square-card")
         with pytest.raises(KeyError):
-            svg.preset.unregister("size", "square-card")
+            svg.preset.size.unregister("square-card")
 
     def test_builtin_is_replaced_not_removed(self) -> None:
         with pytest.raises(KeyError, match="built in"):
-            svg.preset.unregister("size", "a4")
+            svg.preset.size.unregister("a4")
 
     def test_units_must_match(self) -> None:
         with pytest.raises(ValueError, match="one unit"):
@@ -100,7 +100,7 @@ class TestPageSize:
         assert dataclasses.replace(config, size=svg.size.icon).size.width == 512.0
 
     def test_namespace_names_are_identifiers(self) -> None:
-        assert svg.size.slide_16_9 == svg.preset.get("size", "slide-16:9")
+        assert svg.size.slide_16_9 == svg.preset.size.get("slide-16:9")
         assert svg.size.business_card.units is svg.Unit.IN
         with pytest.raises(AttributeError, match="no size 'nope'"):
             _ = svg.size.nope
@@ -111,7 +111,7 @@ class TestPageSize:
             assert svg.size.poster_50x70.portrait.height == 70.0
             assert "poster_50x70" in dir(svg.size)
         finally:
-            svg.preset.unregister("size", "poster-50x70")
+            svg.preset.size.unregister("poster-50x70")
         assert "poster_50x70" not in dir(svg.size)
 
     def test_static_attributes_cover_the_builtins(self) -> None:

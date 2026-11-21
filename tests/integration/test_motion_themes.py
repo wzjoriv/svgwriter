@@ -51,4 +51,4 @@ def test_behaviours_and_smil_play_together():
         assert box.bounds().x == pytest.approx(SPEED * 0.5)
         assert ".role-shape" in frame.to_string()
     finally:
-        svg.preset.unregister("behavior", "integration_drift")
+        svg.preset.behavior.unregister("integration_drift")

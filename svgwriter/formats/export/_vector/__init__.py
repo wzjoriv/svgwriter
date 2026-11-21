@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 import skia
 
 from ...._internal._constants import PX_PER_INCH, PX_PER_PT
-from .._registry import register, register_importer
+from .._format import Format
 from ._constants import PDF_LINK_KEY
 
 if TYPE_CHECKING:
@@ -18,7 +18,6 @@ if TYPE_CHECKING:
     from ....document import Document
 
 
-@register("pdf", extensions=(".pdf",), multipage=True)
 def pdf(document: Document | Sequence[Document], *, title: str | None = None, author: str | None = None,
         text: bool = True, units_per_inch: float = PX_PER_INCH, icc: IccLike | None = None) -> bytes:
     """Vector PDF drawn by skia: shapes stay vector, text stays selectable, images are embedded.
@@ -115,7 +114,6 @@ def _links(canvas: skia.Canvas, page: Document) -> None:
             canvas.drawAnnotation(skia.Rect.MakeXYWH(*box), PDF_LINK_KEY, skia.Data(target.encode() + b"\0"))
 
 
-@register("tikz", extensions=(".tikz", ".tex"), binary=False)
 def tikz(document: Document, *, standalone: bool = False, text: bool = True, units_per_inch: float = PX_PER_INCH) -> str:
     """A TikZ picture of the flattened vector content (gradients as shadings; images skipped).
 
@@ -154,7 +152,6 @@ def tikz(document: Document, *, standalone: bool = False, text: bool = True, uni
     return to_tikz(document, standalone=standalone, text=text, units_per_inch=units_per_inch)
 
 
-@register("eps", extensions=(".eps", ".ps"))
 def eps(document: Document, *, text: bool = True, units_per_inch: float = PX_PER_INCH) -> bytes:
     """Encapsulated PostScript of the flattened vector content (solid paints; images skipped).
 
@@ -188,7 +185,6 @@ def eps(document: Document, *, text: bool = True, units_per_inch: float = PX_PER
     return to_eps(document, text=text, units_per_inch=units_per_inch).encode("ascii")
 
 
-@register_importer("pdf", extensions=(".pdf",), page_option="page")
 def read_pdf(data: bytes, *, page: int | None = 0) -> Document | list[Document]:
     """The paths, images, clips and text of a PDF page as elements.
 
@@ -228,7 +224,7 @@ def read_pdf(data: bytes, *, page: int | None = 0) -> Document | list[Document]:
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, fill="red")
     >>> data = svg.export.export(doc, "pdf")
-    >>> svg.export.find_importer(".pdf").function(data)[0].get("fill")
+    >>> svg.FORMATS.reader(".pdf").read(data)[0].get("fill")
     '#ff0000'
     """
     from ._pdf_read import page_count
@@ -239,7 +235,6 @@ def read_pdf(data: bytes, *, page: int | None = 0) -> Document | list[Document]:
     return read(data, page=page)
 
 
-@register_importer("tikz", extensions=(".tikz", ".tex"))
 def read_tikz(data: bytes) -> Document:
     """TikZ ``\\draw``, ``\\fill``, ``\\filldraw`` and ``\\path`` commands as paths.
 
@@ -276,7 +271,7 @@ def read_tikz(data: bytes) -> Document:
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, fill="red")
     >>> data = svg.export.export(doc, "tikz").encode()
-    >>> svg.export.find_importer(".tex").function(data)[0].get("fill")
+    >>> svg.FORMATS.reader(".tex").read(data)[0].get("fill")
     '#ff0000'
     """
     from ._tikz_read import read_tikz as read
@@ -284,7 +279,6 @@ def read_tikz(data: bytes) -> Document:
     return read(data.decode("utf-8", "replace"))
 
 
-@register_importer("eps", extensions=(".eps", ".ps"))
 def read_eps(data: bytes) -> Document:
     """EPS and PostScript drawings as paths, run by a small PostScript interpreter.
 
@@ -321,9 +315,24 @@ def read_eps(data: bytes) -> Document:
     >>> doc = svg.Document(10, 10)
     >>> _ = doc.rect(0, 0, 10, 10, fill="red")
     >>> data = svg.export.export(doc, "eps")
-    >>> svg.export.find_importer(".eps").function(data)[0].get("fill")
+    >>> svg.FORMATS.reader(".eps").read(data)[0].get("fill")
     '#ff0000'
     """
     from ._eps_read import read_eps as read
 
     return read(data)
+
+
+class PdfFormat(Format, name="pdf", extensions=(".pdf",), multipage=True):
+    write = staticmethod(pdf)
+    read = staticmethod(read_pdf)
+
+
+class TikzFormat(Format, name="tikz", extensions=(".tikz", ".tex"), binary=False):
+    write = staticmethod(tikz)
+    read = staticmethod(read_tikz)
+
+
+class EpsFormat(Format, name="eps", extensions=(".eps", ".ps")):
+    write = staticmethod(eps)
+    read = staticmethod(read_eps)

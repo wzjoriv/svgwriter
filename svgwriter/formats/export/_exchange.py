@@ -9,7 +9,7 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from ._registry import Exporter, find_exporter, find_importer
+from ._format import FORMATS, Format
 
 if TYPE_CHECKING:
     from ...document import Document
@@ -33,7 +33,7 @@ def export(document: Document | Sequence[Document], format: str, *, seconds: flo
         :meth:`Document.at`) instead of the document as written. Defaults to
         None, which keeps animations (formats without animation show t = 0).
     **options
-        Passed to the exporter function (see each format's description in :func:`exporters`).
+        Passed to the exporter function (see each format in :data:`~svgwriter.FORMATS`).
 
     Returns
     -------
@@ -43,7 +43,7 @@ def export(document: Document | Sequence[Document], format: str, *, seconds: flo
     Raises
     ------
     ValueError
-        If no exporter matches *format*, the sequence is empty, or several
+        If no format writes *format*, the sequence is empty, or several
         documents are given to a single-page format.
 
     See Also
@@ -57,14 +57,14 @@ def export(document: Document | Sequence[Document], format: str, *, seconds: flo
     >>> svg.export.export(doc, "png")[:4] == bytes.fromhex("89504e47")
     True
     >>> deck = svg.export.export([doc, svg.Document(8, 2)], "pdf")
-    >>> len(svg.export.find_importer("pdf").function(deck, page=None))
+    >>> len(svg.FORMATS.reader("pdf").read(deck, page=None))
     2
     """
-    exporter = find_exporter(format)
-    return exporter.function(_frames(exporter, document, seconds), **options)
+    exporter = FORMATS.writer(format)
+    return exporter.write(_frames(exporter, document, seconds), **options)
 
 
-def _frames(exporter: Exporter, document: Document | Sequence[Document], seconds: float | None) -> Any:
+def _frames(exporter: Format, document: Document | Sequence[Document], seconds: float | None) -> Any:
     """The document (or list of documents) to hand to *exporter*, at *seconds* when given."""
     if isinstance(document, Sequence):
         if not document:
@@ -93,7 +93,7 @@ def save(document: Document | Sequence[Document], path: str | os.PathLike[str], 
         Save the SMIL animation frame at this many seconds instead of the
         animated document. Defaults to None.
     **options
-        Passed to the exporter function.
+        Passed to the format's ``write``.
 
     Returns
     -------
@@ -103,7 +103,7 @@ def save(document: Document | Sequence[Document], path: str | os.PathLike[str], 
     Raises
     ------
     ValueError
-        If no exporter matches, or several documents are given to a
+        If no format writes it, or several documents are given to a
         single-page format.
 
     See Also
@@ -121,8 +121,8 @@ def save(document: Document | Sequence[Document], path: str | os.PathLike[str], 
     ...     target.read_text(encoding="utf-8").startswith("<?xml")
     True
     """
-    exporter = find_exporter(format or path)
-    data = exporter.function(_frames(exporter, document, seconds), **options)
+    exporter = FORMATS.writer(format or path)
+    data = exporter.write(_frames(exporter, document, seconds), **options)
     target = Path(path)
     if isinstance(data, bytes):
         target.write_bytes(data)
@@ -132,7 +132,7 @@ def save(document: Document | Sequence[Document], path: str | os.PathLike[str], 
 
 
 def load(path: str | os.PathLike[str], format: str | None = None, **options: Any) -> Document | list[Document]:
-    """Read a document from *path* with the importer chosen by *format* or the extension.
+    """Read a document from *path* with the format chosen by *format* or the extension.
 
     Parameters
     ----------
@@ -141,7 +141,7 @@ def load(path: str | os.PathLike[str], format: str | None = None, **options: Any
     format : str, optional
         Format name overriding the extension. Defaults to None.
     **options
-        Passed to the importer function.
+        Passed to the format's ``read``.
 
     Returns
     -------
@@ -154,7 +154,7 @@ def load(path: str | os.PathLike[str], format: str | None = None, **options: Any
     Raises
     ------
     ValueError
-        If no importer matches.
+        If no format reads it (an :class:`~svgwriter.UnknownNameError`).
 
     See Also
     --------
@@ -171,8 +171,8 @@ def load(path: str | os.PathLike[str], format: str | None = None, **options: Any
     ...     svg.export.load(target).root.tag
     'svg'
     """
-    importer = find_importer(format or path)
-    result = importer.function(Path(path).read_bytes(), **options)
+    importer = FORMATS.reader(format or path)
+    result = importer.read(Path(path).read_bytes(), **options)
     for document in result if isinstance(result, list) else [result]:
         document.root._source_path = os.fspath(path)
     return result

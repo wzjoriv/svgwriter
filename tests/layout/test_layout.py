@@ -206,7 +206,7 @@ def test_exporters_keep_positions(fmt):
         pytest.importorskip("pptx")
     original = _keypad()
     data = svg.export.export(original, fmt)
-    back = svg.export.find_importer(fmt).function(data)
+    back = svg.FORMATS.reader(fmt).read(data)
     if fmt == "pdf":
         back.root.set("viewBox", "0 0 120 80")
     back.root.set("width", 120)

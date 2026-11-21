@@ -5,7 +5,7 @@ Sub-packages
 ------------
 export
     Format registry by name or extension: vector, raster, plotter, office
-    and exchange formats; ``svg.export.register`` adds more.
+    and exchange formats; a :class:`~svgwriter.Format` subclass adds more.
 io
     Serialization options, writers (string, file, stream, async) and the
     parser.

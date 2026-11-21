@@ -57,8 +57,8 @@ def test_mermaid_runs_with_svg_labels(monkeypatch, tmp_path):
 
 
 def test_extensions_route_to_the_importers():
-    assert svg.export.find_importer("x.gv").name == "dot"
-    assert svg.export.find_importer("x.mmd").name == "mermaid"
+    assert svg.FORMATS.reader("x.gv").name == "dot"
+    assert svg.FORMATS.reader("x.mmd").name == "mermaid"
 
 
 @pytest.mark.skipif(shutil.which("latex") is None or shutil.which("dvisvgm") is None, reason="no TeX installed")

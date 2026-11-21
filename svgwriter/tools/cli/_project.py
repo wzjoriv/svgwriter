@@ -29,7 +29,7 @@ PROJECT_PATH = click.option("--path", type=click.Path(path_type=Path), default=P
 
 def _choose_preset() -> str:
     """Ask for a preset with a numbered menu."""
-    names = PRESETS.names()
+    names = PRESETS.list()
     for index, name in enumerate(names, 1):
         click.echo(f"{index:>2}. {name:<{PRESET_COLUMN}} {PRESETS.get(name).description}")
     choice = click.prompt("Preset", default=1, type=click.IntRange(1, len(names)))
@@ -80,7 +80,7 @@ def build(formats: tuple[str, ...], path: Path) -> None:
 @click.command()
 def presets() -> None:
     """List project presets."""
-    for name in PRESETS.names():
+    for name in PRESETS.list():
         click.echo(f"{name:<{PRESET_COLUMN}} {PRESETS.get(name).description}")
 
 

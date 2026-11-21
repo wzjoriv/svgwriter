@@ -24,6 +24,7 @@ __all__ = ["THEMES", "RoleSource", "Theme"]
 RoleSource: TypeAlias = "StyleLike | Callable[[Theme], StyleLike]"
 
 THEMES: Final[Registry[Theme]] = Registry("theme")
+"""Every theme by name: ``svg.THEMES.register(theme)`` adds one, ``list()``, ``get(name)`` and ``unregister(name)``."""
 _ACTIVE: ContextVar[Theme | None] = ContextVar("svgwriter_theme", default=None)
 _TOKENS: ContextVar[tuple[Token[Theme | None], ...]] = ContextVar("svgwriter_theme_tokens", default=())
 
@@ -256,7 +257,7 @@ class Theme(ThemeFiles):
             fonts = self._fonts.replace(**fonts)
         variant = Theme(name if name is not None else self._name, self._palette.replace(**(palette or {})),
                         fonts if fonts is not None else self._fonts, merged)
-        if self._name in THEMES and THEMES.get(self._name) is self:
+        if THEMES.find(self._name, plugins=False) is self:
             return variant._from_file(self._name, None)
         return variant._from_file(self._extends, self._document)
 
@@ -276,8 +277,8 @@ class Theme(ThemeFiles):
 
         Raises
         ------
-        KeyError
-            If no theme has that name.
+        UnknownNameError
+            If no theme has that name; the message suggests the closest names.
 
         Examples
         --------

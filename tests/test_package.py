@@ -50,7 +50,7 @@ def test_sentinel() -> None:
 
 def test_registry_and_chainable() -> None:
     reg: Registry[int] = Registry("number")
-    reg.register("one")(1)
+    reg.register(1, name="one")
     assert reg.get("one") == 1 and list(reg) == ["one"]
 
     class Counter:

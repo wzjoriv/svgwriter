@@ -50,7 +50,7 @@ class UnknownAttributeError(AttributeError):
     def __str__(self) -> str:
         from ...._internal._presets import KINDS
 
-        presets = {name: kind for kind in ("animation", "behavior") for name in KINDS[kind].names()}
+        presets = {name: kind for kind in ("animation", "behavior") for name in KINDS[kind].list()}
         if self.attribute in presets:
             return (f"{self.owner} has no attribute {self.attribute!r}: {self.attribute} is "
                     f"{'an animation' if presets[self.attribute] == 'animation' else 'a behavior'}; "

@@ -92,7 +92,7 @@ def ask_preset() -> str:
     import questionary
 
     choices = [questionary.Choice(f"{name:<{PRESET_COLUMN}} {PRESETS.get(name).description}", name)
-               for name in PRESETS.names()]
+               for name in PRESETS.list()]
     return str(_answer(questionary.select("Preset", choices=choices)))
 
 
@@ -108,7 +108,7 @@ def ask_theme() -> str | None:
     """Ask for a built-in theme to extend; None keeps the preset's own."""
     import questionary
 
-    choices = [questionary.Choice(KEEP_CHOICE, KEEP_CHOICE), *(questionary.Choice(name, name) for name in THEMES.names())]
+    choices = [questionary.Choice(KEEP_CHOICE, KEEP_CHOICE), *(questionary.Choice(name, name) for name in THEMES.list())]
     picked = _answer(questionary.select("Theme", choices=choices))
     return None if picked == KEEP_CHOICE else picked
 

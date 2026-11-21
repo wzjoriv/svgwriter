@@ -17,7 +17,7 @@ def sway(element: svg.Element, seconds: float, *, angle: float = 10.0) -> None:
 def registered():
     assert svg.preset.behavior(sway) is sway
     yield "sway"
-    svg.preset.unregister("behavior", "sway")
+    svg.preset.behavior.unregister("sway")
 
 
 class Stage(svg.Scene):
@@ -29,8 +29,8 @@ class Stage(svg.Scene):
 
 class TestRegistry:
     def test_builtins_are_listed(self) -> None:
-        assert {"wiggle", "hover", "breathe"} <= set(svg.preset.list("behavior"))
-        assert svg.preset.get("behavior", "wiggle") is wiggle
+        assert {"wiggle", "hover", "breathe"} <= set(svg.preset.behavior.list())
+        assert svg.preset.behavior.get("wiggle") is wiggle
 
     def test_named_and_replace(self) -> None:
         @svg.preset.behavior(name="rock")
@@ -41,15 +41,15 @@ class TestRegistry:
             with pytest.raises(ValueError, match="already registered"):
                 svg.preset.behavior(name="rock")(rocking)
             assert svg.preset.behavior(name="rock", replace=True)(sway) is sway
-            assert svg.preset.get("behavior", "rock") is sway
+            assert svg.preset.behavior.get("rock") is sway
         finally:
-            svg.preset.unregister("behavior", "rock")
+            svg.preset.behavior.unregister("rock")
 
     def test_builtin_needs_replace(self) -> None:
         with pytest.raises(ValueError, match=r"built in"):
             svg.preset.behavior(name="wiggle")(sway)
         with pytest.raises(KeyError, match="built in"):
-            svg.preset.unregister("behavior", "wiggle")
+            svg.preset.behavior.unregister("wiggle")
 
     @pytest.mark.parametrize("function", [
         lambda element: None,
@@ -60,7 +60,7 @@ class TestRegistry:
     def test_signature_is_checked(self, function) -> None:
         with pytest.raises(TypeError, match="def bad"):
             svg.preset.behavior(name="bad")(function)
-        assert "bad" not in svg.preset.list("behavior")
+        assert "bad" not in svg.preset.behavior.list()
 
     def test_names_shared_with_animations(self) -> None:
         with pytest.raises(ValueError, match="animation preset"):

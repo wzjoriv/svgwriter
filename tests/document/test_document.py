@@ -203,7 +203,7 @@ def test_from_string_reads_any_text_format() -> None:
 def test_from_string_rejects_unknown_formats_and_svg_only_options() -> None:
     import pytest
 
-    with pytest.raises(ValueError, match="no importer"):
-        svg.Document.from_string("x", "nope")  # no importer for this name or extension
+    with pytest.raises(ValueError, match="no format can read 'nope'"):
+        svg.Document.from_string("x", "nope")
     with pytest.raises(TypeError):
         svg.Document.from_string("flowchart LR\n  A --> B", "mermaid", strictness=svg.Strictness.STRICT)

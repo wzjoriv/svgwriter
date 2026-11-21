@@ -46,7 +46,7 @@ class Project:
 
     See Also
     --------
-    svgwriter.tools.project.register_preset : Add a starter folder for :meth:`new`.
+    svgwriter.tools.project.PRESETS : Register a starter folder for :meth:`new`.
 
     Notes
     -----

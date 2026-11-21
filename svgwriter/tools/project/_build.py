@@ -1,5 +1,5 @@
 """
-Writing a project's outputs: pages through the exporters, scenes as GIF frames or baked SMIL, video through ffmpeg.
+Writing a project's outputs: pages through the formats, scenes as GIF frames or baked SMIL, video through ffmpeg.
 
 Still formats (PDF, PNG, ...) show a page once its animations have ended; ``seconds = 0`` in the format's
 options shows the start instead.
@@ -16,7 +16,7 @@ from ..._document.sizes import PageSize
 from ..._internal._codecs._gif import encode_gif_animation
 from ..._internal._codecs._rgba import to_uint8
 from ...document import Document
-from ...formats.export import exporters, save
+from ...formats.export import FORMATS, save
 from ...model.theme import Theme
 from ...motion.video import Scene, animation_duration, frame_times
 from ..widgets import controls_of
@@ -28,7 +28,7 @@ __all__ = ["control_arguments", "write_outputs"]
 
 
 def _extension(format: str) -> str:
-    exporter = exporters().get(format)
+    exporter = FORMATS.find(format)
     return exporter.extensions[0] if exporter is not None and exporter.extensions else f".{format}"
 
 
@@ -99,7 +99,7 @@ def _write_pages(pages: Sequence[Document], targets: list[Path], format: str, op
         return [_write_scene(Scene(page), target, format, options) for page, target in zip(pages, targets, strict=True)]
     if format not in KEEPS_ANIMATION and "seconds" not in options:
         pages = [_settled(page) for page in pages]
-    exporter = exporters().get(format)
+    exporter = FORMATS.find(format)
     if len(pages) > 1 and exporter is not None and exporter.multipage:
         return [save(list(pages), targets[0], format, **options)]
     return [save(page, target, format, **options) for page, target in zip(pages, targets, strict=True)]
@@ -122,7 +122,7 @@ def write_outputs(config: ProjectConfig, items: Sequence[Item], theme: Theme | N
         options = config.options.get(format, {})
         extension = _extension(format)
         if pages:
-            exporter = exporters().get(format)
+            exporter = FORMATS.find(format)
             one_file = exporter is not None and exporter.multipage and format not in VIDEO_FORMATS
             names = _numbered(config.name, 1 if one_file else len(pages), extension)
             written += _write_pages(pages, [folder / name for name in names], format, options)

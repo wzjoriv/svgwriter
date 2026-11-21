@@ -7,6 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .._internal._presets import SIZES
+from .._internal._registry import UnknownNameError
 from ..model.attributes.length import Length, LengthLike, Unit
 from ._constants import BUILTIN_SIZES, IDENTIFIER_SEPARATORS, LANDSCAPE_SUFFIX, PORTRAIT_SUFFIX
 
@@ -26,7 +27,7 @@ class PageSize:
     """A canvas size: a width and a height counted in one unit.
 
     Look the built-in ones up as attributes of :data:`svgwriter.size` (``svg.size.a4``), add your own
-    with :func:`svgwriter.catalog.preset.size`, and pass either to ``Document(size=...)``, ``Scene.size`` or a
+    with :data:`svgwriter.catalog.preset.size`, and pass either to ``Document(size=...)``, ``Scene.size`` or a
     project's ``size``.
 
     Parameters
@@ -138,7 +139,7 @@ class _Sizes:
         for registered in SIZES:
             if _identifier(registered) == name:
                 return SIZES.get(registered)
-        raise AttributeError(f"no size {name!r}; svg.preset.list(\"size\") lists every size")
+        raise AttributeError(f"no size {name!r}; svg.preset.size.list() lists every size")
 
     def __dir__(self) -> list[str]:
         return [_identifier(registered) for registered in SIZES]
@@ -150,7 +151,7 @@ class _Sizes:
 size = _Sizes()
 """The registered sizes as attributes, names turned into identifiers (``"slide-16:9"`` is ``size.slide_16_9``).
 
-Every attribute is a :class:`PageSize`; sizes added with :func:`svgwriter.catalog.preset.size` appear here too.
+Every attribute is a :class:`PageSize`; sizes added with :data:`svgwriter.catalog.preset.size` appear here too.
 """
 
 
@@ -160,7 +161,7 @@ def page_size(size: str | PageSize) -> tuple[Length, Length]:
     Parameters
     ----------
     size : str or PageSize
-        A :class:`PageSize`, or a name from ``svg.preset.list("size")`` (``"a4"``, ``"letter"``,
+        A :class:`PageSize`, or a name from ``svg.preset.size.list()`` (``"a4"``, ``"letter"``,
         ``"slide-16:9"``, ``"instagram-story"``, ...), optionally followed by ``-landscape`` (long side
         across) or ``-portrait`` (long side down).
 
@@ -171,7 +172,7 @@ def page_size(size: str | PageSize) -> tuple[Length, Length]:
 
     Raises
     ------
-    ValueError
+    UnknownNameError
         If the name is unknown; the message suggests the closest names.
 
     See Also
@@ -186,17 +187,17 @@ def page_size(size: str | PageSize) -> tuple[Length, Length]:
     >>> svg.page_size("a44")
     Traceback (most recent call last):
     ...
-    ValueError: unknown size 'a44'; did you mean 'a4'? (svg.preset.list("size") lists every size)
+    svgwriter._internal._registry.UnknownNameError: unknown size 'a44'; did you mean 'a4'? (svg.preset.size.list() lists every size)
     """
     if isinstance(size, PageSize):
         return size.lengths
     base, turn = size, None
     for suffix in (LANDSCAPE_SUFFIX, PORTRAIT_SUFFIX):
-        if size not in SIZES and size.endswith(suffix):
+        if size.endswith(suffix) and SIZES.find(size, plugins=False) is None:
             base, turn = size.removesuffix(suffix), suffix
-    if base not in SIZES:
-        raise ValueError(f"{SIZES.unknown(size if turn is None else base)} (svg.preset.list(\"size\") lists every size)")
-    page = SIZES.get(base)
+    page = SIZES.find(base)
+    if page is None:
+        raise UnknownNameError(f"{SIZES.unknown(size if turn is None else base)} (svg.preset.size.list() lists every size)")
     if turn is not None:
         page = page.landscape if turn == LANDSCAPE_SUFFIX else page.portrait
     return page.lengths
