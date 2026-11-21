@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-from ..._internal._constants import PX_PER_PT
+from ..._internal._constants import PX_PER_INCH, PX_PER_PT
 from ..._internal._emoji import color_glyph_images
 from ..._internal._flatten import Item, flatten, to_cubic
 from ..._internal._numbers import format_number
@@ -32,6 +32,7 @@ from ._constants import (
     SERIF_WORDS,
     SHADING_LEVEL,
 )
+from ._units import unit_scale
 
 if TYPE_CHECKING:
     from ...color.color import Color
@@ -150,7 +151,7 @@ def _text(run: Any, height: float) -> str:
     return "\n".join([_path(item, height), paint, "fill"])
 
 
-def to_eps(document: Document, *, text: bool = True) -> str:
+def to_eps(document: Document, *, text: bool = True, px_per_inch: float = PX_PER_INCH) -> str:
     """EPS (PostScript level 2) at the document's physical size, 96 user units per inch (3/4 point each).
 
     The document is flattened first, so gradients become solid colours. Images are embedded, and
@@ -160,6 +161,11 @@ def to_eps(document: Document, *, text: bool = True) -> str:
     ----------
     document : Document
         The document to convert.
+    text : bool, optional
+        Write text with PostScript fonts; False draws the exact glyph outlines. Defaults to True.
+    px_per_inch : float, optional
+        User units per inch of a document sized in pixels; 72 draws one unit as one point.
+        Sizes in ``mm``, ``cm``, ``in``, ``pt`` or ``pc`` are kept. Defaults to 96.
 
     Returns
     -------
@@ -185,7 +191,8 @@ def to_eps(document: Document, *, text: bool = True) -> str:
     """
     scene = flatten(document, handled=frozenset({"image"}), text=text, color_glyphs=False)
     level = BASE_LEVEL
-    width, height = scene.width / PX_PER_PT, scene.height / PX_PER_PT
+    points = PX_PER_PT / unit_scale(document, px_per_inch)
+    width, height = scene.width / points, scene.height / points
     lines = [
         "%!PS-Adobe-3.0 EPSF-3.0",
         f"%%BoundingBox: 0 0 {math.ceil(width)} {math.ceil(height)}",
@@ -194,7 +201,7 @@ def to_eps(document: Document, *, text: bool = True) -> str:
         "%%LanguageLevel: {level}",
         "%%EndComments",
         "gsave",
-        f"{_n(1 / PX_PER_PT)} {_n(1 / PX_PER_PT)} scale",
+        f"{_n(1 / points)} {_n(1 / points)} scale",
     ]
     for item in scene.painted():
         if isinstance(item, tuple):

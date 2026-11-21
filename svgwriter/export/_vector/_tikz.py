@@ -8,6 +8,7 @@ import math
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
+from ..._internal._constants import PX_PER_INCH
 from ..._internal._emoji import color_glyph_cells
 from ..._internal._flatten import Item, flatten, to_cubic
 from ..._internal._numbers import format_number
@@ -26,6 +27,7 @@ from ._constants import (
     TIKZ_PRECISION,
     TIKZ_STANDALONE,
 )
+from ._units import unit_scale
 
 if TYPE_CHECKING:
     from ...color.color import Color
@@ -67,10 +69,10 @@ def _family(family: str) -> str:
     return r"\sffamily"
 
 
-def _node(run: Any, color: Callable[[Color], str]) -> str:
+def _node(run: Any, color: Callable[[Color], str], tex_pt: float) -> str:
     """A text run as a ``\\node`` anchored at its baseline start, sized, coloured and turned like the SVG."""
     matrix = run.matrix
-    size = run.size * math.sqrt(abs(matrix.determinant)) / PX_PER_TEX_PT
+    size = run.size * math.sqrt(abs(matrix.determinant)) / tex_pt
     angle = math.degrees(math.atan2(matrix.b, matrix.a))
     font = f"\\fontsize{{{_n(size)}}}{{{_n(size * LINE_SPREAD)}}}\\selectfont"
     font += _family(run.family)
@@ -101,7 +103,8 @@ def _shading_options(shading: Shading, color: Callable[[Color], str]) -> list[st
     return [*keys, f"shading angle={_n(angle)}"]
 
 
-def to_tikz(document: Document, *, standalone: bool = False, text: bool = True) -> str:
+def to_tikz(document: Document, *, standalone: bool = False, text: bool = True,
+            px_per_inch: float = PX_PER_INCH) -> str:
     """A ``tikzpicture`` at the document's physical size: 1 user unit = 0.75 bp (96 per inch), y down as in SVG.
 
     The document is flattened first: gradients become TikZ shadings and images are skipped. Text is
@@ -116,6 +119,9 @@ def to_tikz(document: Document, *, standalone: bool = False, text: bool = True) 
         Wrap in a compilable ``standalone`` LaTeX document. Defaults to False.
     text : bool, optional
         Keep text as LaTeX text; False draws the exact glyph outlines. Defaults to True.
+    px_per_inch : float, optional
+        User units per inch of a document sized in pixels; 72 draws one unit as one point.
+        Sizes in ``mm``, ``cm``, ``in``, ``pt`` or ``pc`` are kept. Defaults to 96.
 
     Returns
     -------
@@ -136,6 +142,8 @@ def to_tikz(document: Document, *, standalone: bool = False, text: bool = True) 
     True
     """
     scene = flatten(document, text=text, color_glyphs=False)
+    scale = unit_scale(document, px_per_inch)
+    bp, tex_pt = PX_PER_BP / scale, PX_PER_TEX_PT / scale
     colors: dict[tuple[int, int, int], str] = {}
 
     def color(value: Color) -> str:
@@ -160,22 +168,22 @@ def to_tikz(document: Document, *, standalone: bool = False, text: bool = True) 
             if item.evenodd:
                 options.append("even odd rule")
         if item.stroke is not None and item.stroke_width > 0:
-            options += [f"draw={color(item.stroke)}", f"line width={_n(item.stroke_width / PX_PER_BP)}bp",
+            options += [f"draw={color(item.stroke)}", f"line width={_n(item.stroke_width / bp)}bp",
                         f"line cap={TIKZ_CAPS.get(item.linecap, 'butt')}", f"line join={TIKZ_JOINS.get(item.linejoin, 'miter')}"]
             if item.stroke_opacity < 1:
                 options.append(f"draw opacity={_n(item.stroke_opacity)}")
             if item.dashes:
-                pattern = " ".join(f"{'on' if i % 2 == 0 else 'off'} {_n(d / PX_PER_BP)}bp"
+                pattern = " ".join(f"{'on' if i % 2 == 0 else 'off'} {_n(d / bp)}bp"
                                    for i, d in enumerate(item.dashes * (2 if len(item.dashes) % 2 else 1)))
                 options.append(f"dash pattern={pattern}")
         if not options:
             continue
         body.append(f"  \\path[{', '.join(options)}] {_path(item)};")
-    body += [_node(run, color) for run in scene.texts]
+    body += [_node(run, color, tex_pt) for run in scene.texts]
     definitions = [f"\\definecolor{{{name}}}{{RGB}}{{{r},{g},{b}}}" for (r, g, b), name in colors.items()]
     picture = "\n".join([
         *definitions,
-        f"\\begin{{tikzpicture}}[x={_n(1 / PX_PER_BP)}bp, y={_n(-1 / PX_PER_BP)}bp]",
+        f"\\begin{{tikzpicture}}[x={_n(1 / bp)}bp, y={_n(-1 / bp)}bp]",
         f"  \\useasboundingbox (0,0) rectangle ({_n(scene.width)},{_n(scene.height)});",
         *body,
         "\\end{tikzpicture}",

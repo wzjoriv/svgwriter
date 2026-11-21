@@ -32,7 +32,7 @@ print(sorted(svg.export.exporters()))
 | PPM / PGM / PNM | `.ppm` `.pgm` `.pnm` | ✓ | ✓ | import also reads `.pbm` |
 | ICO | `.ico` | ✓ | ✓ | PNG entries at `sizes=`, `padding=`; import takes the largest image |
 | ICNS | `.icns` | ✓ | ✓ | standard and Retina sizes; import takes the largest image |
-| PDF | `.pdf` | ✓ | ✓ | vector (skia); text kept as text, in an embedded font subset; import reads paths, images, clips, text and shadings, `page=`; links stay clickable; a list of documents gives one page each (`page=None` reads all) |
+| PDF | `.pdf` | ✓ | ✓ | vector (skia); text kept as text, in an embedded font subset; import reads paths, images, clips, text and shadings, `page=`; links stay clickable; a list of documents gives one page each (`page=None` reads all); `px_per_inch` |
 | EPS / PostScript | `.eps` `.ps` | ✓ | ✓ | text kept as text (ASCII in standard fonts); no transparency; import is a small PostScript interpreter |
 | TikZ | `.tikz` `.tex` | ✓ | ✓ | `standalone=True` for a compilable document; text kept as `\node`; import reads `\draw`, `\fill`, nodes, grids, shadings, `\foreach` |
 | DXF | `.dxf` | ✓ | ✓ | CAD polylines in mm, one layer per colour; import reads lines, polylines, circles, arcs, ellipses |
@@ -226,6 +226,17 @@ Readers work the other way: a PDF or EPS point reads as 4/3 of a unit and a TikZ
 96/2.54, so a file made elsewhere opens at its real size and an exported file reads back at the
 same size with every shape in the same place, measured in user units (a millimetre document comes
 back as 793.7 × 1122.5 units with no `viewBox` scaling).
+
+A drawing made in plain numbers is in CSS pixels, so a 144-unit-wide figure prints 1.5 inches wide.
+When the numbers are meant as points (one unit, one point, as in many plotting tools), pass
+`px_per_inch=72` to `pdf`, `eps` or `tikz`; sizes in `mm`, `cm`, `in`, `pt` or `pc` stay as they are:
+
+```python
+chart = svg.Document(144, 72)                     # meant as 2 x 1 inches
+chart.rect(0, 0, 144, 72, fill="none", stroke="black")
+chart.save("chart.pdf", px_per_inch=72)          # 144 x 72 pt
+chart.save("chart.pdf")                          # 108 x 54 pt: CSS pixels
+```
 
 ## Your own formats
 

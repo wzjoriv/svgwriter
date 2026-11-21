@@ -10,6 +10,7 @@ import struct
 from typing import Final
 
 from ..._internal._constants import CM_PER_INCH, MM_PER_INCH, PX_PER_INCH, PX_PER_PT
+from ...attributes.length import Unit
 
 __all__ = [
     "ANCHORS",
@@ -102,6 +103,7 @@ __all__ = [
     "PATH_TOKEN_RE",
     "MEDIA_BOX_RE",
     "PDF_BOX_PRECISION",
+    "PHYSICAL_UNITS",
     "PDF_HEADER",
     "STARTXREF_RE",
     "XREF_ENTRY_RE",
@@ -254,6 +256,8 @@ MEDIA_BOX_RE: Final = re.compile(rb"/MediaBox\s*\[\s*0\s+0\s+([\d.]+)\s+([\d.]+)
 XREF_ENTRY_RE: Final = re.compile(rb"(?m)^(\d{10})( \d{5} n)")
 STARTXREF_RE: Final = re.compile(rb"(startxref\s+)(\d+)")
 PDF_BOX_PRECISION: Final = 4
+PHYSICAL_UNITS: Final = frozenset({Unit.MM, Unit.CM, Unit.IN, Unit.PT, Unit.PC})
+"""Page size units that fix the printed size, so ``px_per_inch`` leaves them alone."""
 ENCRYPT_RE: Final = re.compile(rb"/Encrypt\s*(?:\d+\s+\d+\s+R|<<)")
 NAME_ESCAPE_RE: Final = re.compile(rb"#([0-9A-Fa-f]{2})")
 LITERALS: Final = {b"true": True, b"false": False, b"null": None}
