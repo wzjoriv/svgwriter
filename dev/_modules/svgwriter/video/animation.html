@@ -290,7 +290,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Registry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyPath</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">TIME_SCALE</span><span class="p">,</span> <span class="n">TIMECOUNT_RE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FRAME_PATTERN</span><span class="p">,</span> <span class="n">FRAME_SUFFIX</span><span class="p">,</span> <span class="n">TIME_SCALE</span><span class="p">,</span> <span class="n">TIMECOUNT_RE</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._ffmpeg</span><span class="w"> </span><span class="kn">import</span> <span class="n">encode</span><span class="p">,</span> <span class="n">find_ffmpeg</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.frames</span><span class="w"> </span><span class="kn">import</span> <span class="n">Frame</span><span class="p">,</span> <span class="n">FrameData</span><span class="p">,</span> <span class="n">frame_times</span><span class="p">,</span> <span class="n">to_frame</span>
 
@@ -582,7 +582,9 @@
 <span class="sd">        The drawing.</span>
 <span class="sd">    path : str or path-like</span>
 <span class="sd">        Output file; the extension picks the encoder (``.mp4``, ``.gif``,</span>
-<span class="sd">        ``.webm``, ``.mov``, ``.apng``, anything else ffmpeg knows).</span>
+<span class="sd">        ``.webm``, ``.mov``, ``.apng``, anything else ffmpeg knows). A</span>
+<span class="sd">        ``.png`` path writes numbered frames beside it instead:</span>
+<span class="sd">        ``intro.png`` becomes ``intro_0000.png``, ``intro_0001.png`` and so on.</span>
 <span class="sd">    fps : float, optional</span>
 <span class="sd">        Frames per second. Defaults to 30.0.</span>
 <span class="sd">    duration : float, optional</span>
@@ -602,7 +604,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    pathlib.Path</span>
-<span class="sd">        The written file.</span>
+<span class="sd">        The written file, or the ``%04d`` pattern of the numbered PNG frames.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
@@ -629,9 +631,12 @@
 <span class="sd">    ffmpeg is required</span>
 <span class="sd">    """</span>
     <span class="n">executable</span> <span class="o">=</span> <span class="n">find_ffmpeg</span><span class="p">(</span><span class="n">ffmpeg</span><span class="p">)</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">FRAME_SUFFIX</span><span class="p">:</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="n">FRAME_PATTERN</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stem</span><span class="o">=</span><span class="n">target</span><span class="o">.</span><span class="n">stem</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">target</span><span class="o">.</span><span class="n">suffix</span><span class="p">))</span>
     <span class="n">frames</span> <span class="o">=</span> <span class="n">iter_frames</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="n">update</span><span class="p">)</span>
-    <span class="n">encode</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="n">executable</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+    <span class="n">encode</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="n">executable</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">target</span></div>
 
 </pre></div>
         </article>

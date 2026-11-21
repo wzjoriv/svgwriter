@@ -429,8 +429,8 @@ needed); <code class="docutils literal notranslate"><span class="pre">.png</span
 </section>
 <section id="video-through-ffmpeg">
 <h2>Video through ffmpeg<a class="headerlink" href="#video-through-ffmpeg" title="Link to this heading">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">render_animation</span></code> draws frames and pipes them to ffmpeg (mp4, gif, webm, mov, apng). The <code class="docutils literal notranslate"><span class="pre">update</span></code>
-callback changes the document for each frame:</p>
+<p><code class="docutils literal notranslate"><span class="pre">render_animation</span></code> draws frames and pipes them to ffmpeg (mp4, gif, webm, mov, apng; a <code class="docutils literal notranslate"><span class="pre">.png</span></code> path
+writes numbered frames). The <code class="docutils literal notranslate"><span class="pre">update</span></code> callback changes the document for each frame:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
@@ -442,10 +442,46 @@ callback changes the document for each frame:</p>
 <p>The built-in <code class="docutils literal notranslate"><span class="pre">&quot;skia&quot;</span></code> renderer returns raw RGBA frames. Any callable <code class="docutils literal notranslate"><span class="pre">renderer(document,</span> <span class="pre">seconds)</span></code> that
 returns PNG bytes or a uint8 <code class="docutils literal notranslate"><span class="pre">(H,</span> <span class="pre">W,</span> <span class="pre">4)</span></code> array works, as does a <code class="docutils literal notranslate"><span class="pre">&quot;module:function&quot;</span></code> name. Missing ffmpeg
 raises <code class="docutils literal notranslate"><span class="pre">FFmpegNotFoundError</span></code> before any rendering.</p>
-<p>From the command line:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>svgwriter<span class="w"> </span>animate<span class="w"> </span>scene.py<span class="w"> </span>-o<span class="w"> </span>out.mp4<span class="w"> </span>--fps<span class="w"> </span><span class="m">30</span>
+</section>
+<section id="scenes">
+<h2>Scenes<a class="headerlink" href="#scenes" title="Link to this heading">¶</a></h2>
+<p>A <code class="docutils literal notranslate"><span class="pre">svg.Scene</span></code> subclass is one animation: class attributes set <code class="docutils literal notranslate"><span class="pre">width</span></code>, <code class="docutils literal notranslate"><span class="pre">height</span></code>, <code class="docutils literal notranslate"><span class="pre">fps</span></code>, <code class="docutils literal notranslate"><span class="pre">duration</span></code> and
+<code class="docutils literal notranslate"><span class="pre">renderer</span></code> (defaults 640 by 360, 30 fps, the SMIL length, <code class="docutils literal notranslate"><span class="pre">&quot;skia&quot;</span></code>), <code class="docutils literal notranslate"><span class="pre">build(doc)</span></code> draws into an empty
+document of that size once, and <code class="docutils literal notranslate"><span class="pre">update(seconds)</span></code> sets the state for each frame. SMIL animations in
+the drawing play as well, so a scene can use presets, Python, or both.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Pulse</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
+    <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mf">2.0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"midnightblue"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dot</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"gold"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">fade_in</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">+</span> <span class="mi">30</span> <span class="o">*</span> <span class="n">seconds</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span>
+
+<span class="n">pulse</span> <span class="o">=</span> <span class="n">Pulse</span><span class="p">()</span>
+<span class="n">still</span> <span class="o">=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>        <span class="c1"># PNG bytes of the frame at 1 s</span>
+<span class="n">frames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">frames</span><span class="p">())</span>    <span class="c1"># 48 frames, not encoded</span>
+<span class="c1"># pulse.save()                   # Pulse.mp4; or save("pulse.gif"), save("pulse.png") for numbered frames</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">build</span></code> receives the document rather than returning one, so the size is declared once, as class
+attributes, and <code class="docutils literal notranslate"><span class="pre">build</span></code> holds only drawing code. It runs when the scene is created; keep the elements
+that <code class="docutils literal notranslate"><span class="pre">update</span></code> changes on <code class="docutils literal notranslate"><span class="pre">self</span></code>. <code class="docutils literal notranslate"><span class="pre">update</span></code> gets absolute time, so frames can be drawn in any order. In a
+notebook a scene displays as its animated SVG. <code class="docutils literal notranslate"><span class="pre">svg.Scene(doc)</span></code> animates an existing document as it is.</p>
+<p>A file can hold any number of scenes. A class whose name starts with <code class="docutils literal notranslate"><span class="pre">_</span></code> is skipped, so a shared base
+class stays out of the list. <code class="docutils literal notranslate"><span class="pre">svg.video.load_scenes</span></code> returns them, and the command line renders them:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>svgwriter<span class="w"> </span>animate<span class="w"> </span>scenes.py<span class="w"> </span>--list<span class="w">            </span><span class="c1"># print the scene names</span>
+<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>svgwriter<span class="w"> </span>animate<span class="w"> </span>scenes.py<span class="w">                   </span><span class="c1"># every scene to &lt;Name&gt;.mp4</span>
+<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>svgwriter<span class="w"> </span>animate<span class="w"> </span>scenes.py<span class="w"> </span>Intro<span class="w"> </span>Outro<span class="w"> </span>--format<span class="w"> </span>gif
+<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>svgwriter<span class="w"> </span>animate<span class="w"> </span>scenes.py:Intro<span class="w"> </span>-o<span class="w"> </span>intro.webm
+<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>svgwriter<span class="w"> </span>animate<span class="w"> </span>mypackage.scenes:Intro<span class="w">      </span><span class="c1"># an importable module</span>
+<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>svgwriter<span class="w"> </span>render<span class="w"> </span>scenes.py<span class="w"> </span>Intro<span class="w"> </span>--time<span class="w"> </span><span class="m">1</span>.5<span class="w">   </span><span class="c1"># one frame to Intro.png</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--fps</span></code>, <code class="docutils literal notranslate"><span class="pre">--duration</span></code> and <code class="docutils literal notranslate"><span class="pre">--renderer</span></code> override the scene’s settings. An <code class="docutils literal notranslate"><span class="pre">.svg</span></code> file is accepted too and
+plays its SMIL. See <code class="docutils literal notranslate"><span class="pre">examples/13_scenes.py</span></code>.</p>
 </section>
 <section id="tweening-and-morphing">
 <h2>Tweening and morphing<a class="headerlink" href="#tweening-and-morphing" title="Link to this heading">¶</a></h2>
@@ -542,6 +578,7 @@ numpy array. Mix footage with vector animation in <code class="docutils literal 
 <li><a class="reference internal" href="#easing">Easing</a></li>
 <li><a class="reference internal" href="#playing-smil">Playing SMIL</a></li>
 <li><a class="reference internal" href="#video-through-ffmpeg">Video through ffmpeg</a></li>
+<li><a class="reference internal" href="#scenes">Scenes</a></li>
 <li><a class="reference internal" href="#tweening-and-morphing">Tweening and morphing</a></li>
 <li><a class="reference internal" href="#video-in">Video in</a></li>
 </ul>

@@ -511,7 +511,11 @@
         <li><a href="reference/ops.html#svgwriter.ops.bounds">bounds() (in module svgwriter.ops)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.build">build() (PathBuilder method)</a>
+
+        <ul>
+          <li><a href="reference/video.html#svgwriter.video.Scene.build">(Scene method)</a>
 </li>
+        </ul></li>
     </ul></td>
   </tr></table>
 </section>
@@ -854,14 +858,14 @@
 </li>
         <li><a href="reference/document.html#svgwriter.Document.describe">describe() (Document method)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/export.html#svgwriter.export.Exporter.description">description (Exporter attribute)</a>
 
         <ul>
           <li><a href="reference/export.html#svgwriter.export.Importer.description">(Importer attribute)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/geometry.html#svgwriter.transform.Matrix.determinant">determinant (Matrix property)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.BooleanOp.DIFFERENCE">DIFFERENCE (BooleanOp attribute)</a>
@@ -890,6 +894,8 @@
 </li>
         <li><a href="reference/document.html#svgwriter.Document">Document (class in svgwriter)</a>
 </li>
+        <li><a href="reference/video.html#svgwriter.video.Scene.document">document (Scene property)</a>
+</li>
         <li><a href="reference/ops.html#svgwriter.ops.draw_graph">draw_graph() (in module svgwriter.ops)</a>
 </li>
         <li><a href="reference/builder.html#svgwriter.builder.drawing">drawing() (in module svgwriter.builder)</a>
@@ -897,6 +903,8 @@
         <li><a href="reference/builder.html#svgwriter.builder.drop_shadow">drop_shadow() (in module svgwriter.builder)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.EdgeMode.DUPLICATE">DUPLICATE (EdgeMode attribute)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.Scene.duration">duration (Scene attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -1052,10 +1060,10 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.Element.find_all">find_all() (Element method)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/export.html#svgwriter.export.find_exporter">find_exporter() (in module svgwriter.export)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/video.html#svgwriter.video.find_ffmpeg">find_ffmpeg() (in module svgwriter.video)</a>
 </li>
         <li><a href="reference/export.html#svgwriter.export.find_importer">find_importer() (in module svgwriter.export)</a>
@@ -1082,6 +1090,8 @@
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.format_value">format_value() (in module svgwriter.attributes)</a>
 </li>
+        <li><a href="reference/video.html#svgwriter.video.Scene.fps">fps (Scene attribute)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.TurbulenceType.FRACTAL_NOISE">FRACTAL_NOISE (TurbulenceType attribute)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.IRI.fragment">fragment (IRI property)</a>
@@ -1091,6 +1101,8 @@
         <li><a href="reference/video.html#svgwriter.video.Video.frame">frame() (Video method)</a>
 </li>
         <li><a href="reference/video.html#svgwriter.video.frame_times">frame_times() (in module svgwriter.video)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.Scene.frames">frames() (Scene method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.animation.AnimationFill.FREEZE">FREEZE (AnimationFill attribute)</a>
 </li>
@@ -1210,6 +1222,8 @@
           <li><a href="reference/video.html#svgwriter.video.Frame.height">(Frame attribute)</a>
 </li>
           <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect.height">(Rect attribute)</a>
+</li>
+          <li><a href="reference/video.html#svgwriter.video.Scene.height">(Scene attribute)</a>
 </li>
           <li><a href="reference/attributes.html#svgwriter.attributes.ViewBox.height">(ViewBox attribute)</a>
 </li>
@@ -1389,6 +1403,8 @@
         <li><a href="reference/geometry.html#svgwriter.pathdata.LineTo">LineTo (class in svgwriter.pathdata)</a>
 </li>
         <li><a href="reference/export.html#svgwriter.export.load">load() (in module svgwriter.export)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.load_scenes">load_scenes() (in module svgwriter.video)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.IRI.local">local() (IRI class method)</a>
 </li>
@@ -1825,6 +1841,8 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.Element.remove">remove() (Element method)</a>
 </li>
+        <li><a href="reference/video.html#svgwriter.video.Scene.render">render() (Scene method)</a>
+</li>
         <li><a href="reference/document.html#svgwriter.Document.render_animation">render_animation() (Document method)</a>
 
         <ul>
@@ -1844,6 +1862,8 @@
 </li>
         </ul></li>
         <li><a href="reference/ops.html#svgwriter.ops.render_svg">render_svg() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.Scene.renderer">renderer (Scene attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.animation.Additive.REPLACE">REPLACE (Additive attribute)</a>
 </li>
@@ -1938,6 +1958,8 @@
 </li>
           <li><a href="reference/export.html#svgwriter.export.save">(in module svgwriter.export)</a>
 </li>
+          <li><a href="reference/video.html#svgwriter.video.Scene.save">(Scene method)</a>
+</li>
         </ul></li>
         <li><a href="reference/document.html#svgwriter.Document.save_async">save_async() (Document method)</a>
 </li>
@@ -1953,6 +1975,10 @@
           <li><a href="reference/geometry.html#svgwriter.transform.Transform.scale">(Transform method)</a>
 </li>
         </ul></li>
+        <li><a href="reference/video.html#svgwriter.video.Scene">Scene (class in svgwriter.video)</a>
+</li>
+        <li><a href="reference/video.html#svgwriter.video.SceneError">SceneError</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.BlendMode.SCREEN">SCREEN (BlendMode attribute)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.cascade.Rule.selector">selector (Rule attribute)</a>
@@ -2053,10 +2079,10 @@
           <li><a href="reference/elements.html#svgwriter.elements.animation.Additive.SUM">(Additive attribute)</a>
 </li>
         </ul></li>
-        <li><a href="reference/attributes.html#svgwriter.attributes.SupportsSVG">SupportsSVG (class in svgwriter.attributes)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/attributes.html#svgwriter.attributes.SupportsSVG">SupportsSVG (class in svgwriter.attributes)</a>
+</li>
         <li><a href="reference/attributes.html#svgwriter.attributes.Attr.svg">svg (Attr attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.structure.Svg">Svg (class in svgwriter.elements.structure)</a>
@@ -2588,7 +2614,11 @@
         <li><a href="reference/video.html#svgwriter.video.unregister_renderer">unregister_renderer() (in module svgwriter.video)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.Element.update">update() (Element method)</a>
+
+        <ul>
+          <li><a href="reference/video.html#svgwriter.video.Scene.update">(Scene method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/elements.html#svgwriter.elements.Element.url">url (Element property)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.structure.Use">Use (class in svgwriter.elements.structure)</a>
@@ -2645,6 +2675,8 @@
           <li><a href="reference/video.html#svgwriter.video.Frame.width">(Frame attribute)</a>
 </li>
           <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect.width">(Rect attribute)</a>
+</li>
+          <li><a href="reference/video.html#svgwriter.video.Scene.width">(Scene attribute)</a>
 </li>
           <li><a href="reference/attributes.html#svgwriter.attributes.ViewBox.width">(ViewBox attribute)</a>
 </li>
