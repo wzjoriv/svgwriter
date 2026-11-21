@@ -21,8 +21,8 @@ True
 
 from __future__ import annotations
 
-from ._frame import Frame, settle
+from ._frame import Frame, settle, settled
 from ._grid import Grid
 from ._stack import HStack, Spacer, Stack, VStack
 
-__all__ = ["Frame", "Grid", "HStack", "Spacer", "Stack", "VStack", "settle"]
+__all__ = ["Frame", "Grid", "HStack", "Spacer", "Stack", "VStack", "settle", "settled"]
