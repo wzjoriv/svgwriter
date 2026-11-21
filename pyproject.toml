@@ -51,14 +51,11 @@ office = [
 ]
 plot = [
     "matplotlib>=3.7",
+    "ziaplot>=0.9",
 ]
 graph = [
     "networkx>=3.0",
-]
-igraph = [
     "python-igraph>=0.11",
-]
-rustworkx = [
     "rustworkx>=0.15",
 ]
 math = [
@@ -73,7 +70,7 @@ notebook = [
     "ipykernel>=6",
 ]
 test = [
-    "pysvgwriter[office,plot,graph,igraph,rustworkx,math]",
+    "pysvgwriter[office,plot,graph,math]",
     "pytest>=7",
     "ezdxf>=1.0",
     "pillow>=10",

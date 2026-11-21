@@ -145,8 +145,8 @@ def draw_graph(graph: Any, *, layout: Layout = "spring", size: float = GRAPH_SIZ
 
     Notes
     -----
-    Install a library with its extra: ``pysvgwriter[graph]`` (networkx),
-    ``pysvgwriter[igraph]`` or ``pysvgwriter[rustworkx]``.
+    ``pysvgwriter[graph]`` installs all three libraries; any one installed
+    on its own works too.
 
     Examples
     --------

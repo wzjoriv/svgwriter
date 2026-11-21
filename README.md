@@ -76,7 +76,7 @@ copy with matrix `M` applied. Baking is explicit: `el.to_path()` folds the trans
 `doc.add(x)` (and `group.add(x)`) turns whatever it is given into elements, trying in this order: an
 element; any object with an `__svgwriter__()` method, which returns an element, a document or anything
 else `add` takes; a `Document` (a copy of its `<svg>` in a `<g>`); a networkx, igraph or rustworkx
-graph (with `pysvgwriter[graph]`, `[igraph]` or `[rustworkx]`); a numpy array (an `<image>`); a
+graph (with `pysvgwriter[graph]`); a numpy array (an `<image>`); a
 matplotlib figure or anything with `savefig`, and anything with `_repr_svg_` (the IPython display protocol), parsed into editable SVG elements; and
 anything with only `_repr_png_` or `_repr_jpeg_`, embedded as an `<image>`.
 
