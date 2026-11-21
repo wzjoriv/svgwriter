@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 def _frames(document: Document, fps: float, duration: float | None, **options: Any) -> list[Any]:
     """Every frame of the SMIL animation as uint8 RGBA, or an empty list when nothing animates."""
-    from ..._internal._rgba import to_uint8
+    from ..._internal._codecs._rgba import to_uint8
     from ...ops.parallel import rasterize_many
     from ...video.animation import animation_duration, frame_times
 
@@ -69,8 +69,8 @@ def _raster(format: str) -> Callable[..., bytes]:
                  dpi: float | None = None, animate: bool = False, fps: float = DEFAULT_GIF_FPS,
                  duration: float | None = None, loop: int = 0, processes: int | None = 1,
                  icc: IccLike | None = None) -> bytes:
-        from ..._internal._encoders import ENCODERS
-        from ..._internal._rgba import to_uint8
+        from ..._internal._codecs._encoders import ENCODERS
+        from ..._internal._codecs._rgba import to_uint8
         from ...ops.render import encode_image
 
         if icc is not None and format not in ICC_FORMATS:
@@ -158,8 +158,8 @@ def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int |
     >>> svg.export.export(doc, "gif").count(b"NETSCAPE2.0")
     1
     """
-    from ..._internal._gif import encode_gif, encode_gif_animation
-    from ..._internal._rgba import to_uint8
+    from ..._internal._codecs._gif import encode_gif, encode_gif_animation
+    from ..._internal._codecs._rgba import to_uint8
     from ...elements.animation import AnimationElement
     from ...video.animation import animation_duration
 
@@ -336,7 +336,7 @@ def read_pnm(data: bytes) -> Document:
     >>> doc.root.view_box.width, len(doc)
     (2, 1)
     """
-    from ..._internal._pnm import decode_pnm
+    from ..._internal._codecs._pnm import decode_pnm
     from ...elements.structure import Pixels
 
     return _image_document(Pixels.from_array(decode_pnm(data)))

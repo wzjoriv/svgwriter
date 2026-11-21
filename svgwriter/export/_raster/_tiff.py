@@ -56,8 +56,8 @@ def tiff(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int 
     >>> svg.export.export(doc, "tiff", dpi=300)[:4]
     b'II*\\x00'
     """
-    from ..._internal._rgba import to_uint8
-    from ..._internal._tiff import encode_tiff
+    from ..._internal._codecs._rgba import to_uint8
+    from ..._internal._codecs._tiff import encode_tiff
 
     if dpi is not None:
         scale = dpi / PX_PER_INCH

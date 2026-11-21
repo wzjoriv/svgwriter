@@ -8,7 +8,7 @@ from collections.abc import Sequence
 
 import numpy as np
 
-from ._constants import CHANNEL_MAX, RGBA_CHANNELS
+from .._constants import CHANNEL_MAX, RGBA_CHANNELS
 
 __all__ = ["to_uint8"]
 

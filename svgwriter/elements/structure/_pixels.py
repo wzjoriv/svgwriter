@@ -158,7 +158,7 @@ class Pixels(PixelCompositing, Drawable):
         >>> Pixels.decode(png)
         Pixels(2x2, channels=3, opaque=True)
         """
-        from ..._internal._pnm import decode_pnm, is_pnm
+        from ..._internal._codecs._pnm import decode_pnm, is_pnm
 
         if is_pnm(data):
             return cls.from_array(decode_pnm(data))
@@ -279,8 +279,8 @@ class Pixels(PixelCompositing, Drawable):
         >>> Pixels.from_array(np.zeros((2, 2, 3))).encode()[1:4]
         b'PNG'
         """
-        from ..._internal._encoders import ENCODERS
-        from ..._internal._rgba import to_uint8
+        from ..._internal._codecs._encoders import ENCODERS
+        from ..._internal._codecs._rgba import to_uint8
         from ...ops.render import encode
 
         encoder = ENCODERS.get(format.lower())

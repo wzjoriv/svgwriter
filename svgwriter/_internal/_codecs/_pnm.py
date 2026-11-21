@@ -9,6 +9,9 @@ from collections.abc import Sequence
 
 import numpy as np
 
+from .._constants import (
+    CHANNEL_MAX,
+)
 from ._codec_constants import (
     LUMA,
     PNM_BINARY_FROM,
@@ -18,9 +21,6 @@ from ._codec_constants import (
     PNM_WHITESPACE,
     UINT16_MAX,
     WHITE,
-)
-from ._constants import (
-    CHANNEL_MAX,
 )
 from ._rgba import _check_rgba, _composite
 

@@ -62,7 +62,7 @@ def encode_tiff(pixels: np.ndarray, space: str = "RGB", *, dpi: float, profile: 
     Examples
     --------
     >>> import numpy as np
-    >>> from svgwriter._internal._tiff import encode_tiff
+    >>> from svgwriter._internal._codecs._tiff import encode_tiff
     >>> encode_tiff(np.zeros((2, 3, 4), np.uint8), dpi=96)[:4]
     b'II*\\x00'
     """
