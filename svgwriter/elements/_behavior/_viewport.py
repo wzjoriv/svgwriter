@@ -95,7 +95,7 @@ class FitToViewBox(Element):
     ) -> None:
         super().__init__(*args, **kwargs)
         self.view_box = view_box  # type: ignore[assignment]
-        self.update(preserve_aspect_ratio=preserve_aspect_ratio)
+        self._assign(preserve_aspect_ratio=preserve_aspect_ratio)
 
     @property
     def view_box(self) -> ViewBox | None:
@@ -159,4 +159,4 @@ class Positioned(Element):
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
-        self.update(x=x, y=y, width=width, height=height)
+        self._assign(x=x, y=y, width=width, height=height)

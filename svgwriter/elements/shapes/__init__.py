@@ -11,8 +11,12 @@ _path    path
 from __future__ import annotations
 
 from ._base import Shape
-from ._basic import Circle, Ellipse, Line, Rect
+from ._circle import Circle
+from ._ellipse import Ellipse
+from ._line import Line
 from ._path import Path
-from ._poly import Polygon, Polyline
+from ._poly import Polyline
+from ._polygon import Polygon
+from ._rect import Rect
 
 __all__ = ["Circle", "Ellipse", "Line", "Path", "Polygon", "Polyline", "Rect", "Shape"]

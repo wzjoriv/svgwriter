@@ -17,8 +17,8 @@ from ._mixins import (
     XLinkAttributes,
     XmlSpace,
 )
-from ._transformable import children_bbox, offset
-from ._viewport import FitToViewBox, Positioned, positioned_bbox, user_units
+from ._transformable import Pivot, children_bbox, offset
+from ._viewport import FitToViewBox, Positioned, ViewBoxLike, positioned_bbox, user_units
 
 __all__ = [
     "ConditionalAttributes",
@@ -29,10 +29,12 @@ __all__ = [
     "GraphicsElement",
     "Operand",
     "PathOperand",
+    "Pivot",
     "Positioned",
     "PresentationAttributes",
     "StyleAttributes",
     "Transformable",
+    "ViewBoxLike",
     "XLinkAttributes",
     "XmlSpace",
     "children_bbox",

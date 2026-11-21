@@ -19,6 +19,7 @@ from ._construct import Construction
 from ._display import Displayable
 from ._errors import UnknownAttributeError, UnknownKeywordError
 from ._factory import _Shortcut
+from ._forward import forward_common
 from ._query import Queryable
 from ._tree import TreeEditing
 
@@ -92,6 +93,7 @@ class Element(Construction, AttributeAccess, TreeEditing, Queryable, Displayable
     category: ClassVar[Category] = Category.OTHER
     content: ClassVar[ContentModel] = ContentModel.ELEMENTS
     _registry: ClassVar[dict[str, type[Element]]] = {}
+    _forward_common = staticmethod(forward_common)
 
     def __init_subclass__(
         cls,
@@ -128,7 +130,7 @@ class Element(Construction, AttributeAccess, TreeEditing, Queryable, Displayable
             key = svg_name(name)
             if key not in KNOWN_ATTRIBUTES and key not in UNSUPPORTED_ATTRIBUTES and not key.startswith(OPEN_PREFIXES):
                 raise UnknownKeywordError(type(self).__name__, name)
-        self.update(**extra)
+        self._assign(**extra)
         self.extend(children)
 
     def __getattr__(self, name: str) -> AttrValue:

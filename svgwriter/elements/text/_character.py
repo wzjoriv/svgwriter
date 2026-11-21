@@ -17,7 +17,8 @@ if TYPE_CHECKING:
     from ...pathdata.data import BBox
     from ...transform.matrix import Point
     from ..shapes import Path
-    from ._text import Text, TSpan
+    from ._spans import TSpan
+    from ._text import Text
 
 __all__ = ["Character", "CharacterRange"]
 
@@ -244,7 +245,7 @@ class _Characters(RangeEffects):
         >>> str(t[0:5].wrap(font_weight="bold"))
         '<tspan font-weight="bold">Hello</tspan>'
         """
-        from ._text import TSpan
+        from ._spans import TSpan
 
         chars = collect(self.text)[self.start:self.stop]
         if not chars:

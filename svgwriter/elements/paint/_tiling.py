@@ -12,7 +12,7 @@ from .._behavior import positioned_bbox
 
 if TYPE_CHECKING:
     from ..structure import Group, Image
-    from ._servers import Pattern
+    from ._pattern import Pattern
 
 
 __all__ = ["PatternTiling"]

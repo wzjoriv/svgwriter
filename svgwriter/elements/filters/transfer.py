@@ -1,5 +1,5 @@
 """
-``feComponentTransfer`` and its ``feFuncR/G/B/A`` children.
+Transfer functions: the shared ``feFunc*`` base and its types.
 """
 
 from __future__ import annotations
@@ -10,10 +10,9 @@ from typing import Any
 from ..._internal._enums import Keyword
 from ..._internal._typing import Self
 from .._behavior import CoreAttributes
-from ..core import Container, ContentModel
-from .base import SingleInput
+from ..core import ContentModel
 
-__all__ = ["FeComponentTransfer", "FeFunc", "FeFuncA", "FeFuncB", "FeFuncG", "FeFuncR", "TransferType"]
+__all__ = ["FeFunc", "TransferType"]
 
 
 def _numbers(value: Any) -> list[float]:
@@ -81,7 +80,7 @@ class FeFunc(CoreAttributes, content=ContentModel.ELEMENTS):
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self.update(
+        self._assign(
             type=type,
             table_values=tuple(table_values) if table_values is not None else None,
             slope=slope,
@@ -205,95 +204,3 @@ class FeFunc(CoreAttributes, content=ContentModel.ELEMENTS):
         if kind is TransferType.DISCRETE and table:
             return table[min(int(c * len(table)), len(table) - 1)]
         return c
-
-
-class FeFuncR(FeFunc, tag="feFuncR"):
-    """``<feFuncR>``: the transfer function of the red channel.
-
-    Takes the parameters of :class:`FeFunc`.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> str(svg.FeFuncR.table(0, 1))
-    '<feFuncR type="table" tableValues="0 1"/>'
-    """
-
-
-class FeFuncG(FeFunc, tag="feFuncG"):
-    """``<feFuncG>``: the transfer function of the green channel.
-
-    Takes the parameters of :class:`FeFunc`.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> svg.FeFuncG.tag
-    'feFuncG'
-    """
-
-
-class FeFuncB(FeFunc, tag="feFuncB"):
-    """``<feFuncB>``: the transfer function of the blue channel.
-
-    Takes the parameters of :class:`FeFunc`.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> svg.FeFuncB.tag
-    'feFuncB'
-    """
-
-
-class FeFuncA(FeFunc, tag="feFuncA"):
-    """``<feFuncA>``: the transfer function of the alpha channel.
-
-    Takes the parameters of :class:`FeFunc`.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> svg.FeFuncA.tag
-    'feFuncA'
-    """
-
-
-class FeComponentTransfer(SingleInput, Container[FeFunc], tag="feComponentTransfer"):
-    """``<feComponentTransfer>``: per-channel remapping.
-
-    Parameters
-    ----------
-    *functions : FeFunc
-        Channel functions to add as children.
-    red, green, blue, alpha : FeFunc, optional
-        Functions for one channel each; they are converted to the matching
-        ``feFuncR``/``G``/``B``/``A`` element. Default to None.
-    **kwargs
-        Sub-region (``x``, ``y``, ``width``, ``height``), ``result``, ``in_``
-        and other SVG attributes in Python spelling.
-
-    See Also
-    --------
-    FeColorMatrix : Mix channels with a matrix.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> str(svg.FeComponentTransfer(red=svg.FeFuncR.linear(2)))
-    '<feComponentTransfer><feFuncR type="linear" slope="2" intercept="0"/></feComponentTransfer>'
-    """
-
-    def __init__(
-        self,
-        *functions: FeFunc,
-        red: FeFunc | None = None,
-        green: FeFunc | None = None,
-        blue: FeFunc | None = None,
-        alpha: FeFunc | None = None,
-        **kwargs: Any,
-    ) -> None:
-        super().__init__(*functions, **kwargs)
-        for func, cls in ((red, FeFuncR), (green, FeFuncG), (blue, FeFuncB), (alpha, FeFuncA)):
-            if func is not None:
-                self.add(func if isinstance(func, cls) else cls.from_attributes(func.attributes))
