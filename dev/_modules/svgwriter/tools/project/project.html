@@ -312,7 +312,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..widgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">Control</span><span class="p">,</span> <span class="n">controls_of</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._build</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_outputs</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectConfig</span><span class="p">,</span> <span class="n">check_formats</span><span class="p">,</span> <span class="n">read_config</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_PORT</span><span class="p">,</span> <span class="n">NOTEBOOK_SUFFIX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">NOTEBOOK_SUFFIX</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._entry</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">entry_parts</span><span class="p">,</span>
     <span class="n">items_of</span><span class="p">,</span>
@@ -588,33 +588,37 @@
 
 <div class="viewcode-block" id="Project.serve">
 <a class="viewcode-back" href="../../../../reference/project.html#svgwriter.Project.serve">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">serve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_PORT</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">open_browser</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">serve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">open_browser</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Serve a live preview at ``http://127.0.0.1:&lt;port&gt;`` until interrupted (Ctrl+C).</span>
 
-<span class="sd">        The project is rebuilt whenever one of its files changes, and the page reloads itself; a failed build</span>
-<span class="sd">        shows its traceback under the last outputs that worked. Controls the entry declares</span>
-<span class="sd">        (:func:`svgwriter.tools.widgets.controls`) appear as a form above the outputs, which rebuild as they change.</span>
+<span class="sd">        The page shows every page and scene as SVG, drawn in memory. Controls the entry declares</span>
+<span class="sd">        (:func:`svgwriter.tools.widgets.controls`) appear in a panel beside or below the drawing, and the drawing</span>
+<span class="sd">        follows them as they move. Saving a file imports the project again and redraws; once the project has been</span>
+<span class="sd">        quiet for a moment the output files are written too, as the page's Build outputs button does. A failed</span>
+<span class="sd">        drawing shows its traceback under the last drawing that worked. The manifest's ``[preview]`` table</span>
+<span class="sd">        (:class:`~svgwriter.tools.project.PreviewConfig`) sets the layout, backdrop, port and more.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        port : int, optional</span>
-<span class="sd">            The local port. Defaults to 8000.</span>
+<span class="sd">            The local port. Defaults to None, ``[preview] port`` (8000).</span>
 <span class="sd">        open_browser : bool, optional</span>
-<span class="sd">            Open the page in the default browser. Defaults to True.</span>
+<span class="sd">            Open the page in the default browser. Defaults to None, ``[preview] open`` (True).</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
-<span class="sd">        preview : The same outputs inline in a notebook.</span>
+<span class="sd">        preview : The output files inline in a notebook.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">        &gt;&gt;&gt; svg.Project.load().serve()  # doctest: +SKIP</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">._server</span><span class="w"> </span><span class="kn">import</span> <span class="n">LiveServer</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">._server</span><span class="w"> </span><span class="kn">import</span> <span class="n">LiveProject</span><span class="p">,</span> <span class="n">LiveServer</span>
 
-        <span class="n">LiveServer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">values</span><span class="p">:</span> <span class="n">Project</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span>
-                   <span class="n">controls</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Project</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">controls</span><span class="p">())</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">open_browser</span><span class="p">)</span></div>
+        <span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">preview</span>
+        <span class="n">server</span> <span class="o">=</span> <span class="n">LiveServer</span><span class="p">(</span><span class="n">LiveProject</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">),</span> <span class="n">settings</span><span class="o">.</span><span class="n">port</span> <span class="k">if</span> <span class="n">port</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">port</span><span class="p">)</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">open</span> <span class="k">if</span> <span class="n">open_browser</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">open_browser</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

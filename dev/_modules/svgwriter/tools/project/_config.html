@@ -312,14 +312,21 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._document.sizes</span><span class="w"> </span><span class="kn">import</span> <span class="n">PageSize</span><span class="p">,</span> <span class="n">page_size</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...formats.export</span><span class="w"> </span><span class="kn">import</span> <span class="n">exporters</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...model.attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...model.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_color</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ANIMATED_FORMATS</span><span class="p">,</span>
+    <span class="n">BACKGROUNDS</span><span class="p">,</span>
     <span class="n">DEFAULT_ENTRY</span><span class="p">,</span>
     <span class="n">DEFAULT_FORMATS</span><span class="p">,</span>
     <span class="n">DEFAULT_OUTPUT</span><span class="p">,</span>
+    <span class="n">DEFAULT_PORT</span><span class="p">,</span>
+    <span class="n">FITS</span><span class="p">,</span>
     <span class="n">FONT_FOLDER</span><span class="p">,</span>
+    <span class="n">LAYOUTS</span><span class="p">,</span>
     <span class="n">MANIFEST</span><span class="p">,</span>
     <span class="n">OUTPUT_KEYS</span><span class="p">,</span>
+    <span class="n">PREVIEW_DEBOUNCE_MS</span><span class="p">,</span>
+    <span class="n">PREVIEW_KEYS</span><span class="p">,</span>
     <span class="n">PROJECT_KEYS</span><span class="p">,</span>
     <span class="n">PYPROJECT</span><span class="p">,</span>
     <span class="n">PYPROJECT_TABLE</span><span class="p">,</span>
@@ -327,7 +334,8 @@
     <span class="n">VIDEO_FORMATS</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"ProjectConfig"</span><span class="p">,</span> <span class="s2">"ProjectError"</span><span class="p">,</span> <span class="s2">"check_formats"</span><span class="p">,</span> <span class="s2">"check_size"</span><span class="p">,</span> <span class="s2">"find_manifest"</span><span class="p">,</span> <span class="s2">"read_config"</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"PreviewConfig"</span><span class="p">,</span> <span class="s2">"ProjectConfig"</span><span class="p">,</span> <span class="s2">"ProjectError"</span><span class="p">,</span> <span class="s2">"check_formats"</span><span class="p">,</span> <span class="s2">"check_preview"</span><span class="p">,</span> <span class="s2">"check_size"</span><span class="p">,</span>
+           <span class="s2">"find_manifest"</span><span class="p">,</span> <span class="s2">"read_config"</span><span class="p">]</span>
 
 <span class="n">SizeSpec</span> <span class="o">=</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">PageSize</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Length</span><span class="p">,</span> <span class="n">Length</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
 
@@ -345,6 +353,53 @@
 <span class="sd">    &gt;&gt;&gt; issubclass(svg.project.ProjectError, ValueError)</span>
 <span class="sd">    True</span>
 <span class="sd">    """</span></div>
+
+
+
+<div class="viewcode-block" id="PreviewConfig">
+<a class="viewcode-back" href="../../../../reference/project.html#svgwriter.tools.project.PreviewConfig">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PreviewConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""How ``svgwriter preview`` shows a project, read from the manifest's ``[preview]`` table.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pages : tuple of str or None</span>
+<span class="sd">        The pages and scenes to show, by output name, in this order. None shows all of them.</span>
+<span class="sd">    background : str</span>
+<span class="sd">        Behind the drawing: ``"checker"``, ``"light"``, ``"dark"`` or a colour.</span>
+<span class="sd">    layout : str</span>
+<span class="sd">        Where the controls sit: ``"auto"`` (right of the drawing on wide windows, below it otherwise),</span>
+<span class="sd">        ``"right"`` or ``"bottom"``.</span>
+<span class="sd">    fit : str</span>
+<span class="sd">        ``"contain"`` scales the drawing to its area; ``"actual"`` shows it at its own size.</span>
+<span class="sd">    port : int</span>
+<span class="sd">        The local port.</span>
+<span class="sd">    open : bool</span>
+<span class="sd">        Open the page in a browser on start.</span>
+<span class="sd">    debounce_ms : int</span>
+<span class="sd">        Milliseconds the page waits after a control moves before asking for a new drawing.</span>
+<span class="sd">    build_on_save : bool</span>
+<span class="sd">        Write the outputs after a file is saved and the project has been quiet for a moment.</span>
+<span class="sd">    formats_on_build : tuple of str or None</span>
+<span class="sd">        The formats that saving and the page's Build outputs button write. None writes ``[outputs] formats``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from svgwriter.tools.project import PreviewConfig</span>
+<span class="sd">    &gt;&gt;&gt; PreviewConfig().layout, PreviewConfig().port</span>
+<span class="sd">    ('auto', 8000)</span>
+<span class="sd">    """</span>
+
+    <span class="n">pages</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">background</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">BACKGROUNDS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">layout</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">LAYOUTS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">fit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FITS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_PORT</span>
+    <span class="nb">open</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">debounce_ms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">PREVIEW_DEBOUNCE_MS</span>
+    <span class="n">build_on_save</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">formats_on_build</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 
@@ -376,6 +431,8 @@
 <span class="sd">        Exporter options per format.</span>
 <span class="sd">    output : str</span>
 <span class="sd">        Output folder, relative to `root`.</span>
+<span class="sd">    preview : PreviewConfig</span>
+<span class="sd">        How ``svgwriter preview`` shows the project.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -394,7 +451,8 @@
     <span class="n">fonts</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FONT_FOLDER</span>
     <span class="n">formats</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_FORMATS</span>
     <span class="n">options</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_OUTPUT</span></div>
+    <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_OUTPUT</span>
+    <span class="n">preview</span><span class="p">:</span> <span class="n">PreviewConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">PreviewConfig</span><span class="p">)</span></div>
 
 
 
@@ -461,6 +519,61 @@
     <span class="k">return</span> <span class="n">names</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_choice</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">choices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">choices</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ProjectError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">: preview.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> is one of </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">repr</span><span class="p">,</span><span class="w"> </span><span class="n">choices</span><span class="p">))</span><span class="si">}</span><span class="s2">, not </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_flag</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ProjectError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">: preview.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> is true or false, not </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_count</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ProjectError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">: preview.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> is a whole number of at least 0, not </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_names</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ProjectError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">: preview.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> is a list of names, not </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_background</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">BACKGROUNDS</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">parse_color</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ProjectError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">: preview.background is one of </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">repr</span><span class="p">,</span><span class="w"> </span><span class="n">BACKGROUNDS</span><span class="p">))</span><span class="si">}</span><span class="s2"> "</span>
+                           <span class="sa">f</span><span class="s2">"or a colour, not </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">check_preview</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">table</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">PreviewConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The ``[preview]`` table as a :class:`PreviewConfig`; an unknown key or bad value raises :class:`ProjectError`."""</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ProjectError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">: preview is a table, not </span><span class="si">{</span><span class="n">table</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">_unknown</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">"preview."</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">PREVIEW_KEYS</span><span class="p">)</span>
+    <span class="n">default</span> <span class="o">=</span> <span class="n">PreviewConfig</span><span class="p">()</span>
+    <span class="n">formats</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"formats_on_build"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">PreviewConfig</span><span class="p">(</span>
+        <span class="n">pages</span><span class="o">=</span><span class="n">_names</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">"pages"</span><span class="p">,</span> <span class="n">table</span><span class="p">[</span><span class="s2">"pages"</span><span class="p">])</span> <span class="k">if</span> <span class="s2">"pages"</span> <span class="ow">in</span> <span class="n">table</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">background</span><span class="o">=</span><span class="n">_background</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"background"</span><span class="p">,</span> <span class="n">default</span><span class="o">.</span><span class="n">background</span><span class="p">)),</span>
+        <span class="n">layout</span><span class="o">=</span><span class="n">_choice</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">"layout"</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"layout"</span><span class="p">,</span> <span class="n">default</span><span class="o">.</span><span class="n">layout</span><span class="p">),</span> <span class="n">LAYOUTS</span><span class="p">),</span>
+        <span class="n">fit</span><span class="o">=</span><span class="n">_choice</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">"fit"</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fit"</span><span class="p">,</span> <span class="n">default</span><span class="o">.</span><span class="n">fit</span><span class="p">),</span> <span class="n">FITS</span><span class="p">),</span>
+        <span class="n">port</span><span class="o">=</span><span class="n">_count</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">"port"</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"port"</span><span class="p">,</span> <span class="n">default</span><span class="o">.</span><span class="n">port</span><span class="p">)),</span>
+        <span class="nb">open</span><span class="o">=</span><span class="n">_flag</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">"open"</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"open"</span><span class="p">,</span> <span class="n">default</span><span class="o">.</span><span class="n">open</span><span class="p">)),</span>
+        <span class="n">debounce_ms</span><span class="o">=</span><span class="n">_count</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">"debounce_ms"</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"debounce_ms"</span><span class="p">,</span> <span class="n">default</span><span class="o">.</span><span class="n">debounce_ms</span><span class="p">)),</span>
+        <span class="n">build_on_save</span><span class="o">=</span><span class="n">_flag</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">"build_on_save"</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"build_on_save"</span><span class="p">,</span> <span class="n">default</span><span class="o">.</span><span class="n">build_on_save</span><span class="p">)),</span>
+        <span class="n">formats_on_build</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">formats</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">check_formats</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">: preview.formats_on_build"</span><span class="p">,</span> <span class="n">_names</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">"formats_on_build"</span><span class="p">,</span> <span class="n">formats</span><span class="p">)))</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">read_config</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjectConfig</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Find and check the manifest for the project at or above *start*."""</span>
     <span class="n">source</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">find_manifest</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
@@ -481,7 +594,8 @@
     <span class="k">return</span> <span class="n">ProjectConfig</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">name</span><span class="p">)),</span>
                          <span class="n">entry</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"entry"</span><span class="p">,</span> <span class="n">DEFAULT_ENTRY</span><span class="p">)),</span> <span class="n">size</span><span class="o">=</span><span class="n">check_size</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"size"</span><span class="p">)),</span>
                          <span class="n">theme</span><span class="o">=</span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"theme"</span><span class="p">),</span> <span class="n">fonts</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fonts"</span><span class="p">,</span> <span class="n">FONT_FOLDER</span><span class="p">)),</span> <span class="n">formats</span><span class="o">=</span><span class="n">formats</span><span class="p">,</span>
-                         <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">outputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"directory"</span><span class="p">,</span> <span class="n">DEFAULT_OUTPUT</span><span class="p">)))</span>
+                         <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">outputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"directory"</span><span class="p">,</span> <span class="n">DEFAULT_OUTPUT</span><span class="p">)),</span>
+                         <span class="n">preview</span><span class="o">=</span><span class="n">check_preview</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"preview"</span><span class="p">,</span> <span class="p">{})))</span>
 </pre></div>
         </article>
       </div>
