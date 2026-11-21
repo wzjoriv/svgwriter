@@ -9,6 +9,7 @@ import functools
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, Concatenate
 
+from .._internal._animation._scenes import scene_of
 from .._internal._constants import (
     BLINK_VALUES,
     CONTAINERS,
@@ -20,7 +21,6 @@ from .._internal._constants import (
     WRITE_LAG,
 )
 from .._internal._presets import ANIMATIONS, BEHAVIORS
-from .._internal._scenes import scene_of
 from .._internal._typing import P
 from ._motion_transform import TransformPresets, timing
 from .animation import Animate, AnimateMotion, Ease, EaseLike, Set

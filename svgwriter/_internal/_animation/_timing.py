@@ -8,7 +8,7 @@ import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from ._constants import (
+from .._constants import (
     CLOCK_RE,
     EPSILON,
     INDEFINITE,
@@ -21,7 +21,7 @@ from ._constants import (
 )
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
+    from ...elements.core import Element
 
 __all__ = ["Timing", "clock", "timing"]
 

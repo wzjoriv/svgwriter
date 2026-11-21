@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar
 
 from .._document.sizes import PageSize, page_size
-from .._internal._scenes import adopt
+from .._internal._animation._scenes import adopt
 from .._internal._typing import AnyPath
 from ._constants import BAKE_DOCUMENTS, SCENE_FORMAT, SCENE_HEIGHT, SCENE_RENDERER, SCENE_WIDTH
 from ._scene_motion import SceneMotion

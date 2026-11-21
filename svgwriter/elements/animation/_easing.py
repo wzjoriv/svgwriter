@@ -8,6 +8,8 @@ import math
 from collections.abc import Callable, Sequence
 from typing import TYPE_CHECKING, Any, TypeAlias
 
+from ..._internal._animation._easing import spline_at, spline_param, spline_progress, split_spline
+from ..._internal._animation._smil import add_values, blend
 from ..._internal._constants import (
     EASE_BEND_SAMPLES,
     EASE_BISECTIONS,
@@ -16,8 +18,6 @@ from ..._internal._constants import (
     EASE_SAMPLES,
     EPSILON,
 )
-from ..._internal._easing import spline_at, spline_param, spline_progress, split_spline
-from ..._internal._smil import add_values, blend
 
 if TYPE_CHECKING:
     from ..core import Element

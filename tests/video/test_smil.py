@@ -1,7 +1,7 @@
 import pytest
 
 import svgwriter as svg
-from svgwriter._internal._timing import clock
+from svgwriter._internal._animation._timing import clock
 
 
 def _ball():

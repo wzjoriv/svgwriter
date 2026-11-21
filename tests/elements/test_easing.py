@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter._internal._easing import spline_progress, split_spline
+from svgwriter._internal._animation._easing import spline_progress, split_spline
 
 TIMES = [i / 20 for i in range(21)]
 

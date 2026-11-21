@@ -7,14 +7,14 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING, Any
 
-from ._constants import ANIMATED_DEFAULTS, EPSILON, NUMBER_RE
+from .._constants import ANIMATED_DEFAULTS, EPSILON, NUMBER_RE
 from ._easing import spline_progress
 from ._timing import timing
 
 if TYPE_CHECKING:
-    from ..document import Document
-    from ..elements.core import Element
-    from ..transform.matrix import Matrix
+    from ...document import Document
+    from ...elements.core import Element
+    from ...transform.matrix import Matrix
 
 __all__ = ["add_values", "blend", "snapshot"]
 
@@ -51,7 +51,7 @@ def _mode(animation: Element) -> str:
 
 def _paced_keys(values: list[str]) -> list[float]:
     """Key times proportional to the distance between neighbouring values (colors in RGB, numbers in space)."""
-    from ..color.color import as_color
+    from ...color.color import as_color
 
     def point(text: str) -> list[float]:
         try:
@@ -105,8 +105,8 @@ def _segment(animation: Element, values: list[str], p: float) -> tuple[str, str,
 
 def blend(a: str, b: str, fraction: float) -> str:
     """Interpolate two attribute texts: colors, number lists (units kept), else a discrete switch."""
-    from ..color.color import as_color
-    from ..ops.interpolate import interpolate
+    from ...color.color import as_color
+    from ...ops.interpolate import interpolate
 
     if fraction == 0:
         return a
@@ -129,7 +129,7 @@ def _target(animation: Element, root: Element) -> Element | None:
 
 
 def _transform_matrix(kind: str, numbers: list[float]) -> Matrix:
-    from ..transform.matrix import IDENTITY, Matrix
+    from ...transform.matrix import IDENTITY, Matrix
 
     padded = [*numbers, 0.0, 0.0, 0.0]
     if kind == "translate":
@@ -146,7 +146,7 @@ def _transform_matrix(kind: str, numbers: list[float]) -> Matrix:
 
 
 def _apply(animation: Element, target: Element, p: float, base_t: dict[int, Matrix]) -> None:
-    from ..attributes.names import svg_name
+    from ...attributes.names import svg_name
 
     tag = animation.tag
     if tag == "animateMotion":
@@ -162,7 +162,7 @@ def _apply(animation: Element, target: Element, p: float, base_t: dict[int, Matr
         return
     base = target.get(name)
     if base is None:
-        from ..attributes.cascade import computed
+        from ...attributes.cascade import computed
 
         base = computed(target, name, ANIMATED_DEFAULTS.get(name))
     if tag == "set":
@@ -176,8 +176,8 @@ def _apply(animation: Element, target: Element, p: float, base_t: dict[int, Matr
 
 
 def _motion(animation: Element, target: Element, p: float, base_t: dict[int, Matrix]) -> None:
-    from ..ops.measure import point_at_length, tangent_at_length, total_length
-    from ..transform.matrix import IDENTITY, Matrix
+    from ...ops.measure import point_at_length, tangent_at_length, total_length
+    from ...transform.matrix import IDENTITY, Matrix
 
     data = _motion_path(animation)
     if data is None:
@@ -200,7 +200,7 @@ def _motion(animation: Element, target: Element, p: float, base_t: dict[int, Mat
 
 
 def _motion_path(animation: Element) -> Any:
-    from ..pathdata.data import PathData
+    from ...pathdata.data import PathData
 
     for child in animation:
         if child.tag == "mpath":
@@ -230,8 +230,8 @@ def snapshot(document: Document, time: float) -> Document:
     and ``additive="sum"``. ``begin`` and ``end`` lists may hold sync bases (``other.end + 1s``);
     event-based and ``indefinite`` times never occur, so animations waiting only on them stay idle.
     """
-    from ..document import Document
-    from ..elements.animation import AnimationElement
+    from ...document import Document
+    from ...elements.animation import AnimationElement
 
     root = document.root.clone()
     root.__dict__["_source_path"] = document.root.__dict__.get("_source_path")

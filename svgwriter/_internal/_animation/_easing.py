@@ -4,7 +4,7 @@ Cubic-bézier timing curves: evaluation, inversion and splitting, shared by SMIL
 
 from __future__ import annotations
 
-from ._constants import EASE_BISECTIONS, EASE_NEWTON_STEPS, EPSILON
+from .._constants import EASE_BISECTIONS, EASE_NEWTON_STEPS, EPSILON
 
 __all__ = ["spline_at", "spline_param", "spline_progress", "split_spline"]
 

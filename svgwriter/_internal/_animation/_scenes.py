@@ -8,7 +8,7 @@ import weakref
 from typing import TYPE_CHECKING, Any, Final
 
 if TYPE_CHECKING:
-    from ..elements.core import Element
+    from ...elements.core import Element
 
 __all__ = ["adopt", "scene_of"]
 

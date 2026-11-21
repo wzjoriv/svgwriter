@@ -8,7 +8,7 @@ import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from ..._internal._timing import clock
+from ..._internal._animation._timing import clock
 from ._constants import COLOR_ATTRIBUTES, PATH_TOLERANCE
 
 if TYPE_CHECKING:

@@ -388,7 +388,7 @@ def render_frame(document: Document, time: float) -> np.ndarray:
     >>> frame.shape, frame.dtype.name
     ((2, 4, 4), 'uint8')
     """
-    from .._internal._smil import snapshot
+    from .._internal._animation._smil import snapshot
     from ..elements.animation import AnimationElement
 
     if document.root.find(AnimationElement) is not None:
