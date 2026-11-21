@@ -301,7 +301,14 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_PRECISION</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_number</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ANGLE_RE</span><span class="p">,</span> <span class="n">ANGLE_SPELLINGS</span><span class="p">,</span> <span class="n">DEGREES_PER</span><span class="p">,</span> <span class="n">FULL_TURN_DEGREES</span><span class="p">,</span> <span class="n">HALF_TURN_DEGREES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ANGLE_RE</span><span class="p">,</span>
+    <span class="n">ANGLE_SPELLINGS</span><span class="p">,</span>
+    <span class="n">DEGREES_PER</span><span class="p">,</span>
+    <span class="n">EQUAL_DIGITS</span><span class="p">,</span>
+    <span class="n">FULL_TURN_DEGREES</span><span class="p">,</span>
+    <span class="n">HALF_TURN_DEGREES</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.quantity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Quantity</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -316,7 +323,7 @@
 
 <div class="viewcode-block" id="Angle">
 <a class="viewcode-back" href="../../../reference/attributes.html#svgwriter.attributes.Angle">[docs]</a>
-<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Angle</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""An angle with a unit; ``float(angle)`` is degrees, as every svgwriter rotation expects.</span>
 
@@ -625,6 +632,15 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__float__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">degrees</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Equal turns of any unit; plain numbers are degrees."""</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="n">Angle</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span> <span class="n">EQUAL_DIGITS</span><span class="p">)</span> <span class="o">==</span> <span class="nb">round</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">degrees</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Angle</span><span class="p">)</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">other</span><span class="p">),</span> <span class="n">EQUAL_DIGITS</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span> <span class="n">EQUAL_DIGITS</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">|</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>

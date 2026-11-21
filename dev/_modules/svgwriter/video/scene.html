@@ -526,6 +526,42 @@
                            <span class="n">renderer</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">renderer</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_advance</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Scene.at">
+<a class="viewcode-back" href="../../../reference/video.html#svgwriter.video.Scene.at">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Document</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The scene as it is at *seconds*: behaviors and :meth:`update` run, SMIL sampled.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        seconds : float</span>
+<span class="sd">            The moment, from the start of the scene.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Document</span>
+<span class="sd">            A still copy, like :meth:`Document.at &lt;svgwriter.Document.at&gt;`; the scene's own document</span>
+<span class="sd">            keeps the Python state of that moment.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        svgwriter.Document.at : The SMIL-only moment of a document.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">        &gt;&gt;&gt; class Grow(svg.Scene):</span>
+<span class="sd">        ...     width, height = 10, 10</span>
+<span class="sd">        ...     def build(self, doc):</span>
+<span class="sd">        ...         self.box = doc.rect(0, 0, 1, 1)</span>
+<span class="sd">        ...     def update(self, seconds):</span>
+<span class="sd">        ...         self.box.width = 1 + seconds</span>
+<span class="sd">        &gt;&gt;&gt; Grow().at(2).root[-1].get("width")</span>
+<span class="sd">        3</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_advance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">document</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Scene.render">
 <a class="viewcode-back" href="../../../reference/video.html#svgwriter.video.Scene.render">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">background</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
@@ -547,7 +583,7 @@
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
-<span class="sd">        svgwriter.Document.at : The still copy that is drawn.</span>
+<span class="sd">        at : The still copy that is drawn.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -557,8 +593,7 @@
 <span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">..ops.render</span><span class="w"> </span><span class="kn">import</span> <span class="n">render_png</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_advance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">render_png</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">document</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">seconds</span><span class="p">),</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="n">background</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">render_png</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">seconds</span><span class="p">),</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="n">background</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Scene.save">

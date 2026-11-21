@@ -422,10 +422,10 @@
           <li><a href="reference/geometry.html#svgwriter.transform.Transform.apply">(Transform method)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/geometry.html#svgwriter.transform.Matrix.apply_points">apply_points() (Matrix method)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/inkscape.html#svgwriter.inkscape.Arc">Arc (class in svgwriter.inkscape)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.pathdata.PathBuilder.arc_to">arc_to() (PathBuilder method)</a>
@@ -510,6 +510,10 @@
           <li><a href="reference/ops.html#svgwriter.ops.Face.at">(Face method)</a>
 </li>
           <li><a href="reference/ops.html#svgwriter.ops.FaceMetrics.at">(FaceMetrics method)</a>
+</li>
+          <li><a href="reference/video.html#svgwriter.video.Scene.at">(Scene method)</a>
+</li>
+          <li><a href="reference/widgets.html#svgwriter.widgets.Sweep.at">(Sweep method)</a>
 </li>
           <li><a href="reference/video.html#svgwriter.video.Video.at">(Video method)</a>
 </li>
@@ -1014,6 +1018,8 @@
           <li><a href="reference/ops.html#svgwriter.ops.Typeface.css">(Typeface method)</a>
 </li>
         </ul></li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.css_declarations">css_declarations() (in module svgwriter.attributes.cascade)</a>
+</li>
         <li><a href="reference/document.html#svgwriter.Document.current">current (Document property)</a>
 
         <ul>
@@ -1076,7 +1082,7 @@
           <li><a href="reference/video.html#svgwriter.video.Frame.data">(Frame attribute)</a>
 </li>
         </ul></li>
-        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.Rule.declarations">declarations (Rule attribute)</a>
+        <li><a href="reference/attributes.html#svgwriter.attributes.rules.Rule.declarations">declarations (Rule attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.structure.Pixels.decode">decode() (Pixels class method)</a>
 </li>
@@ -1536,7 +1542,7 @@
 </li>
         <li><a href="reference/color.html#svgwriter.color.Color.from_uint8">from_uint8() (Color class method)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.frozen_rules">frozen_rules() (in module svgwriter.attributes.cascade)</a>
+        <li><a href="reference/attributes.html#svgwriter.attributes.rules.frozen_rules">frozen_rules() (in module svgwriter.attributes.rules)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.units.ft">ft (in module svgwriter.attributes.units)</a>
 </li>
@@ -2058,6 +2064,8 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.paint.Mask">Mask (class in svgwriter.elements.paint)</a>
 </li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.matches">matches() (in module svgwriter.attributes.cascade)</a>
+</li>
         <li><a href="reference/geometry.html#svgwriter.transform.Matrix">Matrix (class in svgwriter.transform)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.ColorMatrixType.MATRIX">MATRIX (ColorMatrixType attribute)</a>
@@ -2125,6 +2133,8 @@
           <li><a href="reference/attributes.html#module-svgwriter.attributes.cascade">svgwriter.attributes.cascade</a>
 </li>
           <li><a href="reference/attributes.html#module-svgwriter.attributes.quantity">svgwriter.attributes.quantity</a>
+</li>
+          <li><a href="reference/attributes.html#module-svgwriter.attributes.rules">svgwriter.attributes.rules</a>
 </li>
           <li><a href="reference/attributes.html#module-svgwriter.attributes.units">svgwriter.attributes.units</a>
 </li>
@@ -2305,7 +2315,7 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.Rule.order">order (Rule attribute)</a>
+        <li><a href="reference/attributes.html#svgwriter.attributes.rules.Rule.order">order (Rule attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.CompositeOperator.OUT">OUT (CompositeOperator attribute)</a>
 </li>
@@ -2377,7 +2387,7 @@
         </ul></li>
         <li><a href="reference/color.html#svgwriter.color.parse_color">parse_color() (in module svgwriter.color)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.parse_css">parse_css() (in module svgwriter.attributes.cascade)</a>
+        <li><a href="reference/attributes.html#svgwriter.attributes.rules.parse_css">parse_css() (in module svgwriter.attributes.rules)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.parse_func_iri">parse_func_iri() (in module svgwriter.attributes)</a>
 </li>
@@ -2625,14 +2635,14 @@
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.render_frame">render_frame() (in module svgwriter.ops)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/document.html#svgwriter.Document.render_png">render_png() (Document method)</a>
 
         <ul>
           <li><a href="reference/ops.html#svgwriter.ops.render_png">(in module svgwriter.ops)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/ops.html#svgwriter.ops.render_svg">render_svg() (in module svgwriter.ops)</a>
 </li>
         <li><a href="reference/video.html#svgwriter.video.Scene.renderer">renderer (Scene attribute)</a>
@@ -2683,9 +2693,11 @@
 </li>
         <li><a href="reference/theme.html#svgwriter.theme.Theme.roles">roles (Theme property)</a>
 </li>
-        <li><a href="reference/project.html#svgwriter.Project.root">root (Project property)</a>
+        <li><a href="reference/document.html#svgwriter.Document.root">root (Document attribute)</a>
 
         <ul>
+          <li><a href="reference/project.html#svgwriter.Project.root">(Project property)</a>
+</li>
           <li><a href="reference/project.html#svgwriter.project.ProjectConfig.root">(ProjectConfig attribute)</a>
 </li>
         </ul></li>
@@ -2713,11 +2725,11 @@
 </li>
         <li><a href="reference/layout.html#svgwriter.layout.Grid.rows">rows (Grid property)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.Rule">Rule (class in svgwriter.attributes.cascade)</a>
+        <li><a href="reference/attributes.html#svgwriter.attributes.rules.Rule">Rule (class in svgwriter.attributes.rules)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.StyleSheet.rule">rule() (StyleSheet method)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.rules_of">rules_of() (in module svgwriter.attributes.cascade)</a>
+        <li><a href="reference/attributes.html#svgwriter.attributes.rules.rules_of">rules_of() (in module svgwriter.attributes.rules)</a>
 </li>
         <li><a href="reference/inkscape.html#svgwriter.inkscape.Arc.rx">rx (Arc property)</a>
 
@@ -2795,11 +2807,13 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.BlendMode.SCREEN">SCREEN (BlendMode attribute)</a>
 </li>
+        <li><a href="reference/video.html#svgwriter.video.Frame.seconds">seconds (Frame attribute)</a>
+</li>
         <li><a href="reference/ops.html#svgwriter.ops.segment">segment() (in module svgwriter.ops)</a>
 </li>
         <li><a href="reference/widgets.html#svgwriter.widgets.Segmented">Segmented (class in svgwriter.widgets)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.Rule.selector">selector (Rule attribute)</a>
+        <li><a href="reference/attributes.html#svgwriter.attributes.rules.Rule.selector">selector (Rule attribute)</a>
 </li>
         <li><a href="reference/color.html#svgwriter.color.Color.sepia">sepia() (Color method)</a>
 </li>
@@ -2815,7 +2829,7 @@
           <li><a href="reference/widgets.html#svgwriter.widgets.Recorder.set">(Recorder method)</a>
 </li>
         </ul></li>
-        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.set_class_rules">set_class_rules() (in module svgwriter.attributes.cascade)</a>
+        <li><a href="reference/attributes.html#svgwriter.attributes.rules.set_class_rules">set_class_rules() (in module svgwriter.attributes.rules)</a>
 </li>
         <li><a href="reference/inkscape.html#svgwriter.inkscape.set_export_hints">set_export_hints() (in module svgwriter.inkscape)</a>
 </li>
@@ -2945,7 +2959,9 @@
 </li>
         <li><a href="reference/layout.html#svgwriter.layout.Grid.span">span() (Grid method)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.Rule.specificity">specificity (Rule attribute)</a>
+        <li><a href="reference/attributes.html#svgwriter.attributes.rules.Rule.specificity">specificity (Rule attribute)</a>
+</li>
+        <li><a href="reference/attributes.html#svgwriter.attributes.cascade.specified">specified() (in module svgwriter.attributes.cascade)</a>
 </li>
         <li><a href="reference/builder.html#svgwriter.builder.spiral">spiral() (in module svgwriter.builder)</a>
 </li>
@@ -3082,6 +3098,13 @@
 
         <ul>
           <li><a href="reference/attributes.html#module-svgwriter.attributes.quantity">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.attributes.rules
+
+        <ul>
+          <li><a href="reference/attributes.html#module-svgwriter.attributes.rules">module</a>
 </li>
         </ul></li>
         <li>
@@ -3442,6 +3465,8 @@
           <li><a href="reference/widgets.html#svgwriter.widgets.Text">(class in svgwriter.widgets)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/widgets.html#svgwriter.widgets.Checkbox.text">text() (Checkbox method)</a>
 
         <ul>
@@ -3466,8 +3491,6 @@
           <li><a href="reference/widgets.html#svgwriter.widgets.Toggle.text">(Toggle method)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.elements.Element.text_content">text_content (Element property)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.text_outline">text_outline() (in module svgwriter.ops)</a>
@@ -3491,8 +3514,6 @@
 </li>
         </ul></li>
         <li><a href="reference/theme.html#svgwriter.theme.ThemeError">ThemeError</a>
-</li>
-        <li><a href="reference/video.html#svgwriter.video.Frame.time">time (Frame attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.animation.Ease.time_of">time_of() (Ease method)</a>
 </li>

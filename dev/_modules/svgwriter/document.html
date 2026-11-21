@@ -297,10 +297,10 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">overload</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TypeVar</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.access</span><span class="w"> </span><span class="kn">import</span> <span class="n">Access</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._document.ingest</span><span class="w"> </span><span class="kn">import</span> <span class="n">SupportsSVG</span><span class="p">,</span> <span class="n">to_element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._document.building</span><span class="w"> </span><span class="kn">import</span> <span class="n">Building</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.inkscape</span><span class="w"> </span><span class="kn">import</span> <span class="n">InkscapeData</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.output</span><span class="w"> </span><span class="kn">import</span> <span class="n">Output</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.sizes</span><span class="w"> </span><span class="kn">import</span> <span class="n">PageSize</span><span class="p">,</span> <span class="n">page_size</span>
@@ -310,14 +310,12 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">._internal._tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">attach_cursor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyPath</span><span class="p">,</span> <span class="n">Stack</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">ElementFactory</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.elements.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Defs</span><span class="p">,</span> <span class="n">Desc</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="n">Svg</span><span class="p">,</span> <span class="n">Title</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.elements.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Svg</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.theme.sheet</span><span class="w"> </span><span class="kn">import</span> <span class="n">sheet_theme</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.theme.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Theme</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.attributes.style</span><span class="w"> </span><span class="kn">import</span> <span class="n">StyleSheet</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.elements.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">StyleElement</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.io.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">Strictness</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Document"</span><span class="p">]</span>
@@ -328,7 +326,7 @@
 
 <div class="viewcode-block" id="Document">
 <a class="viewcode-back" href="../../reference/document.html#svgwriter.Document">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Document</span><span class="p">(</span><span class="n">Sizing</span><span class="p">,</span> <span class="n">Theming</span><span class="p">,</span> <span class="n">Typography</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">Access</span><span class="p">,</span> <span class="n">InkscapeData</span><span class="p">,</span> <span class="n">ElementFactory</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Document</span><span class="p">(</span><span class="n">Building</span><span class="p">,</span> <span class="n">Sizing</span><span class="p">,</span> <span class="n">Theming</span><span class="p">,</span> <span class="n">Typography</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">Access</span><span class="p">,</span> <span class="n">InkscapeData</span><span class="p">,</span> <span class="n">ElementFactory</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""An SVG document under construction.</span>
 
 <span class="sd">    Shortcut methods (``doc.circle(...)``, ``doc.linear_gradient(...)``)</span>
@@ -522,245 +520,6 @@
         <span class="n">doc</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">yield</span> <span class="n">doc</span>
         <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span></div>
-
-
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">current</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Element</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Where :meth:`add` inserts: the innermost open container.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; doc = Document(10, 10)</span>
-<span class="sd">        &gt;&gt;&gt; doc.current is doc.root</span>
-<span class="sd">        True</span>
-<span class="sd">        &gt;&gt;&gt; with doc.group() as g:</span>
-<span class="sd">        ...     print(doc.current is g)</span>
-<span class="sd">        True</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="o">.</span><span class="n">peek</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">defs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Defs</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""The root ``&lt;defs&gt;``, created on first use; ``doc.defs += x`` adds to it.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; from svgwriter import Rect</span>
-<span class="sd">        &gt;&gt;&gt; doc = Document(10, 10)</span>
-<span class="sd">        &gt;&gt;&gt; doc.defs += Rect(0, 0, 1, 1, id="cell")</span>
-<span class="sd">        &gt;&gt;&gt; doc.defs.tag, len(doc.defs)</span>
-<span class="sd">        ('defs', 1)</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">defs</span><span class="p">()</span>
-
-    <span class="nd">@defs</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">defs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Defs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">defs</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">"use doc.defs += element to add definitions"</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_place</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">E</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">E</span><span class="p">:</span>
-        <span class="n">attach_cursor</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">current</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_define</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">E</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">E</span><span class="p">:</span>
-        <span class="n">element</span><span class="o">.</span><span class="n">ensure_id</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">defs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">defs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-        <span class="n">attach_cursor</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">element</span>
-
-    <span class="nd">@overload</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">E</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">E</span><span class="p">:</span> <span class="o">...</span>
-    <span class="nd">@overload</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">SupportsSVG</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Group</span><span class="p">:</span> <span class="o">...</span>
-<div class="viewcode-block" id="Document.add">
-<a class="viewcode-back" href="../../reference/document.html#svgwriter.Document.add">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Element</span> <span class="o">|</span> <span class="n">SupportsSVG</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Element</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Add *element* at the insertion point and return it.</span>
-
-<span class="sd">        Objects from other libraries that implement ``_repr_svg_`` (plots,</span>
-<span class="sd">        diagrams, formulas) are parsed and added as a ``&lt;g&gt;`` holding their</span>
-<span class="sd">        ``&lt;svg&gt;``, so they can be moved and scaled like any group.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        element : Element or SupportsSVG</span>
-<span class="sd">            The element, or an object providing ``_repr_svg_``.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Element</span>
-<span class="sd">            The added element; a ``&lt;g&gt;`` when a foreign object was converted.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        TypeError</span>
-<span class="sd">            If a ``_repr_svg_`` object returns no SVG.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        define : Add to ``&lt;defs&gt;`` instead.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; from svgwriter import Rect</span>
-<span class="sd">        &gt;&gt;&gt; doc = Document(10, 10)</span>
-<span class="sd">        &gt;&gt;&gt; rect = doc.add(Rect(0, 0, 5, 5))</span>
-<span class="sd">        &gt;&gt;&gt; rect.parent is doc.root</span>
-<span class="sd">        True</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_place</span><span class="p">(</span><span class="n">to_element</span><span class="p">(</span><span class="n">element</span><span class="p">))</span>  <span class="c1"># type: ignore[arg-type]</span></div>
-
-
-<div class="viewcode-block" id="Document.define">
-<a class="viewcode-back" href="../../reference/document.html#svgwriter.Document.define">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">define</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">E</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">E</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Put *element* in ``&lt;defs&gt;`` (giving it an id) and return it.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        element : Element</span>
-<span class="sd">            The element to define; it receives an id if it has none.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Element</span>
-<span class="sd">            The same element, now inside ``&lt;defs&gt;``.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        add : Add at the insertion point instead.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; from svgwriter import Rect</span>
-<span class="sd">        &gt;&gt;&gt; doc = Document(10, 10)</span>
-<span class="sd">        &gt;&gt;&gt; cell = doc.define(Rect(0, 0, 1, 1))</span>
-<span class="sd">        &gt;&gt;&gt; cell.parent is doc.defs, cell.id.startswith("rect")</span>
-<span class="sd">        (True, True)</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define</span><span class="p">(</span><span class="n">element</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Document.title">
-<a class="viewcode-back" href="../../reference/document.html#svgwriter.Document.title">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Title</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Add a ``&lt;title&gt;`` as the first child of the root.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        text : str</span>
-<span class="sd">            The accessible name of the document.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Title</span>
-<span class="sd">            The new element.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        describe : Add a longer description.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; doc = Document(10, 10)</span>
-<span class="sd">        &gt;&gt;&gt; doc.title("Chart").children</span>
-<span class="sd">        ['Chart']</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Title</span><span class="p">(</span><span class="n">text</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="Document.describe">
-<a class="viewcode-back" href="../../reference/document.html#svgwriter.Document.describe">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Desc</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Add a ``&lt;desc&gt;`` at the insertion point.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        text : str</span>
-<span class="sd">            The description.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Desc</span>
-<span class="sd">            The new element.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        title : Add a short name.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; doc = Document(10, 10)</span>
-<span class="sd">        &gt;&gt;&gt; doc.describe("A blue square").children</span>
-<span class="sd">        ['A blue square']</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Desc</span><span class="p">(</span><span class="n">text</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="Document.style">
-<a class="viewcode-back" href="../../reference/document.html#svgwriter.Document.style">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">style</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">css</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">StyleSheet</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StyleElement</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Add a ``&lt;style&gt;`` sheet near the top of the document.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        css : str or StyleSheet, optional</span>
-<span class="sd">            The stylesheet. Defaults to an empty string.</span>
-<span class="sd">        **kwargs</span>
-<span class="sd">            Forwarded to :class:`~svgwriter.elements.structure.StyleElement`.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        StyleElement</span>
-<span class="sd">            The new element, placed after the ``&lt;title&gt;`` when there is one.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; doc = Document(10, 10)</span>
-<span class="sd">        &gt;&gt;&gt; doc.style(".a { fill: red }").tag</span>
-<span class="sd">        'style'</span>
-<span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">.elements.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">StyleElement</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">children</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Title</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span> <span class="n">StyleElement</span><span class="p">(</span><span class="n">css</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="Document.nest">
-<a class="viewcode-back" href="../../reference/document.html#svgwriter.Document.nest">[docs]</a>
-    <span class="nd">@contextmanager</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">nest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">E</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Add *element* and make it the insertion point inside the block.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        element : Element</span>
-<span class="sd">            The container to add and open.</span>
-
-<span class="sd">        Yields</span>
-<span class="sd">        ------</span>
-<span class="sd">        Element</span>
-<span class="sd">            The same element.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        add : Add without nesting.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; from svgwriter import Group</span>
-<span class="sd">        &gt;&gt;&gt; doc = Document(10, 10)</span>
-<span class="sd">        &gt;&gt;&gt; with doc.nest(Group()) as g:</span>
-<span class="sd">        ...     _ = doc.circle(5, 5, 2)</span>
-<span class="sd">        &gt;&gt;&gt; len(g)</span>
-<span class="sd">        1</span>
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">element</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span></div>
 </div>
 
 </pre></div>

@@ -15,7 +15,7 @@ def logo(theme: svg.Theme | str = "light") -> svg.Document:
 
 light = logo()
 for size in (16, 32, 64, 256):
-    light.save(f"logo-{size}.png", size=size, padding=4)
+    light.save(f"logo-{size}.png", pixels=size, padding=4)
 light.save("favicon.ico", sizes=(16, 32, 48))
 light.save("logo.icns")
 logo("dark").save("logo-dark.svg")

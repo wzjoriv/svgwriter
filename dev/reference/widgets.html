@@ -2099,6 +2099,40 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">&lt;nam
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.widgets.Sweep.at">
+<span class="sig-name descname"><span class="pre">at</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="document.html#svgwriter.Document" title="svgwriter.Document"><span class="pre">Document</span></a></span></span><a class="headerlink" href="#svgwriter.widgets.Sweep.at" title="Link to this definition">¶</a></dt>
+<dd><p>The scene as it is at <em>seconds</em>: behaviors and <a class="reference internal" href="#svgwriter.widgets.Sweep.update" title="svgwriter.widgets.Sweep.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a> run, SMIL sampled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seconds</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The moment, from the start of the scene.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Document</em> – A still copy, like <a class="reference internal" href="document.html#svgwriter.Document.at" title="svgwriter.Document.at"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Document.at</span></code></a>; the scene’s own document
+keeps the Python state of that moment.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="document.html#svgwriter.Document.at" title="svgwriter.Document.at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.Document.at</span></code></a></dt><dd><p>The SMIL-only moment of a document.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Grow</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">seconds</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Grow</span><span class="p">()</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">root</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"width"</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.widgets.Sweep.attach">
 <span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">element:</span> <span class="pre">~svgwriter.video._scene_motion.E,</span> <span class="pre">behavior:</span> <span class="pre">~collections.abc.Callable[[~typing.Concatenate[~svgwriter.video._scene_motion.E,</span> <span class="pre">float,</span> <span class="pre">~P]],</span> <span class="pre">None],</span> <span class="pre">*args:</span> <span class="pre">~typing.~P,</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.~P</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">E</span></span></span><a class="headerlink" href="#svgwriter.widgets.Sweep.attach" title="Link to this definition">¶</a></dt>
 <dd><p>Run <em>behavior</em> on <em>element</em> before every frame: <code class="docutils literal notranslate"><span class="pre">behavior(element,</span> <span class="pre">seconds,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>.</p>
@@ -2301,7 +2335,7 @@ and transforms squashed flat with a skew.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="document.html#svgwriter.Document.at" title="svgwriter.Document.at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.Document.at</span></code></a></dt><dd><p>The still copy that is drawn.</p>
+<dt><a class="reference internal" href="#svgwriter.widgets.Sweep.at" title="svgwriter.widgets.Sweep.at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">at</span></code></a></dt><dd><p>The still copy that is drawn.</p>
 </dd>
 </dl>
 </div>
@@ -3040,6 +3074,7 @@ controls (<a class="reference internal" href="#svgwriter.widgets.controls" title
 <li><a class="reference internal" href="#svgwriter.widgets.Sweep.values_at"><code class="docutils literal notranslate"><span class="pre">Sweep.values_at()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.widgets.Sweep.update"><code class="docutils literal notranslate"><span class="pre">Sweep.update()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.widgets.Sweep.save"><code class="docutils literal notranslate"><span class="pre">Sweep.save()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.widgets.Sweep.at"><code class="docutils literal notranslate"><span class="pre">Sweep.at()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.widgets.Sweep.attach"><code class="docutils literal notranslate"><span class="pre">Sweep.attach()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.widgets.Sweep.bake"><code class="docutils literal notranslate"><span class="pre">Sweep.bake()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.widgets.Sweep.build"><code class="docutils literal notranslate"><span class="pre">Sweep.build()</span></code></a></li>

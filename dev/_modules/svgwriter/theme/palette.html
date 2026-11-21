@@ -343,7 +343,7 @@
 <span class="sd">    &gt;&gt;&gt; p = Palette({"ink": "#000000", "paper": "white", "line": lambda p: p.ink.mix(p.paper, 0.5)})</span>
 <span class="sd">    &gt;&gt;&gt; p.line.hex</span>
 <span class="sd">    '#808080'</span>
-<span class="sd">    &gt;&gt;&gt; p.replace({"ink": "#ff0000"}).line.hex</span>
+<span class="sd">    &gt;&gt;&gt; p.replace(ink="#ff0000").line.hex</span>
 <span class="sd">    '#ff8080'</span>
 <span class="sd">    &gt;&gt;&gt; Palette({"ink": "navy", "label": "=readable({palette.ink})"}).label.hex</span>
 <span class="sd">    '#ffffff'</span>
@@ -412,13 +412,13 @@
 
 <div class="viewcode-block" id="Palette.replace">
 <a class="viewcode-back" href="../../../reference/theme.html#svgwriter.theme.Palette.replace">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sources</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PaletteSource</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Palette</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">sources</span><span class="p">:</span> <span class="n">PaletteSource</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Palette</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""A new palette with some sources replaced or added; derived roles follow.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sources : mapping of str to color or str or callable</span>
-<span class="sd">            The roles to replace or add.</span>
+<span class="sd">        **sources : color or str or callable</span>
+<span class="sd">            The roles to replace or add, by name.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -428,7 +428,7 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; from svgwriter.theme import Palette</span>
-<span class="sd">        &gt;&gt;&gt; Palette({"a": "red", "b": "{palette.a}"}).replace({"a": "blue"}).b.hex</span>
+<span class="sd">        &gt;&gt;&gt; Palette({"a": "red", "b": "{palette.a}"}).replace(a="blue").b.hex</span>
 <span class="sd">        '#0000ff'</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="n">Palette</span><span class="p">({</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_sources</span><span class="p">,</span> <span class="o">**</span><span class="n">sources</span><span class="p">})</span></div>

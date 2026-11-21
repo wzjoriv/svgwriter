@@ -427,7 +427,8 @@ so a row of <code class="docutils literal notranslate"><span class="pre">&quot;7
 <h2>Units<a class="headerlink" href="#units" title="Link to this heading">¶</a></h2>
 <p>Lengths are numbers of user units or lengths with units: <code class="docutils literal notranslate"><span class="pre">&quot;2mm&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.mm(2)</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;0.5in&quot;</span></code>. In a document
 whose <code class="docutils literal notranslate"><span class="pre">viewBox</span></code> counts in a physical unit, as <code class="docutils literal notranslate"><span class="pre">svg.Document(size=&quot;a4&quot;)</span></code> does in millimetres, lengths with
-units convert to that unit, so <code class="docutils literal notranslate"><span class="pre">gap=svg.mm(2)</span></code> is two millimetres on paper.</p>
+units convert to that unit, so <code class="docutils literal notranslate"><span class="pre">gap=svg.mm(2)</span></code> is two millimetres on paper, as it is for attributes
+and path tools.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 
 <span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">"a6-landscape"</span><span class="p">)</span>

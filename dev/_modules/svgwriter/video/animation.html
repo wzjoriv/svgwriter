@@ -333,10 +333,10 @@
 <span class="n">RENDERERS</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Registry</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Document</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">FrameData</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Registry</span><span class="p">(</span><span class="s2">"renderer"</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_skia</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FrameData</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_skia</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FrameData</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..ops.render</span><span class="w"> </span><span class="kn">import</span> <span class="n">render_frame</span>
 
-    <span class="k">return</span> <span class="n">render_frame</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_frame</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span>
 
 
 <span class="n">RENDERERS</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"skia"</span><span class="p">,</span> <span class="n">_skia</span><span class="p">)</span>
@@ -564,10 +564,10 @@
     <span class="n">length</span> <span class="o">=</span> <span class="n">duration</span> <span class="k">if</span> <span class="n">duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">animation_duration</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"pass duration=...; the document has no SMIL animation with a plain 'dur'"</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">time</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frame_times</span><span class="p">(</span><span class="n">fps</span><span class="p">,</span> <span class="n">length</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">seconds</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frame_times</span><span class="p">(</span><span class="n">fps</span><span class="p">,</span> <span class="n">length</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">update</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">update</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span>
-        <span class="k">yield</span> <span class="n">to_frame</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">draw</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">time</span><span class="p">))</span></div>
+            <span class="n">update</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">to_frame</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">seconds</span><span class="p">,</span> <span class="n">draw</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">))</span></div>
 
 
 
