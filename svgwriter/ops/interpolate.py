@@ -34,6 +34,8 @@ def interpolate(a: T, b: T, t: float) -> T:
     outlines and holes with holes (a contour without a partner grows from or
     shrinks to its centre), each pair is resampled to one point count and
     started where the points move least, so in-between shapes do not twist.
+    Two batches (:mod:`svgwriter.batch <svgwriter.model.batch>`) of the same
+    size blend every item at once.
     Inside elements, attribute values that cannot be blended (keywords,
     different strings, lists of different lengths) switch at ``t = 0.5``, as
     SMIL's discrete mode does. Other types are added with
@@ -232,6 +234,12 @@ def _is_array(value: object) -> bool:
     return isinstance(value, np.ndarray) or isinstance(getattr(value, "array", None), np.ndarray)
 
 
+def _is_batch(value: object) -> bool:
+    from ..model.batch import Batch
+
+    return isinstance(value, Batch)
+
+
 def _is_element(value: object) -> bool:
     from ..model.elements.core import Element
 
@@ -243,6 +251,7 @@ _RULES: Final[list[tuple[Callable[[object], bool], Callable[[Any, Any, float], A
     (lambda v: isinstance(v, Matrix), _matrix),
     (lambda v: isinstance(v, PathData), blend_outlines),
     (_is_array, _array),
+    (_is_batch, lambda a, b, t: a._blend(b, t)),
     (_is_element, lambda a, b, t: _elements(a, b, t)),
     (_is_sequence, _sequence),
     (_is_color, _color),

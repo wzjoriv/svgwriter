@@ -23,7 +23,8 @@ def drawable_order(root: Element, atomic: Callable[[Element], bool] | None = Non
     """Rendered leaf elements in paint order (containers and definitions skipped).
 
     Walks the tree depth first, descending into ``svg``, ``g``, ``a`` and ``switch`` and
-    skipping definition-only elements such as ``defs``, ``clipPath`` and gradients.
+    skipping definition-only elements such as ``defs``, ``clipPath`` and gradients. A compact
+    batch is one leaf.
 
     Parameters
     ----------
@@ -51,13 +52,16 @@ def drawable_order(root: Element, atomic: Callable[[Element], bool] | None = Non
     >>> [e.tag for e in drawable_order(doc.root)]
     ['rect', 'circle']
     """
+    from ...model.batch import Batch
+
     order: list[Element] = []
 
     def visit(node: Element) -> None:
         for child in node:
             if child.tag in NOT_RENDERED:
                 continue
-            if child.tag in CONTAINERS and not (atomic is not None and atomic(child)):
+            if child.tag in CONTAINERS and not (atomic is not None and atomic(child)) and not (
+                    isinstance(child, Batch) and child.compact):
                 visit(child)
             else:
                 order.append(child)
