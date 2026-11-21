@@ -18,10 +18,6 @@ Image = pytest.importorskip("PIL.Image")
 P3_RED = [234, 51, 35]
 
 
-PAPER_TINT = 16
-"""At most about 6% ink on white: python-lcms2 0.3 profiles generated from a CMYK space tint paper slightly."""
-
-
 @pytest.fixture(scope="module")
 def cmyk_profile() -> bytes:
     from lcms2 import Profile, spaces
@@ -96,7 +92,7 @@ def test_cmyk_tiff_writes_ink_on_a_white_page(cmyk_profile):
     cyan, magenta, yellow, _ = np.asarray(image)[0, 0].tolist()
     assert cyan < 20 and magenta > 200 and yellow > 200
     blank = np.asarray(opened(svg.Document(4, 4).export("tiff", icc=cmyk_profile)))
-    assert blank.max() <= PAPER_TINT
+    assert blank.max() == 0
 
 
 def test_tiff_keeps_alpha_and_resolution_without_a_profile():
