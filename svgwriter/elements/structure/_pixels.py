@@ -125,8 +125,7 @@ class Pixels(PixelCompositing, Drawable):
         """Decode encoded image bytes into sRGB.
 
         Embedded colour information (ICC profile, PNG ``gAMA``/``cHRM``) is applied, so the
-        pixels look as the file intends. ICC profiles go through LittleCMS when the optional
-        ``color`` extra is installed.
+        pixels look as the file intends. ICC profiles go through LittleCMS.
 
         Parameters
         ----------
@@ -362,7 +361,7 @@ def _skia_rgba(data: bytes, *, managed: bool) -> np.ndarray:
 
 
 def _profiled_rgba(data: bytes, profile: bytes | str | None, intent: str | None) -> np.ndarray:
-    from ..._internal._color._icc import hint_missing, load_profile, pixels_to_srgb
+    from ..._internal._color._icc import load_profile, pixels_to_srgb
     from ..._internal._color._icc_constants import AUTO_PROFILE, SRGB_PROFILE
     from ..._internal._color._icc_embedded import embedded_profile
 
@@ -375,8 +374,6 @@ def _profiled_rgba(data: bytes, profile: bytes | str | None, intent: str | None)
     source = profile if profile is not None else embedded_profile(data)
     parsed = load_profile(source) if source is not None else None
     if parsed is None:
-        if profile is not None:
-            hint_missing()
         return _skia_rgba(data, managed=True)
     converted = pixels_to_srgb(parsed, _skia_rgba(data, managed=False), intent)
     return converted if converted is not None else _skia_rgba(data, managed=True)

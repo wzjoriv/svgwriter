@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import io
 import re
-import sys
 
+import lcms2
 import numpy as np
 import pytest
 
@@ -12,7 +12,6 @@ from svgwriter._internal._color._icc_embedded import embed_profile, embedded_pro
 from svgwriter._internal._color._icc_output import output_profile
 from svgwriter.export import find_importer
 
-lcms2 = pytest.importorskip("lcms2")
 Image = pytest.importorskip("PIL.Image")
 
 P3_RED = [234, 51, 35]
@@ -143,13 +142,3 @@ def test_pdf_refuses_rgb_profiles_other_than_srgb():
 
 def test_profiles_are_parsed_once():
     assert output_profile("display-p3") is output_profile("display-p3")
-
-
-def test_without_lcms2_the_error_names_the_extra(monkeypatch):
-    monkeypatch.setitem(sys.modules, "lcms2", None)
-    output_profile.cache_clear()
-    try:
-        with pytest.raises(ImportError, match=r"pysvgwriter\[color\]"):
-            red().export("png", icc="srgb")
-    finally:
-        output_profile.cache_clear()
