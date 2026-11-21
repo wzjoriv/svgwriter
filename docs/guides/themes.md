@@ -85,10 +85,10 @@ are [expressions](#expressions) over the others:
 
 | Role | Default |
 | --- | --- |
-| `border` | `mix({palette.foreground}, {palette.background}, 0.7)` |
-| `muted` | `mix({palette.foreground}, {palette.background}, 0.25)` |
-| `shadow` | `alpha({palette.foreground}, 0.2)` |
-| `on_primary` | `readable({palette.primary}, {palette.background}, {palette.foreground})` |
+| `border` | `=mix({palette.foreground}, {palette.background}, 0.7)` |
+| `muted` | `=mix({palette.foreground}, {palette.background}, 0.25)` |
+| `shadow` | `=alpha({palette.foreground}, 0.2)` |
+| `on_primary` | `=readable({palette.primary}, {palette.background}, {palette.foreground})` |
 
 ## Variants
 
@@ -113,14 +113,18 @@ print(brand.style("box"), brand.style("badge"))
 ```
 
 A role value may also be a reference, `"{palette.primary}"` or `"{fonts.sizes.title}"`, alone or inside
-text (`"1px solid {palette.border}"`), or an expression. Unknown roles and references and reference cycles
+text (`"1px solid {palette.border}"`), or an expression starting with `=`. Unknown roles and references and reference cycles
 raise `svg.theme.ThemeError` with the path of the value.
 
 ## Expressions
 
-Palette entries and role values can compute from other values with a small expression language, in Python
-and in theme files alike. Derived values follow their sources: replacing `primary` changes everything
-computed from it.
+An expression starts with `=`, like a spreadsheet formula: `"=readable({palette.primary})"`,
+`"={fonts.sizes.text} * 1.5"` (spaces after the `=` are fine). A text value without the `=` is never
+evaluated: a color, a lone reference such as `"{palette.primary}"`, or CSS text with its references filled
+in, so `"1px solid {palette.border}"`, `"12px/1.5 serif"` and `"-0.02em"` stay exactly as written.
+
+Palette entries and role values can compute from other values this way, in Python and in theme files alike.
+Derived values follow their sources: replacing `primary` changes everything computed from it.
 
 ```python
 import svgwriter as svg
@@ -128,13 +132,13 @@ import svgwriter as svg
 brand = svg.Theme.get("light").replace(
     palette={
         "primary": "#7c3aed",
-        "on_primary": "readable({palette.primary})",
-        "accent": "mix({palette.primary}, {palette.background}, 0.4, 'oklch')",
+        "on_primary": "=readable({palette.primary})",
+        "accent": "=mix({palette.primary}, {palette.background}, 0.4, 'oklch')",
     },
     roles={"badge": {
-        "fill": "lighten({palette.accent}, 0.2)",
-        "font-size": "{fonts.sizes.text} * 1.5",
-        "opacity": "if(is_dark({palette.background}), 0.9, 0.7)",
+        "fill": "=lighten({palette.accent}, 0.2)",
+        "font-size": "={fonts.sizes.text} * 1.5",
+        "opacity": "=if(is_dark({palette.background}), 0.9, 0.7)",
     }},
 )
 print(brand.palette.on_primary.hex, brand.style("badge"))
@@ -168,22 +172,19 @@ print(brand.palette.on_primary.hex, brand.style("badge"))
 | `round(x, digits?)` | `x` rounded to 0 (default) to 6 digits |
 | `if(condition, then, else)` | `then` or `else`; only the chosen one is evaluated |
 
-A text value is an expression when it is a lone reference, calls a function, starts with `(` or `not`, or
-puts an operator between two values. Anything else is plain text, written as given with its references
-filled in, so CSS such as `"1px solid {palette.border}"`, `"Gill Sans, sans-serif"`, `"-0.02em"` or
-`"url(#glow)"` stays as it is. A palette entry must come out as a color; a role value as a color, number or
-text (a condition alone is an error: choose with `if`).
+A palette entry must come out as a color; a role value as a color, number or text (a condition alone is
+an error: choose with `if`). Saving a theme writes expressions back as given, `=` included.
 
 ```toml
 [palette]
 primary = "#38bdf8"
-on_primary = "readable({palette.primary})"
-border = "mix({palette.foreground}, {palette.background}, 0.6, 'oklab')"
+on_primary = "=readable({palette.primary})"
+border = "=mix({palette.foreground}, {palette.background}, 0.6, 'oklab')"
 
 [roles.badge]
 fill = "{palette.primary}"
-stroke = "darken({palette.primary}, 0.3)"
-stroke-width = "max(1, {fonts.sizes.text} / 10)"
+stroke = "=darken({palette.primary}, 0.3)"
+stroke-width = "=max(1, {fonts.sizes.text} / 10)"
 ```
 
 ### Safety
@@ -191,9 +192,10 @@ stroke-width = "max(1, {fonts.sizes.text} / 10)"
 Nothing in an expression, or anywhere in a theme file, runs Python. Expressions are read by a dedicated
 tokenizer and parser and evaluated over a fixed table of the functions above, each mapped to one
 `svg.Color` method or arithmetic helper; there is no `eval`, `exec` or `compile`, no attribute access,
-no imports and no string formatting, and names in a file are never looked up as Python names. Call-like
-text that is not a function from the table (`__import__('os')`, `eval(...)`, `a.b()`), unsupported operators
-(`**`, `%`) and exponents (`9e999`) are errors, not text. Limits keep evaluation small:
+no imports and no string formatting, and names in a file are never looked up as Python names. Text without
+`=` is never evaluated at all. After `=`, anything outside the language is an error: names that are not
+functions from the table (`=__import__('os')`, `=eval(...)`, `=a.b()`), unsupported operators (`**`, `%`)
+and exponents (`9e999`). Limits keep evaluation small:
 
 | Limit | Value |
 | --- | --- |
@@ -236,7 +238,7 @@ extends = "dark"
 [palette]
 primary = "#38bdf8"
 accent = "{palette.primary}"
-on_primary = "readable({palette.primary})"
+on_primary = "=readable({palette.primary})"
 
 [fonts.sizes]
 title = 26
@@ -248,7 +250,7 @@ fill = "{palette.primary}"
 fill = "{palette.accent}"
 ```
 
-Values are text (colors, CSS, references or expressions), numbers, or color arrays: `[r, g, b]` or
+Values are text (colors, CSS, references or `=` expressions), numbers, or color arrays: `[r, g, b]` or
 `[r, g, b, a]`, either all floats from 0 to 1 or all integers from 0 to 255 (a mix is an error). Font
 sizes and weights are numbers.
 
