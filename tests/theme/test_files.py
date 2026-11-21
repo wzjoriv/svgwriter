@@ -158,3 +158,13 @@ def test_missing_base_and_file_errors(tmp_path: Path) -> None:
     path.write_text('[palette]\nprimary = "{palette.nope}"\n', encoding="utf-8")
     with pytest.raises(ThemeError, match=r"broken\.toml: palette\.primary: unknown reference"):
         svg.Theme.load(path)
+
+
+def test_expressions_saved_as_written() -> None:
+    text = '[palette]\nprimary = "#fde68a"\nlabel = "readable({palette.primary})"  # follows primary\n'
+    theme = svg.Theme.from_toml(text)
+    assert theme.palette.label.hex == "#000000"
+    darker = theme.replace(palette={"primary": "#1e3a8a"})
+    saved = darker.to_toml()
+    assert saved == text.replace("#fde68a", "#1e3a8a")
+    assert svg.Theme.from_toml(saved).palette.label.hex == "#ffffff"

@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from types import MappingProxyType
 
 from ._constants import FONT_FAMILY, FONT_SIZES, FONT_WEIGHTS, MONOSPACE_FAMILY
-from .palette import ThemeError
+from ._errors import ThemeError
 
 __all__ = ["Fonts"]
 

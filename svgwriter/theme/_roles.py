@@ -7,29 +7,20 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
-from ..color.color import Color
 from ._constants import BORDER_MIX, LINE_WIDTH, MUTED_MIX, SHADOW_ALPHA, THIN_LINE_WIDTH
 
 if TYPE_CHECKING:
-    from .palette import Palette
     from .theme import Theme
 
 __all__ = ["DERIVED_PALETTE", "STANDARD_ROLES"]
 
 
-def _border(p: Palette) -> Color:
-    return p.foreground.mix(p.background, BORDER_MIX)
-
-
-def _muted(p: Palette) -> Color:
-    return p.foreground.mix(p.background, MUTED_MIX)
-
-
-def _shadow(p: Palette) -> Color:
-    return p.foreground.with_alpha(SHADOW_ALPHA)
-
-
-DERIVED_PALETTE: dict[str, Callable[[Palette], Color]] = {"border": _border, "muted": _muted, "shadow": _shadow}
+DERIVED_PALETTE: dict[str, str] = {
+    "border": f"mix({{palette.foreground}}, {{palette.background}}, {BORDER_MIX})",
+    "muted": f"mix({{palette.foreground}}, {{palette.background}}, {MUTED_MIX})",
+    "shadow": f"alpha({{palette.foreground}}, {SHADOW_ALPHA})",
+    "on_primary": "readable({palette.primary}, {palette.background}, {palette.foreground})",
+}
 
 
 def _text(color: str, size: str, weight: str = "regular", family: str = "{fonts.family}") -> dict[str, object]:

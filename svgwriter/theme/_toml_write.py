@@ -14,11 +14,11 @@ import tomlkit
 from ..attributes.style import Style
 from ..color.color import Color, as_color
 from ._constants import DEFAULT_THEME, FONT_TABLES
+from ._errors import ThemeError
 from ._resolve import resolve_value
 from ._roles import DERIVED_PALETTE, STANDARD_ROLES
 from ._toml_read import parse_document, read_value
 from .fonts import Fonts
-from .palette import ThemeError
 
 if TYPE_CHECKING:
     from .theme import Theme

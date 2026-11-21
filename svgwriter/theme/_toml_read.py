@@ -13,8 +13,8 @@ from tomlkit.exceptions import TOMLKitError
 
 from ..color._constants import CHANNEL_MAX
 from ..color.color import Color
-from ._constants import ARRAY_CHANNELS, DEFAULT_THEME, FILE_FONT_KEYS, FILE_KEYS, FONT_TABLES
-from .palette import ThemeError
+from ._constants import ARRAY_CHANNELS, DEFAULT_THEME, FILE_FONT_KEYS, FILE_KEYS, FONT_TABLES, MAX_MAGNITUDE
+from ._errors import ThemeError
 
 if TYPE_CHECKING:
     from .theme import Theme
@@ -33,6 +33,8 @@ def parse_document(text: str) -> tomlkit.TOMLDocument:
 def _number(where: str, value: float) -> float:
     if not math.isfinite(value):
         raise ThemeError(f"{where}: {value} is not a finite number")
+    if abs(value) > MAX_MAGNITUDE:
+        raise ThemeError(f"{where}: number too large; the limit is {MAX_MAGNITUDE:g}")
     return value
 
 

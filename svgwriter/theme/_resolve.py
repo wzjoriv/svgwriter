@@ -1,5 +1,5 @@
 """
-Resolve role sources (mappings, functions and ``{section.name}`` references) into styles.
+Resolve role sources (mappings, functions, ``{section.name}`` references and expressions) into styles.
 """
 
 from __future__ import annotations
@@ -10,7 +10,8 @@ from typing import TYPE_CHECKING
 from ..attributes.style import Style
 from ..color.color import Color
 from ._constants import LENGTH_PROPERTIES, OPACITY_PROPERTIES, REFERENCE_RE, ROLE_NAME_RE
-from .palette import ThemeError
+from ._errors import ThemeError
+from ._expression import evaluate, is_expression
 
 if TYPE_CHECKING:
     from .theme import RoleSource, Theme
@@ -40,7 +41,7 @@ def _reference(theme: Theme, where: str, path: str) -> object:
 
 
 def resolve_value(theme: Theme, where: str, value: object) -> object:
-    """Resolve one role property value: call a function, then replace ``{section.name}`` references."""
+    """Resolve one role property value: call a function, evaluate an expression or fill in references."""
     if callable(value):
         try:
             value = value(theme)
@@ -48,9 +49,11 @@ def resolve_value(theme: Theme, where: str, value: object) -> object:
             raise ThemeError(f"{where}: {error}") from None
     if not isinstance(value, str):
         return value
-    whole = REFERENCE_RE.fullmatch(value.strip())
-    if whole is not None:
-        return _reference(theme, where, whole.group(1))
+    if is_expression(value):
+        result = evaluate(value, lambda path: _reference(theme, where, path), where)
+        if isinstance(result, bool):
+            raise ThemeError(f"{where}: a condition is not a CSS value; choose one with if(...)")
+        return result
     return REFERENCE_RE.sub(lambda m: _text(_reference(theme, where, m.group(1))), value)
 
 

@@ -9,9 +9,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from .._internal._typing import AnyPath
+from ._errors import ThemeError
 from ._toml_read import theme_from_toml
 from ._toml_write import theme_to_toml
-from .palette import ThemeError
 
 if TYPE_CHECKING:
     from .theme import Theme

@@ -12,11 +12,12 @@ from typing import Any, Final, TypeAlias
 from .._internal._registry import Registry
 from ..attributes.style import Style, StyleLike, StyleSheet
 from ._constants import DEFAULT_THEME, ROLE_CLASS_PREFIX
+from ._errors import ThemeError
 from ._files import ThemeFiles
 from ._resolve import check_role_name, resolve_role
 from ._roles import DERIVED_PALETTE, STANDARD_ROLES
 from .fonts import Fonts
-from .palette import Palette, PaletteSource, ThemeError
+from .palette import Palette, PaletteSource
 
 __all__ = ["THEMES", "RoleSource", "Theme"]
 
@@ -35,14 +36,15 @@ class Theme(ThemeFiles):
     name : str
         A short name, used by :meth:`get` once registered and written to theme files.
     palette : Palette or mapping
-        Color roles (see :class:`Palette`). ``border`` and ``muted`` are derived from
-        ``foreground`` and ``background`` unless given.
+        Color roles (see :class:`Palette`). ``border``, ``muted`` and ``shadow`` are derived from
+        ``foreground`` and ``background``, and ``on_primary`` from ``primary``, unless given.
     fonts : Fonts, optional
         Families, sizes and weights. Defaults to ``Fonts()``.
     roles : mapping of str to style or callable, optional
         Extra or replaced role styles, merged over the standard roles. Each is a mapping of CSS
         properties (values may be literals, ``"{palette.name}"``/``"{fonts.sizes.name}"``
-        references or functions of the theme) or a function of the theme returning one.
+        references, expressions such as ``"{fonts.sizes.text} * 1.5"`` or functions of the theme) or a
+        function of the theme returning one.
         Defaults to None.
 
     Raises
