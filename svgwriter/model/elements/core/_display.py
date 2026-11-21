@@ -22,7 +22,7 @@ class Displayable:
     __slots__ = ()
 
     def to_string(self, **options: Any) -> str:
-        """Serialize to an SVG string; see :class:`svgwriter.io.SerializeOptions`.
+        """Serialize to an SVG string; see :class:`svgwriter.formats.io.SerializeOptions`.
 
         Parameters
         ----------
@@ -44,7 +44,7 @@ class Displayable:
         >>> svg.circle(0, 0, 1).to_string(xml_declaration=False, pretty=False)
         '<circle cx="0" cy="0" r="1"/>'
         """
-        from ....io.writer import to_string
+        from ....formats.io.writer import to_string
         from ...layout import settle
 
         settle(self)
@@ -73,7 +73,7 @@ class Displayable:
         >>> buffer.getvalue()
         '<circle cx="0" cy="0" r="1"/>'
         """
-        from ....io.writer import write
+        from ....formats.io.writer import write
         from ...layout import settle
 
         settle(self)

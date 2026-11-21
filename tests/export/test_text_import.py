@@ -1,5 +1,5 @@
 import svgwriter as svg
-from svgwriter.export._text import read_markdown, read_text
+from svgwriter.formats.export._text import read_markdown, read_text
 
 
 def test_plain_text_keeps_lines_and_spaces():

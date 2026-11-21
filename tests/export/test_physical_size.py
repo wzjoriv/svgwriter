@@ -6,7 +6,7 @@ import re
 import pytest
 
 import svgwriter as svg
-from svgwriter.export import find_importer
+from svgwriter.formats.export import find_importer
 
 A4_PT = (595.28, 841.89)
 A4_EMU = (7560000, 10692000)

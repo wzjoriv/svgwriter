@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter.io import (
+from svgwriter.formats.io import (
     SerializeOptions,
     Strictness,
     SVGParseError,

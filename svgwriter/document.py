@@ -24,7 +24,7 @@ from .model.theme.sheet import sheet_theme
 from .model.theme.theme import Theme
 
 if TYPE_CHECKING:
-    from .io.parser import Strictness
+    from .formats.io.parser import Strictness
     from .model.attributes.length import Length
 
 __all__ = ["Document"]
@@ -163,10 +163,10 @@ class Document(Building, Sizing, Theming, Typography, Output, Access, InkscapeDa
         >>> len(chart.root.children) > 0
         True
         """
-        from .io.parser import Strictness, parse
+        from .formats.io.parser import Strictness, parse
 
         if format.lower() != "svg":
-            from .export import find_importer
+            from .formats.export import find_importer
 
             if strictness is not None:
                 raise TypeError("strictness= applies to SVG only")
@@ -197,7 +197,7 @@ class Document(Building, Sizing, Theming, Typography, Output, Access, InkscapeDa
             Canvas size.
         **kwargs
             Forwarded to the constructor; ``options`` (a
-            :class:`~svgwriter.io.SerializeOptions`) is used when saving.
+            :class:`~svgwriter.formats.io.SerializeOptions`) is used when saving.
 
         Yields
         ------

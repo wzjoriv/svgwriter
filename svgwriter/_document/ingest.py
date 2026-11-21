@@ -78,7 +78,7 @@ def to_element(item: Any) -> Any:
         return Image(item)
     text = _svg_text(item)
     if text is not None:
-        from ..io.parser import parse
+        from ..formats.io.parser import parse
 
         return _nested(parse(text))
     for name in RASTER_REPRS:

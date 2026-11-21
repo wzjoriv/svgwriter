@@ -16,7 +16,7 @@ from .._document.sizes import PageSize
 from .._internal._codecs._gif import encode_gif_animation
 from .._internal._codecs._rgba import to_uint8
 from ..document import Document
-from ..export import exporters, save
+from ..formats.export import exporters, save
 from ..model.theme import Theme
 from ..video import Scene, animation_duration, frame_times
 from ..widgets import controls_of

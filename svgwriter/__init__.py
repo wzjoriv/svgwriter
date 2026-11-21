@@ -76,8 +76,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from . import (
-    export,
-    inkscape,
     ops,
     project,
     video,
@@ -93,7 +91,9 @@ from .catalog import filters, fonts, gradients, markers, patterns, preset, text_
 from .catalog.builder import drawing
 from .catalog.fonts import FontBuilder
 from .document import Document
-from .io.writer import SerializeOptions, to_string, write
+from .formats import export, inkscape
+from .formats import io as io
+from .formats.io.writer import SerializeOptions, to_string, write
 from .model import attributes as attributes
 from .model import color as color
 from .model import elements as elements
@@ -151,19 +151,19 @@ from .widgets import interact, sweep
 
 if TYPE_CHECKING:
     from ._internal._latex import latex
-    from .io import write_async
-    from .io.parser import Strictness, SVGParseError, parse, parse_file
+    from .formats.io import write_async
+    from .formats.io.parser import Strictness, SVGParseError, parse, parse_file
 
 __version__ = "2.4.0"
 __author__ = "Josue N Rivera"
 
 _LAZY = {
     "latex": ("_internal._latex", "latex"),
-    "parse": ("io.parser", "parse"),
-    "parse_file": ("io.parser", "parse_file"),
-    "Strictness": ("io.parser", "Strictness"),
-    "SVGParseError": ("io.parser", "SVGParseError"),
-    "write_async": ("io", "write_async"),
+    "parse": ("formats.io.parser", "parse"),
+    "parse_file": ("formats.io.parser", "parse_file"),
+    "Strictness": ("formats.io.parser", "Strictness"),
+    "SVGParseError": ("formats.io.parser", "SVGParseError"),
+    "write_async": ("formats.io", "write_async"),
 }
 
 

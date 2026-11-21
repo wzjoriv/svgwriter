@@ -329,7 +329,7 @@ def render_box(element: Element, box: BBox, scale: float, background: ColorLike 
     >>> render_box(svg.rect(0, 0, 4, 4, fill="red"), svg.BBox(0, 0, 8, 4), 1.0).shape
     (4, 8, 4)
     """
-    from ....io.writer import to_string
+    from ....formats.io.writer import to_string
     from ....ops.render import render_tree
     from ...transform.matrix import Matrix
 

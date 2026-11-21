@@ -90,7 +90,7 @@ def render(logo: Any, variants: dict[str, dict[str, Any]], png_sizes: list[int],
     """
     try:
         import svgwriter
-        from svgwriter.export import export
+        from svgwriter.formats.export import export
     except ImportError as exc:
         typer.echo(MISSING, err=True)
         raise typer.Exit(2) from exc
@@ -157,7 +157,7 @@ PRESETS = ("web", *PLATFORMS)
 
 def render_presets(logo: Any, presets: list[str]) -> dict[str, bytes]:
     """Platform icon sets (``ios``, ``android``, ``desktop``) of the default variant, as file name -> bytes."""
-    from svgwriter.export import export
+    from svgwriter.formats.export import export
 
     doc = logo()
     files: dict[str, bytes] = {}

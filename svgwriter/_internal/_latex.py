@@ -121,7 +121,7 @@ def _ziamath(source: str, display: bool) -> Group | None:
         import ziamath
     except ImportError:
         return None
-    from ..io.parser import parse
+    from ..formats.io.parser import parse
     from ..model.elements.structure import Group
 
     if "$" in source:

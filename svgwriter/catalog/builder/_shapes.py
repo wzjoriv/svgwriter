@@ -39,7 +39,7 @@ def _ring(cx: float, cy: float, radii: list[float], rotation: float) -> list[tup
 
 def _inkscape_star(cx: float, cy: float, outer: float, inner: float, sides: int, angle: float, corner_radius: float,
                    *, flatsided: bool, **kwargs: Any) -> Path:
-    from ...inkscape import Star
+    from ...formats.inkscape import Star
 
     if corner_radius > 0:
         raise ValueError("corner_radius= does not apply to Inkscape stars; round them in Inkscape instead")

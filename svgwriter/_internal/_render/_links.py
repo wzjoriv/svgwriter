@@ -54,7 +54,7 @@ def _load(path: str, mtime: float, width: float, height: float, ratio: str, dens
     from ...model.elements.structure import Pixels
 
     if path.lower().endswith((".svg", ".svgz")):
-        from ...export import load
+        from ...formats.export import load
 
         _LOADING.add(path)
         try:

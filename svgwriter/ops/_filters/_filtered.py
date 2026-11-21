@@ -57,7 +57,7 @@ def needs_engine(element: Element) -> bool:
 
 def _painted(root: Element, wrap: Callable[[str], str], others: list[Element], extra: Element | None = None) -> str:
     """*root* serialized with *others* hidden (and *extra* appended at the top level)."""
-    from ...io.writer import to_string
+    from ...formats.io.writer import to_string
 
     if extra is not None:
         root.add(extra)

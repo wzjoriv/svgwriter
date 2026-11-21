@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter.export import find_importer
+from svgwriter.formats.export import find_importer
 
 TOLERANCE = 0.01
 PT = 96 / 72
@@ -286,7 +286,7 @@ class TestPdfContent:
 
 
 def test_tikz_nodes_become_text():
-    from svgwriter.export._vector._tikz_read import read_tikz
+    from svgwriter.formats.export._vector._tikz_read import read_tikz
 
     doc = read_tikz(r"\begin{tikzpicture}\draw (0,0) rectangle (2,1);"
                     r"\node[blue] (a) at (1,0.5) {\textbf{Hello} \\ world};\end{tikzpicture}")
@@ -300,7 +300,7 @@ POINTS = r"\begin{tikzpicture}[x=0.75bp,y=0.75bp]"
 
 
 def tikz_doc(body: str) -> svg.Document:
-    from svgwriter.export._vector._tikz_read import read_tikz
+    from svgwriter.formats.export._vector._tikz_read import read_tikz
 
     return read_tikz(POINTS + body + r"\end{tikzpicture}")
 
@@ -380,7 +380,7 @@ def test_tikz_foreach_unrolls():
 
 
 def test_pdf_page_sized_clips_are_dropped() -> None:
-    from svgwriter.export import find_importer
+    from svgwriter.formats.export import find_importer
 
     content = b"q 0 0 100 50 re W n 0 0 1 rg 10 10 20 20 re f Q q 0 0 100 50 re W n 1 0 0 rg 40 10 20 20 re f Q"
     pdf = pdf_file([content])
@@ -390,7 +390,7 @@ def test_pdf_page_sized_clips_are_dropped() -> None:
 
 
 def test_pdf_smaller_clips_are_kept() -> None:
-    from svgwriter.export import find_importer
+    from svgwriter.formats.export import find_importer
 
     doc = find_importer("pdf").function(pdf_file([b"q 0 0 30 30 re W n 1 0 0 rg 0 0 100 50 re f Q"]))
     assert [e for e in doc.root.iter() if e.tag == "clipPath"]

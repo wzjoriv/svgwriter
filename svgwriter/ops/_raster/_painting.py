@@ -135,7 +135,7 @@ def paint_tree(
     >>> surface = skia.Surface(4, 2)
     >>> paint_tree(surface.getCanvas(), doc.root, lambda text: text, 4, 2, viewport=True)
     """
-    from ...io.writer import to_string
+    from ...formats.io.writer import to_string
     from ...model.elements.text import Text
     from .._filters import draw_filtered, needs_engine
     from ._native_text import draw_text

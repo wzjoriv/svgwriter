@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ..inkscape import (
+from ..formats.inkscape import (
     ExportHints,
     Guide,
     export_hints,
@@ -109,7 +109,7 @@ class InkscapeData:
             Direction in degrees, clockwise from the x axis. Defaults to None,
             which follows from the coordinates given.
         **kwargs
-            ``label``, ``color`` or ``locked`` (see :class:`~svgwriter.inkscape.Guide`).
+            ``label``, ``color`` or ``locked`` (see :class:`~svgwriter.formats.inkscape.Guide`).
 
         Returns
         -------

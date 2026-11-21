@@ -13,7 +13,7 @@ from svgwriter._internal._constants import EMOJI_PROBE
 from svgwriter._internal._render._rendering import renderable_copy
 from svgwriter._internal._typography import _emoji
 from svgwriter._internal._typography._fonts import color_font, font_for
-from svgwriter.export import export
+from svgwriter.formats.export import export
 
 ZWJ, VS16 = chr(0x200D), chr(0xFE0F)
 SKIN = "\U0001f44d\U0001f3fd"

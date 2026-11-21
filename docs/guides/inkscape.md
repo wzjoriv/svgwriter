@@ -131,7 +131,7 @@ wire.connects = None                     # a plain path again
 
 ## Guides
 
-`doc.guides` lists Inkscape's guide lines as {class}`~svgwriter.inkscape.Guide` values in the drawing's
+`doc.guides` lists Inkscape's guide lines as {class}`~svgwriter.formats.inkscape.Guide` values in the drawing's
 own coordinates (y down), and assigning a list replaces them. `doc.guide(x=...)` adds a vertical guide,
 `doc.guide(y=...)` a horizontal one, and `doc.guide(x, y, angle=...)` a slanted one.
 
