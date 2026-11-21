@@ -8,6 +8,7 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar
 
+from .._document.sizes import page_size
 from .._internal._typing import AnyPath
 from ._constants import SCENE_FORMAT, SCENE_HEIGHT, SCENE_RENDERER, SCENE_WIDTH
 from .animation import DEFAULT_FPS, Renderer, iter_frames, render_animation
@@ -40,6 +41,9 @@ class Scene:
     ----------
     width, height : float
         Size of the document handed to :meth:`build`. Default 640 by 360.
+    size : str or None
+        A named size instead (``"video-1080p"``, ``"instagram-story"``, ... see
+        :data:`~svgwriter.SIZES`); it sets `width` and `height`. Default None.
     fps : float
         Frames per second. Default 30.0.
     duration : float or None
@@ -77,19 +81,31 @@ class Scene:
     >>> scene.render(0.5)[:4]
     b'\\x89PNG'
     >>> scene.save("grow.gif")  # doctest: +SKIP
+    >>> class Story(svg.Scene):
+    ...     size = "instagram-story"
+    >>> Story.width, Story.height
+    (1080.0, 1920.0)
     """
 
     width: ClassVar[float] = SCENE_WIDTH
     height: ClassVar[float] = SCENE_HEIGHT
+    size: ClassVar[str | None] = None
     fps: ClassVar[float] = DEFAULT_FPS
     duration: ClassVar[float | None] = None
     renderer: ClassVar[Renderer | str] = SCENE_RENDERER
+
+    def __init_subclass__(cls, **kwargs: object) -> None:
+        super().__init_subclass__(**kwargs)
+        if cls.__dict__.get("size") is not None:
+            cls.width, cls.height = (side.value for side in page_size(cls.size))  # type: ignore[arg-type]
+        elif "width" in cls.__dict__ or "height" in cls.__dict__:
+            cls.size = None
 
     def __init__(self, document: Document | None = None, *, name: str | None = None) -> None:
         if document is None:
             from ..document import Document
 
-            document = Document(self.width, self.height)
+            document = Document(size=self.size) if self.size else Document(self.width, self.height)
             self.build(document)
         self._document = document
         self.name = name or type(self).__name__

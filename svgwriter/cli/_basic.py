@@ -1,5 +1,5 @@
 """
-``shapes``, ``elements``, ``draw``, ``format`` and ``info``.
+``shapes``, ``sizes``, ``elements``, ``draw``, ``format`` and ``info``.
 """
 
 from __future__ import annotations
@@ -8,12 +8,13 @@ import argparse
 import sys
 from collections import Counter
 
+from .._document.sizes import SIZES
 from ..builder import SHAPES
 from ..document import Document
 from ..elements.core import Category, Element
 from ..io.parser import Strictness, parse_file
 from ..io.writer import SerializeOptions
-from ._constants import CANVAS_MARGIN, DEFAULT_CANVAS, DRAW_LAYOUTS, STROKE_WIDTH
+from ._constants import CANVAS_MARGIN, DEFAULT_CANVAS, DRAW_LAYOUTS, SIZE_COLUMN, STROKE_WIDTH
 
 __all__ = ["add_basic_commands", "emit", "output_options"]
 
@@ -21,6 +22,13 @@ __all__ = ["add_basic_commands", "emit", "output_options"]
 def _cmd_shapes(args: argparse.Namespace) -> int:
     for name in SHAPES.names():
         print(name)
+    return 0
+
+
+def _cmd_sizes(args: argparse.Namespace) -> int:
+    for name in SIZES.names():
+        width, height = SIZES.get(name)
+        print(f"{name:<{SIZE_COLUMN}} {width} x {height}")
     return 0
 
 
@@ -110,7 +118,7 @@ def output_options(sub: argparse.ArgumentParser) -> None:
 
 
 def add_basic_commands(commands: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    """Register ``shapes``, ``elements``, ``draw``, ``format`` and ``info``.
+    """Register ``shapes``, ``sizes``, ``elements``, ``draw``, ``format`` and ``info``.
 
     Parameters
     ----------
@@ -122,6 +130,7 @@ def add_basic_commands(commands: argparse._SubParsersAction[argparse.ArgumentPar
     svgwriter.cli._media.add_media_commands : The commands that need ffmpeg or skia.
     """
     commands.add_parser("shapes", help="list registered composite shapes").set_defaults(func=_cmd_shapes)
+    commands.add_parser("sizes", help="list named canvas sizes (Document(size=...))").set_defaults(func=_cmd_sizes)
     commands.add_parser("elements", help="list supported elements by category").set_defaults(func=_cmd_elements)
 
     draw = commands.add_parser("draw", help="render a registered shape")

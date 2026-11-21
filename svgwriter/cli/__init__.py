@@ -3,6 +3,7 @@
 Commands
 --------
 shapes, elements    list registered composite shapes and element classes
+sizes               list named canvas sizes
 draw                write a registered shape
 format, info        re-serialize or summarize an SVG file
 animate             render the scenes of a file to mp4/gif/webm/png frames (ffmpeg)

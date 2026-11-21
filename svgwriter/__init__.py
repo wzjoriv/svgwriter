@@ -59,6 +59,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from . import export, ops, theme, video
+from ._document.sizes import SIZES, page_size, register_size, unregister_size
 from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
 from .aliases import filter as filter  # noqa: A004, E402
@@ -143,6 +144,7 @@ __all__ = [
     "Point",
     "SVGParseError",
     "SHAPES",
+    "SIZES",
     "Scene",
     "Align",
     "Color",
@@ -178,9 +180,11 @@ __all__ = [
     "turn",
     "mm",
     "interpolate",
+    "page_size",
     "latex",
     "parse",
     "register_font",
+    "register_size",
     "register_interpolator",
     "parse_color",
     "parse_file",
@@ -195,6 +199,7 @@ __all__ = [
     "text_to_path",
     "theme",
     "unregister_interpolator",
+    "unregister_size",
     "to_string",
     "video",
     "write",

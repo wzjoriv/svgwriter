@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, Any, TypeVar, overload
 from ._document.access import Access
 from ._document.ingest import SupportsSVG, to_element
 from ._document.output import Output
+from ._document.sizes import page_size
 from ._document.sizing import Sizing
 from ._document.theming import Theming
 from ._internal._tree import attach_cursor
@@ -20,6 +21,7 @@ from .elements.structure import Defs, Desc, Group, Svg, Title
 from .theme.theme import Theme
 
 if TYPE_CHECKING:
+    from .attributes.length import Length
     from .attributes.style import StyleSheet
     from .elements.structure import StyleElement
     from .io.parser import Strictness
@@ -39,9 +41,14 @@ class Document(Sizing, Theming, Output, Access, ElementFactory):
 
     Parameters
     ----------
-    width, height : float, optional
+    width, height : float or Length, optional
         Canvas size; a matching ``viewBox`` is added unless one is given.
         Defaults to None, which sizes the canvas from the content on output.
+    size : str, optional
+        A named size instead of `width` and `height`: ``"a4"``, ``"letter"``,
+        ``"slide-16:9"``, ``"instagram-post"``, ... (see :data:`~svgwriter.SIZES`), with
+        ``-landscape`` or ``-portrait`` appended to turn it. Paper sizes are in millimetres or
+        inches, so the ``viewBox`` counts in those units. Defaults to None.
     root : Svg, optional
         Use an existing root instead of creating one. Defaults to None.
     theme : Theme or str, optional
@@ -50,9 +57,17 @@ class Document(Sizing, Theming, Output, Access, ElementFactory):
     **kwargs
         Forwarded to :class:`~svgwriter.elements.Svg`.
 
+    Raises
+    ------
+    TypeError
+        If `size` is given together with `width` or `height`.
+    ValueError
+        If `size` is not a registered name.
+
     See Also
     --------
     svgwriter.elements.Svg : The root element wrapped by a document.
+    svgwriter.register_size : Add a named size.
 
     Notes
     -----
@@ -74,10 +89,18 @@ class Document(Sizing, Theming, Output, Access, ElementFactory):
     >>> doc += Rect(0, 0, 5, 5)
     >>> doc.root[-1].tag
     'rect'
+    >>> page = Document(size="a4")
+    >>> page.root.get("width"), page.root.get("viewBox").width
+    (Length(value=210.0, unit=<Unit.MM: 'mm'>), 210.0)
     """
 
-    def __init__(self, width: float | None = None, height: float | None = None, *, root: Svg | None = None,
-                 theme: Theme | str | None = None, **kwargs: Any) -> None:
+    def __init__(self, width: float | Length | None = None, height: float | Length | None = None, *,
+                 size: str | None = None, root: Svg | None = None, theme: Theme | str | None = None,
+                 **kwargs: Any) -> None:
+        if size is not None:
+            if width is not None or height is not None:
+                raise TypeError("give either size= or width and height, not both")
+            width, height = page_size(size)
         if root is None:
             if width is not None and height is not None:
                 root = Svg.with_size(width, height, **kwargs)
