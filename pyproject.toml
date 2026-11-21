@@ -149,5 +149,5 @@ drop = ["image/png", "text/html"]
 
 [tool.devkit.logo]
 source = "examples.12_logo:logo"
-variants = { dark = { theme = "dark" }, mono = { mono = true } }
+variants = { dark = { theme = "dark" }, mono = { theme = "mono" } }
 output = "docs/_static/logo"

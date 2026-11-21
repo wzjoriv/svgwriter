@@ -6,11 +6,11 @@ so regenerating and comparing bytes tells whether checked-in assets are stale.
 ```python
 import svgwriter as svg
 
-def logo(theme="light"):
-    ground, mark = ("#0f766e", "white") if theme == "light" else ("#99f6e4", "#042f2e")
+def logo(theme: svg.Theme | str = "light") -> svg.Document:
+    palette = svg.Theme.of(theme).palette
     doc = svg.Document(root=svg.Svg(view_box=(-50, -50, 100, 100)))
-    doc.rect(-50, -50, 100, 100, rx=22, fill=ground)
-    doc.path(fill="none", stroke=mark, stroke_width=12).move_to(-22, 18).line_to(0, -24).line_to(22, 18)
+    doc.rect(-50, -50, 100, 100, rx=22, fill=palette.primary)
+    doc.path(fill="none", stroke=palette.on_primary, stroke_width=12).move_to(-22, 18).line_to(0, -24).line_to(22, 18)
     return doc
 
 light = logo()
@@ -21,5 +21,6 @@ light.save("logo.icns")
 logo("dark").save("logo-dark.svg")
 ```
 
-`examples/12_logo.py` in the repository is a complete version with light, dark and mono variants and the full
+Variants are themes ([Themes](themes.md)): `logo("dark")`, `logo("mono")`, or any
+`svg.Theme.get("light").replace(palette={...})`. `examples/12_logo.py` in the repository is a complete version with light, dark and mono variants and the full
 asset set.
