@@ -12,11 +12,11 @@ from ._constants import (
     BASE64_SUFFIX,
     CONTAINERS,
     GZIP_MAGIC,
-    IMAGE_AXES,
     LINK_CACHE,
     NOT_RENDERED,
     PERCENT,
     SVG_DATA_URI,
+    VIEWPORT_AXES,
     VIEWPORT_FALLBACK,
 )
 
@@ -239,7 +239,7 @@ def _absolute_geometry(image: Element) -> None:
     from ..attributes.length import Length, Unit
 
     extent = None
-    for name, axis in IMAGE_AXES.items():
+    for name, axis in VIEWPORT_AXES.items():
         value = image.attributes.get(name)
         if value is None:
             continue

@@ -109,7 +109,10 @@ __all__ = [
     "LATEX_TEMPLATE",
     "LATIN_EXTENDED_ADDITIONAL",
     "LINK_CACHE",
-    "IMAGE_AXES",
+    "VIEWPORT_AXES",
+    "TILE_OFFSETS",
+    "TILE_COPY_SUFFIX",
+    "USER_SPACE",
     "BASE64_SUFFIX",
     "GZIP_MAGIC",
     "SVG_DATA_URI",
@@ -123,6 +126,16 @@ __all__ = [
     "MARKABLE",
     "MARKER_FREE",
     "URL_OPEN",
+    "COLOR_PROPERTIES",
+    "CURRENT_COLOR",
+    "INHERIT",
+    "GRADIENT_TAGS",
+    "PAINT_PROPERTIES",
+    "SERVER_ATTRIBUTES",
+    "XLINK_HREF",
+    "OBJECT_BOUNDING_BOX",
+    "SERVER_UNITS",
+    "URL_PREFIX",
     "MATHTEXT_SIZE",
     "MAX_SEGMENTS",
     "MERMAID",
@@ -265,7 +278,10 @@ VIEWPORT_FALLBACK: Final = 300.0
 SVG_DATA_URI: Final = "data:image/svg+xml"
 BASE64_SUFFIX: Final = ";base64"
 GZIP_MAGIC: Final = b"\x1f\x8b"
-IMAGE_AXES: Final = {"x": 0, "width": 0, "y": 1, "height": 1}
+VIEWPORT_AXES: Final = {"x": 0, "y": 1, "width": 0, "height": 1}
+TILE_OFFSETS: Final = frozenset({"x", "y"})
+TILE_COPY_SUFFIX: Final = "-svgwriter-tile-"
+USER_SPACE: Final = "userSpaceOnUse"
 
 CLOCK_RE: Final = re.compile(r"^\s*(?:(\d+):)?(\d{1,2}):(\d{1,2}(?:\.\d+)?)\s*$")
 EPSILON: Final = 1e-9
@@ -285,6 +301,22 @@ MARKER_CLIP_ID: Final = "svgwriter-marker-viewport-"
 MARKABLE: Final = frozenset({"path", "line", "polyline", "polygon"})
 MARKER_FREE: Final = frozenset({"marker", "defs", "clipPath", "mask", "pattern", "symbol"})
 URL_OPEN: Final = "url(#"
+CURRENT_COLOR: Final = "currentColor"
+INHERIT: Final = "inherit"
+XLINK_HREF: Final = "xlink:href"
+GRADIENT_TAGS: Final = frozenset({"linearGradient", "radialGradient"})
+PAINT_PROPERTIES: Final = ("fill", "stroke")
+_GRADIENT_COMMON: Final = ("gradientUnits", "gradientTransform", "spreadMethod")
+SERVER_ATTRIBUTES: Final = {
+    "linearGradient": (*_GRADIENT_COMMON, "x1", "y1", "x2", "y2"),
+    "radialGradient": (*_GRADIENT_COMMON, "cx", "cy", "r", "fx", "fy"),
+    "pattern": ("patternUnits", "patternContentUnits", "patternTransform", "x", "y", "width", "height", "viewBox",
+                "preserveAspectRatio"),
+}
+OBJECT_BOUNDING_BOX: Final = "objectBoundingBox"
+URL_PREFIX: Final = "url("
+SERVER_UNITS: Final = {"linearGradient": "gradientUnits", "radialGradient": "gradientUnits", "pattern": "patternUnits"}
+COLOR_PROPERTIES: Final = frozenset({"fill", "stroke", "stop-color", "flood-color", "lighting-color"})
 PERCENT: Final = 100.0
 DEFAULT_SIZE: Final = 16.0
 JOIN_TOLERANCE: Final = 0.01
