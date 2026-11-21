@@ -33,6 +33,7 @@ guides/geometry
 guides/layout
 guides/paths
 guides/text
+guides/fonts
 guides/colors-and-images
 guides/effects
 guides/presets
