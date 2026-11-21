@@ -7,6 +7,7 @@ from __future__ import annotations
 from collections.abc import Iterator
 from contextlib import contextmanager
 
+from ..layout import settle
 from ..theme.sheet import applied
 from ..theme.theme import Theme
 
@@ -36,5 +37,6 @@ class Theming:
 
     @contextmanager
     def _prepared(self) -> Iterator[None]:
+        settle(self.root)
         with self._sized(), applied(self._theme, self.root):
             yield

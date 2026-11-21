@@ -43,6 +43,8 @@ preset
     Presets of your own by kind (``@svg.preset.animation``, ``@svg.preset.shape``).
 project
     Design projects: ``svgwriter.toml``, presets, building and live preview (``Project``).
+layout
+    Stacks and grids that place their children by size (VStack, HStack, Grid).
 theme
     Palettes, fonts and role styles applied as CSS classes (``Theme``).
 ops
@@ -62,7 +64,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from . import export, ops, preset, project, theme, video
+from . import export, layout, ops, preset, project, theme, video
 from ._document.sizes import PageSize, page_size, size
 from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
@@ -98,6 +100,7 @@ from .document import Document
 from .elements import *  # noqa: F403
 from .elements import __all__ as _elements_all
 from .io.writer import SerializeOptions, to_string, write
+from .layout import Grid, HStack, Spacer, VStack
 from .ops import interpolate, register_font, register_interpolator, text_to_path, unregister_interpolator
 from .pathdata import BBox, PathBuilder, PathData
 from .project import Project
@@ -193,6 +196,11 @@ __all__ = [
     "parse_file",
     "parse_paint",
     "export",
+    "layout",
+    "Grid",
+    "HStack",
+    "Spacer",
+    "VStack",
     "ops",
     "preset",
     "project",
