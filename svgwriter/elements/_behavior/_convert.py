@@ -8,8 +8,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from ..._internal._constants import SVG_NS, XLINK_NS
 from ...attributes.length import Length
-from ..core import Element
-from ..core._tree import references_of
+from ..core import Element, references_of
 from ._constants import DEFAULT_STROKE_WIDTH
 from ._transformable import Transformable
 

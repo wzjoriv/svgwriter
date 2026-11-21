@@ -7,6 +7,7 @@ from __future__ import annotations
 from ._container import Container, GraphicsContainer
 from ._element import AttrValue, Category, Child, ContentModel, Element
 from ._factory import ElementFactory
+from ._tree import references_of
 from ._unknown import UnknownElement
 
 __all__ = [
@@ -19,4 +20,5 @@ __all__ = [
     "ElementFactory",
     "GraphicsContainer",
     "UnknownElement",
+    "references_of",
 ]
