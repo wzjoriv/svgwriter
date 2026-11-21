@@ -11,9 +11,16 @@ from typing import TYPE_CHECKING, Any
 import tomlkit
 from tomlkit.exceptions import TOMLKitError
 
-from ..color._constants import CHANNEL_MAX
 from ..color.color import Color
-from ._constants import ARRAY_CHANNELS, DEFAULT_THEME, FILE_FONT_KEYS, FILE_KEYS, FONT_TABLES, MAX_MAGNITUDE
+from ._constants import (
+    ARRAY_CHANNELS,
+    ARRAY_INTEGER_MAX,
+    DEFAULT_THEME,
+    FILE_FONT_KEYS,
+    FILE_KEYS,
+    FONT_TABLES,
+    MAX_MAGNITUDE,
+)
 from ._errors import ThemeError
 
 if TYPE_CHECKING:
@@ -43,8 +50,8 @@ def _array_color(where: str, values: list[Any]) -> Color:
                                                 for v in values):
         raise ThemeError(f"{where}: a color array holds 3 or 4 numbers")
     if all(isinstance(v, int) for v in values):
-        if any(not 0 <= v <= CHANNEL_MAX for v in values):
-            raise ThemeError(f"{where}: integer channels run from 0 to {CHANNEL_MAX}")
+        if any(not 0 <= v <= ARRAY_INTEGER_MAX for v in values):
+            raise ThemeError(f"{where}: integer channels run from 0 to {ARRAY_INTEGER_MAX}")
         return Color.from_uint8(*values)
     if any(isinstance(v, int) for v in values):
         raise ThemeError(f"{where}: use all floats (0 to 1) or all integers (0 to 255), not a mix")

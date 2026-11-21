@@ -9,6 +9,7 @@ from typing import Final
 
 __all__ = [
     "ARRAY_CHANNELS",
+    "ARRAY_INTEGER_MAX",
     "BOOLEAN_WORDS",
     "BORDER_MIX",
     "BUILTIN_THEMES",
@@ -69,6 +70,7 @@ FILE_KEYS: Final = frozenset({"name", "extends", "palette", "fonts", "roles"})
 FILE_FONT_KEYS: Final = frozenset({"family", "monospace", "sizes", "weights"})
 FONT_TABLES: Final = ("sizes", "weights")
 ARRAY_CHANNELS: Final = (3, 4)
+ARRAY_INTEGER_MAX: Final = 255
 
 MAX_EXPRESSION_LENGTH: Final = 512
 MAX_EXPRESSION_DEPTH: Final = 32
