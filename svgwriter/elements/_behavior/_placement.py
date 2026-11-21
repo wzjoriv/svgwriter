@@ -6,7 +6,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ...pathdata._constants import BOX_POINTS
 from ...pathdata.data import BBox
 from ...transform.matrix import Point
 from ._constants import BASELINE, ORIGIN
@@ -81,7 +80,7 @@ class Placement:
         self._anchor = None if value is None else (float(value[0]), float(value[1]))
 
     def _point_names(self) -> tuple[str, ...]:
-        names = (*BOX_POINTS, ORIGIN)
+        names = (*BBox.point_names(), ORIGIN)
         return (*names, BASELINE) if type(self)._baseline_point is not Placement._baseline_point else names
 
     def _check_point_name(self, name: str) -> None:
