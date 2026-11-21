@@ -8,6 +8,7 @@ import difflib
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, overload
 
+from ..._internal._constants import INKSCAPE_LABEL
 from ..._internal._ids import next_id
 from ..._internal._registry import chainable
 from ..._internal._typing import ElementId
@@ -94,6 +95,32 @@ class AttributeAccess:
         if not XML_NAME_RE.match(value):
             raise ValueError(f"invalid id: {value!r}")
         self.attributes = {"id": value, **{k: v for k, v in self.attributes.items() if k != "id"}}
+
+    @property
+    def label(self) -> str | None:
+        """A readable name for the element, stored as ``inkscape:label``, or None.
+
+        Inkscape shows it in its Layers and Objects panels, and
+        ``doc["name"]`` finds an element by label when no id matches.
+        Assigning None removes it.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> r = svg.rect(0, 0, 1, 1)
+        >>> r.label = "Logo"
+        >>> r.label, r.attributes["inkscape:label"]
+        ('Logo', 'Logo')
+        """
+        value = self.attributes.get(INKSCAPE_LABEL)
+        return None if value is None else str(value)
+
+    @label.setter
+    def label(self, value: str | None) -> None:
+        if value is None:
+            self.attributes.pop(INKSCAPE_LABEL, None)
+        else:
+            self.attributes[INKSCAPE_LABEL] = value
 
     def ensure_id(self) -> ElementId:
         """Return the id, assigning a generated one if needed.

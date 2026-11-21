@@ -11,6 +11,7 @@ from .._internal._constants import NON_CONTENT
 from .._internal._tree import element_list
 from .._internal._typing import Self
 from ..elements.core import Element
+from ..inkscape import by_label
 from .ingest import SupportsSVG, to_element
 
 __all__ = ["Access"]
@@ -44,12 +45,16 @@ class Access:
     @overload
     def __getitem__(self, key: str) -> Element: ...
     def __getitem__(self, key: int | slice | str) -> Element | list[Element]:
-        """``doc[0]`` (top-level content by position), ``doc[1:3]`` or ``doc["logo"]`` (any element by id).
+        """``doc[0]`` (top-level content by position), ``doc[1:3]`` or ``doc["logo"]`` (any element by id or label).
+
+        A string is looked up as an id first; when no element has that id, the
+        element whose label (``inkscape:label``, the name Inkscape shows in its
+        Objects panel) matches is returned.
 
         Parameters
         ----------
         key : int, slice or str
-            A position or slice among the top-level content, or an element id.
+            A position or slice among the top-level content, or an element id or label.
 
         Returns
         -------
@@ -59,20 +64,24 @@ class Access:
         Raises
         ------
         IndexError, KeyError
-            When nothing is at that position or has that id.
+            When nothing is at that position or has that id or label, or when
+            several elements share the label.
 
         Examples
         --------
         >>> from svgwriter import Document
         >>> doc = Document(10, 10)
         >>> _ = doc.rect(0, 0, 5, 5, id="logo")
-        >>> doc[0] is doc["logo"]
-        True
+        >>> _ = doc.circle(5, 5, 2, inkscape_label="Sun")
+        >>> doc[0] is doc["logo"], doc["Sun"].tag
+        (True, 'circle')
         """
         if isinstance(key, str):
             element = self.root.get_element_by_id(key)
             if element is None:
-                raise KeyError(f"no element with id {key!r}")
+                element = by_label(self.root, key)
+            if element is None:
+                raise KeyError(f"no element with id or label {key!r}")
             return element
         return self._content()[key]
 
@@ -94,7 +103,7 @@ class Access:
 
     def __contains__(self, item: object) -> bool:
         if isinstance(item, str):
-            return self.root.get_element_by_id(item) is not None
+            return self.root.get_element_by_id(item) is not None or by_label(self.root, item) is not None
         return isinstance(item, Element) and any(e is item for e in self.root.iter())
 
     def get_element_by_id(self, element_id: str) -> Element | None:

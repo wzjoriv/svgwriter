@@ -9,7 +9,14 @@ from collections.abc import Iterator
 from dataclasses import InitVar, dataclass, field
 from typing import Any
 
-from .._internal._constants import DEFAULT_INDENT, DEFAULT_PRECISION, DOCTYPE, XLINK_NS
+from .._internal._constants import (
+    DEFAULT_INDENT,
+    DEFAULT_PRECISION,
+    DOCTYPE,
+    INKSCAPE_NS,
+    KNOWN_NAMESPACES,
+    SVG_NS,
+)
 from .._internal._escape import escape_attribute, escape_text
 from .._internal._sentinels import MISSING, MissingType
 from .._internal._typing import AnyPath
@@ -18,8 +25,9 @@ from ..attributes.values import format_value
 from ..elements.core import Element, UnknownElement
 from ..pathdata.data import PathData
 from ..transform.matrix import Matrix
-from ._constants import DEFAULT_ENCODING, FOREIGN_PREFIX
-from ._markup import default_namespaces, inline_content, open_text, ordered, uses_xlink
+from ._constants import DEFAULT_ENCODING, FOREIGN_PREFIX, NAMESPACE_DECLARATION
+from ._inkscape import transform_center
+from ._markup import default_namespaces, inline_content, open_text, ordered, used_namespaces
 
 __all__ = ["SerializeOptions", "Writer", "iter_chunks", "to_string", "write"]
 
@@ -50,7 +58,8 @@ class SerializeOptions:
         Write path data in its shortest form. Defaults to False.
     namespaces : dict, optional
         Namespace declarations put on a root ``<svg>``. Defaults to the SVG and
-        XLink namespaces.
+        XLink namespaces. Other prefixes in use (``inkscape:``, ``sodipodi:``,
+        prefixes declared by a parsed file) are declared once on the root too.
 
     See Also
     --------
@@ -119,50 +128,80 @@ class Writer:
         return value.svg_value(self.options.precision, pivot=element.anchor,
                                box=element.local_bbox())  # type: ignore[attr-defined]
 
-    def _open_tag(self, element: Element, extra: dict[str, str]) -> str:
+    def _open_tag(self, element: Element, extra: dict[str, str], names: dict[str, str], tag: str) -> str:
         attributes = dict(extra)
-        prefixes: dict[str, str] = {}
         for key, value in ordered(element.attributes):
             if key.startswith("{"):
                 namespace, _, local = key[1:].partition("}")
-                if namespace not in prefixes:
-                    prefixes[namespace] = f"{FOREIGN_PREFIX}{len(prefixes)}"
-                    attributes[f"xmlns:{prefixes[namespace]}"] = namespace
-                key = f"{prefixes[namespace]}:{local}"
+                key = f"{names[namespace]}:{local}"
+            elif key in attributes:
+                continue
             attributes[key] = self._transform(element, value) if key == "transform" else self._value(key, value)
-        parts = [element.tag] + [f'{k}="{escape_attribute(v)}"' for k, v in attributes.items()]
+        if INKSCAPE_NS in names:
+            attributes.update({key: self._value(key, value) for key, value in transform_center(element).items()})
+        parts = [tag] + [f'{k}="{escape_attribute(v)}"' for k, v in attributes.items()]
         return "<" + " ".join(parts)
 
-    def _root_namespaces(self, element: Element) -> dict[str, str]:
+    def _namespaces(self, element: Element) -> tuple[dict[str, str], dict[str, str]]:
+        """The declarations written on the top element, and each namespace URI's prefix."""
+        declared: dict[str, str] = {}
         if element.tag == "svg" and not isinstance(element, UnknownElement):
-            declared = dict(self.options.namespaces)
-            if not uses_xlink(element):
-                declared.pop("xmlns:xlink", None)
-            return declared
-        return {"xmlns:xlink": XLINK_NS} if uses_xlink(element) else {}
+            declared.update(self.options.namespaces)
+        prefixes, attribute_uris, element_uris = used_namespaces(element)
+        scope: Element | None = element
+        while scope is not None:
+            for key, value in scope.attributes.items():
+                if key.startswith(NAMESPACE_DECLARATION + ":") and (
+                        scope is element or key.partition(":")[2] in prefixes
+                        or value in attribute_uris or value in element_uris):
+                    declared.setdefault(key, str(value))
+            scope = scope.parent
+        if "xlink" not in prefixes:
+            declared.pop("xmlns:xlink", None)
+        for prefix in sorted(prefixes):
+            if prefix in KNOWN_NAMESPACES:
+                declared.setdefault(f"xmlns:{prefix}", KNOWN_NAMESPACES[prefix])
+        names = {uri: key.partition(":")[2] for key, uri in declared.items() if ":" in key}
+        known = {uri: prefix for prefix, uri in KNOWN_NAMESPACES.items()}
+        for uri in sorted(attribute_uris | element_uris):
+            if uri in names or uri == SVG_NS:
+                continue
+            if uri in known:
+                prefix = known[uri]
+            elif uri in attribute_uris:
+                prefix = next(f"{FOREIGN_PREFIX}{n}" for n in range(len(declared) + 1)
+                              if f"xmlns:{FOREIGN_PREFIX}{n}" not in declared)
+            else:
+                continue
+            declared[f"xmlns:{prefix}"] = uri
+            names[uri] = prefix
+        return declared, names
 
-    def _element(self, element: Element, depth: int, extra: dict[str, str], inline: bool) -> Iterator[str]:
+    def _element(self, element: Element, depth: int, extra: dict[str, str], inline: bool,
+                 names: dict[str, str]) -> Iterator[str]:
         opts = self.options
         pad = "" if inline else opts.indent * depth
-        yield pad + self._open_tag(element, extra)
+        namespace = getattr(element, "namespace", None)
+        tag = f"{names[namespace]}:{element.tag}" if namespace in names else element.tag
+        yield pad + self._open_tag(element, extra, names, tag)
         if not element.children:
             yield "/>"
             return
         yield ">"
         inner_inline = inline or inline_content(element)
-        namespace = getattr(element, "namespace", None)
+        default = None if namespace in names else namespace
         for child in element.children:
             if isinstance(child, str):
                 yield escape_text(child)
                 continue
             child_ns = getattr(child, "namespace", None)
-            declare = {"xmlns": child_ns} if child_ns and child_ns != namespace else {}
+            declare = {"xmlns": child_ns} if child_ns and child_ns != default and child_ns not in names else {}
             if not inner_inline:
                 yield opts.newline
-            yield from self._element(child, depth + 1, declare, inner_inline)
+            yield from self._element(child, depth + 1, declare, inner_inline, names)
         if not inner_inline:
             yield opts.newline + pad
-        yield f"</{element.tag}>"
+        yield f"</{tag}>"
 
     def iter_chunks(self, element: Element, *, xml_declaration: bool | MissingType = MISSING) -> Iterator[str]:
         """Yield the document in pieces (useful for streaming).
@@ -199,7 +238,8 @@ class Writer:
             yield f'<?xml version="1.0" encoding="{opts.encoding}" standalone="no"?>{opts.newline or chr(10)}'
         if opts.doctype:
             yield DOCTYPE + (opts.newline or "\n")
-        yield from self._element(element, 0, self._root_namespaces(element), False)
+        declared, names = self._namespaces(element)
+        yield from self._element(element, 0, declared, False, names)
         if opts.newline:
             yield opts.newline
 

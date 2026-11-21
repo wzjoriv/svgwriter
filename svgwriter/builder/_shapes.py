@@ -37,6 +37,15 @@ def _ring(cx: float, cy: float, radii: list[float], rotation: float) -> list[tup
     return points
 
 
+def _inkscape_star(cx: float, cy: float, outer: float, inner: float, sides: int, angle: float, corner_radius: float,
+                   *, flatsided: bool, **kwargs: Any) -> Path:
+    from ..inkscape import Star
+
+    if corner_radius > 0:
+        raise ValueError("corner_radius= does not apply to Inkscape stars; round them in Inkscape instead")
+    return Star.create(cx, cy, outer, inner, sides, angle=angle, flatsided=flatsided, **kwargs)
+
+
 @shape
 def star(
     cx: float,
@@ -46,6 +55,7 @@ def star(
     points: int = DEFAULT_STAR_POINTS,
     *,
     corner_radius: float = 0,
+    inkscape: bool = False,
     **kwargs: Any,
 ) -> Polygon | Path:
     """Build a star with *points* tips, pointing up.
@@ -63,14 +73,22 @@ def star(
     corner_radius : float, optional
         Radius of the circular fillet at every tip and notch; it shrinks where the star is too small
         for it. Defaults to 0 (sharp).
+    inkscape : bool, optional
+        Build a path carrying Inkscape's star parameters (``sodipodi:type="star"``),
+        so the star stays editable with Inkscape's star tool. Defaults to False.
     **kwargs
         Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`
-        (:class:`~svgwriter.elements.Path` when rounded).
+        (:class:`~svgwriter.elements.Path` when rounded or `inkscape`).
 
     Returns
     -------
     Polygon or Path
-        The star, a polygon unless `corner_radius` rounds it into a path.
+        The star, a polygon unless `corner_radius` or `inkscape` makes it a path.
+
+    Raises
+    ------
+    ValueError
+        If `inkscape` is combined with `corner_radius`.
 
     See Also
     --------
@@ -83,8 +101,12 @@ def star(
     10
     >>> round(star(50, 50, 40, corner_radius=4).bbox.height, 1)
     64.0
+    >>> star(50, 50, 40, inkscape=True).get("sodipodi:type")
+    'star'
     """
     inner = outer * DEFAULT_INNER_RATIO if inner is None else inner
+    if inkscape:
+        return _inkscape_star(cx, cy, outer, inner, points, -QUARTER_TURN, corner_radius, flatsided=False, **kwargs)
     vertices = _ring(cx, cy, [outer, inner] * points, -QUARTER_TURN)
     if corner_radius > 0:
         return rounded_outline(vertices, [corner_radius] * len(vertices), **kwargs)
@@ -176,6 +198,7 @@ def regular_polygon(
     *,
     rotation: float = 0,
     corner_radius: float = 0,
+    inkscape: bool = False,
     **kwargs: Any,
 ) -> Polygon | Path:
     """Build a regular polygon with optionally rounded corners.
@@ -192,19 +215,23 @@ def regular_polygon(
         Clockwise rotation in degrees; the first corner is at the top when 0. Defaults to 0.
     corner_radius : float, optional
         Radius of the circular fillet at every corner. Defaults to 0 (sharp).
+    inkscape : bool, optional
+        Build a path carrying Inkscape's polygon parameters (``sodipodi:type="star"``
+        with ``inkscape:flatsided="true"``), editable with Inkscape's star tool.
+        Defaults to False.
     **kwargs
         Presentation attributes forwarded to :class:`~svgwriter.elements.Polygon`
-        (:class:`~svgwriter.elements.Path` when rounded).
+        (:class:`~svgwriter.elements.Path` when rounded or `inkscape`).
 
     Returns
     -------
     Polygon or Path
-        The polygon, a path when `corner_radius` rounds it.
+        The polygon, a path when `corner_radius` rounds it or `inkscape` is set.
 
     Raises
     ------
     ValueError
-        If `sides` is below 3.
+        If `sides` is below 3, or `inkscape` is combined with `corner_radius`.
 
     See Also
     --------
@@ -217,9 +244,14 @@ def regular_polygon(
     6
     >>> regular_polygon(0, 0, 10, 5, corner_radius=2).tag
     'path'
+    >>> regular_polygon(0, 0, 10, 6, inkscape=True).get("inkscape:flatsided")
+    'true'
     """
     if sides < MIN_SIDES:
         raise ValueError(f"a polygon needs at least {MIN_SIDES} sides, got {sides}")
+    if inkscape:
+        return _inkscape_star(cx, cy, r, r * math.cos(math.pi / sides), sides, rotation - QUARTER_TURN, corner_radius,
+                              flatsided=True, **kwargs)
     vertices = _ring(cx, cy, [r] * sides, rotation - QUARTER_TURN)
     if corner_radius > 0:
         return rounded_outline(vertices, [corner_radius] * sides, **kwargs)

@@ -30,7 +30,7 @@ COLOR_OPACITY: Final = {
 }
 COLOR_ATTRIBUTES: Final = frozenset({*COLOR_OPACITY, "color", "lighting-color"})
 XML_NAME_RE: Final = re.compile(r"^[A-Za-z_][\w.\-]*$")
-OPEN_PREFIXES: Final = ("data-", "aria-")
+OPEN_PREFIXES: Final = ("data-", "aria-", "inkscape:", "sodipodi:")
 INSTANCE_FIELDS: Final = frozenset({"attributes", "children", "parent"})
 
 PREVIEW_PADDING: Final = 2.0

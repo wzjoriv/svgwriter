@@ -64,13 +64,14 @@ def _is_srgb(icc: IccLike) -> bool:
 
 
 def _raster(format: str) -> Callable[..., bytes]:
-    def exporter(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int | None = None,
+    def exporter(document: Document, *, scale: float | None = None, size: tuple[int, int] | int | None = None,
                  padding: float = 0.0, background: ColorLike | None = None, quality: int = DEFAULT_QUALITY,
                  dpi: float | None = None, animate: bool = False, fps: float = DEFAULT_GIF_FPS,
                  duration: float | None = None, loop: int = 0, processes: int | None = 1,
                  icc: IccLike | None = None) -> bytes:
         from ..._internal._codecs._encoders import ENCODERS
         from ..._internal._codecs._rgba import to_uint8
+        from ...inkscape import export_hints
         from ...ops.render import encode_image
 
         if icc is not None and format not in ICC_FORMATS:
@@ -79,8 +80,9 @@ def _raster(format: str) -> Callable[..., bytes]:
             background = "white"
         if isinstance(size, int):
             size = (size, size)
-        if dpi is not None:
-            scale = dpi / PX_PER_INCH
+        if dpi is None and scale is None and size is None:
+            dpi = export_hints(document.root).dpi
+        scale = dpi / PX_PER_INCH if dpi is not None else 1.0 if scale is None else scale
         animated = _animation_encoders()
         if animate and format in animated:
             frames = _frames(document, fps, duration, scale=scale, size=size, padding=padding, background=background,
@@ -101,7 +103,8 @@ def _raster(format: str) -> Callable[..., bytes]:
             return ENCODERS[format](to_uint8(image))
         return encode_image(image, format, quality=quality)
 
-    exporter.__doc__ = (f"{format.upper()} raster (``scale`` or ``dpi``, ``size``, ``padding``, ``background``, "
+    exporter.__doc__ = (f"{format.upper()} raster (``scale`` or ``dpi``, defaulting to Inkscape's "
+                        "``inkscape:export-xdpi`` when the document has one, ``size``, ``padding``, ``background``, "
                         "``quality``" + (", ``icc`` (``'srgb'``, ``'display-p3'`` or RGB profile bytes: pixels are "
                                          "converted and the profile embedded)" if format in ICC_FORMATS else "")
                         + ")" + ("; ``animate=True`` with ``fps``, ``duration``, ``loop`` writes the SMIL "

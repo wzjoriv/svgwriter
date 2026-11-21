@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <name>Apply svgwriter Theme</name>
+  <id>org.svgwriter.theme</id>
+  <dependency type="file" location="inx">svgwriter_extension.py</dependency>
+  <param name="theme" type="optiongroup" appearance="combo" gui-text="Theme:">
+    <option value="light">Light</option>
+    <option value="dark">Dark</option>
+    <option value="paper">Paper</option>
+    <option value="print">Print</option>
+    <option value="mono">Mono</option>
+    <option value="noir">Noir</option>
+    <option value="brutalist">Brutalist</option>
+    <option value="dracula">Dracula</option>
+    <option value="alucard">Alucard</option>
+    <option value="one-dark">One Dark</option>
+    <option value="one-light">One Light</option>
+  </param>
+  <param name="theme-file" type="path" mode="file" filetypes="toml" gui-text="Or a theme.toml:"></param>
+  <param name="role" type="string" gui-text="Give the selection the role (optional):"></param>
+  <label>Objects with svgwriter roles (box, shape, accent, text, title, line, ...) take the theme's colours and fonts.</label>
+  <effect needs-live-preview="true">
+    <object-type>all</object-type>
+    <effects-menu>
+      <submenu name="svgwriter"/>
+    </effects-menu>
+  </effect>
+  <script>
+    <command location="inx" interpreter="python">svgwriter_theme.py</command>
+  </script>
+</inkscape-extension>
