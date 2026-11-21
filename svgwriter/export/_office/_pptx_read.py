@@ -9,6 +9,7 @@ import math
 from typing import TYPE_CHECKING, Any
 
 from . import require
+from ._anim_apply import apply_effect
 from ._constants import (
     ALPHA_SCALE,
     ASCENT,
@@ -22,6 +23,7 @@ from ._constants import (
 )
 from ._drawingml import read_gradient, read_line_style
 from ._pptx import _a
+from ._pptx_timing_read import read_timing
 
 if TYPE_CHECKING:
     from ...document import Document
@@ -38,23 +40,29 @@ def read_pptx(data: bytes, index: int | None) -> Document | list[Document]:
         raise IndexError(f"the deck has {len(slides)} slides, not slide {index}")
     docs = []
     for slide in slides if index is None else [slides[index]]:
-        doc = Document(deck.slide_width / EMU_PER_UNIT, deck.slide_height / EMU_PER_UNIT)
+        size = (deck.slide_width / EMU_PER_UNIT, deck.slide_height / EMU_PER_UNIT)
+        doc = Document(*size)
+        drawn: dict[int, list[Any]] = {}
         for shape in slide.shapes:
-            _read_shape(doc, shape)
+            _read_shape(doc, shape, drawn)
+        for spid, effect in read_timing(slide._element, size):
+            for element in drawn.get(spid, []):
+                apply_effect(element, effect)
         docs.append(doc)
     return docs if index is None else docs[0]
 
 
-def _read_shape(parent: Any, shape: Any) -> None:
-    """Add *shape* (recursing into groups) to *parent* as native elements."""
+def _read_shape(parent: Any, shape: Any, drawn: dict[int, list[Any]]) -> None:
+    """Add *shape* (recursing into groups) to *parent* as native elements, listed in *drawn* by shape id."""
     from ...elements.structure import A, Group, Image, Pixels
 
     left, top = (shape.left or 0) / EMU_PER_UNIT, (shape.top or 0) / EMU_PER_UNIT
     width, height = (shape.width or 0) / EMU_PER_UNIT, (shape.height or 0) / EMU_PER_UNIT
     if shape.shape_type is not None and shape.shape_type == require("pptx.enum.shapes").MSO_SHAPE_TYPE.GROUP:
         group = parent.add(Group())
+        drawn.setdefault(shape.shape_id, []).append(group)
         for child in shape.shapes:
-            _read_shape(group, child)
+            _read_shape(group, child, drawn)
         return
     element: Any = None
     if hasattr(shape, "image"):
@@ -67,11 +75,13 @@ def _read_shape(parent: Any, shape: Any) -> None:
             element.rotate(shape.rotation, about=(left + width / 2, top + height / 2))
         address = _link(shape)
         parent.add(A(element, href=address) if address else element)
+        drawn.setdefault(shape.shape_id, []).append(element)
     text = _text(shape, left, top)
     if text is not None:
         if shape.rotation:
             text.rotate(shape.rotation, about=(left + width / 2, top + height / 2))
         parent.add(text)
+        drawn.setdefault(shape.shape_id, []).append(text)
 
 
 def _link(shape: Any) -> str | None:
