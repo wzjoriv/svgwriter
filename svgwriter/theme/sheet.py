@@ -4,7 +4,7 @@ The theme ``<style>`` sheet of a tree: the roles it uses and the sheet written w
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
@@ -59,7 +59,7 @@ def used_roles(theme: Theme, root: Element) -> list[str]:
 
 
 @contextmanager
-def applied(theme: Theme, root: Element) -> Iterator[None]:
+def applied(theme: Theme, root: Element) -> Generator[None, None, None]:
     """Hold the theme sheet in *root* for the duration of the block.
 
     The sheet is a ``<style id="svgwriter-theme">`` with rules for the roles in use. An existing one

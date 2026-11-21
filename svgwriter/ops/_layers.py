@@ -4,7 +4,7 @@ Draw ``<image>`` pixels in z-order around skia's SVG renderer, which cannot load
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
@@ -138,7 +138,7 @@ def hidden(root: Element, keep: list[Element], atomic: Callable[[Element], bool]
 
 
 @contextmanager
-def concealed(leaves: list[Element]) -> Iterator[None]:
+def concealed(leaves: list[Element]) -> Generator[None, None, None]:
     """Hide *leaves* (``display="none"``, filter dropped) while the block runs, then restore them.
 
     The filter goes too: skia's SVG renderer still draws a filter whose result is opaque

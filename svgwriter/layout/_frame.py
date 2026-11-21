@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from contextvars import ContextVar
 from typing import Any, ClassVar, Literal, overload
@@ -24,7 +24,7 @@ _DONE: ContextVar[set[int] | None] = ContextVar("svgwriter_layout_pass", default
 
 
 @contextmanager
-def _layout_pass() -> Iterator[set[int]]:
+def _layout_pass() -> Generator[set[int], None, None]:
     """One pass in which each layout group arranges at most once (joins an open pass)."""
     done = _DONE.get()
     if done is not None:
