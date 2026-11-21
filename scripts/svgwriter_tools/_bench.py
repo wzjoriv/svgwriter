@@ -37,6 +37,13 @@ def _scene(count: int) -> svg.Document:
     return doc
 
 
+def _batched(count: int) -> svg.Document:
+    doc = svg.Document(1000, 1000)
+    x, y, r = np.random.default_rng(0).uniform(0, 1000, (3, count))
+    doc.add(svg.batch.circles(x, y, r / 50, fill="teal"))
+    return doc
+
+
 def run(count: int = 100_000, figures: int = 100) -> list[Timing]:
     """Time each scenario; *count* elements for the tree benchmarks, *figures* small documents for batches."""
     timings: list[Timing] = []
@@ -53,6 +60,13 @@ def run(count: int = 100_000, figures: int = 100) -> list[Timing]:
     record("parse SVG", lambda: svg.Document.from_string(text), count)
     record("bounds of every circle", lambda: [c.bounds() for c in doc], count)
     record("content bounds (auto-size)", doc.content_bounds, count)
+    record(f"rasterize {count} circles", doc.rasterize, count)
+    record(f"batch: build {count} circles", lambda: _batched(count), count)
+    batched = _batched(count)
+    batch = batched.root[0]
+    record("batch: transform every circle", lambda: batch.clone().translate(1, 0).rotate(5), count)
+    record("batch: write SVG", batched.to_string, count)
+    record(f"batch: rasterize {count} circles", batched.rasterize, count)
     small = _scene(1000)
     record("rasterize 1000 circles", small.rasterize, 1000)
     record("export PDF 1000 circles", lambda: small.export("pdf"), 1000)
