@@ -416,7 +416,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">        &gt;&gt;&gt; str(svg.Theme.get("light").style("line"))</span>
-<span class="sd">        'fill:none;stroke:#1f2933;stroke-width:2px'</span>
+<span class="sd">        'fill:none;stroke:#0f766e;stroke-width:2px'</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="n">role</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_styles</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ThemeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"theme </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">!r}</span><span class="s2"> has no role </span><span class="si">{</span><span class="n">role</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
@@ -472,7 +472,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">        &gt;&gt;&gt; svg.Theme.get("mono").css(["dot"]).css()</span>
-<span class="sd">        '.role-dot { fill:#000000;stroke:none }'</span>
+<span class="sd">        '.role-dot { fill:#000000;stroke:#000000;stroke-width:1px }'</span>
 <span class="sd">        """</span>
         <span class="n">wanted</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_styles</span><span class="p">)</span> <span class="k">if</span> <span class="n">roles</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">set</span><span class="p">(</span><span class="n">roles</span><span class="p">)</span>
         <span class="n">missing</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">wanted</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_styles</span><span class="p">))</span>
@@ -510,7 +510,7 @@
 <span class="sd">        &gt;&gt;&gt; light = svg.Theme.get("light")</span>
 <span class="sd">        &gt;&gt;&gt; bold = light.replace(roles={"line": {"stroke-width": 4}}, fonts={"sizes": {"text": 16}})</span>
 <span class="sd">        &gt;&gt;&gt; str(bold.style("line")), bold.fonts.sizes["text"]</span>
-<span class="sd">        ('fill:none;stroke:#1f2933;stroke-width:4px', 16)</span>
+<span class="sd">        ('fill:none;stroke:#0f766e;stroke-width:4px', 16)</span>
 <span class="sd">        """</span>
         <span class="n">merged</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_roles</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">role</span><span class="p">,</span> <span class="n">source</span> <span class="ow">in</span> <span class="p">(</span><span class="n">roles</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -534,7 +534,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        name : str</span>
-<span class="sd">            ``"light"``, ``"dark"``, ``"paper"``, ``"print"``, ``"mono"`` or one added to :data:`THEMES`.</span>
+<span class="sd">            A registered name: ``"light"``, ``"dark"``, ``"print"``, ... (see :data:`THEMES`).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -622,8 +622,11 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Theme</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">NotImplemented</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_palette</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fonts</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_styles</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span> <span class="o">==</span> <span class="p">(</span>
-            <span class="n">other</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_palette</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_fonts</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">_styles</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_palette</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fonts</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style_texts</span><span class="p">())</span> <span class="o">==</span> <span class="p">(</span>
+            <span class="n">other</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_palette</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_fonts</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">other</span><span class="o">.</span><span class="n">_style_texts</span><span class="p">())</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_style_texts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">role</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">style</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span> <span class="k">for</span> <span class="n">role</span><span class="p">,</span> <span class="n">style</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_styles</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
     <span class="fm">__hash__</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore[assignment]</span>
 

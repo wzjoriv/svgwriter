@@ -312,6 +312,58 @@ in colors, so a translucent <code class="docutils literal notranslate"><span cla
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)))</span>     <span class="c1"># fill="#ff0000" fill-opacity="0.5"</span>
 </pre></div>
 </div>
+<section id="css-color-4-text">
+<h3>CSS Color 4 text<a class="headerlink" href="#css-color-4-text" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Color.parse</span></code> (and every color argument) reads the CSS Color 4 functions and converts them to sRGB:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Syntax</p></th>
+<th class="head"><p>Channels</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rgb(255</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">/</span> <span class="pre">50%)</span></code>, <code class="docutils literal notranslate"><span class="pre">rgba(255,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0.5)</span></code></p></td>
+<td><p>numbers are 0..255, percentages 0..100%</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hsl(120</span> <span class="pre">100%</span> <span class="pre">50%)</span></code>, <code class="docutils literal notranslate"><span class="pre">hsv(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">hwb(120</span> <span class="pre">20%</span> <span class="pre">30%)</span></code></p></td>
+<td><p>hue (<code class="docutils literal notranslate"><span class="pre">deg</span></code>, <code class="docutils literal notranslate"><span class="pre">rad</span></code>, <code class="docutils literal notranslate"><span class="pre">grad</span></code>, <code class="docutils literal notranslate"><span class="pre">turn</span></code>), then percentages</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lab(54.29</span> <span class="pre">80.8</span> <span class="pre">69.89)</span></code>, <code class="docutils literal notranslate"><span class="pre">lch(54.29</span> <span class="pre">106.84</span> <span class="pre">40.85)</span></code></p></td>
+<td><p>CIE Lab/LCH on a D50 white</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">oklab(0.628</span> <span class="pre">0.2249</span> <span class="pre">0.1258)</span></code>, <code class="docutils literal notranslate"><span class="pre">oklch(62.8%</span> <span class="pre">0.2577</span> <span class="pre">29.23)</span></code></p></td>
+<td><p>OKLab/OKLCH</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">color(display-p3</span> <span class="pre">1</span> <span class="pre">0</span> <span class="pre">0)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">srgb</span></code>, <code class="docutils literal notranslate"><span class="pre">srgb-linear</span></code>, <code class="docutils literal notranslate"><span class="pre">display-p3</span></code>, <code class="docutils literal notranslate"><span class="pre">a98-rgb</span></code>, <code class="docutils literal notranslate"><span class="pre">rec2020</span></code>, <code class="docutils literal notranslate"><span class="pre">xyz</span></code>/<code class="docutils literal notranslate"><span class="pre">xyz-d65</span></code>, <code class="docutils literal notranslate"><span class="pre">xyz-d50</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">device-cmyk(0</span> <span class="pre">1</span> <span class="pre">1</span> <span class="pre">0)</span></code></p></td>
+<td><p>naive CMYK with no profile</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Comma and space-separated forms both work, <code class="docutils literal notranslate"><span class="pre">/</span> <span class="pre">alpha</span></code> sets the opacity and <code class="docutils literal notranslate"><span class="pre">none</span></code> is a zero channel.
+Colors outside the sRGB gamut (most of Display P3, Rec. 2020 and high-chroma OKLCH) are clipped to it.
+For press-accurate CMYK use an ICC profile: a trailing <code class="docutils literal notranslate"><span class="pre">icc-color(...)</span></code> is kept with the color.</p>
+</section>
+<section id="adjusting-colors">
+<h3>Adjusting colors<a class="headerlink" href="#adjusting-colors" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"#0f766e"</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">lighten</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">darken</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>          <span class="c1"># HSL lightness</span>
+<span class="n">c</span><span class="o">.</span><span class="n">saturate</span><span class="p">(</span><span class="mf">0.2</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">desaturate</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>     <span class="c1"># HSL saturation</span>
+<span class="n">c</span><span class="o">.</span><span class="n">hue_shift</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span>        <span class="c1"># HSL hue</span>
+<span class="n">c</span><span class="o">.</span><span class="n">grayscale</span><span class="p">(),</span> <span class="n">c</span><span class="o">.</span><span class="n">invert</span><span class="p">()</span>              <span class="c1"># same perceived lightness; negative</span>
+<span class="n">c</span><span class="o">.</span><span class="n">mix</span><span class="p">(</span><span class="s2">"white"</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="s2">"oklch"</span><span class="p">)</span>     <span class="c1"># "srgb" (default), "linear", "oklab" or "oklch"</span>
+<span class="n">c</span><span class="o">.</span><span class="n">contrast</span><span class="p">(</span><span class="s2">"white"</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">is_dark</span>         <span class="c1"># WCAG ratio; whether white text reads better</span>
+<span class="n">c</span><span class="o">.</span><span class="n">readable</span><span class="p">()</span>                           <span class="c1"># black or white, whichever has more contrast on c</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">lighten</span></code> and <code class="docutils literal notranslate"><span class="pre">darken</span></code> move HSL lightness: they reach pure white and black at the ends and keep the hue,
+which is what palettes expect. For perceptually even steps mix in OKLCH instead:
+<code class="docutils literal notranslate"><span class="pre">c.mix(&quot;white&quot;,</span> <span class="pre">0.2,</span> <span class="pre">space=&quot;oklch&quot;)</span></code>. <code class="docutils literal notranslate"><span class="pre">space=&quot;linear&quot;</span></code> mixes light as it adds physically.</p>
+</section>
 </section>
 <section id="colour-profiles">
 <h2>Colour profiles<a class="headerlink" href="#colour-profiles" title="Link to this heading">¶</a></h2>
@@ -448,7 +500,11 @@ composites onto a whole image.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Colors and images</a><ul>
-<li><a class="reference internal" href="#colors">Colors</a></li>
+<li><a class="reference internal" href="#colors">Colors</a><ul>
+<li><a class="reference internal" href="#css-color-4-text">CSS Color 4 text</a></li>
+<li><a class="reference internal" href="#adjusting-colors">Adjusting colors</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#colour-profiles">Colour profiles</a></li>
 <li><a class="reference internal" href="#images-are-numpy-arrays">Images are numpy arrays</a></li>
 <li><a class="reference internal" href="#patterns">Patterns</a></li>

@@ -285,11 +285,11 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedTuple</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_PRECISION</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">Keyword</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_number</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">SEPARATORS</span>
 
@@ -402,7 +402,7 @@
 
 <div class="viewcode-block" id="Align">
 <a class="viewcode-back" href="../../../reference/attributes.html#svgwriter.attributes.Align">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Align</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Align</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Alignment values of ``preserveAspectRatio``.</span>
 
 <span class="sd">    ``CENTER`` is an alias of ``X_MID_Y_MID``, the default.</span>
@@ -434,7 +434,7 @@
 
 <div class="viewcode-block" id="MeetOrSlice">
 <a class="viewcode-back" href="../../../reference/attributes.html#svgwriter.attributes.MeetOrSlice">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">MeetOrSlice</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MeetOrSlice</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Whether the viewBox is scaled to fit entirely or to cover the viewport.</span>
 
 <span class="sd">    See Also</span>

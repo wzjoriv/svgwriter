@@ -698,6 +698,8 @@
 </li>
         <li><a href="reference/io.html#svgwriter.io.SerializeOptions.compact_paths">compact_paths (SerializeOptions attribute)</a>
 </li>
+        <li><a href="reference/color.html#svgwriter.color.Color.complement">complement() (Color method)</a>
+</li>
         <li><a href="reference/ops.html#svgwriter.ops.composite_rgba">composite_rgba() (in module svgwriter.ops)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.CompositeOperator">CompositeOperator (class in svgwriter.elements.filters)</a>
@@ -747,6 +749,8 @@
 </li>
         </ul></li>
         <li><a href="reference/document.html#svgwriter.Document.content_bounds">content_bounds() (Document method)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.contrast">contrast() (Color method)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.Attr.convert">convert (Attr attribute)</a>
 </li>
@@ -867,6 +871,8 @@
         <li><a href="reference/elements.html#svgwriter.elements.structure.Svg.defs">defs() (Svg method)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.Angle.degrees">degrees (Angle property)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.desaturate">desaturate() (Color method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.structure.Desc">Desc (class in svgwriter.elements.structure)</a>
 </li>
@@ -1224,6 +1230,8 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.paint.Gradient">Gradient (class in svgwriter.elements.paint)</a>
 </li>
+        <li><a href="reference/color.html#svgwriter.color.Color.grayscale">grayscale() (Color method)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.Channel.GREEN">GREEN (Channel attribute)</a>
 </li>
         <li><a href="reference/builder.html#svgwriter.builder.grid">grid() (in module svgwriter.builder)</a>
@@ -1270,6 +1278,8 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.ColorMatrixType.HUE_ROTATE">HUE_ROTATE (ColorMatrixType attribute)</a>
 </li>
+        <li><a href="reference/color.html#svgwriter.color.Color.hue_shift">hue_shift() (Color method)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -1312,12 +1322,12 @@
 </li>
         <li><a href="reference/attributes.html#svgwriter.attributes.cascade.INHERITED">INHERITED (in module svgwriter.attributes.cascade)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.elements.Element.insert">insert() (Element method)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.interpolate">interpolate() (in module svgwriter.ops)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/ops.html#svgwriter.ops.BooleanOp.INTERSECTION">INTERSECTION (BooleanOp attribute)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.intersection">intersection() (in module svgwriter.ops)</a>
@@ -1328,6 +1338,8 @@
           <li><a href="reference/geometry.html#svgwriter.transform.Transform.inverse">(Transform method)</a>
 </li>
         </ul></li>
+        <li><a href="reference/color.html#svgwriter.color.Color.invert">invert() (Color method)</a>
+</li>
         <li><a href="reference/attributes.html#svgwriter.attributes.IRI">IRI (class in svgwriter.attributes)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.Element.iri">iri (Element property)</a>
@@ -1336,7 +1348,11 @@
           <li><a href="reference/color.html#svgwriter.color.PaintRef.iri">(PaintRef attribute)</a>
 </li>
         </ul></li>
+        <li><a href="reference/color.html#svgwriter.color.Color.is_dark">is_dark (Color property)</a>
+</li>
         <li><a href="reference/geometry.html#svgwriter.transform.Matrix.is_identity">is_identity (Matrix property)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.is_light">is_light (Color property)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.transform.Matrix.isclose">isclose() (Matrix method)</a>
 </li>
@@ -1839,6 +1855,8 @@
         </ul></li>
         <li><a href="reference/ops.html#svgwriter.ops.rasterize_many">rasterize_many() (in module svgwriter.ops)</a>
 </li>
+        <li><a href="reference/color.html#svgwriter.color.Color.readable">readable() (Color method)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.elements.shapes.Rect">Rect (class in svgwriter.elements.shapes)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.Channel.RED">RED (Channel attribute)</a>
@@ -1903,14 +1921,14 @@
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.render_frame">render_frame() (in module svgwriter.ops)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/document.html#svgwriter.Document.render_png">render_png() (Document method)</a>
 
         <ul>
           <li><a href="reference/ops.html#svgwriter.ops.render_png">(in module svgwriter.ops)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/ops.html#svgwriter.ops.render_svg">render_svg() (in module svgwriter.ops)</a>
 </li>
         <li><a href="reference/video.html#svgwriter.video.Scene.renderer">renderer (Scene attribute)</a>
@@ -2010,6 +2028,8 @@
         <li><a href="reference/geometry.html#svgwriter.pathdata.CenterArc.sample">sample() (CenterArc method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.elements.filters.ColorMatrixType.SATURATE">SATURATE (ColorMatrixType attribute)</a>
+</li>
+        <li><a href="reference/color.html#svgwriter.color.Color.saturate">saturate() (Color method)</a>
 </li>
         <li><a href="reference/document.html#svgwriter.Document.save">save() (Document method)</a>
 

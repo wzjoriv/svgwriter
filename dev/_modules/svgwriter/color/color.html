@@ -297,6 +297,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._drawable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drawable</span><span class="p">,</span> <span class="n">color_swatch</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_number</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">N</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._adjust</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColorAdjustments</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._blending</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColorBlending</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._channels</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColorChannels</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -345,7 +346,7 @@
 <div class="viewcode-block" id="Color">
 <a class="viewcode-back" href="../../../reference/color.html#svgwriter.color.Color">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">Color</span><span class="p">(</span><span class="n">ColorChannels</span><span class="p">,</span> <span class="n">ColorBlending</span><span class="p">,</span> <span class="n">Drawable</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Color</span><span class="p">(</span><span class="n">ColorChannels</span><span class="p">,</span> <span class="n">ColorBlending</span><span class="p">,</span> <span class="n">ColorAdjustments</span><span class="p">,</span> <span class="n">Drawable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""An sRGB color with straight alpha; every channel is a float in ``0..1``.</span>
 
 <span class="sd">    Colors are immutable, support ``+`` (even mix), ``*`` and ``/`` (scaling),</span>
@@ -413,7 +414,7 @@
 <a class="viewcode-back" href="../../../reference/color.html#svgwriter.color.Color.parse">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Color</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Parse a name, ``#rgb[a]``, ``#rrggbb[aa]``, ``rgb[a](...)`` or ``hsl[a](...)``.</span>
+<span class="w">        </span><span class="sd">"""Parse a name, hex or CSS Color 4 function (see :func:`parse_color`).</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -648,14 +649,21 @@
 <a class="viewcode-back" href="../../../reference/color.html#svgwriter.color.parse_color">[docs]</a>
 <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_color</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Color</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Parse a color keyword, hex, ``rgb[a](...)`` or ``hsl[a](...)``.</span>
+<span class="w">    </span><span class="sd">"""Parse a color keyword, hex or CSS Color 4 function into sRGB.</span>
 
-<span class="sd">    An optional trailing ``icc-color(...)`` is preserved. Results are cached.</span>
+<span class="sd">    Functions: ``rgb()``/``rgba()`` (numbers are 0..255, percentages 0..100%), ``hsl()``/``hsla()``,</span>
+<span class="sd">    ``hwb()``, ``hsv()``/``hsva()``, ``lab()``, ``lch()``, ``oklab()``, ``oklch()``,</span>
+<span class="sd">    ``color(&lt;space&gt; r g b)`` with ``srgb``, ``srgb-linear``, ``display-p3``, ``a98-rgb``, ``rec2020``,</span>
+<span class="sd">    ``xyz``/``xyz-d65`` or ``xyz-d50``, and ``device-cmyk()``. Both the comma syntax and the modern</span>
+<span class="sd">    space-separated syntax with ``/ alpha`` work; ``none`` stands for a zero channel; hues take</span>
+<span class="sd">    ``deg``, ``rad``, ``grad`` or ``turn``. Colors outside the sRGB gamut are clipped to it.</span>
+<span class="sd">    ``device-cmyk()`` is the naive formula with no profile; real CMYK goes through a trailing</span>
+<span class="sd">    ``icc-color(...)``, which is preserved. Results are cached.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    text : str</span>
-<span class="sd">        Color text such as ``"tomato"``, ``"#f80"``, ``"rgb(255 0 0)"`` or ``"hsl(120, 100%, 50%)"``.</span>
+<span class="sd">        Color text such as ``"tomato"``, ``"#f80"``, ``"rgb(255 0 0 / 50%)"`` or ``"oklch(62.8% 0.2577 29.23)"``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>

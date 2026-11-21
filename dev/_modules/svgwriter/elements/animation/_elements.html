@@ -285,10 +285,10 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">TypeAlias</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">Keyword</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...pathdata.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathBuilder</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathData</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._behavior</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConditionalAttributes</span><span class="p">,</span> <span class="n">CoreAttributes</span><span class="p">,</span> <span class="n">ExternalResourcesAttribute</span><span class="p">,</span> <span class="n">XLinkAttributes</span>
@@ -319,7 +319,7 @@
 
 <div class="viewcode-block" id="Restart">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.Restart">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Restart</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Restart</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The ``restart`` attribute: when an animation may begin again.</span>
 
 <span class="sd">    See Also</span>
@@ -340,7 +340,7 @@
 
 <div class="viewcode-block" id="AnimationFill">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.AnimationFill">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">AnimationFill</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnimationFill</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The animation ``fill`` attribute: the state after the active duration (not paint).</span>
 
 <span class="sd">    See Also</span>
@@ -360,7 +360,7 @@
 
 <div class="viewcode-block" id="CalcMode">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.CalcMode">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">CalcMode</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CalcMode</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The ``calcMode`` attribute: how values are interpolated.</span>
 
 <span class="sd">    See Also</span>
@@ -382,7 +382,7 @@
 
 <div class="viewcode-block" id="Additive">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.Additive">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Additive</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Additive</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The ``additive`` attribute: replace the underlying value or add to it.</span>
 
 <span class="sd">    See Also</span>
@@ -402,7 +402,7 @@
 
 <div class="viewcode-block" id="Accumulate">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.Accumulate">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Accumulate</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Accumulate</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The ``accumulate`` attribute: whether repeats build on the previous end value.</span>
 
 <span class="sd">    See Also</span>
@@ -422,7 +422,7 @@
 
 <div class="viewcode-block" id="TransformType">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.TransformType">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">TransformType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TransformType</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The ``type`` of an ``animateTransform``.</span>
 
 <span class="sd">    See Also</span>
