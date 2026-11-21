@@ -409,7 +409,7 @@ def {FORWARD_FUNCTION}(
 {INDENT}--------
 {INDENT}>>> from svgwriter.elements.core._forward import forward_common
 {INDENT}>>> given = {{}}
-{INDENT}>>> forward_common(given, "a", None, None, None, None, None, None, None, None, None, None, None, None, None, "b")
+{INDENT}>>> forward_common(given, id="a", class_="b", stroke=None)
 {INDENT}>>> given
 {INDENT}{{'id': 'a', 'class_': 'b'}}
 {INDENT}"""

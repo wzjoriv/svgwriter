@@ -137,7 +137,7 @@ def forward_common(
     --------
     >>> from svgwriter.elements.core._forward import forward_common
     >>> given = {}
-    >>> forward_common(given, "a", None, None, None, None, None, None, None, None, None, None, None, None, None, "b")
+    >>> forward_common(given, id="a", class_="b", stroke=None)
     >>> given
     {'id': 'a', 'class_': 'b'}
     """
