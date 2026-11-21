@@ -12,6 +12,10 @@ What it shows:
 - `svg.Typeface` for the title and label faces, layout groups for the legend (`HStack`) and the tide table
   (`Grid`, read from `assets/data/tides.csv`), and the theme with its sizes in millimetres.
 
+Controls (`svgwriter preview` shows them as a form): the colour `theme` (the project's own, `night`, `blueprint` or `mint`), an accent `hue` shift of the theme's primary, secondary and accent colours, and the `title` text. The defaults give the poster `svgwriter build` writes.
+
+Open the notebook, [poster.ipynb](poster.ipynb), to see the demo step by step with its pictures; run it to get a panel for the controls.
+
 ```
 svgwriter preview    # the poster as PDF, PNG and SVG
 svgwriter build      # output/poster.pdf (A4), output/poster.png (300 dpi) and output/poster.svg

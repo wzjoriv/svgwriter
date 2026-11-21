@@ -34,6 +34,10 @@ class Planets(svg.Scene):
     fps = 30
     duration = 6.0
 
+    def __init__(self, speed: float = 1.0) -> None:
+        self.speed = speed
+        super().__init__()
+
     def build(self, doc: svg.Document) -> None:
         doc.rect(0, 0, self.width, self.height).as_role("background")
         title = heading("Eight planets", f"Orbit distances to scale: 1 AU = {AU} px", x=MARGIN, y=MARGIN)
@@ -47,13 +51,14 @@ class Planets(svg.Scene):
             orbits += svg.circle(sun_x, sun_y, radius).as_role("orbit")
             body = svg.circle(sun_x + radius, sun_y, planet.radius, fill=planet.color)
             bodies += body
-            self.attach(body, orbit, cx=sun_x, cy=sun_y, au=planet.au)
+            self.attach(body, orbit, cx=sun_x, cy=sun_y, au=planet.au, speed=self.speed)
             if planet.au > LABELLED:
                 doc.text(planet.name, x=sun_x + radius, y=sun_y + 44 + index % 2 * 26,
                          text_anchor="middle").as_role("caption")
         orbits.animate.stagger("fade_in", step=0.15, dur=0.6, begin=0.4)
         doc.circle(sun_x, sun_y, 9).as_role("shape").filter = svg.filters.glow(6, color="#ffd166")
         doc.text("Mercury to Mars", x=sun_x, y=sun_y - 70, text_anchor="middle").as_role("caption")
+
 
 
 # %% [markdown]
@@ -68,6 +73,10 @@ class Betelgeuse(svg.Scene):
     size = "video-720p"
     fps = 30
     duration = 6.0
+
+    def __init__(self, speed: float = 1.0) -> None:
+        self.speed = speed
+        super().__init__()
 
     def build(self, doc: svg.Document) -> None:
         doc.rect(0, 0, self.width, self.height).as_role("background")
@@ -91,14 +100,29 @@ class Betelgeuse(svg.Scene):
         doc.text("Suns in a row", x=self.width - MARGIN, y=MARGIN + 110, text_anchor="end").as_role("caption")
 
     def update(self, seconds: float) -> None:
-        counted = min(max((seconds - 1.5) / 3.0, 0.0), 1.0) * ROW
+        counted = min(max((seconds * self.speed - 1.5) / 3.0, 0.0), 1.0) * ROW
         while len(self.suns.children) < int(counted):
             index = len(self.suns.children)
             self.suns += svg.circle(self.row_x + 2 * index + 1, self.row_y, 1)
         self.counter.show(counted)
 
 
+# %% [markdown]
+# `scenes` is the project's entry: one clip each. Two controls, a time scale and which clip, drive the same
+# scenes through a function that bakes the chosen one, which `svg.interact` shows in a notebook.
+
+# %%
 scenes = [Planets, Betelgeuse]
+CLIPS = {"Eight planets": Planets, "700× wider": Betelgeuse}
+
+
+@svg.widgets.controls(
+    scene=svg.widgets.Segmented(list(CLIPS), value="Eight planets"),
+    speed=svg.widgets.Slider(0.25, 4, step=0.25, value=1.0, label="time scale"),
+)
+def explainer(doc: svg.Document, *, scene: str = "Eight planets", speed: float = 1.0) -> svg.Document:
+    """The chosen clip with its clock running *speed* times as fast, baked into an animated document."""
+    return CLIPS[scene](speed).bake()
 
 # %%
 if __name__ == "__main__":
