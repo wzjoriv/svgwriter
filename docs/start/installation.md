@@ -27,6 +27,14 @@ Optional extras:
   Without it, `icc-color(...)` draws its sRGB fallback colour and images are drawn as their decoder
   delivers them; a one-time warning says profiles were skipped.
 
+- **widget** for {doc}`notebook panels <../guides/widgets>` (`svg.interact`) through ipywidgets:
+
+  ```console
+  $ pip install "pysvgwriter[widget]"
+  ```
+
+  Controls, sweeps and the controls of `svgwriter preview` work without it.
+
 Optional external program:
 
 - **ffmpeg** on `PATH` for {doc}`video export <../guides/animation>`. Without it, `render_animation` raises

@@ -19,6 +19,7 @@ builder
 theme
 inkscape
 video
+widgets
 project
 cli
 ```

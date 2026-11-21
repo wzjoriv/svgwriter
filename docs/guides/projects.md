@@ -165,5 +165,9 @@ so they follow `theme.toml`.
 
 `svgwriter preview` serves `http://127.0.0.1:8000/` (`--port` to change it, `--no-open` to skip the
 browser). It polls the project's files twice a second; when one changes it rebuilds, and the page
-reloads itself. A failed build shows its traceback on the page until the next save fixes it. It uses
-only the standard library.
+reloads itself. A failed build shows its traceback under the last outputs that worked until the next
+save fixes it. It uses only the standard library.
+
+An entry that declares controls with `@svg.widgets.controls` gets a form above the outputs: sliders,
+buttons, colour pickers and switches as plain HTML inputs. Each change rebuilds the project with the new
+values and swaps the outputs in place; `svgwriter build` uses the starting values. See {doc}`widgets`.
