@@ -15,9 +15,9 @@ from svgwriter.model.transform import Matrix, Point, Rotate, Transform
 class TestContainerOperators:
     def test_iadd_single_and_list(self) -> None:
         group = svg.Group()
-        group += svg.Circle()
-        group += [svg.Rect(), svg.Line()]
-        group += (e for e in [svg.Ellipse()])
+        group += svg.Circle(0, 0, 1)
+        group += [svg.Rect(0, 0, 1, 1), svg.Line()]
+        group += (e for e in [svg.Ellipse(0, 0, 1, 1)])
         assert [c.tag for c in group] == ["circle", "rect", "line", "ellipse"]
 
     def test_iadd_rejects_non_elements(self) -> None:
@@ -25,27 +25,27 @@ class TestContainerOperators:
         with pytest.raises(TypeError, match="iterable of elements"):
             group += object()  # type: ignore[arg-type]
         with pytest.raises(TypeError, match="expected elements"):
-            group += [svg.Rect(), 3]  # type: ignore[list-item]
+            group += [svg.Rect(0, 0, 1, 1), 3]  # type: ignore[list-item]
 
     def test_document_iadd_respects_insertion_point(self) -> None:
         doc = svg.Document(10, 10)
         with doc.group() as g:
-            doc += svg.Rect()
-            doc += [svg.Circle(), svg.Line()]
+            doc += svg.Rect(0, 0, 1, 1)
+            doc += [svg.Circle(0, 0, 1), svg.Line()]
         assert len(g) == 3 and len(doc.root) == 1
 
     def test_plus_makes_a_new_group(self) -> None:
-        a, b, c = svg.Rect(), svg.Circle(), svg.Line()
+        a, b, c = svg.Rect(0, 0, 1, 1), svg.Circle(0, 0, 1), svg.Line()
         group = a + b
         assert isinstance(group, svg.Group) and list(group) == [a, b]
         assert list(svg.Group(id="g") + [c]) [1] is c
-        assert list([svg.Rect(), svg.Rect()] + svg.Circle())[2].tag == "circle"
+        assert list([svg.Rect(0, 0, 1, 1), svg.Rect(0, 0, 1, 1)] + svg.Circle(0, 0, 1))[2].tag == "circle"
 
     def test_plus_rejects_other_types(self) -> None:
         with pytest.raises(TypeError):
-            _ = svg.Rect() + object()  # type: ignore[operator]
+            _ = svg.Rect(0, 0, 1, 1) + object()  # type: ignore[operator]
         with pytest.raises(TypeError):
-            _ = svg.Rect() + (1, 2, 3)  # type: ignore[operator]
+            _ = svg.Rect(0, 0, 1, 1) + (1, 2, 3)  # type: ignore[operator]
 
     def test_mod_is_gone(self) -> None:
         with pytest.raises(TypeError):
@@ -114,7 +114,7 @@ class TestPathOperators:
         assert joined.get("stroke") == "red" and str(a.d) == "M0 0 H10"
         assert str((a + "M1 1 L2 2").d).endswith("L2 2")
         assert str((a + PathData("M3 3")).d).endswith("M3 3")
-        assert isinstance(a + svg.Circle(), svg.Group)
+        assert isinstance(a + svg.Circle(0, 0, 1), svg.Group)
 
     def test_path_in_place_concatenation(self) -> None:
         a = svg.Path("M0 0 H1")

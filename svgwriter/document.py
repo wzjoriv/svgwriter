@@ -166,12 +166,12 @@ class Document(Building, Sizing, Theming, Typography, Output, Access, InkscapeDa
         from .formats.io.parser import Strictness, parse
 
         if format.lower() != "svg":
-            from .formats.export._format import FORMATS
+            from .formats import reader
 
             if strictness is not None:
                 raise TypeError("strictness= applies to SVG only")
             data = text.encode("utf-8") if isinstance(text, str) else text
-            return FORMATS.reader(format).read(data, **options)  # type: ignore[return-value]
+            return reader(format).read(data, **options)  # type: ignore[return-value]
         theme = options.pop("theme", None)
         if options:
             raise TypeError(f"SVG takes no option {', '.join(map(repr, sorted(options)))}; only theme=")

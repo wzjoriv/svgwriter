@@ -192,7 +192,7 @@ class Frame(Group):
         --------
         >>> import svgwriter as svg
         >>> card = svg.VStack(svg.rect(0, 0, 30, 10), padding=5)
-        >>> card.background = svg.rect(rx=4, fill="white")
+        >>> card.background = svg.rect(0, 0, 1, 1, rx=4, fill="white")
         >>> card.background.bounds()
         BBox(x=0.0, y=0.0, width=40.0, height=20.0)
         """
@@ -205,7 +205,7 @@ class Frame(Group):
         if old is not None:
             self.remove(old)
         if isinstance(value, str):
-            value = Rect().as_role(value)
+            value = Rect(0, 0, 1, 1).as_role(value)
         self._background_child = value
         if value is not None:
             self.insert(0, value)

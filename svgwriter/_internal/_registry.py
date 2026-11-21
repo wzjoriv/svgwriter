@@ -11,8 +11,8 @@ import warnings
 from collections.abc import Callable, Iterator
 from typing import Concatenate, Generic, TypeVar, overload
 
-from ..errors import UnknownNameError
 from ._constants import ENTRY_POINT_PREFIX, SUGGESTIONS
+from ._errors import UnknownNameError
 from ._typing import P
 
 __all__ = ["Registry", "chainable", "owner_of"]

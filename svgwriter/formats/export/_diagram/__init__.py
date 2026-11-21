@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING
 
 from ...._internal._constants import DOT, MERMAID
 from ...._internal._tools import find_tool, run_tool, svg_document
-from .._format import Format
+from ..._format import Format
 from ._constants import MERMAID_CONFIG
 
 if TYPE_CHECKING:

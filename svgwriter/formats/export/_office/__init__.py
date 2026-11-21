@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any
 
 from ...._internal._constants import PX_PER_INCH
 from ....errors import OfficeExtraError
-from .._format import Format
+from ..._format import Format
 from ._constants import EXTRA_HINT, PICTURE_SCALE
 
 if TYPE_CHECKING:

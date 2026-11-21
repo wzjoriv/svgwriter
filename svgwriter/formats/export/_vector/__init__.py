@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 import skia
 
 from ...._internal._constants import PX_PER_INCH, PX_PER_PT
-from .._format import Format
+from ..._format import Format
 from ._constants import PDF_LINK_KEY
 
 if TYPE_CHECKING:

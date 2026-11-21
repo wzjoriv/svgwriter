@@ -9,8 +9,8 @@ import json
 from collections.abc import Mapping
 from typing import TYPE_CHECKING
 
+from .._format import Format
 from ._constants import PAGE, SCRIPT, SVG_RE
-from ._format import Format
 
 if TYPE_CHECKING:
     from ...document import Document

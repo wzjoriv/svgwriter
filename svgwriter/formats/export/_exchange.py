@@ -9,7 +9,7 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from ._format import FORMATS, Format
+from .._format import FORMATS, Format
 
 if TYPE_CHECKING:
     from ...document import Document

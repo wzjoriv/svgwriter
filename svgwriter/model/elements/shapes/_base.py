@@ -10,9 +10,16 @@ from ...pathdata.data import BBox
 from .._behavior import GraphicsElement, PathOperand, user_units
 from ..core import Category
 
-__all__ = ["Shape", "parse_points", "user_units"]
+__all__ = ["Shape", "parse_points", "require_sizes", "user_units"]
 
 
+
+
+def require_sizes(tag: str, **sizes: object) -> None:
+    """Raise TypeError naming the sizes of a ``<tag>`` that were not given, such as ``circle needs r``."""
+    missing = [name for name, value in sizes.items() if value is None]
+    if missing:
+        raise TypeError(f"{tag} needs {' and '.join(missing)}: give {', '.join(f'{name}=' for name in missing)}")
 
 
 def parse_points(text: str) -> list[tuple[float, float]]:

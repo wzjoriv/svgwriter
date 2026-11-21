@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from .._format import Format
+from ..._format import Format
 
 if TYPE_CHECKING:
     from ....document import Document

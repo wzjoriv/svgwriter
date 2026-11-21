@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ...._internal._constants import PX_PER_INCH
-from .._format import Format
+from ..._format import Format
 from .._units import dpi_scale
 
 if TYPE_CHECKING:

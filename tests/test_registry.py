@@ -7,7 +7,7 @@ import pytest
 
 import svgwriter as svg
 from svgwriter._internal._registry import Registry
-from svgwriter.formats.export._format import FORMATS
+from svgwriter.formats._format import FORMATS
 
 
 def _points(*items: tuple[str, str]) -> list[metadata.EntryPoint]:

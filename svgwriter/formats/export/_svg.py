@@ -7,8 +7,8 @@ from __future__ import annotations
 import gzip
 from typing import TYPE_CHECKING, Any
 
+from .._format import Format
 from ._constants import GZIP_MAGIC
-from ._format import Format
 
 if TYPE_CHECKING:
     from ...document import Document

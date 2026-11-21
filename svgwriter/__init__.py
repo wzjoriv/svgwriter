@@ -62,9 +62,8 @@ from .catalog import effects, filters, fonts, gradients, markers, patterns, pres
 from .catalog.builder import drawing
 from .catalog.fonts import FontBuilder
 from .document import Document
-from .formats import export, inkscape
+from .formats import Format, export, inkscape
 from .formats import io as io
-from .formats.export import Format
 from .formats.io.writer import SerializeOptions, to_string, write
 from .model import attributes as attributes
 from .model import batch as batch

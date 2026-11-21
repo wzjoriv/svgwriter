@@ -62,7 +62,7 @@ def background_layer(element: Element, order: list[Element]) -> list[Element] | 
     >>> from svgwriter.ops._filters._filter_inputs import background_layer
     >>> doc = svg.Document(10, 10)
     >>> group = doc.add(svg.group(enable_background="new"))
-    >>> first, second = group.add(svg.Rect()), group.add(svg.Circle())
+    >>> first, second = group.add(svg.Rect(0, 0, 1, 1)), group.add(svg.Circle(0, 0, 1))
     >>> [leaf.tag for leaf in background_layer(second, drawable_order(doc.root))]
     ['rect']
     """

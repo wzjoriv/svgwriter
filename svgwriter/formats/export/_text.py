@@ -8,6 +8,7 @@ from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
+from .._format import Format
 from ._constants import (
     BODY_SIZE,
     BOLD_RE,
@@ -25,7 +26,6 @@ from ._constants import (
     SANS,
     SPACES_PER_LEVEL,
 )
-from ._format import Format
 
 if TYPE_CHECKING:
     from ...document import Document

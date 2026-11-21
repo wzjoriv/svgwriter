@@ -10,13 +10,13 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, ClassVar, Final
 
-from ..._internal._constants import SUGGESTIONS
-from ..._internal._registry import Registry
-from ...errors import UnknownNameError
+from .._internal._constants import SUGGESTIONS
+from .._internal._registry import Registry
+from ..errors import UnknownNameError
 from ._constants import DEFAULT_PAGE_OPTION, EXTENSION_DOT
 
 if TYPE_CHECKING:
-    from ...document import Document
+    from ..document import Document
 
 __all__ = ["FORMATS", "Format", "FormatRegistry"]
 
@@ -259,7 +259,9 @@ class FormatRegistry(Registry[Format]):
 
 
 def _load_builtins() -> None:
-    from . import _diagram, _html, _office, _plotter, _raster, _scene, _svg, _text, _vector  # noqa: F401
+    from .export import load_formats
+
+    load_formats()
 
 
 FORMATS: Final = FormatRegistry("format", _load_builtins)

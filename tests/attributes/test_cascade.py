@@ -10,7 +10,7 @@ from svgwriter.model.attributes.rules import parse_css
 def tree() -> tuple[svg.Svg, svg.Group, svg.Rect]:
     root = svg.Svg()
     g = root.append(svg.Group(id="outer", class_="box", fill="blue", font_size=20))
-    r = g.append(svg.Rect(id="r", class_="a b", data_kind="x"))
+    r = g.append(svg.Rect(0, 0, 1, 1, id="r", class_="a b", data_kind="x"))
     return root, g, r
 
 
@@ -65,7 +65,7 @@ class TestComputed:
         assert r.computed("opacity") == 0.3
 
     def test_default(self) -> None:
-        assert svg.Rect().computed("stroke", "none") == "none"
+        assert svg.Rect(0, 0, 1, 1).computed("stroke", "none") == "none"
 
 
 def test_resolve_styles_bakes_css_into_attributes() -> None:
@@ -88,7 +88,7 @@ def test_sibling_combinators_and_backtracking(selector, expected):
 
 
 def test_resolved_sheets_are_removed_so_inline_values_keep_winning():
-    root = svg.Svg(svg.StyleElement(".a { fill: blue }"), svg.Rect(class_="a", style="fill:red"))
+    root = svg.Svg(svg.StyleElement(".a { fill: blue }"), svg.Rect(0, 0, 1, 1, class_="a", style="fill:red"))
     resolve_styles(root)
     rect = root.find(svg.Rect)
     assert rect.get("fill") == "red" and root.find(svg.StyleElement) is None

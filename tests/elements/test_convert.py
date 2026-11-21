@@ -74,18 +74,18 @@ class TestClip:
 
     def test_clip_multiple_shapes_and_existing_clip_path(self) -> None:
         cp = svg.ClipPath(svg.Rect(0, 0, 1, 1))
-        assert svg.Rect().clip(cp).clip_region is cp
-        assert len(svg.Rect().clip(svg.Circle(), svg.Rect()).clip_region) == 2
+        assert svg.Rect(0, 0, 1, 1).clip(cp).clip_region is cp
+        assert len(svg.Rect(0, 0, 1, 1).clip(svg.Circle(0, 0, 1), svg.Rect(0, 0, 1, 1)).clip_region) == 2
 
     def test_clip_on_group_and_text(self) -> None:
         assert svg.Group().clip(svg.Circle(0, 0, 1)).clip_region is not None
         assert svg.Text("x").clip(svg.Circle(0, 0, 1)).clip_region is not None
 
     def test_unclip_and_errors(self) -> None:
-        r = svg.Rect().clip(svg.Circle())
+        r = svg.Rect(0, 0, 1, 1).clip(svg.Circle(0, 0, 1))
         assert r.unclip().clip_region is None
         with pytest.raises(TypeError, match="unclip"):
-            svg.Rect().clip()
+            svg.Rect(0, 0, 1, 1).clip()
 
     def test_flatten_clip_intersects(self) -> None:
         r = svg.Rect(0, 0, 100, 100, fill="teal").clip(svg.Rect(50, 0, 100, 100))
@@ -176,7 +176,7 @@ class TestClone:
     def test_copy_module(self) -> None:
         import copy
 
-        r = svg.Rect(fill="red")
+        r = svg.Rect(0, 0, 1, 1, fill="red")
         assert copy.copy(r) is not r and copy.deepcopy(r).get("fill") == r.get("fill")
 
 
@@ -199,7 +199,7 @@ class TestUseAppearance:
 
 
 def test_copy_is_clone() -> None:
-    r = svg.Rect(fill="red")
+    r = svg.Rect(0, 0, 1, 1, fill="red")
     assert svg.Rect.copy is svg.Rect.clone and r.copy() is not r and r.copy(linked=True).tag == "use"
 
 

@@ -50,7 +50,7 @@ class TestAnimationPreset:
 
         try:
             assert callable(jump)
-            assert svg.rect().animate.hop().element.children[0].tag == "animateTransform"
+            assert svg.rect(0, 0, 1, 1).animate.hop().element.children[0].tag == "animateTransform"
         finally:
             svg.preset.animation.unregister("hop")
 
@@ -111,7 +111,7 @@ class TestAnimationPreset:
         assert dot.children[0].get("dur") != "9s"
 
     def test_unknown_name_suggests(self, registered: str) -> None:
-        motion = svg.rect().animate
+        motion = svg.rect(0, 0, 1, 1).animate
         with pytest.raises(AttributeError, match="did you mean 'bob'"):
             motion.bobb()
         with pytest.raises(AttributeError, match="did you mean 'fade_in'"):

@@ -6,7 +6,7 @@ JPEG, WebP, GIF, BMP, PNM), PDF, TikZ and EPS (their vector paths), DXF, HPGL, G
 Excalidraw, HTML, ICO and ICNS, text and Markdown, plus Graphviz DOT, Mermaid, PlantUML and D2
 when their command-line tools are installed; with the ``office`` extra, PPTX (editable shapes,
 in and out), DOCX (in and out) and XLSX (picture, out). Add a format by subclassing
-:class:`Format`; ``svg.formats`` lists them.
+:class:`~svgwriter.Format`; ``svg.formats`` lists them.
 
 Example
 -------
@@ -22,6 +22,16 @@ b'%PDF-'
 from __future__ import annotations
 
 from ._exchange import export, load, save
-from ._format import Format, FormatRegistry
 
-__all__ = ["Format", "FormatRegistry", "export", "load", "save"]
+__all__ = ["export", "load", "load_formats", "save"]
+
+
+def load_formats() -> None:
+    """Import the built-in formats, so they register; the format registry calls it before its first lookup.
+
+    Examples
+    --------
+    >>> from svgwriter.formats.export import load_formats
+    >>> load_formats()
+    """
+    from . import _diagram, _html, _office, _plotter, _raster, _scene, _svg, _text, _vector  # noqa: F401

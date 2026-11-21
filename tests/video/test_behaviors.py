@@ -120,11 +120,11 @@ class TestAttach:
 
     def test_unknown_name_suggests(self) -> None:
         with pytest.raises(AttributeError, match="'wiggle'"):
-            svg.rect().animate.wigle()
+            svg.rect(0, 0, 1, 1).animate.wigle()
 
     def test_home_needs_a_behavior(self) -> None:
         with pytest.raises(ValueError, match="no home yet"):
-            _ = svg.rect().home
+            _ = svg.rect(0, 0, 1, 1).home
 
 
 class TestBuiltins:

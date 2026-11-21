@@ -158,7 +158,7 @@ def concealed(leaves: list[Element]) -> Generator[None, None, None]:
     --------
     >>> import svgwriter as svg
     >>> from svgwriter.ops._raster._layers import concealed
-    >>> rect = svg.Rect(filter="url(#f)")
+    >>> rect = svg.Rect(0, 0, 1, 1, filter="url(#f)")
     >>> with concealed([rect]):
     ...     rect.get("display"), rect.get("filter")
     ('none', None)

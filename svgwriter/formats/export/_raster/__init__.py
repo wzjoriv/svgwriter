@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from ...._internal._constants import PX_PER_INCH
-from .._format import Format
+from ..._format import Format
 from .._units import dpi_scale
 from . import _tiff  # noqa: F401
 from ._constants import DEFAULT_GIF_FPS, DEFAULT_QUALITY, ICC_FORMATS

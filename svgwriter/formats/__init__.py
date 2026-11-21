@@ -36,9 +36,10 @@ Examples
 
 from __future__ import annotations
 
-from .export._format import FORMATS as _FORMATS
+from ._format import FORMATS as _FORMATS
+from ._format import Format, FormatRegistry
 
-__all__ = ["find", "get", "list", "reader", "readers", "register", "unregister", "writer", "writers"]
+__all__ = ["Format", "FormatRegistry", "find", "get", "list", "reader", "readers", "register", "unregister", "writer", "writers"]
 
 register = _FORMATS.register
 list = _FORMATS.list  # noqa: A001

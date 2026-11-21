@@ -10,8 +10,8 @@ import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ..errors import DiagramToolError
 from ._constants import INSTALL_HINT, TIMEOUT_SECONDS
+from ._errors import DiagramToolError
 
 if TYPE_CHECKING:
     from ..document import Document

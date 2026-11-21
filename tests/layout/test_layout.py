@@ -141,8 +141,8 @@ def test_grid_rows_and_implicit_rows():
 
 def test_nested_layouts_stretch_and_follow_changes():
     label = svg.text("Key", font_size=12)
-    key = svg.VStack(label, padding=4, background=svg.rect(rx=3))
-    other = svg.VStack(svg.text("Other key", font_size=12), padding=4, background=svg.rect(rx=3))
+    key = svg.VStack(label, padding=4, background=svg.rect(0, 0, 1, 1, rx=3))
+    other = svg.VStack(svg.text("Other key", font_size=12), padding=4, background=svg.rect(0, 0, 1, 1, rx=3))
     grid = svg.Grid(key, other, columns=2, gap=4)
     card = svg.VStack(svg.rect(0, 0, 200, 10), grid, gap=8, padding=10, align="stretch", background="surface")
     assert key.bounds().width == other.bounds().width == pytest.approx(98)
@@ -193,10 +193,10 @@ def test_output_is_plain_groups_and_clones_keep_layout():
 
 
 def _keypad() -> svg.Document:
-    keys = [svg.VStack(svg.text(k, font_size=14), padding=6, align="center", background=svg.rect(fill="teal"))
+    keys = [svg.VStack(svg.text(k, font_size=14), padding=6, align="center", background=svg.rect(0, 0, 1, 1, fill="teal"))
             for k in "123456"]
     doc = svg.Document(120, 80)
-    doc += svg.Grid(*keys, columns=3, gap=4, padding=4, background=svg.rect(fill="#eee")).translate(10, 5)
+    doc += svg.Grid(*keys, columns=3, gap=4, padding=4, background=svg.rect(0, 0, 1, 1, fill="#eee")).translate(10, 5)
     return doc
 
 
@@ -217,7 +217,7 @@ def test_exporters_keep_positions(fmt):
 
 def test_rendering_uses_the_arranged_positions():
     doc = svg.Document()
-    doc += svg.VStack(svg.text("Hi", font_size=20), svg.text("Hi", font_size=20), background=svg.rect(fill="red"))
+    doc += svg.VStack(svg.text("Hi", font_size=20), svg.text("Hi", font_size=20), background=svg.rect(0, 0, 1, 1, fill="red"))
     alpha = doc.rasterize()[..., 3]
     assert alpha[1:-1, 1:-1].min() > 0.9
 

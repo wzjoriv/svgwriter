@@ -16,8 +16,8 @@ from ..._document.sizes import PageSize
 from ..._internal._codecs._gif import encode_gif_animation
 from ..._internal._codecs._rgba import to_uint8
 from ...document import Document
+from ...formats import find as find_format
 from ...formats.export import save
-from ...formats.export._format import FORMATS
 from ...model.theme import Theme
 from ...motion.video import Scene, animation_duration, frame_times
 from ..widgets import controls_of
@@ -36,7 +36,7 @@ class View(NamedTuple):
 
 
 def _extension(format: str) -> str:
-    exporter = FORMATS.find(format)
+    exporter = find_format(format)
     return exporter.extensions[0] if exporter is not None and exporter.extensions else f".{format}"
 
 
@@ -114,7 +114,7 @@ def _write_pages(pages: Sequence[Document], targets: list[Path], format: str, op
         return [_write_scene(Scene(page), target, format, options) for page, target in zip(pages, targets, strict=True)]
     if format not in KEEPS_ANIMATION and "seconds" not in options:
         pages = [_settled(page) for page in pages]
-    exporter = FORMATS.find(format)
+    exporter = find_format(format)
     if len(pages) > 1 and exporter is not None and exporter.multipage:
         return [save(list(pages), targets[0], format, **options)]
     return [save(page, target, format, **options) for page, target in zip(pages, targets, strict=True)]
@@ -177,7 +177,7 @@ def write_outputs(config: ProjectConfig, items: Sequence[Item], theme: Theme | N
         options = config.options.get(format, {})
         extension = _extension(format)
         if pages:
-            exporter = FORMATS.find(format)
+            exporter = find_format(format)
             one_file = exporter is not None and exporter.multipage and format not in VIDEO_FORMATS
             names = _numbered(config.name, 1 if one_file else len(pages), extension)
             written += _write_pages(pages, [folder / name for name in names], format, options)

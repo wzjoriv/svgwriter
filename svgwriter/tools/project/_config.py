@@ -13,7 +13,7 @@ import tomlkit
 
 from ..._document.sizes import PageSize, page_size
 from ...errors import ProjectError
-from ...formats.export._format import FORMATS
+from ...formats import writers as format_writers
 from ...model.attributes.length import Length
 from ...model.color import parse_color
 from ._constants import (
@@ -193,7 +193,7 @@ def check_size(source: Path, value: object) -> SizeSpec:
 
 def check_formats(where: str, formats: Sequence[object]) -> tuple[str, ...]:
     """*formats* in lower case; an unknown one raises :class:`ProjectError` naming *where*."""
-    known = {*FORMATS.writers(), *ANIMATED_FORMATS, *VIDEO_FORMATS}
+    known = {*format_writers(), *ANIMATED_FORMATS, *VIDEO_FORMATS}
     names = tuple(str(name).lower() for name in formats)
     for name in names:
         if name not in known:
@@ -263,7 +263,7 @@ def read_config(start: Path) -> ProjectConfig:
     project = data.get("project", {})
     outputs = data.get("outputs", {})
     _unknown(source, "project.", project, PROJECT_KEYS)
-    _unknown(source, "outputs.", outputs, OUTPUT_KEYS | {*FORMATS.writers(), *ANIMATED_FORMATS, *VIDEO_FORMATS})
+    _unknown(source, "outputs.", outputs, OUTPUT_KEYS | {*format_writers(), *ANIMATED_FORMATS, *VIDEO_FORMATS})
     formats = check_formats(f"{source}: outputs.formats", outputs.get("formats", DEFAULT_FORMATS))
     options: dict[str, dict[str, Any]] = {}
     for key, value in outputs.items():

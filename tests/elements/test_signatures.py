@@ -58,7 +58,8 @@ def test_lowercase_aliases_share_the_signature() -> None:
     "cls", [c for c in ELEMENTS if issubclass(c, PresentationAttributes)], ids=lambda cls: cls.__name__
 )
 def test_listed_keywords_reach_the_attributes(cls: type) -> None:
-    element = cls(font_style="italic", fill="red", id="e", data_note="kept")
+    sizes = {"Rect": (0, 0, 1, 1), "Circle": (0, 0, 1), "Ellipse": (0, 0, 1, 1)}.get(cls.__name__, ())
+    element = cls(*sizes, font_style="italic", fill="red", id="e", data_note="kept")
     assert element.get("font-style") == "italic" and element.get("fill") == "red"
     assert element.id == "e" and element.get("data-note") == "kept"
 

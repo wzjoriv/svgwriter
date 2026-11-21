@@ -14,7 +14,7 @@ class TestAttributeAccess:
         assert 'stroke-linejoin="round"' in str(r)
 
     def test_unset_known_attribute_reads_none(self) -> None:
-        assert svg.Rect().marker_end is None and svg.Circle().clip_rule is None
+        assert svg.Rect(0, 0, 1, 1).marker_end is None and svg.Circle(0, 0, 1).clip_rule is None
 
     def test_camel_case_and_prefixed(self) -> None:
         g = svg.LinearGradient()
@@ -35,7 +35,7 @@ class TestAttributeAccess:
         assert t.get("rotate") == 5
 
     def test_none_removes_and_del(self) -> None:
-        r = svg.Rect(fill="red")
+        r = svg.Rect(0, 0, 1, 1, fill="red")
         r.fill = None
         assert not r.has("fill")
         r.stroke_dashoffset = 3
@@ -44,29 +44,29 @@ class TestAttributeAccess:
 
     def test_typo_suggests(self) -> None:
         with pytest.raises(AttributeError, match="did you mean 'stroke_width'"):
-            svg.Rect().strok_width = 2
+            svg.Rect(0, 0, 1, 1).strok_width = 2
         with pytest.raises(AttributeError, match="no attribute"):
-            _ = svg.Rect().strok_width
+            _ = svg.Rect(0, 0, 1, 1).strok_width
 
     def test_unlisted_attribute_already_present_is_accessible(self) -> None:
-        r = svg.Rect()
+        r = svg.Rect(0, 0, 1, 1)
         r.set("data-x", 1)
         assert r.data_x == 1
 
     def test_web_only_rejected(self) -> None:
         with pytest.raises((AttributeError, ValueError)):
-            svg.Rect().onclick = "x"
+            svg.Rect(0, 0, 1, 1).onclick = "x"
 
 
 class TestKeywordChecking:
     def test_typo_in_constructor_suggests(self) -> None:
         with pytest.raises(TypeError, match="did you mean 'stroke_width'"):
-            svg.Rect(strok_width=2)
+            svg.Rect(0, 0, 1, 1, strok_width=2)
         with pytest.raises(AttributeError):
-            svg.circle(fil="red")
+            svg.circle(0, 0, 1, fil="red")
 
     def test_custom_attributes_stay_possible(self) -> None:
-        r = svg.Rect(data_role="x", aria_label="box", attrs={"my-attr": 1})
+        r = svg.Rect(0, 0, 1, 1, data_role="x", aria_label="box", attrs={"my-attr": 1})
         assert r.get("data-role") == "x" and r.get("aria-label") == "box" and r.get("my-attr") == 1
 
     def test_shortcuts_check_too(self) -> None:
@@ -78,7 +78,7 @@ class TestReferences:
     def test_url_and_iri_point_at_the_element(self) -> None:
         g = svg.LinearGradient(id="g")
         assert g.url.svg_value() == "url(#g)" and g.iri.svg_value() == "#g"
-        assert svg.Rect().url.svg_value().startswith("url(#rect")
+        assert svg.Rect(0, 0, 1, 1).url.svg_value().startswith("url(#rect")
 
     def test_href_reads_an_xlink_elements_own_link(self) -> None:
         track = svg.Path("M0 0 L1 1", id="track")
