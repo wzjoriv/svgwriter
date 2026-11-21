@@ -18,6 +18,8 @@ layout
     Stacks and grids that place their children by size.
 theme
     Palettes, fonts and role styles applied as CSS classes.
+batch
+    Many similar shapes made, transformed and written as numpy columns.
 
 Notes
 -----

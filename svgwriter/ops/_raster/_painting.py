@@ -141,7 +141,8 @@ def paint_tree(
     from ._native_text import draw_text
     from ._native_text import native_text as drawable
 
-    root = renderable_copy(root, keep_text=drawable if native_text else None, color_glyphs=True)
+    root = renderable_copy(root, keep_text=drawable if native_text else None, color_glyphs=True,
+                           compact_batches=True)
     if viewport:
         root.attributes["width"], root.attributes["height"] = width, height
     if view_box is not None:

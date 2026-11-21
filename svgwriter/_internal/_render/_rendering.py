@@ -36,6 +36,7 @@ __all__ = [
     "expand_image_patterns",
     "outlined",
     "page_box",
+    "expand_batches",
     "renderable_copy",
     "shapes_as_paths",
     "unfiltered_masks",
@@ -153,8 +154,18 @@ def outlined(text: Text) -> Element:
     return group
 
 
+def expand_batches(root: Element, *, keep_shapes: bool = False) -> None:
+    """Expand every compact batch under *root* into real elements (with *keep_shapes*, text batches only)."""
+    from ...model.batch import Batch
+    from ...model.elements import Text
+
+    for batch in [e for e in root.iter() if isinstance(e, Batch) and e.compact]:
+        if not keep_shapes or batch.item_type is Text:
+            batch.expand()
+
+
 def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None = None,
-                    color_glyphs: bool = False) -> Element:
+                    color_glyphs: bool = False, compact_batches: bool = False) -> Element:
     """A copy of *root* with every ``<text>`` replaced by its glyph outlines.
 
     Skia's SVG renderer draws no text, so text is drawn as paths. Styles are resolved,
@@ -170,6 +181,9 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     color_glyphs : bool, optional
         Follow each outlined, rendered text that has colour glyphs (emoji, which have no outline)
         with a copy kept as ``<text>``, from which a canvas draws just those glyphs. Defaults to False.
+    compact_batches : bool, optional
+        Leave compact batches of shapes as they are (their markup draws the same) instead of
+        expanding them into elements; text batches always expand. Defaults to False.
 
     Returns
     -------
@@ -189,6 +203,7 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     from ...model.elements import Text
 
     copy = root.clone()
+    expand_batches(copy, keep_shapes=compact_batches)
     fixed_layouts(copy)
     drop_foreign(copy)
     resolve_styles(copy)

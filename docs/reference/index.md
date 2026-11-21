@@ -10,6 +10,7 @@ document
 elements
 geometry
 layout
+batch
 color
 ops
 fonts
