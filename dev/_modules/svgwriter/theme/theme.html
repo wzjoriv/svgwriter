@@ -293,11 +293,12 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Registry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..attributes.style</span><span class="w"> </span><span class="kn">import</span> <span class="n">Style</span><span class="p">,</span> <span class="n">StyleLike</span><span class="p">,</span> <span class="n">StyleSheet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_THEME</span><span class="p">,</span> <span class="n">ROLE_CLASS_PREFIX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThemeError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._files</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThemeFiles</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._resolve</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_role_name</span><span class="p">,</span> <span class="n">resolve_role</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._roles</span><span class="w"> </span><span class="kn">import</span> <span class="n">DERIVED_PALETTE</span><span class="p">,</span> <span class="n">STANDARD_ROLES</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.fonts</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fonts</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.palette</span><span class="w"> </span><span class="kn">import</span> <span class="n">Palette</span><span class="p">,</span> <span class="n">PaletteSource</span><span class="p">,</span> <span class="n">ThemeError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.palette</span><span class="w"> </span><span class="kn">import</span> <span class="n">Palette</span><span class="p">,</span> <span class="n">PaletteSource</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"THEMES"</span><span class="p">,</span> <span class="s2">"RoleSource"</span><span class="p">,</span> <span class="s2">"Theme"</span><span class="p">]</span>
 
@@ -318,14 +319,15 @@
 <span class="sd">    name : str</span>
 <span class="sd">        A short name, used by :meth:`get` once registered and written to theme files.</span>
 <span class="sd">    palette : Palette or mapping</span>
-<span class="sd">        Color roles (see :class:`Palette`). ``border`` and ``muted`` are derived from</span>
-<span class="sd">        ``foreground`` and ``background`` unless given.</span>
+<span class="sd">        Color roles (see :class:`Palette`). ``border``, ``muted`` and ``shadow`` are derived from</span>
+<span class="sd">        ``foreground`` and ``background``, and ``on_primary`` from ``primary``, unless given.</span>
 <span class="sd">    fonts : Fonts, optional</span>
 <span class="sd">        Families, sizes and weights. Defaults to ``Fonts()``.</span>
 <span class="sd">    roles : mapping of str to style or callable, optional</span>
 <span class="sd">        Extra or replaced role styles, merged over the standard roles. Each is a mapping of CSS</span>
 <span class="sd">        properties (values may be literals, ``"{palette.name}"``/``"{fonts.sizes.name}"``</span>
-<span class="sd">        references or functions of the theme) or a function of the theme returning one.</span>
+<span class="sd">        references, expressions such as ``"={fonts.sizes.text} * 1.5"`` or functions of the theme) or a</span>
+<span class="sd">        function of the theme returning one.</span>
 <span class="sd">        Defaults to None.</span>
 
 <span class="sd">    Raises</span>
@@ -357,7 +359,7 @@
 <span class="sd">    'brand'</span>
 <span class="sd">    """</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"_fonts"</span><span class="p">,</span> <span class="s2">"_name"</span><span class="p">,</span> <span class="s2">"_palette"</span><span class="p">,</span> <span class="s2">"_roles"</span><span class="p">,</span> <span class="s2">"_styles"</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"_document"</span><span class="p">,</span> <span class="s2">"_extends"</span><span class="p">,</span> <span class="s2">"_fonts"</span><span class="p">,</span> <span class="s2">"_name"</span><span class="p">,</span> <span class="s2">"_palette"</span><span class="p">,</span> <span class="s2">"_roles"</span><span class="p">,</span> <span class="s2">"_styles"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">palette</span><span class="p">:</span> <span class="n">Palette</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PaletteSource</span><span class="p">],</span> <span class="n">fonts</span><span class="p">:</span> <span class="n">Fonts</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">roles</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RoleSource</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -368,6 +370,13 @@
         <span class="n">merged</span> <span class="o">=</span> <span class="p">{</span><span class="n">check_role_name</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">{</span><span class="o">**</span><span class="n">STANDARD_ROLES</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">roles</span> <span class="ow">or</span> <span class="p">{})}</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
         <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_roles"</span><span class="p">,</span> <span class="n">MappingProxyType</span><span class="p">(</span><span class="n">merged</span><span class="p">))</span>
         <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_styles"</span><span class="p">,</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">resolve_role</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">merged</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_extends"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_document"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extends</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Theme</span><span class="p">:</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_extends"</span><span class="p">,</span> <span class="n">extends</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_document"</span><span class="p">,</span> <span class="n">document</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">"Theme is immutable; use replace()"</span><span class="p">)</span>
@@ -386,6 +395,20 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">fonts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Fonts</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Font families, sizes and weights."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fonts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extends</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The registered theme this one is a variant of, or None; files write it as ``extends``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">        &gt;&gt;&gt; svg.Theme.get("dark").replace(name="night").extends</span>
+<span class="sd">        'dark'</span>
+<span class="sd">        &gt;&gt;&gt; svg.Theme.get("dark").extends is None</span>
+<span class="sd">        True</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extends</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">roles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RoleSource</span><span class="p">]:</span>
@@ -487,6 +510,9 @@
                 <span class="n">fonts</span><span class="p">:</span> <span class="n">Fonts</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">roles</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RoleSource</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Theme</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""A variant: palette entries, font values and role properties merge into this theme's.</span>
 
+<span class="sd">        A variant of a registered theme extends it; a variant of anything else keeps what that</span>
+<span class="sd">        theme extends and the file it was read from, so :meth:`save` writes only what changed.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        name : str, optional</span>
@@ -521,8 +547,11 @@
                 <span class="n">merged</span><span class="p">[</span><span class="n">role</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fonts</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
             <span class="n">fonts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fonts</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="o">**</span><span class="n">fonts</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Theme</span><span class="p">(</span><span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_palette</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">palette</span> <span class="ow">or</span> <span class="p">{}),</span>
-                     <span class="n">fonts</span> <span class="k">if</span> <span class="n">fonts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fonts</span><span class="p">,</span> <span class="n">merged</span><span class="p">)</span></div>
+        <span class="n">variant</span> <span class="o">=</span> <span class="n">Theme</span><span class="p">(</span><span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_palette</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">palette</span> <span class="ow">or</span> <span class="p">{}),</span>
+                        <span class="n">fonts</span> <span class="k">if</span> <span class="n">fonts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fonts</span><span class="p">,</span> <span class="n">merged</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="ow">in</span> <span class="n">THEMES</span> <span class="ow">and</span> <span class="n">THEMES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">variant</span><span class="o">.</span><span class="n">_from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">variant</span><span class="o">.</span><span class="n">_from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_extends</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Theme.get">

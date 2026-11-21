@@ -425,8 +425,31 @@ and <code class="docutils literal notranslate"><span class="pre">surface</span><
 <code class="docutils literal notranslate"><span class="pre">one-light</span></code> follow Atom’s One Dark and One Light themes (MIT licensed). Where an official comment grey is
 too faint for caption text, the theme uses a lighter grey from the same palette.</p>
 <p>Palette roles: <code class="docutils literal notranslate"><span class="pre">background</span></code>, <code class="docutils literal notranslate"><span class="pre">foreground</span></code>, <code class="docutils literal notranslate"><span class="pre">surface</span></code>, <code class="docutils literal notranslate"><span class="pre">border</span></code>, <code class="docutils literal notranslate"><span class="pre">muted</span></code>, <code class="docutils literal notranslate"><span class="pre">primary</span></code>, <code class="docutils literal notranslate"><span class="pre">on_primary</span></code> (ink on
-<code class="docutils literal notranslate"><span class="pre">primary</span></code>), <code class="docutils literal notranslate"><span class="pre">secondary</span></code>, <code class="docutils literal notranslate"><span class="pre">accent</span></code>, <code class="docutils literal notranslate"><span class="pre">success</span></code>, <code class="docutils literal notranslate"><span class="pre">warning</span></code>, <code class="docutils literal notranslate"><span class="pre">error</span></code>, <code class="docutils literal notranslate"><span class="pre">shadow</span></code>. <code class="docutils literal notranslate"><span class="pre">border</span></code> and <code class="docutils literal notranslate"><span class="pre">muted</span></code> are mixed from
-<code class="docutils literal notranslate"><span class="pre">foreground</span></code> and <code class="docutils literal notranslate"><span class="pre">background</span></code> unless given, and <code class="docutils literal notranslate"><span class="pre">shadow</span></code> is a translucent <code class="docutils literal notranslate"><span class="pre">foreground</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">primary</span></code>), <code class="docutils literal notranslate"><span class="pre">secondary</span></code>, <code class="docutils literal notranslate"><span class="pre">accent</span></code>, <code class="docutils literal notranslate"><span class="pre">success</span></code>, <code class="docutils literal notranslate"><span class="pre">warning</span></code>, <code class="docutils literal notranslate"><span class="pre">error</span></code>, <code class="docutils literal notranslate"><span class="pre">shadow</span></code>. Unless a theme gives them, four
+are <a class="reference internal" href="#expressions">expressions</a> over the others:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Role</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">border</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">=mix({palette.foreground},</span> <span class="pre">{palette.background},</span> <span class="pre">0.7)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">muted</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">=mix({palette.foreground},</span> <span class="pre">{palette.background},</span> <span class="pre">0.25)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">shadow</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">=alpha({palette.foreground},</span> <span class="pre">0.2)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">on_primary</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">=readable({palette.primary},</span> <span class="pre">{palette.background},</span> <span class="pre">{palette.foreground})</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
 <section id="variants">
 <h2>Variants<a class="headerlink" href="#variants" title="Link to this heading">¶</a></h2>
@@ -449,8 +472,173 @@ follow their sources:</p>
 </pre></div>
 </div>
 <p>A role value may also be a reference, <code class="docutils literal notranslate"><span class="pre">&quot;{palette.primary}&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;{fonts.sizes.title}&quot;</span></code>, alone or inside
-text (<code class="docutils literal notranslate"><span class="pre">&quot;1px</span> <span class="pre">solid</span> <span class="pre">{palette.border}&quot;</span></code>). Unknown roles and references and reference cycles raise
-<code class="docutils literal notranslate"><span class="pre">svg.theme.ThemeError</span></code> with the path of the value.</p>
+text (<code class="docutils literal notranslate"><span class="pre">&quot;1px</span> <span class="pre">solid</span> <span class="pre">{palette.border}&quot;</span></code>), or an expression starting with <code class="docutils literal notranslate"><span class="pre">=</span></code>. Unknown roles and references and reference cycles
+raise <code class="docutils literal notranslate"><span class="pre">svg.theme.ThemeError</span></code> with the path of the value.</p>
+</section>
+<section id="expressions">
+<h2>Expressions<a class="headerlink" href="#expressions" title="Link to this heading">¶</a></h2>
+<p>An expression starts with <code class="docutils literal notranslate"><span class="pre">=</span></code>, like a spreadsheet formula: <code class="docutils literal notranslate"><span class="pre">&quot;=readable({palette.primary})&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;={fonts.sizes.text}</span> <span class="pre">*</span> <span class="pre">1.5&quot;</span></code> (spaces after the <code class="docutils literal notranslate"><span class="pre">=</span></code> are fine). A text value without the <code class="docutils literal notranslate"><span class="pre">=</span></code> is never
+evaluated: a color, a lone reference such as <code class="docutils literal notranslate"><span class="pre">&quot;{palette.primary}&quot;</span></code>, or CSS text with its references filled
+in, so <code class="docutils literal notranslate"><span class="pre">&quot;1px</span> <span class="pre">solid</span> <span class="pre">{palette.border}&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;12px/1.5</span> <span class="pre">serif&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;-0.02em&quot;</span></code> stay exactly as written.</p>
+<p>Palette entries and role values can compute from other values this way, in Python and in theme files alike.
+Derived values follow their sources: replacing <code class="docutils literal notranslate"><span class="pre">primary</span></code> changes everything computed from it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+
+<span class="n">brand</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"light"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+    <span class="n">palette</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">"primary"</span><span class="p">:</span> <span class="s2">"#7c3aed"</span><span class="p">,</span>
+        <span class="s2">"on_primary"</span><span class="p">:</span> <span class="s2">"=readable(</span><span class="si">{palette.primary}</span><span class="s2">)"</span><span class="p">,</span>
+        <span class="s2">"accent"</span><span class="p">:</span> <span class="s2">"=mix(</span><span class="si">{palette.primary}</span><span class="s2">, </span><span class="si">{palette.background}</span><span class="s2">, 0.4, 'oklch')"</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">roles</span><span class="o">=</span><span class="p">{</span><span class="s2">"badge"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"fill"</span><span class="p">:</span> <span class="s2">"=lighten(</span><span class="si">{palette.accent}</span><span class="s2">, 0.2)"</span><span class="p">,</span>
+        <span class="s2">"font-size"</span><span class="p">:</span> <span class="s2">"=</span><span class="si">{fonts.sizes.text}</span><span class="s2"> * 1.5"</span><span class="p">,</span>
+        <span class="s2">"opacity"</span><span class="p">:</span> <span class="s2">"=if(is_dark(</span><span class="si">{palette.background}</span><span class="s2">), 0.9, 0.7)"</span><span class="p">,</span>
+    <span class="p">}},</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">brand</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">on_primary</span><span class="o">.</span><span class="n">hex</span><span class="p">,</span> <span class="n">brand</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">"badge"</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Kind</p></th>
+<th class="head"><p>Forms</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Colors</p></td>
+<td><p>anything <code class="docutils literal notranslate"><span class="pre">svg.Color.parse</span></code> reads: names (<code class="docutils literal notranslate"><span class="pre">navy</span></code>), hex (<code class="docutils literal notranslate"><span class="pre">#0f766e</span></code>), <code class="docutils literal notranslate"><span class="pre">rgb()</span></code>, <code class="docutils literal notranslate"><span class="pre">hsl()</span></code>, <code class="docutils literal notranslate"><span class="pre">hwb()</span></code>, <code class="docutils literal notranslate"><span class="pre">lab()</span></code>, <code class="docutils literal notranslate"><span class="pre">lch()</span></code>, <code class="docutils literal notranslate"><span class="pre">oklab()</span></code>, <code class="docutils literal notranslate"><span class="pre">oklch()</span></code>, <code class="docutils literal notranslate"><span class="pre">color()</span></code>, <code class="docutils literal notranslate"><span class="pre">device-cmyk()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Numbers</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">12</span></code>, <code class="docutils literal notranslate"><span class="pre">0.5</span></code>, <code class="docutils literal notranslate"><span class="pre">.5</span></code>, optionally with <code class="docutils literal notranslate"><span class="pre">px</span></code> (<code class="docutils literal notranslate"><span class="pre">2px</span></code>); no exponents</p></td>
+</tr>
+<tr class="row-even"><td><p>Text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'oklch'</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;oklch&quot;</span></code>, without escapes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Conditions</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code>, <code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>References</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{palette.primary}</span></code>, <code class="docutils literal notranslate"><span class="pre">{fonts.family}</span></code>, <code class="docutils literal notranslate"><span class="pre">{fonts.sizes.title}</span></code>, <code class="docutils literal notranslate"><span class="pre">{fonts.weights.bold}</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Arithmetic</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">+</span></code>, <code class="docutils literal notranslate"><span class="pre">-</span></code>, <code class="docutils literal notranslate"><span class="pre">*</span></code>, <code class="docutils literal notranslate"><span class="pre">/</span></code> and unary <code class="docutils literal notranslate"><span class="pre">-</span></code> on numbers, with parentheses</p></td>
+</tr>
+<tr class="row-even"><td><p>Comparisons</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;=</span></code> on numbers; <code class="docutils literal notranslate"><span class="pre">==</span></code>, <code class="docutils literal notranslate"><span class="pre">!=</span></code> on values of one kind; not chained</p></td>
+</tr>
+<tr class="row-odd"><td><p>Logic</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">and</span></code>, <code class="docutils literal notranslate"><span class="pre">or</span></code>, <code class="docutils literal notranslate"><span class="pre">not</span></code> on conditions</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Function</p></th>
+<th class="head"><p>Result</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lighten(c,</span> <span class="pre">amount)</span></code>, <code class="docutils literal notranslate"><span class="pre">darken(c,</span> <span class="pre">amount)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">c</span></code> moved toward white or black; <code class="docutils literal notranslate"><span class="pre">amount</span></code> from 0 to 1</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mix(a,</span> <span class="pre">b,</span> <span class="pre">weight?,</span> <span class="pre">space?)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">a</span></code> blended toward <code class="docutils literal notranslate"><span class="pre">b</span></code> by <code class="docutils literal notranslate"><span class="pre">weight</span></code> (default 0.5) in <code class="docutils literal notranslate"><span class="pre">'srgb'</span></code> (default), <code class="docutils literal notranslate"><span class="pre">'linear'</span></code>, <code class="docutils literal notranslate"><span class="pre">'oklab'</span></code> or <code class="docutils literal notranslate"><span class="pre">'oklch'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">alpha(c,</span> <span class="pre">a)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">c</span></code> with opacity <code class="docutils literal notranslate"><span class="pre">a</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">saturate(c,</span> <span class="pre">amount)</span></code>, <code class="docutils literal notranslate"><span class="pre">desaturate(c,</span> <span class="pre">amount)</span></code></p></td>
+<td><p>HSL saturation raised or lowered</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hue_shift(c,</span> <span class="pre">degrees)</span></code>, <code class="docutils literal notranslate"><span class="pre">complement(c)</span></code></p></td>
+<td><p>hue turned by <code class="docutils literal notranslate"><span class="pre">degrees</span></code>, or by 180</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">grayscale(c)</span></code>, <code class="docutils literal notranslate"><span class="pre">invert(c)</span></code></p></td>
+<td><p>grey of the same luminance; inverted channels</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">luminance(c)</span></code></p></td>
+<td><p>WCAG relative luminance, 0 to 1</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">contrast(a,</span> <span class="pre">b)</span></code></p></td>
+<td><p>WCAG contrast ratio, 1 to 21</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">is_dark(c)</span></code>, <code class="docutils literal notranslate"><span class="pre">is_light(c)</span></code></p></td>
+<td><p>a condition</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">readable(bg,</span> <span class="pre">a?,</span> <span class="pre">b?)</span></code></p></td>
+<td><p>of <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> (default black and white), the one with more contrast on <code class="docutils literal notranslate"><span class="pre">bg</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">min(x,</span> <span class="pre">...)</span></code>, <code class="docutils literal notranslate"><span class="pre">max(x,</span> <span class="pre">...)</span></code></p></td>
+<td><p>the smallest or largest number</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">clamp(x,</span> <span class="pre">low,</span> <span class="pre">high)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">x</span></code> kept within <code class="docutils literal notranslate"><span class="pre">low</span></code> and <code class="docutils literal notranslate"><span class="pre">high</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">round(x,</span> <span class="pre">digits?)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">x</span></code> rounded to 0 (default) to 6 digits</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">if(condition,</span> <span class="pre">then,</span> <span class="pre">else)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">then</span></code> or <code class="docutils literal notranslate"><span class="pre">else</span></code>; only the chosen one is evaluated</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A palette entry must come out as a color; a role value as a color, number or text (a condition alone is
+an error: choose with <code class="docutils literal notranslate"><span class="pre">if</span></code>). Saving a theme writes expressions back as given, <code class="docutils literal notranslate"><span class="pre">=</span></code> included.</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[palette]</span>
+<span class="n">primary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#38bdf8"</span>
+<span class="n">on_primary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"=readable({palette.primary})"</span>
+<span class="n">border</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"=mix({palette.foreground}, {palette.background}, 0.6, 'oklab')"</span>
+
+<span class="k">[roles.badge]</span>
+<span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"{palette.primary}"</span>
+<span class="n">stroke</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"=darken({palette.primary}, 0.3)"</span>
+<span class="n">stroke-width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"=max(1, {fonts.sizes.text} / 10)"</span>
+</pre></div>
+</div>
+<section id="safety">
+<h3>Safety<a class="headerlink" href="#safety" title="Link to this heading">¶</a></h3>
+<p>Nothing in an expression, or anywhere in a theme file, runs Python. Expressions are read by a dedicated
+tokenizer and parser and evaluated over a fixed table of the functions above, each mapped to one
+<code class="docutils literal notranslate"><span class="pre">svg.Color</span></code> method or arithmetic helper; there is no <code class="docutils literal notranslate"><span class="pre">eval</span></code>, <code class="docutils literal notranslate"><span class="pre">exec</span></code> or <code class="docutils literal notranslate"><span class="pre">compile</span></code>, no attribute access,
+no imports and no string formatting, and names in a file are never looked up as Python names. Text without
+<code class="docutils literal notranslate"><span class="pre">=</span></code> is never evaluated at all. After <code class="docutils literal notranslate"><span class="pre">=</span></code>, anything outside the language is an error: names that are not
+functions from the table (<code class="docutils literal notranslate"><span class="pre">=__import__('os')</span></code>, <code class="docutils literal notranslate"><span class="pre">=eval(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">=a.b()</span></code>), unsupported operators (<code class="docutils literal notranslate"><span class="pre">**</span></code>, <code class="docutils literal notranslate"><span class="pre">%</span></code>)
+and exponents (<code class="docutils literal notranslate"><span class="pre">9e999</span></code>). Limits keep evaluation small:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Limit</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Expression length</p></td>
+<td><p>512 characters</p></td>
+</tr>
+<tr class="row-odd"><td><p>Nesting of parentheses, calls and unary operators</p></td>
+<td><p>32 levels</p></td>
+</tr>
+<tr class="row-even"><td><p>Chain of palette references</p></td>
+<td><p>16 levels; cycles are errors</p></td>
+</tr>
+<tr class="row-odd"><td><p>Size of any number, written or computed</p></td>
+<td><p>1,000,000</p></td>
+</tr>
+<tr class="row-even"><td><p>Arguments of <code class="docutils literal notranslate"><span class="pre">min</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span></code></p></td>
+<td><p>16</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Every error is a <code class="docutils literal notranslate"><span class="pre">ThemeError</span></code> that names the key, and the file when one was loaded, with a short reason:
+<code class="docutils literal notranslate"><span class="pre">night.toml:</span> <span class="pre">palette.accent:</span> <span class="pre">lighten():</span> <span class="pre">argument</span> <span class="pre">2</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">between</span> <span class="pre">0</span> <span class="pre">and</span> <span class="pre">1,</span> <span class="pre">got</span> <span class="pre">5</span></code>.</p>
+</section>
 </section>
 <section id="using-a-theme">
 <h2>Using a theme<a class="headerlink" href="#using-a-theme" title="Link to this heading">¶</a></h2>
@@ -473,13 +661,15 @@ so threads and async tasks each keep their own; outside any block the default is
 <section id="theme-files">
 <h2>Theme files<a class="headerlink" href="#theme-files" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">theme.save(path)</span></code> writes TOML and <code class="docutils literal notranslate"><span class="pre">svg.Theme.load(path)</span></code> reads it. A file extends a registered theme
-(<code class="docutils literal notranslate"><span class="pre">light</span></code> unless <code class="docutils literal notranslate"><span class="pre">extends</span></code> says otherwise) and holds only literals and references; nothing in it runs.</p>
+(<code class="docutils literal notranslate"><span class="pre">light</span></code> unless <code class="docutils literal notranslate"><span class="pre">extends</span></code> says otherwise) and holds only literals, references and
+<a class="reference internal" href="#expressions">expressions</a>; nothing in it runs.</p>
 <div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"night"</span>
 <span class="n">extends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dark"</span>
 
 <span class="k">[palette]</span>
 <span class="n">primary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#38bdf8"</span>
 <span class="n">accent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"{palette.primary}"</span>
+<span class="n">on_primary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"=readable({palette.primary})"</span>
 
 <span class="k">[fonts.sizes]</span>
 <span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">26</span>
@@ -491,8 +681,28 @@ so threads and async tasks each keep their own; outside any block the default is
 <span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"{palette.accent}"</span>
 </pre></div>
 </div>
-<p>Saving writes every value resolved, so a saved file is a snapshot: entries that were functions are
-written as the colors they produced. Reading TOML on Python 3.10 needs <code class="docutils literal notranslate"><span class="pre">tomli</span></code>.</p>
+<p>Values are text (colors, CSS, references or <code class="docutils literal notranslate"><span class="pre">=</span></code> expressions), numbers, or color arrays: <code class="docutils literal notranslate"><span class="pre">[r,</span> <span class="pre">g,</span> <span class="pre">b]</span></code> or
+<code class="docutils literal notranslate"><span class="pre">[r,</span> <span class="pre">g,</span> <span class="pre">b,</span> <span class="pre">a]</span></code>, either all floats from 0 to 1 or all integers from 0 to 255 (a mix is an error). Font
+sizes and weights are numbers.</p>
+<p><code class="docutils literal notranslate"><span class="pre">save</span></code> writes what differs from the theme it <code class="docutils literal notranslate"><span class="pre">extends</span></code>: a variant made with <code class="docutils literal notranslate"><span class="pre">replace</span></code> on a registered theme
+extends that theme, so <code class="docutils literal notranslate"><span class="pre">svg.Theme.get(&quot;dark&quot;).replace(name=&quot;night&quot;).save(path)</span></code> writes two lines. References
+and expressions are written as given, so they stay live; only values given as Python functions are written
+as the colors and numbers they produce (a role given as a function is written as the properties it returns,
+which a reader merges over the extended role). A theme read from a file remembers the file: saving it, or a
+<code class="docutils literal notranslate"><span class="pre">replace</span></code> variant of it, edits that text, so comments, blank lines and key order stay, and only edited or
+new keys change. A theme built directly with <code class="docutils literal notranslate"><span class="pre">svg.Theme(...)</span></code> is written in full.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+
+<span class="n">night</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">from_toml</span><span class="p">(</span><span class="s2">"""</span>
+<span class="s2"># Night, for slides</span>
+<span class="s2">extends = "dark"</span>
+
+<span class="s2">[palette]</span>
+<span class="s2">primary = "#38bdf8"   # sky blue</span>
+<span class="s2">"""</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">night</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="s2">"accent"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{palette.primary}</span><span class="s2">"</span><span class="p">})</span><span class="o">.</span><span class="n">to_toml</span><span class="p">())</span>
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -556,6 +766,10 @@ written as the colors they produced. Reading TOML on Python 3.10 needs <code cla
 <li><a class="reference internal" href="#standard-roles">Standard roles</a></li>
 <li><a class="reference internal" href="#built-in-themes">Built-in themes</a></li>
 <li><a class="reference internal" href="#variants">Variants</a></li>
+<li><a class="reference internal" href="#expressions">Expressions</a><ul>
+<li><a class="reference internal" href="#safety">Safety</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#using-a-theme">Using a theme</a></li>
 <li><a class="reference internal" href="#theme-files">Theme files</a></li>
 </ul>

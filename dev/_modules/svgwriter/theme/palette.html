@@ -280,7 +280,7 @@
         <article role="main" id="furo-main-content">
           <h1>Source code for svgwriter.theme.palette</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">``Palette``: named color roles, each a literal, a reference or a function of the palette.</span>
+<span class="sd">``Palette``: named color roles, each a literal, a reference, an expression or a function of the palette.</span>
 <span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
@@ -289,26 +289,11 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeAlias</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..color.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span><span class="p">,</span> <span class="n">ColorLike</span><span class="p">,</span> <span class="n">as_color</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">REFERENCE_RE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">MAX_REFERENCE_DEPTH</span><span class="p">,</span> <span class="n">REFERENCE_RE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThemeError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._expression</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate</span><span class="p">,</span> <span class="n">is_expression</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Palette"</span><span class="p">,</span> <span class="s2">"PaletteSource"</span><span class="p">,</span> <span class="s2">"ThemeError"</span><span class="p">]</span>
-
-
-<div class="viewcode-block" id="ThemeError">
-<a class="viewcode-back" href="../../../reference/theme.html#svgwriter.theme.ThemeError">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ThemeError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""A theme that cannot be resolved: an unknown role or reference, a cycle, or a malformed value.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; try:</span>
-<span class="sd">    ...     svg.theme.Palette({"a": "{palette.b}"})</span>
-<span class="sd">    ... except svg.theme.ThemeError as error:</span>
-<span class="sd">    ...     print(error)</span>
-<span class="sd">    palette.a: unknown reference {palette.b}</span>
-<span class="sd">    """</span></div>
-
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Palette"</span><span class="p">,</span> <span class="s2">"PaletteSource"</span><span class="p">]</span>
 
 
 <span class="n">PaletteSource</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="s2">"ColorLike | Callable[[Palette], ColorLike]"</span>
@@ -317,19 +302,21 @@
 <div class="viewcode-block" id="Palette">
 <a class="viewcode-back" href="../../../reference/theme.html#svgwriter.theme.Palette">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Palette</span><span class="p">(</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Color</span><span class="p">]):</span>
-<span class="w">    </span><span class="sd">"""Immutable color roles, resolved once from literals, references and functions.</span>
+<span class="w">    </span><span class="sd">"""Immutable color roles, resolved once from literals, references, expressions and functions.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    sources : mapping of str to color or str or callable</span>
 <span class="sd">        Each role's source: a color (``"#0f766e"``, ``"navy"``, a :class:`~svgwriter.Color`), a</span>
-<span class="sd">        reference to another role written ``"{palette.name}"``, or a function that receives this</span>
-<span class="sd">        palette and returns a color (``lambda p: p.foreground.mix(p.background, 0.3)``).</span>
+<span class="sd">        reference to another role written ``"{palette.name}"``, an expression marked</span>
+<span class="sd">        with a leading ``=`` such as ``"=lighten({palette.primary}, 0.2)"`` (see the Themes guide), or a function that receives</span>
+<span class="sd">        this palette and returns a color (``lambda p: p.foreground.mix(p.background, 0.3)``).</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ThemeError</span>
-<span class="sd">        If a reference names a missing role, references form a cycle, or a value is not a color.</span>
+<span class="sd">        If a reference names a missing role, references form a cycle or nest too deeply, an</span>
+<span class="sd">        expression is malformed, or a value is not a color.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -348,6 +335,8 @@
 <span class="sd">    '#808080'</span>
 <span class="sd">    &gt;&gt;&gt; p.replace({"ink": "#ff0000"}).line.hex</span>
 <span class="sd">    '#ff8080'</span>
+<span class="sd">    &gt;&gt;&gt; Palette({"ink": "navy", "label": "=readable({palette.ink})"}).label.hex</span>
+<span class="sd">    '#ffffff'</span>
 <span class="sd">    """</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"_resolving"</span><span class="p">,</span> <span class="s2">"_sources"</span><span class="p">,</span> <span class="s2">"_values"</span><span class="p">)</span>
@@ -367,6 +356,8 @@
             <span class="k">raise</span> <span class="n">ThemeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"reference cycle: </span><span class="si">{</span><span class="n">cycle</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sources</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ThemeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unknown palette role </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resolving</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">MAX_REFERENCE_DEPTH</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ThemeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"palette.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: references nest deeper than </span><span class="si">{</span><span class="n">MAX_REFERENCE_DEPTH</span><span class="si">}</span><span class="s2"> levels"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_resolving</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sources</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
@@ -374,19 +365,24 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_resolving</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Color</span><span class="p">:</span>
+        <span class="n">section</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">section</span> <span class="o">!=</span> <span class="s2">"palette"</span> <span class="ow">or</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sources</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ThemeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"palette.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: unknown reference </span><span class="se">{{</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="se">}}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">PaletteSource</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Color</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">as_color</span><span class="p">(</span><span class="n">source</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">ThemeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"palette.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">match</span> <span class="o">=</span> <span class="n">REFERENCE_RE</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-            <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">section</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">section</span> <span class="o">!=</span> <span class="s2">"palette"</span> <span class="ow">or</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sources</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">ThemeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"palette.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: unknown reference </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">whole</span> <span class="o">:=</span> <span class="n">REFERENCE_RE</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reference</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">whole</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_expression</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+            <span class="n">source</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">path</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reference</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="p">),</span> <span class="sa">f</span><span class="s2">"palette.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># type: ignore[assignment]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Color</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="n">ThemeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"palette.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected a color, got </span><span class="si">{</span><span class="n">source</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">as_color</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
