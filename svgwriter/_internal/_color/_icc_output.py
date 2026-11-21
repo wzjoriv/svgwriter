@@ -10,7 +10,7 @@ from typing import Any, Literal, TypeAlias
 
 import numpy as np
 
-from ._icc_constants import ICC_EXTRA_HINT, OUTPUT_INTENT, OUTPUT_PROFILES, PROFILE_CACHE
+from ._icc_constants import OUTPUT_INTENT, OUTPUT_PROFILES, PROFILE_CACHE
 
 __all__ = ["IccLike", "OutputProfile", "output_profile", "to_profile"]
 
@@ -59,22 +59,17 @@ def output_profile(icc: str | bytes) -> OutputProfile:
 
     Raises
     ------
-    ImportError
-        If the optional ``color`` extra (``lcms2``) is not installed.
     ValueError
         For an unknown keyword or bytes that are not an ICC profile.
 
     Examples
     --------
-    >>> from svgwriter._internal._color._icc import lcms_available
     >>> from svgwriter._internal._color._icc_output import output_profile
-    >>> output_profile("display-p3").space if lcms_available() else "RGB"
+    >>> output_profile("display-p3").space
     'RGB'
     """
-    try:
-        from lcms2 import Profile
-    except ImportError:
-        raise ImportError(ICC_EXTRA_HINT) from None
+    from lcms2 import Profile
+
     key = icc.strip().lower() if isinstance(icc, str) else None
     if key is not None:
         if key not in OUTPUT_PROFILES:
@@ -115,10 +110,9 @@ def to_profile(rgba: np.ndarray, target: OutputProfile) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from svgwriter._internal._color._icc import lcms_available
     >>> from svgwriter._internal._color._icc_output import output_profile, to_profile
     >>> red = np.array([[[255, 0, 0, 255]]], np.uint8)
-    >>> to_profile(red, output_profile("display-p3")).tolist() if lcms_available() else [[[234, 51, 35, 255]]]
+    >>> to_profile(red, output_profile("display-p3")).tolist()
     [[[234, 51, 35, 255]]]
     """
     if target.srgb:

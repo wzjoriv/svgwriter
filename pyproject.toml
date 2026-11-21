@@ -17,6 +17,7 @@ dependencies = [
     "uharfbuzz>=0.40",
     "tomlkit>=0.12",
     "click>=8.1",
+    "python-lcms2>=0.4.1",
 ]
 keywords = ["svg", "vector", "graphics", "drawing", "animation"]
 classifiers = [
@@ -61,9 +62,6 @@ graph = [
 math = [
     "ziamath>=0.11",
 ]
-color = [
-    "python-lcms2>=0.3.1",
-]
 fonts = [
     "fonttools>=4.40",
     "brotli>=1.0",
@@ -71,18 +69,20 @@ fonts = [
 widget = [
     "ipywidgets>=8",
 ]
+cli = [
+    "questionary>=2.0",
+]
 notebook = [
     "nbformat>=5",
     "nbclient>=0.7",
     "ipykernel>=6",
 ]
 test = [
-    "pysvgwriter[office,plot,graph,math,widget]",
+    "pysvgwriter[office,plot,graph,math,widget,cli]",
     "pytest>=7",
     "ezdxf>=1.0",
     "pillow>=10",
     "fonttools>=4.40",
-    "python-lcms2>=0.3.1; python_version < '3.15'",
 ]
 dev = [
     "pysvgwriter[test,docs,notebook]",

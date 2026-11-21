@@ -26,7 +26,7 @@ from ._entry import (
 )
 from ._gallery import Preview
 from ._notebook import headless, kernel_object, run_notebook
-from .presets import create
+from .presets import SizeChoice, create
 
 __all__ = ["Project"]
 
@@ -103,7 +103,7 @@ class Project:
 
     @classmethod
     def new(cls, path: str | os.PathLike[str], preset: str = "blank", *, notebook: bool = False,
-            name: str | None = None) -> Project:
+            name: str | None = None, theme: str | None = None, size: SizeChoice | None = None) -> Project:
         """Create a project folder from a preset and load it.
 
         Parameters
@@ -116,6 +116,11 @@ class Project:
             Write ``main.ipynb`` instead of ``main.py``. Defaults to False.
         name : str, optional
             The project name. Defaults to the folder name.
+        theme : str, optional
+            A built-in theme name that ``theme.toml`` extends. Defaults to None, the preset's own.
+        size : str or sequence of (float or str), optional
+            A size name (``"a4"``) or ``[width, height]``, written to ``svgwriter.toml``. Defaults to
+            None, the preset's own.
 
         Returns
         -------
@@ -125,7 +130,8 @@ class Project:
         Raises
         ------
         ProjectError
-            If the preset is unknown (the message lists the presets) or the folder is not empty.
+            If the preset, theme or size is unknown (the message lists the choices) or the folder is
+            not empty.
 
         Examples
         --------
@@ -134,7 +140,7 @@ class Project:
         ...     print(svg.Project.new(f"{folder}/talk", preset="slides").config.formats)
         ('pptx', 'pdf')
         """
-        return cls.load(create(path, preset, notebook=notebook, name=name))
+        return cls.load(create(path, preset, notebook=notebook, name=name, theme=theme, size=size))
 
     @property
     def root(self) -> Path:

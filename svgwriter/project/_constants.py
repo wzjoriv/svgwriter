@@ -47,6 +47,7 @@ __all__ = [
     "RELOAD_MILLISECONDS",
     "RELOAD_SCRIPT",
     "TEMPLATES",
+    "THEME_FILE",
     "TEMPLATE_SUFFIX",
     "TOP_KEYS",
     "VIDEO_FORMATS",
@@ -55,6 +56,7 @@ __all__ = [
 ]
 
 MANIFEST: Final = "svgwriter.toml"
+THEME_FILE: Final = "theme.toml"
 PYPROJECT: Final = "pyproject.toml"
 PYPROJECT_TABLE: Final = ("tool", "svgwriter")
 

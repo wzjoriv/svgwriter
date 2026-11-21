@@ -112,7 +112,7 @@ def _lookup(table: dict[str, ProfileRef], name: str) -> ProfileRef | None:
 
 def _converted(text: str, table: dict[str, ProfileRef]) -> str | None:
     from ...color.color import Color
-    from ._icc import color_to_srgb, hint_missing, load_profile
+    from ._icc import color_to_srgb, load_profile
 
     match = ICC_COLOR_RE.match(text)
     if match is None:
@@ -121,8 +121,6 @@ def _converted(text: str, table: dict[str, ProfileRef]) -> str | None:
     name, *rest = [part.strip() for part in match.group("args").split(",")]
     ref = _lookup(table, name)
     profile = load_profile(ref.data) if ref is not None and ref.data is not None else None
-    if ref is not None and profile is None:
-        hint_missing()
     try:
         components = [float(part) for part in rest]
     except ValueError:
@@ -162,8 +160,7 @@ def resolve_profiles(root: Element) -> None:
     """Draw colour-managed content in sRGB, in place on a render copy.
 
     ``icc-color(name, ...)`` in a fill, stroke, stop, flood or lighting colour is converted
-    through the named ``<color-profile>``; without that profile, or without the optional
-    ``lcms2`` package, its sRGB fallback colour is kept. An ``<image>`` whose
+    through the named ``<color-profile>``; without that profile, its sRGB fallback colour is kept. An ``<image>`` whose
     ``color-profile`` names a profile (or ``sRGB``) is decoded with it.
 
     Parameters

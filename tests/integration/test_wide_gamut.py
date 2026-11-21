@@ -37,8 +37,6 @@ def test_mix_in_oklch_from_python_and_toml_agree():
 @pytest.mark.parametrize("icc", [None, "display-p3"])
 def test_png_paints_every_wide_gamut_colour(icc):
     image = pytest.importorskip("PIL.Image")
-    if icc is not None:
-        pytest.importorskip("lcms2")
     options = {} if icc is None else {"icc": icc}
     pixels = image.open(io.BytesIO(drawing().export("png", **options))).convert("RGB")
     green, primary, blend = (pixels.getpixel((x, 15)) for x in (15, 45, 75))

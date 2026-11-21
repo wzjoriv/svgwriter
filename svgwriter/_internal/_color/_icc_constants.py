@@ -16,7 +16,6 @@ __all__ = [
     "ICC_COLOR_RE",
     "ICC_PAINTS",
     "INTENTS",
-    "ICC_EXTRA_HINT",
     "JPEG_APP0",
     "JPEG_APP2",
     "JPEG_ICC_CHUNK",
@@ -26,7 +25,6 @@ __all__ = [
     "JPEG_SEGMENT_LENGTH",
     "JPEG_SOI",
     "JPEG_START_OF_SCAN",
-    "LCMS_HINT",
     "OUTPUT_PROFILES",
     "PNG_COLOR_CHUNKS",
     "PNG_ICC_DEFLATE",
@@ -85,9 +83,3 @@ PNG_COLOR_CHUNKS: Final = frozenset({b"iCCP", b"sRGB", b"gAMA", b"cHRM"})
 
 OUTPUT_PROFILES: Final = {"srgb": "sRGB", "display-p3": "Display P3"}
 """The profile keywords exports take, and the LittleCMS built-in profile each names."""
-ICC_EXTRA_HINT: Final = ("embedding an ICC profile needs the optional 'color' extra: "
-                         "pip install pysvgwriter[color]")
-
-LCMS_HINT: Final = ("ICC colour profiles are not applied: install the optional 'color' extra "
-                    "(pip install pysvgwriter[color]) to convert icc-color() and profiled images; "
-                    "the sRGB fallback is drawn meanwhile")

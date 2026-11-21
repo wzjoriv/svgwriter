@@ -2,19 +2,15 @@ from __future__ import annotations
 
 import base64
 import struct
-import sys
-import warnings
 import zlib
 
+import lcms2
 import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter._internal._color import _icc
 from svgwriter._internal._color._icc_embedded import embedded_profile
 from svgwriter.elements.structure import Pixels
-
-lcms2 = pytest.importorskip("lcms2")
 
 SWATCH = (40, 150, 60)
 
@@ -51,15 +47,6 @@ def icc_page(fill: str) -> svg.Document:
     doc.add(svg.ColorProfile("adobe", data_uri(adobe()), rendering_intent="relative-colorimetric"))
     doc.rect(0, 0, 4, 4, fill=fill)
     return doc
-
-
-@pytest.fixture
-def without_lcms(monkeypatch):
-    monkeypatch.setitem(sys.modules, "lcms2", None)
-    monkeypatch.setattr(_icc, "_HINTED", [])
-    _icc.load_profile.cache_clear()
-    yield
-    _icc.load_profile.cache_clear()
 
 
 def test_png_and_jpeg_profiles_are_found() -> None:
@@ -123,17 +110,3 @@ def test_image_srgb_profile_ignores_embedded() -> None:
 def test_decode_rejects_unknown_keyword() -> None:
     with pytest.raises(ValueError, match="profile"):
         Pixels.decode(png_with_profile(adobe()), profile="cmyk")
-
-
-def test_without_lcms_fallback_and_one_hint(without_lcms) -> None:
-    with pytest.warns(UserWarning, match="color"):
-        pixel = icc_page("#ff0000 icc-color(adobe, 0, 1, 0)").rasterize()[2, 2, :3]
-    assert np.allclose(pixel, (1, 0, 0), atol=0.01)
-    with warnings.catch_warnings():
-        warnings.simplefilter("error")
-        icc_page("#ff0000 icc-color(adobe, 0, 1, 0)").rasterize()
-
-
-def test_without_lcms_images_decode(without_lcms) -> None:
-    decoded = Pixels.decode(png_with_profile(adobe()))
-    assert decoded.shape == (4, 4)

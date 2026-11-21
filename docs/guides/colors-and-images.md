@@ -98,8 +98,8 @@ CIEDE2000 formula on CIE Lab, the standard in print and colour science (about 1 
 ## Colour profiles
 
 SVG 1.1 colours are sRGB, optionally followed by an `icc-color(...)` in an ICC profile declared with
-`<color-profile>`. With the {doc}`color extra <../start/installation>` installed, rendering converts
-them through the profile; otherwise the sRGB colour before `icc-color` is drawn:
+`<color-profile>`. Rendering converts them through the profile; without the profile, the sRGB colour
+before `icc-color` is drawn:
 
 ```python
 doc = svg.Document(100, 100)
