@@ -78,7 +78,6 @@ from typing import TYPE_CHECKING, Any
 from . import (
     ops,
     project,
-    video,
     widgets,
 )
 from ._document.sizes import PageSize, page_size, size
@@ -136,6 +135,8 @@ from .model.layout import Grid, HStack, Spacer, VStack
 from .model.pathdata import BBox, PathBuilder, PathData
 from .model.theme import THEMES, Theme
 from .model.transform import Matrix, Point, Transform
+from .motion import video
+from .motion.video import FFmpegNotFoundError, Scene, register_renderer
 from .ops import (
     Typeface,
     distribute,
@@ -146,7 +147,6 @@ from .ops import (
     unregister_interpolator,
 )
 from .project import Project
-from .video import FFmpegNotFoundError, Scene, register_renderer
 from .widgets import interact, sweep
 
 if TYPE_CHECKING:

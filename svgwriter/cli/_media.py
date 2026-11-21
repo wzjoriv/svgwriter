@@ -10,8 +10,8 @@ from pathlib import Path
 import click
 
 from ..document import Document
-from ..video import FFmpegError, FFmpegNotFoundError, Scene, SceneError, load_scenes
-from ..video.animation import DEFAULT_FPS, RENDERERS
+from ..motion.video import FFmpegError, FFmpegNotFoundError, Scene, SceneError, load_scenes
+from ..motion.video.animation import DEFAULT_FPS, RENDERERS
 from ._basic import emit, output_options
 from ._constants import DEFAULT_FONT, DEFAULT_TEXT_SIZE, EXIT_FAILURE, FRAME_FORMAT, TEXT_MARGIN
 

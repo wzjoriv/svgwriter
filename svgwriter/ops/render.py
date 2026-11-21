@@ -352,7 +352,7 @@ def render_png(document: Document, *, scale: float = 1.0, background: ColorLike 
 
 
 def render_frame(document: Document, seconds: float) -> np.ndarray:
-    """Frame renderer for :func:`~svgwriter.video.render_animation`: an opaque uint8 RGBA frame.
+    """Frame renderer for :func:`~svgwriter.motion.video.render_animation`: an opaque uint8 RGBA frame.
 
     Draws the document as it is at each frame (use ``update=`` to change it
     over time) on white, and returns raw pixels so ffmpeg needs no PNG

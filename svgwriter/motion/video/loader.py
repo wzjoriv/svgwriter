@@ -27,7 +27,7 @@ class SceneError(ValueError):
 
     Examples
     --------
-    >>> from svgwriter.video import SceneError
+    >>> from svgwriter.motion.video import SceneError
     >>> issubclass(SceneError, ValueError)
     True
     """
@@ -48,7 +48,7 @@ def _namespace(head: str) -> dict[str, Any]:
 
 
 def _as_scene(name: str, value: object) -> Scene | None:
-    from ..document import Document
+    from ...document import Document
 
     if isinstance(value, Scene):
         return value
@@ -103,15 +103,15 @@ def load_scenes(source: str | Path, names: Sequence[str] = ()) -> list[Scene]:
 
     Examples
     --------
-    >>> from svgwriter.video import load_scenes
-    >>> [scene.name for scene in load_scenes("svgwriter.video.scene:Scene")]
+    >>> from svgwriter.motion.video import load_scenes
+    >>> [scene.name for scene in load_scenes("svgwriter.motion.video.scene:Scene")]
     Traceback (most recent call last):
     ...
-    svgwriter.video.loader.SceneError: 'Scene' in svgwriter.video.scene is not a scene
+    svgwriter.motion.video.loader.SceneError: 'Scene' in svgwriter.motion.video.scene is not a scene
     """
     text = str(source)
     if Path(text).suffix.lower() == SCENE_SVG:
-        from ..document import Document
+        from ...document import Document
 
         return [Scene(Document.open(text), name=Path(text).stem)]
     head, attribute = _split(text)

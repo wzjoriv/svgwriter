@@ -27,7 +27,7 @@ class RGBAArray(Protocol):
     Examples
     --------
     >>> import numpy as np
-    >>> from svgwriter.video import RGBAArray
+    >>> from svgwriter.motion.video import RGBAArray
     >>> isinstance(np.zeros((6, 8, 4), dtype="uint8"), RGBAArray)
     True
     """
@@ -67,7 +67,7 @@ class Frame:
 
     Examples
     --------
-    >>> from svgwriter.video import Frame
+    >>> from svgwriter.motion.video import Frame
     >>> frame = Frame(0, 0.0, 2, 1, bytes(8), png=False)
     >>> frame.width * frame.height * 4 == len(frame.data)
     True
@@ -117,7 +117,7 @@ def to_frame(index: int, seconds: float, data: FrameData) -> Frame:
     Examples
     --------
     >>> import numpy as np
-    >>> from svgwriter.video.frames import to_frame
+    >>> from svgwriter.motion.video.frames import to_frame
     >>> frame = to_frame(0, 0.0, np.zeros((6, 8, 4), dtype="uint8"))
     >>> frame.width, frame.height, frame.png
     (8, 6, False)
@@ -169,7 +169,7 @@ def frame_times(fps: float, duration: float) -> list[float]:
 
     Examples
     --------
-    >>> from svgwriter.video import frame_times
+    >>> from svgwriter.motion.video import frame_times
     >>> frame_times(4, 1)
     [0.0, 0.25, 0.5, 0.75]
     """

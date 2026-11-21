@@ -1,5 +1,5 @@
 """
-Constants for ``svgwriter.video``: defaults, tables and patterns.
+Constants for ``svgwriter.motion.video``: defaults, tables and patterns.
 """
 
 from __future__ import annotations

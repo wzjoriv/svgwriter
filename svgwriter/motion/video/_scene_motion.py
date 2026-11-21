@@ -8,14 +8,14 @@ import warnings
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, Concatenate, TypeVar
 
-from .._internal._typing import P
+from ..._internal._typing import P
 from ._bake import bake_document, bake_times
 from ._constants import BAKE_TOLERANCE
 from .animation import animation_duration
 
 if TYPE_CHECKING:
-    from ..document import Document
-    from ..model.elements.core import Element
+    from ...document import Document
+    from ...model.elements.core import Element
 
 __all__ = ["SceneMotion"]
 
@@ -153,7 +153,7 @@ class SceneMotion:
         >>> baked.at(0.5)[0].get("x")
         '45'
         """
-        from ..document import Document
+        from ...document import Document
 
         length = duration or self.duration or animation_duration(self.document)
         if length is None:

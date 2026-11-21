@@ -11,7 +11,7 @@ import subprocess
 import tempfile
 from collections.abc import Iterable, Iterator
 
-from .._internal._typing import AnyPath
+from ..._internal._typing import AnyPath
 from ._constants import FFMPEG, OUTPUTS, STDERR_TAIL
 from .frames import Frame
 
@@ -62,7 +62,7 @@ def find_ffmpeg(executable: str | None = None) -> str:
 
     Examples
     --------
-    >>> from svgwriter.video import FFmpegNotFoundError, find_ffmpeg
+    >>> from svgwriter.motion.video import FFmpegNotFoundError, find_ffmpeg
     >>> try:
     ...     find_ffmpeg("no-such-ffmpeg")
     ... except FFmpegNotFoundError:
@@ -98,7 +98,7 @@ def output_args(path: AnyPath) -> list[str]:
 
     Examples
     --------
-    >>> from svgwriter.video._ffmpeg import output_args
+    >>> from svgwriter.motion.video._ffmpeg import output_args
     >>> output_args("clip.apng")
     ['-plays', '0', '-f', 'apng']
     >>> output_args("clip.xyz")
@@ -129,8 +129,8 @@ def input_args(first: Frame, fps: float) -> list[str]:
     Examples
     --------
     >>> import numpy as np
-    >>> from svgwriter.video.frames import to_frame
-    >>> from svgwriter.video._ffmpeg import input_args
+    >>> from svgwriter.motion.video.frames import to_frame
+    >>> from svgwriter.motion.video._ffmpeg import input_args
     >>> frame = to_frame(0, 0.0, np.zeros((6, 8, 4), dtype="uint8"))
     >>> input_args(frame, 12)[:2], input_args(frame, 12)[-4:]
     (['-framerate', '12'], ['-s', '8x6', '-i', '-'])
@@ -187,11 +187,11 @@ def encode(frames: Iterable[Frame], path: AnyPath, fps: float, *, executable: st
 
     See Also
     --------
-    svgwriter.video.render_animation : Renders and encodes in one call.
+    svgwriter.motion.video.render_animation : Renders and encodes in one call.
 
     Examples
     --------
-    >>> from svgwriter.video._ffmpeg import encode
+    >>> from svgwriter.motion.video._ffmpeg import encode
     >>> encode([], "out.gif", 12, executable="ffmpeg")
     Traceback (most recent call last):
     ...

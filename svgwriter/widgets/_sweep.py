@@ -16,8 +16,8 @@ from ..model.attributes import Length, ViewBox
 from ..model.color import parse_color
 from ..model.elements.animation import Ease, EaseLike
 from ..model.pathdata import BBox
+from ..motion.video import DEFAULT_FPS, Renderer, Scene, frame_times
 from ..ops import interpolate
-from ..video import DEFAULT_FPS, Renderer, Scene, frame_times
 from ._choices import ColorPicker, Dropdown, MultiSelect, Text, Toggle, hex_color
 from ._constants import BOUNDS_SAMPLES, GIF_SUFFIX, SWEEP_DURATION
 from ._control import Control

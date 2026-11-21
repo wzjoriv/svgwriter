@@ -9,14 +9,14 @@ from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import TYPE_CHECKING, Final, TypeAlias
 
-from .._internal._registry import Registry
-from .._internal._typing import AnyPath
+from ..._internal._registry import Registry
+from ..._internal._typing import AnyPath
 from ._constants import FRAME_PATTERN, FRAME_SUFFIX, TIME_SCALE, TIMECOUNT_RE
 from ._ffmpeg import encode, find_ffmpeg
 from .frames import Frame, FrameData, frame_times, to_frame
 
 if TYPE_CHECKING:
-    from ..document import Document
+    from ...document import Document
 
 __all__ = [
     "DEFAULT_FPS",
@@ -43,7 +43,7 @@ RENDERERS: Final[Registry[Callable[[Document, float], FrameData]]] = Registry("r
 
 
 def _skia(document: Document, seconds: float) -> FrameData:
-    from ..ops.render import render_frame
+    from ...ops.render import render_frame
 
     return render_frame(document, seconds)
 
@@ -73,7 +73,7 @@ def register_renderer(name: str) -> Callable[[Renderer], Renderer]:
 
     Examples
     --------
-    >>> from svgwriter.video import register_renderer, resolve_renderer, unregister_renderer
+    >>> from svgwriter.motion.video import register_renderer, resolve_renderer, unregister_renderer
     >>> @register_renderer("myraster")
     ... def render(document, seconds):
     ...     return document.render_png()
@@ -99,7 +99,7 @@ def unregister_renderer(name: str) -> None:
 
     Examples
     --------
-    >>> from svgwriter.video import register_renderer, unregister_renderer
+    >>> from svgwriter.motion.video import register_renderer, unregister_renderer
     >>> _ = register_renderer("tmp")(lambda document, seconds: b"")
     >>> unregister_renderer("tmp")
     """
@@ -133,7 +133,7 @@ def resolve_renderer(renderer: Renderer | str | None) -> Renderer:
 
     Examples
     --------
-    >>> from svgwriter.video import resolve_renderer
+    >>> from svgwriter.motion.video import resolve_renderer
     >>> callable(resolve_renderer("skia"))
     True
     >>> resolve_renderer("nope")
@@ -189,12 +189,12 @@ def animation_duration(document: Document) -> float | None:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.video import animation_duration
+    >>> from svgwriter.motion.video import animation_duration
     >>> doc = svg.Document(10, 10)
     >>> animation_duration(doc) is None
     True
     """
-    from ..model.elements.animation import AnimationElement
+    from ...model.elements.animation import AnimationElement
 
     ends = []
     for element in document.root.find_all(AnimationElement):
@@ -250,7 +250,7 @@ def iter_frames(
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.video import iter_frames
+    >>> from svgwriter.motion.video import iter_frames
     >>> doc = svg.Document(8, 6)
     >>> [(f.index, f.width, f.height) for f in iter_frames(doc, fps=2, duration=1, renderer="skia")]
     [(0, 8, 6), (1, 8, 6)]
@@ -326,7 +326,7 @@ def render_animation(
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.video import FFmpegNotFoundError, render_animation
+    >>> from svgwriter.motion.video import FFmpegNotFoundError, render_animation
     >>> doc = svg.Document(8, 6)
     >>> try:
     ...     render_animation(doc, "out.gif", duration=1, renderer="skia", ffmpeg="no-such-ffmpeg")

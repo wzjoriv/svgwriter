@@ -9,18 +9,18 @@ import math
 from collections.abc import Callable, Sequence
 from typing import TYPE_CHECKING, Any, cast
 
-from .._internal._constants import ANIMATED_DEFAULTS, EPSILON
-from ..model.attributes.cascade import INHERITED
-from ..model.attributes.style import Style
-from ..model.elements.animation import Animate, AnimateTransform, AnimationElement, Set
+from ..._internal._constants import ANIMATED_DEFAULTS, EPSILON
+from ...model.attributes.cascade import INHERITED
+from ...model.attributes.style import Style
+from ...model.elements.animation import Animate, AnimateTransform, AnimationElement, Set
 from ._bake_record import Record, Tape, label
 from ._bake_series import Vector, colors, fill, number, numbers, parts, runs, simplify, template
 from ._constants import BAKE_DISCRETE, BAKE_HIDDEN, BAKE_INITIAL, BAKE_PARTS, BAKE_VISIBILITY, BAKE_VISIBLE
 
 if TYPE_CHECKING:
-    from ..document import Document
-    from ..model.elements.core import Element
-    from ..model.transform.matrix import Matrix
+    from ...document import Document
+    from ...model.elements.core import Element
+    from ...model.transform.matrix import Matrix
 
 __all__ = ["bake_document", "bake_times"]
 
@@ -32,7 +32,7 @@ def bake_times(fps: float, duration: float) -> list[float]:
 
 
 def _hex(rgb: Vector) -> str:
-    from ..model.color.color import Color
+    from ...model.color.color import Color
 
     return Color(*(min(max(channel, 0.0), 1.0) for channel in rgb)).hex
 
@@ -225,7 +225,7 @@ def _retext(target: Element, text: tuple[str, ...]) -> None:
 def bake_document(document: Document, advance: Callable[[Document, float], None], times: Sequence[float],
                   tolerance: float) -> tuple[Document, list[str]]:
     """A copy of *document* whose SMIL replays what *advance* does at *times*, and what SMIL cannot express."""
-    from ..document import Document
+    from ...document import Document
 
     tape = Tape(document)
     for time in times:

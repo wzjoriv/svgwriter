@@ -18,7 +18,7 @@ from .._internal._codecs._rgba import to_uint8
 from ..document import Document
 from ..formats.export import exporters, save
 from ..model.theme import Theme
-from ..video import Scene, animation_duration, frame_times
+from ..motion.video import Scene, animation_duration, frame_times
 from ..widgets import controls_of
 from ._config import ProjectConfig
 from ._constants import ANIMATED_FORMATS, BAKED_FORMATS, DEFAULT_GIF_FPS, KEEPS_ANIMATION, VIDEO_FORMATS

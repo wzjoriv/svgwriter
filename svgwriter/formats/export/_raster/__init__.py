@@ -23,8 +23,8 @@ if TYPE_CHECKING:
 def _frames(document: Document, fps: float, duration: float | None, **options: Any) -> list[Any]:
     """Every frame of the SMIL animation as uint8 RGBA, or an empty list when nothing animates."""
     from ...._internal._codecs._rgba import to_uint8
+    from ....motion.video.animation import animation_duration, frame_times
     from ....ops.parallel import rasterize_many
-    from ....video.animation import animation_duration, frame_times
 
     processes = options.pop("processes", 1)
     length = duration if duration is not None else animation_duration(document)
@@ -166,7 +166,7 @@ def gif(document: Document, *, scale: float = 1.0, pixels: tuple[int, int] | int
     from ...._internal._codecs._gif import encode_gif, encode_gif_animation
     from ...._internal._codecs._rgba import to_uint8
     from ....model.elements.animation import AnimationElement
-    from ....video.animation import animation_duration
+    from ....motion.video.animation import animation_duration
 
     del quality
     if dpi is not None:

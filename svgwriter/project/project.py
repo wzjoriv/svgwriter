@@ -10,7 +10,7 @@ from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
 
-from ..video import Scene
+from ..motion.video import Scene
 from ..widgets import Control, controls_of
 from ._build import write_outputs
 from ._config import ProjectConfig, check_formats, read_config

@@ -11,8 +11,8 @@ import pytest
 import svgwriter as svg
 from svgwriter import video
 from svgwriter.cli import main
-from svgwriter.video import _ffmpeg
-from svgwriter.video.frames import to_frame
+from svgwriter.motion.video import _ffmpeg
+from svgwriter.motion.video.frames import to_frame
 
 FFMPEG = shutil.which("ffmpeg")
 needs_ffmpeg = pytest.mark.skipif(FFMPEG is None, reason="ffmpeg is not on PATH")

@@ -375,12 +375,12 @@ svg.unregister_interpolator(Weight)
 
 ## Video in
 
-`svgwriter.video.Video(path)` reads a video lazily through ffmpeg: `video[i]` is frame `i` as an
+`svgwriter.motion.video.Video(path)` reads a video lazily through ffmpeg: `video[i]` is frame `i` as an
 `<image>`, `video.at(seconds)` the frame shown at that time, and iterating streams every frame as a
 numpy array. Mix footage with vector animation in `update`:
 
 ```python
-from svgwriter.video import Video
+from svgwriter.motion.video import Video
 
 # clip = Video("footage.mp4")
 # backdrop = doc.add(clip[0])

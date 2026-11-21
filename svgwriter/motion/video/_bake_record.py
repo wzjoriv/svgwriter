@@ -8,15 +8,15 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from ..model.attributes.names import PRESENTATION_ATTRIBUTES
-from ..model.attributes.style import Style
-from ..model.attributes.values import format_value
-from ..model.elements.animation import AnimationElement
-from ..model.elements.core import Element
+from ...model.attributes.names import PRESENTATION_ATTRIBUTES
+from ...model.attributes.style import Style
+from ...model.attributes.values import format_value
+from ...model.elements.animation import AnimationElement
+from ...model.elements.core import Element
 
 if TYPE_CHECKING:
-    from ..document import Document
-    from ..model.transform.matrix import Matrix
+    from ...document import Document
+    from ...model.transform.matrix import Matrix
 
 __all__ = ["Record", "Tape", "label", "walk"]
 

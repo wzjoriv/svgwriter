@@ -23,8 +23,8 @@ from ._constants import (
 from ._ffmpeg import FFmpegError, find_ffmpeg
 
 if TYPE_CHECKING:
-    from .._internal._typing import AnyPath
-    from ..model.elements.structure import Image
+    from ..._internal._typing import AnyPath
+    from ...model.elements.structure import Image
 
 __all__ = ["Video"]
 
@@ -66,7 +66,7 @@ class Video:
 
     Examples
     --------
-    >>> from svgwriter.video import Video
+    >>> from svgwriter.motion.video import Video
     >>> # clip = Video("clip.mp4"); first = clip[0]; len(clip), clip.fps
     """
 
@@ -128,13 +128,13 @@ class Video:
 
     def at(self, seconds: float) -> Image:
         """The frame shown at *seconds* as an ``<image>`` at pixel size, placed at the origin."""
-        from ..model.elements.structure import Image
+        from ...model.elements.structure import Image
 
         return Image(self.array_at(seconds))
 
     def __getitem__(self, index: int) -> Image:
         """``video[i]``: frame *i* as an ``<image>``."""
-        from ..model.elements.structure import Image
+        from ...model.elements.structure import Image
 
         return Image(self.frame(index))
 

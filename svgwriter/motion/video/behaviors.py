@@ -7,7 +7,7 @@ anchor, so it never drifts. Attach one by name (``element.animate.wiggle()``) or
 Example
 -------
 >>> import svgwriter as svg
->>> from svgwriter.video.behaviors import wiggle
+>>> from svgwriter.motion.video.behaviors import wiggle
 >>> class Alarm(svg.Scene):
 ...     width, height, duration = 40, 40, 1.0
 ...     def build(self, doc):
@@ -22,8 +22,8 @@ from __future__ import annotations
 
 import math
 
-from .._internal._presets import BEHAVIORS
-from ..model.elements import Transformable
+from ..._internal._presets import BEHAVIORS
+from ...model.elements import Transformable
 from ._constants import (
     BREATHE_AMOUNT,
     BREATHE_PERIOD,

@@ -8,17 +8,17 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar
 
-from .._document.sizes import PageSize, page_size
-from .._internal._animation._scenes import adopt
-from .._internal._typing import AnyPath
+from ..._document.sizes import PageSize, page_size
+from ..._internal._animation._scenes import adopt
+from ..._internal._typing import AnyPath
 from ._constants import BAKE_DOCUMENTS, SCENE_FORMAT, SCENE_HEIGHT, SCENE_RENDERER, SCENE_WIDTH
 from ._scene_motion import SceneMotion
 from .animation import DEFAULT_FPS, Renderer, animation_duration, iter_frames, render_animation
 from .frames import Frame
 
 if TYPE_CHECKING:
-    from ..document import Document
-    from ..model.color.color import ColorLike
+    from ...document import Document
+    from ...model.color.color import ColorLike
 
 __all__ = ["Scene"]
 
@@ -57,8 +57,8 @@ class Scene(SceneMotion):
 
     See Also
     --------
-    svgwriter.video.load_scenes : Collect the scenes of a file or module.
-    svgwriter.video.render_animation : The encoder underneath :meth:`save`.
+    svgwriter.motion.video.load_scenes : Collect the scenes of a file or module.
+    svgwriter.motion.video.render_animation : The encoder underneath :meth:`save`.
 
     Notes
     -----
@@ -105,7 +105,7 @@ class Scene(SceneMotion):
             cls.size = None
 
     def __init__(self, document: Document | None = None, *, name: str | None = None) -> None:
-        from ..document import Document
+        from ...document import Document
 
         self._behaviors = []
         self.name = name or type(self).__name__
@@ -284,7 +284,7 @@ class Scene(SceneMotion):
         >>> svg.Scene(svg.Document(4, 4)).render(scale=2)[:4]
         b'\\x89PNG'
         """
-        from ..ops.render import render_png
+        from ...ops.render import render_png
 
         return render_png(self.at(seconds), scale=scale, background=background)
 
@@ -333,7 +333,7 @@ class Scene(SceneMotion):
         >>> Still().save("still.png", ffmpeg="no-such-ffmpeg")
         Traceback (most recent call last):
         ...
-        svgwriter.video._ffmpeg.FFmpegNotFoundError: ...
+        svgwriter.motion.video._ffmpeg.FFmpegNotFoundError: ...
         """
         target = Path(path) if path is not None else Path(f"{self.name}.{SCENE_FORMAT}")
         if target.suffix.lower() in BAKE_DOCUMENTS:

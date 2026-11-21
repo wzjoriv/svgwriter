@@ -51,7 +51,7 @@ print(sorted(svg.export.exporters()))
 | PlantUML | `.puml` `.plantuml` | — | ✓ | drawn by `plantuml` |
 | D2 | `.d2` | — | ✓ | drawn by `d2` |
 | LaTeX math | `svg.latex(...)` | — | ✓ | formulas as glyph outlines: TeX (`latex` + `dvisvgm`), else Ziamath (`pysvgwriter[math]`), else matplotlib mathtext |
-| Video frames | `.mp4` `.webm` `.mov` | ✓ | ✓ | needs ffmpeg: `render_animation` writes frames, `svgwriter.video.Video` reads them |
+| Video frames | `.mp4` `.webm` `.mov` | ✓ | ✓ | needs ffmpeg: `render_animation` writes frames, `svgwriter.motion.video.Video` reads them |
 
 TikZ, EPS, PowerPoint, Word, Excalidraw and the polyline formats work from a flattened copy of the
 drawing: transforms, clipping, patterns and markers are worked into the shapes themselves. Masks and

@@ -13,14 +13,14 @@ import numpy as np
 from .._internal._drawable import ascii_markup
 from .._internal._typing import AnyPath
 from ..model.elements.core import Element
-from ..video.animation import DEFAULT_FPS
+from ..motion.video.animation import DEFAULT_FPS
 from ._constants import INLINE_STYLE
 
 if TYPE_CHECKING:
     from ..document import Document
     from ..model.attributes.protocols import TextSink
     from ..model.color.color import ColorLike
-    from ..video.animation import Renderer, Update
+    from ..motion.video.animation import Renderer, Update
 
 
 E = TypeVar("E", bound=Element)
@@ -378,7 +378,7 @@ class Output:
     ) -> FilePath:
         """Render frames through *renderer* and encode them with ffmpeg.
 
-        See :func:`svgwriter.video.render_animation` for the parameters.
+        See :func:`svgwriter.motion.video.render_animation` for the parameters.
         ffmpeg is located before any frame is rendered.
 
         Parameters
@@ -411,7 +411,7 @@ class Output:
 
         See Also
         --------
-        svgwriter.video.iter_frames : The frames without encoding.
+        svgwriter.motion.video.iter_frames : The frames without encoding.
 
         Examples
         --------
@@ -420,6 +420,6 @@ class Output:
         >>> doc = Document(8, 6)
         >>> doc.render_animation("out.gif", duration=1, renderer="skia")  # doctest: +SKIP
         """
-        from ..video.animation import render_animation
+        from ..motion.video.animation import render_animation
 
         return render_animation(self, path, fps, duration, renderer, update=update, ffmpeg=ffmpeg)
