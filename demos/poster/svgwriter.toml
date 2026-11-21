@@ -1,0 +1,10 @@
+# An A4 print poster drawn in millimetres: a true-size PDF and a 300 dpi PNG.
+[project]
+name = "poster"
+entry = "main:poster"
+size = "a4"               # 210 x 297 mm; every coordinate in main.py is a millimetre
+theme = "theme.toml"
+
+[outputs]
+formats = ["pdf", "png", "svg"]
+png = { dpi = 300 }
