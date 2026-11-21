@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.color.color - svgwriter 1.3.0</title>
+        <title>svgwriter.color.color - svgwriter 2.0.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">svgwriter 1.3.0</div></a>
+      <a href="../../../index.html"><div class="brand">svgwriter 2.0.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.3.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.0.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.3.0</span>
+  <span class="sidebar-versions-label">2.0.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -221,6 +221,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/logos.html">Logos and icons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -239,7 +241,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli.html">Command line</a></li>
 </ul>
 </li>
 </ul>
@@ -291,6 +296,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._drawable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drawable</span><span class="p">,</span> <span class="n">color_swatch</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_number</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">N</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._adjust</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColorAdjustments</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._blending</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColorBlending</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._channels</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColorChannels</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -339,7 +345,7 @@
 <div class="viewcode-block" id="Color">
 <a class="viewcode-back" href="../../../reference/color.html#svgwriter.color.Color">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">Color</span><span class="p">(</span><span class="n">ColorChannels</span><span class="p">,</span> <span class="n">ColorBlending</span><span class="p">,</span> <span class="n">Drawable</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Color</span><span class="p">(</span><span class="n">ColorChannels</span><span class="p">,</span> <span class="n">ColorBlending</span><span class="p">,</span> <span class="n">ColorAdjustments</span><span class="p">,</span> <span class="n">Drawable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""An sRGB color with straight alpha; every channel is a float in ``0..1``.</span>
 
 <span class="sd">    Colors are immutable, support ``+`` (even mix), ``*`` and ``/`` (scaling),</span>
@@ -407,7 +413,7 @@
 <a class="viewcode-back" href="../../../reference/color.html#svgwriter.color.Color.parse">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Color</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Parse a name, ``#rgb[a]``, ``#rrggbb[aa]``, ``rgb[a](...)`` or ``hsl[a](...)``.</span>
+<span class="w">        </span><span class="sd">"""Parse a name, hex or CSS Color 4 function (see :func:`parse_color`).</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -642,14 +648,21 @@
 <a class="viewcode-back" href="../../../reference/color.html#svgwriter.color.parse_color">[docs]</a>
 <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_color</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Color</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Parse a color keyword, hex, ``rgb[a](...)`` or ``hsl[a](...)``.</span>
+<span class="w">    </span><span class="sd">"""Parse a color keyword, hex or CSS Color 4 function into sRGB.</span>
 
-<span class="sd">    An optional trailing ``icc-color(...)`` is preserved. Results are cached.</span>
+<span class="sd">    Functions: ``rgb()``/``rgba()`` (numbers are 0..255, percentages 0..100%), ``hsl()``/``hsla()``,</span>
+<span class="sd">    ``hwb()``, ``hsv()``/``hsva()``, ``lab()``, ``lch()``, ``oklab()``, ``oklch()``,</span>
+<span class="sd">    ``color(&lt;space&gt; r g b)`` with ``srgb``, ``srgb-linear``, ``display-p3``, ``a98-rgb``, ``rec2020``,</span>
+<span class="sd">    ``xyz``/``xyz-d65`` or ``xyz-d50``, and ``device-cmyk()``. Both the comma syntax and the modern</span>
+<span class="sd">    space-separated syntax with ``/ alpha`` work; ``none`` stands for a zero channel; hues take</span>
+<span class="sd">    ``deg``, ``rad``, ``grad`` or ``turn``. Colors outside the sRGB gamut are clipped to it.</span>
+<span class="sd">    ``device-cmyk()`` is the naive formula with no profile; real CMYK goes through a trailing</span>
+<span class="sd">    ``icc-color(...)``, which is preserved. Results are cached.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    text : str</span>
-<span class="sd">        Color text such as ``"tomato"``, ``"#f80"``, ``"rgb(255 0 0)"`` or ``"hsl(120, 100%, 50%)"``.</span>
+<span class="sd">        Color text such as ``"tomato"``, ``"#f80"``, ``"rgb(255 0 0 / 50%)"`` or ``"oklch(62.8% 0.2577 29.23)"``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -728,7 +741,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=e3eff1ea"></script>
+</div><script src="../../../_static/documentation_options.js?v=79f5c508"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

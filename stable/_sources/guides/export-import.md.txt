@@ -79,10 +79,30 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 | transforms | yes | yes | yes | applied | applied | applied | applied | picture | applied | applied |
 | markers | yes | shapes | shapes | shapes | shapes | shapes | shapes | picture | shapes | outlines |
 | LaTeX formulas | outlines | pixels | outlines | outlines | outlines | equations | equations | picture | outlines | outlines |
-| SMIL animation | yes | one frame | one frame | one frame | one frame | one frame | one frame | one frame | one frame | one frame |
+| SMIL animation | yes | one frame | one frame | one frame | one frame | slide effects, both ways | one frame | one frame | one frame | one frame |
 | links | yes | no | yes | no | no | on shapes | no | no | yes | no |
 
 "one frame" is the drawing at t = 0, or at `time=`; `render_animation` writes animated GIF and video.
+
+PowerPoint keeps SMIL as slide effects that start with the slide, each at its own `begin` (no clicks
+needed), and reading a deck turns them back into `element.animate` presets:
+
+| SMIL (preset) | PowerPoint effect |
+| --- | --- |
+| opacity 0 to 1, 1 to 0 (`fade_in`, `fade_out`) | Fade entrance, Fade exit |
+| `set visibility` (`show`, `hide`) | Appear, Disappear |
+| translate or `animateMotion` (`move_by`, `move_to`, `slide_in`, `follow`, `bounce`, `shake`) | custom motion path |
+| rotate (`rotate`, `spin`) | Spin |
+| scale (`scale`, `grow`, `shrink`, `pulse`) | Grow/Shrink |
+| fill or stroke colour (`tween("fill", ...)`, two-colour `color_cycle`) | colour change of the fill or the line |
+
+`begin`, `dur`, `repeat`, `freeze` and there-and-back values (`pulse`, `color_cycle`) carry over; an
+ease becomes PowerPoint's accelerate and decelerate fractions, so curves are approximated. Shapes with
+an entrance effect are drawn in their visible state, since PowerPoint hides them until the effect.
+PowerPoint spins and scales about the shape's centre, so a named or custom pivot (`about=`, `anchor`)
+other than the centre is not kept, and motion paths are followed without turning. Anything else
+(`morph`, `draw`, `create`, `write`, `wipe`, `typewriter`, `skew`, `blink`, sync-based `begin`) is
+dropped with one warning that lists it.
 PowerPoint and Word place pictures by their bounding box, so a rotated or skewed image comes out upright, and
 group opacity is multiplied into each shape's own transparency. A radial gradient becomes a
 PowerPoint path gradient centred on the gradient's centre, which matches circles and differs on
@@ -113,7 +133,8 @@ doc.save("figure.pdf", text=False)     # glyph outlines only
 ```
 
 PDF, EPS and TikZ read back as filled and stroked `<path>` elements with solid colours or gradients,
-stroke width, dashes, caps, joins and opacity, in points with y pointing down. The PDF reader scans for objects (a
+stroke width, dashes, caps, joins and opacity, in user units with y pointing down (see
+[Physical size](#physical-size)). The PDF reader scans for objects (a
 broken xref table does not matter), inflates `/FlateDecode` streams, follows Form XObjects and `gs`
 alpha, and reads page 1 unless you pass `page=`. Images, clipping paths and text come in as
 `<image>`, `clip-path` and `<text>`. Text is decoded through the font's `/ToUnicode` map, which most
@@ -131,6 +152,39 @@ and xcolor mixes, the common line options, shadings (`top color`, `inner color` 
 page = svg.export.load("figure.pdf", page=0)
 picture = svg.Document.open("figure.tex")
 ```
+
+## Page sizes
+
+`size=` names a canvas instead of a width and height. Paper and card sizes keep their real units, so the
+`viewBox` counts in millimetres or inches and plain numbers inside are millimetres or inches; screen sizes
+are pixels. `dpi=` on raster exports then gives the real size in pixels:
+
+```python
+poster = svg.Document(size="a4")                     # 210 x 297 mm; coordinates are millimetres
+poster.rect(10, 10, 190, 277, fill="none", stroke="black", stroke_width=0.5)
+poster.save("poster.png", dpi=150)                   # 1241 x 1755 pixels
+wide = svg.Document(size="a4-landscape")             # any name turns with -landscape or -portrait
+slide = svg.Document(size="slide-16:9")              # 1280 x 720, PowerPoint's default slide size
+typed = svg.Document(size=svg.size.letter.landscape)  # svg.size.<name> is a PageSize (width, height, units)
+svg.preset.size("poster-50x70", "50cm", "70cm")         # your own, also svg.size.poster_50x70
+print(svg.preset.list("size")[:6], svg.size.poster_50x70.landscape)
+svg.preset.unregister("size", "poster-50x70")
+```
+
+`svg.size.<name>` gives a `PageSize` for every registered size with the name turned into an identifier
+(`svg.size.slide_16_9`, `svg.size.instagram_story`), so an editor completes it; `.landscape` and `.portrait`
+turn it. `Document(size=...)`, `Scene.size` and a project's `size` take a name or a `PageSize`.
+
+| Kind | Names |
+|---|---|
+| Paper (mm) | `a0` to `a6` |
+| Paper (in) | `letter`, `legal`, `tabloid`, `business-card` |
+| Slides and video (px) | `slide-16:9`, `slide-4:3`, `video-720p`, `video-1080p`, `youtube-thumbnail` |
+| Social images (px) | `instagram-post`, `instagram-portrait`, `instagram-story`, `og-image` |
+| Icons (px) | `favicon`, `apple-touch-icon`, `icon` |
+
+`svgwriter sizes` lists them with their dimensions, `Scene` subclasses take the same names
+(`size = "instagram-story"`), and [project files](projects.md) use them for `size`.
 
 ## Pages and slides
 
@@ -151,6 +205,27 @@ widest and the tallest drawing, and smaller drawings are centred on their slides
 hold one drawing and raise `ValueError` for a list. The low-level `load` returns the list too when
 the page option is `None` (`page=None` for PDF, `slide=None` for PowerPoint); `Document.open` reads
 one page and `Document.open_all` reads every page, or wraps a single-page file in a list of one.
+
+## Physical size
+
+A user unit is a CSS pixel, 96 to the inch, so a point is 4/3 of a unit and a millimetre is
+96/25.4. Formats with a physical page keep the document's true size: a
+`svg.Document(210 * svg.mm, 297 * svg.mm)` exports as a 595.28 × 841.89 pt A4 PDF page and EPS
+bounding box, and as a 7560000 × 10692000 EMU PowerPoint slide, and an 8.5 × 11 inch document as a
+612 × 792 pt Letter page. TikZ pictures are drawn at 0.75 bp per unit, Word drawings at 9525 EMU
+per unit, and DXF, HPGL and G-code at 25.4/96 mm per unit. A raster has no physical size: `dpi=`
+sets how many pixels an inch of the document becomes (96 is `scale=1`).
+
+```python
+a4 = svg.Document(210 * svg.mm, 297 * svg.mm)   # user units are millimetres through the viewBox
+a4.rect(20, 30, 50, 10, fill="red")
+a4.save("a4.pdf")                               # prints at 100% on A4
+```
+
+Readers work the other way: a PDF or EPS point reads as 4/3 of a unit and a TikZ `1cm` as
+96/2.54, so a file made elsewhere opens at its real size and an exported file reads back at the
+same size with every shape in the same place, measured in user units (a millimetre document comes
+back as 793.7 × 1122.5 units with no `viewBox` scaling).
 
 ## Your own formats
 
@@ -197,8 +272,9 @@ mathtext; `engine="tex"`, `"ziamath"` or `"mathtext"` picks one.
 
 - `.pptx` out: one slide per drawing (a list gives a deck), each outline an editable PowerPoint shape
   (curves, solid or gradient fill, outline with dashes, caps and joins, transparency, hyperlink), text
-  as editable text boxes and images as pictures. In: shapes, pictures and text boxes of a slide
-  (`svg.Document.open("deck.pptx", slide=2)`) as native SVG elements, with the same paints and links.
+  as editable text boxes, images as pictures and SMIL as slide effects. In: shapes, pictures, text
+  boxes and effects of a slide (`svg.Document.open("deck.pptx", slide=2)`) as native SVG elements and
+  presets, with the same paints and links.
 - `.docx` out: the drawing as native Word shapes floating in one paragraph as tall as the drawing,
   with the same outlines, paints, text boxes and pictures as the PowerPoint export. In: paragraphs,
   headings (`Title`, `Heading 1`-`6`), bulleted and numbered lists and line breaks laid out top to

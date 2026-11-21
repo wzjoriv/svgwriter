@@ -3,11 +3,11 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="prev" title="Composite shapes and effects" href="builder.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Project" href="project.html"><link rel="prev" title="Themes" href="theme.html">
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Animation export - svgwriter 1.3.0</title>
+        <title>Animation export - svgwriter 2.0.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 1.3.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.0.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.3.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.0.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.3.0</span>
+  <span class="sidebar-versions-label">2.0.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -222,6 +222,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/logos.html">Logos and icons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -240,7 +242,10 @@
 <li class="toctree-l2"><a class="reference internal" href="io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="theme.html">Themes</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html">Command line</a></li>
 </ul>
 </li>
 </ul>
@@ -285,12 +290,35 @@
         <article role="main" id="furo-main-content">
           <section id="animation-export">
 <h1>Animation export<a class="headerlink" href="#animation-export" title="Link to this heading">¶</a></h1>
-<p>Frame rendering and ffmpeg encoding.</p>
+<p>Scenes, frame rendering and ffmpeg encoding. <code class="docutils literal notranslate"><span class="pre">svg.Scene</span></code> is exported at the top level as well.</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#svgwriter.video.Scene" title="svgwriter.video.Scene"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.video.Scene</span></code></a>([document, name])</p></td>
+<td><p>An animation: a drawing built once, then changed over time.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.video.Scene.attach</span></code>(element, ...)</p></td>
+<td><p>Run <em>behavior</em> on <em>element</em> before every frame: <code class="docutils literal notranslate"><span class="pre">behavior(element,</span> <span class="pre">seconds,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.video.Scene.bake</span></code>([fps, duration, ...])</p></td>
+<td><p>A copy of the document whose SMIL plays what the behaviors and <code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code> do.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#svgwriter.video.load_scenes" title="svgwriter.video.load_scenes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.video.load_scenes</span></code></a>(source[, names])</p></td>
+<td><p>Collect scenes from a script, a module or an <code class="docutils literal notranslate"><span class="pre">.svg</span></code> file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#svgwriter.video.SceneError" title="svgwriter.video.SceneError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.video.SceneError</span></code></a></p></td>
+<td><p>A source defines no scene, or no scene with a requested name.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p id="module-svgwriter.video">Turning documents into video and GIF files through ffmpeg.</p>
 <p>svgwriter does not rasterize by itself. A <em>renderer</em> is any callable
 <code class="docutils literal notranslate"><span class="pre">renderer(document,</span> <span class="pre">seconds)</span></code> returning PNG bytes or an
 <code class="docutils literal notranslate"><span class="pre">(height,</span> <span class="pre">width,</span> <span class="pre">4)</span></code> uint8 RGBA array; frames are piped to <code class="docutils literal notranslate"><span class="pre">ffmpeg</span></code>.
-The <code class="docutils literal notranslate"><span class="pre">&quot;skia&quot;</span></code> renderer is built in.</p>
+The <code class="docutils literal notranslate"><span class="pre">&quot;skia&quot;</span></code> renderer is built in. A <a class="reference internal" href="#svgwriter.video.Scene" title="svgwriter.video.Scene"><code class="xref py py-class docutils literal notranslate"><span class="pre">Scene</span></code></a> subclass bundles a
+drawing, its <code class="docutils literal notranslate"><span class="pre">update</span></code> and its settings, so one file can hold several
+animations.</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
@@ -300,6 +328,315 @@ The <code class="docutils literal notranslate"><span class="pre">&quot;skia&quot
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">render_animation</span><span class="p">(</span><span class="s2">"grow.gif"</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">renderer</span><span class="o">=</span><span class="s2">"skia"</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="n">grow</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="py class">
+<dt class="sig sig-object py" id="svgwriter.video.Scene">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Scene</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="document.html#svgwriter.Document" title="svgwriter.Document"><span class="pre">Document</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/video/scene.html#Scene"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.video.Scene" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">SceneMotion</span></code></p>
+<p>An animation: a drawing built once, then changed over time.</p>
+<p>Subclass it, set the class attributes and override <a class="reference internal" href="#svgwriter.video.Scene.build" title="svgwriter.video.Scene.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build()</span></code></a> and,
+for procedural motion, <a class="reference internal" href="#svgwriter.video.Scene.update" title="svgwriter.video.Scene.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a>; <code class="xref py py-meth docutils literal notranslate"><span class="pre">attach()</span></code> adds reusable
+behaviors. SMIL animations in the drawing play as well. Saving as SVG or
+PowerPoint bakes the Python motion into SMIL (<code class="xref py py-meth docutils literal notranslate"><span class="pre">bake()</span></code>). One file
+can hold several scenes; <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">animate</span></code> renders each one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>document</strong> (<a class="reference internal" href="document.html#svgwriter.Document" title="svgwriter.Document"><em>Document</em></a><em>, </em><em>optional</em>) – A finished drawing to animate as it is, instead of calling
+<a class="reference internal" href="#svgwriter.video.Scene.build" title="svgwriter.video.Scene.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build()</span></code></a>. Defaults to None.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – The scene’s name, used for output files. Defaults to the class name.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Variables<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>height</strong> (<a class="reference internal" href="#svgwriter.video.Scene.width" title="svgwriter.video.Scene.width"><em>width</em></a><em>,</em>) – Size of the document handed to <a class="reference internal" href="#svgwriter.video.Scene.build" title="svgwriter.video.Scene.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build()</span></code></a>. Default 640 by 360.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><a class="reference internal" href="document.html#svgwriter.PageSize" title="svgwriter.PageSize"><em>PageSize</em></a><em> or </em><em>None</em>) – A named size instead (<code class="docutils literal notranslate"><span class="pre">&quot;video-1080p&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.size.instagram_story</span></code>, … see
+<a class="reference internal" href="document.html#svgwriter.size" title="svgwriter.size"><code class="xref py py-data docutils literal notranslate"><span class="pre">size</span></code></a>); it sets <cite>width</cite> and <cite>height</cite>. Default None.</p></li>
+<li><p><strong>fps</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Frames per second. Default 30.0.</p></li>
+<li><p><strong>duration</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> or </em><em>None</em>) – Seconds to render. Default None, the end of the SMIL animations.</p></li>
+<li><p><strong>renderer</strong> (<em>callable</em><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – <code class="docutils literal notranslate"><span class="pre">renderer(document,</span> <span class="pre">seconds)</span></code>, a registered name or
+<code class="docutils literal notranslate"><span class="pre">&quot;module:function&quot;</span></code>. Default <code class="docutils literal notranslate"><span class="pre">&quot;skia&quot;</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.video.load_scenes" title="svgwriter.video.load_scenes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.video.load_scenes</span></code></a></dt><dd><p>Collect the scenes of a file or module.</p>
+</dd>
+<dt><a class="reference internal" href="#svgwriter.video.render_animation" title="svgwriter.video.render_animation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.video.render_animation</span></code></a></dt><dd><p>The encoder underneath <a class="reference internal" href="#svgwriter.video.Scene.save" title="svgwriter.video.Scene.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code></a>.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p><a class="reference internal" href="#svgwriter.video.Scene.build" title="svgwriter.video.Scene.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build()</span></code></a> receives an empty document of the class’s size rather than
+returning one, so <code class="docutils literal notranslate"><span class="pre">width</span></code> and <code class="docutils literal notranslate"><span class="pre">height</span></code> mean one thing and the method
+holds only drawing code. It runs when the scene is created, so the
+elements it stores are there before the first <a class="reference internal" href="#svgwriter.video.Scene.update" title="svgwriter.video.Scene.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a>. Keep the elements that <a class="reference internal" href="#svgwriter.video.Scene.update" title="svgwriter.video.Scene.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a> changes on
+<code class="docutils literal notranslate"><span class="pre">self</span></code>. <a class="reference internal" href="#svgwriter.video.Scene.update" title="svgwriter.video.Scene.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a> receives absolute time, so frames can be rendered
+in any order and a scene can be saved more than once.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Grow</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">1.0</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">dot</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"tomato"</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">12</span> <span class="o">*</span> <span class="n">seconds</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span> <span class="o">=</span> <span class="n">Grow</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">frame</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">scene</span><span class="o">.</span><span class="n">frames</span><span class="p">()]</span>
+<span class="go">[0, 1, 2, 3]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)[:</span><span class="mi">4</span><span class="p">]</span>
+<span class="go">b'\x89PNG'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"grow.gif"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Story</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">size</span> <span class="o">=</span> <span class="s2">"instagram-story"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Story</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">Story</span><span class="o">.</span><span class="n">height</span>
+<span class="go">(1080.0, 1920.0)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.video.Scene.width">
+<span class="sig-name descname"><span class="pre">width</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">640.0</span></span><a class="headerlink" href="#svgwriter.video.Scene.width" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.video.Scene.height">
+<span class="sig-name descname"><span class="pre">height</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">360.0</span></span><a class="headerlink" href="#svgwriter.video.Scene.height" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.video.Scene.size">
+<span class="sig-name descname"><span class="pre">size</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="document.html#svgwriter.PageSize" title="svgwriter.PageSize"><span class="pre">PageSize</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#svgwriter.video.Scene.size" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.video.Scene.fps">
+<span class="sig-name descname"><span class="pre">fps</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">30.0</span></span><a class="headerlink" href="#svgwriter.video.Scene.fps" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.video.Scene.duration">
+<span class="sig-name descname"><span class="pre">duration</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#svgwriter.video.Scene.duration" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.video.Scene.renderer">
+<span class="sig-name descname"><span class="pre">renderer</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Renderer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'skia'</span></span><a class="headerlink" href="#svgwriter.video.Scene.renderer" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.video.Scene.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="document.html#svgwriter.Document" title="svgwriter.Document"><span class="pre">Document</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/video/scene.html#Scene.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.video.Scene.build" title="Link to this definition">¶</a></dt>
+<dd><p>Draw the scene into <em>doc</em>; called once, when the scene is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>doc</strong> (<a class="reference internal" href="document.html#svgwriter.Document" title="svgwriter.Document"><em>Document</em></a>) – An empty document of size <code class="docutils literal notranslate"><span class="pre">width</span></code> by <code class="docutils literal notranslate"><span class="pre">height</span></code>.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.video.Scene.update" title="svgwriter.video.Scene.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a></dt><dd><p>Change the drawing for each frame.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Card</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">40</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"navy"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">Card</span><span class="p">()</span><span class="o">.</span><span class="n">document</span><span class="p">)</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.video.Scene.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/video/scene.html#Scene.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.video.Scene.update" title="Link to this definition">¶</a></dt>
+<dd><p>Set the drawing to its state at <em>seconds</em>; called before every frame, after the behaviors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seconds</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Time since the start of the scene.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.video.Scene.build" title="svgwriter.video.Scene.build"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code></a></dt><dd><p>Draw the scene once.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Slide</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">seconds</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span> <span class="o">=</span> <span class="n">Slide</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">x</span>
+<span class="go">50.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="svgwriter.video.Scene.document">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">document</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="document.html#svgwriter.Document" title="svgwriter.Document"><span class="pre">Document</span></a></span><a class="headerlink" href="#svgwriter.video.Scene.document" title="Link to this definition">¶</a></dt>
+<dd><p>The drawing the scene animates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Document</em> – The document passed in, or a new one filled by <a class="reference internal" href="#svgwriter.video.Scene.build" title="svgwriter.video.Scene.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build()</span></code></a>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">()</span><span class="o">.</span><span class="n">document</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"viewBox"</span><span class="p">)</span><span class="o">.</span><span class="n">width</span>
+<span class="go">640.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.video.Scene.frames">
+<span class="sig-name descname"><span class="pre">frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renderer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Renderer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.video.Frame" title="svgwriter.video.Frame"><span class="pre">Frame</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/video/scene.html#Scene.frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.video.Scene.frames" title="Link to this definition">¶</a></dt>
+<dd><p>Render the frames without encoding them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fps</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Overrides the class’s <code class="docutils literal notranslate"><span class="pre">fps</span></code>.</p></li>
+<li><p><strong>duration</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Overrides the class’s <code class="docutils literal notranslate"><span class="pre">duration</span></code>.</p></li>
+<li><p><strong>renderer</strong> (<em>callable</em><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Overrides the class’s <code class="docutils literal notranslate"><span class="pre">renderer</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Frame</em> – One frame per <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">/</span> <span class="pre">fps</span></code> seconds.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If no duration is set and the drawing has no SMIL animation.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.video.Scene.save" title="svgwriter.video.Scene.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a></dt><dd><p>Encode the frames into a file.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Blank</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mf">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[(</span><span class="n">f</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">height</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">Blank</span><span class="p">()</span><span class="o">.</span><span class="n">frames</span><span class="p">(</span><span class="n">fps</span><span class="o">=</span><span class="mi">2</span><span class="p">)]</span>
+<span class="go">[(8, 6), (8, 6)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.video.Scene.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ColorLike</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><span class="pre">bytes</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/video/scene.html#Scene.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.video.Scene.render" title="Link to this definition">¶</a></dt>
+<dd><p>One frame at <em>seconds</em> as PNG bytes, with SMIL applied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seconds</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – The moment to draw. Defaults to 0.0.</p></li>
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Pixels per user unit. Defaults to 1.0.</p></li>
+<li><p><strong>background</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Background color. Defaults to None (transparent).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>bytes</em> – A PNG file.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="document.html#svgwriter.Document.at" title="svgwriter.Document.at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.Document.at</span></code></a></dt><dd><p>The still copy that is drawn.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">)[:</span><span class="mi">4</span><span class="p">]</span>
+<span class="go">b'\x89PNG'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.video.Scene.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnyPath</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renderer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Renderer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ffmpeg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.shapes.Path" title="svgwriter.elements.shapes.Path"><span class="pre">Path</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/video/scene.html#Scene.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.video.Scene.save" title="Link to this definition">¶</a></dt>
+<dd><p>Render the scene and encode it with ffmpeg, or bake it into an animated SVG or PowerPoint deck.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>path-like</em><em>, </em><em>optional</em>) – Output file; the extension picks the format (<code class="docutils literal notranslate"><span class="pre">.mp4</span></code>, <code class="docutils literal notranslate"><span class="pre">.gif</span></code>,
+<code class="docutils literal notranslate"><span class="pre">.webm</span></code>, <code class="docutils literal notranslate"><span class="pre">.mov</span></code>, <code class="docutils literal notranslate"><span class="pre">.apng</span></code>; <code class="docutils literal notranslate"><span class="pre">.png</span></code> writes numbered frames).
+<code class="docutils literal notranslate"><span class="pre">.svg</span></code>, <code class="docutils literal notranslate"><span class="pre">.svgz</span></code>, <code class="docutils literal notranslate"><span class="pre">.html</span></code> and <code class="docutils literal notranslate"><span class="pre">.pptx</span></code> save <code class="xref py py-meth docutils literal notranslate"><span class="pre">bake()</span></code>’s
+document instead, without ffmpeg.
+Defaults to <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;.mp4</span></code> in the current folder.</p></li>
+<li><p><strong>fps</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Overrides the class’s <code class="docutils literal notranslate"><span class="pre">fps</span></code> (the sampling rate when baking).</p></li>
+<li><p><strong>duration</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Overrides the class’s <code class="docutils literal notranslate"><span class="pre">duration</span></code>.</p></li>
+<li><p><strong>renderer</strong> (<em>callable</em><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Overrides the class’s <code class="docutils literal notranslate"><span class="pre">renderer</span></code>.</p></li>
+<li><p><strong>ffmpeg</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – The ffmpeg executable. Defaults to <code class="docutils literal notranslate"><span class="pre">ffmpeg</span></code> on <code class="docutils literal notranslate"><span class="pre">PATH</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>pathlib.Path</em> – The written file, or the pattern of the numbered frames.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#svgwriter.video.FFmpegNotFoundError" title="svgwriter.video.FFmpegNotFoundError"><strong>FFmpegNotFoundError</strong></a> – Before rendering anything, when ffmpeg is missing.</p></li>
+<li><p><a class="reference internal" href="#svgwriter.video.FFmpegError" title="svgwriter.video.FFmpegError"><strong>FFmpegError</strong></a> – When ffmpeg fails.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.video.Scene.frames" title="svgwriter.video.Scene.frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frames</span></code></a></dt><dd><p>The frames without encoding.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Still</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mf">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Still</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"still.png"</span><span class="p">,</span> <span class="n">ffmpeg</span><span class="o">=</span><span class="s2">"no-such-ffmpeg"</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">svgwriter.video._ffmpeg.FFmpegNotFoundError</span>: <span class="n">...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="svgwriter.video.SceneError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">SceneError</span></span><a class="reference internal" href="../_modules/svgwriter/video/loader.html#SceneError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.video.SceneError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a></p>
+<p>A source defines no scene, or no scene with a requested name.</p>
+<p>Subclasses <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.video.load_scenes" title="svgwriter.video.load_scenes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_scenes</span></code></a></dt><dd><p>Raises it.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.video</span><span class="w"> </span><span class="kn">import</span> <span class="n">SceneError</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">SceneError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="svgwriter.video.Video">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Video</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnyPath</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">ffmpeg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/video/reader.html#Video"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.video.Video" title="Link to this definition">¶</a></dt>
@@ -637,6 +974,48 @@ default renderer.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.video.load_scenes">
+<span class="sig-name descname"><span class="pre">load_scenes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.video.Scene" title="svgwriter.video.scene.Scene"><span class="pre">Scene</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/video/loader.html#load_scenes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.video.load_scenes" title="Link to this definition">¶</a></dt>
+<dd><p>Collect scenes from a script, a module or an <code class="docutils literal notranslate"><span class="pre">.svg</span></code> file.</p>
+<p><cite>source</cite> is a path to a Python file, an importable module name, either
+one followed by <code class="docutils literal notranslate"><span class="pre">:Name</span></code>, or an <code class="docutils literal notranslate"><span class="pre">.svg</span></code> file. Without names, every
+<a class="reference internal" href="#svgwriter.video.Scene" title="svgwriter.video.Scene"><code class="xref py py-class docutils literal notranslate"><span class="pre">Scene</span></code></a> subclass the file or module defines is returned, in
+definition order; classes whose names start with <code class="docutils literal notranslate"><span class="pre">_</span></code> are skipped, so
+a shared base class can be private. A name may also refer to a scene
+instance or a <a class="reference internal" href="document.html#svgwriter.Document" title="svgwriter.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><em>pathlib.Path</em></a>) – <code class="docutils literal notranslate"><span class="pre">&quot;scenes.py&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;scenes.py:Intro&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;pkg.scenes:Intro&quot;</span></code> or
+<code class="docutils literal notranslate"><span class="pre">&quot;drawing.svg&quot;</span></code>.</p></li>
+<li><p><strong>names</strong> (<em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Scenes to pick, in this order. Defaults to all of them.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>list of Scene</em> – New instances, ready to save.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.video.SceneError" title="svgwriter.video.SceneError"><strong>SceneError</strong></a> – If nothing matches, or a name is not a scene.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.video.Scene" title="svgwriter.video.Scene"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Scene</span></code></a></dt><dd><p>What the file defines.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.video</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_scenes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">scene</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">scene</span> <span class="ow">in</span> <span class="n">load_scenes</span><span class="p">(</span><span class="s2">"svgwriter.video.scene:Scene"</span><span class="p">)]</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">svgwriter.video.loader.SceneError</span>: <span class="n">'Scene' in svgwriter.video.scene is not a scene</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="svgwriter.video.register_renderer">
 <span class="sig-name descname"><span class="pre">register_renderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Renderer</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Renderer</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/video/animation.html#register_renderer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.video.register_renderer" title="Link to this definition">¶</a></dt>
 <dd><p>Decorator registering a renderer so it can be chosen by <em>name</em>.</p>
@@ -680,7 +1059,9 @@ rendered. Frames are piped to a single ffmpeg process.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>document</strong> (<a class="reference internal" href="document.html#svgwriter.Document" title="svgwriter.Document"><em>Document</em></a>) – The drawing.</p></li>
 <li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>path-like</em>) – Output file; the extension picks the encoder (<code class="docutils literal notranslate"><span class="pre">.mp4</span></code>, <code class="docutils literal notranslate"><span class="pre">.gif</span></code>,
-<code class="docutils literal notranslate"><span class="pre">.webm</span></code>, <code class="docutils literal notranslate"><span class="pre">.mov</span></code>, <code class="docutils literal notranslate"><span class="pre">.apng</span></code>, anything else ffmpeg knows).</p></li>
+<code class="docutils literal notranslate"><span class="pre">.webm</span></code>, <code class="docutils literal notranslate"><span class="pre">.mov</span></code>, <code class="docutils literal notranslate"><span class="pre">.apng</span></code>, anything else ffmpeg knows). A
+<code class="docutils literal notranslate"><span class="pre">.png</span></code> path writes numbered frames beside it instead:
+<code class="docutils literal notranslate"><span class="pre">intro.png</span></code> becomes <code class="docutils literal notranslate"><span class="pre">intro_0000.png</span></code>, <code class="docutils literal notranslate"><span class="pre">intro_0001.png</span></code> and so on.</p></li>
 <li><p><strong>fps</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Frames per second. Defaults to 30.0.</p></li>
 <li><p><strong>duration</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Seconds to render. Defaults to the end of the document’s SMIL
 animations.</p></li>
@@ -694,7 +1075,7 @@ procedural animation. Defaults to None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>pathlib.Path</em> – The written file.</p>
+<dd class="field-even"><p><em>pathlib.Path</em> – The written file, or the <code class="docutils literal notranslate"><span class="pre">%04d</span></code> pattern of the numbered PNG frames.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -782,6 +1163,110 @@ import path.</p>
 </div>
 </dd></dl>
 
+<section id="module-svgwriter.video.behaviors">
+<span id="behaviours"></span><h2>Behaviours<a class="headerlink" href="#module-svgwriter.video.behaviors" title="Link to this heading">¶</a></h2>
+<p>Built-in behaviors: Python motion a <code class="xref py py-class docutils literal notranslate"><span class="pre">Scene</span></code> runs before every frame.</p>
+<p>Each one starts from the element’s <code class="xref py py-attr docutils literal notranslate"><span class="pre">home</span></code> and moves it relative to that, about its
+anchor, so it never drifts. Attach one by name (<code class="docutils literal notranslate"><span class="pre">element.animate.wiggle()</span></code>) or typed
+(<code class="docutils literal notranslate"><span class="pre">scene.attach(element,</span> <span class="pre">wiggle,</span> <span class="pre">angle=10)</span></code>).</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.video.behaviors</span><span class="w"> </span><span class="kn">import</span> <span class="n">wiggle</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Alarm</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mf">1.0</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">bell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">wiggle</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span> <span class="o">=</span> <span class="n">Alarm</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="mf">0.125</span><span class="p">)[:</span><span class="mi">4</span><span class="p">]</span>
+<span class="go">b'\x89PNG'</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.video.behaviors.breathe">
+<span class="sig-name descname"><span class="pre">breathe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Transformable" title="svgwriter.elements._behavior._transformable.Transformable"><span class="pre">Transformable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/video/behaviors.html#breathe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.video.behaviors.breathe" title="Link to this definition">¶</a></dt>
+<dd><p>Grow and shrink by the fraction <em>amount</em> about the anchor, once every <em>period</em> seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Transformable" title="svgwriter.elements.Transformable"><em>Transformable</em></a>) – The element to scale.</p></li>
+<li><p><strong>seconds</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The scene time.</p></li>
+<li><p><strong>amount</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Largest change of size, as a fraction. Defaults to 0.05.</p></li>
+<li><p><strong>period</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Seconds per full breath. Defaults to 2.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Heart</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mf">2.0</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">heart</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">breathe</span><span class="p">(</span><span class="n">amount</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">element</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span> <span class="o">=</span> <span class="n">Heart</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">breathe</span><span class="p">(</span><span class="n">scene</span><span class="o">.</span><span class="n">heart</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">amount</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">heart</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">a</span>
+<span class="go">1.5</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.video.behaviors.hover">
+<span class="sig-name descname"><span class="pre">hover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Transformable" title="svgwriter.elements._behavior._transformable.Transformable"><span class="pre">Transformable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/video/behaviors.html#hover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.video.behaviors.hover" title="Link to this definition">¶</a></dt>
+<dd><p>Float up and down by <em>height</em> user units, once every <em>period</em> seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Transformable" title="svgwriter.elements.Transformable"><em>Transformable</em></a>) – The element to move.</p></li>
+<li><p><strong>seconds</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The scene time.</p></li>
+<li><p><strong>height</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Largest rise above home, in user units. Defaults to 4.</p></li>
+<li><p><strong>period</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Seconds per full rise and fall. Defaults to 2.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Balloon</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mf">2.0</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">balloon</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">hover</span><span class="p">()</span><span class="o">.</span><span class="n">element</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span> <span class="o">=</span> <span class="n">Balloon</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hover</span><span class="p">(</span><span class="n">scene</span><span class="o">.</span><span class="n">balloon</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">balloon</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">f</span>
+<span class="go">-4.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.video.behaviors.wiggle">
+<span class="sig-name descname"><span class="pre">wiggle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.elements.Transformable" title="svgwriter.elements._behavior._transformable.Transformable"><span class="pre">Transformable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/video/behaviors.html#wiggle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.video.behaviors.wiggle" title="Link to this definition">¶</a></dt>
+<dd><p>Rock back and forth by up to <em>angle</em> degrees about the anchor, once every <em>period</em> seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.Transformable" title="svgwriter.elements.Transformable"><em>Transformable</em></a>) – The element to move.</p></li>
+<li><p><strong>seconds</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The scene time.</p></li>
+<li><p><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Largest turn either way, in degrees. Defaults to 6.</p></li>
+<li><p><strong>period</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Seconds per full swing. Defaults to 0.5.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Bell</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mf">1.0</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">bell</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">wiggle</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">element</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span> <span class="o">=</span> <span class="n">Bell</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wiggle</span><span class="p">(</span><span class="n">scene</span><span class="o">.</span><span class="n">bell</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">scene</span><span class="o">.</span><span class="n">bell</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">decompose</span><span class="p">()[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">6</span><span class="p">)</span>
+<span class="go">10.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
 </section>
 
         </article>
@@ -789,15 +1274,23 @@ import path.</p>
       <footer>
         
         <div class="related-pages">
-          
-          <a class="prev-page" href="builder.html">
+          <a class="next-page" href="project.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Project</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="theme.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Composite shapes and effects</div>
+                <div class="title">Themes</div>
                 
               </div>
             </a>
@@ -832,6 +1325,22 @@ import path.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Animation export</a><ul>
+<li><a class="reference internal" href="#svgwriter.video.Scene"><code class="docutils literal notranslate"><span class="pre">Scene</span></code></a><ul>
+<li><a class="reference internal" href="#svgwriter.video.Scene.width"><code class="docutils literal notranslate"><span class="pre">Scene.width</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.video.Scene.height"><code class="docutils literal notranslate"><span class="pre">Scene.height</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.video.Scene.size"><code class="docutils literal notranslate"><span class="pre">Scene.size</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.video.Scene.fps"><code class="docutils literal notranslate"><span class="pre">Scene.fps</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.video.Scene.duration"><code class="docutils literal notranslate"><span class="pre">Scene.duration</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.video.Scene.renderer"><code class="docutils literal notranslate"><span class="pre">Scene.renderer</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.video.Scene.build"><code class="docutils literal notranslate"><span class="pre">Scene.build()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.video.Scene.update"><code class="docutils literal notranslate"><span class="pre">Scene.update()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.video.Scene.document"><code class="docutils literal notranslate"><span class="pre">Scene.document</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.video.Scene.frames"><code class="docutils literal notranslate"><span class="pre">Scene.frames()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.video.Scene.render"><code class="docutils literal notranslate"><span class="pre">Scene.render()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.video.Scene.save"><code class="docutils literal notranslate"><span class="pre">Scene.save()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#svgwriter.video.SceneError"><code class="docutils literal notranslate"><span class="pre">SceneError</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.video.Video"><code class="docutils literal notranslate"><span class="pre">Video</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.video.Video.frame"><code class="docutils literal notranslate"><span class="pre">Video.frame()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.video.Video.array_at"><code class="docutils literal notranslate"><span class="pre">Video.array_at()</span></code></a></li>
@@ -858,10 +1367,17 @@ import path.</p>
 <li><a class="reference internal" href="#svgwriter.video.find_ffmpeg"><code class="docutils literal notranslate"><span class="pre">find_ffmpeg()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.video.frame_times"><code class="docutils literal notranslate"><span class="pre">frame_times()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.video.iter_frames"><code class="docutils literal notranslate"><span class="pre">iter_frames()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.video.load_scenes"><code class="docutils literal notranslate"><span class="pre">load_scenes()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.video.register_renderer"><code class="docutils literal notranslate"><span class="pre">register_renderer()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.video.render_animation"><code class="docutils literal notranslate"><span class="pre">render_animation()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.video.resolve_renderer"><code class="docutils literal notranslate"><span class="pre">resolve_renderer()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.video.unregister_renderer"><code class="docutils literal notranslate"><span class="pre">unregister_renderer()</span></code></a></li>
+<li><a class="reference internal" href="#module-svgwriter.video.behaviors">Behaviours</a><ul>
+<li><a class="reference internal" href="#svgwriter.video.behaviors.breathe"><code class="docutils literal notranslate"><span class="pre">breathe()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.video.behaviors.hover"><code class="docutils literal notranslate"><span class="pre">hover()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.video.behaviors.wiggle"><code class="docutils literal notranslate"><span class="pre">wiggle()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -873,7 +1389,7 @@ import path.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e3eff1ea"></script>
+</div><script src="../_static/documentation_options.js?v=79f5c508"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

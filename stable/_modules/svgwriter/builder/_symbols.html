@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.builder._symbols - svgwriter 1.3.0</title>
+        <title>svgwriter.builder._symbols - svgwriter 2.0.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">svgwriter 1.3.0</div></a>
+      <a href="../../../index.html"><div class="brand">svgwriter 2.0.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.3.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.0.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.3.0</span>
+  <span class="sidebar-versions-label">2.0.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -221,6 +221,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/logos.html">Logos and icons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -239,7 +241,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli.html">Command line</a></li>
 </ul>
 </li>
 </ul>
@@ -283,6 +288,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span><span class="p">,</span> <span class="n">Polygon</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..pathdata.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathBuilder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..preset</span><span class="w"> </span><span class="kn">import</span> <span class="n">shape</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">CALLOUT_RADIUS</span><span class="p">,</span>
     <span class="n">CALLOUT_TAIL_RATIO</span><span class="p">,</span>
@@ -292,14 +298,13 @@
     <span class="n">HEART_NOTCH</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._rounded</span><span class="w"> </span><span class="kn">import</span> <span class="n">rounded_outline</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">shape_factory</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"callout"</span><span class="p">,</span> <span class="s2">"cross"</span><span class="p">,</span> <span class="s2">"heart"</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="heart">
 <a class="viewcode-back" href="../../../reference/builder.html#svgwriter.builder.heart">[docs]</a>
-<span class="nd">@shape_factory</span><span class="p">(</span><span class="s2">"heart"</span><span class="p">)</span>
+<span class="nd">@shape</span><span class="p">(</span><span class="s2">"heart"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">heart</span><span class="p">(</span><span class="n">cx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">cy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Build a heart made of cubic curves, point down.</span>
 
@@ -346,7 +351,7 @@
 
 <div class="viewcode-block" id="callout">
 <a class="viewcode-back" href="../../../reference/builder.html#svgwriter.builder.callout">[docs]</a>
-<span class="nd">@shape_factory</span><span class="p">(</span><span class="s2">"callout"</span><span class="p">)</span>
+<span class="nd">@shape</span><span class="p">(</span><span class="s2">"callout"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"box"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">callout</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -415,7 +420,7 @@
 
 <div class="viewcode-block" id="cross">
 <a class="viewcode-back" href="../../../reference/builder.html#svgwriter.builder.cross">[docs]</a>
-<span class="nd">@shape_factory</span><span class="p">(</span><span class="s2">"cross"</span><span class="p">)</span>
+<span class="nd">@shape</span><span class="p">(</span><span class="s2">"cross"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">cross</span><span class="p">(</span><span class="n">cx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">cy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Polygon</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Build a plus sign.</span>
 
@@ -491,7 +496,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=e3eff1ea"></script>
+</div><script src="../../../_static/documentation_options.js?v=79f5c508"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Export and import - svgwriter 1.3.0</title>
+        <title>Export and import - svgwriter 2.0.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 1.3.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.0.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.3.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.0.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.3.0</span>
+  <span class="sidebar-versions-label">2.0.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -222,6 +222,8 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logos.html">Logos and icons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -240,7 +242,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli.html">Command line</a></li>
 </ul>
 </li>
 </ul>
@@ -723,7 +728,7 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>one frame</p></td>
 <td><p>one frame</p></td>
 <td><p>one frame</p></td>
-<td><p>one frame</p></td>
+<td><p>slide effects, both ways</p></td>
 <td><p>one frame</p></td>
 <td><p>one frame</p></td>
 <td><p>one frame</p></td>
@@ -744,7 +749,45 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 </tbody>
 </table>
 </div>
-<p>“one frame” is the drawing at t = 0, or at <code class="docutils literal notranslate"><span class="pre">time=</span></code>; <code class="docutils literal notranslate"><span class="pre">render_animation</span></code> writes animated GIF and video.
+<p>“one frame” is the drawing at t = 0, or at <code class="docutils literal notranslate"><span class="pre">time=</span></code>; <code class="docutils literal notranslate"><span class="pre">render_animation</span></code> writes animated GIF and video.</p>
+<p>PowerPoint keeps SMIL as slide effects that start with the slide, each at its own <code class="docutils literal notranslate"><span class="pre">begin</span></code> (no clicks
+needed), and reading a deck turns them back into <code class="docutils literal notranslate"><span class="pre">element.animate</span></code> presets:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>SMIL (preset)</p></th>
+<th class="head"><p>PowerPoint effect</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>opacity 0 to 1, 1 to 0 (<code class="docutils literal notranslate"><span class="pre">fade_in</span></code>, <code class="docutils literal notranslate"><span class="pre">fade_out</span></code>)</p></td>
+<td><p>Fade entrance, Fade exit</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">visibility</span></code> (<code class="docutils literal notranslate"><span class="pre">show</span></code>, <code class="docutils literal notranslate"><span class="pre">hide</span></code>)</p></td>
+<td><p>Appear, Disappear</p></td>
+</tr>
+<tr class="row-even"><td><p>translate or <code class="docutils literal notranslate"><span class="pre">animateMotion</span></code> (<code class="docutils literal notranslate"><span class="pre">move_by</span></code>, <code class="docutils literal notranslate"><span class="pre">move_to</span></code>, <code class="docutils literal notranslate"><span class="pre">slide_in</span></code>, <code class="docutils literal notranslate"><span class="pre">follow</span></code>, <code class="docutils literal notranslate"><span class="pre">bounce</span></code>, <code class="docutils literal notranslate"><span class="pre">shake</span></code>)</p></td>
+<td><p>custom motion path</p></td>
+</tr>
+<tr class="row-odd"><td><p>rotate (<code class="docutils literal notranslate"><span class="pre">rotate</span></code>, <code class="docutils literal notranslate"><span class="pre">spin</span></code>)</p></td>
+<td><p>Spin</p></td>
+</tr>
+<tr class="row-even"><td><p>scale (<code class="docutils literal notranslate"><span class="pre">scale</span></code>, <code class="docutils literal notranslate"><span class="pre">grow</span></code>, <code class="docutils literal notranslate"><span class="pre">shrink</span></code>, <code class="docutils literal notranslate"><span class="pre">pulse</span></code>)</p></td>
+<td><p>Grow/Shrink</p></td>
+</tr>
+<tr class="row-odd"><td><p>fill or stroke colour (<code class="docutils literal notranslate"><span class="pre">tween(&quot;fill&quot;,</span> <span class="pre">...)</span></code>, two-colour <code class="docutils literal notranslate"><span class="pre">color_cycle</span></code>)</p></td>
+<td><p>colour change of the fill or the line</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">begin</span></code>, <code class="docutils literal notranslate"><span class="pre">dur</span></code>, <code class="docutils literal notranslate"><span class="pre">repeat</span></code>, <code class="docutils literal notranslate"><span class="pre">freeze</span></code> and there-and-back values (<code class="docutils literal notranslate"><span class="pre">pulse</span></code>, <code class="docutils literal notranslate"><span class="pre">color_cycle</span></code>) carry over; an
+ease becomes PowerPoint’s accelerate and decelerate fractions, so curves are approximated. Shapes with
+an entrance effect are drawn in their visible state, since PowerPoint hides them until the effect.
+PowerPoint spins and scales about the shape’s centre, so a named or custom pivot (<code class="docutils literal notranslate"><span class="pre">about=</span></code>, <code class="docutils literal notranslate"><span class="pre">anchor</span></code>)
+other than the centre is not kept, and motion paths are followed without turning. Anything else
+(<code class="docutils literal notranslate"><span class="pre">morph</span></code>, <code class="docutils literal notranslate"><span class="pre">draw</span></code>, <code class="docutils literal notranslate"><span class="pre">create</span></code>, <code class="docutils literal notranslate"><span class="pre">write</span></code>, <code class="docutils literal notranslate"><span class="pre">wipe</span></code>, <code class="docutils literal notranslate"><span class="pre">typewriter</span></code>, <code class="docutils literal notranslate"><span class="pre">skew</span></code>, <code class="docutils literal notranslate"><span class="pre">blink</span></code>, sync-based <code class="docutils literal notranslate"><span class="pre">begin</span></code>) is
+dropped with one warning that lists it.
 PowerPoint and Word place pictures by their bounding box, so a rotated or skewed image comes out upright, and
 group opacity is multiplied into each shape’s own transparency. A radial gradient becomes a
 PowerPoint path gradient centred on the gradient’s centre, which matches circles and differs on
@@ -799,7 +842,8 @@ reader of the file may lack the fonts:</p>
 </pre></div>
 </div>
 <p>PDF, EPS and TikZ read back as filled and stroked <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> elements with solid colours or gradients,
-stroke width, dashes, caps, joins and opacity, in points with y pointing down. The PDF reader scans for objects (a
+stroke width, dashes, caps, joins and opacity, in user units with y pointing down (see
+<a class="reference internal" href="#physical-size">Physical size</a>). The PDF reader scans for objects (a
 broken xref table does not matter), inflates <code class="docutils literal notranslate"><span class="pre">/FlateDecode</span></code> streams, follows Form XObjects and <code class="docutils literal notranslate"><span class="pre">gs</span></code>
 alpha, and reads page 1 unless you pass <code class="docutils literal notranslate"><span class="pre">page=</span></code>. Images, clipping paths and text come in as
 <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">clip-path</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;text&gt;</span></code>. Text is decoded through the font’s <code class="docutils literal notranslate"><span class="pre">/ToUnicode</span></code> map, which most
@@ -816,6 +860,54 @@ and xcolor mixes, the common line options, shadings (<code class="docutils liter
 <span class="n">picture</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"figure.tex"</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="page-sizes">
+<h2>Page sizes<a class="headerlink" href="#page-sizes" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">size=</span></code> names a canvas instead of a width and height. Paper and card sizes keep their real units, so the
+<code class="docutils literal notranslate"><span class="pre">viewBox</span></code> counts in millimetres or inches and plain numbers inside are millimetres or inches; screen sizes
+are pixels. <code class="docutils literal notranslate"><span class="pre">dpi=</span></code> on raster exports then gives the real size in pixels:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">poster</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">"a4"</span><span class="p">)</span>                     <span class="c1"># 210 x 297 mm; coordinates are millimetres</span>
+<span class="n">poster</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">190</span><span class="p">,</span> <span class="mi">277</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"none"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">stroke_width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">poster</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"poster.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>                   <span class="c1"># 1241 x 1755 pixels</span>
+<span class="n">wide</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">"a4-landscape"</span><span class="p">)</span>             <span class="c1"># any name turns with -landscape or -portrait</span>
+<span class="n">slide</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">"slide-16:9"</span><span class="p">)</span>              <span class="c1"># 1280 x 720, PowerPoint's default slide size</span>
+<span class="n">typed</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">letter</span><span class="o">.</span><span class="n">landscape</span><span class="p">)</span>  <span class="c1"># svg.size.&lt;name&gt; is a PageSize (width, height, units)</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="s2">"poster-50x70"</span><span class="p">,</span> <span class="s2">"50cm"</span><span class="p">,</span> <span class="s2">"70cm"</span><span class="p">)</span>         <span class="c1"># your own, also svg.size.poster_50x70</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="s2">"size"</span><span class="p">)[:</span><span class="mi">6</span><span class="p">],</span> <span class="n">svg</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">poster_50x70</span><span class="o">.</span><span class="n">landscape</span><span class="p">)</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"size"</span><span class="p">,</span> <span class="s2">"poster-50x70"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">svg.size.&lt;name&gt;</span></code> gives a <code class="docutils literal notranslate"><span class="pre">PageSize</span></code> for every registered size with the name turned into an identifier
+(<code class="docutils literal notranslate"><span class="pre">svg.size.slide_16_9</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.size.instagram_story</span></code>), so an editor completes it; <code class="docutils literal notranslate"><span class="pre">.landscape</span></code> and <code class="docutils literal notranslate"><span class="pre">.portrait</span></code>
+turn it. <code class="docutils literal notranslate"><span class="pre">Document(size=...)</span></code>, <code class="docutils literal notranslate"><span class="pre">Scene.size</span></code> and a project’s <code class="docutils literal notranslate"><span class="pre">size</span></code> take a name or a <code class="docutils literal notranslate"><span class="pre">PageSize</span></code>.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Kind</p></th>
+<th class="head"><p>Names</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Paper (mm)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">a0</span></code> to <code class="docutils literal notranslate"><span class="pre">a6</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Paper (in)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">letter</span></code>, <code class="docutils literal notranslate"><span class="pre">legal</span></code>, <code class="docutils literal notranslate"><span class="pre">tabloid</span></code>, <code class="docutils literal notranslate"><span class="pre">business-card</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Slides and video (px)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">slide-16:9</span></code>, <code class="docutils literal notranslate"><span class="pre">slide-4:3</span></code>, <code class="docutils literal notranslate"><span class="pre">video-720p</span></code>, <code class="docutils literal notranslate"><span class="pre">video-1080p</span></code>, <code class="docutils literal notranslate"><span class="pre">youtube-thumbnail</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Social images (px)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">instagram-post</span></code>, <code class="docutils literal notranslate"><span class="pre">instagram-portrait</span></code>, <code class="docutils literal notranslate"><span class="pre">instagram-story</span></code>, <code class="docutils literal notranslate"><span class="pre">og-image</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Icons (px)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">favicon</span></code>, <code class="docutils literal notranslate"><span class="pre">apple-touch-icon</span></code>, <code class="docutils literal notranslate"><span class="pre">icon</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">sizes</span></code> lists them with their dimensions, <code class="docutils literal notranslate"><span class="pre">Scene</span></code> subclasses take the same names
+(<code class="docutils literal notranslate"><span class="pre">size</span> <span class="pre">=</span> <span class="pre">&quot;instagram-story&quot;</span></code>), and <a class="reference internal" href="projects.html"><span class="std std-doc">project files</span></a> use them for <code class="docutils literal notranslate"><span class="pre">size</span></code>.</p>
 </section>
 <section id="pages-and-slides">
 <h2>Pages and slides<a class="headerlink" href="#pages-and-slides" title="Link to this heading">¶</a></h2>
@@ -834,6 +926,25 @@ widest and the tallest drawing, and smaller drawings are centred on their slides
 hold one drawing and raise <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> for a list. The low-level <code class="docutils literal notranslate"><span class="pre">load</span></code> returns the list too when
 the page option is <code class="docutils literal notranslate"><span class="pre">None</span></code> (<code class="docutils literal notranslate"><span class="pre">page=None</span></code> for PDF, <code class="docutils literal notranslate"><span class="pre">slide=None</span></code> for PowerPoint); <code class="docutils literal notranslate"><span class="pre">Document.open</span></code> reads
 one page and <code class="docutils literal notranslate"><span class="pre">Document.open_all</span></code> reads every page, or wraps a single-page file in a list of one.</p>
+</section>
+<section id="physical-size">
+<h2>Physical size<a class="headerlink" href="#physical-size" title="Link to this heading">¶</a></h2>
+<p>A user unit is a CSS pixel, 96 to the inch, so a point is 4/3 of a unit and a millimetre is
+96/25.4. Formats with a physical page keep the document’s true size: a
+<code class="docutils literal notranslate"><span class="pre">svg.Document(210</span> <span class="pre">*</span> <span class="pre">svg.mm,</span> <span class="pre">297</span> <span class="pre">*</span> <span class="pre">svg.mm)</span></code> exports as a 595.28 × 841.89 pt A4 PDF page and EPS
+bounding box, and as a 7560000 × 10692000 EMU PowerPoint slide, and an 8.5 × 11 inch document as a
+612 × 792 pt Letter page. TikZ pictures are drawn at 0.75 bp per unit, Word drawings at 9525 EMU
+per unit, and DXF, HPGL and G-code at 25.4/96 mm per unit. A raster has no physical size: <code class="docutils literal notranslate"><span class="pre">dpi=</span></code>
+sets how many pixels an inch of the document becomes (96 is <code class="docutils literal notranslate"><span class="pre">scale=1</span></code>).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a4</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">210</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">,</span> <span class="mi">297</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">)</span>   <span class="c1"># user units are millimetres through the viewBox</span>
+<span class="n">a4</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span>
+<span class="n">a4</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"a4.pdf"</span><span class="p">)</span>                               <span class="c1"># prints at 100% on A4</span>
+</pre></div>
+</div>
+<p>Readers work the other way: a PDF or EPS point reads as 4/3 of a unit and a TikZ <code class="docutils literal notranslate"><span class="pre">1cm</span></code> as
+96/2.54, so a file made elsewhere opens at its real size and an exported file reads back at the
+same size with every shape in the same place, measured in user units (a millimetre document comes
+back as 793.7 × 1122.5 units with no <code class="docutils literal notranslate"><span class="pre">viewBox</span></code> scaling).</p>
 </section>
 <section id="your-own-formats">
 <h2>Your own formats<a class="headerlink" href="#your-own-formats" title="Link to this heading">¶</a></h2>
@@ -879,8 +990,9 @@ mathtext; <code class="docutils literal notranslate"><span class="pre">engine=&q
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">.pptx</span></code> out: one slide per drawing (a list gives a deck), each outline an editable PowerPoint shape
 (curves, solid or gradient fill, outline with dashes, caps and joins, transparency, hyperlink), text
-as editable text boxes and images as pictures. In: shapes, pictures and text boxes of a slide
-(<code class="docutils literal notranslate"><span class="pre">svg.Document.open(&quot;deck.pptx&quot;,</span> <span class="pre">slide=2)</span></code>) as native SVG elements, with the same paints and links.</p></li>
+as editable text boxes, images as pictures and SMIL as slide effects. In: shapes, pictures, text
+boxes and effects of a slide (<code class="docutils literal notranslate"><span class="pre">svg.Document.open(&quot;deck.pptx&quot;,</span> <span class="pre">slide=2)</span></code>) as native SVG elements and
+presets, with the same paints and links.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.docx</span></code> out: the drawing as native Word shapes floating in one paragraph as tall as the drawing,
 with the same outlines, paints, text boxes and pictures as the PowerPoint export. In: paragraphs,
 headings (<code class="docutils literal notranslate"><span class="pre">Title</span></code>, <code class="docutils literal notranslate"><span class="pre">Heading</span> <span class="pre">1</span></code>-<code class="docutils literal notranslate"><span class="pre">6</span></code>), bulleted and numbered lists and line breaks laid out top to
@@ -974,7 +1086,9 @@ interaction is attached by the page, by element id:</p>
 <li><a class="reference internal" href="#">Export and import</a><ul>
 <li><a class="reference internal" href="#what-each-format-keeps">What each format keeps</a></li>
 <li><a class="reference internal" href="#text-stays-text">Text stays text</a></li>
+<li><a class="reference internal" href="#page-sizes">Page sizes</a></li>
 <li><a class="reference internal" href="#pages-and-slides">Pages and slides</a></li>
+<li><a class="reference internal" href="#physical-size">Physical size</a></li>
 <li><a class="reference internal" href="#your-own-formats">Your own formats</a></li>
 <li><a class="reference internal" href="#diagrams">Diagrams</a></li>
 <li><a class="reference internal" href="#office-files">Office files</a></li>
@@ -990,7 +1104,7 @@ interaction is attached by the page, by element id:</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e3eff1ea"></script>
+</div><script src="../_static/documentation_options.js?v=79f5c508"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

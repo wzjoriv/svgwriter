@@ -53,6 +53,21 @@ again = svg.Document.open("hello.svg")
 print(again[0].tag, len(again))       # top-level content by index
 ```
 
+## Start a project
+
+For a design with its own theme, components and outputs, start a project folder from a preset and let
+the command line build it:
+
+```console
+svgwriter new my-poster --preset poster      # or: blank, slides, animation (--notebook for main.ipynb)
+cd my-poster
+svgwriter preview                            # a browser page that reloads on every save
+svgwriter build                              # PDF, SVG and PNG into output/
+```
+
+Named sizes work in any document: `svg.Document(size="a4")` draws in millimetres. See
+{doc}`../guides/projects`.
+
 ## More examples
 
-The `examples/` folder of the repository is a numbered learning path of runnable scripts (`examples/01_basic_shapes.py` to `examples/12_logo.py`), each with a Jupyter notebook beside it (`examples/<name>.ipynb`) that shows the results as pictures.
+The `examples/` folder of the repository is a numbered learning path of runnable scripts (`examples/01_basic_shapes.py` to `examples/15_powerpoint.py`), each with a Jupyter notebook beside it (`examples/<name>.ipynb`) that shows the results as pictures.

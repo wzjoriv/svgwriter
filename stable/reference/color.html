@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Colors - svgwriter 1.3.0</title>
+        <title>Colors - svgwriter 2.0.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 1.3.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.0.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.3.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.0.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.3.0</span>
+  <span class="sidebar-versions-label">2.0.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -222,6 +222,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/logos.html">Logos and icons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -240,7 +242,10 @@
 <li class="toctree-l2"><a class="reference internal" href="io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html">Command line</a></li>
 </ul>
 </li>
 </ul>
@@ -325,7 +330,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="svgwriter.color.PaintKeyword">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">PaintKeyword</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/color/paint.html#PaintKeyword"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.color.PaintKeyword" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Keyword</span></code></p>
 <p>The paint keywords that are not colors.</p>
 <p>Members compare equal to their SVG text.</p>
 <p class="rubric">Examples</p>
@@ -443,11 +448,18 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="svgwriter.color.parse_color">
 <span class="sig-name descname"><span class="pre">parse_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.color.Color"><span class="pre">Color</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/color/color.html#parse_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.color.parse_color" title="Link to this definition">¶</a></dt>
-<dd><p>Parse a color keyword, hex, <code class="docutils literal notranslate"><span class="pre">rgb[a](...)</span></code> or <code class="docutils literal notranslate"><span class="pre">hsl[a](...)</span></code>.</p>
-<p>An optional trailing <code class="docutils literal notranslate"><span class="pre">icc-color(...)</span></code> is preserved. Results are cached.</p>
+<dd><p>Parse a color keyword, hex or CSS Color 4 function into sRGB.</p>
+<p>Functions: <code class="docutils literal notranslate"><span class="pre">rgb()</span></code>/<code class="docutils literal notranslate"><span class="pre">rgba()</span></code> (numbers are 0..255, percentages 0..100%), <code class="docutils literal notranslate"><span class="pre">hsl()</span></code>/<code class="docutils literal notranslate"><span class="pre">hsla()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">hwb()</span></code>, <code class="docutils literal notranslate"><span class="pre">hsv()</span></code>/<code class="docutils literal notranslate"><span class="pre">hsva()</span></code>, <code class="docutils literal notranslate"><span class="pre">lab()</span></code>, <code class="docutils literal notranslate"><span class="pre">lch()</span></code>, <code class="docutils literal notranslate"><span class="pre">oklab()</span></code>, <code class="docutils literal notranslate"><span class="pre">oklch()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">color(&lt;space&gt;</span> <span class="pre">r</span> <span class="pre">g</span> <span class="pre">b)</span></code> with <code class="docutils literal notranslate"><span class="pre">srgb</span></code>, <code class="docutils literal notranslate"><span class="pre">srgb-linear</span></code>, <code class="docutils literal notranslate"><span class="pre">display-p3</span></code>, <code class="docutils literal notranslate"><span class="pre">a98-rgb</span></code>, <code class="docutils literal notranslate"><span class="pre">rec2020</span></code>,
+<code class="docutils literal notranslate"><span class="pre">xyz</span></code>/<code class="docutils literal notranslate"><span class="pre">xyz-d65</span></code> or <code class="docutils literal notranslate"><span class="pre">xyz-d50</span></code>, and <code class="docutils literal notranslate"><span class="pre">device-cmyk()</span></code>. Both the comma syntax and the modern
+space-separated syntax with <code class="docutils literal notranslate"><span class="pre">/</span> <span class="pre">alpha</span></code> work; <code class="docutils literal notranslate"><span class="pre">none</span></code> stands for a zero channel; hues take
+<code class="docutils literal notranslate"><span class="pre">deg</span></code>, <code class="docutils literal notranslate"><span class="pre">rad</span></code>, <code class="docutils literal notranslate"><span class="pre">grad</span></code> or <code class="docutils literal notranslate"><span class="pre">turn</span></code>. Colors outside the sRGB gamut are clipped to it.
+<code class="docutils literal notranslate"><span class="pre">device-cmyk()</span></code> is the naive formula with no profile; real CMYK goes through a trailing
+<code class="docutils literal notranslate"><span class="pre">icc-color(...)</span></code>, which is preserved. Results are cached.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Color text such as <code class="docutils literal notranslate"><span class="pre">&quot;tomato&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;#f80&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;rgb(255</span> <span class="pre">0</span> <span class="pre">0)&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;hsl(120,</span> <span class="pre">100%,</span> <span class="pre">50%)&quot;</span></code>.</p>
+<dd class="field-odd"><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Color text such as <code class="docutils literal notranslate"><span class="pre">&quot;tomato&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;#f80&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;rgb(255</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">/</span> <span class="pre">50%)&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;oklch(62.8%</span> <span class="pre">0.2577</span> <span class="pre">29.23)&quot;</span></code>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>Color</em> – The parsed color.</p>
@@ -509,7 +521,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="svgwriter.color.Color">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">g</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/color/color.html#Color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.color.Color" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ColorChannels</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ColorBlending</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Drawable</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ColorChannels</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ColorBlending</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ColorAdjustments</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Drawable</span></code></p>
 <p>An sRGB color with straight alpha; every channel is a float in <code class="docutils literal notranslate"><span class="pre">0..1</span></code>.</p>
 <p>Colors are immutable, support <code class="docutils literal notranslate"><span class="pre">+</span></code> (even mix), <code class="docutils literal notranslate"><span class="pre">*</span></code> and <code class="docutils literal notranslate"><span class="pre">/</span></code> (scaling),
 and iterate as <code class="docutils literal notranslate"><span class="pre">r,</span> <span class="pre">g,</span> <span class="pre">b,</span> <span class="pre">a</span></code>.</p>
@@ -591,7 +603,7 @@ no alpha in colors, so a translucent <code class="docutils literal notranslate">
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.color.Color.parse">
 <span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.color.Color"><span class="pre">Color</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/color/color.html#Color.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.color.Color.parse" title="Link to this definition">¶</a></dt>
-<dd><p>Parse a name, <code class="docutils literal notranslate"><span class="pre">#rgb[a]</span></code>, <code class="docutils literal notranslate"><span class="pre">#rrggbb[aa]</span></code>, <code class="docutils literal notranslate"><span class="pre">rgb[a](...)</span></code> or <code class="docutils literal notranslate"><span class="pre">hsl[a](...)</span></code>.</p>
+<dd><p>Parse a name, hex or CSS Color 4 function (see <a class="reference internal" href="#svgwriter.color.parse_color" title="svgwriter.color.parse_color"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_color()</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Color text.</p>
@@ -730,6 +742,44 @@ is emitted separately as an opacity attribute.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.color.Color.complement">
+<span class="sig-name descname"><span class="pre">complement</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.Color"><span class="pre">Color</span></a></span></span><a class="headerlink" href="#svgwriter.color.Color.complement" title="Link to this definition">¶</a></dt>
+<dd><p>The color with its hue turned half way round.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Color</em> – The complementary color.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"blue"</span><span class="p">)</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#ffff00'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.color.Color.contrast">
+<span class="sig-name descname"><span class="pre">contrast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ColorLike</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="headerlink" href="#svgwriter.color.Color.contrast" title="Link to this definition">¶</a></dt>
+<dd><p>The WCAG 2 contrast ratio with another color, from 1 to 21.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.Color"><em>Color</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The second color; the order does not matter. Alpha is ignored.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>float</em> – <code class="docutils literal notranslate"><span class="pre">(L1</span> <span class="pre">+</span> <span class="pre">0.05)</span> <span class="pre">/</span> <span class="pre">(L2</span> <span class="pre">+</span> <span class="pre">0.05)</span></code> with <code class="docutils literal notranslate"><span class="pre">L1</span></code> the lighter relative luminance. Body text
+needs 4.5 for WCAG AA, large text 3.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"black"</span><span class="p">)</span><span class="o">.</span><span class="n">contrast</span><span class="p">(</span><span class="s2">"white"</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">21.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.color.Color.darken">
 <span class="sig-name descname"><span class="pre">darken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Opacity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.Color"><span class="pre">Color</span></a></span></span><a class="headerlink" href="#svgwriter.color.Color.darken" title="Link to this definition">¶</a></dt>
 <dd><p>Lower HSL lightness by an amount.</p>
@@ -752,6 +802,43 @@ is emitted separately as an opacity attribute.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">darken</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span>
 <span class="go">'#4c4c4c'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.color.Color.desaturate">
+<span class="sig-name descname"><span class="pre">desaturate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Opacity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.Color"><span class="pre">Color</span></a></span></span><a class="headerlink" href="#svgwriter.color.Color.desaturate" title="Link to this definition">¶</a></dt>
+<dd><p>Lower HSL saturation by an amount.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>amount</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Decrease in saturation on a <code class="docutils literal notranslate"><span class="pre">0..1</span></code> scale.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Color</em> – The adjusted color.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"red"</span><span class="p">)</span><span class="o">.</span><span class="n">desaturate</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#808080'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.color.Color.grayscale">
+<span class="sig-name descname"><span class="pre">grayscale</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.Color"><span class="pre">Color</span></a></span></span><a class="headerlink" href="#svgwriter.color.Color.grayscale" title="Link to this definition">¶</a></dt>
+<dd><p>The grey of the same perceived lightness (OKLab lightness, no chroma).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Color</em> – A neutral grey with the same alpha.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"yellow"</span><span class="p">)</span><span class="o">.</span><span class="n">grayscale</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#f4f4f4'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -783,6 +870,67 @@ is emitted separately as an opacity attribute.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"blue"</span><span class="p">)</span><span class="o">.</span><span class="n">hsl</span>
 <span class="go">(240.0, 1.0, 0.5)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.color.Color.hue_shift">
+<span class="sig-name descname"><span class="pre">hue_shift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.Color"><span class="pre">Color</span></a></span></span><a class="headerlink" href="#svgwriter.color.Color.hue_shift" title="Link to this definition">¶</a></dt>
+<dd><p>Turn the HSL hue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>degrees</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Angle to add to the hue; any value, taken modulo 360.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Color</em> – The color with the same saturation, lightness and alpha.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"red"</span><span class="p">)</span><span class="o">.</span><span class="n">hue_shift</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#00ff00'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.color.Color.invert">
+<span class="sig-name descname"><span class="pre">invert</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.Color"><span class="pre">Color</span></a></span></span><a class="headerlink" href="#svgwriter.color.Color.invert" title="Link to this definition">¶</a></dt>
+<dd><p>The negative: every channel <code class="docutils literal notranslate"><span class="pre">c</span></code> becomes <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-</span> <span class="pre">c</span></code>; alpha is kept.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Color</em> – The inverted color.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"#ff8000"</span><span class="p">)</span><span class="o">.</span><span class="n">invert</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#007fff'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="svgwriter.color.Color.is_dark">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_dark</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><a class="headerlink" href="#svgwriter.color.Color.is_dark" title="Link to this definition">¶</a></dt>
+<dd><p>Whether white text reads better on this color than black text.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"navy"</span><span class="p">)</span><span class="o">.</span><span class="n">is_dark</span><span class="p">,</span> <span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"yellow"</span><span class="p">)</span><span class="o">.</span><span class="n">is_dark</span>
+<span class="go">(True, False)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="svgwriter.color.Color.is_light">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_light</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><a class="headerlink" href="#svgwriter.color.Color.is_light" title="Link to this definition">¶</a></dt>
+<dd><p>Whether black text reads better on this color than white text; the opposite of <a class="reference internal" href="#svgwriter.color.Color.is_dark" title="svgwriter.color.Color.is_dark"><code class="xref py py-attr docutils literal notranslate"><span class="pre">is_dark</span></code></a>.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"white"</span><span class="p">)</span><span class="o">.</span><span class="n">is_light</span>
+<span class="go">True</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -830,26 +978,31 @@ is emitted separately as an opacity attribute.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.color.Color.mix">
-<span class="sig-name descname"><span class="pre">mix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ColorLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Opacity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.Color"><span class="pre">Color</span></a></span></span><a class="headerlink" href="#svgwriter.color.Color.mix" title="Link to this definition">¶</a></dt>
-<dd><p>Blend linearly with another color.</p>
+<span class="sig-name descname"><span class="pre">mix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ColorLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Opacity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MixSpace</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'srgb'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.Color"><span class="pre">Color</span></a></span></span><a class="headerlink" href="#svgwriter.color.Color.mix" title="Link to this definition">¶</a></dt>
+<dd><p>Blend with another color in a chosen space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.Color"><em>Color</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The color to mix in.</p></li>
 <li><p><strong>weight</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Share of <cite>other</cite> in the result, from 0 to 1. Defaults to 0.5.</p></li>
+<li><p><strong>space</strong> (<em>{&quot;srgb&quot;</em><em>, </em><em>&quot;linear&quot;</em><em>, </em><em>&quot;oklab&quot;</em><em>, </em><em>&quot;oklch&quot;}</em><em>, </em><em>optional</em>) – Where to interpolate: the stored sRGB channels, linear-light sRGB (physically even
+blending of light), OKLab (perceptually even steps) or OKLCH (OKLab with hue taken the
+shorter way round, so saturated colors stay saturated). Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;srgb&quot;</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Color</em> – The blended color; alpha is blended too.</p>
+<dd class="field-even"><p><em>Color</em> – The blended color, clipped to the sRGB gamut; alpha is blended linearly.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If <cite>other</cite> is not a valid color.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If <cite>other</cite> is not a valid color or <cite>space</cite> is unknown.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"red"</span><span class="p">)</span><span class="o">.</span><span class="n">mix</span><span class="p">(</span><span class="s2">"blue"</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span>
 <span class="go">'#bf0040'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"red"</span><span class="p">)</span><span class="o">.</span><span class="n">mix</span><span class="p">(</span><span class="s2">"blue"</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="s2">"oklch"</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#ba00c2'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -862,6 +1015,31 @@ is emitted separately as an opacity attribute.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">opaque</span><span class="o">.</span><span class="n">a</span>
 <span class="go">1.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.color.Color.readable">
+<span class="sig-name descname"><span class="pre">readable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ColorLike</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ColorLike</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'white'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.Color"><span class="pre">Color</span></a></span></span><a class="headerlink" href="#svgwriter.color.Color.readable" title="Link to this definition">¶</a></dt>
+<dd><p>Of two colors, the one with more contrast on this color, for text on it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>first</strong> (<a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.Color"><em>Color</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – The candidates. Default to black and white.</p></li>
+<li><p><strong>second</strong> (<a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.Color"><em>Color</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – The candidates. Default to black and white.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Color</em> – <cite>first</cite> or <cite>second</cite>, whichever has the higher <a class="reference internal" href="#svgwriter.color.Color.contrast" title="svgwriter.color.Color.contrast"><code class="xref py py-meth docutils literal notranslate"><span class="pre">contrast()</span></code></a>; <cite>first</cite> on a tie.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"#0f766e"</span><span class="p">)</span><span class="o">.</span><span class="n">readable</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#ffffff'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"#fbbf24"</span><span class="p">)</span><span class="o">.</span><span class="n">readable</span><span class="p">(</span><span class="s2">"#1f2933"</span><span class="p">,</span> <span class="s2">"#ffffff"</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#1f2933'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -886,6 +1064,33 @@ is emitted separately as an opacity attribute.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">rgba</span>
 <span class="go">(1, 0.5, 0, 1.0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.color.Color.saturate">
+<span class="sig-name descname"><span class="pre">saturate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Opacity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.color.Color" title="svgwriter.color.Color"><span class="pre">Color</span></a></span></span><a class="headerlink" href="#svgwriter.color.Color.saturate" title="Link to this definition">¶</a></dt>
+<dd><p>Raise HSL saturation by an amount.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>amount</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Change in saturation on a <code class="docutils literal notranslate"><span class="pre">0..1</span></code> scale; negative desaturates. The result is clamped.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Color</em> – The adjusted color, with the same hue, lightness and alpha.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.color.Color.desaturate" title="svgwriter.color.Color.desaturate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">desaturate</span></code></a></dt><dd><p>Lower saturation instead.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"#806060"</span><span class="p">)</span><span class="o">.</span><span class="n">saturate</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#b82828'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1035,15 +1240,25 @@ is emitted separately as an opacity attribute.</p>
 <li><a class="reference internal" href="#svgwriter.color.Color.with_icc"><code class="docutils literal notranslate"><span class="pre">Color.with_icc()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.color.Color.to_css"><code class="docutils literal notranslate"><span class="pre">Color.to_css()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.color.Color.svg_value"><code class="docutils literal notranslate"><span class="pre">Color.svg_value()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.color.Color.complement"><code class="docutils literal notranslate"><span class="pre">Color.complement()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.color.Color.contrast"><code class="docutils literal notranslate"><span class="pre">Color.contrast()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.color.Color.darken"><code class="docutils literal notranslate"><span class="pre">Color.darken()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.color.Color.desaturate"><code class="docutils literal notranslate"><span class="pre">Color.desaturate()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.color.Color.grayscale"><code class="docutils literal notranslate"><span class="pre">Color.grayscale()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.color.Color.hex"><code class="docutils literal notranslate"><span class="pre">Color.hex</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.color.Color.hsl"><code class="docutils literal notranslate"><span class="pre">Color.hsl</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.color.Color.hue_shift"><code class="docutils literal notranslate"><span class="pre">Color.hue_shift()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.color.Color.invert"><code class="docutils literal notranslate"><span class="pre">Color.invert()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.color.Color.is_dark"><code class="docutils literal notranslate"><span class="pre">Color.is_dark</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.color.Color.is_light"><code class="docutils literal notranslate"><span class="pre">Color.is_light</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.color.Color.lighten"><code class="docutils literal notranslate"><span class="pre">Color.lighten()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.color.Color.luminance"><code class="docutils literal notranslate"><span class="pre">Color.luminance</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.color.Color.mix"><code class="docutils literal notranslate"><span class="pre">Color.mix()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.color.Color.opaque"><code class="docutils literal notranslate"><span class="pre">Color.opaque</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.color.Color.readable"><code class="docutils literal notranslate"><span class="pre">Color.readable()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.color.Color.rgb"><code class="docutils literal notranslate"><span class="pre">Color.rgb</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.color.Color.rgba"><code class="docutils literal notranslate"><span class="pre">Color.rgba</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.color.Color.saturate"><code class="docutils literal notranslate"><span class="pre">Color.saturate()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.color.Color.scale"><code class="docutils literal notranslate"><span class="pre">Color.scale()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.color.Color.uint8"><code class="docutils literal notranslate"><span class="pre">Color.uint8</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.color.Color.with_alpha"><code class="docutils literal notranslate"><span class="pre">Color.with_alpha()</span></code></a></li>
@@ -1060,7 +1275,7 @@ is emitted separately as an opacity attribute.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e3eff1ea"></script>
+</div><script src="../_static/documentation_options.js?v=79f5c508"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

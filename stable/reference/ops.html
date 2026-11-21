@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Geometry operations and rendering - svgwriter 1.3.0</title>
+        <title>Geometry operations and rendering - svgwriter 2.0.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 1.3.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.0.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.3.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.0.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.3.0</span>
+  <span class="sidebar-versions-label">2.0.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -222,6 +222,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/logos.html">Logos and icons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -240,7 +242,10 @@
 <li class="toctree-l2"><a class="reference internal" href="io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html">Command line</a></li>
 </ul>
 </li>
 </ul>
@@ -504,22 +509,33 @@ definitions on premultiplied color.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="svgwriter.ops.draw_graph">
-<span class="sig-name descname"><span class="pre">draw_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'spring'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">400.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">12.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_fill</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'#4c9be8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_stroke</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'#555555'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.structure.Group" title="svgwriter.elements.structure.Group"><span class="pre">Group</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/ops/graph.html#draw_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.draw_graph" title="Link to this definition">¶</a></dt>
-<dd><p>Draw a networkx graph as SVG elements you can restyle afterwards.</p>
+<span class="sig-name descname"><span class="pre">draw_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layout</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'spring'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">400.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">12.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_fill</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'#4c9be8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_stroke</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'#555555'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.elements.structure.Group" title="svgwriter.elements.structure.Group"><span class="pre">Group</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/ops/graph.html#draw_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.draw_graph" title="Link to this definition">¶</a></dt>
+<dd><p>Draw a networkx, igraph or rustworkx graph as SVG elements you can restyle afterwards.</p>
 <p>Nodes become <code class="docutils literal notranslate"><span class="pre">&lt;circle&gt;</span></code> elements (id <code class="docutils literal notranslate"><span class="pre">node-&lt;name&gt;</span></code>), edges <code class="docutils literal notranslate"><span class="pre">&lt;line&gt;</span></code>
 elements, or arcs when an edge runs both ways in a directed graph, with
 arrowheads for directed graphs, and labels <code class="docutils literal notranslate"><span class="pre">&lt;text&gt;</span></code>. Per-node and
 per-edge attributes override the defaults: <code class="docutils literal notranslate"><span class="pre">fill</span></code>, <code class="docutils literal notranslate"><span class="pre">radius</span></code>,
-<code class="docutils literal notranslate"><span class="pre">label</span></code>, <code class="docutils literal notranslate"><span class="pre">stroke</span></code>, <code class="docutils literal notranslate"><span class="pre">width</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">label</span></code>, <code class="docutils literal notranslate"><span class="pre">stroke</span></code>, <code class="docutils literal notranslate"><span class="pre">width</span></code>; an edge’s <code class="docutils literal notranslate"><span class="pre">label</span></code> (or else its
+<code class="docutils literal notranslate"><span class="pre">weight</span></code>) is written at its middle when <em>edge_labels</em>.</p>
+<p>Each library’s own attributes are read: networkx node and edge data,
+igraph vertex and edge attributes (vertices keyed by <code class="docutils literal notranslate"><span class="pre">name</span></code> when set,
+else by index), and rustworkx payloads (a dict holds attributes; any
+other node payload is its label, any other edge payload its weight).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>graph</strong> (<em>networkx.Graph</em>) – Any networkx graph (directed or not, multigraphs drawn as simple edges).</p></li>
-<li><p><strong>layout</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>mapping</em><em> or </em><em>callable</em><em>, </em><em>optional</em>) – A networkx layout name (<code class="docutils literal notranslate"><span class="pre">&quot;spring&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;circular&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;kamada_kawai&quot;</span></code>,
-…), ready positions <code class="docutils literal notranslate"><span class="pre">{node:</span> <span class="pre">(x,</span> <span class="pre">y)}</span></code>, or a function <code class="docutils literal notranslate"><span class="pre">f(graph)</span></code>
-returning them. Defaults to “spring”.</p></li>
+<li><p><strong>graph</strong> (<em>networkx.Graph</em><em>, </em><em>igraph.Graph</em><em>, </em><em>rustworkx.PyGraph</em><em> or </em><em>rustworkx.PyDiGraph</em>) – Directed or not; multigraphs are drawn as simple edges.</p></li>
+<li><p><strong>layout</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>mapping</em><em>, </em><em>sequence</em><em> or </em><em>callable</em><em>, </em><em>optional</em>) – A layout of the graph’s own library: <code class="docutils literal notranslate"><span class="pre">&quot;spring&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;circular&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;kamada_kawai&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;random&quot;</span></code> work for all three, plus that
+library’s others (networkx <code class="docutils literal notranslate"><span class="pre">&quot;spectral&quot;</span></code>, igraph <code class="docutils literal notranslate"><span class="pre">&quot;sugiyama&quot;</span></code>,
+rustworkx <code class="docutils literal notranslate"><span class="pre">&quot;spiral&quot;</span></code>, …). Or ready positions: <code class="docutils literal notranslate"><span class="pre">{node:</span> <span class="pre">(x,</span> <span class="pre">y)}</span></code>,
+a library’s own result (an igraph <code class="docutils literal notranslate"><span class="pre">Layout</span></code>, a rustworkx
+<code class="docutils literal notranslate"><span class="pre">Pos2DMapping</span></code>) or points in node order; or a function
+<code class="docutils literal notranslate"><span class="pre">f(graph)</span></code> returning any of these. Defaults to “spring”.</p></li>
 <li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Side of the square the layout is fitted into. Defaults to 400.</p></li>
 <li><p><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – Write node names (or their <code class="docutils literal notranslate"><span class="pre">label</span></code> attribute). Defaults to True.</p></li>
+<li><p><strong>edge_labels</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – Write each edge’s <code class="docutils literal notranslate"><span class="pre">label</span></code> or <code class="docutils literal notranslate"><span class="pre">weight</span></code> attribute at its middle.
+Defaults to False.</p></li>
 <li><p><strong>node_radius</strong> (<em>optional</em>) – Default node and edge style.</p></li>
 <li><p><strong>node_fill</strong> (<em>optional</em>) – Default node and edge style.</p></li>
 <li><p><strong>edge_stroke</strong> (<em>optional</em>) – Default node and edge style.</p></li>
@@ -532,14 +548,28 @@ returning them. Defaults to “spring”.</p></li>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ImportError" title="(in Python v3.15)"><strong>ImportError</strong></a> – If networkx is not installed (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">'pysvgwriter[graph]'</span></code>).</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the layout name is unknown.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If <em>graph</em> is not a graph of a supported library.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the layout name is unknown to the graph’s library, or positions
+    are missing for some nodes.</p></li>
 </ul>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="document.html#svgwriter.Document.add" title="svgwriter.Document.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.Document.add</span></code></a></dt><dd><p>Takes graphs directly, drawn with the defaults.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p><code class="docutils literal notranslate"><span class="pre">pysvgwriter[graph]</span></code> installs all three libraries; any one installed
+on its own works too.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># import networkx as nx; doc = svg.Document(); doc.add(nx.karate_club_graph()); doc.fit()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">picture</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">draw_graph</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">path_graph</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">layout</span><span class="o">=</span><span class="s2">"circular"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">picture</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s2">"circle"</span><span class="p">])</span>
+<span class="go">3</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -586,8 +616,10 @@ attributes; anything else is morphed as outlines: outlines pair with
 outlines and holes with holes (a contour without a partner grows from or
 shrinks to its centre), each pair is resampled to one point count and
 started where the points move least, so in-between shapes do not twist.
-Values that cannot be blended (keywords, different strings) switch at
-<code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">0.5</span></code>, as SMIL’s discrete mode does.</p>
+Inside elements, attribute values that cannot be blended (keywords,
+different strings, lists of different lengths) switch at <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">0.5</span></code>, as
+SMIL’s discrete mode does. Other types are added with
+<a class="reference internal" href="#svgwriter.ops.register_interpolator" title="svgwriter.ops.register_interpolator"><code class="xref py py-func docutils literal notranslate"><span class="pre">register_interpolator()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -599,11 +631,16 @@ Values that cannot be blended (keywords, different strings) switch at
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>object</em> – A new value; neither input is changed.</p>
 </dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If no rule blends <em>a</em> with <em>b</em> (for example a number and a color).</p>
+</dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.Color.mix</span></code></dt><dd><p>Color blending on its own.</p>
+</dd>
+<dt><a class="reference internal" href="#svgwriter.ops.register_interpolator" title="svgwriter.ops.register_interpolator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_interpolator</span></code></a></dt><dd><p>Teach interpolate a new type.</p>
 </dd>
 </dl>
 </div>
@@ -618,6 +655,10 @@ Values that cannot be blended (keywords, different strings) switch at
 <span class="gp">&gt;&gt;&gt; </span><span class="n">morph</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">morph</span><span class="o">.</span><span class="n">tag</span>
 <span class="go">'path'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"bold"</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">TypeError</span>: <span class="n">cannot interpolate int and str; teach it with svg.register_interpolator</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -861,6 +902,42 @@ stored in the font.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># name = svg.register_font("Inter-Regular.ttf")</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># svg.text("Hello", x=0, y=20, font_family=name).to_path()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.ops.register_interpolator">
+<span class="sig-name descname"><span class="pre">register_interpolator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#type" title="(in Python v3.15)"><span class="pre">type</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/ops/interpolate.html#register_interpolator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.register_interpolator" title="Link to this definition">¶</a></dt>
+<dd><p>Teach <a class="reference internal" href="#svgwriter.ops.interpolate" title="svgwriter.ops.interpolate"><code class="xref py py-func docutils literal notranslate"><span class="pre">interpolate()</span></code></a> to blend values of a new kind.</p>
+<p>Registered rules are tried before the built-in ones, newest first, so a
+rule can also replace how a built-in type blends.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kind</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#type" title="(in Python v3.15)"><em>type</em></a><em> or </em><em>callable</em>) – A class (instances and subclasses match) or a predicate
+<code class="docutils literal notranslate"><span class="pre">kind(value)</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code>. A rule applies when both values match.</p></li>
+<li><p><strong>blend</strong> (<em>callable</em>) – <code class="docutils literal notranslate"><span class="pre">blend(a,</span> <span class="pre">b,</span> <span class="pre">t)</span></code> returning the value a fraction <em>t</em> from <em>a</em> to <em>b</em>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.ops.unregister_interpolator" title="svgwriter.ops.unregister_interpolator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unregister_interpolator</span></code></a></dt><dd><p>Remove the rule again.</p>
+</dd>
+<dt><a class="reference internal" href="#svgwriter.ops.interpolate" title="svgwriter.ops.interpolate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpolate</span></code></a></dt><dd><p>Uses the rules.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Weight</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">pass</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">register_interpolator</span><span class="p">(</span><span class="n">Weight</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Weight</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">t</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">Weight</span><span class="p">(</span><span class="mi">400</span><span class="p">),</span> <span class="n">Weight</span><span class="p">(</span><span class="mi">700</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="go">600</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">unregister_interpolator</span><span class="p">(</span><span class="n">Weight</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1149,6 +1226,28 @@ the first installed family wins.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.ops.unregister_interpolator">
+<span class="sig-name descname"><span class="pre">unregister_interpolator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#type" title="(in Python v3.15)"><span class="pre">type</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/ops/interpolate.html#unregister_interpolator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.unregister_interpolator" title="Link to this definition">¶</a></dt>
+<dd><p>Remove the rule registered for <em>kind</em> with <a class="reference internal" href="#svgwriter.ops.register_interpolator" title="svgwriter.ops.register_interpolator"><code class="xref py py-func docutils literal notranslate"><span class="pre">register_interpolator()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kind</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#type" title="(in Python v3.15)"><em>type</em></a><em> or </em><em>callable</em>) – The class or predicate given when registering.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#KeyError" title="(in Python v3.15)"><strong>KeyError</strong></a> – If no rule is registered for <em>kind</em>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">unregister_interpolator</span><span class="p">(</span><span class="nb">complex</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">KeyError</span>: <span class="n">'no interpolator registered for complex'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="svgwriter.ops.text_width">
 <span class="sig-name descname"><span class="pre">text_width</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_family</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sans-serif'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">16.0</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.15)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'normal'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'bold'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">italic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/ops/text.html#text_width"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.text_width" title="Link to this definition">¶</a></dt>
 <dd><p>Advance width of <em>text</em> set in the given font.</p>
@@ -1429,6 +1528,7 @@ converts.</p>
 <li><a class="reference internal" href="#svgwriter.ops.rasterize_many"><code class="docutils literal notranslate"><span class="pre">rasterize_many()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.render_png"><code class="docutils literal notranslate"><span class="pre">render_png()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.register_font"><code class="docutils literal notranslate"><span class="pre">register_font()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.ops.register_interpolator"><code class="docutils literal notranslate"><span class="pre">register_interpolator()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.render_svg"><code class="docutils literal notranslate"><span class="pre">render_svg()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.resolve_operator"><code class="docutils literal notranslate"><span class="pre">resolve_operator()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.simplify"><code class="docutils literal notranslate"><span class="pre">simplify()</span></code></a></li>
@@ -1437,6 +1537,7 @@ converts.</p>
 <li><a class="reference internal" href="#svgwriter.ops.tangent_at_length"><code class="docutils literal notranslate"><span class="pre">tangent_at_length()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.text_outline"><code class="docutils literal notranslate"><span class="pre">text_outline()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.text_to_path"><code class="docutils literal notranslate"><span class="pre">text_to_path()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.ops.unregister_interpolator"><code class="docutils literal notranslate"><span class="pre">unregister_interpolator()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.text_width"><code class="docutils literal notranslate"><span class="pre">text_width()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.to_matplotlib"><code class="docutils literal notranslate"><span class="pre">to_matplotlib()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.to_skia"><code class="docutils literal notranslate"><span class="pre">to_skia()</span></code></a></li>
@@ -1454,7 +1555,7 @@ converts.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e3eff1ea"></script>
+</div><script src="../_static/documentation_options.js?v=79f5c508"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

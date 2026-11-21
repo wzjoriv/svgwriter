@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.elements.animation._elements - svgwriter 1.3.0</title>
+        <title>svgwriter.elements.animation._elements - svgwriter 2.0.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">svgwriter 1.3.0</div></a>
+      <a href="../../../../index.html"><div class="brand">svgwriter 2.0.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 1.3.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.0.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">1.3.0</span>
+  <span class="sidebar-versions-label">2.0.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
@@ -221,6 +221,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/logos.html">Logos and icons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/projects.html">Projects</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -239,7 +241,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/attributes.html">Attribute values and styles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/cli.html">Command line</a></li>
 </ul>
 </li>
 </ul>
@@ -279,10 +284,10 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">TypeAlias</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">Keyword</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...pathdata.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathBuilder</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathData</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._behavior</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConditionalAttributes</span><span class="p">,</span> <span class="n">CoreAttributes</span><span class="p">,</span> <span class="n">ExternalResourcesAttribute</span><span class="p">,</span> <span class="n">XLinkAttributes</span>
@@ -313,7 +318,7 @@
 
 <div class="viewcode-block" id="Restart">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.Restart">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Restart</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Restart</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The ``restart`` attribute: when an animation may begin again.</span>
 
 <span class="sd">    See Also</span>
@@ -334,7 +339,7 @@
 
 <div class="viewcode-block" id="AnimationFill">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.AnimationFill">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">AnimationFill</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnimationFill</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The animation ``fill`` attribute: the state after the active duration (not paint).</span>
 
 <span class="sd">    See Also</span>
@@ -354,7 +359,7 @@
 
 <div class="viewcode-block" id="CalcMode">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.CalcMode">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">CalcMode</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CalcMode</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The ``calcMode`` attribute: how values are interpolated.</span>
 
 <span class="sd">    See Also</span>
@@ -376,7 +381,7 @@
 
 <div class="viewcode-block" id="Additive">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.Additive">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Additive</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Additive</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The ``additive`` attribute: replace the underlying value or add to it.</span>
 
 <span class="sd">    See Also</span>
@@ -396,7 +401,7 @@
 
 <div class="viewcode-block" id="Accumulate">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.Accumulate">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Accumulate</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Accumulate</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The ``accumulate`` attribute: whether repeats build on the previous end value.</span>
 
 <span class="sd">    See Also</span>
@@ -416,7 +421,7 @@
 
 <div class="viewcode-block" id="TransformType">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.animation.TransformType">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">TransformType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TransformType</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The ``type`` of an ``animateTransform``.</span>
 
 <span class="sd">    See Also</span>
@@ -755,7 +760,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=e3eff1ea"></script>
+</div><script src="../../../../_static/documentation_options.js?v=79f5c508"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

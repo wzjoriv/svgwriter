@@ -121,7 +121,7 @@ doc = svg.Document(200, 150)
 doc.add(Network([3, 5, 2]))
 ```
 
-`add` also takes objects from other libraries: matplotlib figures (`savefig`), anything with
+`add` also takes objects from other libraries: matplotlib figures (`savefig`), ziaplot plots, anything with
 `_repr_svg_` (parsed into elements), anything with only `_repr_png_` or `_repr_jpeg_` (an `<image>`),
 and numpy pixel arrays.
 
@@ -133,9 +133,29 @@ and stay editable there. With `doc.add(fig)` in the other direction, figures and
 
 ## Graphs
 
-With the `pysvgwriter[graph]` extra, networkx graphs draw themselves: `doc.add(G)`, or
-`svgwriter.ops.draw_graph(G, layout="circular", node_radius=8)` for options. Nodes are circles with
-ids `node-<name>`, edges are lines (arcs when a directed edge runs both ways) with arrowheads for
-directed graphs, and node or edge attributes (`fill`, `radius`, `label`, `stroke`, `width`) style
-single items. Any networkx layout, a positions mapping or a layout function places the nodes.
+networkx, python-igraph and rustworkx graphs draw themselves: `doc.add(G)`, or
+`svgwriter.ops.draw_graph(G, layout="circular", node_radius=8)` for options. Install the library
+with `pysvgwriter[graph]` (all three), or install just the one you use.
+Nodes are circles with ids `node-<name>`, edges are lines (arcs when a directed edge runs both ways)
+with arrowheads for directed graphs, and node or edge attributes (`fill`, `radius`, `label`,
+`stroke`, `width`) style single items; `edge_labels=True` writes each edge's `label` or `weight`.
+
+```python
+import igraph as ig
+
+g = ig.Graph([(0, 1), (1, 2), (2, 0)], directed=True)
+g.vs["name"] = ["a", "b", "c"]
+g.es["weight"] = [1, 2, 3]
+doc.add(svg.ops.draw_graph(g, layout="kamada_kawai", edge_labels=True))
+```
+
+Each library reads its own way: networkx node and edge data; igraph vertex and edge attributes, with
+vertices keyed by `name` when set (else by index); rustworkx payloads, where a dict holds the
+attributes and any other node payload is the label (any other edge payload the weight).
+
+`layout=` takes a name from the graph's own library (`"spring"`, `"circular"`, `"kamada_kawai"` and
+`"random"` work for all three, plus each library's others, such as networkx `"spectral"`, igraph
+`"sugiyama"` or rustworkx `"spiral"`; an unknown name lists the choices), ready positions
+(`{node: (x, y)}`, an igraph `Layout`, a rustworkx `Pos2DMapping`), or a function of the graph
+returning them. `seed=` makes random layouts reproducible.
 
