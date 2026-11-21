@@ -13,7 +13,7 @@ from .._behavior import CoreAttributes, PresentationAttributes
 from ..core import Category, Child, Container, ContentModel, Element
 
 if TYPE_CHECKING:
-    from ._fonts import Glyph
+    from ._glyphs import Glyph
 
 __all__ = ["FontGlyphs"]
 
@@ -109,7 +109,7 @@ class FontGlyphs:
         >>> str(f.glyph("a", "M0 0L5 5"))
         '<glyph d="M0 0 L5 5" unicode="a"/>'
         """
-        from ._fonts import Glyph
+        from ._glyphs import Glyph
 
         return self.add(Glyph(unicode, d, **kwargs))
 
@@ -129,6 +129,6 @@ class FontGlyphs:
         >>> list(f.glyphs())
         ['a']
         """
-        from ._fonts import Glyph
+        from ._glyphs import Glyph
 
         return {str(g.get("unicode")): g for g in self if isinstance(g, Glyph)}

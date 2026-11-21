@@ -12,7 +12,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, Concatenate, Final, Generic, ParamSpec, TypeVar
 
 if TYPE_CHECKING:
-    from ..filters.base import Filter
+    from ..filters import Filter
     from ..paint import ClipPath, LinearGradient, Marker, Mask, Pattern, RadialGradient
     from ..shapes import Circle, Ellipse, Line, Path, Polygon, Polyline, Rect
     from ..structure import A, Group, Image, Switch, Symbol, Use
@@ -35,7 +35,7 @@ PLACED: Final = {
 DEFINED: Final = {
     "linear_gradient": ("paint", "LinearGradient"), "radial_gradient": ("paint", "RadialGradient"),
     "pattern": ("paint", "Pattern"), "clip_path": ("paint", "ClipPath"), "mask": ("paint", "Mask"),
-    "marker": ("paint", "Marker"), "filter": ("filters.base", "Filter"), "symbol": ("structure", "Symbol"),
+    "marker": ("paint", "Marker"), "filter": ("filters", "Filter"), "symbol": ("structure", "Symbol"),
 }
 
 

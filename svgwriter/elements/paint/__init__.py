@@ -4,8 +4,12 @@ Paint servers, clipping and markers: gradients, stops, patterns, ``clipPath``, `
 
 from __future__ import annotations
 
-from ._clip import ClipPath, Marker, Mask
-from ._servers import Gradient, LinearGradient, Pattern, RadialGradient, Stop
+from ._clip import ClipPath, Mask
+from ._linear import LinearGradient
+from ._marker import Marker
+from ._pattern import Pattern
+from ._radial import RadialGradient
+from ._servers import Gradient, Stop
 
 __all__ = [
     "ClipPath",
