@@ -15,6 +15,7 @@ from ._keywords import resolve_keywords
 from ._layers import ancestry, drawable_order
 from ._links import resolve_links
 from ._markers import expand_markers
+from ._profiles import resolve_profiles
 from ._servers import resolve_servers
 from ._stops import linear_rgb_stops
 from ._tiles import user_space_patterns
@@ -183,6 +184,7 @@ def renderable_copy(root: Element, *, keep_text: Callable[[Text], bool] | None =
     resolve_styles(copy)
     apply_conditions(copy)
     expand_uses(copy)
+    resolve_profiles(copy)
     resolve_keywords(copy)
     resolve_servers(copy)
     linear_rgb_stops(copy)
