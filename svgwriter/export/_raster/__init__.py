@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ..._internal._constants import DEFAULT_DPI
+from ..._internal._constants import PX_PER_INCH
 from .._registry import register, register_importer
 from ._constants import DEFAULT_GIF_FPS, DEFAULT_QUALITY
 
@@ -55,7 +55,7 @@ def _raster(format: str) -> Callable[..., bytes]:
         if isinstance(size, int):
             size = (size, size)
         if dpi is not None:
-            scale = dpi / DEFAULT_DPI
+            scale = dpi / PX_PER_INCH
         animated = _animation_encoders()
         if animate and format in animated:
             frames = _frames(document, fps, duration, scale=scale, size=size, padding=padding, background=background,
@@ -130,7 +130,7 @@ def gif(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int |
 
     del quality
     if dpi is not None:
-        scale = dpi / DEFAULT_DPI
+        scale = dpi / PX_PER_INCH
     if isinstance(size, int):
         size = (size, size)
     options = {"scale": scale, "size": size, "padding": padding, "background": background}

@@ -9,8 +9,9 @@ import io
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any
 
+from ..._internal._constants import PX_PER_INCH
 from .._registry import register, register_importer
-from ._constants import EXTRA_HINT, PICTURE_SCALE, USER_UNITS_PER_INCH
+from ._constants import EXTRA_HINT, PICTURE_SCALE
 
 if TYPE_CHECKING:
     from ...document import Document
@@ -139,11 +140,11 @@ def read_pptx(data: bytes, *, slide: int | None = 0) -> Document | list[Document
 
 def _picture(document: Document) -> tuple[bytes, float, float]:
     """The drawing as PNG bytes plus its size in inches at 96 user units per inch."""
-    from ...ops.render import document_size
+    from ...ops.render import page_size
 
-    width, height = document_size(document)
+    width, height = page_size(document)
     png = document.export("png", scale=PICTURE_SCALE)
-    return png, width / USER_UNITS_PER_INCH, height / USER_UNITS_PER_INCH
+    return png, width / PX_PER_INCH, height / PX_PER_INCH
 
 
 @register("docx", extensions=(".docx",))

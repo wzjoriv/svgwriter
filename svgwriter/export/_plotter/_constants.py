@@ -7,6 +7,8 @@ from __future__ import annotations
 import re
 from typing import Final
 
+from ..._internal._constants import MM_PER_INCH, PX_PER_INCH
+
 __all__ = [
     "ARC_STEP_DEGREES",
     "DEFAULT_TOLERANCE",
@@ -25,7 +27,7 @@ __all__ = [
     "PRECISION",
 ]
 
-MM_PER_USER_UNIT: Final = 25.4 / 96.0
+MM_PER_USER_UNIT: Final = MM_PER_INCH / PX_PER_INCH
 DEFAULT_TOLERANCE: Final = 0.05
 HPGL_UNITS_PER_MM: Final = 40.0
 PRECISION: Final = 4
