@@ -273,12 +273,12 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
     """
     from ..attributes.cascade import computed, rules_of
     from ..elements import Image, PathOperand
-    from ..ops.render import document_size
+    from ..ops.render import page_size
     from ._layers import ancestry, drawable_order, image_matrix
     from ._rendering import renderable_copy, view_matrix
 
     with document._prepared():
-        width, height = document_size(document)
+        width, height = page_size(document)
         view = view_matrix(document, width, height)
         source = document.root
         if text:

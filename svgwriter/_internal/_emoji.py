@@ -135,7 +135,7 @@ def color_glyph_boxes(document: Document) -> Iterator[tuple[GlyphBox, Matrix, fl
     """
     from ..attributes.cascade import rules_of
     from ..elements import Text
-    from ..ops.render import document_size
+    from ..ops.render import page_size
     from ..transform.matrix import Matrix
     from ._flatten import _hidden, _number
     from ._layers import ancestry, drawable_order
@@ -143,7 +143,7 @@ def color_glyph_boxes(document: Document) -> Iterator[tuple[GlyphBox, Matrix, fl
     from ._rendering import view_matrix
 
     with document._prepared():
-        width, height = document_size(document)
+        width, height = page_size(document)
         view = view_matrix(document, width, height)
         root = document.root
         rules = rules_of(root)
