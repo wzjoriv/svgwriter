@@ -34,6 +34,7 @@ guides/paths
 guides/text
 guides/colors-and-images
 guides/effects
+guides/presets
 guides/documents
 guides/rendering
 guides/export-import
