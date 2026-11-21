@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any, TypeVar, overload
 
 from ._document.access import Access
 from ._document.ingest import SupportsSVG, to_element
+from ._document.inkscape import InkscapeData
 from ._document.output import Output
 from ._document.sizes import PageSize, page_size
 from ._document.sizing import Sizing
@@ -33,7 +34,7 @@ __all__ = ["Document"]
 E = TypeVar("E", bound=Element)
 
 
-class Document(Sizing, Theming, Typography, Output, Access, ElementFactory):
+class Document(Sizing, Theming, Typography, Output, Access, InkscapeData, ElementFactory):
     """An SVG document under construction.
 
     Shortcut methods (``doc.circle(...)``, ``doc.linear_gradient(...)``)

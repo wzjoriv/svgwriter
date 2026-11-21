@@ -54,6 +54,9 @@ export
     Format registry by name or extension: vector (SVG, PDF, TikZ, EPS),
     raster (PNG, JPEG, WebP, BMP, GIF, PPM, ICO, ICNS), plotter (DXF, HPGL,
     G-code) and Excalidraw; ``svg.export.register`` adds more.
+inkscape
+    Inkscape files: layers, labels, editable stars and arcs, connectors,
+    guides and export hints.
 video
     Frame rendering through a pluggable renderer and encoding with ffmpeg.
 cli
@@ -64,7 +67,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from . import export, layout, ops, preset, project, theme, video
+from . import export, inkscape, layout, ops, preset, project, theme, video
 from ._document.sizes import PageSize, page_size, size
 from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
@@ -217,6 +220,7 @@ __all__ = [
     "parse_file",
     "parse_paint",
     "export",
+    "inkscape",
     "layout",
     "Grid",
     "HStack",

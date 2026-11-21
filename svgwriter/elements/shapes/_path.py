@@ -19,6 +19,7 @@ from ._base import Shape
 from ._commands import PathCommands
 
 if TYPE_CHECKING:
+    from ...inkscape.connectors import Connection
     from ..structure import Group
 
 __all__ = ["Path"]
@@ -71,6 +72,35 @@ class Path(PathCommands, Shape, tag="path"):
         super().__init__(**kwargs)
         self.d = d  # type: ignore[assignment]
         self.update(path_length=path_length)
+
+    @property
+    def connects(self) -> Connection | None:
+        """The objects this path joins as an Inkscape connector, or None for a plain path.
+
+        Assign ``(start, end)`` to attach the path to two elements
+        (``inkscape:connection-start`` and ``-end``; it is redrawn as a straight
+        line between their centres), or None to detach it.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> doc = svg.Document(100, 40)
+        >>> a, b = doc.circle(10, 20, 5), doc.circle(90, 20, 5)
+        >>> wire = doc.path(stroke="black")
+        >>> wire.connects = (a, b)
+        >>> wire.connects.start is a, str(wire.d)
+        (True, 'M10 20 L90 20')
+        """
+        from ...inkscape.connectors import connection
+
+        return connection(self)
+
+    @connects.setter
+    def connects(self, value: tuple[Element | None, Element | None] | None) -> None:
+        from ...inkscape.connectors import connect
+
+        start, end = (None, None) if value is None else value
+        connect(self, start, end)
 
     @property
     def d(self) -> PathData:
