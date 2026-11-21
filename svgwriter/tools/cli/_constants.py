@@ -21,7 +21,6 @@ __all__ = [
     "FRAME_FORMAT",
     "KEEP_CHOICE",
     "PRESET_COLUMN",
-    "PREVIEW_PORT",
     "SIZE_COLUMN",
     "SIZE_SEPARATOR",
     "STROKE_WIDTH",
@@ -40,7 +39,6 @@ DEFAULT_FONT: Final = "sans-serif"
 TEXT_MARGIN: Final = 4.0
 SIZE_COLUMN: Final = 20
 PRESET_COLUMN: Final = 12
-PREVIEW_PORT: Final = 8000
 DEFAULT_PRESET: Final = "blank"
 SIZE_SEPARATOR: Final = ","
 KEEP_CHOICE: Final = "the preset's own"

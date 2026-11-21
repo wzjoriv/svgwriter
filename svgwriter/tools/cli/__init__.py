@@ -5,7 +5,7 @@ Commands
 new                 start a design project from a preset
 build               write a project's outputs
 presets             list project presets
-preview             serve a project's outputs on a page that reloads on every save
+preview             serve a live page that redraws as controls move and files change
 shapes, elements    list registered composite shapes and element classes
 sizes               list named canvas sizes
 draw                write a registered shape
