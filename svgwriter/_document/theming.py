@@ -7,7 +7,7 @@ from __future__ import annotations
 from collections.abc import Generator
 from contextlib import contextmanager
 
-from ..attributes._constants import ROOT_RULES
+from ..attributes.cascade import set_class_rules
 from ..layout import settle
 from ..theme.sheet import applied, role_rules
 from ..theme.theme import Theme
@@ -35,7 +35,7 @@ class Theming:
     @theme.setter
     def theme(self, value: Theme | str) -> None:
         self._theme = Theme.of(value)
-        object.__setattr__(self.root, ROOT_RULES, role_rules(self._theme))  # type: ignore[attr-defined]
+        set_class_rules(self.root, role_rules(self._theme))  # type: ignore[attr-defined]
 
     @contextmanager
     def _prepared(self) -> Generator[None, None, None]:

@@ -25,7 +25,7 @@ from .names import PRESENTATION_ATTRIBUTES
 if TYPE_CHECKING:
     from ..elements.core import Element
 
-__all__ = ["INHERITED", "Rule", "computed", "frozen_rules", "parse_css", "resolve_styles", "rules_of"]
+__all__ = ["INHERITED", "Rule", "computed", "frozen_rules", "parse_css", "resolve_styles", "rules_of", "set_class_rules"]
 
 _FROZEN: ContextVar[dict[int, list[Rule]] | None] = ContextVar("svgwriter_frozen_rules", default=None)
 
@@ -415,3 +415,25 @@ def resolve_styles(root: Element) -> None:
         if sheet.parent is not None:
             sheet.parent.remove(sheet)
     root.__dict__.pop(ROOT_RULES, None)
+
+
+def set_class_rules(root: Element, rules: dict[str, list[Rule]]) -> None:
+    """Attach rules by class name to *root*; :func:`rules_of` puts them first for the classes in use.
+
+    Parameters
+    ----------
+    root : Element
+        The root of a tree.
+    rules : dict of str to list of Rule
+        The rules of each class name, such as a theme's role styles.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.attributes.cascade import computed, parse_css, set_class_rules
+    >>> root = svg.Svg(svg.rect(0, 0, 1, 1, class_="a"))
+    >>> set_class_rules(root, {"a": parse_css(".a { fill: red }")})
+    >>> computed(root[0], "fill")
+    'red'
+    """
+    object.__setattr__(root, ROOT_RULES, rules)
