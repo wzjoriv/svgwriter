@@ -8,7 +8,7 @@ import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from ..._internal._timing import clock
+from ..._internal._animation._timing import clock
 from ._constants import COLOR_ATTRIBUTES, PATH_TOLERANCE
 
 if TYPE_CHECKING:
@@ -131,7 +131,7 @@ def _transform(animation: Element, values: list[str], frame: Matrix) -> dict[str
 
 
 def _motion(animation: Element, frame: Matrix) -> dict[str, Any] | None:
-    from ..._internal._flatten import polylines
+    from ..._internal._flat._flatten import polylines
     from ...pathdata.data import PathData
 
     path = animation.get("path")

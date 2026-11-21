@@ -10,7 +10,7 @@ from ..._internal._constants import PX_PER_INCH
 from .._registry import register
 
 if TYPE_CHECKING:
-    from ..._internal._icc_output import IccLike
+    from ..._internal._color._icc_output import IccLike
     from ...color.color import ColorLike
     from ...document import Document
 
@@ -56,8 +56,8 @@ def tiff(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int 
     >>> svg.export.export(doc, "tiff", dpi=300)[:4]
     b'II*\\x00'
     """
-    from ..._internal._rgba import to_uint8
-    from ..._internal._tiff import encode_tiff
+    from ..._internal._codecs._rgba import to_uint8
+    from ..._internal._codecs._tiff import encode_tiff
 
     if dpi is not None:
         scale = dpi / PX_PER_INCH
@@ -65,7 +65,7 @@ def tiff(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int 
         size = (size, size)
     target = None
     if icc is not None:
-        from ..._internal._icc_output import output_profile
+        from ..._internal._color._icc_output import output_profile
 
         target = output_profile(icc)
     cmyk = target is not None and target.space == "CMYK"
@@ -73,7 +73,7 @@ def tiff(document: Document, *, scale: float = 1.0, size: tuple[int, int] | int 
         background = "white"
     pixels = to_uint8(document.rasterize(scale=scale, size=size, padding=padding, background=background))
     if target is not None:
-        from ..._internal._icc_output import to_profile
+        from ..._internal._color._icc_output import to_profile
 
         pixels = to_profile(pixels, target)
     return encode_tiff(pixels, "CMYK" if cmyk else "RGB", dpi=scale * PX_PER_INCH,

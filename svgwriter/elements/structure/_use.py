@@ -21,7 +21,7 @@ __all__ = ["UseGeometry"]
 
 def _symbol_outline(symbol: Element, use: Element) -> PathData:
     """A ``<symbol>``'s children as one outline, its ``viewBox`` fitted into the ``<use>``'s width and height."""
-    from ..._internal._layers import fit_box
+    from ..._internal._render._layers import fit_box
     from ...attributes.viewbox import PreserveAspectRatio, ViewBox
     from .._behavior import union_outline
 

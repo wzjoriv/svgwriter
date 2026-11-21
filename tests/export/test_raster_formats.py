@@ -8,9 +8,9 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter._internal._encoders import encode_bmp
-from svgwriter._internal._gif import encode_gif
-from svgwriter._internal._pnm import decode_pnm, encode_pnm
+from svgwriter._internal._codecs._encoders import encode_bmp
+from svgwriter._internal._codecs._gif import encode_gif
+from svgwriter._internal._codecs._pnm import decode_pnm, encode_pnm
 from svgwriter.elements.structure import Image, Pixels
 
 

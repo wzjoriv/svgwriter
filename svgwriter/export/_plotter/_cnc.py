@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
-from ..._internal._flatten import Point, Scene, flatten, polylines
+from ..._internal._flat._flatten import Point, Scene, flatten, polylines
 from ..._internal._numbers import format_number
 from ._constants import DEFAULT_TOLERANCE, HPGL_UNITS_PER_MM, MM_PER_USER_UNIT, PRECISION
 

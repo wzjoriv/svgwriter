@@ -10,7 +10,7 @@ from typing import Any
 
 import numpy as np
 
-from .._internal._flatten import polylines
+from .._internal._flat._flatten import polylines
 from ..pathdata.commands import ClosePath, LineTo, MoveTo
 from ..pathdata.data import PathData
 from ._constants import MORPH_CORNER, MORPH_FLATNESS, MORPH_MAX_POINTS, MORPH_MIN_POINTS, MORPH_SPACING

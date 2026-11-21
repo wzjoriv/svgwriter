@@ -109,8 +109,8 @@ def slide_animations(document: Document) -> SlideAnimations:
     >>> slide_animations(doc).dropped
     ['animate d on <path>']
     """
-    from ..._internal._layers import ancestry
-    from ..._internal._rendering import view_matrix
+    from ..._internal._render._layers import ancestry
+    from ..._internal._render._rendering import view_matrix
     from ...document import Document
     from ...elements.animation import AnimationElement
     from ...ops.render import page_size

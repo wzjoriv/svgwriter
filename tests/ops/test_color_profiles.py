@@ -10,8 +10,8 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter._internal import _icc
-from svgwriter._internal._icc_embedded import embedded_profile
+from svgwriter._internal._color import _icc
+from svgwriter._internal._color._icc_embedded import embedded_profile
 from svgwriter.elements.structure import Pixels
 
 lcms2 = pytest.importorskip("lcms2")

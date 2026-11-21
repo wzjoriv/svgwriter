@@ -11,14 +11,14 @@ from typing import TYPE_CHECKING, Any, Literal
 import skia
 
 from .._internal._constants import ANCHOR_SHIFT
-from .._internal._font_match import FontStyle, describe
-from .._internal._font_names import family_names
-from .._internal._fonts import font_for, registered_typefaces, resolve_font
+from .._internal._typography._font_match import FontStyle, describe
+from .._internal._typography._font_names import family_names
+from .._internal._typography._fonts import font_for, registered_typefaces, resolve_font
 from ..pathdata.data import PathData
 from ..transform.matrix import Matrix
 from ._constants import DEFAULT_FAMILY, DEFAULT_FONT_SIZE, GLYPH_CACHE
-from ._glyphs import GlyphBox, layout_glyphs
 from ._skia import from_skia
+from ._text import GlyphBox, layout_glyphs
 
 if TYPE_CHECKING:
     from ..elements.shapes import Path

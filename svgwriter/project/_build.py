@@ -13,8 +13,8 @@ from pathlib import Path
 from typing import Any
 
 from .._document.sizes import PageSize
-from .._internal._gif import encode_gif_animation
-from .._internal._rgba import to_uint8
+from .._internal._codecs._gif import encode_gif_animation
+from .._internal._codecs._rgba import to_uint8
 from ..document import Document
 from ..export import exporters, save
 from ..theme import Theme

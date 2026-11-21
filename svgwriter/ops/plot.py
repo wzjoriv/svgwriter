@@ -95,7 +95,7 @@ def to_matplotlib(item: Element | Document, ax: Any, *, flip: bool = True) -> li
     except ImportError as error:
         raise ImportError("drawing into matplotlib needs matplotlib; pip install 'pysvgwriter[plot]'") from error
 
-    from .._internal._flatten import flatten
+    from .._internal._flat._flatten import flatten
     from ..document import Document
 
     document = item if isinstance(item, Document) else Document()

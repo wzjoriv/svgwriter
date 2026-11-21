@@ -70,7 +70,7 @@ def split_equations(document: Document) -> tuple[Document, list[Equation]]:
     >>> len(rest), [e.source for e in found]
     (0, ['x^2'])
     """
-    from ..._internal._rendering import page_box
+    from ..._internal._render._rendering import page_box
     from ...document import Document
     from ._omml import latex_to_omml
 

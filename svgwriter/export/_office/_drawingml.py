@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any
 from ._constants import A_NS, ALPHA_SCALE, ANGLE_UNIT, CAPS, JOINS, MITER_SCALE
 
 if TYPE_CHECKING:
-    from ..._internal._paints import Shading
+    from ..._internal._flat._paints import Shading
     from ...elements.core import Element
     from ...pathdata.data import BBox
 
@@ -62,7 +62,7 @@ def gradient_xml(shading: Shading, box: BBox, opacity: float) -> str:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter._internal._flatten import flatten
+    >>> from svgwriter._internal._flat._flatten import flatten
     >>> from svgwriter.export._office._drawingml import gradient_xml
     >>> doc = svg.Document(100, 50)
     >>> _ = doc.rect(0, 0, 100, 50, fill=svg.LinearGradient.horizontal("red", "blue"))

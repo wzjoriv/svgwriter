@@ -25,7 +25,7 @@ def test_extensions_route(tmp_path):
 
 
 def test_generic_families_resolve_to_real_fonts():
-    from svgwriter._internal._fonts import resolve_font
+    from svgwriter._internal._typography._fonts import resolve_font
 
     mono = resolve_font("monospace", 12, "normal", False)
     assert mono.measureText("iiii") == mono.measureText("WWWW")

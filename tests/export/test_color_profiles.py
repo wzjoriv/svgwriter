@@ -8,8 +8,8 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter._internal._icc_embedded import embed_profile, embedded_profile
-from svgwriter._internal._icc_output import output_profile
+from svgwriter._internal._color._icc_embedded import embed_profile, embedded_profile
+from svgwriter._internal._color._icc_output import output_profile
 from svgwriter.export import find_importer
 
 lcms2 = pytest.importorskip("lcms2")

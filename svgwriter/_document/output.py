@@ -102,7 +102,7 @@ class Output:
         >>> doc.at(1.0)[0].get("cx")
         '50'
         """
-        from .._internal._smil import snapshot
+        from .._internal._animation._smil import snapshot
 
         return snapshot(self, time)
 

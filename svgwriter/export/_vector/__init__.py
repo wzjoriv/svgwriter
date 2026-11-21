@@ -14,7 +14,7 @@ from .._registry import register, register_importer
 from ._constants import PDF_LINK_KEY
 
 if TYPE_CHECKING:
-    from ..._internal._icc_output import IccLike
+    from ..._internal._color._icc_output import IccLike
     from ...document import Document
 
 
@@ -72,7 +72,7 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     >>> svg.export.export(svg.Document(4, 4), "pdf", title="demo")[:5]
     b'%PDF-'
     """
-    from ..._internal._rendering import view_matrix
+    from ..._internal._render._rendering import view_matrix
     from ...ops.render import page_size, paint_tree
     from ._pdf_boxes import exact_media_boxes, page_points
     from ._units import unit_scale
@@ -100,7 +100,7 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     data = exact_media_boxes(bytes(stream.detachAsData()), sizes)
     if icc is None:
         return data
-    from ..._internal._icc_output import output_profile
+    from ..._internal._color._icc_output import output_profile
     from ._pdf_intent import with_output_intent
 
     return with_output_intent(data, output_profile(icc))
@@ -108,7 +108,7 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
 
 def _links(canvas: skia.Canvas, page: Document) -> None:
     """A clickable URL area over every ``<a href>`` of *page*."""
-    from ..._internal._rendering import page_box
+    from ..._internal._render._rendering import page_box
 
     for anchor in [element for element in page.root.iter() if element.tag == "a"]:
         target = str(anchor.get("href") or anchor.get("xlink:href") or "")

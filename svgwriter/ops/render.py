@@ -10,12 +10,11 @@ from typing import TYPE_CHECKING, Any, Final
 import numpy as np
 import skia
 
-from .._internal._rendering import view_matrix
+from .._internal._render._rendering import view_matrix
 from ..attributes.length import Length, Unit
 from ..attributes.viewbox import ViewBox
-from ._canvas import make_surface, paint_svg, read_pixels
 from ._constants import CHANNEL_MAX, DEFAULT_QUALITY, FORMATS
-from ._painting import paint_tree, render_tree
+from ._raster import make_surface, paint_svg, paint_tree, read_pixels, render_tree
 
 if TYPE_CHECKING:
     from ..color.color import ColorLike
@@ -388,7 +387,7 @@ def render_frame(document: Document, time: float) -> np.ndarray:
     >>> frame.shape, frame.dtype.name
     ((2, 4, 4), 'uint8')
     """
-    from .._internal._smil import snapshot
+    from .._internal._animation._smil import snapshot
     from ..elements.animation import AnimationElement
 
     if document.root.find(AnimationElement) is not None:

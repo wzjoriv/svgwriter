@@ -10,13 +10,12 @@ from pathlib import Path
 from typing import Any
 
 from .._internal._constants import NORMAL_WEIGHT
-from .._internal._font_constants import (
+from .._internal._typography._font_constants import (
     FONT_FILE_SUFFIXES,
 )
-from .._internal._font_match import FontStyle, match_rank, style_of
+from .._internal._typography._font_match import FontStyle, match_rank, style_of
 from ._constants import DEFAULT_FONT_SIZE
-from ._faces import Face, FaceMetrics, css_family
-from ._sources import FontSource, family_of, installed_faces, load, load_face
+from ._text import Face, FaceMetrics, FontSource, css_family, family_of, installed_faces, load, load_face
 from .text import register_font
 
 __all__ = ["Face", "FaceMetrics", "FontSource", "Typeface", "known_typefaces"]
@@ -271,7 +270,7 @@ class Typeface:
         >>> svg.Typeface("sans-serif").face(weight="bold").weight[0] >= 400
         True
         """
-        from .._internal._fonts import font_weight
+        from .._internal._typography._fonts import font_weight
 
         wanted, slant = float(font_weight(weight)), style_of(style)
         chosen = min(self._faces, key=lambda face: match_rank(face, wanted, slant))

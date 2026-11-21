@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from .._internal._fonts import font_weight
+from .._internal._typography._fonts import font_weight
 from ..attributes.cascade import computed, rules_of
 from ..elements.core import Category
 

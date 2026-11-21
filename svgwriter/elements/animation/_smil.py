@@ -12,7 +12,8 @@ from ..core import Child, Element
 from ._easing import EaseLike, apply_ease
 
 if TYPE_CHECKING:
-    from ._elements import Accumulate, Additive, CalcMode, Clock
+    from ._elements import Clock
+    from ._keywords import Accumulate, Additive, CalcMode
 
 __all__ = ["FadeShortcut", "SpinShortcut"]
 
@@ -135,7 +136,7 @@ class SpinShortcut:
         >>> AnimateTransform.spin(5, 5, dur=3).get("to")
         '360 5 5'
         """
-        from ._elements import TransformType
+        from ._keywords import TransformType
 
         kwargs.setdefault("repeat_count", float("inf"))
         return cls(TransformType.ROTATE, from_=f"0 {cx:g} {cy:g}", to=f"360 {cx:g} {cy:g}", **kwargs)

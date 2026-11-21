@@ -8,7 +8,7 @@ import pytest
 import skia
 
 import svgwriter as svg
-from svgwriter._internal import _fonts
+from svgwriter._internal._typography import _fonts
 
 EM = 1000
 REGULAR, BOLD = 400, 700
@@ -251,7 +251,7 @@ def test_collections_load_every_face():
     assert typeface.measure("A", 100, weight=BOLD) == pytest.approx(70)
     single = skia.Typeface.MakeFromData(skia.Data.MakeWithCopy(typeface.face(BOLD).data))
     assert single.fontStyle().weight() == BOLD
-    from svgwriter._internal._sfnt import collection_member
+    from svgwriter._internal._typography._sfnt import collection_member
 
     member = skia.Typeface.MakeFromData(skia.Data.MakeWithCopy(collection_member(buffer.getvalue(), 1)))
     assert member.fontStyle().weight() == BOLD
@@ -272,7 +272,7 @@ def test_css_can_reference_instead_of_embed(family):
 
 
 def test_unknown_installed_family_suggests_close_names(monkeypatch: pytest.MonkeyPatch):
-    from svgwriter.ops import _sources
+    from svgwriter.ops._text import _sources
 
     monkeypatch.setattr(_sources, "_installed_families", lambda: ("Gill Sans", "Georgia", "Helvetica"))
     with pytest.raises(LookupError, match="did you mean 'Georgia'"):

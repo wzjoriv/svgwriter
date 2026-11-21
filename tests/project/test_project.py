@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter._internal._fonts import registered_typefaces
+from svgwriter._internal._typography._fonts import registered_typefaces
 from svgwriter.project import ProjectError
 
 from ..conftest import wellformed
