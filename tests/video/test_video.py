@@ -114,7 +114,7 @@ class TestRenderers:
     def test_iter_frames_and_update(self) -> None:
         seen: list[float] = []
         frames = list(video.iter_frames(_doc(), 4, 1, solid_png, update=lambda doc, t: seen.append(t)))
-        assert [f.time for f in frames] == seen == [0, 0.25, 0.5, 0.75]
+        assert [f.seconds for f in frames] == seen == [0, 0.25, 0.5, 0.75]
 
     def test_duration_from_smil(self) -> None:
         doc = _doc()
@@ -269,7 +269,7 @@ class TestAnimateCommand:
 class TestRenderAndOutlineCommands:
     def test_render(self, script: Path, tmp_path: Path) -> None:
         target = tmp_path / "frame.png"
-        assert main(["render", str(script), "Grow", "-o", str(target), "--time", "0.5", "--scale", "2", "--background", "white"]) == 0
+        assert main(["render", str(script), "Grow", "-o", str(target), "--at", "0.5", "--scale", "2", "--background", "white"]) == 0
         assert target.read_bytes().startswith(b"\x89PNG")
 
     def test_render_every_scene_and_svg(self, script: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

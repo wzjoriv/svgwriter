@@ -351,7 +351,7 @@ def render_png(document: Document, *, scale: float = 1.0, background: ColorLike 
     return encode_image(rasterize(document, scale=scale, background=background, snapshot=True))
 
 
-def render_frame(document: Document, time: float) -> np.ndarray:
+def render_frame(document: Document, seconds: float) -> np.ndarray:
     """Frame renderer for :func:`~svgwriter.video.render_animation`: an opaque uint8 RGBA frame.
 
     Draws the document as it is at each frame (use ``update=`` to change it
@@ -362,8 +362,8 @@ def render_frame(document: Document, time: float) -> np.ndarray:
     ----------
     document : Document
         The document to draw.
-    time : float
-        The frame time; unused, since the document itself carries the state.
+    seconds : float
+        The frame's moment; SMIL animation is sampled there, Python state is already on the document.
 
     Returns
     -------
@@ -391,7 +391,7 @@ def render_frame(document: Document, time: float) -> np.ndarray:
     from ..elements.animation import AnimationElement
 
     if document.root.find(AnimationElement) is not None:
-        document = snapshot(document, time)
+        document = snapshot(document, seconds)
     image = document.rasterize(background="white", snapshot=True)
     info = skia.ImageInfo.Make(image.width(), image.height(), skia.kRGBA_8888_ColorType, skia.kPremul_AlphaType)
     frame = np.empty((image.height(), image.width(), 4), np.uint8)

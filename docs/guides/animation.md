@@ -254,7 +254,7 @@ $ python -m svgwriter animate scenes.py                   # every scene to <Name
 $ python -m svgwriter animate scenes.py Intro Outro --format gif
 $ python -m svgwriter animate scenes.py:Intro -o intro.webm
 $ python -m svgwriter animate mypackage.scenes:Intro      # an importable module
-$ python -m svgwriter render scenes.py Intro --time 1.5   # one frame to Intro.png
+$ python -m svgwriter render scenes.py Intro --at 1.5   # one frame to Intro.png
 ```
 
 `--fps`, `--duration` and `--renderer` override the scene's settings. An `.svg` file is accepted too and

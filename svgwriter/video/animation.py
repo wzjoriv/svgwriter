@@ -42,10 +42,10 @@ DEFAULT_FPS: Final = 30.0
 RENDERERS: Final[Registry[Callable[[Document, float], FrameData]]] = Registry("renderer")
 
 
-def _skia(document: Document, time: float) -> FrameData:
+def _skia(document: Document, seconds: float) -> FrameData:
     from ..ops.render import render_frame
 
-    return render_frame(document, time)
+    return render_frame(document, seconds)
 
 
 RENDERERS.add("skia", _skia)
@@ -259,10 +259,10 @@ def iter_frames(
     length = duration if duration is not None else animation_duration(document)
     if length is None:
         raise ValueError("pass duration=...; the document has no SMIL animation with a plain 'dur'")
-    for index, time in enumerate(frame_times(fps, length)):
+    for index, seconds in enumerate(frame_times(fps, length)):
         if update is not None:
-            update(document, time)
-        yield to_frame(index, time, draw(document, time))
+            update(document, seconds)
+        yield to_frame(index, seconds, draw(document, seconds))
 
 
 def render_animation(

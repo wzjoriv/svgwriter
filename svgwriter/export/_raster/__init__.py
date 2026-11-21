@@ -32,8 +32,8 @@ def _frames(document: Document, fps: float, duration: float | None, **options: A
     if isinstance(options.get("size"), int):
         options["size"] = (options["size"], options["size"])
     if processes == 1:
-        return [to_uint8(document.at(time).rasterize(**options)) for time in frame_times(fps, length)]
-    snapshots = [document.at(time) for time in frame_times(fps, length)]
+        return [to_uint8(document.at(seconds).rasterize(**options)) for seconds in frame_times(fps, length)]
+    snapshots = [document.at(seconds) for seconds in frame_times(fps, length)]
     return rasterize_many(snapshots, processes=processes, dtype="uint8", **options)
 
 

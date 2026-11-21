@@ -89,10 +89,11 @@ def animate(source: str, names: tuple[str, ...], output: str | None, extension: 
 @click.argument("names", nargs=-1)
 @click.option("-o", "--out", "--output", "output",
               help=f"output file for a single scene (default: <Name>.{FRAME_FORMAT})")
-@click.option("--time", type=float, default=0.0, show_default=True, help="seconds into the scene")
+@click.option("--at", "seconds", type=float, default=0.0, show_default=True, metavar="SECONDS",
+              help="moment to render, in seconds from the start")
 @click.option("--scale", type=float, default=1.0, show_default=True, help="pixels per user unit")
 @click.option("--background", help="background color (default: transparent)")
-def render(source: str, names: tuple[str, ...], output: str | None, time: float, scale: float,
+def render(source: str, names: tuple[str, ...], output: str | None, seconds: float, scale: float,
            background: str | None) -> None:
     """Rasterize scenes or an SVG file to PNG.
 
@@ -104,7 +105,7 @@ def render(source: str, names: tuple[str, ...], output: str | None, time: float,
         raise fail(str(exc)) from None
     for scene, target in targets:
         written = target or Path(f"{scene.name}.{FRAME_FORMAT}")
-        written.write_bytes(scene.render(time, scale=scale, background=background))
+        written.write_bytes(scene.render(seconds, scale=scale, background=background))
         click.echo(written)
 
 

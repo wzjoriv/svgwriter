@@ -50,7 +50,7 @@ class Frame:
     ----------
     index : int
         Position in the sequence, starting at 0.
-    time : float
+    seconds : float
         Sample time in seconds.
     width : int
         Width in pixels.
@@ -74,7 +74,7 @@ class Frame:
     """
 
     index: int
-    time: float
+    seconds: float
     width: int
     height: int
     data: bytes
@@ -86,14 +86,14 @@ def _png_size(data: bytes) -> tuple[int, int]:
     return width, height
 
 
-def to_frame(index: int, time: float, data: FrameData) -> Frame:
+def to_frame(index: int, seconds: float, data: FrameData) -> Frame:
     """Check and wrap renderer output.
 
     Parameters
     ----------
     index : int
         Position of the frame in the sequence.
-    time : float
+    seconds : float
         Sample time in seconds.
     data : bytes, bytearray, memoryview or RGBAArray
         PNG bytes or an ``(height, width, 4)`` uint8 array.
@@ -112,7 +112,7 @@ def to_frame(index: int, time: float, data: FrameData) -> Frame:
 
     See Also
     --------
-    frame_times : The sample times passed as `time`.
+    frame_times : The sample times passed as `seconds`.
 
     Examples
     --------
@@ -131,7 +131,7 @@ def to_frame(index: int, time: float, data: FrameData) -> Frame:
         if not raw.startswith(PNG_SIGNATURE):
             raise TypeError("renderer returned bytes that are not a PNG; return PNG bytes or an RGBA array")
         width, height = _png_size(raw)
-        return Frame(index, time, width, height, raw, True)
+        return Frame(index, seconds, width, height, raw, True)
     if isinstance(data, RGBAArray):
         shape = tuple(data.shape)
         if len(shape) != 3 or shape[2] != RGBA_CHANNELS:
@@ -139,7 +139,7 @@ def to_frame(index: int, time: float, data: FrameData) -> Frame:
         dtype = getattr(data, "dtype", RGBA_DTYPE)
         if str(dtype) != RGBA_DTYPE:
             raise ValueError(f"RGBA frames need dtype uint8, got {dtype}")
-        return Frame(index, time, int(shape[1]), int(shape[0]), data.tobytes(), False)
+        return Frame(index, seconds, int(shape[1]), int(shape[0]), data.tobytes(), False)
     raise TypeError(f"renderer returned {type(data).__name__}; expected PNG bytes or an RGBA array")
 
 
