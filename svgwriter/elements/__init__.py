@@ -16,6 +16,7 @@ animation   animate, set, animateMotion, mpath, animateColor, animateTransform
 
 from __future__ import annotations
 
+from ._animations import ANIMATIONS, register_animation, unregister_animation
 from ._behavior import (
     ConditionalAttributes,
     CoreAttributes,
@@ -30,6 +31,7 @@ from ._behavior import (
     XLinkAttributes,
     XmlSpace,
 )
+from ._motion import Motion
 from .animation import (
     Accumulate,
     Additive,
@@ -102,6 +104,10 @@ from .text import (
 
 __all__ = [
     "A",
+    "ANIMATIONS",
+    "Motion",
+    "register_animation",
+    "unregister_animation",
     "Accumulate",
     "Additive",
     "AltGlyph",

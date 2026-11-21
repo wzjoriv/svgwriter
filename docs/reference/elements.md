@@ -60,3 +60,17 @@ Element classes. Every class also has a lowercase alias (`svgwriter.circle` is `
 .. automodule:: svgwriter.elements.animation
    :members:
 ```
+
+## Animation presets
+
+`element.animate` returns a `Motion`; its methods add SMIL children and chain. `register_animation`
+adds presets of your own as more methods.
+
+```{eval-rst}
+.. autoclass:: svgwriter.Motion
+   :members:
+.. autodata:: svgwriter.ANIMATIONS
+   :no-value:
+.. autofunction:: svgwriter.register_animation
+.. autofunction:: svgwriter.unregister_animation
+```

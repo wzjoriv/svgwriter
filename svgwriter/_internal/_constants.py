@@ -139,6 +139,7 @@ __all__ = [
     "RENDER_LANGUAGE",
     "RGBA_CHANNELS",
     "RTL_ANCHORS",
+    "SUGGESTIONS",
     "SECONDS_PER_HOUR",
     "SECONDS_PER_MINUTE",
     "SHAKE_DISTANCE",
@@ -383,3 +384,4 @@ ANIMATED_DEFAULTS: Final = {
 }
 RENDER_LANGUAGE: Final = "en"
 FEATURE_PREFIX: Final = "http://www.w3.org/TR/SVG11/feature#"
+SUGGESTIONS: Final = 3

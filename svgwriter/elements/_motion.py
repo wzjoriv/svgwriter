@@ -4,6 +4,9 @@ Animation presets: show/hide, fades, draw-on, create/write, wipes, typewriter, c
 
 from __future__ import annotations
 
+import difflib
+import functools
+from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from .._internal._constants import (
@@ -12,8 +15,10 @@ from .._internal._constants import (
     CREATE_DRAW_SHARE,
     DEFAULT_DURATION,
     FOREVER,
+    SUGGESTIONS,
     WRITE_LAG,
 )
+from ._animations import ANIMATIONS
 from ._motion_transform import TransformPresets, timing
 from .animation import Animate, AnimateMotion, Ease, EaseLike, Set
 
@@ -80,7 +85,8 @@ class Motion(TransformPresets):
     state; default True) and ``ease``, a timing curve over the whole preset
     (a name such as ``"ease-in-out"``, a bézier 4-tuple, ``("steps", n)`` or
     a function; see :class:`~svgwriter.Ease`). ``show`` and ``hide`` act at
-    one instant, so they take only the moment.
+    one instant, so they take only the moment. Presets added with
+    :func:`~svgwriter.register_animation` are methods too.
 
     Parameters
     ----------
@@ -107,6 +113,25 @@ class Motion(TransformPresets):
     def _add(self, animation: Element) -> Motion:
         self.element.append(animation)
         return self
+
+    def __getattr__(self, name: str) -> Callable[..., Motion]:
+        if name in ANIMATIONS:
+            function = ANIMATIONS.get(name)
+
+            @functools.wraps(function)
+            def preset(*args: Any, **options: Any) -> Motion:
+                function(self, *args, **options)
+                return self
+
+            return preset
+        known = [*ANIMATIONS, *(member for member in dir(Motion) if not member.startswith("_"))]
+        close = difflib.get_close_matches(name, known, n=SUGGESTIONS)
+        hint = f"; did you mean {' or '.join(map(repr, close))}?" if close else ""
+        raise AttributeError(f"no animation preset {name!r}{hint} (svg.register_animation adds one)", name=name,
+                             obj=self)
+
+    def __dir__(self) -> list[str]:
+        return sorted({*super().__dir__(), *ANIMATIONS})
 
     def tween(self, attribute: str, start: Any, end: Any, dur: float = DEFAULT_DURATION, *, begin: float = 0.0,
               repeat: float | str | None = None, freeze: bool = True, ease: EaseLike | None = None) -> Motion:
