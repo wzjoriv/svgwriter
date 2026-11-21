@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="prev" title="Project" href="project.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Errors" href="errors.html"><link rel="prev" title="Project" href="project.html">
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
@@ -235,6 +235,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -264,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project.html">Project</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -332,7 +334,7 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 <td><p>List project presets</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sizes</span></code></p></td>
-<td><p>List named canvas sizes (<code class="docutils literal notranslate"><span class="pre">svg.preset.list(&quot;size&quot;)</span></code>)</p></td>
+<td><p>List named canvas sizes (<code class="docutils literal notranslate"><span class="pre">svg.preset.size.list()</span></code>)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">shapes</span></code>, <code class="docutils literal notranslate"><span class="pre">elements</span></code></p></td>
 <td><p>List shape presets and element classes</p></td>
@@ -358,9 +360,11 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 </tbody>
 </table>
 </div>
+<p>Packages add commands through the <code class="docutils literal notranslate"><span class="pre">svgwriter.command</span></code> entry-point group, and <code class="docutils literal notranslate"><span class="pre">commands.register(command)</span></code>
+adds one at run time (see <a class="reference internal" href="../guides/extending.html"><span class="std std-doc">Extending svgwriter</span></a>).</p>
 <dl class="py data">
 <dt class="sig sig-object py" id="svgwriter.tools.cli.app">
-<span class="sig-name descname"><span class="pre">app</span></span><a class="headerlink" href="#svgwriter.tools.cli.app" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">app</span></span><a class="reference internal" href="../_modules/svgwriter/tools/cli.html#app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.tools.cli.app" title="Link to this definition">¶</a></dt>
 <dd><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">click.Group</span></code>; <code class="docutils literal notranslate"><span class="pre">app.add_command(command)</span></code> adds a command.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -391,6 +395,30 @@ cannot be read or written; errors are one line on stderr, without a traceback.</
 </div>
 </dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py" id="svgwriter.tools.cli.commands">
+<span class="sig-name descname"><span class="pre">commands</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Final" title="(in Python v3.15)"><span class="pre">Final</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="presets.html#svgwriter.Registry" title="svgwriter._internal._registry.Registry"><span class="pre">Registry</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Command</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#svgwriter.tools.cli.commands" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">commands.register(command)</span></code>, or the <code class="docutils literal notranslate"><span class="pre">svgwriter.command</span></code> entry points.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">click</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.tools.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">commands</span><span class="p">,</span> <span class="n">main</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nd">@commands</span><span class="o">.</span><span class="n">register</span>
+<span class="gp">... </span><span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s2">"Say hello."</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">hello</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">"hello"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span><span class="p">([</span><span class="s2">"hello"</span><span class="p">])</span>
+<span class="go">hello</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">commands</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"hello"</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Commands beside the built-in ones</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
         </article>
@@ -398,7 +426,15 @@ cannot be read or written; errors are one line on stderr, without a traceback.</
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="errors.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Errors</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="project.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
@@ -443,6 +479,7 @@ cannot be read or written; errors are one line on stderr, without a traceback.</
 <li><a class="reference internal" href="#">Command line</a><ul>
 <li><a class="reference internal" href="#svgwriter.tools.cli.app"><code class="docutils literal notranslate"><span class="pre">app</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.tools.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.tools.cli.commands"><code class="docutils literal notranslate"><span class="pre">commands</span></code></a></li>
 </ul>
 </li>
 </ul>

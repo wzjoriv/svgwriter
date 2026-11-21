@@ -235,6 +235,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -264,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -323,9 +325,6 @@
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#svgwriter.motion.video.load_scenes" title="svgwriter.motion.video.load_scenes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.motion.video.load_scenes</span></code></a>(source[, ...])</p></td>
 <td><p>Collect scenes from a script, a module or an <code class="docutils literal notranslate"><span class="pre">.svg</span></code> file.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#svgwriter.motion.video.SceneError" title="svgwriter.motion.video.SceneError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.motion.video.SceneError</span></code></a></p></td>
-<td><p>A source defines no scene, or no scene with a requested name.</p></td>
 </tr>
 </tbody>
 </table>
@@ -642,8 +641,8 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">&lt;nam
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#svgwriter.motion.video.FFmpegNotFoundError" title="svgwriter.motion.video.FFmpegNotFoundError"><strong>FFmpegNotFoundError</strong></a> – Before rendering anything, when ffmpeg is missing.</p></li>
-<li><p><a class="reference internal" href="#svgwriter.motion.video.FFmpegError" title="svgwriter.motion.video.FFmpegError"><strong>FFmpegError</strong></a> – When ffmpeg fails.</p></li>
+<li><p><a class="reference internal" href="errors.html#svgwriter.errors.FFmpegNotFoundError" title="svgwriter.errors.FFmpegNotFoundError"><strong>FFmpegNotFoundError</strong></a> – Before rendering anything, when ffmpeg is missing.</p></li>
+<li><p><a class="reference internal" href="errors.html#svgwriter.errors.FFmpegError" title="svgwriter.errors.FFmpegError"><strong>FFmpegError</strong></a> – When ffmpeg fails.</p></li>
 </ul>
 </dd>
 </dl>
@@ -661,32 +660,11 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">&lt;nam
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Still</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"still.png"</span><span class="p">,</span> <span class="n">ffmpeg</span><span class="o">=</span><span class="s2">"no-such-ffmpeg"</span><span class="p">)</span>
 <span class="gt">Traceback (most recent call last):</span>
 <span class="c">...</span>
-<span class="gr">svgwriter.motion.video._ffmpeg.FFmpegNotFoundError</span>: <span class="n">...</span>
+<span class="gr">svgwriter.errors.FFmpegNotFoundError</span>: <span class="n">...</span>
 </pre></div>
 </div>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="svgwriter.motion.video.SceneError">
-<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">SceneError</span></span><a class="reference internal" href="../_modules/svgwriter/motion/video/loader.html#SceneError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.motion.video.SceneError" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a></p>
-<p>A source defines no scene, or no scene with a requested name.</p>
-<p>Subclasses <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.motion.video.load_scenes" title="svgwriter.motion.video.load_scenes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_scenes</span></code></a></dt><dd><p>Raises it.</p>
-</dd>
-</dl>
-</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.motion.video</span><span class="w"> </span><span class="kn">import</span> <span class="n">SceneError</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">SceneError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span>
-<span class="go">True</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py class">
@@ -714,8 +692,8 @@ instance <code class="docutils literal notranslate"><span class="pre">backdrop.p
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#svgwriter.motion.video.FFmpegNotFoundError" title="svgwriter.motion.video.FFmpegNotFoundError"><strong>FFmpegNotFoundError</strong></a> – If ffmpeg is not installed.</p></li>
-<li><p><a class="reference internal" href="#svgwriter.motion.video.FFmpegError" title="svgwriter.motion.video.FFmpegError"><strong>FFmpegError</strong></a> – If the file has no video stream ffmpeg can read.</p></li>
+<li><p><a class="reference internal" href="errors.html#svgwriter.errors.FFmpegNotFoundError" title="svgwriter.errors.FFmpegNotFoundError"><strong>FFmpegNotFoundError</strong></a> – If ffmpeg is not installed.</p></li>
+<li><p><a class="reference internal" href="errors.html#svgwriter.errors.FFmpegError" title="svgwriter.errors.FFmpegError"><strong>FFmpegError</strong></a> – If the file has no video stream ffmpeg can read.</p></li>
 </ul>
 </dd>
 </dl>
@@ -760,35 +738,6 @@ instance <code class="docutils literal notranslate"><span class="pre">backdrop.p
 <dd><p>The frame shown at <em>seconds</em> as an <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code> at pixel size, placed at the origin.</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="svgwriter.motion.video.FFmpegError">
-<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">FFmpegError</span></span><a class="reference internal" href="../_modules/svgwriter/motion/video/_ffmpeg.html#FFmpegError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.motion.video.FFmpegError" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#RuntimeError" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a></p>
-<p><code class="docutils literal notranslate"><span class="pre">ffmpeg</span></code> ran but failed.</p>
-<p>The message carries the exit status and the tail of ffmpeg’s error output.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">encode</span></code></dt><dd><p>Raises it.</p>
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="svgwriter.motion.video.FFmpegNotFoundError">
-<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">FFmpegNotFoundError</span></span><a class="reference internal" href="../_modules/svgwriter/motion/video/_ffmpeg.html#FFmpegNotFoundError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.motion.video.FFmpegNotFoundError" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#RuntimeError" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a></p>
-<p><code class="docutils literal notranslate"><span class="pre">ffmpeg</span></code> is not installed or not on <code class="docutils literal notranslate"><span class="pre">PATH</span></code>.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.motion.video.find_ffmpeg" title="svgwriter.motion.video.find_ffmpeg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_ffmpeg</span></code></a></dt><dd><p>Raises it.</p>
-</dd>
-</dl>
-</div>
 </dd></dl>
 
 <dl class="py class">
@@ -928,7 +877,7 @@ instance <code class="docutils literal notranslate"><span class="pre">backdrop.p
 <dd class="field-even"><p><em>str</em> – The resolved path.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.motion.video.FFmpegNotFoundError" title="svgwriter.motion.video.FFmpegNotFoundError"><strong>FFmpegNotFoundError</strong></a> – When it cannot be found; nothing has been rendered at that point.</p>
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#svgwriter.errors.FFmpegNotFoundError" title="svgwriter.errors.FFmpegNotFoundError"><strong>FFmpegNotFoundError</strong></a> – When it cannot be found; nothing has been rendered at that point.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -939,7 +888,8 @@ instance <code class="docutils literal notranslate"><span class="pre">backdrop.p
 </dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.motion.video</span><span class="w"> </span><span class="kn">import</span> <span class="n">FFmpegNotFoundError</span><span class="p">,</span> <span class="n">find_ffmpeg</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FFmpegNotFoundError</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.motion.video</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_ffmpeg</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">find_ffmpeg</span><span class="p">(</span><span class="s2">"no-such-ffmpeg"</span><span class="p">)</span>
 <span class="gp">... </span><span class="k">except</span> <span class="n">FFmpegNotFoundError</span><span class="p">:</span>
@@ -1047,7 +997,7 @@ instance or a <a class="reference internal" href="document.html#svgwriter.Docume
 <dd class="field-even"><p><em>list of Scene</em> – New instances, ready to save.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.motion.video.SceneError" title="svgwriter.motion.video.SceneError"><strong>SceneError</strong></a> – If nothing matches, or a name is not a scene.</p>
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#svgwriter.errors.SceneError" title="svgwriter.errors.SceneError"><strong>SceneError</strong></a> – If nothing matches, or a name is not a scene.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1062,40 +1012,7 @@ instance or a <a class="reference internal" href="document.html#svgwriter.Docume
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">scene</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">scene</span> <span class="ow">in</span> <span class="n">load_scenes</span><span class="p">(</span><span class="s2">"svgwriter.motion.video.scene:Scene"</span><span class="p">)]</span>
 <span class="gt">Traceback (most recent call last):</span>
 <span class="c">...</span>
-<span class="gr">svgwriter.motion.video.loader.SceneError</span>: <span class="n">'Scene' in svgwriter.motion.video.scene is not a scene</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="svgwriter.motion.video.register_renderer">
-<span class="sig-name descname"><span class="pre">register_renderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Renderer</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Renderer</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/motion/video/animation.html#register_renderer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.motion.video.register_renderer" title="Link to this definition">¶</a></dt>
-<dd><p>Decorator registering a renderer so it can be chosen by <em>name</em>.</p>
-<p>A rasterizer package can register itself on import, after which
-<code class="docutils literal notranslate"><span class="pre">renderer=&quot;myraster&quot;</span></code> selects it everywhere a renderer is accepted.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name to register the renderer under.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>callable</em> – A decorator that registers the function and returns it unchanged.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.motion.video.resolve_renderer" title="svgwriter.motion.video.resolve_renderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve_renderer</span></code></a></dt><dd><p>Look a registered renderer up again.</p>
-</dd>
-</dl>
-</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.motion.video</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_renderer</span><span class="p">,</span> <span class="n">resolve_renderer</span><span class="p">,</span> <span class="n">unregister_renderer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nd">@register_renderer</span><span class="p">(</span><span class="s2">"myraster"</span><span class="p">)</span>
-<span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">return</span> <span class="n">document</span><span class="o">.</span><span class="n">render_png</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">resolve_renderer</span><span class="p">(</span><span class="s2">"myraster"</span><span class="p">)</span> <span class="ow">is</span> <span class="n">render</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">unregister_renderer</span><span class="p">(</span><span class="s2">"myraster"</span><span class="p">)</span>
+<span class="gr">svgwriter.errors.SceneError</span>: <span class="n">'Scene' in svgwriter.motion.video.scene is not a scene</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1131,8 +1048,8 @@ procedural animation. Defaults to None.</p></li>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#svgwriter.motion.video.FFmpegNotFoundError" title="svgwriter.motion.video.FFmpegNotFoundError"><strong>FFmpegNotFoundError</strong></a> – Before rendering anything, when ffmpeg is missing.</p></li>
-<li><p><a class="reference internal" href="#svgwriter.motion.video.FFmpegError" title="svgwriter.motion.video.FFmpegError"><strong>FFmpegError</strong></a> – When ffmpeg fails.</p></li>
+<li><p><a class="reference internal" href="errors.html#svgwriter.errors.FFmpegNotFoundError" title="svgwriter.errors.FFmpegNotFoundError"><strong>FFmpegNotFoundError</strong></a> – Before rendering anything, when ffmpeg is missing.</p></li>
+<li><p><a class="reference internal" href="errors.html#svgwriter.errors.FFmpegError" title="svgwriter.errors.FFmpegError"><strong>FFmpegError</strong></a> – When ffmpeg fails.</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If no renderer or duration can be determined.</p></li>
 </ul>
 </dd>
@@ -1146,7 +1063,8 @@ procedural animation. Defaults to None.</p></li>
 </div>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.motion.video</span><span class="w"> </span><span class="kn">import</span> <span class="n">FFmpegNotFoundError</span><span class="p">,</span> <span class="n">render_animation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FFmpegNotFoundError</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.motion.video</span><span class="w"> </span><span class="kn">import</span> <span class="n">render_animation</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">render_animation</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="s2">"out.gif"</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">renderer</span><span class="o">=</span><span class="s2">"skia"</span><span class="p">,</span> <span class="n">ffmpeg</span><span class="o">=</span><span class="s2">"no-such-ffmpeg"</span><span class="p">)</span>
@@ -1171,7 +1089,8 @@ import path.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If <cite>renderer</cite> is None or an unregistered name without a colon.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If <cite>renderer</cite> is None.</p></li>
+<li><p><a class="reference internal" href="errors.html#svgwriter.errors.UnknownNameError" title="svgwriter.errors.UnknownNameError"><strong>UnknownNameError</strong></a> – If <cite>renderer</cite> is an unregistered name without a colon; the message suggests the closest names.</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If a <code class="docutils literal notranslate"><span class="pre">&quot;module:function&quot;</span></code> path names something that is not callable.</p></li>
 </ul>
 </dd>
@@ -1179,7 +1098,7 @@ import path.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.motion.video.register_renderer" title="svgwriter.motion.video.register_renderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_renderer</span></code></a></dt><dd><p>Add a named renderer.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">renderers</span></code></dt><dd><p>Register a named renderer.</p>
 </dd>
 </dl>
 </div>
@@ -1190,27 +1109,7 @@ import path.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">resolve_renderer</span><span class="p">(</span><span class="s2">"nope"</span><span class="p">)</span>
 <span class="gt">Traceback (most recent call last):</span>
 <span class="c">...</span>
-<span class="gr">ValueError</span>: <span class="n">unknown renderer 'nope'; registered: skia</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="svgwriter.motion.video.unregister_renderer">
-<span class="sig-name descname"><span class="pre">unregister_renderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/motion/video/animation.html#unregister_renderer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.motion.video.unregister_renderer" title="Link to this definition">¶</a></dt>
-<dd><p>Remove the renderer registered under <em>name</em>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name given to <a class="reference internal" href="#svgwriter.motion.video.register_renderer" title="svgwriter.motion.video.register_renderer"><code class="xref py py-func docutils literal notranslate"><span class="pre">register_renderer()</span></code></a>.</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#KeyError" title="(in Python v3.15)"><strong>KeyError</strong></a> – When no renderer has that name.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.motion.video</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_renderer</span><span class="p">,</span> <span class="n">unregister_renderer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">register_renderer</span><span class="p">(</span><span class="s2">"tmp"</span><span class="p">)(</span><span class="k">lambda</span> <span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">:</span> <span class="sa">b</span><span class="s2">""</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">unregister_renderer</span><span class="p">(</span><span class="s2">"tmp"</span><span class="p">)</span>
+<span class="gr">svgwriter.errors.UnknownNameError</span>: <span class="n">unknown renderer 'nope'; registered: skia</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1393,15 +1292,12 @@ anchor, so it never drifts. Attach one by name (<code class="docutils literal no
 <li><a class="reference internal" href="#svgwriter.motion.video.Scene.save"><code class="docutils literal notranslate"><span class="pre">Scene.save()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#svgwriter.motion.video.SceneError"><code class="docutils literal notranslate"><span class="pre">SceneError</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.motion.video.Video"><code class="docutils literal notranslate"><span class="pre">Video</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.motion.video.Video.frame"><code class="docutils literal notranslate"><span class="pre">Video.frame()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.motion.video.Video.array_at"><code class="docutils literal notranslate"><span class="pre">Video.array_at()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.motion.video.Video.at"><code class="docutils literal notranslate"><span class="pre">Video.at()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#svgwriter.motion.video.FFmpegError"><code class="docutils literal notranslate"><span class="pre">FFmpegError</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.motion.video.FFmpegNotFoundError"><code class="docutils literal notranslate"><span class="pre">FFmpegNotFoundError</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.motion.video.Frame"><code class="docutils literal notranslate"><span class="pre">Frame</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.motion.video.Frame.index"><code class="docutils literal notranslate"><span class="pre">Frame.index</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.motion.video.Frame.seconds"><code class="docutils literal notranslate"><span class="pre">Frame.seconds</span></code></a></li>
@@ -1421,10 +1317,8 @@ anchor, so it never drifts. Attach one by name (<code class="docutils literal no
 <li><a class="reference internal" href="#svgwriter.motion.video.frame_times"><code class="docutils literal notranslate"><span class="pre">frame_times()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.motion.video.iter_frames"><code class="docutils literal notranslate"><span class="pre">iter_frames()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.motion.video.load_scenes"><code class="docutils literal notranslate"><span class="pre">load_scenes()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.motion.video.register_renderer"><code class="docutils literal notranslate"><span class="pre">register_renderer()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.motion.video.render_animation"><code class="docutils literal notranslate"><span class="pre">render_animation()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.motion.video.resolve_renderer"><code class="docutils literal notranslate"><span class="pre">resolve_renderer()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.motion.video.unregister_renderer"><code class="docutils literal notranslate"><span class="pre">unregister_renderer()</span></code></a></li>
 <li><a class="reference internal" href="#module-svgwriter.motion.video.behaviors">Behaviours</a><ul>
 <li><a class="reference internal" href="#svgwriter.motion.video.behaviors.breathe"><code class="docutils literal notranslate"><span class="pre">breathe()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.motion.video.behaviors.hover"><code class="docutils literal notranslate"><span class="pre">hover()</span></code></a></li>

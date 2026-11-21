@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Design" href="../explanation/design.html"><link rel="prev" title="Widgets" href="widgets.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Extending svgwriter" href="extending.html"><link rel="prev" title="Widgets" href="widgets.html">
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
@@ -235,6 +235,7 @@
 <li class="toctree-l1"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -264,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -503,9 +505,9 @@ shows the start instead. SVG, GIF and PowerPoint keep the animations.</p>
 <span class="n">folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
 <span class="p">(</span><span class="n">folder</span> <span class="o">/</span> <span class="s2">"svgwriter.toml"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s1">'[project]</span><span class="se">\n</span><span class="s1">name = "{{ project_name }}"</span><span class="se">\n</span><span class="s1">size = "icon"</span><span class="se">\n</span><span class="s1">'</span>
                                        <span class="s1">'[outputs]</span><span class="se">\n</span><span class="s1">formats = ["svg", "png"]</span><span class="se">\n</span><span class="s1">'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
-<span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">register_preset</span><span class="p">(</span><span class="s2">"badge"</span><span class="p">,</span> <span class="n">folder</span><span class="p">,</span> <span class="s2">"A 512 x 512 app icon"</span><span class="p">,</span> <span class="n">extends</span><span class="o">=</span><span class="s2">"blank"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">PRESETS</span><span class="o">.</span><span class="n">names</span><span class="p">())</span>
-<span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">unregister_preset</span><span class="p">(</span><span class="s2">"badge"</span><span class="p">)</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">Preset</span><span class="p">(</span><span class="s2">"badge"</span><span class="p">,</span> <span class="s2">"A 512 x 512 app icon"</span><span class="p">,</span> <span class="n">folder</span><span class="p">,</span> <span class="n">extends</span><span class="o">=</span><span class="s2">"blank"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">list</span><span class="p">())</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"badge"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In a preset folder, a <code class="docutils literal notranslate"><span class="pre">-tpl</span></code> suffix is dropped from file names (<code class="docutils literal notranslate"><span class="pre">main.py-tpl</span></code> becomes <code class="docutils literal notranslate"><span class="pre">main.py</span></code>, so the
@@ -623,12 +625,12 @@ controls’ starting values. See <a class="reference internal" href="widgets.htm
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../explanation/design.html">
+          <a class="next-page" href="extending.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Design</div>
+                <div class="title">Extending svgwriter</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>

@@ -235,6 +235,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -264,6 +265,7 @@
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -2154,7 +2156,7 @@ keeps the Python state of that moment.</p>
 <p>Typed with the behavior’s own options, so editors complete and check them. Behaviors run in the
 order they were attached, all before <a class="reference internal" href="#svgwriter.tools.widgets.Sweep.update" title="svgwriter.tools.widgets.Sweep.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a>. The first one attached to an element records
 its <code class="xref py py-attr docutils literal notranslate"><span class="pre">home</span></code>. <code class="docutils literal notranslate"><span class="pre">element.animate.&lt;name&gt;(...)</span></code> does the same for a behavior
-registered with <a class="reference internal" href="builder.html#svgwriter.catalog.preset.behavior" title="svgwriter.catalog.preset.behavior"><code class="xref py py-func docutils literal notranslate"><span class="pre">&#64;svg.preset.behavior</span></code></a>.</p>
+registered with <code class="xref py py-data docutils literal notranslate"><span class="pre">&#64;svg.preset.behavior</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

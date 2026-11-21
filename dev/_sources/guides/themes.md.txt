@@ -74,8 +74,10 @@ rest of the `shape` role.
 | `one-dark`, `one-light` | the One palettes, dark and light |
 
 Body and caption text in every built-in theme meets WCAG AA contrast (4.5:1) against both `background`
-and `surface`; titles, which are large, meet 3:1. `svg.Theme.get(name)` returns one;
-`svg.THEMES.names()` lists them, and `svg.THEMES.add(name, theme)` registers your own.
+and `surface`; titles, which are large, meet 3:1. `svg.themes.get(name)` returns one;
+`svg.themes.list()` lists them, `svg.themes.register(theme)` registers your own under its name, and
+`svg.themes.unregister(name)` removes it again. A package can ship themes through the `svgwriter.theme`
+entry-point group (see [Extending svgwriter](extending.md)).
 
 `dracula` and `alucard` follow the Dracula palette (MIT licensed, draculatheme.com); `one-dark` and
 `one-light` follow Atom's One Dark and One Light themes (MIT licensed). Where an official comment grey is
@@ -102,7 +104,7 @@ follow their sources:
 ```python
 import svgwriter as svg
 
-brand = svg.Theme.get("light").replace(
+brand = svg.themes.get("light").replace(
     name="brand",
     palette={"primary": "#7c3aed", "border": lambda p: p.primary.mix(p.background, 0.6)},
     fonts={"family": "Georgia, serif", "sizes": {"title": 28}},
@@ -116,7 +118,7 @@ print(brand.style("box"), brand.style("badge"))
 
 A role value may also be a reference, `"{palette.primary}"` or `"{fonts.sizes.title}"`, alone or inside
 text (`"1px solid {palette.border}"`), or an expression starting with `=`. Unknown roles and references and reference cycles
-raise `svg.theme.ThemeError` with the path of the value.
+raise `svg.errors.ThemeError` with the path of the value.
 
 ## Expressions
 
@@ -131,7 +133,7 @@ Derived values follow their sources: replacing `primary` changes everything comp
 ```python
 import svgwriter as svg
 
-brand = svg.Theme.get("light").replace(
+brand = svg.themes.get("light").replace(
     palette={
         "primary": "#7c3aed",
         "on_primary": "=readable({palette.primary})",
@@ -222,7 +224,7 @@ Every error is a `ThemeError` that names the key, and the file when one was load
 ```python
 import svgwriter as svg
 
-with svg.Theme.get("print"):
+with svg.themes.get("print"):
     figure = svg.Document(100, 40)
     figure.text("Figure 1", x=4, y=24).as_role("caption")
 print(figure.theme.name, svg.Theme.current().name)
@@ -259,7 +261,7 @@ sizes and weights are numbers. `fonts.family` and `fonts.monospace` are a family
 files, relative to the theme file, loaded as an `svg.Typeface` (see [Typography](text.md#typography)).
 
 `save` writes what differs from the theme it `extends`: a variant made with `replace` on a registered theme
-extends that theme, so `svg.Theme.get("dark").replace(name="night").save(path)` writes two lines. References
+extends that theme, so `svg.themes.get("dark").replace(name="night").save(path)` writes two lines. References
 and expressions are written as given, so they stay live; only values given as Python functions are written
 as the colors and numbers they produce (a role given as a function is written as the properties it returns,
 which a reader merges over the extended role). A theme read from a file remembers the file: saving it, or a

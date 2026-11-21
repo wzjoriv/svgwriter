@@ -56,18 +56,18 @@ def badge(cx: float, cy: float, r: float, **kwargs: object) -> svg.Group:
     return svg.Group(ring, dot)
 
 
-print("badge" in svg.preset.list("shape"), badge(10, 10, 6, fill="gold").tag)
-make = svg.preset.get("shape", "badge")
-svg.preset.unregister("shape", "badge")
+print("badge" in svg.preset.shape.list(), badge(10, 10, 6, fill="gold").tag)
+make = svg.preset.shape.get("badge")
+svg.preset.shape.unregister("badge")
 ```
 
 Follow the conventions of the built-in presets so yours feel the same: position and size as
 positional arguments, options as keyword-only arguments, and style attributes passed through
 `**kwargs` to the element. A package can publish presets by defining them with `svg.preset.shape` in a
-module; importing that module registers them. `svg.preset.get("shape", name)` then looks a preset up by
-name, and `svg.preset.list("shape")` lists everything available. Animation presets work the same way
+module; importing that module registers them. `svg.preset.shape.get(name)` then looks a preset up by
+name, and `svg.preset.shape.list()` lists everything available. Animation presets work the same way
 (see the [animation guide](../guides/animation.md)), and so do patterns, filters, gradients, markers and
-text effects (see the [Presets guide](../guides/presets.md)).
+effects (see the [Presets guide](../guides/presets.md)).
 
 ## Preset functions
 

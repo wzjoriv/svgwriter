@@ -235,6 +235,7 @@
 <li class="toctree-l1"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -264,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -317,8 +319,8 @@ resizes the ones it stretches), so the output is plain SVG that every exporter k
 <span class="n">card</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">VStack</span><span class="p">(</span>
     <span class="n">svg</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Storage"</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"title"</span><span class="p">),</span>
     <span class="n">svg</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"42 GB of 64 GB used"</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"caption"</span><span class="p">),</span>
-    <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"accent"</span><span class="p">),</span>
-    <span class="n">gap</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"stretch"</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">rx</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"surface"</span><span class="p">),</span>
+    <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"accent"</span><span class="p">),</span>
+    <span class="n">gap</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"stretch"</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"surface"</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">theme</span><span class="o">=</span><span class="s2">"light"</span><span class="p">)</span>
 <span class="n">doc</span> <span class="o">+=</span> <span class="n">card</span>

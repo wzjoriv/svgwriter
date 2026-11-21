@@ -234,6 +234,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -263,6 +264,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -381,7 +383,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_probe</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circle</span>
 
-    <span class="k">return</span> <span class="n">Circle</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_pick</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>

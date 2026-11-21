@@ -235,6 +235,7 @@
 <li class="toctree-l1"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -264,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -442,8 +444,10 @@ rest of the <code class="docutils literal notranslate"><span class="pre">shape</
 </table>
 </div>
 <p>Body and caption text in every built-in theme meets WCAG AA contrast (4.5:1) against both <code class="docutils literal notranslate"><span class="pre">background</span></code>
-and <code class="docutils literal notranslate"><span class="pre">surface</span></code>; titles, which are large, meet 3:1. <code class="docutils literal notranslate"><span class="pre">svg.Theme.get(name)</span></code> returns one;
-<code class="docutils literal notranslate"><span class="pre">svg.THEMES.names()</span></code> lists them, and <code class="docutils literal notranslate"><span class="pre">svg.THEMES.add(name,</span> <span class="pre">theme)</span></code> registers your own.</p>
+and <code class="docutils literal notranslate"><span class="pre">surface</span></code>; titles, which are large, meet 3:1. <code class="docutils literal notranslate"><span class="pre">svg.themes.get(name)</span></code> returns one;
+<code class="docutils literal notranslate"><span class="pre">svg.themes.list()</span></code> lists them, <code class="docutils literal notranslate"><span class="pre">svg.themes.register(theme)</span></code> registers your own under its name, and
+<code class="docutils literal notranslate"><span class="pre">svg.themes.unregister(name)</span></code> removes it again. A package can ship themes through the <code class="docutils literal notranslate"><span class="pre">svgwriter.theme</span></code>
+entry-point group (see <a class="reference internal" href="extending.html"><span class="std std-doc">Extending svgwriter</span></a>).</p>
 <p><code class="docutils literal notranslate"><span class="pre">dracula</span></code> and <code class="docutils literal notranslate"><span class="pre">alucard</span></code> follow the Dracula palette (MIT licensed, draculatheme.com); <code class="docutils literal notranslate"><span class="pre">one-dark</span></code> and
 <code class="docutils literal notranslate"><span class="pre">one-light</span></code> follow Atom’s One Dark and One Light themes (MIT licensed). Where an official comment grey is
 too faint for caption text, the theme uses a lighter grey from the same palette.</p>
@@ -482,7 +486,7 @@ theme, written with the typed <code class="docutils literal notranslate"><span c
 follow their sources:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 
-<span class="n">brand</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"light"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+<span class="n">brand</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"light"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">"brand"</span><span class="p">,</span>
     <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="s2">"primary"</span><span class="p">:</span> <span class="s2">"#7c3aed"</span><span class="p">,</span> <span class="s2">"border"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">primary</span><span class="o">.</span><span class="n">mix</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">background</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)},</span>
     <span class="n">fonts</span><span class="o">=</span><span class="p">{</span><span class="s2">"family"</span><span class="p">:</span> <span class="s2">"Georgia, serif"</span><span class="p">,</span> <span class="s2">"sizes"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"title"</span><span class="p">:</span> <span class="mi">28</span><span class="p">}},</span>
@@ -496,7 +500,7 @@ follow their sources:</p>
 </div>
 <p>A role value may also be a reference, <code class="docutils literal notranslate"><span class="pre">&quot;{palette.primary}&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;{fonts.sizes.title}&quot;</span></code>, alone or inside
 text (<code class="docutils literal notranslate"><span class="pre">&quot;1px</span> <span class="pre">solid</span> <span class="pre">{palette.border}&quot;</span></code>), or an expression starting with <code class="docutils literal notranslate"><span class="pre">=</span></code>. Unknown roles and references and reference cycles
-raise <code class="docutils literal notranslate"><span class="pre">svg.theme.ThemeError</span></code> with the path of the value.</p>
+raise <code class="docutils literal notranslate"><span class="pre">svg.errors.ThemeError</span></code> with the path of the value.</p>
 </section>
 <section id="expressions">
 <h2>Expressions<a class="headerlink" href="#expressions" title="Link to this heading">¶</a></h2>
@@ -508,7 +512,7 @@ in, so <code class="docutils literal notranslate"><span class="pre">&quot;1px</s
 Derived values follow their sources: replacing <code class="docutils literal notranslate"><span class="pre">primary</span></code> changes everything computed from it.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 
-<span class="n">brand</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"light"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+<span class="n">brand</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"light"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
     <span class="n">palette</span><span class="o">=</span><span class="p">{</span>
         <span class="s2">"primary"</span><span class="p">:</span> <span class="s2">"#7c3aed"</span><span class="p">,</span>
         <span class="s2">"on_primary"</span><span class="p">:</span> <span class="s2">"=readable(</span><span class="si">{palette.primary}</span><span class="s2">)"</span><span class="p">,</span>
@@ -677,7 +681,7 @@ so threads and async tasks each keep their own; outside any block the default is
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 
-<span class="k">with</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"print"</span><span class="p">):</span>
+<span class="k">with</span> <span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"print"</span><span class="p">):</span>
     <span class="n">figure</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
     <span class="n">figure</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Figure 1"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"caption"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">figure</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -712,7 +716,7 @@ so threads and async tasks each keep their own; outside any block the default is
 sizes and weights are numbers. <code class="docutils literal notranslate"><span class="pre">fonts.family</span></code> and <code class="docutils literal notranslate"><span class="pre">fonts.monospace</span></code> are a family name or a list of font
 files, relative to the theme file, loaded as an <code class="docutils literal notranslate"><span class="pre">svg.Typeface</span></code> (see <a class="reference internal" href="text.html#typography"><span class="std std-ref">Typography</span></a>).</p>
 <p><code class="docutils literal notranslate"><span class="pre">save</span></code> writes what differs from the theme it <code class="docutils literal notranslate"><span class="pre">extends</span></code>: a variant made with <code class="docutils literal notranslate"><span class="pre">replace</span></code> on a registered theme
-extends that theme, so <code class="docutils literal notranslate"><span class="pre">svg.Theme.get(&quot;dark&quot;).replace(name=&quot;night&quot;).save(path)</span></code> writes two lines. References
+extends that theme, so <code class="docutils literal notranslate"><span class="pre">svg.themes.get(&quot;dark&quot;).replace(name=&quot;night&quot;).save(path)</span></code> writes two lines. References
 and expressions are written as given, so they stay live; only values given as Python functions are written
 as the colors and numbers they produce (a role given as a function is written as the properties it returns,
 which a reader merges over the extended role). A theme read from a file remembers the file: saving it, or a

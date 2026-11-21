@@ -234,6 +234,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -263,6 +264,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -308,29 +310,11 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">...errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">SceneError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">SCENE_RUN_NAME</span><span class="p">,</span> <span class="n">SCENE_SCRIPT</span><span class="p">,</span> <span class="n">SCENE_SVG</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.scene</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scene</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"SceneError"</span><span class="p">,</span> <span class="s2">"load_scenes"</span><span class="p">]</span>
-
-
-<div class="viewcode-block" id="SceneError">
-<a class="viewcode-back" href="../../../../reference/video.html#svgwriter.motion.video.SceneError">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">SceneError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""A source defines no scene, or no scene with a requested name.</span>
-
-<span class="sd">    Subclasses :class:`ValueError`.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    load_scenes : Raises it.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.motion.video import SceneError</span>
-<span class="sd">    &gt;&gt;&gt; issubclass(SceneError, ValueError)</span>
-<span class="sd">    True</span>
-<span class="sd">    """</span></div>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"load_scenes"</span><span class="p">]</span>
 
 
 
@@ -410,7 +394,7 @@
 <span class="sd">    &gt;&gt;&gt; [scene.name for scene in load_scenes("svgwriter.motion.video.scene:Scene")]</span>
 <span class="sd">    Traceback (most recent call last):</span>
 <span class="sd">    ...</span>
-<span class="sd">    svgwriter.motion.video.loader.SceneError: 'Scene' in svgwriter.motion.video.scene is not a scene</span>
+<span class="sd">    svgwriter.errors.SceneError: 'Scene' in svgwriter.motion.video.scene is not a scene</span>
 <span class="sd">    """</span>
     <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">SCENE_SVG</span><span class="p">:</span>

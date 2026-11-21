@@ -11,8 +11,8 @@ import svgwriter as svg
 card = svg.VStack(
     svg.text("Storage", font_size=16).as_role("title"),
     svg.text("42 GB of 64 GB used", font_size=12).as_role("caption"),
-    svg.rect(height=8, rx=4).as_role("accent"),
-    gap=8, padding=16, align="stretch", background=svg.rect(rx=12).as_role("surface"),
+    svg.rect(width=0, height=8, rx=4).as_role("accent"),
+    gap=8, padding=16, align="stretch", background=svg.rect(0, 0, 1, 1, rx=12).as_role("surface"),
 )
 doc = svg.Document(theme="light")
 doc += card

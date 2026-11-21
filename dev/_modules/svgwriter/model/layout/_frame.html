@@ -234,6 +234,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -263,6 +264,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -495,7 +497,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">        &gt;&gt;&gt; card = svg.VStack(svg.rect(0, 0, 30, 10), padding=5)</span>
-<span class="sd">        &gt;&gt;&gt; card.background = svg.rect(rx=4, fill="white")</span>
+<span class="sd">        &gt;&gt;&gt; card.background = svg.rect(0, 0, 1, 1, rx=4, fill="white")</span>
 <span class="sd">        &gt;&gt;&gt; card.background.bounds()</span>
 <span class="sd">        BBox(x=0.0, y=0.0, width=40.0, height=20.0)</span>
 <span class="sd">        """</span>
@@ -508,7 +510,7 @@
         <span class="k">if</span> <span class="n">old</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">Rect</span><span class="p">()</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_background_child</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>

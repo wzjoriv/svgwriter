@@ -8,10 +8,10 @@ Colors are {class}`~svgwriter.Color` values with red, green, blue and alpha as f
 ```python
 import svgwriter as svg
 
-svg.rect(fill="tomato")
-svg.rect(fill="#ff6347cc")
-svg.rect(fill="rgba(255, 99, 71, 0.8)")
-svg.rect(fill=(1.0, 0.39, 0.28, 0.8))
+svg.rect(0, 0, 1, 1, fill="tomato")
+svg.rect(0, 0, 1, 1, fill="#ff6347cc")
+svg.rect(0, 0, 1, 1, fill="rgba(255, 99, 71, 0.8)")
+svg.rect(0, 0, 1, 1, fill=(1.0, 0.39, 0.28, 0.8))
 c = svg.Color.from_uint8(255, 99, 71)          # 0..255 values are explicit
 print(c.hex, c.rgba, c.uint8)
 print(c.lighten(0.2).hex, c.mix("navy").hex, (c * 0.5).hex)
@@ -22,7 +22,7 @@ in colors, so a translucent `fill`, `stroke`, `stop-color` or `flood-color` also
 `*-opacity` attribute:
 
 ```python
-print(svg.rect(fill=(1, 0, 0, 0.5)))     # fill="#ff0000" fill-opacity="0.5"
+print(svg.rect(0, 0, 1, 1, fill=(1, 0, 0, 0.5)))     # fill="#ff0000" fill-opacity="0.5"
 ```
 
 ### CSS Color 4 text

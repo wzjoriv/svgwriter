@@ -234,6 +234,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -263,6 +264,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -297,11 +299,15 @@
         <article role="main" id="furo-main-content">
           <h1>All modules for which code is available</h1>
 <ul><li><a href="svgwriter/_document/sizes.html">svgwriter._document.sizes</a></li>
+<li><a href="svgwriter/_internal/_presets.html">svgwriter._internal._presets</a></li>
+<li><a href="svgwriter/_internal/_registry.html">svgwriter._internal._registry</a></li>
 <li><a href="svgwriter/catalog/builder/_drawing.html">svgwriter.catalog.builder._drawing</a></li>
 <li><a href="svgwriter/catalog/builder/_functions.html">svgwriter.catalog.builder._functions</a></li>
 <li><a href="svgwriter/catalog/builder/_lines.html">svgwriter.catalog.builder._lines</a></li>
 <li><a href="svgwriter/catalog/builder/_shapes.html">svgwriter.catalog.builder._shapes</a></li>
 <li><a href="svgwriter/catalog/builder/_symbols.html">svgwriter.catalog.builder._symbols</a></li>
+<li><a href="svgwriter/catalog/effects/_elements.html">svgwriter.catalog.effects._elements</a></li>
+<li><a href="svgwriter/catalog/effects/_materials.html">svgwriter.catalog.effects._materials</a></li>
 <li><a href="svgwriter/catalog/filters/_edges.html">svgwriter.catalog.filters._edges</a></li>
 <li><a href="svgwriter/catalog/filters/_shadows.html">svgwriter.catalog.filters._shadows</a></li>
 <li><a href="svgwriter/catalog/filters/_surface.html">svgwriter.catalog.filters._surface</a></li>
@@ -310,19 +316,10 @@
 <li><a href="svgwriter/catalog/markers/_library.html">svgwriter.catalog.markers._library</a></li>
 <li><a href="svgwriter/catalog/patterns/_geometric.html">svgwriter.catalog.patterns._geometric</a></li>
 <li><a href="svgwriter/catalog/patterns/_organic.html">svgwriter.catalog.patterns._organic</a></li>
-<li><a href="svgwriter/catalog/preset/_animation.html">svgwriter.catalog.preset._animation</a></li>
-<li><a href="svgwriter/catalog/preset/_behavior.html">svgwriter.catalog.preset._behavior</a></li>
-<li><a href="svgwriter/catalog/preset/_catalogue.html">svgwriter.catalog.preset._catalogue</a></li>
-<li><a href="svgwriter/catalog/preset/_kinds.html">svgwriter.catalog.preset._kinds</a></li>
-<li><a href="svgwriter/catalog/preset/_shape.html">svgwriter.catalog.preset._shape</a></li>
-<li><a href="svgwriter/catalog/preset/_size.html">svgwriter.catalog.preset._size</a></li>
-<li><a href="svgwriter/catalog/preset/_text_effect.html">svgwriter.catalog.preset._text_effect</a></li>
-<li><a href="svgwriter/catalog/text_effects/_elements.html">svgwriter.catalog.text_effects._elements</a></li>
-<li><a href="svgwriter/catalog/text_effects/_materials.html">svgwriter.catalog.text_effects._materials</a></li>
 <li><a href="svgwriter/document.html">svgwriter.document</a></li>
-<li><a href="svgwriter/formats/export/_exchange.html">svgwriter.formats.export._exchange</a></li>
-<li><a href="svgwriter/formats/export/_registry.html">svgwriter.formats.export._registry</a></li>
-<li><a href="svgwriter/formats/inkscape/connectors.html">svgwriter.formats.inkscape.connectors</a></li>
+<li><a href="svgwriter/formats/export.html">svgwriter.formats.export</a></li>
+<ul><li><a href="svgwriter/formats/export/_exchange.html">svgwriter.formats.export._exchange</a></li>
+</ul><li><a href="svgwriter/formats/inkscape/connectors.html">svgwriter.formats.inkscape.connectors</a></li>
 <li><a href="svgwriter/formats/inkscape/guides.html">svgwriter.formats.inkscape.guides</a></li>
 <li><a href="svgwriter/formats/inkscape/hints.html">svgwriter.formats.inkscape.hints</a></li>
 <li><a href="svgwriter/formats/inkscape/layers.html">svgwriter.formats.inkscape.layers</a></li>
@@ -411,7 +408,6 @@
 <li><a href="svgwriter/model/pathdata/commands.html">svgwriter.model.pathdata.commands</a></li>
 <li><a href="svgwriter/model/pathdata/data.html">svgwriter.model.pathdata.data</a></li>
 <li><a href="svgwriter/model/pathdata/parser.html">svgwriter.model.pathdata.parser</a></li>
-<li><a href="svgwriter/model/theme/_errors.html">svgwriter.model.theme._errors</a></li>
 <li><a href="svgwriter/model/theme/fonts.html">svgwriter.model.theme.fonts</a></li>
 <li><a href="svgwriter/model/theme/palette.html">svgwriter.model.theme.palette</a></li>
 <li><a href="svgwriter/model/theme/sheet.html">svgwriter.model.theme.sheet</a></li>
@@ -443,7 +439,7 @@
 <li><a href="svgwriter/tools/cli.html">svgwriter.tools.cli</a></li>
 <li><a href="svgwriter/tools/project/_config.html">svgwriter.tools.project._config</a></li>
 <li><a href="svgwriter/tools/project/_gallery.html">svgwriter.tools.project._gallery</a></li>
-<li><a href="svgwriter/tools/project/presets.html">svgwriter.tools.project.presets</a></li>
+<li><a href="svgwriter/tools/project/_presets.html">svgwriter.tools.project._presets</a></li>
 <li><a href="svgwriter/tools/project/project.html">svgwriter.tools.project.project</a></li>
 <li><a href="svgwriter/tools/widgets/_choices.html">svgwriter.tools.widgets._choices</a></li>
 <li><a href="svgwriter/tools/widgets/_control.html">svgwriter.tools.widgets._control</a></li>

@@ -235,6 +235,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -264,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -2465,38 +2467,6 @@ y-down coordinate system.</p></li>
 
 </dd></dl>
 
-<dl class="py exception">
-<dt class="sig sig-object py" id="svgwriter.model.pathdata.PathSyntaxError">
-<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">PathSyntaxError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/model/pathdata/parser.html#PathSyntaxError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.pathdata.PathSyntaxError" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a></p>
-<p>Raised for malformed path data.</p>
-<p>A <cite>ValueError</cite> that records where in the text parsing failed.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – What went wrong.</p></li>
-<li><p><strong>position</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – Character offset of the error; also stored as the <code class="docutils literal notranslate"><span class="pre">position</span></code> attribute.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.model.pathdata.parse_path" title="svgwriter.model.pathdata.parse_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_path</span></code></a></dt><dd><p>Raises this error.</p>
-</dd>
-</dl>
-</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.model.pathdata</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathSyntaxError</span><span class="p">,</span> <span class="n">parse_path</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">parse_path</span><span class="p">(</span><span class="s2">"L1 1"</span><span class="p">)</span>
-<span class="gp">... </span><span class="k">except</span> <span class="n">PathSyntaxError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
-<span class="go">path data must start with a moveto at offset 0</span>
-</pre></div>
-</div>
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="svgwriter.model.pathdata.QuadTo">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">QuadTo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">y1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/model/pathdata/commands.html#QuadTo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.pathdata.QuadTo" title="Link to this definition">¶</a></dt>
@@ -2826,7 +2796,7 @@ line (zero radius or coincident endpoints).</p>
 <dd class="field-even"><p><em>PathCommand</em> – The commands in order.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.model.pathdata.PathSyntaxError" title="svgwriter.model.pathdata.PathSyntaxError"><strong>PathSyntaxError</strong></a> – If the text is malformed or does not start with a moveto.</p>
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#svgwriter.errors.PathSyntaxError" title="svgwriter.errors.PathSyntaxError"><strong>PathSyntaxError</strong></a> – If the text is malformed or does not start with a moveto.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -2856,7 +2826,7 @@ line (zero radius or coincident endpoints).</p>
 <dd class="field-even"><p><em>list of PathCommand</em> – The parsed commands.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.model.pathdata.PathSyntaxError" title="svgwriter.model.pathdata.PathSyntaxError"><strong>PathSyntaxError</strong></a> – If the text is malformed or does not start with a moveto.</p>
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#svgwriter.errors.PathSyntaxError" title="svgwriter.errors.PathSyntaxError"><strong>PathSyntaxError</strong></a> – If the text is malformed or does not start with a moveto.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -3214,7 +3184,7 @@ point, so relative commands and closing behave as in SVG.</p>
 <dd class="field-even"><p><em>PathBuilder</em> – The builder itself, for chaining.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.model.pathdata.PathSyntaxError" title="svgwriter.model.pathdata.PathSyntaxError"><strong>PathSyntaxError</strong></a> – If <cite>data</cite> is text that is not valid path data.</p>
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#svgwriter.errors.PathSyntaxError" title="svgwriter.errors.PathSyntaxError"><strong>PathSyntaxError</strong></a> – If <cite>data</cite> is text that is not valid path data.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -3519,7 +3489,7 @@ transformation with <code class="docutils literal notranslate"><span class="pre"
 <dd class="field-odd"><p><strong>commands</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>iterable</em><em> of </em><a class="reference internal" href="#svgwriter.model.pathdata.PathCommand" title="svgwriter.model.pathdata.PathCommand"><em>PathCommand</em></a><em>, </em><em>optional</em>) – Path data text, or commands. Defaults to an empty path.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#svgwriter.model.pathdata.PathSyntaxError" title="svgwriter.model.pathdata.PathSyntaxError"><strong>PathSyntaxError</strong></a> – If <cite>commands</cite> is text that is not valid path data.</p>
+<dd class="field-even"><p><a class="reference internal" href="errors.html#svgwriter.errors.PathSyntaxError" title="svgwriter.errors.PathSyntaxError"><strong>PathSyntaxError</strong></a> – If <cite>commands</cite> is text that is not valid path data.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -4034,7 +4004,6 @@ node has both coordinates.</p>
 <li><a class="reference internal" href="#svgwriter.model.pathdata.MoveTo.relative"><code class="docutils literal notranslate"><span class="pre">MoveTo.relative</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#svgwriter.model.pathdata.PathSyntaxError"><code class="docutils literal notranslate"><span class="pre">PathSyntaxError</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.pathdata.QuadTo"><code class="docutils literal notranslate"><span class="pre">QuadTo</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.model.pathdata.QuadTo.code"><code class="docutils literal notranslate"><span class="pre">QuadTo.code</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.pathdata.QuadTo.coordinates"><code class="docutils literal notranslate"><span class="pre">QuadTo.coordinates</span></code></a></li>

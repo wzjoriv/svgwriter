@@ -235,6 +235,7 @@
 <li class="toctree-l1"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -264,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -309,7 +311,7 @@
           <section id="presets">
 <h1>Presets<a class="headerlink" href="#presets" title="Link to this heading">¶</a></h1>
 <p>svgwriter ships catalogues of ready-made looks: patterns and gradients to paint with, filters, line
-markers and text effects. Each catalogue is a module of functions that build an ordinary element, so the
+markers and effects. Each catalogue is a module of functions that build an ordinary element, so the
 result is plain SVG you can inspect and edit, and each is open to presets of your own.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
@@ -336,9 +338,9 @@ result is plain SVG you can inspect and edit, and each is open to presets of you
 <td><p><code class="docutils literal notranslate"><span class="pre">marker_end=svg.markers.arrow()</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&lt;marker&gt;</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">svg.text_effects</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">text[4:9].effect(&quot;fire&quot;)</span></code></p></td>
-<td><p>paint, a filter and an animation on live text</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">svg.effects</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">shape.effect(&quot;neon&quot;)</span></code>, <code class="docutils literal notranslate"><span class="pre">text[4:9].effect(&quot;fire&quot;)</span></code></p></td>
+<td><p>paint, a filter and an animation on any element, text staying text</p></td>
 </tr>
 </tbody>
 </table>
@@ -373,7 +375,7 @@ another role and <code class="docutils literal notranslate"><span class="pre">ba
 gradient presets sample extra stops in OKLCH, so <code class="docutils literal notranslate"><span class="pre">blend(&quot;red&quot;,</span> <span class="pre">&quot;blue&quot;)</span></code> passes through a clear violet.
 <code class="docutils literal notranslate"><span class="pre">angle=</span></code> sets the direction (0 left to right, 90 top to bottom). Gradients are in bounding-box units and
 stretch to the shape; <code class="docutils literal notranslate"><span class="pre">mesh</span></code> layers a radial blend from each corner. Stop colors are numbers, so theme
-defaults come from the current theme when the gradient is built (<code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">svg.Theme.get(&quot;dark&quot;):</span></code>).</p>
+defaults come from the current theme when the gradient is built (<code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">svg.themes.get(&quot;dark&quot;):</span></code>).</p>
 </section>
 <section id="filters">
 <h2>Filters<a class="headerlink" href="#filters" title="Link to this heading">¶</a></h2>
@@ -403,20 +405,22 @@ you pass a color, so they restyle with the document theme. <code class="docutils
 <p>Markers are sized in stroke widths, so a thicker line gets a larger head, and turn with the line
 (<code class="docutils literal notranslate"><span class="pre">orient=&quot;auto&quot;</span></code>). They take the theme role <code class="docutils literal notranslate"><span class="pre">arrow.head</span></code> unless you pass <code class="docutils literal notranslate"><span class="pre">color=</span></code>.</p>
 </section>
-<section id="text-effects">
-<h2>Text effects<a class="headerlink" href="#text-effects" title="Link to this heading">¶</a></h2>
+<section id="effects">
+<h2>Effects<a class="headerlink" href="#effects" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">520</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
 <span class="n">line</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"A bitter Wind carried sparks"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">28</span><span class="p">)</span>
 <span class="n">line</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">13</span><span class="p">]</span><span class="o">.</span><span class="n">effect</span><span class="p">(</span><span class="s2">"wind"</span><span class="p">)</span>
-<span class="n">svg</span><span class="o">.</span><span class="n">text_effects</span><span class="o">.</span><span class="n">fire</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">22</span><span class="p">:</span><span class="mi">28</span><span class="p">])</span>               <span class="c1"># the same, by function</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">effects</span><span class="o">.</span><span class="n">fire</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">22</span><span class="p">:</span><span class="mi">28</span><span class="p">])</span>               <span class="c1"># the same, by function</span>
 <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"sparks.gif"</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><img alt="Smoke, metal, wind, fire and snow on one sentence" src="../_images/text_effects.gif" /></p>
+<p><img alt="Smoke, metal, wind, fire and snow on one sentence" src="../_images/effects1.gif" /></p>
 <p><code class="docutils literal notranslate"><span class="pre">fire</span></code>, <code class="docutils literal notranslate"><span class="pre">ice</span></code>, <code class="docutils literal notranslate"><span class="pre">smoke</span></code>, <code class="docutils literal notranslate"><span class="pre">metal</span></code>, <code class="docutils literal notranslate"><span class="pre">wind</span></code>, <code class="docutils literal notranslate"><span class="pre">snow</span></code>, <code class="docutils literal notranslate"><span class="pre">neon</span></code> and <code class="docutils literal notranslate"><span class="pre">glitch</span></code> each set a gradient or color, a
-filter and a small SMIL animation (<code class="docutils literal notranslate"><span class="pre">animate=False</span></code> leaves it still). The glyphs are never turned into
-outlines: the text stays selectable and searchable, and keeps its font. Effects size themselves to the
-glyphs, so the same effect looks the same at any font size.</p>
+filter and a small SMIL animation (<code class="docutils literal notranslate"><span class="pre">animate=False</span></code> leaves it still), on any element: a shape, group, image
+or text (<code class="docutils literal notranslate"><span class="pre">svg.circle(0,</span> <span class="pre">0,</span> <span class="pre">20).effect(&quot;neon&quot;)</span></code>). The glyphs of a text are never turned into outlines: the
+text stays selectable and searchable, and keeps its font. Effects size themselves to the element (a text to
+its glyph height, anything else to the shorter side of its bounding box), so the same effect looks the same
+at any size.</p>
 <p>On a whole text the effect styles it directly. On a range the characters move onto a copy of the text
 placed just above it (<code class="docutils literal notranslate"><span class="pre">text[a:b].isolate()</span></code>): the copy hides every other character and the original
 hides the range, both with <code class="docutils literal notranslate"><span class="pre">visibility=&quot;hidden&quot;</span></code> so every character keeps its place. Filters then reach
@@ -440,22 +444,24 @@ The wrapper checks the return type, so a mistake fails where it is made.</p>
     <span class="k">return</span> <span class="n">svg</span><span class="o">.</span><span class="n">Pattern</span><span class="p">(</span><span class="n">mortar</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">pattern_units</span><span class="o">=</span><span class="s2">"userSpaceOnUse"</span><span class="p">)</span>
 
 
-<span class="nd">@svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">text_effect</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">ember</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="n">svg</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"#f97316"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">text</span><span class="o">.</span><span class="n">fill</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">gradients</span><span class="o">.</span><span class="n">blend</span><span class="p">(</span><span class="s2">"#fde68a"</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="s2">"#7f1d1d"</span><span class="p">,</span> <span class="n">angle</span><span class="o">=-</span><span class="mi">90</span><span class="p">)</span>
-    <span class="n">text</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">glow</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="nd">@svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">effect</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ember</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">svg</span><span class="o">.</span><span class="n">Element</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"#f97316"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">element</span><span class="o">.</span><span class="n">fill</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">gradients</span><span class="o">.</span><span class="n">blend</span><span class="p">(</span><span class="s2">"#fde68a"</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="s2">"#7f1d1d"</span><span class="p">,</span> <span class="n">angle</span><span class="o">=-</span><span class="mi">90</span><span class="p">)</span>
+    <span class="n">element</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">glow</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
 
 
 <span class="n">wall</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">patterns</span><span class="o">.</span><span class="n">bricks</span><span class="p">())</span>
 <span class="n">title</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"still warm"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">36</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">28</span><span class="p">)</span>
 <span class="n">title</span><span class="p">[</span><span class="mi">6</span><span class="p">:]</span><span class="o">.</span><span class="n">effect</span><span class="p">(</span><span class="s2">"ember"</span><span class="p">)</span>
-<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"pattern"</span><span class="p">,</span> <span class="s2">"bricks"</span><span class="p">)</span>
-<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"text_effect"</span><span class="p">,</span> <span class="s2">"ember"</span><span class="p">)</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"bricks"</span><span class="p">)</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">effect</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"ember"</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>A text effect receives a whole <code class="docutils literal notranslate"><span class="pre">Text</span></code> and styles it in place; registering it makes it work on ranges
-too. <code class="docutils literal notranslate"><span class="pre">svg.preset.list(&quot;filter&quot;)</span></code> lists a catalogue and <code class="docutils literal notranslate"><span class="pre">svg.preset.get(&quot;marker&quot;,</span> <span class="pre">&quot;arrow&quot;)</span></code> looks one up
-by name. The functions are documented in the <a class="reference internal" href="../reference/presets.html"><span class="std std-doc">preset reference</span></a>.</p>
+<p>An effect receives the element (for a range, the copy holding the range’s characters) and styles it in
+place; registering it makes it work on every element and on ranges. An effect that only suits some
+elements raises <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> for the others. <code class="docutils literal notranslate"><span class="pre">svg.preset.filter.list()</span></code> lists a catalogue and <code class="docutils literal notranslate"><span class="pre">svg.preset.marker.get(&quot;arrow&quot;)</span></code> looks one up
+by name. The functions are documented in the <a class="reference internal" href="../reference/presets.html"><span class="std std-doc">preset reference</span></a>; packages can ship presets
+through entry points (see <a class="reference internal" href="extending.html"><span class="std std-doc">Extending svgwriter</span></a>).</p>
 </section>
 </section>
 
@@ -519,7 +525,7 @@ by name. The functions are documented in the <a class="reference internal" href=
 <li><a class="reference internal" href="#gradients">Gradients</a></li>
 <li><a class="reference internal" href="#filters">Filters</a></li>
 <li><a class="reference internal" href="#markers">Markers</a></li>
-<li><a class="reference internal" href="#text-effects">Text effects</a></li>
+<li><a class="reference internal" href="#effects">Effects</a></li>
 <li><a class="reference internal" href="#exporting">Exporting</a></li>
 <li><a class="reference internal" href="#presets-of-your-own">Presets of your own</a></li>
 </ul>

@@ -234,6 +234,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -263,6 +264,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -309,6 +311,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Registry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyPath</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnknownNameError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FRAME_PATTERN</span><span class="p">,</span> <span class="n">FRAME_SUFFIX</span><span class="p">,</span> <span class="n">TIME_SCALE</span><span class="p">,</span> <span class="n">TIMECOUNT_RE</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._ffmpeg</span><span class="w"> </span><span class="kn">import</span> <span class="n">encode</span><span class="p">,</span> <span class="n">find_ffmpeg</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.frames</span><span class="w"> </span><span class="kn">import</span> <span class="n">Frame</span><span class="p">,</span> <span class="n">FrameData</span><span class="p">,</span> <span class="n">frame_times</span><span class="p">,</span> <span class="n">to_frame</span>
@@ -318,15 +321,13 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">"DEFAULT_FPS"</span><span class="p">,</span>
-    <span class="s2">"RENDERERS"</span><span class="p">,</span>
+    <span class="s2">"renderers"</span><span class="p">,</span>
     <span class="s2">"Renderer"</span><span class="p">,</span>
     <span class="s2">"Update"</span><span class="p">,</span>
     <span class="s2">"animation_duration"</span><span class="p">,</span>
     <span class="s2">"iter_frames"</span><span class="p">,</span>
-    <span class="s2">"register_renderer"</span><span class="p">,</span>
     <span class="s2">"render_animation"</span><span class="p">,</span>
     <span class="s2">"resolve_renderer"</span><span class="p">,</span>
-    <span class="s2">"unregister_renderer"</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="n">Renderer</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="s2">"Callable[[Document, float], FrameData]"</span>
@@ -337,7 +338,19 @@
 
 <span class="n">DEFAULT_FPS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="mf">30.0</span>
 
-<span class="n">RENDERERS</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Registry</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Document</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">FrameData</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Registry</span><span class="p">(</span><span class="s2">"renderer"</span><span class="p">)</span>
+<span class="n">renderers</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Registry</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Document</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">FrameData</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Registry</span><span class="p">(</span><span class="s2">"renderer"</span><span class="p">)</span>
+<span class="sd">"""Renderers by name, chosen with ``renderer="name"``: ``@svg.renderers.register`` adds one.</span>
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+<span class="sd">&gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">&gt;&gt;&gt; @svg.renderers.register(name="myraster")</span>
+<span class="sd">... def render(document, seconds):</span>
+<span class="sd">...     return document.render_png()</span>
+<span class="sd">&gt;&gt;&gt; svg.renderers.get("myraster") is render</span>
+<span class="sd">True</span>
+<span class="sd">&gt;&gt;&gt; _ = svg.renderers.unregister("myraster")</span>
+<span class="sd">"""</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_skia</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FrameData</span><span class="p">:</span>
@@ -346,68 +359,7 @@
     <span class="k">return</span> <span class="n">render_frame</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span>
 
 
-<span class="n">RENDERERS</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"skia"</span><span class="p">,</span> <span class="n">_skia</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="register_renderer">
-<a class="viewcode-back" href="../../../../reference/video.html#svgwriter.motion.video.register_renderer">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">register_renderer</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Renderer</span><span class="p">],</span> <span class="n">Renderer</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""Decorator registering a renderer so it can be chosen by *name*.</span>
-
-<span class="sd">    A rasterizer package can register itself on import, after which</span>
-<span class="sd">    ``renderer="myraster"`` selects it everywhere a renderer is accepted.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    name : str</span>
-<span class="sd">        The name to register the renderer under.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    callable</span>
-<span class="sd">        A decorator that registers the function and returns it unchanged.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    resolve_renderer : Look a registered renderer up again.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.motion.video import register_renderer, resolve_renderer, unregister_renderer</span>
-<span class="sd">    &gt;&gt;&gt; @register_renderer("myraster")</span>
-<span class="sd">    ... def render(document, seconds):</span>
-<span class="sd">    ...     return document.render_png()</span>
-<span class="sd">    &gt;&gt;&gt; resolve_renderer("myraster") is render</span>
-<span class="sd">    True</span>
-<span class="sd">    &gt;&gt;&gt; unregister_renderer("myraster")</span>
-<span class="sd">    """</span>
-    <span class="k">return</span> <span class="n">RENDERERS</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># type: ignore[return-value]</span></div>
-
-
-
-<div class="viewcode-block" id="unregister_renderer">
-<a class="viewcode-back" href="../../../../reference/video.html#svgwriter.motion.video.unregister_renderer">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">unregister_renderer</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Remove the renderer registered under *name*.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    name : str</span>
-<span class="sd">        The name given to :func:`register_renderer`.</span>
-
-<span class="sd">    Raises</span>
-<span class="sd">    ------</span>
-<span class="sd">    KeyError</span>
-<span class="sd">        When no renderer has that name.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.motion.video import register_renderer, unregister_renderer</span>
-<span class="sd">    &gt;&gt;&gt; _ = register_renderer("tmp")(lambda document, seconds: b"")</span>
-<span class="sd">    &gt;&gt;&gt; unregister_renderer("tmp")</span>
-<span class="sd">    """</span>
-    <span class="n">RENDERERS</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
-
+<span class="n">renderers</span><span class="o">.</span><span class="n">add_builtin</span><span class="p">(</span><span class="s2">"skia"</span><span class="p">,</span> <span class="n">_skia</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="resolve_renderer">
@@ -429,13 +381,15 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If `renderer` is None or an unregistered name without a colon.</span>
+<span class="sd">        If `renderer` is None.</span>
+<span class="sd">    UnknownNameError</span>
+<span class="sd">        If `renderer` is an unregistered name without a colon; the message suggests the closest names.</span>
 <span class="sd">    TypeError</span>
 <span class="sd">        If a ``"module:function"`` path names something that is not callable.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    register_renderer : Add a named renderer.</span>
+<span class="sd">    renderers : Register a named renderer.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -445,21 +399,22 @@
 <span class="sd">    &gt;&gt;&gt; resolve_renderer("nope")</span>
 <span class="sd">    Traceback (most recent call last):</span>
 <span class="sd">    ...</span>
-<span class="sd">    ValueError: unknown renderer 'nope'; registered: skia</span>
+<span class="sd">    svgwriter.errors.UnknownNameError: unknown renderer 'nope'; registered: skia</span>
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">renderer</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">renderer</span>
     <span class="k">if</span> <span class="n">renderer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">names</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">RENDERERS</span><span class="o">.</span><span class="n">names</span><span class="p">())</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">renderers</span><span class="o">.</span><span class="n">list</span><span class="p">())</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">"no renderer given; pass renderer=callable(document, seconds) returning PNG bytes or an RGBA array, "</span>
             <span class="sa">f</span><span class="s2">"a registered name (</span><span class="si">{</span><span class="n">names</span><span class="si">}</span><span class="s2">) or 'module:function'"</span>
         <span class="p">)</span>
-    <span class="k">if</span> <span class="n">renderer</span> <span class="ow">in</span> <span class="n">RENDERERS</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">RENDERERS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
     <span class="n">module_name</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">attribute</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">sep</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unknown renderer </span><span class="si">{</span><span class="n">renderer</span><span class="si">!r}</span><span class="s2">; registered: </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">RENDERERS</span><span class="o">.</span><span class="n">names</span><span class="p">())</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="n">renderers</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">found</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnknownNameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">renderers</span><span class="o">.</span><span class="n">unknown</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span><span class="si">}</span><span class="s2">; registered: </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">renderers</span><span class="o">.</span><span class="n">list</span><span class="p">())</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">found</span>
     <span class="n">found</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">),</span> <span class="n">attribute</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">found</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">renderer</span><span class="si">!r}</span><span class="s2"> is not callable"</span><span class="p">)</span>
@@ -641,7 +596,8 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.motion.video import FFmpegNotFoundError, render_animation</span>
+<span class="sd">    &gt;&gt;&gt; from svgwriter.errors import FFmpegNotFoundError</span>
+<span class="sd">    &gt;&gt;&gt; from svgwriter.motion.video import render_animation</span>
 <span class="sd">    &gt;&gt;&gt; doc = svg.Document(8, 6)</span>
 <span class="sd">    &gt;&gt;&gt; try:</span>
 <span class="sd">    ...     render_animation(doc, "out.gif", duration=1, renderer="skia", ffmpeg="no-such-ffmpeg")</span>

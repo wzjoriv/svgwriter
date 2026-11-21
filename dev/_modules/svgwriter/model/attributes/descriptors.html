@@ -234,6 +234,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -263,6 +264,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -338,7 +340,7 @@
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">    &gt;&gt;&gt; svg.Rect.width.key</span>
 <span class="sd">    'width'</span>
-<span class="sd">    &gt;&gt;&gt; svg.Rect(width=3).width</span>
+<span class="sd">    &gt;&gt;&gt; svg.Rect(width=3, height=1).width</span>
 <span class="sd">    3.0</span>
 <span class="sd">    """</span>
 
@@ -412,7 +414,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; svg.Rect(width=5).width, svg.parse('&lt;rect width="2mm"/&gt;').width</span>
+<span class="sd">    &gt;&gt;&gt; svg.Rect(width=5, height=1).width, svg.parse('&lt;rect width="2mm"/&gt;').width</span>
 <span class="sd">    (5.0, Length(value=2.0, unit=&lt;Unit.MM: 'mm'&gt;))</span>
 <span class="sd">    """</span>
 

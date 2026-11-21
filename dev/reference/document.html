@@ -235,6 +235,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -264,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -347,7 +349,7 @@ the theme sheet of an existing <cite>root</cite>, else takes <code class="xref p
 <dl class="simple">
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.model.elements.Svg</span></code></dt><dd><p>The root element wrapped by a document.</p>
 </dd>
-<dt><a class="reference internal" href="builder.html#svgwriter.catalog.preset.size" title="svgwriter.catalog.preset.size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.catalog.preset.size</span></code></a></dt><dd><p>Add a named size.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.catalog.preset.size</span></code></dt><dd><p>Add a named size.</p>
 </dd>
 </dl>
 </div>
@@ -405,7 +407,7 @@ explicitly.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><em>bytes</em></a>) – The source; <code class="docutils literal notranslate"><span class="pre">str</span></code> is encoded as UTF-8 for formats read as bytes.</p></li>
-<li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – A registered importer name (see <code class="docutils literal notranslate"><span class="pre">svg.export.importers()</span></code>). Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;svg&quot;</span></code>.</p></li>
+<li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – A format name or extension (see <code class="docutils literal notranslate"><span class="pre">svg.formats.readers()</span></code>). Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;svg&quot;</span></code>.</p></li>
 <li><p><strong>strictness</strong> (<em>Strictness</em><em>, </em><em>optional</em>) – How SVG treats unknown elements and unsupported attributes. Defaults to
 <code class="docutils literal notranslate"><span class="pre">Strictness.LENIENT</span></code>. SVG only.</p></li>
 <li><p><strong>**options</strong> (<em>Any</em>) – Options of the importer (for example <code class="docutils literal notranslate"><span class="pre">theme=</span></code> for Mermaid). SVG takes only <code class="docutils literal notranslate"><span class="pre">theme=</span></code>, the
@@ -417,7 +419,7 @@ theme to restyle the document with (by default the one that wrote it is kept).</
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>SVGParseError</strong> – If the text is malformed or, when strict, unsupported.</p></li>
+<li><p><a class="reference internal" href="errors.html#svgwriter.errors.SVGParseError" title="svgwriter.errors.SVGParseError"><strong>SVGParseError</strong></a> – If the text is malformed or, when strict, unsupported.</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the root element is not <code class="docutils literal notranslate"><span class="pre">&lt;svg&gt;</span></code>, or <em>format</em> is not a registered importer.</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If <em>strictness</em> is given for a format other than SVG, or SVG is given an option other
     than <code class="docutils literal notranslate"><span class="pre">theme</span></code>.</p></li>
@@ -772,7 +774,7 @@ made in this session.</p>
 <dt class="sig sig-object py" id="svgwriter.Document.export">
 <span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><span class="pre">bytes</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#svgwriter.Document.export" title="Link to this definition">¶</a></dt>
 <dd><p>This document in <em>format</em> (<code class="docutils literal notranslate"><span class="pre">&quot;png&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;pdf&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;tikz&quot;</span></code>, … or an extension).</p>
-<p>See <a class="reference internal" href="export.html#svgwriter.formats.export.exporters" title="svgwriter.formats.export.exporters"><code class="xref py py-func docutils literal notranslate"><span class="pre">svgwriter.formats.export.exporters()</span></code></a> for the registered formats.</p>
+<p><code class="docutils literal notranslate"><span class="pre">svg.formats.writers()</span></code> lists the formats.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1137,8 +1139,8 @@ Defaults to None, which raises; there is no default renderer.</p></li>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="video.html#svgwriter.motion.video.FFmpegNotFoundError" title="svgwriter.motion.video.FFmpegNotFoundError"><strong>FFmpegNotFoundError</strong></a> – When ffmpeg is missing.</p></li>
-<li><p><a class="reference internal" href="video.html#svgwriter.motion.video.FFmpegError" title="svgwriter.motion.video.FFmpegError"><strong>FFmpegError</strong></a> – When ffmpeg fails.</p></li>
+<li><p><a class="reference internal" href="errors.html#svgwriter.errors.FFmpegNotFoundError" title="svgwriter.errors.FFmpegNotFoundError"><strong>FFmpegNotFoundError</strong></a> – When ffmpeg is missing.</p></li>
+<li><p><a class="reference internal" href="errors.html#svgwriter.errors.FFmpegError" title="svgwriter.errors.FFmpegError"><strong>FFmpegError</strong></a> – When ffmpeg fails.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1380,7 +1382,7 @@ screen sizes are pixels. Append <code class="docutils literal notranslate"><span
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A canvas size: a width and a height counted in one unit.</p>
 <p>Look the built-in ones up as attributes of <a class="reference internal" href="#svgwriter.size" title="svgwriter.size"><code class="xref py py-data docutils literal notranslate"><span class="pre">svgwriter.size</span></code></a> (<code class="docutils literal notranslate"><span class="pre">svg.size.a4</span></code>), add your own
-with <a class="reference internal" href="builder.html#svgwriter.catalog.preset.size" title="svgwriter.catalog.preset.size"><code class="xref py py-func docutils literal notranslate"><span class="pre">svgwriter.catalog.preset.size()</span></code></a>, and pass either to <code class="docutils literal notranslate"><span class="pre">Document(size=...)</span></code>, <code class="docutils literal notranslate"><span class="pre">Scene.size</span></code> or a
+with <code class="xref py py-data docutils literal notranslate"><span class="pre">svgwriter.catalog.preset.size</span></code>, and pass either to <code class="docutils literal notranslate"><span class="pre">Document(size=...)</span></code>, <code class="docutils literal notranslate"><span class="pre">Scene.size</span></code> or a
 project’s <code class="docutils literal notranslate"><span class="pre">size</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1396,7 +1398,7 @@ project’s <code class="docutils literal notranslate"><span class="pre">size</s
 <dl class="simple">
 <dt><a class="reference internal" href="#svgwriter.size" title="svgwriter.size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.size</span></code></a></dt><dd><p>The built-in sizes by name.</p>
 </dd>
-<dt><a class="reference internal" href="builder.html#svgwriter.catalog.preset.size" title="svgwriter.catalog.preset.size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.catalog.preset.size</span></code></a></dt><dd><p>Register a size under a name.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.catalog.preset.size</span></code></dt><dd><p>Register a size under a name.</p>
 </dd>
 </dl>
 </div>
@@ -1489,7 +1491,7 @@ project’s <code class="docutils literal notranslate"><span class="pre">size</s
 <dd><p>The width and height of a size, turned for a <code class="docutils literal notranslate"><span class="pre">-landscape</span></code> or <code class="docutils literal notranslate"><span class="pre">-portrait</span></code> suffix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><a class="reference internal" href="#svgwriter.PageSize" title="svgwriter.PageSize"><em>PageSize</em></a>) – A <a class="reference internal" href="#svgwriter.PageSize" title="svgwriter.PageSize"><code class="xref py py-class docutils literal notranslate"><span class="pre">PageSize</span></code></a>, or a name from <code class="docutils literal notranslate"><span class="pre">svg.preset.list(&quot;size&quot;)</span></code> (<code class="docutils literal notranslate"><span class="pre">&quot;a4&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;letter&quot;</span></code>,
+<dd class="field-odd"><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><a class="reference internal" href="#svgwriter.PageSize" title="svgwriter.PageSize"><em>PageSize</em></a>) – A <a class="reference internal" href="#svgwriter.PageSize" title="svgwriter.PageSize"><code class="xref py py-class docutils literal notranslate"><span class="pre">PageSize</span></code></a>, or a name from <code class="docutils literal notranslate"><span class="pre">svg.preset.size.list()</span></code> (<code class="docutils literal notranslate"><span class="pre">&quot;a4&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;letter&quot;</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;slide-16:9&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;instagram-story&quot;</span></code>, …), optionally followed by <code class="docutils literal notranslate"><span class="pre">-landscape</span></code> (long side
 across) or <code class="docutils literal notranslate"><span class="pre">-portrait</span></code> (long side down).</p>
 </dd>
@@ -1497,13 +1499,13 @@ across) or <code class="docutils literal notranslate"><span class="pre">-portrai
 <dd class="field-even"><p><em>tuple of Length</em> – <code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code>.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the name is unknown; the message suggests the closest names.</p>
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#svgwriter.errors.UnknownNameError" title="svgwriter.errors.UnknownNameError"><strong>UnknownNameError</strong></a> – If the name is unknown; the message suggests the closest names.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="builder.html#svgwriter.catalog.preset.size" title="svgwriter.catalog.preset.size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.catalog.preset.size</span></code></a></dt><dd><p>Add a size.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.catalog.preset.size</span></code></dt><dd><p>Add a size.</p>
 </dd>
 </dl>
 </div>
@@ -1514,7 +1516,7 @@ across) or <code class="docutils literal notranslate"><span class="pre">-portrai
 <span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">page_size</span><span class="p">(</span><span class="s2">"a44"</span><span class="p">)</span>
 <span class="gt">Traceback (most recent call last):</span>
 <span class="c">...</span>
-<span class="gr">ValueError</span>: <span class="n">unknown size 'a44'; did you mean 'a4'? (svg.preset.list("size") lists every size)</span>
+<span class="gr">svgwriter.errors.UnknownNameError</span>: <span class="n">unknown size 'a44'; did you mean 'a4'? (svg.preset.size.list() lists every size)</span>
 </pre></div>
 </div>
 </dd></dl>

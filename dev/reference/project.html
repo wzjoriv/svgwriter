@@ -235,6 +235,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -264,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -326,7 +328,7 @@ looks for a manifest; only <a class="reference internal" href="#svgwriter.Projec
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.tools.project.register_preset" title="svgwriter.tools.project.register_preset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.tools.project.register_preset</span></code></a></dt><dd><p>Add a starter folder for <a class="reference internal" href="#svgwriter.Project.new" title="svgwriter.Project.new"><code class="xref py py-meth docutils literal notranslate"><span class="pre">new()</span></code></a>.</p>
+<dt><a class="reference internal" href="#svgwriter.tools.project.presets" title="svgwriter.tools.project.presets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.tools.project.presets</span></code></a></dt><dd><p>Register a starter folder for <a class="reference internal" href="#svgwriter.Project.new" title="svgwriter.Project.new"><code class="xref py py-meth docutils literal notranslate"><span class="pre">new()</span></code></a>.</p>
 </dd>
 </dl>
 </div>
@@ -356,7 +358,7 @@ always runs the current files.</p>
 <dd class="field-even"><p><em>Project</em> – The project.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.tools.project.ProjectError" title="svgwriter.tools.project.ProjectError"><strong>ProjectError</strong></a> – If no manifest is found, or it has an unknown key or a bad value (the message names the file and key).</p>
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#svgwriter.errors.ProjectError" title="svgwriter.errors.ProjectError"><strong>ProjectError</strong></a> – If no manifest is found, or it has an unknown key or a bad value (the message names the file and key).</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -377,7 +379,7 @@ always runs the current files.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.15)"><em>os.PathLike</em></a>) – The new folder; it must not exist or be empty.</p></li>
-<li><p><strong>preset</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – A name from <a class="reference internal" href="#svgwriter.tools.project.PRESETS" title="svgwriter.tools.project.PRESETS"><code class="xref py py-data docutils literal notranslate"><span class="pre">svgwriter.tools.project.PRESETS</span></code></a>. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;blank&quot;</span></code>.</p></li>
+<li><p><strong>preset</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – A name from <a class="reference internal" href="#svgwriter.tools.project.presets" title="svgwriter.tools.project.presets"><code class="xref py py-data docutils literal notranslate"><span class="pre">svgwriter.tools.project.presets</span></code></a>. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;blank&quot;</span></code>.</p></li>
 <li><p><strong>notebook</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – Write <code class="docutils literal notranslate"><span class="pre">main.ipynb</span></code> instead of <code class="docutils literal notranslate"><span class="pre">main.py</span></code>. Defaults to False.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – The project name. Defaults to the folder name.</p></li>
 <li><p><strong>theme</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – A built-in theme name that <code class="docutils literal notranslate"><span class="pre">theme.toml</span></code> extends. Defaults to None, the preset’s own.</p></li>
@@ -389,7 +391,7 @@ None, the preset’s own.</p></li>
 <dd class="field-even"><p><em>Project</em> – The new project, ready to build.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.tools.project.ProjectError" title="svgwriter.tools.project.ProjectError"><strong>ProjectError</strong></a> – If the preset, theme or size is unknown (the message lists the choices) or the folder is
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#svgwriter.errors.ProjectError" title="svgwriter.errors.ProjectError"><strong>ProjectError</strong></a> – If the preset, theme or size is unknown (the message lists the choices) or the folder is
     not empty.</p>
 </dd>
 </dl>
@@ -438,7 +440,7 @@ name. Defaults to None, their starting values.</p></li>
 <dd class="field-even"><p><em>list of pathlib.Path</em> – The files written, in format order.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.tools.project.ProjectError" title="svgwriter.tools.project.ProjectError"><strong>ProjectError</strong></a> – If the entry, the theme or a format cannot be found.</p>
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#svgwriter.errors.ProjectError" title="svgwriter.errors.ProjectError"><strong>ProjectError</strong></a> – If the entry, the theme or a format cannot be found.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -466,7 +468,7 @@ values. Notebook entries declare none here.</p>
 <dd class="field-odd"><p><em>dict of str to Control</em> – One control per parameter name, across the entry’s functions.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#svgwriter.tools.project.ProjectError" title="svgwriter.tools.project.ProjectError"><strong>ProjectError</strong></a> – If the entry cannot be found.</p>
+<dd class="field-even"><p><a class="reference internal" href="errors.html#svgwriter.errors.ProjectError" title="svgwriter.errors.ProjectError"><strong>ProjectError</strong></a> – If the entry cannot be found.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -701,20 +703,6 @@ drawing shows its traceback under the last drawing that worked. The manifest’s
 
 </dd></dl>
 
-<dl class="py exception">
-<dt class="sig sig-object py" id="svgwriter.tools.project.ProjectError">
-<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ProjectError</span></span><a class="reference internal" href="../_modules/svgwriter/tools/project/_config.html#ProjectError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.tools.project.ProjectError" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a></p>
-<p>A project file is missing or invalid, or its entry cannot be loaded; the message names the file.</p>
-<p>Subclasses <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">ProjectError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span>
-<span class="go">True</span>
-</pre></div>
-</div>
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="svgwriter.tools.project.Preview">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Preview</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/tools/project/_gallery.html#Preview"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.tools.project.Preview" title="Link to this definition">¶</a></dt>
@@ -746,7 +734,7 @@ drawing shows its traceback under the last drawing that worked. The manifest’s
 
 <dl class="py class">
 <dt class="sig sig-object py" id="svgwriter.tools.project.Preset">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">extends</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/tools/project/presets.html#Preset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.tools.project.Preset" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">extends</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/tools/project/_presets.html#Preset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.tools.project.Preset" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A starter project: a folder of files, optionally laid over another preset’s.</p>
 <p>In the folder, a <code class="docutils literal notranslate"><span class="pre">-tpl</span></code> suffix is dropped from file names (<code class="docutils literal notranslate"><span class="pre">main.py-tpl</span></code> becomes <code class="docutils literal notranslate"><span class="pre">main.py</span></code>, so the
@@ -764,7 +752,7 @@ have <code class="docutils literal notranslate"><span class="pre">{{</span> <spa
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">PRESETS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"poster"</span><span class="p">)</span><span class="o">.</span><span class="n">extends</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"poster"</span><span class="p">)</span><span class="o">.</span><span class="n">extends</span>
 <span class="go">'blank'</span>
 </pre></div>
 </div>
@@ -791,70 +779,51 @@ have <code class="docutils literal notranslate"><span class="pre">{{</span> <spa
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.tools.project.PRESETS">
-<span class="sig-name descname"><span class="pre">PRESETS</span></span><a class="headerlink" href="#svgwriter.tools.project.PRESETS" title="Link to this definition">¶</a></dt>
-<dd><p>Ordered name -&gt; object mapping populated by a decorator.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="svgwriter.tools.project.register_preset">
-<span class="sig-name descname"><span class="pre">register_preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.15)"><span class="pre">PathLike</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">extends</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.tools.project.Preset" title="svgwriter.tools.project.presets.Preset"><span class="pre">Preset</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/tools/project/presets.html#register_preset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.tools.project.register_preset" title="Link to this definition">¶</a></dt>
-<dd><p>Add a project preset that <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">new</span> <span class="pre">NAME</span> <span class="pre">--preset</span> <span class="pre">&lt;name&gt;</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">Project.new()</span></code> can start from.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The preset name.</p></li>
-<li><p><strong>directory</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.15)"><em>os.PathLike</em></a>) – The folder to copy (see <a class="reference internal" href="#svgwriter.tools.project.Preset" title="svgwriter.tools.project.Preset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Preset</span></code></a> for the file name rules).</p></li>
-<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – One line for <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">presets</span></code>.</p></li>
-<li><p><strong>extends</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – A registered preset whose files are copied first, so this folder only holds what differs.
-Defaults to None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Preset</em> – The registered preset.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the name is taken, the folder does not exist, or <cite>extends</cite> is not registered.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.tools.project.unregister_preset" title="svgwriter.tools.project.unregister_preset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unregister_preset</span></code></a></dt><dd><p>Remove it again.</p>
-</dd>
-</dl>
-</div>
+<dt class="sig sig-object py" id="svgwriter.tools.project.presets">
+<span class="sig-name descname"><span class="pre">presets</span></span><a class="headerlink" href="#svgwriter.tools.project.presets" title="Link to this definition">¶</a></dt>
+<dd><p>what <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">new</span> <span class="pre">NAME</span> <span class="pre">--preset</span> <span class="pre">&lt;name&gt;</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">Project.new()</span></code> start from.</p>
+<p>Register a <a class="reference internal" href="#svgwriter.tools.project.Preset" title="svgwriter.tools.project.Preset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Preset</span></code></a> with <code class="xref py py-meth docutils literal notranslate"><span class="pre">register()</span></code> (its folder must exist and <code class="docutils literal notranslate"><span class="pre">extends</span></code> name a registered
+preset); <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">presets</span></code> lists them. Packages add presets through the <code class="docutils literal notranslate"><span class="pre">svgwriter.project_preset</span></code>
+entry-point group.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span><span class="o">,</span><span class="w"> </span><span class="nn">tempfile</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">folder</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">preset</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">register_preset</span><span class="p">(</span><span class="s2">"badge"</span><span class="p">,</span> <span class="n">folder</span><span class="p">,</span> <span class="s2">"A round badge"</span><span class="p">,</span> <span class="n">extends</span><span class="o">=</span><span class="s2">"blank"</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">preset</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">PRESETS</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">unregister_preset</span><span class="p">(</span><span class="s2">"badge"</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">preset</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">Preset</span><span class="p">(</span><span class="s2">"badge"</span><span class="p">,</span> <span class="s2">"A round badge"</span><span class="p">,</span> <span class="n">folder</span><span class="p">,</span> <span class="s2">"blank"</span><span class="p">))</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">"badge"</span> <span class="ow">in</span> <span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">list</span><span class="p">())</span>
+<span class="gp">... </span>    <span class="n">_</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"badge"</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="svgwriter.tools.project.unregister_preset">
-<span class="sig-name descname"><span class="pre">unregister_preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/tools/project/presets.html#unregister_preset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.tools.project.unregister_preset" title="Link to this definition">¶</a></dt>
-<dd><p>Remove a preset added with <a class="reference internal" href="#svgwriter.tools.project.register_preset" title="svgwriter.tools.project.register_preset"><code class="xref py py-func docutils literal notranslate"><span class="pre">register_preset()</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The registered name.</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#KeyError" title="(in Python v3.15)"><strong>KeyError</strong></a> – If no preset has that name.</p>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Project presets by name</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="svgwriter.tools.project.ProjectPresets">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ProjectPresets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">builtins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/tools/project/_presets.html#ProjectPresets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.tools.project.ProjectPresets" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="presets.html#svgwriter.Registry" title="svgwriter._internal._registry.Registry"><code class="xref py py-class docutils literal notranslate"><span class="pre">Registry</span></code></a>[<a class="reference internal" href="#svgwriter.tools.project.Preset" title="svgwriter.tools.project._presets.Preset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Preset</span></code></a>]</p>
+<p>Project presets by name: what <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">new</span> <span class="pre">NAME</span> <span class="pre">--preset</span> <span class="pre">&lt;name&gt;</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">Project.new()</span></code> start from.</p>
+<p>Register a <a class="reference internal" href="#svgwriter.tools.project.Preset" title="svgwriter.tools.project.Preset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Preset</span></code></a> with <code class="xref py py-meth docutils literal notranslate"><span class="pre">register()</span></code> (its folder must exist and <code class="docutils literal notranslate"><span class="pre">extends</span></code> name a registered
+preset); <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">presets</span></code> lists them. Packages add presets through the <code class="docutils literal notranslate"><span class="pre">svgwriter.project_preset</span></code>
+entry-point group.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">unregister_preset</span><span class="p">(</span><span class="s2">"nope"</span><span class="p">)</span>
-<span class="gt">Traceback (most recent call last):</span>
-<span class="c">...</span>
-<span class="gr">KeyError</span>: <span class="n">"unknown preset 'nope'"</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span><span class="o">,</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">folder</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">preset</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">Preset</span><span class="p">(</span><span class="s2">"badge"</span><span class="p">,</span> <span class="s2">"A round badge"</span><span class="p">,</span> <span class="n">folder</span><span class="p">,</span> <span class="s2">"blank"</span><span class="p">))</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">"badge"</span> <span class="ow">in</span> <span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">list</span><span class="p">())</span>
+<span class="gp">... </span>    <span class="n">_</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"badge"</span><span class="p">)</span>
+<span class="go">True</span>
 </pre></div>
 </div>
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.tools.project.ProjectPresets.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.tools.project.Preset" title="svgwriter.tools.project._presets.Preset"><span class="pre">Preset</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.tools.project.Preset" title="svgwriter.tools.project._presets.Preset"><span class="pre">Preset</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/tools/project/_presets.html#ProjectPresets.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.tools.project.ProjectPresets.prepare" title="Link to this definition">¶</a></dt>
+<dd><p>Check <em>item</em> and return what is stored under <em>name</em> (the item itself unless a kind wraps it).</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -953,7 +922,6 @@ Defaults to None.</p></li>
 <li><a class="reference internal" href="#svgwriter.tools.project.PreviewConfig.formats_on_build"><code class="docutils literal notranslate"><span class="pre">PreviewConfig.formats_on_build</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#svgwriter.tools.project.ProjectError"><code class="docutils literal notranslate"><span class="pre">ProjectError</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.tools.project.Preview"><code class="docutils literal notranslate"><span class="pre">Preview</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.tools.project.Preset"><code class="docutils literal notranslate"><span class="pre">Preset</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.tools.project.Preset.name"><code class="docutils literal notranslate"><span class="pre">Preset.name</span></code></a></li>
@@ -962,9 +930,11 @@ Defaults to None.</p></li>
 <li><a class="reference internal" href="#svgwriter.tools.project.Preset.extends"><code class="docutils literal notranslate"><span class="pre">Preset.extends</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#svgwriter.tools.project.PRESETS"><code class="docutils literal notranslate"><span class="pre">PRESETS</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.tools.project.register_preset"><code class="docutils literal notranslate"><span class="pre">register_preset()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.tools.project.unregister_preset"><code class="docutils literal notranslate"><span class="pre">unregister_preset()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.tools.project.presets"><code class="docutils literal notranslate"><span class="pre">presets</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.tools.project.ProjectPresets"><code class="docutils literal notranslate"><span class="pre">ProjectPresets</span></code></a><ul>
+<li><a class="reference internal" href="#svgwriter.tools.project.ProjectPresets.prepare"><code class="docutils literal notranslate"><span class="pre">ProjectPresets.prepare()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

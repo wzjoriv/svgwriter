@@ -234,6 +234,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -263,6 +264,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -389,8 +391,8 @@
 <span class="sd">    (a name such as ``"ease-in-out"``, a bézier 4-tuple, ``("steps", n)`` or</span>
 <span class="sd">    a function; see :class:`~svgwriter.Ease`). ``show`` and ``hide`` act at</span>
 <span class="sd">    one instant, so they take only the moment. Presets added with</span>
-<span class="sd">    :func:`@svg.preset.animation &lt;svgwriter.catalog.preset.animation&gt;` are methods too, and so are behaviors</span>
-<span class="sd">    (:func:`@svg.preset.behavior &lt;svgwriter.catalog.preset.behavior&gt;`), which attach to the scene owning the element.</span>
+<span class="sd">    :data:`@svg.preset.animation &lt;svgwriter.catalog.preset.animation&gt;` are methods too, and so are behaviors</span>
+<span class="sd">    (:data:`@svg.preset.behavior &lt;svgwriter.catalog.preset.behavior&gt;`), which attach to the scene owning the element.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -432,7 +434,7 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">BEHAVIORS</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attach</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">close</span> <span class="o">=</span> <span class="n">difflib</span><span class="o">.</span><span class="n">get_close_matches</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">ANIMATIONS</span><span class="o">.</span><span class="n">names</span><span class="p">(),</span> <span class="o">*</span><span class="n">BEHAVIORS</span><span class="o">.</span><span class="n">names</span><span class="p">()],</span> <span class="n">n</span><span class="o">=</span><span class="n">SUGGESTIONS</span><span class="p">)</span>
+        <span class="n">close</span> <span class="o">=</span> <span class="n">difflib</span><span class="o">.</span><span class="n">get_close_matches</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">ANIMATIONS</span><span class="o">.</span><span class="n">list</span><span class="p">(),</span> <span class="o">*</span><span class="n">BEHAVIORS</span><span class="o">.</span><span class="n">list</span><span class="p">()],</span> <span class="n">n</span><span class="o">=</span><span class="n">SUGGESTIONS</span><span class="p">)</span>
         <span class="n">hint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"; did you mean </span><span class="si">{</span><span class="s1">' or '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">repr</span><span class="p">,</span><span class="w"> </span><span class="n">close</span><span class="p">))</span><span class="si">}</span><span class="s2">?"</span> <span class="k">if</span> <span class="n">close</span> <span class="k">else</span> <span class="s2">""</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"no animation preset or behavior </span><span class="si">{</span><span class="n">name</span><span class="si">!r}{</span><span class="n">hint</span><span class="si">}</span><span class="s2"> (@svg.preset.animation or "</span>
                              <span class="s2">"@svg.preset.behavior adds one)"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
@@ -462,7 +464,7 @@
 <span class="w">        </span><span class="sd">"""Run an animation function on this element: ``function(self, *args, **kwargs)``.</span>
 
 <span class="sd">        Typed with the function's own parameters, so editors complete and check its options. The</span>
-<span class="sd">        function need not be registered; :func:`@svg.preset.animation &lt;svgwriter.catalog.preset.animation&gt;` also makes it</span>
+<span class="sd">        function need not be registered; :data:`@svg.preset.animation &lt;svgwriter.catalog.preset.animation&gt;` also makes it</span>
 <span class="sd">        ``element.animate.&lt;name&gt;``.</span>
 
 <span class="sd">        Parameters</span>

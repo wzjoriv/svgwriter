@@ -234,6 +234,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -263,6 +264,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -306,9 +308,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">...errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThemeError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ROLE_CLASS_PREFIX</span><span class="p">,</span> <span class="n">SHEET_THEME_NAME</span><span class="p">,</span> <span class="n">STYLE_ID</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThemeError</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">THEMES</span><span class="p">,</span> <span class="n">Theme</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Theme</span><span class="p">,</span> <span class="n">themes</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..attributes.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rule</span>
@@ -344,7 +346,7 @@
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">    &gt;&gt;&gt; from svgwriter.model.theme.sheet import used_roles</span>
 <span class="sd">    &gt;&gt;&gt; g = svg.group(svg.circle(0, 0, 1).as_role("dot"), svg.rect(0, 0, 1, 1).as_role("box"))</span>
-<span class="sd">    &gt;&gt;&gt; used_roles(svg.Theme.get("light"), g)</span>
+<span class="sd">    &gt;&gt;&gt; used_roles(svg.themes.get("light"), g)</span>
 <span class="sd">    ['box', 'dot']</span>
 <span class="sd">    """</span>
     <span class="n">by_class</span> <span class="o">=</span> <span class="p">{</span><span class="n">Theme</span><span class="o">.</span><span class="n">class_name</span><span class="p">(</span><span class="n">role</span><span class="p">):</span> <span class="n">role</span> <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">theme</span><span class="o">.</span><span class="n">roles</span><span class="p">}</span>
@@ -386,7 +388,7 @@
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">    &gt;&gt;&gt; from svgwriter.model.theme.sheet import applied</span>
 <span class="sd">    &gt;&gt;&gt; root = svg.Svg(svg.circle(0, 0, 1).as_role("dot"))</span>
-<span class="sd">    &gt;&gt;&gt; with applied(svg.Theme.get("mono"), root):</span>
+<span class="sd">    &gt;&gt;&gt; with applied(svg.themes.get("mono"), root):</span>
 <span class="sd">    ...     root[0].css</span>
 <span class="sd">    '.role-dot { fill:#000000;stroke:#000000;stroke-width:1px }'</span>
 <span class="sd">    &gt;&gt;&gt; len(root)</span>
@@ -453,8 +455,8 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sheet</span><span class="p">,</span> <span class="n">StyleElement</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="n">css</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">css</span>
-    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">THEMES</span><span class="o">.</span><span class="n">names</span><span class="p">():</span>
-        <span class="n">theme</span> <span class="o">=</span> <span class="n">THEMES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">themes</span><span class="o">.</span><span class="n">list</span><span class="p">():</span>
+        <span class="n">theme</span> <span class="o">=</span> <span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">roles</span> <span class="o">=</span> <span class="n">used_roles</span><span class="p">(</span><span class="n">theme</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">ThemeError</span><span class="p">:</span>
@@ -490,7 +492,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">    &gt;&gt;&gt; from svgwriter.model.theme.sheet import role_rules</span>
-<span class="sd">    &gt;&gt;&gt; role_rules(svg.Theme.get("mono"))["role-dot"][0].declarations[0]</span>
+<span class="sd">    &gt;&gt;&gt; role_rules(svg.themes.get("mono"))["role-dot"][0].declarations[0]</span>
 <span class="sd">    ('fill', '#000000', False)</span>
 <span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..attributes.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_css</span>

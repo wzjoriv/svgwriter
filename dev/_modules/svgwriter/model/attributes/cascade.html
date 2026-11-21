@@ -234,6 +234,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -263,6 +264,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -391,7 +393,7 @@
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">    &gt;&gt;&gt; from svgwriter.model.attributes.cascade import css_declarations</span>
 <span class="sd">    &gt;&gt;&gt; from svgwriter.model.attributes.rules import parse_css</span>
-<span class="sd">    &gt;&gt;&gt; rect = svg.Rect(class_="a", id="r")</span>
+<span class="sd">    &gt;&gt;&gt; rect = svg.Rect(0, 0, 1, 1, class_="a", id="r")</span>
 <span class="sd">    &gt;&gt;&gt; rules = parse_css(".a { fill: red } #r { fill: blue }")</span>
 <span class="sd">    &gt;&gt;&gt; css_declarations(rect, rules)</span>
 <span class="sd">    {'fill': 'blue'}</span>
@@ -448,9 +450,9 @@
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">    &gt;&gt;&gt; from svgwriter.model.attributes.cascade import specified</span>
-<span class="sd">    &gt;&gt;&gt; specified(svg.Rect(fill="red", style="opacity:.5"), "opacity")</span>
+<span class="sd">    &gt;&gt;&gt; specified(svg.Rect(0, 0, 1, 1, fill="red", style="opacity:.5"), "opacity")</span>
 <span class="sd">    '.5'</span>
-<span class="sd">    &gt;&gt;&gt; specified(svg.Rect(), "fill") is None</span>
+<span class="sd">    &gt;&gt;&gt; specified(svg.Rect(0, 0, 1, 1), "fill") is None</span>
 <span class="sd">    True</span>
 <span class="sd">    """</span>
     <span class="n">inline</span> <span class="o">=</span> <span class="n">_inline</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>

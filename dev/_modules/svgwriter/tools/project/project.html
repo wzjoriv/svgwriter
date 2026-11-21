@@ -234,6 +234,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -263,6 +264,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -324,7 +326,7 @@
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._gallery</span><span class="w"> </span><span class="kn">import</span> <span class="n">Preview</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._notebook</span><span class="w"> </span><span class="kn">import</span> <span class="n">headless</span><span class="p">,</span> <span class="n">kernel_object</span><span class="p">,</span> <span class="n">run_notebook</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.presets</span><span class="w"> </span><span class="kn">import</span> <span class="n">SizeChoice</span><span class="p">,</span> <span class="n">create</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._presets</span><span class="w"> </span><span class="kn">import</span> <span class="n">SizeChoice</span><span class="p">,</span> <span class="n">create</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Project"</span><span class="p">]</span>
 
@@ -346,7 +348,7 @@
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    svgwriter.tools.project.register_preset : Add a starter folder for :meth:`new`.</span>
+<span class="sd">    svgwriter.tools.project.presets : Register a starter folder for :meth:`new`.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -416,7 +418,7 @@
 <span class="sd">        path : str or os.PathLike</span>
 <span class="sd">            The new folder; it must not exist or be empty.</span>
 <span class="sd">        preset : str, optional</span>
-<span class="sd">            A name from :data:`svgwriter.tools.project.PRESETS`. Defaults to ``"blank"``.</span>
+<span class="sd">            A name from :data:`svgwriter.tools.project.presets`. Defaults to ``"blank"``.</span>
 <span class="sd">        notebook : bool, optional</span>
 <span class="sd">            Write ``main.ipynb`` instead of ``main.py``. Defaults to False.</span>
 <span class="sd">        name : str, optional</span>

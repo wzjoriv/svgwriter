@@ -234,6 +234,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -263,6 +264,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -305,6 +307,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Final</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">...errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathSyntaxError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ARC_FLAG_POSITIONS</span><span class="p">,</span> <span class="n">ARITY</span><span class="p">,</span> <span class="n">NUMBER_RE</span><span class="p">,</span> <span class="n">SEPARATORS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.commands</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ArcTo</span><span class="p">,</span>
@@ -320,7 +323,7 @@
     <span class="n">VLineTo</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"PathSyntaxError"</span><span class="p">,</span> <span class="s2">"iter_commands"</span><span class="p">,</span> <span class="s2">"parse_path"</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"iter_commands"</span><span class="p">,</span> <span class="s2">"parse_path"</span><span class="p">]</span>
 
 <span class="n">_COMMANDS</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">[</span><span class="n">PathCommand</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"M"</span><span class="p">:</span> <span class="n">MoveTo</span><span class="p">,</span>
@@ -334,39 +337,6 @@
     <span class="s2">"A"</span><span class="p">:</span> <span class="n">ArcTo</span><span class="p">,</span>
     <span class="s2">"Z"</span><span class="p">:</span> <span class="n">ClosePath</span><span class="p">,</span>
 <span class="p">}</span>
-
-
-<div class="viewcode-block" id="PathSyntaxError">
-<a class="viewcode-back" href="../../../../reference/geometry.html#svgwriter.model.pathdata.PathSyntaxError">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">PathSyntaxError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Raised for malformed path data.</span>
-
-<span class="sd">    A `ValueError` that records where in the text parsing failed.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    message : str</span>
-<span class="sd">        What went wrong.</span>
-<span class="sd">    position : int</span>
-<span class="sd">        Character offset of the error; also stored as the ``position`` attribute.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    parse_path : Raises this error.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.model.pathdata import PathSyntaxError, parse_path</span>
-<span class="sd">    &gt;&gt;&gt; try:</span>
-<span class="sd">    ...     parse_path("L1 1")</span>
-<span class="sd">    ... except PathSyntaxError as error:</span>
-<span class="sd">    ...     print(error)</span>
-<span class="sd">    path data must start with a moveto at offset 0</span>
-<span class="sd">    """</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2"> at offset </span><span class="si">{</span><span class="n">position</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">position</span></div>
 
 
 

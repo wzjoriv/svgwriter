@@ -233,6 +233,7 @@
 <li class="toctree-l1"><a class="reference internal" href="guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -262,6 +263,7 @@
 <li class="toctree-l2"><a class="reference internal" href="reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -338,6 +340,12 @@
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.Accumulate">Accumulate (class in svgwriter.model.elements.animation)</a>
 </li>
         <li><a href="reference/document.html#svgwriter.Document.add">add() (Document method)</a>
+
+        <ul>
+          <li><a href="reference/presets.html#svgwriter.Registry.add">(Registry method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/presets.html#svgwriter.Registry.add_builtin">add_builtin() (Registry method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.Additive">Additive (class in svgwriter.model.elements.animation)</a>
 </li>
@@ -411,13 +419,13 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.AnimateTransform">AnimateTransform (class in svgwriter.model.elements.animation)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.animation">animation() (in module svgwriter.catalog.preset)</a>
-</li>
         <li><a href="reference/video.html#svgwriter.motion.video.animation_duration">animation_duration() (in module svgwriter.motion.video)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.AnimationElement">AnimationElement (class in svgwriter.model.elements.animation)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.AnimationFill">AnimationFill (class in svgwriter.model.elements.animation)</a>
+</li>
+        <li><a href="reference/builder.html#svgwriter.catalog.preset.AnimationPresets">AnimationPresets (class in svgwriter.catalog.preset)</a>
 </li>
         <li><a href="reference/cli.html#svgwriter.tools.cli.app">app (in module svgwriter.tools.cli)</a>
 </li>
@@ -609,11 +617,9 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.behavior">behavior() (in module svgwriter.catalog.preset)</a>
+        <li><a href="reference/builder.html#svgwriter.catalog.preset.BehaviorPresets">BehaviorPresets (class in svgwriter.catalog.preset)</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.filters.bevel">bevel() (in module svgwriter.catalog.filters)</a>
-</li>
-        <li><a href="reference/export.html#svgwriter.formats.export.Exporter.binary">binary (Exporter attribute)</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.gradients.blend">blend() (in module svgwriter.catalog.gradients)</a>
 </li>
@@ -923,6 +929,8 @@
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.combine">combine() (in module svgwriter.ops)</a>
 </li>
+        <li><a href="reference/cli.html#svgwriter.tools.cli.commands">commands (in module svgwriter.tools.cli)</a>
+</li>
         <li><a href="reference/batch.html#svgwriter.model.batch.Batch.compact">compact (Batch property)</a>
 
         <ul>
@@ -1153,6 +1161,8 @@
 </li>
         <li><a href="reference/document.html#svgwriter.Document.define">define() (Document method)</a>
 </li>
+        <li><a href="reference/builder.html#svgwriter.catalog.preset.DefinitionPresets">DefinitionPresets (class in svgwriter.catalog.preset)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.model.elements.structure.Defs">Defs (class in svgwriter.model.elements.structure)</a>
 </li>
         <li><a href="reference/document.html#svgwriter.Document.defs">defs (Document property)</a>
@@ -1175,15 +1185,11 @@
 </li>
         <li><a href="reference/document.html#svgwriter.Document.describe">describe() (Document method)</a>
 </li>
-        <li><a href="reference/export.html#svgwriter.formats.export.Exporter.description">description (Exporter attribute)</a>
-
-        <ul>
-          <li><a href="reference/export.html#svgwriter.formats.export.Importer.description">(Importer attribute)</a>
+        <li><a href="reference/project.html#svgwriter.tools.project.Preset.description">description (Preset attribute)</a>
 </li>
-          <li><a href="reference/project.html#svgwriter.tools.project.Preset.description">(Preset attribute)</a>
-</li>
-        </ul></li>
         <li><a href="reference/geometry.html#svgwriter.model.transform.Matrix.determinant">determinant (Matrix property)</a>
+</li>
+        <li><a href="reference/errors.html#svgwriter.errors.DiagramToolError">DiagramToolError</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.markers.diamond">diamond() (in module svgwriter.catalog.markers)</a>
 </li>
@@ -1283,6 +1289,8 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.EdgeMode">EdgeMode (class in svgwriter.model.elements.filters)</a>
 </li>
+        <li><a href="reference/builder.html#svgwriter.catalog.preset.EffectPresets">EffectPresets (class in svgwriter.catalog.preset)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element">Element (class in svgwriter.model.elements)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.IRI.element">element (IRI attribute)</a>
@@ -1357,10 +1365,6 @@
 </li>
         <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.export_hints">export_hints() (in module svgwriter.formats.inkscape)</a>
 </li>
-        <li><a href="reference/export.html#svgwriter.formats.export.Exporter">Exporter (class in svgwriter.formats.export)</a>
-</li>
-        <li><a href="reference/export.html#svgwriter.formats.export.exporters">exporters() (in module svgwriter.formats.export)</a>
-</li>
         <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.ExportHints">ExportHints (class in svgwriter.formats.inkscape)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.extend">extend() (Element method)</a>
@@ -1373,12 +1377,6 @@
 
         <ul>
           <li><a href="reference/theme.html#svgwriter.model.theme.Theme.extends">(Theme property)</a>
-</li>
-        </ul></li>
-        <li><a href="reference/export.html#svgwriter.formats.export.Exporter.extensions">extensions (Exporter attribute)</a>
-
-        <ul>
-          <li><a href="reference/export.html#svgwriter.formats.export.Importer.extensions">(Importer attribute)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -1467,9 +1465,9 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.FeTurbulence">FeTurbulence (class in svgwriter.model.elements.filters)</a>
 </li>
-        <li><a href="reference/video.html#svgwriter.motion.video.FFmpegError">FFmpegError</a>
+        <li><a href="reference/errors.html#svgwriter.errors.FFmpegError">FFmpegError</a>
 </li>
-        <li><a href="reference/video.html#svgwriter.motion.video.FFmpegNotFoundError">FFmpegNotFoundError</a>
+        <li><a href="reference/errors.html#svgwriter.errors.FFmpegNotFoundError">FFmpegNotFoundError</a>
 </li>
         <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.ExportHints.filename">filename (ExportHints attribute)</a>
 </li>
@@ -1477,21 +1475,19 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.Filter">Filter (class in svgwriter.model.elements.filters)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.filter">filter() (in module svgwriter.catalog.preset)</a>
-</li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.FilterPrimitive">FilterPrimitive (class in svgwriter.model.elements.filters)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.find">find() (Element method)</a>
+
+        <ul>
+          <li><a href="reference/presets.html#svgwriter.Registry.find">(Registry method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.find_all">find_all() (Element method)</a>
-</li>
-        <li><a href="reference/export.html#svgwriter.formats.export.find_exporter">find_exporter() (in module svgwriter.formats.export)</a>
 </li>
         <li><a href="reference/video.html#svgwriter.motion.video.find_ffmpeg">find_ffmpeg() (in module svgwriter.motion.video)</a>
 </li>
-        <li><a href="reference/export.html#svgwriter.formats.export.find_importer">find_importer() (in module svgwriter.formats.export)</a>
-</li>
-        <li><a href="reference/presets.html#svgwriter.catalog.text_effects.fire">fire() (in module svgwriter.catalog.text_effects)</a>
+        <li><a href="reference/presets.html#svgwriter.catalog.effects.fire">fire() (in module svgwriter.catalog.effects)</a>
 </li>
         <li><a href="reference/project.html#svgwriter.tools.project.PreviewConfig.fit">fit (PreviewConfig attribute)</a>
 </li>
@@ -1631,12 +1627,6 @@
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.FuncIRI">FuncIRI (class in svgwriter.model.attributes)</a>
 </li>
-        <li><a href="reference/export.html#svgwriter.formats.export.Exporter.function">function (Exporter attribute)</a>
-
-        <ul>
-          <li><a href="reference/export.html#svgwriter.formats.export.Importer.function">(Importer attribute)</a>
-</li>
-        </ul></li>
     </ul></td>
   </tr></table>
 </section>
@@ -1688,9 +1678,7 @@
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.get">get() (Element method)</a>
 
         <ul>
-          <li><a href="reference/builder.html#svgwriter.catalog.preset.get">(in module svgwriter.catalog.preset)</a>
-</li>
-          <li><a href="reference/theme.html#svgwriter.model.theme.Theme.get">(Theme static method)</a>
+          <li><a href="reference/presets.html#svgwriter.Registry.get">(Registry method)</a>
 </li>
         </ul></li>
         <li><a href="reference/document.html#svgwriter.Document.get_element_by_id">get_element_by_id() (Document method)</a>
@@ -1701,7 +1689,7 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="reference/presets.html#svgwriter.catalog.text_effects.glitch">glitch() (in module svgwriter.catalog.text_effects)</a>
+        <li><a href="reference/presets.html#svgwriter.catalog.effects.glitch">glitch() (in module svgwriter.catalog.effects)</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.filters.glow">glow() (in module svgwriter.catalog.filters)</a>
 </li>
@@ -1716,8 +1704,6 @@
         <li><a href="reference/attributes.html#svgwriter.model.attributes.units.grad">grad (in module svgwriter.model.attributes.units)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.paint.Gradient">Gradient (class in svgwriter.model.elements.paint)</a>
-</li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.gradient">gradient() (in module svgwriter.catalog.preset)</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.filters.grain">grain() (in module svgwriter.catalog.filters)</a>
 </li>
@@ -1817,7 +1803,7 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/color.html#svgwriter.model.color.Color.icc">icc (Color attribute)</a>
 </li>
-        <li><a href="reference/presets.html#svgwriter.catalog.text_effects.ice">ice() (in module svgwriter.catalog.text_effects)</a>
+        <li><a href="reference/presets.html#svgwriter.catalog.effects.ice">ice() (in module svgwriter.catalog.effects)</a>
 </li>
         <li><a href="reference/fonts.html#svgwriter.catalog.fonts.FontBuilder.icon">icon() (FontBuilder method)</a>
 </li>
@@ -1828,10 +1814,6 @@
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.TransferType.IDENTITY">IDENTITY (TransferType attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.structure.Image">Image (class in svgwriter.model.elements.structure)</a>
-</li>
-        <li><a href="reference/export.html#svgwriter.formats.export.Importer">Importer (class in svgwriter.formats.export)</a>
-</li>
-        <li><a href="reference/export.html#svgwriter.formats.export.importers">importers() (in module svgwriter.formats.export)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.CompositeOperator.IN">IN (CompositeOperator attribute)</a>
 
@@ -1879,10 +1861,10 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.insert">insert() (Element method)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/ops.html#svgwriter.ops.Typeface.installed">installed (Typeface property)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/batch.html#svgwriter.model.batch.instances">instances() (in module svgwriter.model.batch)</a>
 </li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.RangeSlider.integer">integer (RangeSlider attribute)</a>
@@ -2085,15 +2067,15 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.FeFunc.linear">linear() (FeFunc class method)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.model.elements.paint.LinearGradient">LinearGradient (class in svgwriter.model.elements.paint)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/batch.html#svgwriter.model.batch.lines">lines() (in module svgwriter.model.batch)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.LineTo">LineTo (class in svgwriter.model.pathdata)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.list">list() (in module svgwriter.catalog.preset)</a>
+        <li><a href="reference/presets.html#svgwriter.Registry.list">list() (Registry method)</a>
 </li>
         <li><a href="reference/export.html#svgwriter.formats.export.load">load() (in module svgwriter.formats.export)</a>
 
@@ -2101,6 +2083,8 @@
           <li><a href="reference/project.html#svgwriter.Project.load">(Project class method)</a>
 </li>
         </ul></li>
+        <li><a href="reference/export.html#svgwriter.formats.export.load_formats">load_formats() (in module svgwriter.formats.export)</a>
+</li>
         <li><a href="reference/video.html#svgwriter.motion.video.load_scenes">load_scenes() (in module svgwriter.motion.video)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.IRI.local">local() (IRI class method)</a>
@@ -2189,8 +2173,6 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.paint.Marker">Marker (class in svgwriter.model.elements.paint)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.marker">marker() (in module svgwriter.catalog.preset)</a>
-</li>
         <li><a href="reference/elements.html#svgwriter.model.elements.paint.Mask">Mask (class in svgwriter.model.elements.paint)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.cascade.matches">matches() (in module svgwriter.model.attributes.cascade)</a>
@@ -2231,7 +2213,7 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.structure.Metadata">Metadata (class in svgwriter.model.elements.structure)</a>
 </li>
-        <li><a href="reference/presets.html#svgwriter.catalog.text_effects.metal">metal() (in module svgwriter.catalog.text_effects)</a>
+        <li><a href="reference/presets.html#svgwriter.catalog.effects.metal">metal() (in module svgwriter.catalog.effects)</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.gradients.metallic">metallic() (in module svgwriter.catalog.gradients)</a>
 </li>
@@ -2265,6 +2247,8 @@
         <ul>
           <li><a href="reference/builder.html#module-svgwriter.catalog.builder">svgwriter.catalog.builder</a>
 </li>
+          <li><a href="reference/presets.html#module-svgwriter.catalog.effects">svgwriter.catalog.effects</a>
+</li>
           <li><a href="reference/presets.html#module-svgwriter.catalog.filters">svgwriter.catalog.filters</a>
 </li>
           <li><a href="reference/fonts.html#module-svgwriter.catalog.fonts">svgwriter.catalog.fonts</a>
@@ -2277,7 +2261,7 @@
 </li>
           <li><a href="reference/builder.html#module-svgwriter.catalog.preset">svgwriter.catalog.preset</a>
 </li>
-          <li><a href="reference/presets.html#module-svgwriter.catalog.text_effects">svgwriter.catalog.text_effects</a>
+          <li><a href="reference/errors.html#module-svgwriter.errors">svgwriter.errors</a>
 </li>
           <li><a href="reference/export.html#module-svgwriter.formats.export">svgwriter.formats.export</a>
 </li>
@@ -2346,8 +2330,6 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.MPath">MPath (class in svgwriter.model.elements.animation)</a>
 </li>
-        <li><a href="reference/export.html#svgwriter.formats.export.Exporter.multipage">multipage (Exporter attribute)</a>
-</li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.BlendMode.MULTIPLY">MULTIPLY (BlendMode attribute)</a>
 </li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.MultiSelect">MultiSelect (class in svgwriter.tools.widgets)</a>
@@ -2365,10 +2347,6 @@
         <ul>
           <li><a href="reference/color.html#svgwriter.model.color.Color.name">(Color attribute)</a>
 </li>
-          <li><a href="reference/export.html#svgwriter.formats.export.Exporter.name">(Exporter attribute)</a>
-</li>
-          <li><a href="reference/export.html#svgwriter.formats.export.Importer.name">(Importer attribute)</a>
-</li>
           <li><a href="reference/project.html#svgwriter.tools.project.Preset.name">(Preset attribute)</a>
 </li>
           <li><a href="reference/project.html#svgwriter.Project.name">(Project property)</a>
@@ -2380,13 +2358,19 @@
           <li><a href="reference/ops.html#svgwriter.ops.Typeface.name">(Typeface property)</a>
 </li>
         </ul></li>
+        <li><a href="reference/presets.html#svgwriter.Registry.name_of">name_of() (Registry method)</a>
+
+        <ul>
+          <li><a href="reference/builder.html#svgwriter.catalog.preset.SizePresets.name_of">(SizePresets method)</a>
+</li>
+        </ul></li>
         <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.namedview">namedview() (in module svgwriter.formats.inkscape)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.namespace">namespace (Element attribute)</a>
 </li>
         <li><a href="reference/io.html#svgwriter.formats.io.SerializeOptions.namespaces">namespaces (SerializeOptions attribute)</a>
 </li>
-        <li><a href="reference/presets.html#svgwriter.catalog.text_effects.neon">neon() (in module svgwriter.catalog.text_effects)</a>
+        <li><a href="reference/presets.html#svgwriter.catalog.effects.neon">neon() (in module svgwriter.catalog.effects)</a>
 </li>
         <li><a href="reference/document.html#svgwriter.Document.nest">nest() (Document method)</a>
 </li>
@@ -2446,6 +2430,8 @@
           <li><a href="reference/theme.html#svgwriter.model.theme.Theme.of">(Theme static method)</a>
 </li>
         </ul></li>
+        <li><a href="reference/errors.html#svgwriter.errors.OfficeExtraError">OfficeExtraError</a>
+</li>
         <li><a href="reference/color.html#svgwriter.model.color.Color.opaque">opaque (Color property)</a>
 </li>
         <li><a href="reference/project.html#svgwriter.tools.project.PreviewConfig.open">open (PreviewConfig attribute)</a>
@@ -2510,8 +2496,6 @@
 </li>
         <li><a href="reference/layout.html#svgwriter.model.layout.Frame.padding">padding (Frame property)</a>
 </li>
-        <li><a href="reference/export.html#svgwriter.formats.export.Importer.page_option">page_option (Importer attribute)</a>
-</li>
         <li><a href="reference/document.html#svgwriter.page_size">page_size() (in module svgwriter)</a>
 </li>
         <li><a href="reference/project.html#svgwriter.tools.project.PreviewConfig.pages">pages (PreviewConfig attribute)</a>
@@ -2572,11 +2556,9 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.PathOperand">PathOperand (class in svgwriter.model.elements)</a>
 </li>
-        <li><a href="reference/geometry.html#svgwriter.model.pathdata.PathSyntaxError">PathSyntaxError</a>
+        <li><a href="reference/errors.html#svgwriter.errors.PathSyntaxError">PathSyntaxError</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.paint.Pattern">Pattern (class in svgwriter.model.elements.paint)</a>
-</li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.pattern">pattern() (in module svgwriter.catalog.preset)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.units.pc">pc (in module svgwriter.model.attributes.units)</a>
 </li>
@@ -2586,8 +2568,6 @@
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.PERCENT">PERCENT (Unit attribute)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.PIXEL">PIXEL (Unit attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.structure.Pixels">Pixels (class in svgwriter.model.elements.structure)</a>
@@ -2598,6 +2578,8 @@
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.transform.Point">Point (class in svgwriter.model.transform)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/ops.html#svgwriter.ops.Corner.point">point (Corner attribute)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.point">point() (BBox method)</a>
@@ -2632,13 +2614,27 @@
 </li>
         <li><a href="reference/io.html#svgwriter.formats.io.SerializeOptions.precision">precision (SerializeOptions attribute)</a>
 </li>
+        <li><a href="reference/builder.html#svgwriter.catalog.preset.AnimationPresets.prepare">prepare() (AnimationPresets method)</a>
+
+        <ul>
+          <li><a href="reference/builder.html#svgwriter.catalog.preset.BehaviorPresets.prepare">(BehaviorPresets method)</a>
+</li>
+          <li><a href="reference/builder.html#svgwriter.catalog.preset.DefinitionPresets.prepare">(DefinitionPresets method)</a>
+</li>
+          <li><a href="reference/builder.html#svgwriter.catalog.preset.EffectPresets.prepare">(EffectPresets method)</a>
+</li>
+          <li><a href="reference/project.html#svgwriter.tools.project.ProjectPresets.prepare">(ProjectPresets method)</a>
+</li>
+          <li><a href="reference/presets.html#svgwriter.Registry.prepare">(Registry method)</a>
+</li>
+        </ul></li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.Style.presentation_only">presentation_only() (Style method)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.PreserveAspectRatio">PreserveAspectRatio (class in svgwriter.model.attributes)</a>
 </li>
         <li><a href="reference/project.html#svgwriter.tools.project.Preset">Preset (class in svgwriter.tools.project)</a>
 </li>
-        <li><a href="reference/project.html#svgwriter.tools.project.PRESETS">PRESETS (in module svgwriter.tools.project)</a>
+        <li><a href="reference/project.html#svgwriter.tools.project.presets">presets (in module svgwriter.tools.project)</a>
 </li>
         <li><a href="reference/io.html#svgwriter.formats.io.SerializeOptions.pretty">pretty (SerializeOptions attribute)</a>
 </li>
@@ -2656,7 +2652,9 @@
 </li>
         <li><a href="reference/project.html#svgwriter.tools.project.ProjectConfig">ProjectConfig (class in svgwriter.tools.project)</a>
 </li>
-        <li><a href="reference/project.html#svgwriter.tools.project.ProjectError">ProjectError</a>
+        <li><a href="reference/errors.html#svgwriter.errors.ProjectError">ProjectError</a>
+</li>
+        <li><a href="reference/project.html#svgwriter.tools.project.ProjectPresets">ProjectPresets (class in svgwriter.tools.project)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.units.pt">pt (in module svgwriter.model.attributes.units)</a>
 </li>
@@ -2744,23 +2742,29 @@
           <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Star.redraw">(Star method)</a>
 </li>
         </ul></li>
-        <li><a href="reference/export.html#svgwriter.formats.export.register">register() (in module svgwriter.formats.export)</a>
+        <li><a href="reference/builder.html#svgwriter.catalog.preset.AnimationPresets.register">register() (AnimationPresets method)</a>
 
         <ul>
+          <li><a href="reference/builder.html#svgwriter.catalog.preset.BehaviorPresets.register">(BehaviorPresets method)</a>
+</li>
+          <li><a href="reference/builder.html#svgwriter.catalog.preset.DefinitionPresets.register">(DefinitionPresets method)</a>
+</li>
+          <li><a href="reference/builder.html#svgwriter.catalog.preset.EffectPresets.register">(EffectPresets method)</a>
+</li>
+          <li><a href="reference/presets.html#svgwriter.Registry.register">(Registry method)</a>
+</li>
+          <li><a href="reference/builder.html#svgwriter.catalog.preset.ShapePresets.register">(ShapePresets method)</a>
+</li>
           <li><a href="reference/ops.html#svgwriter.ops.Typeface.register">(Typeface method)</a>
 </li>
         </ul></li>
         <li><a href="reference/ops.html#svgwriter.ops.register_font">register_font() (in module svgwriter.ops)</a>
 </li>
-        <li><a href="reference/export.html#svgwriter.formats.export.register_importer">register_importer() (in module svgwriter.formats.export)</a>
-</li>
         <li><a href="reference/ops.html#svgwriter.ops.register_interpolator">register_interpolator() (in module svgwriter.ops)</a>
 </li>
-        <li><a href="reference/project.html#svgwriter.tools.project.register_preset">register_preset() (in module svgwriter.tools.project)</a>
-</li>
-        <li><a href="reference/video.html#svgwriter.motion.video.register_renderer">register_renderer() (in module svgwriter.motion.video)</a>
-</li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.registered">registered() (Element class method)</a>
+</li>
+        <li><a href="reference/presets.html#svgwriter.Registry">Registry (class in svgwriter)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.shapes.Polyline.regular">regular() (Polyline class method)</a>
 </li>
@@ -2814,10 +2818,10 @@
         </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements._behavior.Convertible.render_bounds">render_bounds() (Convertible method)</a>
 </li>
-        <li><a href="reference/ops.html#svgwriter.ops.render_frame">render_frame() (in module svgwriter.ops)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/ops.html#svgwriter.ops.render_frame">render_frame() (in module svgwriter.ops)</a>
+</li>
         <li><a href="reference/document.html#svgwriter.Document.render_png">render_png() (Document method)</a>
 
         <ul>
@@ -2851,6 +2855,8 @@
         <li><a href="reference/attributes.html#svgwriter.model.attributes.cascade.resolve_styles">resolve_styles() (in module svgwriter.model.attributes.cascade)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.Restart">Restart (class in svgwriter.model.elements.animation)</a>
+</li>
+        <li><a href="reference/presets.html#svgwriter.Registry.restore">restore() (Registry method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.FilterPrimitive.result">result (FilterPrimitive property)</a>
 </li>
@@ -2988,9 +2994,11 @@
         </ul></li>
         <li><a href="reference/video.html#svgwriter.motion.video.Scene">Scene (class in svgwriter.motion.video)</a>
 </li>
-        <li><a href="reference/video.html#svgwriter.motion.video.SceneError">SceneError</a>
+        <li><a href="reference/errors.html#svgwriter.errors.SceneError">SceneError</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.BlendMode.SCREEN">SCREEN (BlendMode attribute)</a>
+</li>
+        <li><a href="reference/presets.html#svgwriter.Registry.seal">seal() (Registry method)</a>
 </li>
         <li><a href="reference/video.html#svgwriter.motion.video.Frame.seconds">seconds (Frame attribute)</a>
 </li>
@@ -3038,18 +3046,16 @@
           <li><a href="reference/video.html#svgwriter.motion.video.RGBAArray.shape">(RGBAArray property)</a>
 </li>
         </ul></li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.shape">shape() (in module svgwriter.catalog.preset)</a>
-
-        <ul>
-          <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.shape">(in module svgwriter.formats.inkscape)</a>
+        <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.shape">shape() (in module svgwriter.formats.inkscape)</a>
 </li>
-        </ul></li>
         <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Arc.shape_type">shape_type (Arc attribute)</a>
 
         <ul>
           <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Star.shape_type">(Star attribute)</a>
 </li>
         </ul></li>
+        <li><a href="reference/builder.html#svgwriter.catalog.preset.ShapePresets">ShapePresets (class in svgwriter.catalog.preset)</a>
+</li>
         <li><a href="reference/theme.html#svgwriter.model.theme.sheet.sheet_theme">sheet_theme() (in module svgwriter.model.theme.sheet)</a>
 </li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.Backend.show">show() (Backend method)</a>
@@ -3086,7 +3092,7 @@
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.Sweep.size">(Sweep attribute)</a>
 </li>
         </ul></li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.size">size() (in module svgwriter.catalog.preset)</a>
+        <li><a href="reference/builder.html#svgwriter.catalog.preset.SizePresets">SizePresets (class in svgwriter.catalog.preset)</a>
 </li>
         <li><a href="reference/theme.html#svgwriter.model.theme.Fonts.sizes">sizes (Fonts attribute)</a>
 </li>
@@ -3118,7 +3124,7 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.Ease.smil">smil() (Ease method)</a>
 </li>
-        <li><a href="reference/presets.html#svgwriter.catalog.text_effects.smoke">smoke() (in module svgwriter.catalog.text_effects)</a>
+        <li><a href="reference/presets.html#svgwriter.catalog.effects.smoke">smoke() (in module svgwriter.catalog.effects)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.PathBuilder.smooth_curve_to">smooth_curve_to() (PathBuilder method)</a>
 </li>
@@ -3128,7 +3134,7 @@
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.SmoothQuadTo">SmoothQuadTo (class in svgwriter.model.pathdata)</a>
 </li>
-        <li><a href="reference/presets.html#svgwriter.catalog.text_effects.snow">snow() (in module svgwriter.catalog.text_effects)</a>
+        <li><a href="reference/presets.html#svgwriter.catalog.effects.snow">snow() (in module svgwriter.catalog.effects)</a>
 </li>
         <li><a href="reference/color.html#svgwriter.model.color.Color.source">source (Color attribute)</a>
 
@@ -3182,6 +3188,8 @@
 </li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.Control.starting_at">starting_at() (Control method)</a>
 </li>
+        <li><a href="reference/presets.html#svgwriter.Registry.state">state() (Registry method)</a>
+</li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.IntSlider.step">step (IntSlider attribute)</a>
 
         <ul>
@@ -3196,10 +3204,10 @@
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.Face.stretch">stretch (Face attribute)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/presets.html#svgwriter.catalog.patterns.stripes">stripes() (in module svgwriter.catalog.patterns)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.StandardInput.STROKE_PAINT">STROKE_PAINT (StandardInput attribute)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.stroke_to_path">stroke_to_path() (in module svgwriter.ops)</a>
@@ -3278,11 +3286,20 @@
           <li><a href="reference/attributes.html#svgwriter.model.attributes.ViewBox.svg_value">(ViewBox method)</a>
 </li>
         </ul></li>
+        <li><a href="reference/errors.html#svgwriter.errors.SVGParseError">SVGParseError</a>
+</li>
         <li>
     svgwriter.catalog.builder
 
         <ul>
           <li><a href="reference/builder.html#module-svgwriter.catalog.builder">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.catalog.effects
+
+        <ul>
+          <li><a href="reference/presets.html#module-svgwriter.catalog.effects">module</a>
 </li>
         </ul></li>
         <li>
@@ -3328,10 +3345,10 @@
 </li>
         </ul></li>
         <li>
-    svgwriter.catalog.text_effects
+    svgwriter.errors
 
         <ul>
-          <li><a href="reference/presets.html#module-svgwriter.catalog.text_effects">module</a>
+          <li><a href="reference/errors.html#module-svgwriter.errors">module</a>
 </li>
         </ul></li>
         <li>
@@ -3741,8 +3758,6 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.text_content">text_content (Element property)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.text_effect">text_effect() (in module svgwriter.catalog.preset)</a>
-</li>
         <li><a href="reference/ops.html#svgwriter.ops.text_outline">text_outline() (in module svgwriter.ops)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.text_to_path">text_to_path() (in module svgwriter.ops)</a>
@@ -3767,7 +3782,7 @@
         </ul></li>
         <li><a href="reference/presets.html#svgwriter.catalog.gradients.theme">theme() (in module svgwriter.catalog.gradients)</a>
 </li>
-        <li><a href="reference/theme.html#svgwriter.model.theme.ThemeError">ThemeError</a>
+        <li><a href="reference/errors.html#svgwriter.errors.ThemeError">ThemeError</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.Ease.time_of">time_of() (Ease method)</a>
 </li>
@@ -3975,17 +3990,17 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/ops.html#svgwriter.ops.FaceMetrics.units_per_em">units_per_em (FaceMetrics attribute)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.unregister">unregister() (in module svgwriter.catalog.preset)</a>
-
-        <ul>
-          <li><a href="reference/export.html#svgwriter.formats.export.unregister">(in module svgwriter.formats.export)</a>
+        <li><a href="reference/presets.html#svgwriter.Registry.unknown">unknown() (Registry method)</a>
 </li>
-        </ul></li>
+        <li><a href="reference/errors.html#svgwriter.errors.UnknownAttributeError">UnknownAttributeError</a>
+</li>
+        <li><a href="reference/errors.html#svgwriter.errors.UnknownKeywordError">UnknownKeywordError</a>
+</li>
+        <li><a href="reference/errors.html#svgwriter.errors.UnknownNameError">UnknownNameError</a>
+</li>
+        <li><a href="reference/presets.html#svgwriter.Registry.unregister">unregister() (Registry method)</a>
+</li>
         <li><a href="reference/ops.html#svgwriter.ops.unregister_interpolator">unregister_interpolator() (in module svgwriter.ops)</a>
-</li>
-        <li><a href="reference/project.html#svgwriter.tools.project.unregister_preset">unregister_preset() (in module svgwriter.tools.project)</a>
-</li>
-        <li><a href="reference/video.html#svgwriter.motion.video.unregister_renderer">unregister_renderer() (in module svgwriter.motion.video)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.update">update() (Element method)</a>
 
@@ -4127,7 +4142,7 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/video.html#svgwriter.motion.video.behaviors.wiggle">wiggle() (in module svgwriter.motion.video.behaviors)</a>
 </li>
-        <li><a href="reference/presets.html#svgwriter.catalog.text_effects.wind">wind() (in module svgwriter.catalog.text_effects)</a>
+        <li><a href="reference/presets.html#svgwriter.catalog.effects.wind">wind() (in module svgwriter.catalog.effects)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.Motion.wipe">wipe() (Motion method)</a>
 </li>

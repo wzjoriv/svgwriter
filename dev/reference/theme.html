@@ -235,6 +235,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -264,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -309,7 +311,7 @@
           <section id="themes">
 <h1>Themes<a class="headerlink" href="#themes" title="Link to this heading">¶</a></h1>
 <p>Palettes, fonts and role styles; see the <a class="reference internal" href="../guides/themes.html"><span class="std std-doc">Themes guide</span></a>. <code class="docutils literal notranslate"><span class="pre">svg.Theme</span></code> and
-<code class="docutils literal notranslate"><span class="pre">svg.THEMES</span></code> are also available at the top level.</p>
+<code class="docutils literal notranslate"><span class="pre">svg.themes</span></code> are also available at the top level; every registry works like <code class="docutils literal notranslate"><span class="pre">svg.Registry</span></code>.</p>
 <p id="module-svgwriter.model.theme">Themes: palettes, fonts and role styles that documents apply as CSS classes.</p>
 <p>A <a class="reference internal" href="#svgwriter.model.theme.Theme" title="svgwriter.model.theme.Theme"><code class="xref py py-class docutils literal notranslate"><span class="pre">Theme</span></code></a> is immutable. Elements opt in with <code class="docutils literal notranslate"><span class="pre">element.as_role(&quot;box&quot;)</span></code>; a document writes one
 <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> rule per role it uses, so the SVG stays portable and can be restyled by swapping the sheet.
@@ -406,7 +408,7 @@ subtitle 18 and caption 11.</p></li>
 <dd class="field-even"><p><em>str or float or int</em> – The value.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.model.theme.ThemeError" title="svgwriter.model.theme.ThemeError"><strong>ThemeError</strong></a> – If the path names nothing.</p>
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#svgwriter.errors.ThemeError" title="svgwriter.errors.ThemeError"><strong>ThemeError</strong></a> – If the path names nothing.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -450,7 +452,7 @@ with a leading <code class="docutils literal notranslate"><span class="pre">=</s
 this palette and returns a color (<code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">p:</span> <span class="pre">p.foreground.mix(p.background,</span> <span class="pre">0.3)</span></code>).</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#svgwriter.model.theme.ThemeError" title="svgwriter.model.theme.ThemeError"><strong>ThemeError</strong></a> – If a reference names a missing role, references form a cycle or nest too deeply, an
+<dd class="field-even"><p><a class="reference internal" href="errors.html#svgwriter.errors.ThemeError" title="svgwriter.errors.ThemeError"><strong>ThemeError</strong></a> – If a reference names a missing role, references form a cycle or nest too deeply, an
     expression is malformed, or a value is not a color.</p>
 </dd>
 </dl>
@@ -522,7 +524,7 @@ every role computed from it. Roles read as attributes (<code class="docutils lit
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – A short name, used by <a class="reference internal" href="#svgwriter.model.theme.Theme.get" title="svgwriter.model.theme.Theme.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get()</span></code></a> once registered and written to theme files.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – A short name, used by <code class="xref py py-meth docutils literal notranslate"><span class="pre">get()</span></code> once registered and written to theme files.</p></li>
 <li><p><strong>palette</strong> (<a class="reference internal" href="#svgwriter.model.theme.Palette" title="svgwriter.model.theme.Palette"><em>Palette</em></a><em> or </em><em>mapping</em>) – Color roles (see <a class="reference internal" href="#svgwriter.model.theme.Palette" title="svgwriter.model.theme.Palette"><code class="xref py py-class docutils literal notranslate"><span class="pre">Palette</span></code></a>). <code class="docutils literal notranslate"><span class="pre">border</span></code>, <code class="docutils literal notranslate"><span class="pre">muted</span></code> and <code class="docutils literal notranslate"><span class="pre">shadow</span></code> are derived from
 <code class="docutils literal notranslate"><span class="pre">foreground</span></code> and <code class="docutils literal notranslate"><span class="pre">background</span></code>, and <code class="docutils literal notranslate"><span class="pre">on_primary</span></code> from <code class="docutils literal notranslate"><span class="pre">primary</span></code>, unless given.</p></li>
 <li><p><strong>fonts</strong> (<a class="reference internal" href="#svgwriter.model.theme.Fonts" title="svgwriter.model.theme.Fonts"><em>Fonts</em></a><em>, </em><em>optional</em>) – Families, sizes and weights. Defaults to <code class="docutils literal notranslate"><span class="pre">Fonts()</span></code>.</p></li>
@@ -534,7 +536,7 @@ Defaults to None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#svgwriter.model.theme.ThemeError" title="svgwriter.model.theme.ThemeError"><strong>ThemeError</strong></a> – If a role name is invalid or anything cannot be resolved.</p>
+<dd class="field-even"><p><a class="reference internal" href="errors.html#svgwriter.errors.ThemeError" title="svgwriter.errors.ThemeError"><strong>ThemeError</strong></a> – If a role name is invalid or anything cannot be resolved.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -550,7 +552,7 @@ for documents created in the block (a context variable, so threads and tasks sta
 Outside any block the default is the registered <code class="docutils literal notranslate"><span class="pre">&quot;light&quot;</span></code> theme.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dark</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dark</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dark</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">"box"</span><span class="p">)[</span><span class="s2">"fill"</span><span class="p">]</span><span class="o">.</span><span class="n">hex</span>
 <span class="go">'#1f2937'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">brand</span> <span class="o">=</span> <span class="n">dark</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"brand"</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="s2">"primary"</span><span class="p">:</span> <span class="s2">"#ff6600"</span><span class="p">})</span>
@@ -585,9 +587,9 @@ Outside any block the default is the registered <code class="docutils literal no
 <dd><p>The registered theme this one is a variant of, or None; files write it as <code class="docutils literal notranslate"><span class="pre">extends</span></code>.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"night"</span><span class="p">)</span><span class="o">.</span><span class="n">extends</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"night"</span><span class="p">)</span><span class="o">.</span><span class="n">extends</span>
 <span class="go">'dark'</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">)</span><span class="o">.</span><span class="n">extends</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">)</span><span class="o">.</span><span class="n">extends</span> <span class="ow">is</span> <span class="kc">None</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -611,12 +613,12 @@ Outside any block the default is the registered <code class="docutils literal no
 <dd class="field-even"><p><em>Style</em> – CSS declarations with colors resolved.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.model.theme.ThemeError" title="svgwriter.model.theme.ThemeError"><strong>ThemeError</strong></a> – If the theme has no such role.</p>
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#svgwriter.errors.ThemeError" title="svgwriter.errors.ThemeError"><strong>ThemeError</strong></a> – If the theme has no such role.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"light"</span><span class="p">)</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">"line"</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"light"</span><span class="p">)</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">"line"</span><span class="p">))</span>
 <span class="go">'fill:none;stroke:#0f766e;stroke-width:2px'</span>
 </pre></div>
 </div>
@@ -654,12 +656,12 @@ Outside any block the default is the registered <code class="docutils literal no
 <dd class="field-even"><p><em>StyleSheet</em> – The rules.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.model.theme.ThemeError" title="svgwriter.model.theme.ThemeError"><strong>ThemeError</strong></a> – If a requested role is not in the theme.</p>
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#svgwriter.errors.ThemeError" title="svgwriter.errors.ThemeError"><strong>ThemeError</strong></a> – If a requested role is not in the theme.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mono"</span><span class="p">)</span><span class="o">.</span><span class="n">css</span><span class="p">([</span><span class="s2">"dot"</span><span class="p">])</span><span class="o">.</span><span class="n">css</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mono"</span><span class="p">)</span><span class="o">.</span><span class="n">css</span><span class="p">([</span><span class="s2">"dot"</span><span class="p">])</span><span class="o">.</span><span class="n">css</span><span class="p">()</span>
 <span class="go">'.role-dot { fill:#000000;stroke:#000000;stroke-width:1px }'</span>
 </pre></div>
 </div>
@@ -687,33 +689,10 @@ function replaces it. Defaults to None.</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">light</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"light"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">light</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"light"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bold</span> <span class="o">=</span> <span class="n">light</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">roles</span><span class="o">=</span><span class="p">{</span><span class="s2">"line"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"stroke-width"</span><span class="p">:</span> <span class="mi">4</span><span class="p">}},</span> <span class="n">fonts</span><span class="o">=</span><span class="p">{</span><span class="s2">"sizes"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="mi">16</span><span class="p">}})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">bold</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">"line"</span><span class="p">)),</span> <span class="n">bold</span><span class="o">.</span><span class="n">fonts</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">"text"</span><span class="p">]</span>
 <span class="go">('fill:none;stroke:#0f766e;stroke-width:4px', 16)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.theme.Theme.get">
-<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.theme.Theme" title="svgwriter.model.theme.theme.Theme"><span class="pre">Theme</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/theme/theme.html#Theme.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.theme.Theme.get" title="Link to this definition">¶</a></dt>
-<dd><p>The registered theme called <em>name</em>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – A registered name: <code class="docutils literal notranslate"><span class="pre">&quot;light&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;dark&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;print&quot;</span></code>, … (see <code class="xref py py-data docutils literal notranslate"><span class="pre">THEMES</span></code>).</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Theme</em> – The theme.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#KeyError" title="(in Python v3.15)"><strong>KeyError</strong></a> – If no theme has that name.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"paper"</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
-<span class="go">'paper'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -731,7 +710,7 @@ function replaces it. Defaults to None.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
 <span class="go">'light'</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
 <span class="go">'dark'</span>
 </pre></div>
@@ -752,28 +731,12 @@ function replaces it. Defaults to None.</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">)</span> <span class="ow">is</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">)</span> <span class="ow">is</span> <span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dark"</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
 <span class="go">(True, 'light')</span>
 </pre></div>
 </div>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="svgwriter.model.theme.ThemeError">
-<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ThemeError</span></span><a class="reference internal" href="../_modules/svgwriter/model/theme/_errors.html#ThemeError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.theme.ThemeError" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a></p>
-<p>A theme that cannot be resolved: an unknown role or reference, a cycle, or a malformed value.</p>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">svg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">Palette</span><span class="p">({</span><span class="s2">"a"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{palette.b}</span><span class="s2">"</span><span class="p">})</span>
-<span class="gp">... </span><span class="k">except</span> <span class="n">svg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">ThemeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
-<span class="go">palette.a: unknown reference {palette.b}</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <p id="module-svgwriter.model.theme.sheet">The theme <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> sheet of a tree: the roles it uses and the sheet written while it is output.</p>
@@ -799,7 +762,7 @@ restored on exit. Nothing is written when no role is used and no sheet exists.</
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.model.theme.sheet</span><span class="w"> </span><span class="kn">import</span> <span class="n">applied</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">root</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Svg</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"dot"</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">applied</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mono"</span><span class="p">),</span> <span class="n">root</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">applied</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mono"</span><span class="p">),</span> <span class="n">root</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">root</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">css</span>
 <span class="go">'.role-dot { fill:#000000;stroke:#000000;stroke-width:1px }'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
@@ -825,7 +788,7 @@ restored on exit. Nothing is written when no role is used and no sheet exists.</
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.model.theme.sheet</span><span class="w"> </span><span class="kn">import</span> <span class="n">role_rules</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">role_rules</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mono"</span><span class="p">))[</span><span class="s2">"role-dot"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">declarations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">role_rules</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mono"</span><span class="p">))[</span><span class="s2">"role-dot"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">declarations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">('fill', '#000000', False)</span>
 </pre></div>
 </div>
@@ -873,14 +836,14 @@ with the sheet’s role styles, named <code class="docutils literal notranslate"
 <dd class="field-even"><p><em>list of str</em> – Role names.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#svgwriter.model.theme.ThemeError" title="svgwriter.model.theme.ThemeError"><strong>ThemeError</strong></a> – If an element carries a <code class="docutils literal notranslate"><span class="pre">role-</span></code> class that the theme does not define.</p>
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#svgwriter.errors.ThemeError" title="svgwriter.errors.ThemeError"><strong>ThemeError</strong></a> – If an element carries a <code class="docutils literal notranslate"><span class="pre">role-</span></code> class that the theme does not define.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.model.theme.sheet</span><span class="w"> </span><span class="kn">import</span> <span class="n">used_roles</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"dot"</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"box"</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">used_roles</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"light"</span><span class="p">),</span> <span class="n">g</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">used_roles</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"light"</span><span class="p">),</span> <span class="n">g</span><span class="p">)</span>
 <span class="go">['box', 'dot']</span>
 </pre></div>
 </div>
@@ -969,12 +932,10 @@ with the sheet’s role styles, named <code class="docutils literal notranslate"
 <li><a class="reference internal" href="#svgwriter.model.theme.Theme.class_name"><code class="docutils literal notranslate"><span class="pre">Theme.class_name()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.theme.Theme.css"><code class="docutils literal notranslate"><span class="pre">Theme.css()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.theme.Theme.replace"><code class="docutils literal notranslate"><span class="pre">Theme.replace()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.theme.Theme.get"><code class="docutils literal notranslate"><span class="pre">Theme.get()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.theme.Theme.current"><code class="docutils literal notranslate"><span class="pre">Theme.current()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.theme.Theme.of"><code class="docutils literal notranslate"><span class="pre">Theme.of()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#svgwriter.model.theme.ThemeError"><code class="docutils literal notranslate"><span class="pre">ThemeError</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.theme.sheet.applied"><code class="docutils literal notranslate"><span class="pre">applied()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.theme.sheet.role_rules"><code class="docutils literal notranslate"><span class="pre">role_rules()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.theme.sheet.sheet_theme"><code class="docutils literal notranslate"><span class="pre">sheet_theme()</span></code></a></li>

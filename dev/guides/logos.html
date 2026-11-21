@@ -235,6 +235,7 @@
 <li class="toctree-l1"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -264,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -328,7 +330,7 @@ so regenerating and comparing bytes tells whether checked-in assets are stale.</
 </pre></div>
 </div>
 <p>Variants are themes (<a class="reference internal" href="themes.html"><span class="std std-doc">Themes</span></a>): <code class="docutils literal notranslate"><span class="pre">logo(&quot;dark&quot;)</span></code>, <code class="docutils literal notranslate"><span class="pre">logo(&quot;mono&quot;)</span></code>, or any
-<code class="docutils literal notranslate"><span class="pre">svg.Theme.get(&quot;light&quot;).replace(palette={...})</span></code>. <code class="docutils literal notranslate"><span class="pre">examples/12_logo.py</span></code> in the repository is a complete version with light, dark and mono variants and the full
+<code class="docutils literal notranslate"><span class="pre">svg.themes.get(&quot;light&quot;).replace(palette={...})</span></code>. <code class="docutils literal notranslate"><span class="pre">examples/12_logo.py</span></code> in the repository is a complete version with light, dark and mono variants and the full
 asset set.</p>
 </section>
 

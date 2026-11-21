@@ -234,6 +234,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -263,6 +264,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -307,7 +309,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">._registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Exporter</span><span class="p">,</span> <span class="n">find_exporter</span><span class="p">,</span> <span class="n">find_importer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._format</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORMATS</span><span class="p">,</span> <span class="n">Format</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">...document</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span>
@@ -333,7 +335,7 @@
 <span class="sd">        :meth:`Document.at`) instead of the document as written. Defaults to</span>
 <span class="sd">        None, which keeps animations (formats without animation show t = 0).</span>
 <span class="sd">    **options</span>
-<span class="sd">        Passed to the exporter function (see each format's description in :func:`exporters`).</span>
+<span class="sd">        Passed to the exporter function (see each format in ``svg.formats``).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -343,7 +345,7 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If no exporter matches *format*, the sequence is empty, or several</span>
+<span class="sd">        If no format writes *format*, the sequence is empty, or several</span>
 <span class="sd">        documents are given to a single-page format.</span>
 
 <span class="sd">    See Also</span>
@@ -357,15 +359,15 @@
 <span class="sd">    &gt;&gt;&gt; svg.export.export(doc, "png")[:4] == bytes.fromhex("89504e47")</span>
 <span class="sd">    True</span>
 <span class="sd">    &gt;&gt;&gt; deck = svg.export.export([doc, svg.Document(8, 2)], "pdf")</span>
-<span class="sd">    &gt;&gt;&gt; len(svg.export.find_importer("pdf").function(deck, page=None))</span>
+<span class="sd">    &gt;&gt;&gt; len(svg.formats.reader("pdf").read(deck, page=None))</span>
 <span class="sd">    2</span>
 <span class="sd">    """</span>
-    <span class="n">exporter</span> <span class="o">=</span> <span class="n">find_exporter</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">exporter</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span></div>
+    <span class="n">exporter</span> <span class="o">=</span> <span class="n">FORMATS</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">exporter</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span></div>
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">:</span> <span class="n">Exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">:</span> <span class="n">Format</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""The document (or list of documents) to hand to *exporter*, at *seconds* when given."""</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">document</span><span class="p">:</span>
@@ -396,7 +398,7 @@
 <span class="sd">        Save the SMIL animation frame at this many seconds instead of the</span>
 <span class="sd">        animated document. Defaults to None.</span>
 <span class="sd">    **options</span>
-<span class="sd">        Passed to the exporter function.</span>
+<span class="sd">        Passed to the format's ``write``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -406,7 +408,7 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If no exporter matches, or several documents are given to a</span>
+<span class="sd">        If no format writes it, or several documents are given to a</span>
 <span class="sd">        single-page format.</span>
 
 <span class="sd">    See Also</span>
@@ -424,8 +426,8 @@
 <span class="sd">    ...     target.read_text(encoding="utf-8").startswith("&lt;?xml")</span>
 <span class="sd">    True</span>
 <span class="sd">    """</span>
-    <span class="n">exporter</span> <span class="o">=</span> <span class="n">find_exporter</span><span class="p">(</span><span class="nb">format</span> <span class="ow">or</span> <span class="n">path</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">exporter</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">exporter</span> <span class="o">=</span> <span class="n">FORMATS</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="nb">format</span> <span class="ow">or</span> <span class="n">path</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">exporter</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_frames</span><span class="p">(</span><span class="n">exporter</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">seconds</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
     <span class="n">target</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
         <span class="n">target</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -438,7 +440,7 @@
 <div class="viewcode-block" id="load">
 <a class="viewcode-back" href="../../../../reference/export.html#svgwriter.formats.export.load">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Document</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Document</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""Read a document from *path* with the importer chosen by *format* or the extension.</span>
+<span class="w">    </span><span class="sd">"""Read a document from *path* with the format chosen by *format* or the extension.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -447,7 +449,7 @@
 <span class="sd">    format : str, optional</span>
 <span class="sd">        Format name overriding the extension. Defaults to None.</span>
 <span class="sd">    **options</span>
-<span class="sd">        Passed to the importer function.</span>
+<span class="sd">        Passed to the format's ``read``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -460,7 +462,7 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If no importer matches.</span>
+<span class="sd">        If no format reads it (an :class:`~svgwriter.UnknownNameError`).</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -477,8 +479,8 @@
 <span class="sd">    ...     svg.export.load(target).root.tag</span>
 <span class="sd">    'svg'</span>
 <span class="sd">    """</span>
-    <span class="n">importer</span> <span class="o">=</span> <span class="n">find_importer</span><span class="p">(</span><span class="nb">format</span> <span class="ow">or</span> <span class="n">path</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">importer</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">(),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">importer</span> <span class="o">=</span> <span class="n">FORMATS</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="nb">format</span> <span class="ow">or</span> <span class="n">path</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">importer</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">(),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">result</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">result</span><span class="p">]:</span>
         <span class="n">document</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">_source_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fspath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
