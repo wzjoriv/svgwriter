@@ -217,6 +217,7 @@
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../guides/geometry.html">Geometry and transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/colors-and-images.html">Colors and images</a></li>
@@ -241,6 +242,7 @@
 <li class="toctree-l2"><a class="reference internal" href="document.html">Document</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layout.html">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ops.html">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="export.html">Export and import</a></li>
@@ -337,6 +339,12 @@ arguments use Python spelling (<code class="docutils literal notranslate"><span 
 <dt class="sig sig-object py" id="svgwriter.elements.Element.tag">
 <span class="sig-name descname"><span class="pre">tag</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.15)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="headerlink" href="#svgwriter.elements.Element.tag" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.elements.Element.arranges_children">
+<span class="sig-name descname"><span class="pre">arranges_children</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.15)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#svgwriter.elements.Element.arranges_children" title="Link to this definition">¶</a></dt>
+<dd><p>True for layout groups, which place their children before any child is measured.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="svgwriter.elements.Element.namespace">
@@ -493,12 +501,6 @@ both behave like <code class="docutils literal notranslate"><span class="pre">cl
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.elements.Element.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linked</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.elements.Element" title="svgwriter.elements.core._element.Element"><span class="pre">Element</span></a></span></span><a class="headerlink" href="#svgwriter.elements.Element.copy" title="Link to this definition">¶</a></dt>
-<dd><p>Same as <a class="reference internal" href="#svgwriter.elements.Element.clone" title="svgwriter.elements.Element.clone"><code class="xref py py-meth docutils literal notranslate"><span class="pre">clone()</span></code></a>.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.elements.Element.append">
 <span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">child</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">C</span></span></span><a class="headerlink" href="#svgwriter.elements.Element.append" title="Link to this definition">¶</a></dt>
 <dd><p>Append a child element or text node and return it.</p>
@@ -543,6 +545,12 @@ the child but not yet placed are collected into the root <code class="docutils l
 <span class="go">0</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.elements.Element.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linked</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.elements.Element" title="svgwriter.elements.core._element.Element"><span class="pre">Element</span></a></span></span><a class="headerlink" href="#svgwriter.elements.Element.copy" title="Link to this definition">¶</a></dt>
+<dd><p>Same as <a class="reference internal" href="#svgwriter.elements.Element.clone" title="svgwriter.elements.Element.clone"><code class="xref py py-meth docutils literal notranslate"><span class="pre">clone()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -7758,6 +7766,7 @@ rewritten to the matched start shape, which looks the same.</p>
 <li><a class="reference internal" href="#base-classes">Base classes</a><ul>
 <li><a class="reference internal" href="#svgwriter.elements.Element"><code class="docutils literal notranslate"><span class="pre">Element</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.elements.Element.tag"><code class="docutils literal notranslate"><span class="pre">Element.tag</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.elements.Element.arranges_children"><code class="docutils literal notranslate"><span class="pre">Element.arranges_children</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.namespace"><code class="docutils literal notranslate"><span class="pre">Element.namespace</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.category"><code class="docutils literal notranslate"><span class="pre">Element.category</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.content"><code class="docutils literal notranslate"><span class="pre">Element.content</span></code></a></li>
@@ -7766,9 +7775,9 @@ rewritten to the matched start shape, which looks the same.</p>
 <li><a class="reference internal" href="#svgwriter.elements.Element.home"><code class="docutils literal notranslate"><span class="pre">Element.home</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.computed"><code class="docutils literal notranslate"><span class="pre">Element.computed()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.clone"><code class="docutils literal notranslate"><span class="pre">Element.clone()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.elements.Element.copy"><code class="docutils literal notranslate"><span class="pre">Element.copy()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.append"><code class="docutils literal notranslate"><span class="pre">Element.append()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.clear"><code class="docutils literal notranslate"><span class="pre">Element.clear()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.elements.Element.copy"><code class="docutils literal notranslate"><span class="pre">Element.copy()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.discard"><code class="docutils literal notranslate"><span class="pre">Element.discard()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.ensure_id"><code class="docutils literal notranslate"><span class="pre">Element.ensure_id()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.elements.Element.extend"><code class="docutils literal notranslate"><span class="pre">Element.extend()</span></code></a></li>

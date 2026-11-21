@@ -217,6 +217,7 @@
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../guides/geometry.html">Geometry and transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/colors-and-images.html">Colors and images</a></li>
@@ -241,6 +242,7 @@
 <li class="toctree-l2"><a class="reference internal" href="document.html">Document</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elements.html">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layout.html">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ops.html">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="export.html">Export and import</a></li>
@@ -2361,6 +2363,27 @@ nearest ancestor if the property inherits, else the default. The keyword
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.attributes.cascade.frozen_rules">
+<span class="sig-name descname"><span class="pre">frozen_rules</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.15)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/cascade.html#frozen_rules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.cascade.frozen_rules" title="Link to this definition">¶</a></dt>
+<dd><p>Collect each tree’s style rules once for the block, for many lookups while no <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> changes.</p>
+<p>Joins an enclosing block, so nesting is free.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>None</em></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.attributes.cascade</span><span class="w"> </span><span class="kn">import</span> <span class="n">frozen_rules</span><span class="p">,</span> <span class="n">rules_of</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">'&lt;svg xmlns="http://www.w3.org/2000/svg"&gt;&lt;style&gt;.a{fill:red}&lt;/style&gt;&lt;/svg&gt;'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">frozen_rules</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="n">rules_of</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="ow">is</span> <span class="n">rules_of</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="svgwriter.attributes.cascade.parse_css">
 <span class="sig-name descname"><span class="pre">parse_css</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.attributes.cascade.Rule" title="svgwriter.attributes.cascade.Rule"><span class="pre">Rule</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/attributes/cascade.html#parse_css"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.attributes.cascade.parse_css" title="Link to this definition">¶</a></dt>
 <dd><p>Parse a style sheet into rules; <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> blocks are skipped.</p>
@@ -2698,6 +2721,7 @@ are case-insensitive (<code class="docutils literal notranslate"><span class="pr
 </ul>
 </li>
 <li><a class="reference internal" href="#svgwriter.attributes.cascade.computed"><code class="docutils literal notranslate"><span class="pre">computed()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.attributes.cascade.frozen_rules"><code class="docutils literal notranslate"><span class="pre">frozen_rules()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.attributes.cascade.parse_css"><code class="docutils literal notranslate"><span class="pre">parse_css()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.attributes.cascade.resolve_styles"><code class="docutils literal notranslate"><span class="pre">resolve_styles()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.attributes.cascade.rules_of"><code class="docutils literal notranslate"><span class="pre">rules_of()</span></code></a></li>

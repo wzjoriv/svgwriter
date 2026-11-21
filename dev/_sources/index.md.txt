@@ -29,6 +29,7 @@ start/quickstart
 :maxdepth: 1
 
 guides/geometry
+guides/layout
 guides/paths
 guides/text
 guides/colors-and-images

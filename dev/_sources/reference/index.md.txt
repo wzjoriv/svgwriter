@@ -9,6 +9,7 @@ without notice; their public classes are documented where they are exported.
 document
 elements
 geometry
+layout
 color
 ops
 export
