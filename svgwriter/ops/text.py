@@ -12,6 +12,7 @@ import skia
 
 from .._internal._constants import ANCHOR_SHIFT
 from .._internal._font_match import FontStyle, describe
+from .._internal._font_names import family_names
 from .._internal._fonts import font_for, registered_typefaces, resolve_font
 from ..pathdata.data import PathData
 from ..transform.matrix import Matrix
@@ -48,7 +49,7 @@ def register_font(source: str | os.PathLike[str] | bytes, family: str | None = N
         A ``.ttf``/``.otf``/``.ttc`` file or its contents.
     family : str, optional
         Name to register under. Defaults to None, which uses the family name
-        stored in the font.
+        stored in the font (typographic family first, then WWS, then legacy).
     weight : float or (float, float), optional
         The weight (or variable range) the face stands for, as the
         ``font-weight`` descriptor of ``@font-face``. Defaults to None, which
@@ -78,8 +79,10 @@ def register_font(source: str | os.PathLike[str] | bytes, family: str | None = N
         typeface = skia.Typeface.MakeFromFile(os.fspath(source))
     if typeface is None:
         raise ValueError(f"cannot read a font from {source if not isinstance(source, bytes) else 'the data'!r}")
-    name = family or typeface.getFamilyName()
-    registered_typefaces.setdefault(name.lower(), []).append((typeface, describe(typeface, weight, style)))
+    names = family_names(typeface)
+    name = family or names[0]
+    registered_typefaces.setdefault(name.lower(), []).append(
+        (typeface, describe(typeface, weight, style, subfamily=names[1])))
     resolve_font.cache_clear()
     font_for.cache_clear()
     glyph_shape.cache_clear()

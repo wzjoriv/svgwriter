@@ -18,6 +18,7 @@ from ._font_constants import (
     NORMAL_STRETCH,
     STYLE_ORDER,
     STYLES,
+    SUBFAMILY_STYLES,
     TAG_BYTES,
     WIDTH_PERCENT,
 )
@@ -64,8 +65,12 @@ def style_of(value: object) -> FontStyle:
 
 
 def describe(typeface: Any, weight: float | Range | None = None, style: str | None = None,
-             stretch: float | Range | None = None) -> FaceStyle:
-    """The CSS descriptors of a skia typeface, read from the font unless given."""
+             stretch: float | Range | None = None, subfamily: str = "") -> FaceStyle:
+    """The CSS descriptors of a skia typeface, read from the font unless given.
+
+    Weight and width come from the OS/2 table or the variation axes; the style from the OS/2
+    selection flags, with an italic or oblique subfamily name winning over an upright flag.
+    """
     axes = {str(axis_tag(axis.tag)): (axis.min, getattr(axis, "def"), axis.max)
             for axis in typeface.getVariationDesignParameters()}
     font_style = typeface.fontStyle()
@@ -73,7 +78,11 @@ def describe(typeface: Any, weight: float | Range | None = None, style: str | No
         weight = axes[AXIS_WEIGHT][0::2] if AXIS_WEIGHT in axes else font_style.weight()
     if stretch is None:
         stretch = axes[AXIS_WIDTH][0::2] if AXIS_WIDTH in axes else WIDTH_PERCENT.get(font_style.width(), NORMAL_STRETCH)
-    return FaceStyle(_range(weight), style_of(style if style is not None else font_style.slant()), _range(stretch), axes)
+    if style is None:
+        style = style_of(font_style.slant())
+        named = [word for word in SUBFAMILY_STYLES if word in subfamily.lower()]
+        style = named[0] if style == "normal" and named else style
+    return FaceStyle(_range(weight), style_of(style), _range(stretch), axes)
 
 
 def _range(value: float | Range) -> Range:

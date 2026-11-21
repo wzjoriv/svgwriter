@@ -7,21 +7,20 @@ from __future__ import annotations
 import os
 from collections.abc import Iterable, Iterator, Mapping
 from pathlib import Path
-from typing import Any, TypeAlias
+from typing import Any
 
-import skia
-
-from .._internal._constants import GENERIC_CANDIDATES, NORMAL_WEIGHT
-from .._internal._font_constants import FONT_FILE_SUFFIXES
-from .._internal._font_match import FontStyle, describe, match_rank, style_of
+from .._internal._constants import NORMAL_WEIGHT
+from .._internal._font_constants import (
+    FONT_FILE_SUFFIXES,
+)
+from .._internal._font_match import FontStyle, match_rank, style_of
 from ._constants import DEFAULT_FONT_SIZE
 from ._faces import Face, FaceMetrics, css_family
+from ._sources import FontSource, family_of, installed_faces, load, load_face
 from .text import register_font
 
 __all__ = ["Face", "FaceMetrics", "FontSource", "Typeface", "known_typefaces"]
 
-FontSource: TypeAlias = str | os.PathLike[str] | bytes
-"""A font file path or its contents."""
 
 _REGISTERED: set[tuple[str, Any, Any, str]] = set()
 _KNOWN: dict[str, Typeface] = {}
@@ -44,26 +43,6 @@ def known_typefaces() -> list[Typeface]:
     True
     """
     return list(_KNOWN.values())
-
-
-def _load(source: FontSource) -> tuple[Any, Path | None, bytes]:
-    """The skia typeface, path and bytes of a font file or its contents."""
-    path = None if isinstance(source, bytes) else Path(os.fspath(source))
-    blob = source if isinstance(source, bytes) else path.read_bytes()  # type: ignore[union-attr]
-    typeface = skia.Typeface.MakeFromData(skia.Data.MakeWithCopy(blob))
-    if typeface is None:
-        raise ValueError(f"cannot read a font from {str(path) if path else 'the data'!r}")
-    return typeface, path, blob
-
-
-def _installed(name: str) -> tuple[str, list[Any]]:
-    """The concrete family and its installed typefaces; generic names pick the first installed candidate."""
-    manager = skia.FontMgr.RefDefault()
-    for family in (*GENERIC_CANDIDATES.get(name.lower(), ()), name):
-        styles = manager.matchFamily(family)
-        if styles.count():
-            return family, [styles.createTypeface(index) for index in range(styles.count())]
-    raise LookupError(f"no installed font family {name!r}; load files with Typeface.from_files")
 
 
 class Typeface:
@@ -117,8 +96,8 @@ class Typeface:
     def __init__(self, name: str, faces: Iterable[FontSource] | Mapping[tuple[float, str], FontSource] | None = None
                  ) -> None:
         if faces is None:
-            self._name, typefaces = _installed(name)
-            self._faces = tuple(Face.of(self._name, typeface, describe(typeface)) for typeface in typefaces)
+            self._name, found = installed_faces(name)
+            self._faces = tuple(found)
             self._installed = True
             _KNOWN[self._name.lower()] = self
             return
@@ -132,9 +111,7 @@ class Typeface:
         self._name, self._installed = name, False
         loaded = []
         for override, source in entries:
-            typeface, path, blob = _load(source)
-            weight, style = override if override is not None else (None, None)
-            loaded.append(Face.of(name, typeface, describe(typeface, weight, style), path, blob))
+            loaded.extend(load_face(name, typeface, override, path, blob) for typeface, path, blob in load(source))
         self._faces = tuple(loaded)
         self.register()
         _KNOWN[name.lower()] = self
@@ -147,10 +124,14 @@ class Typeface:
         Parameters
         ----------
         *sources : path or bytes
-            ``.ttf``/``.otf`` files (or their contents), one per face; variable
-            fonts cover their whole axis ranges.
+            ``.ttf``/``.otf`` files, their contents (bytes, a binary stream or a
+            ``data:`` URI), one per face; collections
+            (``.ttc``/``.otc``) add every face they hold; variable fonts cover
+            their whole axis ranges.
         name : str, optional
-            The family name. Defaults to None, which uses the first file's family.
+            The family name. Defaults to None, which uses the first file's family
+            as stored inside it (typographic family first, so "Inter SemiBold"
+            files join "Inter").
         faces : mapping of (weight, style) to path or bytes, optional
             More files whose weight and style are given here instead of read.
             Defaults to None.
@@ -171,7 +152,7 @@ class Typeface:
         if not entries:
             raise ValueError("from_files needs at least one font file")
         typeface = cls.__new__(cls)
-        typeface._fill(name or _load(entries[0][1])[0].getFamilyName(), entries)
+        typeface._fill(name or family_of(entries[0][1]), entries)
         return typeface
 
     @classmethod
@@ -202,7 +183,7 @@ class Typeface:
         >>> # brand = svg.Typeface.from_folder("assets/fonts", "Inter")
         """
         files = sorted(path for path in Path(os.fspath(folder)).iterdir() if path.suffix.lower() in FONT_FILE_SUFFIXES)
-        families = {path: _load(path)[0].getFamilyName() for path in files}
+        families = {path: family_of(path) for path in files}
         if name is not None:
             files = [path for path in files if families[path].lower() == name.lower()]
         elif len(set(families.values())) > 1:
@@ -264,7 +245,7 @@ class Typeface:
         for face in () if self._installed else self._faces:
             key = (self._name.lower(), face.source or face.blob, face.weight, face.style)
             if key not in _REGISTERED:
-                register_font(face.blob if face.blob is not None else face.data, self._name,
+                register_font(face.data, self._name,
                               weight=face.weight, style=face.style)
                 _REGISTERED.add(key)
         return self
@@ -324,13 +305,17 @@ class Typeface:
         """
         return self.face(weight, style).measure(text, size)
 
-    def css(self, faces: Iterable[Face] | None = None) -> str:
-        """``@font-face`` rules with the font files as data URIs.
+    def css(self, faces: Iterable[Face] | None = None, *, embed: bool = True) -> str:
+        """``@font-face`` rules, the font files embedded as data URIs or referenced.
 
         Parameters
         ----------
         faces : iterable of Face, optional
             The faces to write. Defaults to None, which writes every face.
+        embed : bool, optional
+            Embed the files. Defaults to True; False writes ``local(...)`` for
+            installed faces and ``url(path)`` for file faces, so an SVG kept
+            next to its fonts stays small.
 
         Returns
         -------
@@ -344,7 +329,7 @@ class Typeface:
         >>> sans.css([sans.face()]).count("@font-face")
         1
         """
-        return "\n".join(face.css() for face in (self._faces if faces is None else faces))
+        return "\n".join(face.css(embed=embed) for face in (self._faces if faces is None else faces))
 
     def svg_value(self, precision: int | None = None) -> str:
         """The family name as a ``font-family`` value (quoted when CSS needs it).

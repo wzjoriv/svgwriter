@@ -10,15 +10,27 @@ __all__ = [
     "AXIS_SLANT",
     "AXIS_WEIGHT",
     "AXIS_WIDTH",
+    "BASE64_MARKER",
     "CFF_TABLES",
     "CHECKSUM_MAGIC",
+    "COLLECTION_COUNT",
+    "COLLECTION_COUNT_AT",
+    "COLLECTION_TAG",
+    "DATA_URI",
+    "ENGLISH_US",
     "FONT_FILE_SUFFIXES",
     "FONT_MIME",
     "HEAD_ADJUSTMENT",
     "HEAD_TABLE",
     "MATCH_WEIGHT_HIGH",
     "MATCH_WEIGHT_LOW",
+    "NAME_HEADER",
+    "NAME_PAIRS",
+    "NAME_PLATFORMS",
+    "NAME_RECORD",
+    "NAME_TABLE",
     "NORMAL_STRETCH",
+    "REGULAR_SUBFAMILY",
     "SFNT_CFF",
     "SFNT_CHECKSUM_MASK",
     "SFNT_HEADER",
@@ -27,6 +39,8 @@ __all__ = [
     "STANDALONE_SUFFIXES",
     "STYLES",
     "STYLE_ORDER",
+    "SUBFAMILY_STYLES",
+    "SUGGESTIONS",
     "TAG_BYTES",
     "WIDTH_PERCENT",
     "WORD_ALIGN",
@@ -59,3 +73,17 @@ SFNT_HEADER: Final = ">4sHHHH"
 SFNT_RECORD: Final = ">4sIII"
 SFNT_CHECKSUM_MASK: Final = 0xFFFFFFFF
 WORD_ALIGN: Final = 4
+NAME_TABLE: Final = "name"
+NAME_HEADER: Final = ">HHH"
+NAME_RECORD: Final = ">HHHHHH"
+NAME_PAIRS: Final = ((16, 17), (21, 22), (1, 2))
+NAME_PLATFORMS: Final = (3, 0, 1)
+ENGLISH_US: Final = 0x0409
+REGULAR_SUBFAMILY: Final = "Regular"
+SUBFAMILY_STYLES: Final = ("italic", "oblique")
+COLLECTION_TAG: Final = b"ttcf"
+COLLECTION_COUNT: Final = ">I"
+COLLECTION_COUNT_AT: Final = 8
+DATA_URI: Final = "data:"
+BASE64_MARKER: Final = ";base64"
+SUGGESTIONS: Final = 3

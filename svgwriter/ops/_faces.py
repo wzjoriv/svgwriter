@@ -13,8 +13,9 @@ from typing import Any
 
 import skia
 
-from .._internal._font_constants import AXIS_WEIGHT, FONT_MIME, STANDALONE_SUFFIXES
+from .._internal._font_constants import AXIS_WEIGHT, FONT_MIME, REGULAR_SUBFAMILY, STANDALONE_SUFFIXES
 from .._internal._font_match import FaceStyle, FontStyle, Range, axis_tag
+from .._internal._font_names import face_count
 from .._internal._sfnt import font_format, sfnt_bytes
 from ._constants import DEFAULT_FONT_SIZE, FAMILY_IDENTIFIER
 
@@ -112,6 +113,8 @@ class Face:
         ``(minimum, default, maximum)``; empty for a static face.
     source : pathlib.Path or None
         The file the face came from; None for installed or in-memory fonts.
+    subfamily : str
+        The style name inside the font (typographic name first), such as ``"SemiBold Italic"``.
 
     Examples
     --------
@@ -127,12 +130,13 @@ class Face:
     stretch: Range
     axes: dict[str, tuple[float, float, float]] = field(default_factory=dict)
     source: Path | None = None
+    subfamily: str = REGULAR_SUBFAMILY
     typeface: Any = field(default=None, repr=False, compare=False)
     blob: bytes | None = field(default=None, repr=False, compare=False)
 
     @classmethod
     def of(cls, family: str, typeface: Any, described: FaceStyle, source: Path | None = None,
-           blob: bytes | None = None) -> Face:
+           blob: bytes | None = None, subfamily: str = REGULAR_SUBFAMILY) -> Face:
         """A face from a skia typeface and its CSS descriptors.
 
         Parameters
@@ -147,6 +151,8 @@ class Face:
             The file it was read from. Defaults to None.
         blob : bytes, optional
             The file contents, when already read. Defaults to None.
+        subfamily : str, optional
+            The style name read from the font. Defaults to "Regular".
 
         Returns
         -------
@@ -163,7 +169,7 @@ class Face:
         'Sans'
         """
         return cls(family, described.weight, described.style, described.stretch, dict(described.axes),
-                   source, typeface, blob)
+                   source, subfamily, typeface, blob)
 
     @property
     def variable(self) -> bool:
@@ -199,7 +205,8 @@ class Face:
         >>> svg.Typeface("sans-serif").face().data[:4] in (b"\\0\\1\\0\\0", b"OTTO", b"true")
         True
         """
-        if self.blob is not None and (self.source is None or self.source.suffix.lower() in STANDALONE_SUFFIXES):
+        standalone = self.source is None or self.source.suffix.lower() in STANDALONE_SUFFIXES
+        if self.blob is not None and standalone and face_count(self.blob) == 1:
             return self.blob
         return sfnt_bytes(self.typeface)
 
@@ -280,8 +287,15 @@ class Face:
             else self.weight[0]
         return text_width(text, css_family(self.family), size, weight=round(weight), italic=self.style != "normal")
 
-    def css(self) -> str:
-        """An ``@font-face`` rule carrying this face as a data URI.
+    def css(self, *, embed: bool = True) -> str:
+        """An ``@font-face`` rule for this face.
+
+        Parameters
+        ----------
+        embed : bool, optional
+            Carry the font file as a data URI. Defaults to True; False writes
+            ``local('Family Style')`` for an installed face and ``url(path)``
+            for a file face (in-memory faces are always embedded).
 
         Returns
         -------
@@ -291,12 +305,20 @@ class Face:
         Examples
         --------
         >>> import svgwriter as svg
-        >>> svg.Typeface("sans-serif").face().css().startswith("@font-face")
-        True
+        >>> svg.Typeface("sans-serif").face().css(embed=False).count("local(")
+        1
         """
-        encoded = base64.b64encode(self.data).decode("ascii")
         family = self.family.replace("\\", "\\\\").replace('"', '\\"')
-        return (f'@font-face {{ font-family: "{family}"; '
-                f'src: url(data:{FONT_MIME[self.format]};base64,{encoded}) format("{self.format}"); '
+        return (f'@font-face {{ font-family: "{family}"; src: {self._src(embed)}; '
                 f"font-weight: {_span(self.weight)}; font-style: {self.style}; "
                 f"font-stretch: {_span(self.stretch, '%')}; }}")
+
+    def _src(self, embed: bool) -> str:
+        """The ``src`` descriptor: a data URI, a local name or the file's URL."""
+        if not embed and self.source is not None:
+            return f'url("{self.source.as_posix()}") format("{self.format}")'
+        if not embed and self.blob is None:
+            local = f"{self.family} {self.subfamily}".replace("'", "\\'")
+            return f"local('{local}')"
+        encoded = base64.b64encode(self.data).decode("ascii")
+        return f'url(data:{FONT_MIME[self.format]};base64,{encoded}) format("{self.format}")'

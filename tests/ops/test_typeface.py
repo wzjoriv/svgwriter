@@ -207,3 +207,67 @@ def test_theme_files_accept_font_files(tmp_path, family):
     assert theme.fonts.to_dict()["family"] == [str(family[0]), str(family[1])]
     with pytest.raises(svg.theme.ThemeError, match="fonts.family"):
         svg.Theme.from_toml('[fonts]\nfamily = ["missing.ttf"]\n')
+
+
+def _named(legacy: str, subfamily: str, weight: int, width: int, *, italic: bool = False) -> bytes:
+    """A face whose legacy name (ID 1) differs from its typographic family (ID 16), as non-RIBBI styles do."""
+    ttlib = pytest.importorskip("fontTools.ttLib")
+    font = ttlib.TTFont(io.BytesIO(_font("unused", width, weight=weight, italic=italic)))
+    names = font["name"]
+    names.names = []
+    names.setName(legacy, 1, 3, 1, 0x409)
+    names.setName("Italic" if italic else "Regular", 2, 3, 1, 0x409)
+    names.setName("SvgwInterish", 16, 3, 1, 0x409)
+    names.setName(subfamily, 17, 3, 1, 0x409)
+    buffer = io.BytesIO()
+    font.save(buffer)
+    return buffer.getvalue()
+
+
+def test_typographic_names_keep_a_large_family_together(tmp_path):
+    faces = {"Regular.ttf": ("SvgwInterish", "Regular", 400, 400, False),
+             "SemiBold.ttf": ("SvgwInterish SemiBold", "SemiBold", 600, 550, False),
+             "SemiBoldItalic.ttf": ("SvgwInterish SemiBold", "SemiBold Italic", 600, 560, True)}
+    for file, (legacy, subfamily, weight, width, italic) in faces.items():
+        (tmp_path / file).write_bytes(_named(legacy, subfamily, weight, width, italic=italic))
+    typeface = svg.Typeface.from_folder(tmp_path)
+    assert typeface.name == "SvgwInterish" and len(typeface) == 3
+    semibold = typeface.face(600)
+    assert semibold.weight == (600, 600) and semibold.subfamily == "SemiBold"
+    assert typeface.face(600, "italic").subfamily == "SemiBold Italic"
+    assert svg.register_font(_named("SvgwInterish Light", "Light", 300, 300)) == "SvgwInterish"
+
+
+def test_collections_load_every_face():
+    collection = pytest.importorskip("fontTools.ttLib.ttCollection")
+    ttlib = pytest.importorskip("fontTools.ttLib")
+    bundle = collection.TTCollection()
+    bundle.fonts = [ttlib.TTFont(io.BytesIO(_font("SvgwBundle", 400))),
+                    ttlib.TTFont(io.BytesIO(_font("SvgwBundle", 600, weight=BOLD)))]
+    buffer = io.BytesIO()
+    bundle.save(buffer)
+    typeface = svg.Typeface.from_files(buffer.getvalue())
+    assert [face.weight[0] for face in typeface] == [REGULAR, BOLD]
+    assert typeface.measure("A", 100, weight=BOLD) == pytest.approx(70)
+    single = skia.Typeface.MakeFromData(skia.Data.MakeWithCopy(typeface.face(BOLD).data))
+    assert single.fontStyle().weight() == BOLD
+
+
+def test_sources_may_be_streams_and_data_uris():
+    data = _font("SvgwStream", 300)
+    uri = "data:font/ttf;base64," + base64.b64encode(data).decode("ascii")
+    typeface = svg.Typeface.from_files(io.BytesIO(data), name="SvgwStream")
+    assert svg.Typeface.from_files(uri).name == "SvgwStream" and len(typeface) == 1
+
+
+def test_css_can_reference_instead_of_embed(family):
+    typeface = svg.Typeface.from_files(*family, name="SvgwLinked")
+    assert f'url("{family[0].as_posix()}")' in typeface.css(embed=False) and "base64" not in typeface.css(embed=False)
+    serif = svg.Typeface("serif")
+    assert f"local('{serif.name} {serif.face().subfamily}')" in serif.css([serif.face()], embed=False)
+
+
+def test_unknown_installed_family_suggests_close_names():
+    installed = svg.Typeface("sans-serif").name
+    with pytest.raises(LookupError, match="did you mean"):
+        svg.Typeface(installed[:-1] + "x")
