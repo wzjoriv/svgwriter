@@ -108,8 +108,11 @@ doc.text("Regular", x=10, y=25, font_family=sans, font_size=18)
 doc.text("Bold italic", x=10, y=50, font=sans, font_size=18, font_weight="bold", font_style="italic")
 ```
 
-`from_files` reads each face's family, weight (OS/2 weight class), style and width from the file; a
-mapping of `(weight, style)` to files states them instead. A variable font covers its `wght`, `wdth`
+`from_files` reads each face's family, weight (OS/2 weight class), style and width from inside the
+file, never from its name: the typographic family comes first, so "Inter SemiBold" files join "Inter",
+and `face.subfamily` keeps the style name ("SemiBold Italic"). Sources may be paths, bytes, binary
+streams or `data:` URIs; collections (`.ttc`) add every face. A mapping of `(weight, style)` to files
+states the descriptors instead. A variable font covers its `wght`, `wdth`
 and `slnt` ranges, listed in `face.axes`. Faces loaded from files are registered at once, so layout,
 measurement, outlines and rendering use them without installing anything.
 
@@ -131,7 +134,8 @@ Measure with the face, then draw with the family: `measure` uses the same shapin
 An SVG file names its fonts; viewers without them substitute others. `doc.embed_fonts()` adds a
 `<style>` with an `@font-face` rule per face the text actually uses, the font file inside as a data URI,
 so browsers draw the file with its own fonts. `doc.used_faces()` lists those faces and
-`typeface.css()` gives the rules of a whole family.
+`typeface.css()` gives the rules of a whole family; `typeface.css(embed=False)` refers to the fonts
+instead (`local(...)` for installed faces, the file path for file faces), for SVG kept next to its fonts.
 
 ```python
 doc.embed_fonts(sans)
