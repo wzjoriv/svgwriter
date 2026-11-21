@@ -288,9 +288,10 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Final</span><span class="p">,</span> <span class="n">TypeAlias</span><span class="p">,</span> <span class="n">overload</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Final</span><span class="p">,</span> <span class="n">TypeAlias</span><span class="p">,</span> <span class="n">overload</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">CM_PER_INCH</span><span class="p">,</span>
@@ -301,32 +302,24 @@
     <span class="n">PC_PER_INCH</span><span class="p">,</span>
     <span class="n">PT_PER_INCH</span><span class="p">,</span>
     <span class="n">PX_PER_INCH</span><span class="p">,</span>
+    <span class="n">Q_PER_INCH</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">Keyword</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_number</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">LENGTH_RE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">LENGTH_RE</span><span class="p">,</span> <span class="n">LENGTH_SCALES</span><span class="p">,</span> <span class="n">LENGTH_SPELLINGS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.quantity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Quantity</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">"Length"</span><span class="p">,</span>
-    <span class="s2">"LengthLike"</span><span class="p">,</span>
-    <span class="s2">"LengthUnit"</span><span class="p">,</span>
-    <span class="s2">"Unit"</span><span class="p">,</span>
-    <span class="s2">"cm"</span><span class="p">,</span>
-    <span class="s2">"em"</span><span class="p">,</span>
-    <span class="s2">"ex"</span><span class="p">,</span>
-    <span class="s2">"inch"</span><span class="p">,</span>
-    <span class="s2">"mm"</span><span class="p">,</span>
-    <span class="s2">"pc"</span><span class="p">,</span>
-    <span class="s2">"percent"</span><span class="p">,</span>
-    <span class="s2">"pt"</span><span class="p">,</span>
-    <span class="s2">"px"</span><span class="p">,</span>
-<span class="p">]</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..transform.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.angle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Length"</span><span class="p">,</span> <span class="s2">"LengthLike"</span><span class="p">,</span> <span class="s2">"Unit"</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="Unit">
 <a class="viewcode-back" href="../../../reference/attributes.html#svgwriter.attributes.Unit">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Unit</span><span class="p">(</span><span class="n">Keyword</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""SVG 1.1 length units.</span>
+<span class="w">    </span><span class="sd">"""Length units: SVG 1.1's plus CSS's ``Q`` (quarter millimetres).</span>
 
 <span class="sd">    ``NONE`` (also ``USER``) means user units. ``PIXEL`` and ``INCH`` are</span>
 <span class="sd">    aliases of ``PX`` and ``IN``. ``str(unit)`` gives the suffix as written in SVG.</span>
@@ -354,6 +347,7 @@
     <span class="n">EM</span> <span class="o">=</span> <span class="s2">"em"</span>
     <span class="n">EX</span> <span class="o">=</span> <span class="s2">"ex"</span>
     <span class="n">PERCENT</span> <span class="o">=</span> <span class="s2">"%"</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="s2">"Q"</span>
     <span class="n">USER</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="n">PIXEL</span> <span class="o">=</span> <span class="s2">"px"</span>
     <span class="n">INCH</span> <span class="o">=</span> <span class="s2">"in"</span>
@@ -369,6 +363,7 @@
     <span class="n">Unit</span><span class="o">.</span><span class="n">PC</span><span class="p">:</span> <span class="n">PC_PER_INCH</span><span class="p">,</span>
     <span class="n">Unit</span><span class="o">.</span><span class="n">MM</span><span class="p">:</span> <span class="n">MM_PER_INCH</span><span class="p">,</span>
     <span class="n">Unit</span><span class="o">.</span><span class="n">CM</span><span class="p">:</span> <span class="n">CM_PER_INCH</span><span class="p">,</span>
+    <span class="n">Unit</span><span class="o">.</span><span class="n">Q</span><span class="p">:</span> <span class="n">Q_PER_INCH</span><span class="p">,</span>
 <span class="p">}</span>
 
 
@@ -378,11 +373,17 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Length</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""A number with an optional unit.</span>
 
+<span class="sd">    The unit may be spelled out (``"millimetres"``, ``"inches"``); metres and</span>
+<span class="sd">    feet are accepted too and stored as millimetres and inches, since SVG has</span>
+<span class="sd">    no such units. Multiplying or dividing by other lengths and angles gives a</span>
+<span class="sd">    `~svgwriter.attributes.quantity.Quantity` (an area, for instance) that turns</span>
+<span class="sd">    back into a length when the dimensions cancel.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    value : float</span>
 <span class="sd">        The magnitude.</span>
-<span class="sd">    unit : Unit, optional</span>
+<span class="sd">    unit : Unit or str, optional</span>
 <span class="sd">        The unit; ``Unit.NONE`` means user units. Defaults to ``Unit.NONE``.</span>
 
 <span class="sd">    See Also</span>
@@ -396,10 +397,22 @@
 <span class="sd">    '2.5mm'</span>
 <span class="sd">    &gt;&gt;&gt; Length.parse("1in").to_user_units()</span>
 <span class="sd">    96.0</span>
+<span class="sd">    &gt;&gt;&gt; str(Length(1.5, "metres")), str(Length(2, "ft"))</span>
+<span class="sd">    ('1500mm', '24in')</span>
 <span class="sd">    """</span>
 
     <span class="n">value</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">unit</span><span class="p">:</span> <span class="n">Unit</span> <span class="o">=</span> <span class="n">Unit</span><span class="o">.</span><span class="n">NONE</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span> <span class="n">Unit</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="n">spelling</span> <span class="o">=</span> <span class="n">LENGTH_SPELLINGS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">spelling</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unknown length unit </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">suffix</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="n">LENGTH_SCALES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">spelling</span><span class="p">,</span> <span class="p">(</span><span class="n">spelling</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">scale</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"unit"</span><span class="p">,</span> <span class="n">Unit</span><span class="p">(</span><span class="n">suffix</span><span class="p">))</span>
 
     <span class="nd">@overload</span>
     <span class="nd">@classmethod</span>
@@ -432,6 +445,8 @@
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            If the text is not a valid length.</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the value is an angle or another non-length quantity.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -445,6 +460,8 @@
             <span class="k">return</span> <span class="n">text</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"needs a length, got </span><span class="si">{</span><span class="n">_dimension</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_parse_cached</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
 
@@ -558,11 +575,11 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; from svgwriter.attributes.length import inch</span>
-<span class="sd">        &gt;&gt;&gt; inch(1).to("mm")</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">        &gt;&gt;&gt; svg.inch(1).to("mm")</span>
 <span class="sd">        Length(value=25.4, unit=&lt;Unit.MM: 'mm'&gt;)</span>
 <span class="sd">        """</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="n">Unit</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">Length</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span><span class="o">.</span><span class="n">unit</span>
         <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">absolute</span> <span class="ow">and</span> <span class="n">Length</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">):</span>
@@ -576,7 +593,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_other</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Length</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""*other* as a length in this length's unit, for addition and comparison."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="n">Length</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"cannot </span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> and a length"</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"cannot </span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">_dimension</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2"> and a length"</span><span class="p">)</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">Length</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="k">else</span> <span class="n">Length</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">other</span><span class="p">),</span> <span class="n">Unit</span><span class="o">.</span><span class="n">NONE</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">unit</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">value</span>
@@ -598,18 +615,46 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Length</span><span class="p">:</span>
         <span class="k">return</span> <span class="o">-</span><span class="bp">self</span> <span class="o">+</span> <span class="n">other</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Length</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">Length</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"a length times a length is an area, not a length; multiply by a number"</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Length</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""``length * number`` is a length; a length or angle factor gives a `Quantity` such as an area."""</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Length</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Quantity</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">*</span> <span class="n">other</span>
 
     <span class="fm">__rmul__</span> <span class="o">=</span> <span class="fm">__mul__</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Length</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""``length / number`` is a length; ``length / length`` is their plain ratio."""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="n">Length</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_other</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"divide"</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
-        <span class="k">return</span> <span class="n">Length</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Length</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Quantity</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">/</span> <span class="n">other</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__rtruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Quantity</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Quantity</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">**</span> <span class="n">power</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__matmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">|</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Point</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""``distance @ angle``: the point at that distance from the origin, in that direction.</span>
+
+<span class="sd">        Plain numbers are degrees; positive angles turn from +x towards +y.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">        &gt;&gt;&gt; p = svg.px(2) @ svg.deg(90)</span>
+<span class="sd">        &gt;&gt;&gt; round(p.x, 9), p.y</span>
+<span class="sd">        (0.0, 2.0)</span>
+<span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..transform.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.angle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span>
+
+        <span class="n">direction</span> <span class="o">=</span> <span class="n">Angle</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_user_units</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Point</span><span class="p">(</span><span class="n">radius</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">direction</span><span class="o">.</span><span class="n">radians</span><span class="p">),</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">direction</span><span class="o">.</span><span class="n">radians</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Length</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Length</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
@@ -634,63 +679,21 @@
 <span class="n">LengthLike</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="n">Length</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_dimension</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.angle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">dimension</span>
+    <span class="k">return</span> <span class="s2">"angle"</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Angle</span><span class="p">)</span> <span class="k">else</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+
+
 <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_parse_cached</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Length</span><span class="p">:</span>
     <span class="n">match</span> <span class="o">=</span> <span class="n">LENGTH_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"invalid length: </span><span class="si">{</span><span class="n">text</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">number</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">Length</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">number</span><span class="p">),</span> <span class="n">Unit</span><span class="p">(</span><span class="n">unit</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">))</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">LengthUnit</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""A unit you can call or multiply: ``mm(5)`` and ``5 * mm`` are both ``Length(5, Unit.MM)``.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    unit : Unit</span>
-<span class="sd">        The unit this factory produces.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from svgwriter.attributes.length import inch, mm</span>
-<span class="sd">    &gt;&gt;&gt; str(5 * mm), str(inch(2) - 10 * mm)</span>
-<span class="sd">    ('5mm', '1.6063in')</span>
-<span class="sd">    """</span>
-
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"unit"</span><span class="p">,)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Unit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">unit</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Length</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Length</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Length</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Length</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">"LengthUnit(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">value</span><span class="si">!r}</span><span class="s2">)"</span>
-
-
-<span class="n">px</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="n">Unit</span><span class="o">.</span><span class="n">PX</span><span class="p">)</span>
-<span class="sd">"""Pixels (user units): ``px(5)`` or ``5 * px``."""</span>
-<span class="n">pt</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="n">Unit</span><span class="o">.</span><span class="n">PT</span><span class="p">)</span>
-<span class="sd">"""Points, 72 per inch: ``pt(5)`` or ``5 * pt``."""</span>
-<span class="n">pc</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="n">Unit</span><span class="o">.</span><span class="n">PC</span><span class="p">)</span>
-<span class="sd">"""Picas, 6 per inch: ``pc(5)`` or ``5 * pc``."""</span>
-<span class="n">mm</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="n">Unit</span><span class="o">.</span><span class="n">MM</span><span class="p">)</span>
-<span class="sd">"""Millimetres: ``mm(5)`` or ``5 * mm``."""</span>
-<span class="n">cm</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="n">Unit</span><span class="o">.</span><span class="n">CM</span><span class="p">)</span>
-<span class="sd">"""Centimetres: ``cm(5)`` or ``5 * cm``."""</span>
-<span class="n">inch</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="n">Unit</span><span class="o">.</span><span class="n">IN</span><span class="p">)</span>
-<span class="sd">"""Inches: ``inch(5)`` or ``5 * inch``."""</span>
-<span class="n">em</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="n">Unit</span><span class="o">.</span><span class="n">EM</span><span class="p">)</span>
-<span class="sd">"""Font-size multiples: ``em(5)`` or ``5 * em``."""</span>
-<span class="n">ex</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="n">Unit</span><span class="o">.</span><span class="n">EX</span><span class="p">)</span>
-<span class="sd">"""x-height multiples: ``ex(5)`` or ``5 * ex``."""</span>
-<span class="n">percent</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="n">Unit</span><span class="o">.</span><span class="n">PERCENT</span><span class="p">)</span>
-<span class="sd">"""Percentages: ``percent(5)`` or ``5 * percent``."""</span>
+    <span class="k">return</span> <span class="n">Length</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">number</span><span class="p">),</span> <span class="n">unit</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
 </pre></div>
         </article>
       </div>

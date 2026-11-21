@@ -6,6 +6,12 @@ Lengths, viewBox, styles, CSS cascade and attribute names.
 .. automodule:: svgwriter.attributes
    :members:
 
+.. automodule:: svgwriter.attributes.quantity
+   :members: check_dimension, dimension_name
+
+.. automodule:: svgwriter.attributes.units
+   :members: length, angle
+
 .. automodule:: svgwriter.attributes.cascade
    :members:
 ```

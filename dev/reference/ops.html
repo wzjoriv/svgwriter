@@ -347,6 +347,48 @@ second outline covers) and <code class="docutils literal notranslate"><span clas
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="svgwriter.ops.Corner">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Corner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="geometry.html#svgwriter.transform.Point" title="svgwriter.transform.Point"><span class="pre">Point</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="attributes.html#svgwriter.attributes.Angle" title="svgwriter.attributes.Angle"><span class="pre">Angle</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/ops/corners.html#Corner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.Corner" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NamedTuple" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></a></p>
+<p>A sharp vertex of an outline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – The vertex number: segment end points counted in drawing order across
+all subpaths, starting at 0 with each subpath’s first point.</p></li>
+<li><p><strong>point</strong> (<a class="reference internal" href="geometry.html#svgwriter.transform.Point" title="svgwriter.transform.Point"><em>Point</em></a>) – Where the vertex is.</p></li>
+<li><p><strong>angle</strong> (<a class="reference internal" href="attributes.html#svgwriter.attributes.Angle" title="svgwriter.attributes.Angle"><em>Angle</em></a>) – The turn the outline makes there; positive turns towards +y
+(clockwise on screen), 180 degrees is a full reversal.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">corners</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">corners</span><span class="p">(</span><span class="s2">"M0 0 L10 0 L10 10"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">Corner(index=1, point=Point(x=10.0, y=0.0), angle=Angle(value=90.0, unit='deg'))</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.ops.Corner.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><a class="headerlink" href="#svgwriter.ops.Corner.index" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.ops.Corner.point">
+<span class="sig-name descname"><span class="pre">point</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="geometry.html#svgwriter.transform.Point" title="svgwriter.transform.matrix.Point"><span class="pre">Point</span></a></span><a class="headerlink" href="#svgwriter.ops.Corner.point" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="svgwriter.ops.Corner.angle">
+<span class="sig-name descname"><span class="pre">angle</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="attributes.html#svgwriter.attributes.Angle" title="svgwriter.attributes.angle.Angle"><span class="pre">Angle</span></a></span><a class="headerlink" href="#svgwriter.ops.Corner.angle" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="svgwriter.ops.bounds">
 <span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Geometry</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="geometry.html#svgwriter.pathdata.BBox" title="svgwriter.pathdata.BBox"><span class="pre">BBox</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/ops/measure.html#bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.bounds" title="Link to this definition">¶</a></dt>
@@ -373,7 +415,10 @@ second outline covers) and <code class="docutils literal notranslate"><span clas
 <span class="sig-name descname"><span class="pre">combine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.ops.BooleanOp" title="svgwriter.ops.BooleanOp"><span class="pre">BooleanOp</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="geometry.html#svgwriter.pathdata.PathData" title="svgwriter.pathdata.PathData"><span class="pre">PathData</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/ops/boolean.html#combine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.combine" title="Link to this definition">¶</a></dt>
 <dd><p>Combine two outlines with a boolean operation.</p>
 <p>The result has no self-intersections; the named helpers <a class="reference internal" href="#svgwriter.ops.union" title="svgwriter.ops.union"><code class="xref py py-func docutils literal notranslate"><span class="pre">union()</span></code></a>,
-<a class="reference internal" href="#svgwriter.ops.intersection" title="svgwriter.ops.intersection"><code class="xref py py-func docutils literal notranslate"><span class="pre">intersection()</span></code></a>, <a class="reference internal" href="#svgwriter.ops.difference" title="svgwriter.ops.difference"><code class="xref py py-func docutils literal notranslate"><span class="pre">difference()</span></code></a> and <a class="reference internal" href="#svgwriter.ops.xor" title="svgwriter.ops.xor"><code class="xref py py-func docutils literal notranslate"><span class="pre">xor()</span></code></a> call this.</p>
+<a class="reference internal" href="#svgwriter.ops.intersection" title="svgwriter.ops.intersection"><code class="xref py py-func docutils literal notranslate"><span class="pre">intersection()</span></code></a>, <a class="reference internal" href="#svgwriter.ops.difference" title="svgwriter.ops.difference"><code class="xref py py-func docutils literal notranslate"><span class="pre">difference()</span></code></a> and <a class="reference internal" href="#svgwriter.ops.xor" title="svgwriter.ops.xor"><code class="xref py py-func docutils literal notranslate"><span class="pre">xor()</span></code></a> call this.
+Boolean operations work on filled areas: an open path counts as closed by
+a straight line, so a lone line or polyline with no area adds nothing.
+When that leaves the result empty a warning says so.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -475,6 +520,104 @@ definitions on premultiplied color.</p>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">contains</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Circle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.ops.corners">
+<span class="sig-name descname"><span class="pre">corners</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="attributes.html#svgwriter.attributes.Angle" title="svgwriter.attributes.Angle"><span class="pre">Angle</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#svgwriter.ops.Corner" title="svgwriter.ops.Corner"><span class="pre">Corner</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/ops/corners.html#corners"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.corners" title="Link to this definition">¶</a></dt>
+<dd><p>The sharp vertices of an outline, where the direction jumps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.structure.Image.shape" title="svgwriter.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.pathdata.PathData" title="svgwriter.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference internal" href="attributes.html#svgwriter.attributes.Angle" title="svgwriter.attributes.Angle"><em>Angle</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Turns at or below this (degrees for a number) count as smooth. Defaults to 0.01 degrees.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>list of Corner</em> – Index, position and turning angle of each corner, in drawing order.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.ops.round_corners" title="svgwriter.ops.round_corners"><code class="xref py py-obj docutils literal notranslate"><span class="pre">round_corners</span></code></a></dt><dd><p>Replace corners with fillets.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">corners</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">corners</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">))]</span>
+<span class="go">[0, 1, 2, 3]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">corners</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.ops.distribute">
+<span class="sig-name descname"><span class="pre">distribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shapes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">along</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Geometry</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">orient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/ops/along.html#distribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.distribute" title="Link to this definition">¶</a></dt>
+<dd><p>Move shapes to evenly spaced places along a path.</p>
+<p>Each shape’s anchor (its centre unless set otherwise) lands on its place;
+places are spaced as in <cite>sample</cite>. The shapes are moved in place.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shapes</strong> (<em>sequence</em><em> of </em><em>elements</em>) – The shapes, in the order they go along the path.</p></li>
+<li><p><strong>along</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.structure.Image.shape" title="svgwriter.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.pathdata.PathData" title="svgwriter.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The path to follow.</p></li>
+<li><p><strong>orient</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – Also turn each shape so its +x axis follows the path. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>list</em> – The same shapes.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the path has zero length.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dots</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">distribute</span><span class="p">([</span><span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)],</span> <span class="n">along</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">dot</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span> <span class="k">for</span> <span class="n">dot</span> <span class="ow">in</span> <span class="n">dots</span><span class="p">]</span>
+<span class="go">[0.0, 5.0, 10.0]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.ops.frames">
+<span class="sig-name descname"><span class="pre">frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="geometry.html#svgwriter.transform.Point" title="svgwriter.transform.Point"><span class="pre">Point</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="geometry.html#svgwriter.transform.Point" title="svgwriter.transform.Point"><span class="pre">Point</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/ops/along.html#frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.frames" title="Link to this definition">¶</a></dt>
+<dd><p>Positions and unit tangents at <em>count</em> evenly spaced distances along the outline.</p>
+<p>An outline whose subpaths are all closed is split into <em>count</em> equal
+steps that do not repeat the start; an open one includes both ends.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.structure.Image.shape" title="svgwriter.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.pathdata.PathData" title="svgwriter.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to walk.</p></li>
+<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – How many places; at least 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>list of (Point, Point)</em> – Each position with the direction of travel there.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If <em>count</em> is below 1 or the outline has zero length.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.ops.sample" title="svgwriter.ops.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a></dt><dd><p>Just the positions.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">frames</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">frames</span><span class="p">(</span><span class="s2">"M0 0 L10 0"</span><span class="p">,</span> <span class="mi">2</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">(Point(x=10.0, y=0.0), Point(x=1.0, y=0.0))</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1019,6 +1162,111 @@ and <a class="reference internal" href="#svgwriter.ops.rasterize" title="svgwrit
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.ops.round_corners">
+<span class="sig-name descname"><span class="pre">round_corners</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CornerFilter</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Fillet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'arc'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="geometry.html#svgwriter.pathdata.PathData" title="svgwriter.pathdata.PathData"><span class="pre">PathData</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/ops/corners.html#round_corners"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.round_corners" title="Link to this definition">¶</a></dt>
+<dd><p>Replace sharp corners with fillets of <em>radius</em>.</p>
+<p>A fillet shrinks when its neighbours are too short for the radius (sharing
+a side with another fillet leaves each half of it), so the outline never
+overlaps itself. Fillets between straight sides are exact circular arcs;
+next to curves they are cubic curves that leave and join the curves
+smoothly, a fillet’s reach from the vertex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.structure.Image.shape" title="svgwriter.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.pathdata.PathData" title="svgwriter.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline.</p></li>
+<li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Fillet radius in user units.</p></li>
+<li><p><strong>where</strong> (<em>callable</em><em>, </em><em>iterable</em><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – Which corners: None for all, a predicate taking a <cite>Corner</cite>, or vertex
+numbers (<code class="docutils literal notranslate"><span class="pre">Corner.index</span></code>). Defaults to None.</p></li>
+<li><p><strong>fillet</strong> (<em>{&quot;arc&quot;</em><em>, </em><em>&quot;quad&quot;}</em><em>, </em><em>optional</em>) – Draw a circular arc, or a quadratic curve pulled towards the old vertex. Defaults to “arc”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>PathData</em> – The rounded outline.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If a listed vertex is not a corner.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.ops.corners" title="svgwriter.ops.corners"><code class="xref py py-obj docutils literal notranslate"><span class="pre">corners</span></code></a></dt><dd><p>Find the corners and their numbers.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">round_corners</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">round_corners</span><span class="p">(</span><span class="s2">"M0 0 H10 V10"</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">'M0 0 L8 0 A2 2 0 0 1 10 2 L10 10'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.ops.sample">
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="geometry.html#svgwriter.transform.Point" title="svgwriter.transform.Point"><span class="pre">Point</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/ops/along.html#sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.sample" title="Link to this definition">¶</a></dt>
+<dd><p><em>count</em> points evenly spaced by distance along the outline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.structure.Image.shape" title="svgwriter.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.pathdata.PathData" title="svgwriter.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to walk.</p></li>
+<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – How many points; at least 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>list of Point</em> – The points in drawing order; see <cite>frames</cite> for how closed outlines are split.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If <em>count</em> is below 1 or the outline has zero length.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">sample</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sample</span><span class="p">(</span><span class="s2">"M0 0 L10 0"</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">[Point(x=0.0, y=0.0), Point(x=5.0, y=0.0), Point(x=10.0, y=0.0)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">(</span><span class="s2">"M0 0 H10 V10 H0 Z"</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="go">4</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.ops.segment">
+<span class="sig-name descname"><span class="pre">segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="geometry.html#svgwriter.pathdata.PathData" title="svgwriter.pathdata.PathData"><span class="pre">PathData</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/ops/measure.html#segment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.segment" title="Link to this definition">¶</a></dt>
+<dd><p>The part of the outline between two distances from its start.</p>
+<p>Subpaths are walked in order, as for <a class="reference internal" href="#svgwriter.ops.total_length" title="svgwriter.ops.total_length"><code class="xref py py-func docutils literal notranslate"><span class="pre">total_length()</span></code></a>; a stretch that
+spans several subpaths keeps them as separate pieces.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> (<a class="reference internal" href="elements.html#svgwriter.elements.structure.Image.shape" title="svgwriter.elements.structure.Image.shape"><em>shape</em></a><em>, </em><em>text</em><em>, </em><a class="reference internal" href="geometry.html#svgwriter.pathdata.PathData" title="svgwriter.pathdata.PathData"><em>PathData</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The outline to cut.</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Distances from the start in user units, clamped to <code class="docutils literal notranslate"><span class="pre">0..total_length</span></code>.</p></li>
+<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Distances from the start in user units, clamped to <code class="docutils literal notranslate"><span class="pre">0..total_length</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>PathData</em> – The piece of the outline (lines, quadratics and cubics).</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If <em>end</em> comes before <em>start</em>.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.ops.point_at_length" title="svgwriter.ops.point_at_length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">point_at_length</span></code></a></dt><dd><p>One point instead of a stretch.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">segment</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">segment</span><span class="p">(</span><span class="s2">"M0 0 L10 0 L10 10"</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+<span class="go">'M5 0 L10 0 L10 5'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="svgwriter.ops.simplify">
 <span class="sig-name descname"><span class="pre">simplify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Geometry</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="geometry.html#svgwriter.pathdata.PathData" title="svgwriter.pathdata.PathData"><span class="pre">PathData</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/ops/boolean.html#simplify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.simplify" title="Link to this definition">¶</a></dt>
 <dd><p>Equivalent outline with no self-intersections or overlaps.</p>
@@ -1517,10 +1765,19 @@ converts.</p>
 <li><a class="reference internal" href="#svgwriter.ops.BooleanOp.XOR"><code class="docutils literal notranslate"><span class="pre">BooleanOp.XOR</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#svgwriter.ops.Corner"><code class="docutils literal notranslate"><span class="pre">Corner</span></code></a><ul>
+<li><a class="reference internal" href="#svgwriter.ops.Corner.index"><code class="docutils literal notranslate"><span class="pre">Corner.index</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.ops.Corner.point"><code class="docutils literal notranslate"><span class="pre">Corner.point</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.ops.Corner.angle"><code class="docutils literal notranslate"><span class="pre">Corner.angle</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#svgwriter.ops.bounds"><code class="docutils literal notranslate"><span class="pre">bounds()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.combine"><code class="docutils literal notranslate"><span class="pre">combine()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.composite_rgba"><code class="docutils literal notranslate"><span class="pre">composite_rgba()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.contains"><code class="docutils literal notranslate"><span class="pre">contains()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.ops.corners"><code class="docutils literal notranslate"><span class="pre">corners()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.ops.distribute"><code class="docutils literal notranslate"><span class="pre">distribute()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.ops.frames"><code class="docutils literal notranslate"><span class="pre">frames()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.difference"><code class="docutils literal notranslate"><span class="pre">difference()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.draw_graph"><code class="docutils literal notranslate"><span class="pre">draw_graph()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.from_skia"><code class="docutils literal notranslate"><span class="pre">from_skia()</span></code></a></li>
@@ -1535,6 +1792,9 @@ converts.</p>
 <li><a class="reference internal" href="#svgwriter.ops.register_interpolator"><code class="docutils literal notranslate"><span class="pre">register_interpolator()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.render_svg"><code class="docutils literal notranslate"><span class="pre">render_svg()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.resolve_operator"><code class="docutils literal notranslate"><span class="pre">resolve_operator()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.ops.round_corners"><code class="docutils literal notranslate"><span class="pre">round_corners()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.ops.sample"><code class="docutils literal notranslate"><span class="pre">sample()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.ops.segment"><code class="docutils literal notranslate"><span class="pre">segment()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.simplify"><code class="docutils literal notranslate"><span class="pre">simplify()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.render_frame"><code class="docutils literal notranslate"><span class="pre">render_frame()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.stroke_to_path"><code class="docutils literal notranslate"><span class="pre">stroke_to_path()</span></code></a></li>

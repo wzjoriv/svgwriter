@@ -294,6 +294,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">...pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathData</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...transform.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransformLike</span><span class="p">,</span> <span class="n">as_transform</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._along</span><span class="w"> </span><span class="kn">import</span> <span class="n">AlongPath</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._boolean</span><span class="w"> </span><span class="kn">import</span> <span class="n">BooleanOps</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">NOT_COPIED</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._measure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Measurement</span>
@@ -308,10 +309,11 @@
 
 <div class="viewcode-block" id="PathOperand">
 <a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.elements.PathOperand">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">PathOperand</span><span class="p">(</span><span class="n">BooleanOps</span><span class="p">,</span> <span class="n">Measurement</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PathOperand</span><span class="p">(</span><span class="n">BooleanOps</span><span class="p">,</span> <span class="n">Measurement</span><span class="p">,</span> <span class="n">AlongPath</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""An element with an outline.</span>
 
-<span class="sd">    Adds :meth:`to_path`, boolean operators and exact measurement:</span>
+<span class="sd">    Adds :meth:`to_path`, exact measurement, walking the outline (:meth:`at`,</span>
+<span class="sd">    :meth:`sample`, :meth:`between`, :meth:`round_corners`, ...) and boolean operators:</span>
 
 <span class="sd">    - ``a | b``: union</span>
 <span class="sd">    - ``a &amp; b``: intersection</span>
