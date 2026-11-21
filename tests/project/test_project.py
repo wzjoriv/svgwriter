@@ -81,6 +81,17 @@ class TestPresets:
         text = project.build(["svg"])[0].read_text(encoding="utf-8")
         assert "#123456" in text.lower()
 
+    def test_theme_applies_to_scenes_made_on_import(self, tmp_path: Path) -> None:
+        project = svg.Project.new(tmp_path / "swept")
+        (project.root / "theme.toml").write_text('extends = "dark"\n[roles.felt]\nfill = "#123456"\n', encoding="utf-8")
+        (project.root / "main.py").write_text(
+            "import svgwriter as svg\n"
+            "def page(doc, size=10):\n    doc.rect(0, 0, size, size).as_role('felt')\n"
+            "sweep = svg.sweep(page, size=(10, 20), dur=0.5, fps=4)\n"
+            "build = [page, sweep]\n", encoding="utf-8")
+        written = project.build(["svg"])
+        assert all("#123456" in path.read_text(encoding="utf-8").lower() for path in written)
+
     def test_fonts_are_registered(self, tmp_path: Path) -> None:
         from ..ops.test_fonts import _box_font
 
