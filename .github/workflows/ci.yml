@@ -41,6 +41,8 @@ jobs:
           pip install -e ".[test,dev]"
       - name: Lint
         run: ruff check --output-format github
+      - name: Element signatures match their attribute groups
+        run: python scripts/dev.py svgwriter signatures check
       - name: Stubs generate
         run: python scripts/dev.py stub generate
       - name: Notebooks match their scripts

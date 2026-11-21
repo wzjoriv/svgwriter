@@ -1,10 +1,11 @@
-"""svgwriter's own developer commands: the W3C SVG 1.1 test suite and conformance scores.
+"""svgwriter's own developer commands: the W3C SVG 1.1 test suite, conformance scores and generated code.
 
 python scripts/dev.py svgwriter fetch-suite
 python scripts/dev.py svgwriter conformance [--filter shapes] [--report build/conformance.md]
 python scripts/dev.py svgwriter bench [--count 100000]
 python scripts/dev.py svgwriter gallery
 python scripts/dev.py svgwriter formats [--format pdf --format tikz] [--out build/formats]
+python scripts/dev.py svgwriter signatures write|check
 """
 
 from __future__ import annotations
@@ -77,3 +78,23 @@ def formats(format: list[str] = typer.Option([], help="Exporter names; every exp
     for path in write_report(reference, results, out):
         typer.echo(f"wrote {path}")
     typer.echo((out / "scores.md").read_text(encoding="utf-8"))
+
+
+@app.command()
+def signatures(action: str = typer.Argument(..., help="write: regenerate; check: fail when stale.")) -> None:
+    """Generate every element class's typed __init__ from its attribute groups, or check the generated code is current."""
+    from ._signatures import check, write
+
+    if action == "write":
+        for path in write():
+            typer.echo(f"wrote {path.relative_to(Path.cwd()) if path.is_relative_to(Path.cwd()) else path}")
+    elif action == "check":
+        stale = check()
+        for path in stale:
+            typer.echo(f"stale: {path}", err=True)
+        if stale:
+            typer.echo("run: python scripts/dev.py svgwriter signatures write", err=True)
+            raise typer.Exit(1)
+        typer.echo("element signatures are current")
+    else:
+        raise typer.BadParameter("use write or check", param_hint="ACTION")

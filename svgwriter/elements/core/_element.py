@@ -17,6 +17,7 @@ from ._constants import INSTANCE_FIELDS, OPEN_PREFIXES
 from ._construct import Construction
 from ._display import Displayable
 from ._errors import UnknownAttributeError, UnknownKeywordError
+from ._forward import forward_common
 from ._query import Queryable
 from ._tree import TreeEditing
 
@@ -84,6 +85,7 @@ class Element(Construction, AttributeAccess, TreeEditing, Queryable, Displayable
     category: ClassVar[Category] = Category.OTHER
     content: ClassVar[ContentModel] = ContentModel.ELEMENTS
     _registry: ClassVar[dict[str, type[Element]]] = {}
+    _forward_common = staticmethod(forward_common)
 
     def __init_subclass__(
         cls,
