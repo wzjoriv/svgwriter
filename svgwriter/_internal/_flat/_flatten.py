@@ -271,7 +271,8 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
     >>> len(scene.items), scene.skipped
     (1, [])
     """
-    from ...attributes.cascade import computed, rules_of
+    from ...attributes.cascade import computed
+    from ...attributes.rules import rules_of
     from ...elements import Image, PathOperand
     from ...ops.render import page_size
     from .._render._layers import ancestry, drawable_order, image_matrix

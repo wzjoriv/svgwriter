@@ -9,7 +9,7 @@ from contextlib import contextmanager
 from contextvars import ContextVar
 from typing import Any, ClassVar, Literal, overload
 
-from ..attributes.cascade import frozen_rules
+from ..attributes.rules import frozen_rules
 from ..elements import Group, Rect, Use
 from ..elements.core import Child, Element
 from ..pathdata.data import BBox, PathData
