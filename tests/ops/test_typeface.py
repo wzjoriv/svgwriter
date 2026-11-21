@@ -272,7 +272,7 @@ def test_css_can_reference_instead_of_embed(family):
 
 
 def test_unknown_installed_family_suggests_close_names(monkeypatch: pytest.MonkeyPatch):
-    from svgwriter.ops import _sources
+    from svgwriter.ops._text import _sources
 
     monkeypatch.setattr(_sources, "_installed_families", lambda: ("Gill Sans", "Georgia", "Helvetica"))
     with pytest.raises(LookupError, match="did you mean 'Georgia'"):

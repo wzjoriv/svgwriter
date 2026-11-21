@@ -15,8 +15,8 @@ from .._internal._typography._font_constants import (
 )
 from .._internal._typography._font_match import FontStyle, match_rank, style_of
 from ._constants import DEFAULT_FONT_SIZE
-from ._faces import Face, FaceMetrics, css_family
-from ._sources import FontSource, family_of, installed_faces, load, load_face
+from ._text._faces import Face, FaceMetrics, css_family
+from ._text._sources import FontSource, family_of, installed_faces, load, load_face
 from .text import register_font
 
 __all__ = ["Face", "FaceMetrics", "FontSource", "Typeface", "known_typefaces"]

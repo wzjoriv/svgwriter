@@ -13,16 +13,16 @@ from typing import Any
 
 import skia
 
-from .._internal._typography._font_constants import (
+from ..._internal._typography._font_constants import (
     AXIS_WEIGHT,
     FONT_MIME,
     REGULAR_SUBFAMILY,
     STANDALONE_SUFFIXES,
 )
-from .._internal._typography._font_match import FaceStyle, FontStyle, Range, axis_tag
-from .._internal._typography._font_names import face_count
-from .._internal._typography._sfnt import font_format, sfnt_bytes
-from ._constants import DEFAULT_FONT_SIZE, FAMILY_IDENTIFIER
+from ..._internal._typography._font_match import FaceStyle, FontStyle, Range, axis_tag
+from ..._internal._typography._font_names import face_count
+from ..._internal._typography._sfnt import font_format, sfnt_bytes
+from .._constants import DEFAULT_FONT_SIZE, FAMILY_IDENTIFIER
 
 __all__ = ["Face", "FaceMetrics", "css_family"]
 
@@ -286,7 +286,7 @@ class Face:
         >>> face.measure("WW", 20) > face.measure("ii", 20)
         True
         """
-        from .text import text_width
+        from ..text import text_width
 
         weight = self.axes[AXIS_WEIGHT][1] if AXIS_WEIGHT in self.axes and self.weight[0] != self.weight[1] \
             else self.weight[0]

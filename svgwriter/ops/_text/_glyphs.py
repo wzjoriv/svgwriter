@@ -8,16 +8,16 @@ from collections.abc import Sequence
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Any
 
-from .._internal._constants import ANCHOR_SHIFT
-from .._internal._typography._fonts import resolve_font
-from ..pathdata.data import PathData
-from ..transform.matrix import Matrix
-from ._constants import DEFAULT_FAMILY, DEFAULT_FONT_SIZE
-from ._skia import from_skia
+from ..._internal._constants import ANCHOR_SHIFT
+from ..._internal._typography._fonts import resolve_font
+from ...pathdata.data import PathData
+from ...transform.matrix import Matrix
+from .._constants import DEFAULT_FAMILY, DEFAULT_FONT_SIZE
+from .._skia import from_skia
 
 if TYPE_CHECKING:
-    from .._internal._typography._shaping import ColorGlyphs
-    from .text import Anchor, FontWeight
+    from ..._internal._typography._shaping import ColorGlyphs
+    from ..text import Anchor, FontWeight
 
 __all__ = ["GlyphBox", "layout_glyphs"]
 
