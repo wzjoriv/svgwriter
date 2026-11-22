@@ -840,6 +840,38 @@ children’s transforms (<code class="docutils literal notranslate"><span class=
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.model.layout.settled">
+<span class="sig-name descname"><span class="pre">settled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.model.elements.Element" title="svgwriter.model.elements.core._element.Element"><span class="pre">Element</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.15)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/model/layout/_frame.html#settled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.layout.settled" title="Link to this definition">¶</a></dt>
+<dd><p>Arrange every layout group under <em>root</em> and keep that arrangement for the block.</p>
+<p>Measuring inside the block (output asks each group for its box while writing) reuses the
+arrangement instead of laying the tree out again, so the tree must not change inside it.
+Joins an enclosing block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>root</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.Element" title="svgwriter.model.elements.Element"><em>Element</em></a>) – The tree to arrange.</p>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>None</em></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.model.layout.settle" title="svgwriter.model.layout.settle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settle</span></code></a></dt><dd><p>Arrange once, without holding the arrangement.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stack</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">VStack</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">gap</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">svg</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">settled</span><span class="p">(</span><span class="n">stack</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">stack</span><span class="o">.</span><span class="n">bounds</span><span class="p">()</span><span class="o">.</span><span class="n">height</span>
+<span class="go">25.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
         </article>
@@ -941,6 +973,7 @@ children’s transforms (<code class="docutils literal notranslate"><span class=
 </ul>
 </li>
 <li><a class="reference internal" href="#svgwriter.model.layout.settle"><code class="docutils literal notranslate"><span class="pre">settle()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.model.layout.settled"><code class="docutils literal notranslate"><span class="pre">settled()</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -304,21 +304,34 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Iterable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">contextvars</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContextVar</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">AT_BLOCK_RE</span><span class="p">,</span> <span class="n">COMMENT_RE</span><span class="p">,</span> <span class="n">IMPORTANT</span><span class="p">,</span> <span class="n">ROOT_RULES</span><span class="p">,</span> <span class="n">RULE_RE</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._selectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">specificity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AT_BLOCK_RE</span><span class="p">,</span>
+    <span class="n">CLASS_KEY</span><span class="p">,</span>
+    <span class="n">COMMENT_RE</span><span class="p">,</span>
+    <span class="n">ID_KEY</span><span class="p">,</span>
+    <span class="n">IMPORTANT</span><span class="p">,</span>
+    <span class="n">ROOT_RULES</span><span class="p">,</span>
+    <span class="n">RULE_RE</span><span class="p">,</span>
+    <span class="n">RULE_SET_CACHE_SIZE</span><span class="p">,</span>
+    <span class="n">SHEET_CACHE_SIZE</span><span class="p">,</span>
+    <span class="n">TAG_KEY</span><span class="p">,</span>
+    <span class="n">UNIVERSAL_KEY</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._selectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">Selector</span><span class="p">,</span> <span class="n">compile_selector</span><span class="p">,</span> <span class="n">specificity</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Rule"</span><span class="p">,</span> <span class="s2">"frozen_rules"</span><span class="p">,</span> <span class="s2">"parse_css"</span><span class="p">,</span> <span class="s2">"rules_of"</span><span class="p">,</span> <span class="s2">"set_class_rules"</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Rule"</span><span class="p">,</span> <span class="s2">"RuleSet"</span><span class="p">,</span> <span class="s2">"frozen_rules"</span><span class="p">,</span> <span class="s2">"parse_css"</span><span class="p">,</span> <span class="s2">"rule_set"</span><span class="p">,</span> <span class="s2">"rules_of"</span><span class="p">,</span> <span class="s2">"set_class_rules"</span><span class="p">]</span>
 
-<span class="n">_FROZEN</span><span class="p">:</span> <span class="n">ContextVar</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">"svgwriter_frozen_rules"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">_FROZEN</span><span class="p">:</span> <span class="n">ContextVar</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">RuleSet</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">"svgwriter_frozen_rules"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Rule">
@@ -387,6 +400,12 @@
 <span class="sd">    &gt;&gt;&gt; [r.selector for r in parse_css("rect, .a { fill: red } /* x */ #b{stroke:blue}")]</span>
 <span class="sd">    ['rect', '.a', '#b']</span>
 <span class="sd">    """</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">_parse_css</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">start</span><span class="p">))</span></div>
+
+
+
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="n">SHEET_CACHE_SIZE</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_css</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Rule</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
     <span class="n">text</span> <span class="o">=</span> <span class="n">AT_BLOCK_RE</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="n">COMMENT_RE</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="n">text</span><span class="p">))</span>
     <span class="n">rules</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">selectors</span><span class="p">,</span> <span class="n">body</span> <span class="ow">in</span> <span class="n">RULE_RE</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
@@ -404,7 +423,123 @@
             <span class="n">selector</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">selector</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
             <span class="k">if</span> <span class="n">selector</span><span class="p">:</span>
                 <span class="n">rules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Rule</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="n">specificity</span><span class="p">(</span><span class="n">selector</span><span class="p">),</span> <span class="n">start</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">rules</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">declarations</span><span class="p">)))</span>
-    <span class="k">return</span> <span class="n">rules</span></div>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
+
+
+<span class="n">Candidate</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Rule</span><span class="p">,</span> <span class="n">Selector</span><span class="p">]</span>
+<span class="sd">"""A rule with its position in its set and its compiled selector."""</span>
+
+
+<div class="viewcode-block" id="RuleSet">
+<a class="viewcode-back" href="../../../../reference/attributes.html#svgwriter.model.attributes.rules.RuleSet">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RuleSet</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">"""Rules in cascade order, indexed by the rightmost compound selector of each, as browsers do.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rules : iterable of Rule</span>
+<span class="sd">        The rules, in the order ties are broken.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    buckets : dict</span>
+<span class="sd">        Candidates by ``(kind, name)``: the rightmost compound's id, first class or tag, else universal.</span>
+<span class="sd">    attribute_names : tuple of str</span>
+<span class="sd">        Every attribute an attribute selector of the set tests.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    rule_set : The shared set for some rules.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from svgwriter.model.attributes.rules import RuleSet, parse_css</span>
+<span class="sd">    &gt;&gt;&gt; rules = RuleSet(parse_css("rect { fill: red } .a &gt; .b { fill: blue } :hover { fill: none }"))</span>
+<span class="sd">    &gt;&gt;&gt; sorted(rules.buckets)</span>
+<span class="sd">    [('.', 'b'), ('tag', 'rect')]</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Rule</span><span class="p">]</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buckets</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">Candidate</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">names</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">rule</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">selector</span> <span class="o">=</span> <span class="n">compile_selector</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">selector</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">selector</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">buckets</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">selector</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">position</span><span class="p">,</span> <span class="n">rule</span><span class="p">,</span> <span class="n">selector</span><span class="p">))</span>
+            <span class="n">names</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">name</span> <span class="k">for</span> <span class="n">compound</span> <span class="ow">in</span> <span class="n">selector</span><span class="o">.</span><span class="n">compounds</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">compound</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attribute_names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
+
+<div class="viewcode-block" id="RuleSet.candidates">
+<a class="viewcode-back" href="../../../../reference/attributes.html#svgwriter.model.attributes.rules.RuleSet.candidates">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">candidates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ident</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">classes</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Candidate</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""The rules that can match an element, by its tag, id and classes, in set order.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tag : str</span>
+<span class="sd">            The element's tag.</span>
+<span class="sd">        ident : str or None</span>
+<span class="sd">            Its id.</span>
+<span class="sd">        classes : iterable of str</span>
+<span class="sd">            Its distinct class names.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of Candidate</span>
+<span class="sd">            ``(position, rule, selector)`` triples, by position.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from svgwriter.model.attributes.rules import RuleSet, parse_css</span>
+<span class="sd">        &gt;&gt;&gt; rules = RuleSet(parse_css("rect { fill: red } .a { fill: blue } #x { fill: none }"))</span>
+<span class="sd">        &gt;&gt;&gt; [rule.selector for _, rule, _ in rules.candidates("rect", None, ["a"])]</span>
+<span class="sd">        ['rect', '.a']</span>
+<span class="sd">        """</span>
+        <span class="n">buckets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buckets</span>
+        <span class="n">found</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Candidate</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">((</span><span class="n">TAG_KEY</span><span class="p">,</span> <span class="n">tag</span><span class="p">),</span> <span class="p">(</span><span class="n">UNIVERSAL_KEY</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span> <span class="o">*</span><span class="p">((</span><span class="n">CLASS_KEY</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">classes</span><span class="p">)):</span>
+            <span class="n">found</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">buckets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">()))</span>
+        <span class="k">if</span> <span class="n">ident</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">found</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">buckets</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">ID_KEY</span><span class="p">,</span> <span class="n">ident</span><span class="p">),</span> <span class="p">()))</span>
+        <span class="n">found</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">_position</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">found</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_position</span><span class="p">(</span><span class="n">candidate</span><span class="p">:</span> <span class="n">Candidate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">candidate</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="n">RULE_SET_CACHE_SIZE</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_shared</span><span class="p">(</span><span class="n">rules</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Rule</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">RuleSet</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">RuleSet</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="rule_set">
+<a class="viewcode-back" href="../../../../reference/attributes.html#svgwriter.model.attributes.rules.rule_set">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rule_set</span><span class="p">(</span><span class="n">rules</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Rule</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">RuleSet</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The shared, indexed set for some rules: equal rules give the same set, so per-element memos stay valid.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rules : iterable of Rule</span>
+<span class="sd">        The rules, in cascade order; a `RuleSet` is returned as is.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    RuleSet</span>
+<span class="sd">        The indexed rules.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from svgwriter.model.attributes.rules import parse_css, rule_set</span>
+<span class="sd">    &gt;&gt;&gt; rule_set(parse_css(".a { fill: red }")) is rule_set(parse_css(".a { fill: red }"))</span>
+<span class="sd">    True</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">rules</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rules</span><span class="p">,</span> <span class="n">RuleSet</span><span class="p">)</span> <span class="k">else</span> <span class="n">_shared</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">rules</span><span class="p">))</span></div>
 
 
 
@@ -442,7 +577,7 @@
 
 <div class="viewcode-block" id="rules_of">
 <a class="viewcode-back" href="../../../../reference/attributes.html#svgwriter.model.attributes.rules.rules_of">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">rules_of</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">rules_of</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RuleSet</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Collect the rules of every ``&lt;style&gt;`` element under an element.</span>
 
 <span class="sd">    Rules a document attaches to its root by class name (its theme's role styles) come first, for the</span>
@@ -455,8 +590,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    list of Rule</span>
-<span class="sd">        The rules in document order, numbered consecutively.</span>
+<span class="sd">    RuleSet</span>
+<span class="sd">        The rules in document order, indexed; equal rules give the same shared set.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -483,10 +618,11 @@
             <span class="n">used</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
     <span class="n">rules</span> <span class="o">=</span> <span class="p">[</span><span class="n">rule</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">used</span> <span class="o">&amp;</span> <span class="n">by_class</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">by_class</span><span class="p">[</span><span class="n">name</span><span class="p">]]</span>
     <span class="k">for</span> <span class="n">css</span> <span class="ow">in</span> <span class="n">sheets</span><span class="p">:</span>
-        <span class="n">rules</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parse_css</span><span class="p">(</span><span class="n">css</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">rules</span><span class="p">)))</span>
+        <span class="n">rules</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_parse_css</span><span class="p">(</span><span class="n">css</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rules</span><span class="p">)))</span>
+    <span class="n">shared</span> <span class="o">=</span> <span class="n">rule_set</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">cache</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">cache</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">root</span><span class="p">)]</span> <span class="o">=</span> <span class="n">rules</span>
-    <span class="k">return</span> <span class="n">rules</span></div>
+        <span class="n">cache</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">root</span><span class="p">)]</span> <span class="o">=</span> <span class="n">shared</span>
+    <span class="k">return</span> <span class="n">shared</span></div>
 
 
 

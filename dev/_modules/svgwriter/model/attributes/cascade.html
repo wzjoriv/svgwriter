@@ -304,16 +304,21 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Final</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">CSS_DIMENSION_RE</span><span class="p">,</span>
+    <span class="n">INLINE_CACHE_SIZE</span><span class="p">,</span>
     <span class="n">MARKER_LONGHANDS</span><span class="p">,</span>
     <span class="n">ROOT_RULES</span><span class="p">,</span>
+    <span class="n">STYLE_MEMO</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._selectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">matches_from</span><span class="p">,</span> <span class="n">split_selector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._selectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">compile_selector</span><span class="p">,</span> <span class="n">matches_selector</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.names</span><span class="w"> </span><span class="kn">import</span> <span class="n">PRESENTATION_ATTRIBUTES</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rule</span><span class="p">,</span> <span class="n">rules_of</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rule</span><span class="p">,</span> <span class="n">RuleSet</span><span class="p">,</span> <span class="n">rule_set</span><span class="p">,</span> <span class="n">rules_of</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.style</span><span class="w"> </span><span class="kn">import</span> <span class="n">Style</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
@@ -364,14 +369,13 @@
 <span class="sd">    &gt;&gt;&gt; matches(rect, ".other rect")</span>
 <span class="sd">    False</span>
 <span class="sd">    """</span>
-    <span class="n">parts</span> <span class="o">=</span> <span class="n">split_selector</span><span class="p">(</span><span class="n">selector</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="ow">and</span> <span class="n">matches_from</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">parts</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">matches_selector</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">compile_selector</span><span class="p">(</span><span class="n">selector</span><span class="p">))</span></div>
 
 
 
 <div class="viewcode-block" id="css_declarations">
 <a class="viewcode-back" href="../../../../reference/attributes.html#svgwriter.model.attributes.cascade.css_declarations">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">css_declarations</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">css_declarations</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Rule</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Return the declarations from style rules that apply to an element.</span>
 
 <span class="sd">    Conflicts are resolved by ``!important``, then specificity, then source order.</span>
@@ -380,7 +384,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    element : Element</span>
 <span class="sd">        The element to style.</span>
-<span class="sd">    rules : list of Rule</span>
+<span class="sd">    rules : iterable of Rule</span>
 <span class="sd">        Candidate rules, as from `rules_of`.</span>
 
 <span class="sd">    Returns</span>
@@ -398,31 +402,63 @@
 <span class="sd">    &gt;&gt;&gt; css_declarations(rect, rules)</span>
 <span class="sd">    {'fill': 'blue'}</span>
 <span class="sd">    """</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">_declarations</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">rule_set</span><span class="p">(</span><span class="n">rules</span><span class="p">)))</span></div>
+
+
+
+<span class="n">_NONE</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_declarations</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="n">RuleSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""The matched declarations, shared and read-only; memoised on the element while nothing they depend on changes."""</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">rules</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_NONE</span>
+    <span class="n">attributes</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">attributes</span>
+    <span class="n">ident</span> <span class="o">=</span> <span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span>
+    <span class="n">ident</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">ident</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">ident</span><span class="p">)</span>
+    <span class="n">classes</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="n">_text</span><span class="p">(</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">))</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">rules</span><span class="o">.</span><span class="n">attribute_names</span><span class="p">))</span>
+    <span class="n">memo</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">STYLE_MEMO</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">memo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">memo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="n">rules</span> <span class="ow">and</span> <span class="n">memo</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">memo</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># type: ignore[no-any-return]</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="n">rules</span><span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">classes</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
     <span class="n">winners</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">matches</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">rule</span><span class="o">.</span><span class="n">selector</span><span class="p">):</span>
+    <span class="n">local</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">rule</span><span class="p">,</span> <span class="n">selector</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+        <span class="n">local</span> <span class="o">=</span> <span class="n">local</span> <span class="ow">and</span> <span class="n">selector</span><span class="o">.</span><span class="n">local</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">matches_selector</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">selector</span><span class="p">):</span>
             <span class="k">continue</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">important</span> <span class="ow">in</span> <span class="n">rule</span><span class="o">.</span><span class="n">declarations</span><span class="p">:</span>
             <span class="n">rank</span> <span class="o">=</span> <span class="p">(</span><span class="n">important</span><span class="p">,</span> <span class="n">rule</span><span class="o">.</span><span class="n">specificity</span><span class="p">,</span> <span class="n">rule</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">winners</span> <span class="ow">or</span> <span class="n">rank</span> <span class="o">&gt;=</span> <span class="n">winners</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="n">winners</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">winners</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
+    <span class="n">found</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">winners</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">if</span> <span class="n">local</span><span class="p">:</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">STYLE_MEMO</span><span class="p">,</span> <span class="p">(</span><span class="n">rules</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">found</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">found</span>
 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_text</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_inline</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="n">raw</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"style"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">raw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="n">_NONE</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="s2">"items"</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">raw</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span>
-            <span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">";"</span><span class="p">))</span> <span class="k">if</span> <span class="n">sep</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">_parse_inline</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">raw</span><span class="p">))</span>
+
+
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="n">INLINE_CACHE_SIZE</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_inline</span><span class="p">(</span><span class="n">raw</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">raw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">";"</span><span class="p">))</span> <span class="k">if</span> <span class="n">sep</span><span class="p">}</span>
 
 
 <div class="viewcode-block" id="specified">
 <a class="viewcode-back" href="../../../../reference/attributes.html#svgwriter.model.attributes.cascade.specified">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">specified</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">specified</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Rule</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Return the value set directly on an element.</span>
 
 <span class="sd">    Looks at the inline ``style`` first, then matching style rules, then the</span>
@@ -434,7 +470,7 @@
 <span class="sd">        The element to inspect.</span>
 <span class="sd">    name : str</span>
 <span class="sd">        CSS property name, such as ``"fill"``.</span>
-<span class="sd">    rules : list of Rule, optional</span>
+<span class="sd">    rules : iterable of Rule, optional</span>
 <span class="sd">        Style rules to consult; collected from the element's document when omitted. Defaults to None.</span>
 
 <span class="sd">    Returns</span>
@@ -455,12 +491,17 @@
 <span class="sd">    &gt;&gt;&gt; specified(svg.Rect(0, 0, 1, 1), "fill") is None</span>
 <span class="sd">    True</span>
 <span class="sd">    """</span>
-    <span class="n">inline</span> <span class="o">=</span> <span class="n">_inline</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">inline</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">inline</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"style"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">Style</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">"_"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">raw</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">raw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">inline</span> <span class="o">=</span> <span class="n">_inline</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">inline</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">inline</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">rules</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">rules</span> <span class="o">=</span> <span class="n">rules_of</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">root</span><span class="p">())</span>
-    <span class="n">sheet</span> <span class="o">=</span> <span class="n">css_declarations</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span> <span class="k">if</span> <span class="n">rules</span> <span class="k">else</span> <span class="p">{}</span>
+    <span class="n">sheet</span> <span class="o">=</span> <span class="n">_declarations</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">rule_set</span><span class="p">(</span><span class="n">rules</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">sheet</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">sheet</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">element</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
@@ -469,7 +510,7 @@
 
 <div class="viewcode-block" id="computed">
 <a class="viewcode-back" href="../../../../reference/attributes.html#svgwriter.model.attributes.cascade.computed">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">computed</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">computed</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Rule</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Return the computed value of a property.</span>
 
 <span class="sd">    The value is the one specified on the element, else inherited from the</span>
@@ -484,7 +525,7 @@
 <span class="sd">        CSS property name, such as ``"fill"``.</span>
 <span class="sd">    default : object, optional</span>
 <span class="sd">        Returned when no value applies. Defaults to None.</span>
-<span class="sd">    rules : list of Rule, optional</span>
+<span class="sd">    rules : iterable of Rule, optional</span>
 <span class="sd">        Style rules to consult; collected from the element's document when omitted. Defaults to None.</span>
 
 <span class="sd">    Returns</span>
@@ -507,8 +548,7 @@
 <span class="sd">    &gt;&gt;&gt; computed(rect, "opacity", "1")</span>
 <span class="sd">    '1'</span>
 <span class="sd">    """</span>
-    <span class="k">if</span> <span class="n">rules</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">rules</span> <span class="o">=</span> <span class="n">rules_of</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">root</span><span class="p">())</span>
+    <span class="n">rules</span> <span class="o">=</span> <span class="n">rules_of</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">root</span><span class="p">())</span> <span class="k">if</span> <span class="n">rules</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">rule_set</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
     <span class="n">node</span><span class="p">:</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">element</span>
     <span class="k">while</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">specified</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span>
@@ -549,8 +589,7 @@
 <span class="sd">    """</span>
     <span class="n">rules</span> <span class="o">=</span> <span class="n">rules_of</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">():</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="n">css_declarations</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span> <span class="k">if</span> <span class="n">rules</span> <span class="k">else</span> <span class="p">{}</span>
-        <span class="n">values</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_inline</span><span class="p">(</span><span class="n">element</span><span class="p">))</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">_declarations</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">rules</span><span class="p">),</span> <span class="o">**</span><span class="n">_inline</span><span class="p">(</span><span class="n">element</span><span class="p">)}</span>
         <span class="k">if</span> <span class="s2">"marker"</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
             <span class="n">shorthand</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"marker"</span><span class="p">)</span>
             <span class="n">values</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">MARKER_LONGHANDS</span><span class="p">,</span> <span class="n">shorthand</span><span class="p">),</span> <span class="o">**</span><span class="n">values</span><span class="p">}</span>

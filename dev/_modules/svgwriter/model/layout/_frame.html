@@ -316,9 +316,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..transform.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">TOLERANCE</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._lengths</span><span class="w"> </span><span class="kn">import</span> <span class="n">Edges</span><span class="p">,</span> <span class="n">LayoutLength</span><span class="p">,</span> <span class="n">PaddingLike</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">resolve</span><span class="p">,</span> <span class="n">user_scale</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._measure</span><span class="w"> </span><span class="kn">import</span> <span class="n">extent</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="n">resizable</span><span class="p">,</span> <span class="n">resize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._measure</span><span class="w"> </span><span class="kn">import</span> <span class="n">extent</span><span class="p">,</span> <span class="n">measuring</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="n">resizable</span><span class="p">,</span> <span class="n">resize</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Frame"</span><span class="p">,</span> <span class="s2">"settle"</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Frame"</span><span class="p">,</span> <span class="s2">"settle"</span><span class="p">,</span> <span class="s2">"settled"</span><span class="p">]</span>
 
 <span class="n">_DONE</span><span class="p">:</span> <span class="n">ContextVar</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">"svgwriter_layout_pass"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
@@ -332,7 +332,7 @@
         <span class="k">return</span>
     <span class="n">token</span> <span class="o">=</span> <span class="n">_DONE</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">set</span><span class="p">())</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">frozen_rules</span><span class="p">():</span>
+        <span class="k">with</span> <span class="n">frozen_rules</span><span class="p">(),</span> <span class="n">measuring</span><span class="p">():</span>
             <span class="k">yield</span> <span class="n">_DONE</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>  <span class="c1"># type: ignore[misc]</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="n">_DONE</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
@@ -367,6 +367,44 @@
         <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">Frame</span><span class="p">):</span>
                 <span class="n">element</span><span class="o">.</span><span class="n">arrange</span><span class="p">()</span></div>
+
+
+
+
+<div class="viewcode-block" id="settled">
+<a class="viewcode-back" href="../../../../reference/layout.html#svgwriter.model.layout.settled">[docs]</a>
+<span class="nd">@contextmanager</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">settled</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Arrange every layout group under *root* and keep that arrangement for the block.</span>
+
+<span class="sd">    Measuring inside the block (output asks each group for its box while writing) reuses the</span>
+<span class="sd">    arrangement instead of laying the tree out again, so the tree must not change inside it.</span>
+<span class="sd">    Joins an enclosing block.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    root : Element</span>
+<span class="sd">        The tree to arrange.</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    settle : Arrange once, without holding the arrangement.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">    &gt;&gt;&gt; stack = svg.VStack(svg.rect(0, 0, 10, 10), svg.rect(0, 0, 10, 10), gap=5)</span>
+<span class="sd">    &gt;&gt;&gt; with svg.layout.settled(stack):</span>
+<span class="sd">    ...     stack.bounds().height</span>
+<span class="sd">    25.0</span>
+<span class="sd">    """</span>
+    <span class="k">with</span> <span class="n">_layout_pass</span><span class="p">():</span>
+        <span class="n">settle</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="k">yield</span></div>
 
 
 
