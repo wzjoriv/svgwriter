@@ -9,7 +9,7 @@ def styled(css: str) -> tuple[svg.Svg, svg.Group, svg.Rect]:
     root = svg.Svg()
     root.append(svg.StyleElement(css))
     group = root.append(svg.Group(class_="box"))
-    rect = group.append(svg.Rect(class_="a"))
+    rect = group.append(svg.Rect(0, 0, 1, 1, class_="a"))
     return root, group, rect
 
 
@@ -69,7 +69,7 @@ class TestInvalidation:
 
     def test_class_rules_change(self) -> None:
         root = svg.Svg()
-        rect = root.append(svg.Rect(class_="a"))
+        rect = root.append(svg.Rect(0, 0, 1, 1, class_="a"))
         set_class_rules(root, {"a": parse_css(".a { fill: red }")})
         assert computed(rect, "fill") == "red"
         set_class_rules(root, {"a": parse_css(".a { fill: blue }")})
