@@ -38,9 +38,9 @@ class Workshop(svg.Scene):
 
     def build(self, doc: svg.Document) -> None:
         doc.rect(0, 0, self.width, self.height, fill=PAPER)
-        big = doc.add(svg.preset.get("shape", "gear")(110, 90, 50, fill=STEEL))
+        big = doc.add(svg.preset.shape.get("gear")(110, 90, 50, fill=STEEL))
         big.animate.turn(speed=90)
-        small = doc.add(svg.preset.get("shape", "gear")(185, 72, 28, fill=STEEL))
+        small = doc.add(svg.preset.shape.get("gear")(185, 72, 28, fill=STEEL))
         small.animate.turn(speed=-160)
         self.sign = self.attach(doc.rect(244, 40, 32, 32, rx=6, fill=BRASS), wiggle, angle=12, period=0.4)
         self.counter = doc.text("0", x=260, y=140, font_size=28, fill=INK, text_anchor="middle")

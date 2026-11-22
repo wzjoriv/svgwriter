@@ -102,13 +102,13 @@ class RangeEffects:
         return isolate(self.text, self.start, self.stop)
 
     def effect(self, name: str, /, **options: Any) -> Text:
-        """Apply the text effect registered as *name* to these characters only.
+        """Apply the effect registered as *name* to these characters only.
 
         Parameters
         ----------
         name : str
-            A text effect: ``"fire"``, ``"ice"``, ``"smoke"``, ``"metal"``, ``"wind"``, ``"snow"``,
-            ``"neon"``, ``"glitch"`` or one registered with :func:`svgwriter.catalog.preset.text_effect`.
+            An effect: ``"fire"``, ``"ice"``, ``"smoke"``, ``"metal"``, ``"wind"``, ``"snow"``,
+            ``"neon"``, ``"glitch"`` or one registered with :data:`svgwriter.preset.effect`.
         **options
             The effect's options.
 
@@ -119,12 +119,12 @@ class RangeEffects:
 
         Raises
         ------
-        KeyError
+        UnknownNameError
             If no effect has that name; the message suggests the closest names.
 
         See Also
         --------
-        svgwriter.catalog.text_effects : The built-in effects.
+        svgwriter.catalog.effects : The built-in effects.
 
         Examples
         --------
@@ -135,6 +135,6 @@ class RangeEffects:
         >>> layer.get("filter") is not None
         True
         """
-        from ...._internal._presets import TEXT_EFFECTS
+        from ...._internal._presets import EFFECTS
 
-        return TEXT_EFFECTS.get(name)(self, **options)
+        return EFFECTS.get(name)(self, **options)  # type: ignore[no-any-return]

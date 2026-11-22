@@ -32,7 +32,7 @@ def _deck(build) -> bytes:
 
 
 def _read(data: bytes) -> list:
-    back = svg.export.find_importer("pptx").function(data, slide=0)
+    back = svg.formats.reader("pptx").read(data, slide=0)
     return [smil for smil in back.root.iter() if smil.tag in ("animate", "set", "animateTransform", "animateMotion")]
 
 

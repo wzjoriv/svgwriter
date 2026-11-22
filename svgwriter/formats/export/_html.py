@@ -9,8 +9,8 @@ import json
 from collections.abc import Mapping
 from typing import TYPE_CHECKING
 
+from .._format import Format
 from ._constants import PAGE, SCRIPT, SVG_RE
-from ._registry import register, register_importer
 
 if TYPE_CHECKING:
     from ...document import Document
@@ -18,7 +18,6 @@ if TYPE_CHECKING:
 __all__ = ["html_page", "read_html"]
 
 
-@register("html", extensions=(".html", ".htm"), binary=False)
 def html_page(document: Document, *, title: str | None = None, background: str = "white", css: str = "",
               handlers: Mapping[str, Mapping[str, str]] | None = None) -> str:
     """A standalone HTML page showing the drawing as inline SVG.
@@ -74,7 +73,6 @@ def html_page(document: Document, *, title: str | None = None, background: str =
                        svg=document.to_string(xml_declaration=False), script=script)
 
 
-@register_importer("html", extensions=(".html", ".htm"))
 def read_html(data: bytes) -> Document:
     """The first inline ``<svg>`` of an HTML page as a document.
 
@@ -110,3 +108,8 @@ def read_html(data: bytes) -> Document:
     if "xmlns=" not in markup.split(">", 1)[0]:
         markup = markup.replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg"', 1)
     return Document.from_string(markup)
+
+
+class HtmlFormat(Format, name="html", extensions=(".html", ".htm"), binary=False):
+    write = staticmethod(html_page)
+    read = staticmethod(read_html)

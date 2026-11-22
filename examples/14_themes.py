@@ -67,7 +67,7 @@ COLUMNS, GAP, SCALE = 4, 12, 2
 
 def sheet(names: list[str] | None = None) -> svg.Document:
     """One card per theme in a grid, in registration order."""
-    names = names or svg.THEMES.names()
+    names = names or svg.themes.list()
     rows = -(-len(names) // COLUMNS)
     doc = svg.Document(COLUMNS * (WIDTH + GAP) - GAP, rows * (HEIGHT + GAP) - GAP)
     for index, name in enumerate(names):
@@ -85,7 +85,7 @@ sheet()
 # references and CSS such as `"1px solid {palette.border}"` stay as written.
 
 # %%
-brand = svg.Theme.get("dark").replace(
+brand = svg.themes.get("dark").replace(
     name="brand",
     palette={
         "primary": "#f472b6",
@@ -126,7 +126,7 @@ card(dusk)
 # `with theme:` makes a theme the default for documents created inside the block.
 
 # %%
-with svg.Theme.get("paper"):
+with svg.themes.get("paper"):
     default = svg.Document(120, 40)
 default.theme.name
 
@@ -136,7 +136,7 @@ default.theme.name
 # %%
 if __name__ == "__main__":
     brand.save("brand.toml")
-    for name in svg.THEMES.names():
+    for name in svg.themes.list():
         card(name).save(f"themes-{name}.svg")
     sheet().save("14_themes.svg")
     card(brand).save("themes-brand.png", scale=2)

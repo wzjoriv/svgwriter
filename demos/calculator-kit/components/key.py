@@ -22,7 +22,7 @@ def key(label: str, *, shape: str, height: float, colors: Mapping[str, tuple[svg
     A ``circle`` key is as wide as it is tall; every other shape fills its grid cell.
     """
     fill, ink = colors[kind(label)]
-    background = svg.rect(rx=height * SHAPES[shape], fill=fill)
+    background = svg.rect(0, 0, 1, 1, rx=height * SHAPES[shape], fill=fill)
     text = svg.text(label, fill=ink, font_family=font, font_weight=weight).as_role("text")
     square = height if shape == "circle" else None
     return svg.VStack(text, width=square, height=height, align="center", justify="center", background=background)

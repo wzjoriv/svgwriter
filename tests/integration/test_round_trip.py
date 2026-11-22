@@ -16,7 +16,7 @@ def themed_card(typeface: svg.Typeface, theme: svg.Theme | str) -> tuple[svg.Doc
     return doc, stack
 
 
-@pytest.mark.parametrize("theme", ["dark", svg.Theme.get("paper").replace(name="brand", palette={"surface": "#123456"})])
+@pytest.mark.parametrize("theme", ["dark", svg.themes.get("paper").replace(name="brand", palette={"surface": "#123456"})])
 def test_reopened_svg_keeps_roles_positions_fonts_and_theme(tmp_path, typeface, theme):
     doc, stack = themed_card(typeface, theme)
     placed = [child.bounds() for child in stack]
@@ -36,6 +36,6 @@ def test_reopening_with_a_theme_restyles(tmp_path, typeface):
     doc.save(tmp_path / "card.svg")
     light = svg.Document.open(tmp_path / "card.svg", theme="light")
     assert light.theme.name == "light"
-    assert svg.Theme.get("light").palette.surface.hex in light.to_string()
+    assert svg.themes.get("light").palette.surface.hex in light.to_string()
     with pytest.raises(TypeError, match="only theme="):
         svg.Document.open(tmp_path / "card.svg", palette="x")

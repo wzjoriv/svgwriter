@@ -3,7 +3,7 @@
 import pytest
 
 import svgwriter as svg
-from svgwriter.tools.project import PRESETS
+from svgwriter.tools.project import presets
 from tests.ops.test_typeface import _font
 
 CARD = '''
@@ -47,7 +47,7 @@ def make(tmp_path, preset):
 
 
 def test_every_preset_is_covered():
-    assert set(HOOKS) == set(PRESETS)
+    assert set(HOOKS) == set(presets)
 
 
 @pytest.mark.parametrize("preset", sorted(HOOKS))

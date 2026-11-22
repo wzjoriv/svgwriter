@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter.model.theme import ThemeError
+from svgwriter.errors import ThemeError
 from svgwriter.model.theme.sheet import STYLE_ID
 
 
@@ -17,7 +17,7 @@ def _themed(theme: str = "dark") -> svg.Document:
 
 
 def _inline(theme: str = "dark") -> svg.Document:
-    styles = svg.Theme.get(theme)
+    styles = svg.themes.get(theme)
     doc = svg.Document(60, 40)
     doc.rect(0, 0, 60, 40, style=styles.style("background"))
     doc.rect(10, 10, 40, 20, style=styles.style("box"))
@@ -45,8 +45,8 @@ class TestSheet:
     def test_restyle_parsed_document(self) -> None:
         parsed = svg.Document.from_string(_themed("dark").to_string(), theme="light")
         text = parsed.to_string()
-        assert text.count("<style") == 1 and svg.Theme.get("light").palette.surface.hex in text
-        assert svg.Theme.get("dark").palette.surface.hex in str(parsed.root[0])
+        assert text.count("<style") == 1 and svg.themes.get("light").palette.surface.hex in text
+        assert svg.themes.get("dark").palette.surface.hex in str(parsed.root[0])
 
     def test_unknown_role_class(self) -> None:
         doc = svg.Document(10, 10)
@@ -62,9 +62,9 @@ class TestSheet:
 
     def test_theme_setter_and_context(self) -> None:
         doc = _themed()
-        doc.theme = svg.Theme.get("paper")
-        assert svg.Theme.get("paper").palette.surface.hex in doc.to_string()
-        with svg.Theme.get("print"):
+        doc.theme = svg.themes.get("paper")
+        assert svg.themes.get("paper").palette.surface.hex in doc.to_string()
+        with svg.themes.get("print"):
             assert svg.Document().theme.name == "print"
 
 

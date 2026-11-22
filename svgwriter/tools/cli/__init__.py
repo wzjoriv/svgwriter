@@ -14,25 +14,56 @@ animate             render the scenes of a file to mp4/gif/webm/png frames (ffmp
 render              rasterize scenes or an SVG file to PNG (skia-python)
 outline             write text as glyph outlines (skia-python)
 doctor              what works here, what is missing and how to install it
+
+Packages add commands through the ``svgwriter.command`` entry-point group (see :data:`commands`).
 """
 
 from __future__ import annotations
 
 from collections.abc import Sequence
+from typing import Final
 
 import click
 
 from ... import __version__
+from ..._internal._registry import Registry
 from ._basic import add_basic_commands
 from ._constants import EXIT_ERROR, EXIT_FAILURE
 from ._doctor import add_doctor_command
 from ._media import add_media_commands
 from ._project import add_project_commands
 
-__all__ = ["app", "main"]
+__all__ = ["commands", "app", "main"]
+
+commands: Final[Registry[click.Command]] = Registry("command")
+"""Commands beside the built-in ones: ``commands.register(command)``, or the ``svgwriter.command`` entry points.
+
+Examples
+--------
+>>> import click
+>>> from svgwriter.tools.cli import commands, main
+>>> @commands.register
+... @click.command(help="Say hello.")
+... def hello() -> None:
+...     click.echo("hello")
+>>> main(["hello"])
+hello
+0
+>>> _ = commands.unregister("hello")
+"""
 
 
-@click.group(name="svgwriter", invoke_without_command=True,
+class _Commands(click.Group):
+    """The built-in commands, then the ones in :data:`commands`."""
+
+    def list_commands(self, ctx: click.Context) -> list[str]:
+        return sorted({*super().list_commands(ctx), *commands.list()})
+
+    def get_command(self, ctx: click.Context, cmd_name: str) -> click.Command | None:
+        return super().get_command(ctx, cmd_name) or commands.find(cmd_name)
+
+
+@click.group(name="svgwriter", cls=_Commands, invoke_without_command=True,
              help="Start design projects and build them; write, reformat, inspect and animate SVG 1.1 files.")
 @click.version_option(__version__, "--version", prog_name="svgwriter", message="%(prog)s %(version)s",
                       help="show the version and exit")

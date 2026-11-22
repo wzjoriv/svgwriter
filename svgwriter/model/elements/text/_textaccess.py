@@ -20,7 +20,6 @@ if TYPE_CHECKING:
     from ..shapes import Path
     from ..structure import Group
     from ._spans import TSpan
-    from ._text import Text
 
 
 __all__ = ["TextAccess"]
@@ -170,43 +169,6 @@ class TextAccess:
         from ._isolate import visible_bbox
 
         return visible_bbox(self)  # type: ignore[arg-type]
-
-    def effect(self, name: str, /, **options: Any) -> Text:
-        """Apply the text effect registered as *name* to the whole text.
-
-        Parameters
-        ----------
-        name : str
-            A text effect: ``"fire"``, ``"ice"``, ``"smoke"``, ``"metal"``, ``"wind"``, ``"snow"``,
-            ``"neon"``, ``"glitch"`` or one registered with :func:`svgwriter.catalog.preset.text_effect`.
-        **options
-            The effect's options.
-
-        Returns
-        -------
-        Text
-            This text, styled.
-
-        Raises
-        ------
-        KeyError
-            If no effect has that name; the message suggests the closest names.
-
-        See Also
-        --------
-        svgwriter.catalog.text_effects : The built-in effects.
-        svgwriter.CharacterRange.effect : The same for a range of characters.
-
-        Examples
-        --------
-        >>> import svgwriter as svg
-        >>> title = svg.text("Neon", x=0, y=30, font_size=28)
-        >>> title.effect("neon", color="deeppink") is title
-        True
-        """
-        from ...._internal._presets import TEXT_EFFECTS
-
-        return TEXT_EFFECTS.get(name)(self, **options)  # type: ignore[no-any-return]
 
     def run_style(self, source: Element) -> dict[str, object]:
         """Presentation attributes that apply to glyphs coming from *source*.

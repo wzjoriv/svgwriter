@@ -28,13 +28,14 @@ the same parameters written as a GIF. Outputs: SVG, PNG, PDF and GIF. [Notebook]
 UI from `VStack`, `HStack` and `Grid`, with controls for the shell style, key shape, keypad layout, display
 font, size and alignment, history line, key font and weight, spacing and palette. Outputs: SVG, PNG and PDF. [Notebook](https://github.com/wzjoriv/svgwriter/blob/main/demos/calculator-kit/calculator-kit.ipynb).
 
-## Text effects
+## Effects
 
-![Words that smoke, shine, blow, burn and snow](_static/demos/text-effects.gif)
+![Words that smoke, shine, blow, burn and snow beside a logo and buttons](_static/demos/effects.gif)
 
-[`demos/text-effects`](https://github.com/wzjoriv/svgwriter/tree/main/demos/text-effects): a passage on a
-night card where five words carry the smoke, metal, wind, fire and snow effects while staying text, with a dropdown per word to swap its effect.
-Outputs: an animated SVG and a GIF. [Notebook](https://github.com/wzjoriv/svgwriter/blob/main/demos/text-effects/text-effects.ipynb).
+[`demos/effects`](https://github.com/wzjoriv/svgwriter/tree/main/demos/effects): a passage on a
+night card where five words carry the smoke, metal, wind, fire and snow effects while staying text, beside a logo and two buttons with effects of their own, and a dropdown
+per word, for the logo and for the buttons to swap each effect.
+Outputs: an animated SVG and a GIF. [Notebook](https://github.com/wzjoriv/svgwriter/blob/main/demos/effects/effects.ipynb).
 
 ## Planets explainer
 

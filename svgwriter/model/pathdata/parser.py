@@ -7,6 +7,7 @@ from __future__ import annotations
 from collections.abc import Iterator
 from typing import Final
 
+from ...errors import PathSyntaxError
 from ._constants import ARC_FLAG_POSITIONS, ARITY, NUMBER_RE, SEPARATORS
 from .commands import (
     ArcTo,
@@ -22,7 +23,7 @@ from .commands import (
     VLineTo,
 )
 
-__all__ = ["PathSyntaxError", "iter_commands", "parse_path"]
+__all__ = ["iter_commands", "parse_path"]
 
 _COMMANDS: Final[dict[str, type[PathCommand]]] = {
     "M": MoveTo,
@@ -37,36 +38,6 @@ _COMMANDS: Final[dict[str, type[PathCommand]]] = {
     "Z": ClosePath,
 }
 
-
-class PathSyntaxError(ValueError):
-    """Raised for malformed path data.
-
-    A `ValueError` that records where in the text parsing failed.
-
-    Parameters
-    ----------
-    message : str
-        What went wrong.
-    position : int
-        Character offset of the error; also stored as the ``position`` attribute.
-
-    See Also
-    --------
-    parse_path : Raises this error.
-
-    Examples
-    --------
-    >>> from svgwriter.model.pathdata import PathSyntaxError, parse_path
-    >>> try:
-    ...     parse_path("L1 1")
-    ... except PathSyntaxError as error:
-    ...     print(error)
-    path data must start with a moveto at offset 0
-    """
-
-    def __init__(self, message: str, position: int) -> None:
-        super().__init__(f"{message} at offset {position}")
-        self.position = position
 
 
 class _Scanner:

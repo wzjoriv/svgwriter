@@ -10,7 +10,7 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 | `build [--format F ...] [--path DIR]` | Write the project's outputs (all of `[outputs] formats`, or the ones given) |
 | `preview [--port N] [--open/--no-open] [--path DIR]` | Serve a live page that redraws as controls move and files change |
 | `presets` | List project presets |
-| `sizes` | List named canvas sizes (`svg.preset.list("size")`) |
+| `sizes` | List named canvas sizes (`svg.preset.size.list()`) |
 | `shapes`, `elements` | List shape presets and element classes |
 | `draw SHAPE [--size N] [--fill C] [-o FILE]` | Write a shape preset as SVG |
 | `format INPUT [-o FILE] [--compact] [--precision N]` | Parse an SVG file and write it back out |
@@ -48,9 +48,15 @@ to a record with `available`, `version`, `path`, `purpose` and `hint`; it is che
 Each program can also be named by an environment variable, `SVGWRITER_<NAME>` (`SVGWRITER_FFMPEG`,
 `SVGWRITER_DOT`, `SVGWRITER_MMDC`, `SVGWRITER_LATEX`, `SVGWRITER_DVISVGM`, ...), which wins over `PATH`.
 
+Packages add commands through the `svgwriter.command` entry-point group, and `commands.register(command)`
+adds one at run time (see [Extending svgwriter](../guides/extending.md)).
+
 ```{eval-rst}
 .. autodata:: svgwriter.tools.cli.app
    :no-value:
 .. autofunction:: svgwriter.tools.cli.main
 .. autofunction:: svgwriter.capabilities
+
+.. autodata:: svgwriter.tools.cli.commands
+   :no-value:
 ```

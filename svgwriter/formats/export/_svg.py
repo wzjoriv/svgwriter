@@ -7,14 +7,13 @@ from __future__ import annotations
 import gzip
 from typing import TYPE_CHECKING, Any
 
+from .._format import Format
 from ._constants import GZIP_MAGIC
-from ._registry import register, register_importer
 
 if TYPE_CHECKING:
     from ...document import Document
 
 
-@register("svg", extensions=(".svg",), binary=False)
 def svg_text(document: Document, **options: Any) -> str:
     """SVG 1.1 text (links, ``<a>`` and ids preserved); options as :class:`~svgwriter.formats.io.SerializeOptions`.
 
@@ -43,7 +42,6 @@ def svg_text(document: Document, **options: Any) -> str:
     return document.to_string(**options)
 
 
-@register("svgz", extensions=(".svgz",))
 def svgz(document: Document, **options: Any) -> bytes:
     """Gzip-compressed SVG.
 
@@ -72,7 +70,6 @@ def svgz(document: Document, **options: Any) -> bytes:
     return gzip.compress(document.to_string(**options).encode("utf-8"), mtime=0)
 
 
-@register_importer("svg", extensions=(".svg", ".svgz"))
 def read_svg(data: bytes, **options: Any) -> Document:
     """SVG or gzip-compressed SVG.
 
@@ -96,7 +93,7 @@ def read_svg(data: bytes, **options: Any) -> Document:
     --------
     >>> import svgwriter as svg
     >>> data = svg.export.export(svg.Document(4, 4), "svgz")
-    >>> svg.export.find_importer(".svgz").function(data).root.tag
+    >>> svg.formats.reader(".svgz").read(data).root.tag
     'svg'
     """
     from ...document import Document
@@ -104,3 +101,12 @@ def read_svg(data: bytes, **options: Any) -> Document:
     if data[:2] == GZIP_MAGIC:
         data = gzip.decompress(data)
     return Document.from_string(data, **options)
+
+
+class SvgFormat(Format, name="svg", extensions=(".svg",), read_extensions=(".svgz",), binary=False):
+    write = staticmethod(svg_text)
+    read = staticmethod(read_svg)
+
+
+class SvgzFormat(Format, name="svgz", extensions=(".svgz",)):
+    write = staticmethod(svgz)

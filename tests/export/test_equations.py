@@ -128,7 +128,7 @@ def test_pptx_writes_an_editable_equation_where_the_formula_was():
     _check(math[0])
     size = math.find(".//{http://schemas.openxmlformats.org/drawingml/2006/main}rPr").get("sz")
     assert int(size) == 1500
-    back = svg.export.find_importer("pptx").function(data)
+    back = svg.formats.reader("pptx").read(data)
     assert [e.tag for e in back] == ["path", "g"] and back[1][0].text_content == "ab+x2"
 
 
@@ -156,7 +156,7 @@ def test_docx_floats_equations_over_the_shapes():
     offset = equation.find(f"{wp}positionH/{wp}posOffset")
     assert int(offset.text) / 9525 == pytest.approx(150 - 0.5 * int(equation.find(f"{wp}extent").get("cx"))
                                                     / 9525, abs=1)
-    back = svg.export.find_importer("docx").function(data)
+    back = svg.formats.reader("docx").read(data)
     assert [e.tag for e in back] == ["path", "g"] and "x" in back[1][0].text_content
 
 

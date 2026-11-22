@@ -9,7 +9,7 @@ import pytest
 
 import svgwriter as svg
 from svgwriter._internal._typography._fonts import registered_typefaces
-from svgwriter.tools.project import ProjectError
+from svgwriter.errors import ProjectError
 
 from ..conftest import wellformed
 
@@ -59,7 +59,7 @@ class TestPresets:
         assert [path.name for path in written] == names
         for path in written:
             check_output(path)
-        assert "bob" not in svg.preset.list("animation")
+        assert "bob" not in svg.preset.animation.list()
 
     def test_poster_is_a4_in_millimetres(self, tmp_path: Path) -> None:
         project = svg.Project.new(tmp_path / "sheet", preset="poster")
@@ -113,14 +113,14 @@ class TestPresets:
         folder.mkdir()
         (folder / "svgwriter.toml").write_text('[project]\nname = "{{ project_name }}"\nsize = "icon"\n'
                                                '[outputs]\nformats = ["svg"]\n', encoding="utf-8")
-        svg.project.register_preset("badge", folder, "A square icon", extends="blank")
+        svg.project.presets.register(svg.project.Preset("badge", "A square icon", folder, extends="blank"))
         try:
-            assert "badge" in svg.project.PRESETS.names()
+            assert "badge" in svg.project.presets.list()
             project = svg.Project.new(tmp_path / "logo", preset="badge")
             assert (project.root / "components" / "title_block.py").is_file()
             assert [path.name for path in project.build()] == ["logo.svg"]
         finally:
-            svg.project.unregister_preset("badge")
+            svg.project.presets.unregister("badge")
 
 
 class TestConfig:

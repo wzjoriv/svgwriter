@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 from ...._internal._constants import DOT, MERMAID
 from ...._internal._platform import find_executable
 from ...._internal._tools import find_tool, run_tool, svg_document
-from .._registry import register_importer
+from ..._format import Format
 from ._constants import MERMAID_CONFIG
 
 if TYPE_CHECKING:
@@ -21,7 +21,6 @@ if TYPE_CHECKING:
 __all__ = ["read_d2", "read_dot", "read_mermaid", "read_plantuml"]
 
 
-@register_importer("dot", extensions=(".dot", ".gv"))
 def read_dot(data: bytes, *, engine: str = DOT) -> Document:
     """A Graphviz graph laid out and drawn by Graphviz, as a document.
 
@@ -59,7 +58,6 @@ def read_dot(data: bytes, *, engine: str = DOT) -> Document:
     return svg_document(run_tool([executable, "-Tsvg"], data))
 
 
-@register_importer("mermaid", extensions=(".mmd", ".mermaid"))
 def read_mermaid(data: bytes, *, theme: str = "default") -> Document:
     """A Mermaid diagram drawn by the Mermaid CLI, as a document.
 
@@ -108,7 +106,6 @@ def read_mermaid(data: bytes, *, theme: str = "default") -> Document:
         return svg_document(target.read_bytes())
 
 
-@register_importer("plantuml", extensions=(".puml", ".plantuml"))
 def read_plantuml(data: bytes) -> Document:
     """A PlantUML diagram drawn by PlantUML (``plantuml -tsvg -pipe``), as a document.
 
@@ -130,7 +127,6 @@ def read_plantuml(data: bytes) -> Document:
     return svg_document(run_tool([find_tool("plantuml"), "-tsvg", "-pipe"], data))
 
 
-@register_importer("d2", extensions=(".d2",))
 def read_d2(data: bytes) -> Document:
     """A D2 diagram drawn by D2, as a document.
 
@@ -155,3 +151,19 @@ def read_d2(data: bytes) -> Document:
         source.write_bytes(data)
         run_tool([executable, str(source), str(target)])
         return svg_document(target.read_bytes())
+
+
+class DotFormat(Format, name="dot", extensions=(".dot", ".gv")):
+    read = staticmethod(read_dot)
+
+
+class MermaidFormat(Format, name="mermaid", extensions=(".mmd", ".mermaid")):
+    read = staticmethod(read_mermaid)
+
+
+class PlantumlFormat(Format, name="plantuml", extensions=(".puml", ".plantuml")):
+    read = staticmethod(read_plantuml)
+
+
+class D2Format(Format, name="d2", extensions=(".d2",)):
+    read = staticmethod(read_d2)

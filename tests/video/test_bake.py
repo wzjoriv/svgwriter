@@ -211,7 +211,7 @@ class TestScene:
     def test_frames_match_the_python_animation(self) -> None:
         def build(self: svg.Scene, doc: svg.Document) -> None:
             doc.rect(0, 0, 100, 60, fill="white")
-            self.attach(doc.add(svg.preset.get("shape", "star")(30, 30, 15, fill="gold")), wiggle, angle=25,
+            self.attach(doc.add(svg.preset.shape.get("star")(30, 30, 15, fill="gold")), wiggle, angle=25,
                         period=1)
             self.ring = doc.circle(70, 30, 8, fill="none", stroke="teal", stroke_width=3)
             self.ring.animate.fade_in(0.4)

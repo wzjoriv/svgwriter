@@ -1,5 +1,5 @@
 """
-Text effects of the elements: fire, ice, smoke and snow.
+Effects of the elements: fire, ice, smoke and snow.
 """
 
 from __future__ import annotations
@@ -18,11 +18,11 @@ from ...model.elements import (
     FeSpecularLighting,
     FeTurbulence,
     StandardInput,
-    Text,
     TurbulenceType,
 )
+from ...model.elements.core import Element
 from ..gradients import blend
-from ..preset import text_effect
+from ..preset import effect
 from ._constants import (
     FIRE_COLORS,
     FIRE_DURATION,
@@ -54,14 +54,15 @@ from ._parts import fit, loop, tinted
 __all__ = ["fire", "ice", "smoke", "snow"]
 
 
-@text_effect
-def fire(text: Text, *, animate: bool = True, seed: int = 0) -> None:
-    """Burning letters: a white-hot to ember gradient, licked upwards by flickering noise, with an orange glow.
+@effect
+def fire(element: Element, *, animate: bool = True, seed: int = 0) -> None:
+    """Fire: a white-hot to ember gradient, licked upwards by flickering noise, with an orange glow.
 
     Parameters
     ----------
-    text : Text
-        The text, or (through the registered effect) a range such as ``text[4:9]``.
+    element : Element
+        The element: a shape, group, image or text, or (through the registered effect) a range of a text such
+        as ``text[4:9]``.
     animate : bool, optional
         Let the flames flicker (an SMIL loop, so it plays in browsers, GIFs and videos). Defaults to True.
     seed : int, optional
@@ -72,12 +73,15 @@ def fire(text: Text, *, animate: bool = True, seed: int = 0) -> None:
     >>> import svgwriter as svg
     >>> doc = svg.Document(240, 60)
     >>> line = doc.text("carried sparks", x=10, y=40, font_size=28)
-    >>> layer = svg.text_effects.fire(line[8:14])
+    >>> layer = svg.effects.fire(line[8:14])
     >>> layer.get("filter").element[0].children[0].get("attributeName")
     'baseFrequency'
+    >>> torch = svg.effects.fire(doc.circle(200, 30, 12))
+    >>> torch.get("filter").element.get("width")
+    67.2
     """
-    size = fit(text)
-    text.fill = blend(*FIRE_COLORS, angle=-90)
+    size = fit(element)
+    element.fill = blend(*FIRE_COLORS, angle=-90)
     noise = FeTurbulence(size.frequency(FIRE_FREQUENCIES[0]), 2, seed=seed)
     if animate:
         loop(noise, "baseFrequency", size.values(FIRE_FREQUENCIES), FIRE_DURATION)
@@ -85,17 +89,17 @@ def fire(text: Text, *, animate: bool = True, seed: int = 0) -> None:
     color, radius = FIRE_GLOW
     halo = FeGaussianBlur(size(radius), in_=flames)
     flood, glow = tinted(color, halo)
-    text.filter = size.filter(noise, flames, halo, flood, glow, FeMerge(glow, flames))
+    element.filter = size.filter(noise, flames, halo, flood, glow, FeMerge(glow, flames))
 
 
-@text_effect
-def ice(text: Text, *, animate: bool = True) -> None:
-    """Frozen letters: frost-white to glacier-blue, a cold halo and a glint that travels round the edges.
+@effect
+def ice(element: Element, *, animate: bool = True) -> None:
+    """Ice: frost-white to glacier-blue, a cold halo and a glint that travels round the edges.
 
     Parameters
     ----------
-    text : Text
-        The text, or a range of it.
+    element : Element
+        The element, or a range of a text.
     animate : bool, optional
         Move the light round so the glint travels. Defaults to True.
 
@@ -103,11 +107,11 @@ def ice(text: Text, *, animate: bool = True) -> None:
     --------
     >>> import svgwriter as svg
     >>> title = svg.text("cold", x=0, y=30, font_size=30)
-    >>> svg.text_effects.ice(title, animate=False).get("filter").element[-1].tag
+    >>> svg.effects.ice(title, animate=False).get("filter").element[-1].tag
     'feMerge'
     """
-    size = fit(text)
-    text.fill = blend(*ICE_COLORS, angle=90)
+    size = fit(element)
+    element.fill = blend(*ICE_COLORS, angle=90)
     frost_color, frost_radius = ICE_FROST
     frost_blur = FeGaussianBlur(size(frost_radius), in_=StandardInput.SOURCE_ALPHA)
     flood, frost = tinted(frost_color, frost_blur)
@@ -120,17 +124,17 @@ def ice(text: Text, *, animate: bool = True) -> None:
                                specular_exponent=exponent, lighting_color="white")
     inside = FeComposite(CompositeOperator.IN, in_=glint, in2=StandardInput.SOURCE_ALPHA)
     lit = FeComposite(CompositeOperator.ARITHMETIC, in_=StandardInput.SOURCE_GRAPHIC, in2=inside, k2=1, k3=1)
-    text.filter = size.filter(frost_blur, flood, frost, rim, glint, inside, lit, FeMerge(frost, lit))
+    element.filter = size.filter(frost_blur, flood, frost, rim, glint, inside, lit, FeMerge(frost, lit))
 
 
-@text_effect
-def smoke(text: Text, *, animate: bool = True, seed: int = 0) -> None:
-    """Smoky letters: soft grey glyphs that curl and drift inside a faint haze.
+@effect
+def smoke(element: Element, *, animate: bool = True, seed: int = 0) -> None:
+    """Smoke: soft grey that curls and drifts inside a faint haze.
 
     Parameters
     ----------
-    text : Text
-        The text, or a range of it.
+    element : Element
+        The element, or a range of a text.
     animate : bool, optional
         Let the smoke curl. Defaults to True.
     seed : int, optional
@@ -140,11 +144,11 @@ def smoke(text: Text, *, animate: bool = True, seed: int = 0) -> None:
     --------
     >>> import svgwriter as svg
     >>> title = svg.text("Smoke", x=0, y=30, font_size=30)
-    >>> svg.text_effects.smoke(title).fill.hex
+    >>> svg.effects.smoke(title).fill.hex
     '#8d939b'
     """
-    size = fit(text)
-    text.fill = SMOKE_COLOR
+    size = fit(element)
+    element.fill = SMOKE_COLOR
     noise = FeTurbulence(size.frequency(SMOKE_FREQUENCIES[0]), 3, seed=seed, type=TurbulenceType.FRACTAL_NOISE)
     curl = FeDisplacementMap(size(SMOKE_SCALES[0]), Channel.R, Channel.G, in_=StandardInput.SOURCE_GRAPHIC,
                              in2=noise)
@@ -155,17 +159,17 @@ def smoke(text: Text, *, animate: bool = True, seed: int = 0) -> None:
     radius, opacity = SMOKE_HAZE
     haze_blur = FeGaussianBlur(size(radius), in_=curl)
     flood, haze = tinted(SMOKE_COLOR, haze_blur, opacity)
-    text.filter = size.filter(noise, curl, soft, haze_blur, flood, haze, FeMerge(haze, soft))
+    element.filter = size.filter(noise, curl, soft, haze_blur, flood, haze, FeMerge(haze, soft))
 
 
-@text_effect
-def snow(text: Text, *, animate: bool = True, seed: int = 0) -> None:
-    """Snowy letters: white glyphs with a cold rim, flakes drifting down around them.
+@effect
+def snow(element: Element, *, animate: bool = True, seed: int = 0) -> None:
+    """Snow: white with a cold rim, flakes drifting down around it.
 
     Parameters
     ----------
-    text : Text
-        The text, or a range of it.
+    element : Element
+        The element, or a range of a text.
     animate : bool, optional
         Let the flakes fall. Defaults to True.
     seed : int, optional
@@ -175,13 +179,13 @@ def snow(text: Text, *, animate: bool = True, seed: int = 0) -> None:
     --------
     >>> import svgwriter as svg
     >>> title = svg.text("Snow", x=0, y=30, font_size=30)
-    >>> svg.text_effects.snow(title, animate=False).stroke.hex
+    >>> svg.effects.snow(title, animate=False).stroke.hex
     '#bcd4ea'
     """
-    size = fit(text)
-    text.fill = blend(*SNOW_COLORS, angle=90)
-    text.stroke = SNOW_COLORS[-1]
-    text.stroke_width = size(SNOW_RIM)
+    size = fit(element)
+    element.fill = blend(*SNOW_COLORS, angle=90)
+    element.stroke = SNOW_COLORS[-1]
+    element.stroke_width = size(SNOW_RIM)
     frequency, contrast = SNOW_FLAKES
     noise = FeTurbulence(round(frequency / size.scale, 4), 1, seed=seed, type=TurbulenceType.FRACTAL_NOISE)
     rows = [0.0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, contrast, 0, 0, 0, SNOW_DENSITY]
@@ -192,5 +196,5 @@ def snow(text: Text, *, animate: bool = True, seed: int = 0) -> None:
     radius, opacity = SNOW_GLOW
     glow_blur = FeGaussianBlur(size(radius), in_=StandardInput.SOURCE_ALPHA)
     flood, glow = tinted("white", glow_blur, opacity)
-    text.filter = size.filter(noise, flakes, falling, glow_blur, flood, glow,
+    element.filter = size.filter(noise, flakes, falling, glow_blur, flood, glow,
                               FeMerge(glow, StandardInput.SOURCE_GRAPHIC, falling))

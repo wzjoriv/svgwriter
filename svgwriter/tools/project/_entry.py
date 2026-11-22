@@ -13,9 +13,10 @@ from pathlib import Path
 from typing import Any
 
 from ..._internal._presets import KINDS
-from ...model.theme import Theme
+from ...errors import ProjectError
+from ...model.theme import Theme, themes
 from ...motion.video import Scene
-from ._config import ProjectConfig, ProjectError
+from ._config import ProjectConfig
 from ._constants import DEFAULT_NOTEBOOK_OBJECT, FONT_SUFFIXES, NOTEBOOK_SUFFIX
 
 __all__ = ["Item", "entry_parts", "items_of", "load_object", "load_theme", "project_scope", "register_fonts",
@@ -124,7 +125,7 @@ def load_theme(config: ProjectConfig) -> Theme | None:
         except ValueError as error:
             raise ProjectError(f"{path}: {error}") from None
     try:
-        return Theme.get(config.theme)
+        return themes.get(config.theme)
     except KeyError as error:
         raise ProjectError(f"{config.source}: project.theme: {error.args[0]}") from None
 

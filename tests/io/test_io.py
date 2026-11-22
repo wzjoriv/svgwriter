@@ -8,10 +8,10 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
+from svgwriter.errors import SVGParseError
 from svgwriter.formats.io import (
     SerializeOptions,
     Strictness,
-    SVGParseError,
     Writer,
     aiter_chunks,
     iter_chunks,
@@ -33,24 +33,24 @@ def sample() -> svg.Svg:
 
 
 def test_pretty_output_layout() -> None:
-    text = svg.Svg(svg.Group(svg.Rect()), width=10).to_string()
+    text = svg.Svg(svg.Group(svg.Rect(0, 0, 1, 1)), width=10).to_string()
     assert text == (
         '<?xml version="1.0" encoding="utf-8" standalone="no"?>\n'
         '<svg xmlns="http://www.w3.org/2000/svg" width="10" version="1.1">\n'
         "  <g>\n"
-        '    <rect x="0" y="0" width="0" height="0"/>\n'
+        '    <rect x="0" y="0" width="1" height="1"/>\n'
         "  </g>\n"
         "</svg>\n"
     )
 
 
 def test_compact_output() -> None:
-    text = svg.Svg(svg.Group(svg.Rect()), version=None).to_string(pretty=False, xml_declaration=False)
-    assert text == '<svg xmlns="http://www.w3.org/2000/svg"><g><rect x="0" y="0" width="0" height="0"/></g></svg>'
+    text = svg.Svg(svg.Group(svg.Rect(0, 0, 1, 1)), version=None).to_string(pretty=False, xml_declaration=False)
+    assert text == '<svg xmlns="http://www.w3.org/2000/svg"><g><rect x="0" y="0" width="1" height="1"/></g></svg>'
 
 
 def test_xlink_namespace_only_when_used() -> None:
-    assert "xmlns:xlink" not in svg.Svg(svg.Rect()).to_string()
+    assert "xmlns:xlink" not in svg.Svg(svg.Rect(0, 0, 1, 1)).to_string()
     assert 'xmlns:xlink="http://www.w3.org/1999/xlink"' in svg.Svg(svg.Use("#a")).to_string()
     fragment = svg.Use("#a").to_string(xml_declaration=False, pretty=False)
     assert fragment == '<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#a"/>'
@@ -79,7 +79,7 @@ def test_doctype_and_declaration() -> None:
     assert "<!DOCTYPE svg PUBLIC" in text
     wellformed(text)
     assert svg.parse(text).tag == "svg"
-    assert not svg.Rect().to_string(xml_declaration=False).startswith("<?xml")
+    assert not svg.Rect(0, 0, 1, 1).to_string(xml_declaration=False).startswith("<?xml")
 
 
 def test_options_object_and_init_var() -> None:
@@ -88,7 +88,7 @@ def test_options_object_and_init_var() -> None:
     assert SerializeOptions().newline == "\n"
     with pytest.raises(TypeError):
         SerializeOptions(False)  # type: ignore[misc]
-    assert svg.to_string(svg.Rect(), options=options).count("\n") == 1
+    assert svg.to_string(svg.Rect(0, 0, 1, 1), options=options).count("\n") == 1
 
 
 def test_write_to_path_stream_and_str_path(tmp_path: Path) -> None:
@@ -111,7 +111,7 @@ def test_iter_chunks_streams() -> None:
     assert len(chunks) > 10
     assert "".join(chunks) == sample().to_string(xml_declaration=False)
     writer = Writer(pretty=False)
-    assert "".join(writer.iter_chunks(svg.Rect(), xml_declaration=False)) == '<rect x="0" y="0" width="0" height="0"/>'
+    assert "".join(writer.iter_chunks(svg.Rect(0, 0, 1, 1), xml_declaration=False)) == '<rect x="0" y="0" width="1" height="1"/>'
 
 
 def test_async_helpers(tmp_path: Path) -> None:
@@ -198,7 +198,7 @@ class TestParser:
 
 
 def test_parse_rejects_non_svg_root_but_accepts_fragments():
-    with pytest.raises(svg.SVGParseError, match="not an SVG element"):
+    with pytest.raises(svg.errors.SVGParseError, match="not an SVG element"):
         svg.parse("<html/>")
     assert svg.parse('<circle r="2"/>').tag == "circle"
 
@@ -211,7 +211,7 @@ def test_path_must_start_with_move_to():
 
 def test_color_strings_are_checked_on_assignment():
     with pytest.raises(ValueError, match="did you mean 'red'"):
-        svg.rect(fill="redd")
-    rect = svg.rect(fill="url(#g) red", stroke="currentColor")
+        svg.rect(0, 0, 1, 1, fill="redd")
+    rect = svg.rect(0, 0, 1, 1, fill="url(#g) red", stroke="currentColor")
     assert rect.get("fill") == "url(#g) red"
     assert svg.Animate(attribute_name="x", fill="freeze").get("fill") == "freeze"

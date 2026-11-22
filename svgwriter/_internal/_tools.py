@@ -9,27 +9,14 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from ._constants import TIMEOUT_SECONDS
+from ._errors import DiagramToolError
 from ._platform import capability_of, find_executable, missing
 
 if TYPE_CHECKING:
     from ..document import Document
 
-__all__ = ["DiagramToolError", "find_tool", "run_tool", "svg_document"]
+__all__ = ["find_tool", "run_tool", "svg_document"]
 
-
-class DiagramToolError(RuntimeError):
-    """The diagram tool is missing or rejected the input.
-
-    See Also
-    --------
-    svgwriter.formats.export._diagram.read_dot, svgwriter.formats.export._diagram.read_mermaid : The importers that run the tools.
-
-    Examples
-    --------
-    >>> from svgwriter._internal._tools import DiagramToolError
-    >>> issubclass(DiagramToolError, RuntimeError)
-    True
-    """
 
 
 def find_tool(name: str) -> str:

@@ -222,7 +222,7 @@ class Output:
     def export(self, format: str, **options: Any) -> bytes | str:
         """This document in *format* (``"png"``, ``"pdf"``, ``"tikz"``, ... or an extension).
 
-        See :func:`svgwriter.formats.export.exporters` for the registered formats.
+        ``svg.formats.writers()`` lists the formats.
 
         Parameters
         ----------
@@ -330,9 +330,10 @@ class Output:
         ...     [page.root.get("width") for page in svg.Document.open_all(path)]
         [10.0, 20.0]
         """
-        from ..formats.export import find_importer, load
+        from ..formats import reader
+        from ..formats.export import load
 
-        page_option = find_importer(format or path).page_option
+        page_option = reader(format or path).page_option
         if page_option is not None:
             options[page_option] = None
         result = load(path, format, **options)

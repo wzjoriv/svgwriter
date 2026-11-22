@@ -162,7 +162,7 @@ def test_embed_fonts_writes_only_the_used_faces(family):
 def test_embed_fonts_sees_theme_roles(family):
     typeface = svg.Typeface.from_files(*family, name="SvgwRole")
     doc = svg.Document(100, 40)
-    doc.theme = svg.Theme.get("light").replace(fonts={"family": typeface})
+    doc.theme = svg.themes.get("light").replace(fonts={"family": typeface})
     doc.text("A", x=0, y=30).as_role("title")
     assert [face.weight[0] for face in doc.used_faces(typeface)] == [BOLD]
 
@@ -205,7 +205,7 @@ def test_theme_files_accept_font_files(tmp_path, family):
     assert theme.fonts.lookup("family") == "SvgwProbe"
     assert f'family = ["{family[0].name}", "{family[1].name}"]' in theme.to_toml()
     assert theme.fonts.to_dict()["family"] == [str(family[0]), str(family[1])]
-    with pytest.raises(svg.theme.ThemeError, match="fonts.family"):
+    with pytest.raises(svg.errors.ThemeError, match="fonts.family"):
         svg.Theme.from_toml('[fonts]\nfamily = ["missing.ttf"]\n')
 
 
