@@ -3,11 +3,11 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Animation" href="animation.html"><link rel="prev" title="Rendering" href="rendering.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Animation" href="animation.html"><link rel="prev" title="Performance and batches" href="batches.html">
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Export and import - svgwriter 2.4.0</title>
+        <title>Export and import - svgwriter 2.5.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.4.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.4.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.5.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.4.0</span>
+  <span class="sidebar-versions-label">2.5.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -223,6 +223,7 @@
 <li class="toctree-l1"><a class="reference internal" href="presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rendering.html">Rendering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batches.html">Performance and batches</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logos.html">Logos and icons</a></li>
@@ -230,6 +231,7 @@
 <li class="toctree-l1"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -244,6 +246,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/elements.html">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/geometry.html">Geometry</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/layout.html">Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/batch.html">Batches</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/ops.html">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/fonts.html">Fonts</a></li>
@@ -258,6 +261,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -315,7 +319,7 @@
 <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"figure.tex"</span><span class="p">,</span> <span class="n">standalone</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">"eps"</span><span class="p">)</span>                      <span class="c1"># bytes or str, without a file</span>
 <span class="n">again</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"figure.svg"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">export</span><span class="o">.</span><span class="n">exporters</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">formats</span><span class="o">.</span><span class="n">writers</span><span class="p">(),</span> <span class="n">svg</span><span class="o">.</span><span class="n">formats</span><span class="o">.</span><span class="n">readers</span><span class="p">())</span>
 </pre></div>
 </div>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -519,7 +523,7 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">.mp4</span></code> <code class="docutils literal notranslate"><span class="pre">.webm</span></code> <code class="docutils literal notranslate"><span class="pre">.mov</span></code></p></td>
 <td class="text-center"><p>✓</p></td>
 <td class="text-center"><p>✓</p></td>
-<td><p>needs ffmpeg: <code class="docutils literal notranslate"><span class="pre">render_animation</span></code> writes frames, <code class="docutils literal notranslate"><span class="pre">svgwriter.video.Video</span></code> reads them</p></td>
+<td><p>needs ffmpeg: <code class="docutils literal notranslate"><span class="pre">render_animation</span></code> writes frames, <code class="docutils literal notranslate"><span class="pre">svgwriter.motion.video.Video</span></code> reads them</p></td>
 </tr>
 </tbody>
 </table>
@@ -891,8 +895,8 @@ are pixels. <code class="docutils literal notranslate"><span class="pre">dpi=</s
 <span class="n">slide</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">"slide-16:9"</span><span class="p">)</span>              <span class="c1"># 1280 x 720, PowerPoint's default slide size</span>
 <span class="n">typed</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">letter</span><span class="o">.</span><span class="n">landscape</span><span class="p">)</span>  <span class="c1"># svg.size.&lt;name&gt; is a PageSize (width, height, units)</span>
 <span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="s2">"poster-50x70"</span><span class="p">,</span> <span class="s2">"50cm"</span><span class="p">,</span> <span class="s2">"70cm"</span><span class="p">)</span>         <span class="c1"># your own, also svg.size.poster_50x70</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="s2">"size"</span><span class="p">)[:</span><span class="mi">6</span><span class="p">],</span> <span class="n">svg</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">poster_50x70</span><span class="o">.</span><span class="n">landscape</span><span class="p">)</span>
-<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"size"</span><span class="p">,</span> <span class="s2">"poster-50x70"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">list</span><span class="p">()[:</span><span class="mi">6</span><span class="p">],</span> <span class="n">svg</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">poster_50x70</span><span class="o">.</span><span class="n">landscape</span><span class="p">)</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"poster-50x70"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">svg.size.&lt;name&gt;</span></code> gives a <code class="docutils literal notranslate"><span class="pre">PageSize</span></code> for every registered size with the name turned into an identifier
@@ -1018,26 +1022,34 @@ CMYK intent. Without the extra, <code class="docutils literal notranslate"><span
 </section>
 <section id="your-own-formats">
 <h2>Your own formats<a class="headerlink" href="#your-own-formats" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@svg</span><span class="o">.</span><span class="n">export</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">"count"</span><span class="p">,</span> <span class="n">extensions</span><span class="o">=</span><span class="p">(</span><span class="s2">".count"</span><span class="p">,),</span> <span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Number of top-level elements."""</span>
-    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">document</span><span class="p">))</span>
-
-<span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"figure.count"</span><span class="p">)</span>
-
-<span class="nd">@svg</span><span class="o">.</span><span class="n">export</span><span class="o">.</span><span class="n">register_importer</span><span class="p">(</span><span class="s2">"lines"</span><span class="p">,</span> <span class="n">extensions</span><span class="o">=</span><span class="p">(</span><span class="s2">".lines"</span><span class="p">,))</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">read_lines</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+<p>A format is a class: the class line declares its name and extensions, and <code class="docutils literal notranslate"><span class="pre">write</span></code>, <code class="docutils literal notranslate"><span class="pre">read</span></code> or both say
+what it does. Creating the class registers it, so <code class="docutils literal notranslate"><span class="pre">doc.save</span></code>, <code class="docutils literal notranslate"><span class="pre">doc.export</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.Document.open</span></code> and
+<code class="docutils literal notranslate"><span class="pre">svg.Document.from_string</span></code> use it at once.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Lines</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Format</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"lines"</span><span class="p">,</span> <span class="n">extensions</span><span class="o">=</span><span class="p">(</span><span class="s2">".lines"</span><span class="p">,),</span> <span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""One polyline per text line of x,y pairs."""</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
-        <span class="n">pairs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
-        <span class="n">out</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"none"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"black"</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">out</span>
 
-<span class="n">svg</span><span class="o">.</span><span class="n">export</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"count"</span><span class="p">)</span>                       <span class="c1"># plugins and tests can clean up</span>
-<span class="n">svg</span><span class="o">.</span><span class="n">export</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"lines"</span><span class="p">,</span> <span class="n">importer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">y</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">shape</span><span class="o">.</span><span class="n">to_path</span><span class="p">()</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span> <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">document</span><span class="p">]</span>
+        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">polyline</span><span class="p">([</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()],</span>
+                                 <span class="n">fill</span><span class="o">=</span><span class="s2">"none"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"black"</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+<span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"figure.lines"</span><span class="p">)</span>
+<span class="n">again</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"figure.lines"</span><span class="p">)</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">formats</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"lines"</span><span class="p">)</span>                      <span class="c1"># plugins and tests can clean up</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">binary=True</span></code> (the default) means <code class="docutils literal notranslate"><span class="pre">write</span></code> returns <code class="docutils literal notranslate"><span class="pre">bytes</span></code>; <code class="docutils literal notranslate"><span class="pre">multipage=True</span></code> means <code class="docutils literal notranslate"><span class="pre">write</span></code> also takes a
+list of documents and <code class="docutils literal notranslate"><span class="pre">read</span></code> returns a list when its page option (<code class="docutils literal notranslate"><span class="pre">page_option=</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;page&quot;</span></code> by default)
+is None. <code class="docutils literal notranslate"><span class="pre">svg.formats.writer(path)</span></code> and <code class="docutils literal notranslate"><span class="pre">svg.formats.reader(path)</span></code> find a format by name, extension or
+file path. <code class="docutils literal notranslate"><span class="pre">read_extensions=</span></code> adds extensions the format only reads: the <code class="docutils literal notranslate"><span class="pre">svg</span></code> format also reads <code class="docutils literal notranslate"><span class="pre">.svgz</span></code>
+while <code class="docutils literal notranslate"><span class="pre">.svgz</span></code> writes through the <code class="docutils literal notranslate"><span class="pre">svgz</span></code> format, and Excalidraw also reads <code class="docutils literal notranslate"><span class="pre">.json</span></code>. A package can ship formats through the <code class="docutils literal notranslate"><span class="pre">svgwriter.format</span></code> entry-point group (see
+<a class="reference internal" href="extending.html"><span class="std std-doc">Extending svgwriter</span></a>).</p>
 </section>
 <section id="diagrams">
 <h2>Diagrams<a class="headerlink" href="#diagrams" title="Link to this heading">¶</a></h2>
@@ -1112,14 +1124,14 @@ interaction is attached by the page, by element id:</p>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="rendering.html">
+          <a class="prev-page" href="batches.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Rendering</div>
+                <div class="title">Performance and batches</div>
                 
               </div>
             </a>
@@ -1175,7 +1187,7 @@ interaction is attached by the page, by element id:</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=31bb8259"></script>
+</div><script src="../_static/documentation_options.js?v=5574521d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

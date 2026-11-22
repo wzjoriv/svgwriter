@@ -17,7 +17,7 @@ ancestors, and CSS from `<style>` elements all apply, as in a browser. Whitespac
 
 ## Characters as handles
 
-`text[i]` is a live {class}`~svgwriter.elements.text.Character` and `text[a:b]` a `CharacterRange`. Moving and
+`text[i]` is a live {class}`~svgwriter.model.elements.text.Character` and `text[a:b]` a `CharacterRange`. Moving and
 rotating them edits SVG's per-character `dx`/`dy`/`rotate` lists, so the result is still real,
 selectable text: Indexes count user-perceived characters (grapheme clusters): `"é"` written as `e` plus a combining
 accent, a ZWJ emoji family, a flag or a keycap is one character. Runs in complex scripts (Arabic joining, Hebrew,

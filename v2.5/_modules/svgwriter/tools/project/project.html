@@ -1,0 +1,659 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html"><link rel="search" title="Search" href="../../../../search.html">
+        <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
+
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
+        <title>svgwriter.tools.project.project - svgwriter 2.5.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=a55abf10" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f0f0f0;
+  --color-code-foreground: black;
+  --color-brand-primary: #0f766e;
+  --color-brand-content: #0f766e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #5eead4;
+  --color-brand-content: #99f6e4;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #5eead4;
+  --color-brand-content: #99f6e4;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">svgwriter 2.5.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../../_static/logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">svgwriter 2.5.0</span>
+  
+</a><div class="sidebar-versions">
+  <span class="sidebar-versions-label">2.5.0</span>
+  <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
+  <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
+</div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Start</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../demos.html">Demos</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/geometry.html">Geometry and transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/layout.html">Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/paths.html">Paths, boolean operations and measurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/text.html">Text</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/fonts.html">Making fonts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/colors-and-images.html">Colors and images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/presets.html">Presets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/documents.html">Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/rendering.html">Rendering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/batches.html">Performance and batches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/export-import.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/animation.html">Animation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/logos.html">Logos and icons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/widgets.html">Widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/extending.html">Extending svgwriter</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../explanation/design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../explanation/conformance.html">Conformance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../reference/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/document.html">Document</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/elements.html">Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/geometry.html">Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/layout.html">Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/batch.html">Batches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/color.html">Colors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/ops.html">Geometry operations and rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/fonts.html">Fonts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/export.html">Export and import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/io.html">Reading and writing SVG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/attributes.html">Attribute values and styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/presets.html">Preset libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/theme.html">Themes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/inkscape.html">Inkscape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/widgets.html">Widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/errors.html">Errors</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for svgwriter.tools.project.project</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">``Project``: a design folder with a manifest, built into its outputs, previewed in notebooks or a browser.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">nullcontext</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">...motion.video</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scene</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..widgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">Control</span><span class="p">,</span> <span class="n">controls_of</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._build</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_outputs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectConfig</span><span class="p">,</span> <span class="n">check_formats</span><span class="p">,</span> <span class="n">read_config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">NOTEBOOK_SUFFIX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._entry</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">entry_parts</span><span class="p">,</span>
+    <span class="n">items_of</span><span class="p">,</span>
+    <span class="n">load_object</span><span class="p">,</span>
+    <span class="n">load_theme</span><span class="p">,</span>
+    <span class="n">project_scope</span><span class="p">,</span>
+    <span class="n">register_fonts</span><span class="p">,</span>
+    <span class="n">working_directory</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._gallery</span><span class="w"> </span><span class="kn">import</span> <span class="n">Preview</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._notebook</span><span class="w"> </span><span class="kn">import</span> <span class="n">headless</span><span class="p">,</span> <span class="n">kernel_object</span><span class="p">,</span> <span class="n">run_notebook</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._presets</span><span class="w"> </span><span class="kn">import</span> <span class="n">SizeChoice</span><span class="p">,</span> <span class="n">create</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Project"</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Project">
+<a class="viewcode-back" href="../../../../reference/project.html#svgwriter.Project">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Project</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A design project: a folder with ``svgwriter.toml``, the code that draws it and the files it builds.</span>
+
+<span class="sd">    The manifest names the entry (``"main:build"``, a function that draws into a document of the project's</span>
+<span class="sd">    size and theme), the theme file and the output formats. ``[tool.svgwriter]`` in ``pyproject.toml`` works</span>
+<span class="sd">    as well, with the same keys. Nothing is read implicitly: importing svgwriter or creating a document never</span>
+<span class="sd">    looks for a manifest; only :meth:`load` and the ``svgwriter build`` and ``svgwriter preview`` commands do.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    config : ProjectConfig</span>
+<span class="sd">        The settings, usually from :meth:`load`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    svgwriter.tools.project.presets : Register a starter folder for :meth:`new`.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The entry may be a function taking a :class:`~svgwriter.Document`, a :class:`~svgwriter.Scene` class, or a</span>
+<span class="sd">    list of either (one slide or page each), and may live in a notebook (``"main.ipynb:build"``). Modules the</span>
+<span class="sd">    project imports, and the animations and sizes they register, are forgotten after each build, so a build</span>
+<span class="sd">    always runs the current files.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import svgwriter as svg, tempfile</span>
+<span class="sd">    &gt;&gt;&gt; with tempfile.TemporaryDirectory() as folder:</span>
+<span class="sd">    ...     project = svg.Project.new(f"{folder}/card", preset="blank")</span>
+<span class="sd">    ...     print([path.name for path in project.build()])</span>
+<span class="sd">    ['card.svg', 'card.png']</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">ProjectConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;Project </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">&gt;"</span>
+
+<div class="viewcode-block" id="Project.load">
+<a class="viewcode-back" href="../../../../reference/project.html#svgwriter.Project.load">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"."</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Project</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Read the project whose manifest is in *path* or the nearest folder above it.</span>
+
+<span class="sd">        ``svgwriter.toml`` comes first; otherwise a ``pyproject.toml`` with a ``[tool.svgwriter]`` table.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str or os.PathLike, optional</span>
+<span class="sd">            Where to start looking. Defaults to the current folder.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Project</span>
+<span class="sd">            The project.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ProjectError</span>
+<span class="sd">            If no manifest is found, or it has an unknown key or a bad value (the message names the file and key).</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg, tempfile, pathlib</span>
+<span class="sd">        &gt;&gt;&gt; with tempfile.TemporaryDirectory() as folder:</span>
+<span class="sd">        ...     _ = pathlib.Path(folder, "svgwriter.toml").write_text('[project]\\nname = "demo"\\nsize = "a4"')</span>
+<span class="sd">        ...     print(svg.Project.load(folder).config.size)</span>
+<span class="sd">        a4</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">read_config</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="Project.new">
+<a class="viewcode-back" href="../../../../reference/project.html#svgwriter.Project.new">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">preset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"blank"</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">notebook</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">theme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">SizeChoice</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Project</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a project folder from a preset and load it.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str or os.PathLike</span>
+<span class="sd">            The new folder; it must not exist or be empty.</span>
+<span class="sd">        preset : str, optional</span>
+<span class="sd">            A name from :data:`svgwriter.tools.project.presets`. Defaults to ``"blank"``.</span>
+<span class="sd">        notebook : bool, optional</span>
+<span class="sd">            Write ``main.ipynb`` instead of ``main.py``. Defaults to False.</span>
+<span class="sd">        name : str, optional</span>
+<span class="sd">            The project name. Defaults to the folder name.</span>
+<span class="sd">        theme : str, optional</span>
+<span class="sd">            A built-in theme name that ``theme.toml`` extends. Defaults to None, the preset's own.</span>
+<span class="sd">        size : str or sequence of (float or str), optional</span>
+<span class="sd">            A size name (``"a4"``) or ``[width, height]``, written to ``svgwriter.toml``. Defaults to</span>
+<span class="sd">            None, the preset's own.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Project</span>
+<span class="sd">            The new project, ready to build.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ProjectError</span>
+<span class="sd">            If the preset, theme or size is unknown (the message lists the choices) or the folder is</span>
+<span class="sd">            not empty.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg, tempfile</span>
+<span class="sd">        &gt;&gt;&gt; with tempfile.TemporaryDirectory() as folder:</span>
+<span class="sd">        ...     print(svg.Project.new(f"{folder}/talk", preset="slides").config.formats)</span>
+<span class="sd">        ('pptx', 'pdf')</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">create</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">preset</span><span class="p">,</span> <span class="n">notebook</span><span class="o">=</span><span class="n">notebook</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="n">theme</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">root</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The project folder."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The project name; output files are named after it."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The folder the outputs are written to."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">output</span>
+
+<div class="viewcode-block" id="Project.build">
+<a class="viewcode-back" href="../../../../reference/project.html#svgwriter.Project.build">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">formats</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Draw the project and write its outputs into the output folder.</span>
+
+<span class="sd">        Fonts in the font folder are registered first, the theme applies to every page and scene (also to</span>
+<span class="sd">        scenes the entry module makes when it is imported), and the project's code runs in the project folder, so relative paths such as ``assets/data/values.csv`` work.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        formats : sequence of str, optional</span>
+<span class="sd">            Formats to write. Defaults to None, the ``[outputs] formats`` of the manifest.</span>
+<span class="sd">        values : mapping, optional</span>
+<span class="sd">            Values for the controls the entry declares (:func:`svgwriter.tools.widgets.controls`), by parameter</span>
+<span class="sd">            name. Defaults to None, their starting values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of pathlib.Path</span>
+<span class="sd">            The files written, in format order.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ProjectError</span>
+<span class="sd">            If the entry, the theme or a format cannot be found.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        With a notebook entry, a call from inside that notebook uses the notebook's own entry object; any other</span>
+<span class="sd">        call runs the notebook in a new kernel (the ``notebook`` extra) and builds there, so both write the same</span>
+<span class="sd">        files.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg, tempfile</span>
+<span class="sd">        &gt;&gt;&gt; with tempfile.TemporaryDirectory() as folder:</span>
+<span class="sd">        ...     project = svg.Project.new(f"{folder}/sheet", preset="poster")</span>
+<span class="sd">        ...     print([path.name for path in project.build(["svg"])])</span>
+<span class="sd">        ['sheet.svg']</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">headless</span><span class="p">():</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="n">chosen</span> <span class="o">=</span> <span class="n">check_formats</span><span class="p">(</span><span class="s2">"formats"</span><span class="p">,</span> <span class="n">formats</span><span class="p">)</span> <span class="k">if</span> <span class="n">formats</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">formats</span>
+        <span class="n">register_fonts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+        <span class="n">theme</span> <span class="o">=</span> <span class="n">load_theme</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+        <span class="n">target</span><span class="p">,</span> <span class="n">attribute</span> <span class="o">=</span> <span class="n">entry_parts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">NOTEBOOK_SUFFIX</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">kernel_object</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">run_notebook</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">/</span> <span class="n">target</span><span class="p">,</span> <span class="n">chosen</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">working_directory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">write_outputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">items_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span> <span class="n">theme</span><span class="p">,</span> <span class="n">chosen</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">project_scope</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">),</span> <span class="n">working_directory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">):</span>
+            <span class="k">with</span> <span class="n">theme</span> <span class="k">if</span> <span class="n">theme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">nullcontext</span><span class="p">():</span>
+                <span class="n">entry</span> <span class="o">=</span> <span class="n">load_object</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">write_outputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">items_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">entry</span><span class="p">),</span> <span class="n">theme</span><span class="p">,</span> <span class="n">chosen</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Project.controls">
+<a class="viewcode-back" href="../../../../reference/project.html#svgwriter.Project.controls">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">controls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Control</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""The controls the entry's page functions declare with :func:`svgwriter.tools.widgets.controls`.</span>
+
+<span class="sd">        ``svgwriter preview`` shows them as a form above the outputs; ``svgwriter build`` uses their starting</span>
+<span class="sd">        values. Notebook entries declare none here.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict of str to Control</span>
+<span class="sd">            One control per parameter name, across the entry's functions.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ProjectError</span>
+<span class="sd">            If the entry cannot be found.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg, tempfile</span>
+<span class="sd">        &gt;&gt;&gt; with tempfile.TemporaryDirectory() as folder:</span>
+<span class="sd">        ...     print(svg.Project.new(f"{folder}/card").controls())</span>
+<span class="sd">        {}</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">entry_parts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">NOTEBOOK_SUFFIX</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{}</span>
+        <span class="n">found</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Control</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">with</span> <span class="n">project_scope</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">),</span> <span class="n">working_directory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">load_object</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="n">Scene</span><span class="p">,</span> <span class="nb">type</span><span class="p">)):</span>
+                    <span class="n">found</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">controls_of</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">infer</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">found</span></div>
+
+
+<div class="viewcode-block" id="Project.preview">
+<a class="viewcode-back" href="../../../../reference/project.html#svgwriter.Project.preview">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">formats</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Preview</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Build the outputs and show them: in a notebook each file appears inline, and animations play.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        formats : sequence of str, optional</span>
+<span class="sd">            Formats to build and show. Defaults to the manifest's.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Preview</span>
+<span class="sd">            Displays as HTML in notebooks; ``preview.paths`` lists the files.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        serve : A browser page that rebuilds on every save.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg, tempfile</span>
+<span class="sd">        &gt;&gt;&gt; with tempfile.TemporaryDirectory() as folder:</span>
+<span class="sd">        ...     shown = svg.Project.new(f"{folder}/card").preview(["svg"])</span>
+<span class="sd">        ...     print("&lt;img" in shown._repr_html_())</span>
+<span class="sd">        True</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">Preview</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">formats</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Project.serve">
+<a class="viewcode-back" href="../../../../reference/project.html#svgwriter.Project.serve">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">serve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">open_browser</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Serve a live preview at ``http://127.0.0.1:&lt;port&gt;`` until interrupted (Ctrl+C).</span>
+
+<span class="sd">        The page shows every page and scene as SVG, drawn in memory. Controls the entry declares</span>
+<span class="sd">        (:func:`svgwriter.tools.widgets.controls`) appear in a panel beside or below the drawing, and the drawing</span>
+<span class="sd">        follows them as they move. Saving a file imports the project again and redraws; once the project has been</span>
+<span class="sd">        quiet for a moment the output files are written too, as the page's Build outputs button does. A failed</span>
+<span class="sd">        drawing shows its traceback under the last drawing that worked. The manifest's ``[preview]`` table</span>
+<span class="sd">        (:class:`~svgwriter.tools.project.PreviewConfig`) sets the layout, backdrop, port and more.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        port : int, optional</span>
+<span class="sd">            The local port. Defaults to None, ``[preview] port`` (8000).</span>
+<span class="sd">        open_browser : bool, optional</span>
+<span class="sd">            Open the page in the default browser. Defaults to None, ``[preview] open`` (True).</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        preview : The output files inline in a notebook.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">        &gt;&gt;&gt; svg.Project.load().serve()  # doctest: +SKIP</span>
+<span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">._server</span><span class="w"> </span><span class="kn">import</span> <span class="n">LiveProject</span><span class="p">,</span> <span class="n">LiveServer</span>
+
+        <span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">preview</span>
+        <span class="n">server</span> <span class="o">=</span> <span class="n">LiveServer</span><span class="p">(</span><span class="n">LiveProject</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">),</span> <span class="n">settings</span><span class="o">.</span><span class="n">port</span> <span class="k">if</span> <span class="n">port</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">port</span><span class="p">)</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">open</span> <span class="k">if</span> <span class="n">open_browser</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">open_browser</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Josue N Rivera
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/documentation_options.js?v=5574521d"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

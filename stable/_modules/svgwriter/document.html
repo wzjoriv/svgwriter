@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.document - svgwriter 2.4.0</title>
+        <title>svgwriter.document - svgwriter 2.5.0</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">svgwriter 2.4.0</div></a>
+      <a href="../../index.html"><div class="brand">svgwriter 2.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.4.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.5.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.4.0</span>
+  <span class="sidebar-versions-label">2.5.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
@@ -222,6 +222,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../guides/presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../guides/documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../guides/rendering.html">Rendering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/batches.html">Performance and batches</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../guides/logos.html">Logos and icons</a></li>
@@ -229,6 +230,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -243,6 +245,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../reference/elements.html">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../reference/geometry.html">Geometry</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../reference/layout.html">Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/batch.html">Batches</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../reference/ops.html">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../reference/fonts.html">Fonts</a></li>
@@ -257,6 +260,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -310,14 +314,14 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">._document.typography</span><span class="w"> </span><span class="kn">import</span> <span class="n">Typography</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._internal._tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">attach_cursor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyPath</span><span class="p">,</span> <span class="n">Stack</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">ElementFactory</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.elements.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Svg</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.theme.sheet</span><span class="w"> </span><span class="kn">import</span> <span class="n">sheet_theme</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.theme.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Theme</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">ElementFactory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model.elements.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Svg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model.theme.sheet</span><span class="w"> </span><span class="kn">import</span> <span class="n">sheet_theme</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model.theme.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Theme</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.io.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">Strictness</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.formats.io.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">Strictness</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.model.attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Document"</span><span class="p">]</span>
 
@@ -351,7 +355,7 @@
 <span class="sd">        the theme sheet of an existing `root`, else takes :meth:`Theme.current() &lt;svgwriter.Theme.current&gt;`</span>
 <span class="sd">        (``"light"`` outside a ``with theme:`` block).</span>
 <span class="sd">    **kwargs</span>
-<span class="sd">        Forwarded to :class:`~svgwriter.elements.Svg`.</span>
+<span class="sd">        Forwarded to :class:`~svgwriter.model.elements.Svg`.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
@@ -362,8 +366,8 @@
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    svgwriter.elements.Svg : The root element wrapped by a document.</span>
-<span class="sd">    svgwriter.preset.size : Add a named size.</span>
+<span class="sd">    svgwriter.model.elements.Svg : The root element wrapped by a document.</span>
+<span class="sd">    svgwriter.catalog.preset.size : Add a named size.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -423,7 +427,7 @@
 <span class="sd">        text : str or bytes</span>
 <span class="sd">            The source; ``str`` is encoded as UTF-8 for formats read as bytes.</span>
 <span class="sd">        format : str, optional</span>
-<span class="sd">            A registered importer name (see ``svg.export.importers()``). Defaults to ``"svg"``.</span>
+<span class="sd">            A format name or extension (see ``svg.formats.readers()``). Defaults to ``"svg"``.</span>
 <span class="sd">        strictness : Strictness, optional</span>
 <span class="sd">            How SVG treats unknown elements and unsupported attributes. Defaults to</span>
 <span class="sd">            ``Strictness.LENIENT``. SVG only.</span>
@@ -459,19 +463,15 @@
 <span class="sd">        &gt;&gt;&gt; len(chart.root.children) &gt; 0</span>
 <span class="sd">        True</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">.io.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">Strictness</span><span class="p">,</span> <span class="n">parse</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.formats.io.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">Strictness</span><span class="p">,</span> <span class="n">parse</span>
 
         <span class="k">if</span> <span class="nb">format</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">"svg"</span><span class="p">:</span>
-            <span class="kn">from</span><span class="w"> </span><span class="nn">.export</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_importer</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.formats</span><span class="w"> </span><span class="kn">import</span> <span class="n">reader</span>
 
             <span class="k">if</span> <span class="n">strictness</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"strictness= applies to SVG only"</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">importer</span> <span class="o">=</span> <span class="n">find_importer</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="n">importer</span> <span class="o">=</span> <span class="n">find_importer</span><span class="p">(</span><span class="sa">f</span><span class="s2">"text.</span><span class="si">{</span><span class="nb">format</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">text</span>
-            <span class="k">return</span> <span class="n">importer</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>  <span class="c1"># type: ignore[no-any-return]</span>
+            <span class="k">return</span> <span class="n">reader</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>  <span class="c1"># type: ignore[return-value]</span>
         <span class="n">theme</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"theme"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">options</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"SVG takes no option </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">repr</span><span class="p">,</span><span class="w"> </span><span class="nb">sorted</span><span class="p">(</span><span class="n">options</span><span class="p">)))</span><span class="si">}</span><span class="s2">; only theme="</span><span class="p">)</span>
@@ -496,7 +496,7 @@
 <span class="sd">            Canvas size.</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Forwarded to the constructor; ``options`` (a</span>
-<span class="sd">            :class:`~svgwriter.io.SerializeOptions`) is used when saving.</span>
+<span class="sd">            :class:`~svgwriter.formats.io.SerializeOptions`) is used when saving.</span>
 
 <span class="sd">        Yields</span>
 <span class="sd">        ------</span>
@@ -555,7 +555,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=31bb8259"></script>
+</div><script src="../../_static/documentation_options.js?v=5574521d"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

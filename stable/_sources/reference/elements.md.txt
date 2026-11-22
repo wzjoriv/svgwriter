@@ -5,59 +5,59 @@ Element classes. Every class also has a lowercase alias (`svgwriter.circle` is `
 ## Base classes
 
 ```{eval-rst}
-.. autoclass:: svgwriter.elements.Element
+.. autoclass:: svgwriter.model.elements.Element
    :members:
    :inherited-members: Composable
 
-.. autoclass:: svgwriter.elements.Transformable
+.. autoclass:: svgwriter.model.elements.Transformable
    :members:
 
-.. autoclass:: svgwriter.elements._behavior.Convertible
+.. autoclass:: svgwriter.model.elements._behavior.Convertible
    :members:
 
-.. autoclass:: svgwriter.elements.PathOperand
+.. autoclass:: svgwriter.model.elements.PathOperand
    :members:
 ```
 
 ## Shapes
 
 ```{eval-rst}
-.. automodule:: svgwriter.elements.shapes
+.. automodule:: svgwriter.model.elements.shapes
    :members:
 ```
 
 ## Structure and images
 
 ```{eval-rst}
-.. automodule:: svgwriter.elements.structure
+.. automodule:: svgwriter.model.elements.structure
    :members:
 ```
 
 ## Text and fonts
 
 ```{eval-rst}
-.. automodule:: svgwriter.elements.text
+.. automodule:: svgwriter.model.elements.text
    :members:
 ```
 
 ## Paint servers, clipping and markers
 
 ```{eval-rst}
-.. automodule:: svgwriter.elements.paint
+.. automodule:: svgwriter.model.elements.paint
    :members:
 ```
 
 ## Filters
 
 ```{eval-rst}
-.. automodule:: svgwriter.elements.filters
+.. automodule:: svgwriter.model.elements.filters
    :members:
 ```
 
 ## Animation
 
 ```{eval-rst}
-.. automodule:: svgwriter.elements.animation
+.. automodule:: svgwriter.model.elements.animation
    :members:
 ```
 

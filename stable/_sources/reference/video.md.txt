@@ -5,21 +5,20 @@ Scenes, frame rendering and ffmpeg encoding. `svg.Scene` is exported at the top 
 ```{eval-rst}
 .. autosummary::
 
-   svgwriter.video.Scene
-   svgwriter.video.Scene.attach
-   svgwriter.video.Scene.bake
-   svgwriter.video.load_scenes
-   svgwriter.video.SceneError
+   svgwriter.motion.video.Scene
+   svgwriter.motion.video.Scene.attach
+   svgwriter.motion.video.Scene.bake
+   svgwriter.motion.video.load_scenes
 ```
 
 ```{eval-rst}
-.. automodule:: svgwriter.video
+.. automodule:: svgwriter.motion.video
    :members:
 ```
 
 ## Behaviours
 
 ```{eval-rst}
-.. automodule:: svgwriter.video.behaviors
+.. automodule:: svgwriter.motion.video.behaviors
    :members:
 ```

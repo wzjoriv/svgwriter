@@ -5,6 +5,6 @@ Layers, labels, editable stars and arcs, connectors, guides and export hints; se
 `Document.guide` and `Document.export_hints` are documented with {doc}`document`.
 
 ```{eval-rst}
-.. automodule:: svgwriter.inkscape
+.. automodule:: svgwriter.formats.inkscape
    :members:
 ```

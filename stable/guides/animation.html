@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Animation - svgwriter 2.4.0</title>
+        <title>Animation - svgwriter 2.5.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.4.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.4.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.5.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.4.0</span>
+  <span class="sidebar-versions-label">2.5.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -223,6 +223,7 @@
 <li class="toctree-l1"><a class="reference internal" href="presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rendering.html">Rendering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batches.html">Performance and batches</a></li>
 <li class="toctree-l1"><a class="reference internal" href="export-import.html">Export and import</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logos.html">Logos and icons</a></li>
@@ -230,6 +231,7 @@
 <li class="toctree-l1"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -244,6 +246,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/elements.html">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/geometry.html">Geometry</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/layout.html">Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/batch.html">Batches</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/ops.html">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/fonts.html">Fonts</a></li>
@@ -258,6 +261,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -412,8 +416,8 @@ default, and it returns the motion so calls chain:</p>
 <span class="n">row</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Group</span><span class="p">()</span>
 <span class="n">row</span> <span class="o">+=</span> <span class="p">[</span><span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">20</span> <span class="o">+</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">index</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>
 <span class="n">row</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">stagger</span><span class="p">(</span><span class="s2">"bob"</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="s2">"animation"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"animation"</span><span class="p">,</span> <span class="s2">"bob"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">animation</span><span class="o">.</span><span class="n">list</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">animation</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"bob"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The shape is checked when the function is decorated, so a mistake fails at once with a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>
@@ -421,7 +425,7 @@ showing the expected signature. Returning None is accepted too; <code class="doc
 <code class="docutils literal notranslate"><span class="pre">&#64;svg.preset.animation(name=&quot;hop&quot;)</span></code> registers under another name. A taken name raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> naming
 the function that owns it, built-in presets included; <code class="docutils literal notranslate"><span class="pre">replace=True</span></code> replaces one on purpose (a
 replacement can still call the original as <code class="docutils literal notranslate"><span class="pre">svg.Motion.spin(motion,</span> <span class="pre">...)</span></code>), and unregistering the
-replacement brings the built-in back. <code class="docutils literal notranslate"><span class="pre">svg.preset.list(&quot;animation&quot;)</span></code> lists the built-in presets and
+replacement brings the built-in back. <code class="docutils literal notranslate"><span class="pre">svg.preset.animation.list()</span></code> lists the built-in presets and
 yours, and an unknown name in <code class="docutils literal notranslate"><span class="pre">el.animate.&lt;name&gt;</span></code> raises <code class="docutils literal notranslate"><span class="pre">AttributeError</span></code> suggesting the closest ones.
 <code class="docutils literal notranslate"><span class="pre">Motion.apply</span></code> also runs functions that are not registered at all.</p>
 <p>In a <a class="reference internal" href="projects.html"><span class="std std-doc">project</span></a>, presets live in the <code class="docutils literal notranslate"><span class="pre">animations/</span></code> folder and are registered when it is
@@ -614,7 +618,7 @@ animation presets):</p>
 
 <span class="n">garden</span> <span class="o">=</span> <span class="n">Garden</span><span class="p">()</span>
 <span class="n">still</span> <span class="o">=</span> <span class="n">garden</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"behavior"</span><span class="p">,</span> <span class="s2">"sway"</span><span class="p">)</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">behavior</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"sway"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">self.attach(element,</span> <span class="pre">function,</span> <span class="pre">**options)</span></code> is typed with the function’s own options, so editors
@@ -625,8 +629,8 @@ the order they were attached, all before <code class="docutils literal notransla
 from it (<code class="docutils literal notranslate"><span class="pre">element.t</span> <span class="pre">=</span> <span class="pre">element.home.t</span></code>, then a relative move) rather than from the current state: the
 motion is computed afresh every frame, so it never drifts and frames can be drawn in any order. The
 built-in behaviours <code class="docutils literal notranslate"><span class="pre">wiggle</span></code>, <code class="docutils literal notranslate"><span class="pre">hover</span></code> and <code class="docutils literal notranslate"><span class="pre">breathe</span></code> (in <code class="docutils literal notranslate"><span class="pre">svg.video.behaviors</span></code>) work this way, about the
-element’s anchor. <code class="docutils literal notranslate"><span class="pre">&#64;svg.preset.behavior(name=...,</span> <span class="pre">replace=True)</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.preset.list(&quot;behavior&quot;)</span></code>,
-<code class="docutils literal notranslate"><span class="pre">svg.preset.get</span></code> and <code class="docutils literal notranslate"><span class="pre">svg.preset.unregister</span></code> follow the same rules as animation presets, and behaviours
+element’s anchor. <code class="docutils literal notranslate"><span class="pre">&#64;svg.preset.behavior(name=...,</span> <span class="pre">replace=True)</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.preset.behavior.list()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">svg.preset.behavior.get</span></code> and <code class="docutils literal notranslate"><span class="pre">svg.preset.behavior.unregister</span></code> follow the same rules as animation presets, and behaviours
 and animation presets share one set of names, since both are reached through <code class="docutils literal notranslate"><span class="pre">element.animate</span></code>.</p>
 </section>
 <section id="baking-python-animation-into-smil">
@@ -714,10 +718,10 @@ lengths) switch halfway, as SMIL does. Called directly on two values it cannot b
 </section>
 <section id="video-in">
 <h2>Video in<a class="headerlink" href="#video-in" title="Link to this heading">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">svgwriter.video.Video(path)</span></code> reads a video lazily through ffmpeg: <code class="docutils literal notranslate"><span class="pre">video[i]</span></code> is frame <code class="docutils literal notranslate"><span class="pre">i</span></code> as an
+<p><code class="docutils literal notranslate"><span class="pre">svgwriter.motion.video.Video(path)</span></code> reads a video lazily through ffmpeg: <code class="docutils literal notranslate"><span class="pre">video[i]</span></code> is frame <code class="docutils literal notranslate"><span class="pre">i</span></code> as an
 <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">video.at(seconds)</span></code> the frame shown at that time, and iterating streams every frame as a
 numpy array. Mix footage with vector animation in <code class="docutils literal notranslate"><span class="pre">update</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.video</span><span class="w"> </span><span class="kn">import</span> <span class="n">Video</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.motion.video</span><span class="w"> </span><span class="kn">import</span> <span class="n">Video</span>
 
 <span class="c1"># clip = Video("footage.mp4")</span>
 <span class="c1"># backdrop = doc.add(clip[0])</span>
@@ -807,7 +811,7 @@ numpy array. Mix footage with vector animation in <code class="docutils literal 
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=31bb8259"></script>
+</div><script src="../_static/documentation_options.js?v=5574521d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

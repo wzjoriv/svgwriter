@@ -97,8 +97,8 @@ dot.animate.bob(begin=2)                              # by name, like the built-
 row = svg.Group()
 row += [svg.circle(20 + 20 * index, 80, 6) for index in range(4)]
 row.animate.stagger("bob", step=0.2, height=6)
-print(svg.preset.list("animation")[-1])
-svg.preset.unregister("animation", "bob")
+print(svg.preset.animation.list()[-1])
+svg.preset.animation.unregister("bob")
 ```
 
 The shape is checked when the function is decorated, so a mistake fails at once with a `TypeError`
@@ -106,7 +106,7 @@ showing the expected signature. Returning None is accepted too; `apply` returns 
 `@svg.preset.animation(name="hop")` registers under another name. A taken name raises `ValueError` naming
 the function that owns it, built-in presets included; `replace=True` replaces one on purpose (a
 replacement can still call the original as `svg.Motion.spin(motion, ...)`), and unregistering the
-replacement brings the built-in back. `svg.preset.list("animation")` lists the built-in presets and
+replacement brings the built-in back. `svg.preset.animation.list()` lists the built-in presets and
 yours, and an unknown name in `el.animate.<name>` raises `AttributeError` suggesting the closest ones.
 `Motion.apply` also runs functions that are not registered at all.
 
@@ -289,7 +289,7 @@ class Garden(svg.Scene):
 
 garden = Garden()
 still = garden.render(0.5)
-svg.preset.unregister("behavior", "sway")
+svg.preset.behavior.unregister("sway")
 ```
 
 `self.attach(element, function, **options)` is typed with the function's own options, so editors
@@ -301,8 +301,8 @@ the order they were attached, all before `update(seconds)`, so `update` sees the
 from it (`element.t = element.home.t`, then a relative move) rather than from the current state: the
 motion is computed afresh every frame, so it never drifts and frames can be drawn in any order. The
 built-in behaviours `wiggle`, `hover` and `breathe` (in `svg.video.behaviors`) work this way, about the
-element's anchor. `@svg.preset.behavior(name=..., replace=True)`, `svg.preset.list("behavior")`,
-`svg.preset.get` and `svg.preset.unregister` follow the same rules as animation presets, and behaviours
+element's anchor. `@svg.preset.behavior(name=..., replace=True)`, `svg.preset.behavior.list()`,
+`svg.preset.behavior.get` and `svg.preset.behavior.unregister` follow the same rules as animation presets, and behaviours
 and animation presets share one set of names, since both are reached through `element.animate`.
 
 ## Baking Python animation into SMIL
@@ -375,12 +375,12 @@ svg.unregister_interpolator(Weight)
 
 ## Video in
 
-`svgwriter.video.Video(path)` reads a video lazily through ffmpeg: `video[i]` is frame `i` as an
+`svgwriter.motion.video.Video(path)` reads a video lazily through ffmpeg: `video[i]` is frame `i` as an
 `<image>`, `video.at(seconds)` the frame shown at that time, and iterating streams every frame as a
 numpy array. Mix footage with vector animation in `update`:
 
 ```python
-from svgwriter.video import Video
+from svgwriter.motion.video import Video
 
 # clip = Video("footage.mp4")
 # backdrop = doc.add(clip[0])

@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.ops.interpolate - svgwriter 2.4.0</title>
+        <title>svgwriter.ops.interpolate - svgwriter 2.5.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">svgwriter 2.4.0</div></a>
+      <a href="../../../index.html"><div class="brand">svgwriter 2.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.4.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.5.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.4.0</span>
+  <span class="sidebar-versions-label">2.5.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -222,6 +222,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/rendering.html">Rendering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/batches.html">Performance and batches</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/logos.html">Logos and icons</a></li>
@@ -229,6 +230,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -243,6 +245,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/elements.html">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/geometry.html">Geometry</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/layout.html">Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/batch.html">Batches</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/ops.html">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/fonts.html">Fonts</a></li>
@@ -257,6 +260,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/project.html">Project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -301,14 +305,14 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..color.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span><span class="p">,</span> <span class="n">as_color</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathData</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..transform.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">Point</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..model.color.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span><span class="p">,</span> <span class="n">as_color</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..model.pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathData</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..model.transform.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">Point</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DISCRETE_SWITCH</span><span class="p">,</span> <span class="n">FULL_TURN</span><span class="p">,</span> <span class="n">GEOMETRY_SKIP</span><span class="p">,</span> <span class="n">HALF_TURN</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._morph</span><span class="w"> </span><span class="kn">import</span> <span class="n">blend_outlines</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..model.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"interpolate"</span><span class="p">,</span> <span class="s2">"register_interpolator"</span><span class="p">,</span> <span class="s2">"unregister_interpolator"</span><span class="p">]</span>
 
@@ -321,13 +325,15 @@
 <span class="w">    </span><span class="sd">"""The value a fraction *t* of the way from *a* to *b* (``t=0`` gives *a*, ``t=1`` gives *b*).</span>
 
 <span class="sd">    Works on numbers, ``(x, y)`` points and numeric sequences, colors (in</span>
-<span class="sd">    RGBA), :class:`~svgwriter.transform.Matrix` (translation, rotation, skew</span>
+<span class="sd">    RGBA), :class:`~svgwriter.model.transform.Matrix` (translation, rotation, skew</span>
 <span class="sd">    and scale separately, so turns stay turns), :class:`~svgwriter.PathData`</span>
 <span class="sd">    and elements. Two elements of the same kind and shape interpolate their</span>
 <span class="sd">    attributes; anything else is morphed as outlines: outlines pair with</span>
 <span class="sd">    outlines and holes with holes (a contour without a partner grows from or</span>
 <span class="sd">    shrinks to its centre), each pair is resampled to one point count and</span>
 <span class="sd">    started where the points move least, so in-between shapes do not twist.</span>
+<span class="sd">    Two batches (:mod:`svgwriter.batch &lt;svgwriter.model.batch&gt;`) of the same</span>
+<span class="sd">    size blend every item at once.</span>
 <span class="sd">    Inside elements, attribute values that cannot be blended (keywords,</span>
 <span class="sd">    different strings, lists of different lengths) switch at ``t = 0.5``, as</span>
 <span class="sd">    SMIL's discrete mode does. Other types are added with</span>
@@ -533,8 +539,14 @@
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"array"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_batch</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..model.batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Batch</span>
+
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Batch</span><span class="p">)</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_is_element</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..model.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
 
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Element</span><span class="p">)</span>
 
@@ -544,6 +556,7 @@
     <span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">),</span> <span class="n">_matrix</span><span class="p">),</span>
     <span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">PathData</span><span class="p">),</span> <span class="n">blend_outlines</span><span class="p">),</span>
     <span class="p">(</span><span class="n">_is_array</span><span class="p">,</span> <span class="n">_array</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">_is_batch</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">_blend</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">)),</span>
     <span class="p">(</span><span class="n">_is_element</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">_elements</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">)),</span>
     <span class="p">(</span><span class="n">_is_sequence</span><span class="p">,</span> <span class="n">_sequence</span><span class="p">),</span>
     <span class="p">(</span><span class="n">_is_color</span><span class="p">,</span> <span class="n">_color</span><span class="p">),</span>
@@ -594,7 +607,7 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_morph</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Element</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Both as local outlines, blended; paint and other attributes blend or switch."""</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..model.elements.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="n">blend_outlines</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">local_outline</span><span class="p">(),</span> <span class="n">b</span><span class="o">.</span><span class="n">local_outline</span><span class="p">(),</span> <span class="n">t</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -636,7 +649,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=31bb8259"></script>
+</div><script src="../../../_static/documentation_options.js?v=5574521d"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

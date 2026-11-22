@@ -3,6 +3,6 @@
 The format registry and its functions.
 
 ```{eval-rst}
-.. automodule:: svgwriter.export
+.. automodule:: svgwriter.formats.export
    :members:
 ```

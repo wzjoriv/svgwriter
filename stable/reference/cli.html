@@ -3,11 +3,11 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="prev" title="Project" href="project.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Errors" href="errors.html"><link rel="prev" title="Project" href="project.html">
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Command line - svgwriter 2.4.0</title>
+        <title>Command line - svgwriter 2.5.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.4.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.4.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.5.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.4.0</span>
+  <span class="sidebar-versions-label">2.5.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -223,6 +223,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/presets.html">Presets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/documents.html">Documents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/rendering.html">Rendering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/batches.html">Performance and batches</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/export-import.html">Export and import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/animation.html">Animation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/logos.html">Logos and icons</a></li>
@@ -230,6 +231,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/inkscape.html">Inkscape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
 <ul>
@@ -244,6 +246,7 @@
 <li class="toctree-l2"><a class="reference internal" href="elements.html">Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="geometry.html">Geometry</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layout.html">Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="batch.html">Batches</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color.html">Colors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ops.html">Geometry operations and rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fonts.html">Fonts</a></li>
@@ -258,6 +261,7 @@
 <li class="toctree-l2"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project.html">Project</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Errors</a></li>
 </ul>
 </li>
 </ul>
@@ -319,14 +323,14 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">build</span> <span class="pre">[--format</span> <span class="pre">F</span> <span class="pre">...]</span> <span class="pre">[--path</span> <span class="pre">DIR]</span></code></p></td>
 <td><p>Write the project’s outputs (all of <code class="docutils literal notranslate"><span class="pre">[outputs]</span> <span class="pre">formats</span></code>, or the ones given)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">preview</span> <span class="pre">[--port</span> <span class="pre">N]</span> <span class="pre">[--no-open]</span> <span class="pre">[--path</span> <span class="pre">DIR]</span></code></p></td>
-<td><p>Serve the outputs on a local page that rebuilds and reloads on save</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">preview</span> <span class="pre">[--port</span> <span class="pre">N]</span> <span class="pre">[--open/--no-open]</span> <span class="pre">[--path</span> <span class="pre">DIR]</span></code></p></td>
+<td><p>Serve a live page that redraws as controls move and files change</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">presets</span></code></p></td>
 <td><p>List project presets</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sizes</span></code></p></td>
-<td><p>List named canvas sizes (<code class="docutils literal notranslate"><span class="pre">svg.preset.list(&quot;size&quot;)</span></code>)</p></td>
+<td><p>List named canvas sizes (<code class="docutils literal notranslate"><span class="pre">svg.preset.size.list()</span></code>)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">shapes</span></code>, <code class="docutils literal notranslate"><span class="pre">elements</span></code></p></td>
 <td><p>List shape presets and element classes</p></td>
@@ -349,12 +353,41 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">outline</span> <span class="pre">TEXT</span> <span class="pre">[--font</span> <span class="pre">F]</span> <span class="pre">[--size</span> <span class="pre">N]</span> <span class="pre">[-o</span> <span class="pre">FILE]</span></code></p></td>
 <td><p>Write text as glyph outlines</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">doctor</span> <span class="pre">[--json]</span></code></p></td>
+<td><p>Show what works on this machine, what is missing and how to install it on this OS</p></td>
+</tr>
 </tbody>
 </table>
 </div>
+<section id="svgwriter-doctor">
+<h2><code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">doctor</span></code><a class="headerlink" href="#svgwriter-doctor" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">doctor</span></code> checks the optional libraries (skia, harfbuzz, lcms2, fontTools, ipywidgets,
+matplotlib, …) and external programs (ffmpeg, LaTeX with dvisvgm, the Mermaid CLI, Graphviz, PlantUML,
+D2, Inkscape), and prints one line for each: its version when present, otherwise what it is for and the
+command that installs it on this OS and Linux distribution (<code class="docutils literal notranslate"><span class="pre">apt</span></code>, <code class="docutils literal notranslate"><span class="pre">dnf</span></code>, <code class="docutils literal notranslate"><span class="pre">pacman</span></code>, <code class="docutils literal notranslate"><span class="pre">zypper</span></code>, <code class="docutils literal notranslate"><span class="pre">brew</span></code> or
+<code class="docutils literal notranslate"><span class="pre">winget</span></code>). The last line counts the installed font families and names what <code class="docutils literal notranslate"><span class="pre">sans-serif</span></code>, <code class="docutils literal notranslate"><span class="pre">serif</span></code>,
+<code class="docutils literal notranslate"><span class="pre">monospace</span></code> and emoji resolve to; on Linux with few fonts or no emoji font it adds the distribution’s
+font packages.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>svgwriter<span class="w"> </span>doctor
+<span class="go">svgwriter 2.4.0 on Python 3.13.3, Windows 11 (windows, winget)</span>
+<span class="go">  ok   skia         144.1</span>
+<span class="go">  ok   harfbuzz     0.57.0</span>
+<span class="go">  ...</span>
+<span class="go">  --   graphviz     missing (Graphviz DOT diagrams): winget install Graphviz.Graphviz</span>
+<span class="go">fonts: 326 families; sans-serif -&gt; Arial, serif -&gt; Times New Roman, monospace -&gt; Consolas, emoji -&gt; Segoe UI Emoji</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--json</span></code> prints the same report as JSON (<code class="docutils literal notranslate"><span class="pre">python</span></code>, <code class="docutils literal notranslate"><span class="pre">system</span></code>, <code class="docutils literal notranslate"><span class="pre">system_packages</span></code>, <code class="docutils literal notranslate"><span class="pre">capabilities</span></code>,
+<code class="docutils literal notranslate"><span class="pre">fonts</span></code>). From Python, <code class="docutils literal notranslate"><span class="pre">svg.capabilities()</span></code> returns the capability part as a read-only mapping of name
+to a record with <code class="docutils literal notranslate"><span class="pre">available</span></code>, <code class="docutils literal notranslate"><span class="pre">version</span></code>, <code class="docutils literal notranslate"><span class="pre">path</span></code>, <code class="docutils literal notranslate"><span class="pre">purpose</span></code> and <code class="docutils literal notranslate"><span class="pre">hint</span></code>; it is checked once and cached
+(<code class="docutils literal notranslate"><span class="pre">svg.capabilities(refresh=True)</span></code> checks again).</p>
+<p>Each program can also be named by an environment variable, <code class="docutils literal notranslate"><span class="pre">SVGWRITER_&lt;NAME&gt;</span></code> (<code class="docutils literal notranslate"><span class="pre">SVGWRITER_FFMPEG</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SVGWRITER_DOT</span></code>, <code class="docutils literal notranslate"><span class="pre">SVGWRITER_MMDC</span></code>, <code class="docutils literal notranslate"><span class="pre">SVGWRITER_LATEX</span></code>, <code class="docutils literal notranslate"><span class="pre">SVGWRITER_DVISVGM</span></code>, …), which wins over <code class="docutils literal notranslate"><span class="pre">PATH</span></code>.</p>
+<p>Packages add commands through the <code class="docutils literal notranslate"><span class="pre">svgwriter.command</span></code> entry-point group, and <code class="docutils literal notranslate"><span class="pre">commands.register(command)</span></code>
+adds one at run time (see <a class="reference internal" href="../guides/extending.html"><span class="std std-doc">Extending svgwriter</span></a>).</p>
 <dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.cli.app">
-<span class="sig-name descname"><span class="pre">app</span></span><a class="headerlink" href="#svgwriter.cli.app" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="svgwriter.tools.cli.app">
+<span class="sig-name descname"><span class="pre">app</span></span><a class="reference internal" href="../_modules/svgwriter/tools/cli.html#app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.tools.cli.app" title="Link to this definition">¶</a></dt>
 <dd><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">click.Group</span></code>; <code class="docutils literal notranslate"><span class="pre">app.add_command(command)</span></code> adds a command.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -364,8 +397,8 @@ fails (no scene, ffmpeg missing) and 2 for a usage error, an unreadable file or 
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="svgwriter.cli.main">
-<span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/cli.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.cli.main" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="svgwriter.tools.cli.main">
+<span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/tools/cli.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.tools.cli.main" title="Link to this definition">¶</a></dt>
 <dd><p>Run the command line.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -377,7 +410,7 @@ cannot be read or written; errors are one line on stderr, without a traceback.</
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">main</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.tools.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">main</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">main</span><span class="p">([</span><span class="s2">"draw"</span><span class="p">,</span> <span class="s2">"star"</span><span class="p">,</span> <span class="s2">"--size"</span><span class="p">,</span> <span class="s2">"50"</span><span class="p">,</span> <span class="s2">"--compact"</span><span class="p">])</span>
 <span class="go">&lt;?xml ...?&gt;</span>
 <span class="go">&lt;svg ...&lt;/svg&gt;0</span>
@@ -385,6 +418,62 @@ cannot be read or written; errors are one line on stderr, without a traceback.</
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.capabilities">
+<span class="sig-name descname"><span class="pre">capabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">refresh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Capabilities</span></span></span><a class="reference internal" href="../_modules/svgwriter/_internal/_platform/_capabilities.html#capabilities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.capabilities" title="Link to this definition">¶</a></dt>
+<dd><p>What this machine can do: optional libraries and external programs, with how to add each.</p>
+<p>The checks run on first call and are cached; programs are asked for their version once.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>refresh</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – Check again (after installing something). Defaults to False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Capabilities</em> – A read-only mapping of name to <code class="xref py py-class docutils literal notranslate"><span class="pre">Capability</span></code> (<code class="docutils literal notranslate"><span class="pre">available</span></code>, <code class="docutils literal notranslate"><span class="pre">version</span></code>, <code class="docutils literal notranslate"><span class="pre">path</span></code>,
+<code class="docutils literal notranslate"><span class="pre">purpose</span></code> and the install <code class="docutils literal notranslate"><span class="pre">hint</span></code> for this OS).</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#svgwriter.tools.cli.app" title="svgwriter.tools.cli.app"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.tools.cli.app</span></code></a></dt><dd><p><code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">doctor</span></code> prints the same report.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">capabilities</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found</span><span class="p">[</span><span class="s2">"harfbuzz"</span><span class="p">]</span><span class="o">.</span><span class="n">kind</span>
+<span class="go">'python'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># found["ffmpeg"].hint  -&gt; e.g. 'winget install Gyan.FFmpeg'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="svgwriter.tools.cli.commands">
+<span class="sig-name descname"><span class="pre">commands</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Final" title="(in Python v3.15)"><span class="pre">Final</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="presets.html#svgwriter.Registry" title="svgwriter._internal._registry.Registry"><span class="pre">Registry</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Command</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#svgwriter.tools.cli.commands" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">commands.register(command)</span></code>, or the <code class="docutils literal notranslate"><span class="pre">svgwriter.command</span></code> entry points.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">click</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.tools.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">commands</span><span class="p">,</span> <span class="n">main</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nd">@commands</span><span class="o">.</span><span class="n">register</span>
+<span class="gp">... </span><span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s2">"Say hello."</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">hello</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">"hello"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span><span class="p">([</span><span class="s2">"hello"</span><span class="p">])</span>
+<span class="go">hello</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">commands</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"hello"</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Commands beside the built-in ones</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 
         </article>
@@ -392,7 +481,15 @@ cannot be read or written; errors are one line on stderr, without a traceback.</
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="errors.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Errors</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="project.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
@@ -435,8 +532,13 @@ cannot be read or written; errors are one line on stderr, without a traceback.</
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Command line</a><ul>
-<li><a class="reference internal" href="#svgwriter.cli.app"><code class="docutils literal notranslate"><span class="pre">app</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter-doctor"><code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">doctor</span></code></a><ul>
+<li><a class="reference internal" href="#svgwriter.tools.cli.app"><code class="docutils literal notranslate"><span class="pre">app</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.tools.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.capabilities"><code class="docutils literal notranslate"><span class="pre">capabilities()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.tools.cli.commands"><code class="docutils literal notranslate"><span class="pre">commands</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -448,7 +550,7 @@ cannot be read or written; errors are one line on stderr, without a traceback.</
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=31bb8259"></script>
+</div><script src="../_static/documentation_options.js?v=5574521d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
