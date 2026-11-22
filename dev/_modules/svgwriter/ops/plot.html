@@ -308,6 +308,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._platform</span><span class="w"> </span><span class="kn">import</span> <span class="n">missing</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">CLOSEPOLY</span><span class="p">,</span> <span class="n">CURVE4</span><span class="p">,</span> <span class="n">LINETO</span><span class="p">,</span> <span class="n">MOVETO</span><span class="p">,</span> <span class="n">POINTS_PER_UNIT</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -395,7 +396,7 @@
         <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathPatch</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span> <span class="k">as</span> <span class="n">MplPath</span>
     <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">"drawing into matplotlib needs matplotlib; pip install 'pysvgwriter[plot]'"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+        <span class="k">raise</span> <span class="n">missing</span><span class="p">(</span><span class="s2">"matplotlib"</span><span class="p">,</span> <span class="s2">"drawing into matplotlib"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._flat._flatten</span><span class="w"> </span><span class="kn">import</span> <span class="n">flatten</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..document</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span>

@@ -313,6 +313,7 @@
 <span class="sd">animate             render the scenes of a file to mp4/gif/webm/png frames (ffmpeg)</span>
 <span class="sd">render              rasterize scenes or an SVG file to PNG (skia-python)</span>
 <span class="sd">outline             write text as glyph outlines (skia-python)</span>
+<span class="sd">doctor              what works here, what is missing and how to install it</span>
 
 <span class="sd">Packages add commands through the ``svgwriter.command`` entry-point group (see :data:`commands`).</span>
 <span class="sd">"""</span>
@@ -328,6 +329,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Registry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._basic</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_basic_commands</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EXIT_ERROR</span><span class="p">,</span> <span class="n">EXIT_FAILURE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._doctor</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_doctor_command</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._media</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_media_commands</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._project</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_project_commands</span>
 
@@ -378,6 +380,7 @@
 <span class="n">add_project_commands</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 <span class="n">add_basic_commands</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 <span class="n">add_media_commands</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="n">add_doctor_command</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="main">

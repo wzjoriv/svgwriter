@@ -184,7 +184,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
       </label>
     </div>
@@ -303,7 +303,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
           </label>
         </div>
@@ -338,12 +338,93 @@ Nothing else is needed at runtime.</p>
 <p>Controls, sweeps and the controls of <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">preview</span></code> work without it.</p>
 </li>
 </ul>
-<p>Optional external program:</p>
+<p>Optional external programs, found on <code class="docutils literal notranslate"><span class="pre">PATH</span></code> or through <code class="docutils literal notranslate"><span class="pre">SVGWRITER_&lt;NAME&gt;</span></code> (for example
+<code class="docutils literal notranslate"><span class="pre">SVGWRITER_FFMPEG=/opt/ffmpeg/bin/ffmpeg</span></code>):</p>
 <ul class="simple">
-<li><p><strong>ffmpeg</strong> on <code class="docutils literal notranslate"><span class="pre">PATH</span></code> for <a class="reference internal" href="../guides/animation.html"><span class="doc">video export</span></a>. Without it, <code class="docutils literal notranslate"><span class="pre">render_animation</span></code> raises
+<li><p><strong>ffmpeg</strong> for <a class="reference internal" href="../guides/animation.html"><span class="doc">video export</span></a>. Without it, <code class="docutils literal notranslate"><span class="pre">render_animation</span></code> raises
 <code class="docutils literal notranslate"><span class="pre">FFmpegNotFoundError</span></code> before doing any work.</p></li>
+<li><p><strong>LaTeX</strong> with <strong>dvisvgm</strong> for <code class="docutils literal notranslate"><span class="pre">svg.latex</span></code> with real TeX (otherwise Ziamath or matplotlib’s mathtext).</p></li>
+<li><p><strong>Graphviz</strong> (<code class="docutils literal notranslate"><span class="pre">dot</span></code>), the <strong>Mermaid CLI</strong> (<code class="docutils literal notranslate"><span class="pre">mmdc</span></code>), <strong>PlantUML</strong> and <strong>D2</strong> for diagram files.</p></li>
 </ul>
+<section id="check-a-machine">
+<h2>Check a machine<a class="headerlink" href="#check-a-machine" title="Link to this heading">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>svgwriter<span class="w"> </span>doctor
+</pre></div>
+</div>
+<p>prints what is installed, what is missing and the command that adds each missing piece on this OS,
+plus the installed font families and what <code class="docutils literal notranslate"><span class="pre">sans-serif</span></code>, <code class="docutils literal notranslate"><span class="pre">serif</span></code>, <code class="docutils literal notranslate"><span class="pre">monospace</span></code> and emoji resolve to
+(see <a class="reference internal" href="../reference/cli.html"><span class="doc">Command line</span></a>). Every “needs X” error names the same command.</p>
+</section>
+<section id="per-operating-system">
+<h2>Per operating system<a class="headerlink" href="#per-operating-system" title="Link to this heading">¶</a></h2>
+<p>svgwriter draws text with the system’s fonts, so the fonts installed decide what <code class="docutils literal notranslate"><span class="pre">sans-serif</span></code>, emoji,
+Devanagari, Arabic or CJK text looks like. Each generic family tries common faces in order (Arial,
+Helvetica, Liberation Sans, Arimo, DejaVu Sans, Noto Sans for <code class="docutils literal notranslate"><span class="pre">sans-serif</span></code>), and characters a font
+lacks fall back to any installed font that has them.</p>
+<section id="windows">
+<h3>Windows<a class="headerlink" href="#windows" title="Link to this heading">¶</a></h3>
+<p>Wheels need nothing else; Windows ships Arial, Times New Roman, Consolas, Segoe UI Emoji and fonts for
+most scripts. Optional programs through winget:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&gt; winget install Gyan.FFmpeg</span>
+<span class="go">&gt; winget install MiKTeX.MiKTeX</span>
+<span class="go">&gt; winget install Graphviz.Graphviz</span>
+<span class="go">&gt; winget install OpenJS.NodeJS   # then: npm install -g @mermaid-js/mermaid-cli</span>
+</pre></div>
+</div>
+</section>
+<section id="macos">
+<h3>macOS<a class="headerlink" href="#macos" title="Link to this heading">¶</a></h3>
+<p>Wheels need nothing else; macOS ships Helvetica, Times, Menlo, Apple Color Emoji and fonts for most
+scripts. Optional programs through Homebrew:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>brew<span class="w"> </span>install<span class="w"> </span>ffmpeg<span class="w"> </span>graphviz<span class="w"> </span>node
+<span class="gp">$ </span>brew<span class="w"> </span>install<span class="w"> </span>--cask<span class="w"> </span>mactex-no-gui
+<span class="gp">$ </span>npm<span class="w"> </span>install<span class="w"> </span>-g<span class="w"> </span>@mermaid-js/mermaid-cli
+</pre></div>
+</div>
+</section>
+<section id="debian-and-ubuntu-apt">
+<h3>Debian and Ubuntu (apt)<a class="headerlink" href="#debian-and-ubuntu-apt" title="Link to this heading">¶</a></h3>
+<p>skia needs EGL, GL and fontconfig; slim images have no fonts at all, so add a baseline:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>libegl1<span class="w"> </span>libgl1<span class="w"> </span>libfontconfig1<span class="w"> </span>fonts-dejavu-core<span class="w"> </span>fonts-noto-color-emoji
+<span class="gp">$ </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>ffmpeg<span class="w"> </span>graphviz<span class="w"> </span>texlive-latex-extra<span class="w"> </span>dvisvgm
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">fonts-noto-core</span></code>, <code class="docutils literal notranslate"><span class="pre">fonts-noto-cjk</span></code> and <code class="docutils literal notranslate"><span class="pre">fonts-liberation2</span></code> add more scripts and metric-compatible
+Arial and Times faces.</p>
+</section>
+<section id="fedora-rhel-and-derivatives-dnf">
+<h3>Fedora, RHEL and derivatives (dnf)<a class="headerlink" href="#fedora-rhel-and-derivatives-dnf" title="Link to this heading">¶</a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>mesa-libEGL<span class="w"> </span>mesa-libGL<span class="w"> </span>fontconfig<span class="w"> </span>dejavu-sans-fonts<span class="w"> </span>google-noto-color-emoji-fonts
+<span class="gp">$ </span>sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>ffmpeg-free<span class="w"> </span>graphviz<span class="w"> </span>texlive-scheme-basic<span class="w"> </span>texlive-standalone<span class="w"> </span>texlive-dvisvgm
+</pre></div>
+</div>
+</section>
+<section id="arch-linux-pacman">
+<h3>Arch Linux (pacman)<a class="headerlink" href="#arch-linux-pacman" title="Link to this heading">¶</a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>libglvnd<span class="w"> </span>fontconfig<span class="w"> </span>ttf-dejavu<span class="w"> </span>noto-fonts-emoji
+<span class="gp">$ </span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>ffmpeg<span class="w"> </span>graphviz<span class="w"> </span>texlive-basic<span class="w"> </span>texlive-latexextra<span class="w"> </span>texlive-binextra
+</pre></div>
+</div>
+</section>
+<section id="opensuse-zypper">
+<h3>openSUSE (zypper)<a class="headerlink" href="#opensuse-zypper" title="Link to this heading">¶</a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>zypper<span class="w"> </span>install<span class="w"> </span>libEGL1<span class="w"> </span>libGL1<span class="w"> </span>fontconfig<span class="w"> </span>dejavu-fonts<span class="w"> </span>noto-coloremoji-fonts
+<span class="gp">$ </span>sudo<span class="w"> </span>zypper<span class="w"> </span>install<span class="w"> </span>ffmpeg-7<span class="w"> </span>graphviz<span class="w"> </span>texlive-latex<span class="w"> </span>texlive-standalone<span class="w"> </span>texlive-dvisvgm
+</pre></div>
+</div>
+</section>
+<section id="alpine-and-other-musl-distributions">
+<h3>Alpine and other musl distributions<a class="headerlink" href="#alpine-and-other-musl-distributions" title="Link to this heading">¶</a></h3>
+<p>Unsupported: skia-python ships no musllinux wheels, so svgwriter cannot be installed there until it
+does. Use a glibc-based image (<code class="docutils literal notranslate"><span class="pre">debian:stable-slim</span></code>, <code class="docutils literal notranslate"><span class="pre">python:3.13-slim</span></code>).</p>
+</section>
+<section id="pyodide">
+<h3>Pyodide<a class="headerlink" href="#pyodide" title="Link to this heading">¶</a></h3>
+<p>skia-python has no Pyodide build yet, so svgwriter does not run in the browser; external programs are
+never available there.</p>
 <p>For a development install, see <a class="reference internal" href="../contributing.html"><span class="doc">Contributing</span></a>.</p>
+</section>
+</section>
 </section>
 
         </article>
@@ -389,8 +470,38 @@ Nothing else is needed at runtime.</p>
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#check-a-machine">Check a machine</a></li>
+<li><a class="reference internal" href="#per-operating-system">Per operating system</a><ul>
+<li><a class="reference internal" href="#windows">Windows</a></li>
+<li><a class="reference internal" href="#macos">macOS</a></li>
+<li><a class="reference internal" href="#debian-and-ubuntu-apt">Debian and Ubuntu (apt)</a></li>
+<li><a class="reference internal" href="#fedora-rhel-and-derivatives-dnf">Fedora, RHEL and derivatives (dnf)</a></li>
+<li><a class="reference internal" href="#arch-linux-pacman">Arch Linux (pacman)</a></li>
+<li><a class="reference internal" href="#opensuse-zypper">openSUSE (zypper)</a></li>
+<li><a class="reference internal" href="#alpine-and-other-musl-distributions">Alpine and other musl distributions</a></li>
+<li><a class="reference internal" href="#pyodide">Pyodide</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
