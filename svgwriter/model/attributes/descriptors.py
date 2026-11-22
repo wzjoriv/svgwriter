@@ -38,7 +38,7 @@ class Attr(Generic[T]):
     >>> import svgwriter as svg
     >>> svg.Rect.width.key
     'width'
-    >>> svg.Rect(width=3).width
+    >>> svg.Rect(width=3, height=1).width
     3.0
     """
 
@@ -111,7 +111,7 @@ class LengthAttr(Attr["float | Length"]):
     Examples
     --------
     >>> import svgwriter as svg
-    >>> svg.Rect(width=5).width, svg.parse('<rect width="2mm"/>').width
+    >>> svg.Rect(width=5, height=1).width, svg.parse('<rect width="2mm"/>').width
     (5.0, Length(value=2.0, unit=<Unit.MM: 'mm'>))
     """
 

@@ -32,7 +32,7 @@ def test_srgb_inputs_carry_no_source(text):
 def test_hex_and_svg_output_stay_clipped_srgb():
     green = svg.Color.parse(P3_GREEN)
     assert green.hex == "#00ff00"
-    assert str(svg.rect(fill=green)) == str(svg.rect(fill="#00ff00"))
+    assert str(svg.rect(0, 0, 1, 1, fill=green)) == str(svg.rect(0, 0, 1, 1, fill="#00ff00"))
     assert not green.in_gamut and svg.Color.parse("lime").in_gamut
 
 

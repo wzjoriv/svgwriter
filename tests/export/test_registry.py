@@ -6,7 +6,6 @@ import numpy as np
 import pytest
 
 import svgwriter as svg
-from svgwriter import export
 
 
 def drawing() -> svg.Document:
@@ -18,29 +17,41 @@ def drawing() -> svg.Document:
 
 class TestRegistry:
     def test_builtin_formats_and_lookup(self) -> None:
-        names = set(export.exporters())
+        names = set(svg.formats.writers())
         assert {"svg", "svgz", "png", "jpeg", "webp", "pdf", "tikz", "eps"} <= names
-        assert export.find_exporter("x/y/figure.JPG").name == "jpeg"
-        assert export.find_exporter(".tex").name == "tikz" and export.find_exporter("PNG").name == "png"
-        assert export.exporters()["png"].description
+        assert svg.formats.writer("x/y/figure.JPG").name == "jpeg"
+        assert svg.formats.writer(".tex").name == "tikz" and svg.formats.writer("PNG").name == "png"
+        assert svg.formats.get("png").description
+        assert svg.formats.writer("a.svgz").name == "svgz" and svg.formats.reader("a.svgz").name == "svg"
+        assert svg.formats.reader("md").name == "markdown" and svg.formats.writer("jpg").name == "jpeg"
 
     def test_unknown_format(self) -> None:
-        with pytest.raises(ValueError, match="known extensions"):
-            export.find_exporter("figure.xyz")
+        with pytest.raises(ValueError, match="no format can write 'figure.xyz'"):
+            svg.formats.writer("figure.xyz")
+        with pytest.raises(KeyError, match="did you mean 'png'"):
+            svg.formats.writer("pnf")
+        with pytest.raises(svg.errors.UnknownNameError, match="no format can read"):
+            svg.formats.reader("x.xlsx")
 
     def test_register_custom_and_duplicates(self) -> None:
-        @export.register("count-test", extensions=(".cnt",), binary=False, replace=True)
-        def count(document, **options):
+        class Count(svg.Format, name="count-test", extensions=(".cnt",), binary=False):
             """Number of top-level elements."""
-            return str(len(document))
 
-        assert drawing().export("count-test") == "2" and export.find_exporter("a.cnt").description.startswith("Number")
+            def write(self, document, **options):
+                return str(len(document))
+
+        assert drawing().export("count-test") == "2" and svg.formats.writer("a.cnt").description.startswith("Number")
+        assert svg.formats.writer("a.cnt").writable and not svg.formats.get("count-test").readable
         with pytest.raises(ValueError, match="already registered"):
-            export.register("count-test")(count)
-        export.unregister("count-test")
-        assert "count-test" not in export.exporters()
-        with pytest.raises(KeyError, match="no exporter"):
-            export.unregister("count-test")
+            type("Again", (svg.Format,), {}, name="count-test")
+        with pytest.raises(NotImplementedError, match="cannot be read"):
+            svg.formats.get("count-test").read(b"")
+        svg.formats.unregister("count-test")
+        assert "count-test" not in svg.formats.list()
+        with pytest.raises(KeyError, match="unknown format 'count-test'"):
+            svg.formats.unregister("count-test")
+        with pytest.raises(KeyError, match="built in"):
+            svg.formats.unregister("png")
 
     def test_save_and_open_round_trip(self, tmp_path) -> None:
         doc = drawing()

@@ -8,6 +8,7 @@ from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
+from .._format import Format
 from ._constants import (
     BODY_SIZE,
     BOLD_RE,
@@ -25,7 +26,6 @@ from ._constants import (
     SANS,
     SPACES_PER_LEVEL,
 )
-from ._registry import register_importer
 
 if TYPE_CHECKING:
     from ...document import Document
@@ -161,7 +161,6 @@ def read_text(data: bytes) -> Document:
     return _document(group)
 
 
-register_importer("text", extensions=(".txt", ".text"))(read_text)
 
 
 def _plain(text: str) -> str:
@@ -230,4 +229,9 @@ def read_markdown(data: bytes) -> Document:
     return _document(stack(lines))
 
 
-register_importer("markdown", extensions=(".md", ".markdown"))(read_markdown)
+class TextFormat(Format, name="text", extensions=(".txt", ".text")):
+    read = staticmethod(read_text)
+
+
+class MarkdownFormat(Format, name="markdown", extensions=(".md", ".markdown")):
+    read = staticmethod(read_markdown)

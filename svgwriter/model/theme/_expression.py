@@ -9,9 +9,9 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
+from ...errors import ThemeError
 from ..color.color import Color
 from ._constants import COMPARISONS, CONDITIONAL, EXPRESSION_MARK
-from ._errors import ThemeError
 from ._functions import FUNCTIONS, Value, kind
 from ._lexer import ExpressionError
 from ._parser import Binary, Call, Literal, Node, Reference, Unary, check_magnitude, parse

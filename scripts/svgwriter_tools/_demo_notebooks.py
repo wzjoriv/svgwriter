@@ -10,6 +10,7 @@ from __future__ import annotations
 import ast
 import json
 import shutil
+import sys
 import tempfile
 from pathlib import Path
 from typing import Annotated, Any
@@ -40,22 +41,18 @@ STILLS: dict[str, tuple[dict[str, Any], ...]] = {
     "playing-card": ({"rank": "7", "suit": "♠", "hue": 210}, {"rank": "K", "suit": "♣", "hue": 140},
                      {"rank": "A", "suit": "♦", "iridescence": 0.8, "glow": False}),
     "poster": ({"theme": "night"}, {"theme": "blueprint"}, {"hue": 120, "title": "Wave"}),
-    "text-effects": ({"smoke": "ice", "metal": "neon", "wind": "glitch"},
-                     {"sparks": "neon", "snow": "fire", "smoke": "snow"}),
+    "effects": ({"smoke": "ice", "metal": "neon", "wind": "glitch", "logo": "fire"},
+                {"sparks": "neon", "snow": "fire", "smoke": "snow", "button": "glitch"}),
 }
-SETUP = """import svgwriter as svg
-
-project = svg.Project.load()
+SETUP = """project = svg.Project.load()
 theme = svg.Theme.load(project.config.theme)
 theme.__enter__();"""
 SETUP_NOTE = "The project's theme applies to everything below, as it does when the project builds."
-IMPORTS = "from IPython import display as ipy"
-HELPERS = f"""import functools
-
-{IMPORTS}
-
-
-def in_project(function):
+IMPORTS = ("import functools", "from IPython import display as ipy", "import svgwriter as svg")
+IMPORT_STARTS = ("import ", "from ")
+IMPORT_GROUPS = 3
+IMPORT_GROUPS = 3
+HELPERS = """def in_project(function):
     @functools.wraps(function)
     def draw(doc, **values):
         size = project.config.size
@@ -123,11 +120,45 @@ def notebook_text(name: str) -> dict[str, Any]:
                   _cell("code", f"{HELPERS}\n\n\n{INTERACT.format(function=function)}"),
                   _cell("markdown", STILLS_NOTE)]
         cells += [_cell("code", STILL.format(function=function, values=values)) for values in STILLS[name]]
-    cells += [_cell("markdown", SHOW_NOTE), _cell("code", SHOW if functions else f"{IMPORTS}\n\n{SHOW}")]
+    cells += [_cell("markdown", SHOW_NOTE), _cell("code", SHOW)]
+    cells = _one_import_cell(cells, name)
     for index, cell in enumerate(cells):
         cell["id"] = f"cell-{index}"
     notebook["cells"] = cells
     return notebook
+
+
+def _import_rank(line: str, local: set[str]) -> int:
+    """0 for the standard library, 1 for installed packages, 2 for the demo's own packages."""
+    top = line.split()[1].split(".")[0]
+    return 0 if top in sys.stdlib_module_names else 2 if top in local else 1
+
+
+def _import_rank(line: str, local: set[str]) -> int:
+    """0 for the standard library, 1 for installed packages, 2 for the demo's own packages."""
+    top = line.split()[1].split(".")[0]
+    return 0 if top in sys.stdlib_module_names else 2 if top in local else 1
+
+
+def _one_import_cell(cells: list[dict[str, Any]], name: str) -> list[dict[str, Any]]:
+    """Move every import of every code cell into one code cell after the title, each import once."""
+    imports: list[str] = list(IMPORTS)
+    kept: list[dict[str, Any]] = []
+    for cell in cells:
+        if cell["cell_type"] != "code":
+            kept.append(cell)
+            continue
+        lines = cell["source"].splitlines()
+        imports += [line for line in lines if line.startswith(IMPORT_STARTS) and line not in imports]
+        body = "\n".join(line for line in lines if not line.startswith(IMPORT_STARTS)).strip("\n")
+        if body:
+            kept.append({**cell, "source": body})
+    local = {path.name for path in (DEMOS / name).iterdir() if path.is_dir()}
+    ranks = [_import_rank(line, local) for line in imports]
+    blocks = ["\n".join(sorted(line for line, kind in zip(imports, ranks, strict=True) if kind == rank))
+              for rank in range(IMPORT_GROUPS)]
+    kept.insert(1, _cell("code", "\n\n".join(block for block in blocks if block)))
+    return kept
 
 
 def _without_widgets(notebook: dict[str, Any]) -> None:

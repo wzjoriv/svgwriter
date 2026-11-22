@@ -7,9 +7,9 @@ from __future__ import annotations
 from collections.abc import Callable, Iterator, Mapping
 from typing import TypeAlias
 
+from ...errors import ThemeError
 from ..color.color import Color, ColorLike, as_color
 from ._constants import MAX_REFERENCE_DEPTH, REFERENCE_RE
-from ._errors import ThemeError
 from ._expression import evaluate, is_expression
 
 __all__ = ["Palette", "PaletteSource"]

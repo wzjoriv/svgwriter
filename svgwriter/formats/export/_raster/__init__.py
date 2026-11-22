@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from ...._internal._constants import PX_PER_INCH
-from .._registry import register, register_importer
+from ..._format import Format
 from .._units import dpi_scale
 from . import _tiff  # noqa: F401
 from ._constants import DEFAULT_GIF_FPS, DEFAULT_QUALITY, ICC_FORMATS
@@ -113,13 +113,8 @@ def _raster(format: str) -> Callable[..., bytes]:
     return exporter
 
 
-register("png", extensions=(".png",))(_raster("png"))
-register("jpeg", extensions=(".jpg", ".jpeg"))(_raster("jpeg"))
-register("webp", extensions=(".webp",))(_raster("webp"))
-register("bmp", extensions=(".bmp",))(_raster("bmp"))
 
 
-@register("gif", extensions=(".gif",))
 def gif(document: Document, *, scale: float = 1.0, pixels: tuple[int, int] | int | None = None, padding: float = 0.0,
         background: ColorLike | None = None, animate: bool | None = None, fps: float = DEFAULT_GIF_FPS,
         duration: float | None = None, loop: int = 0, quality: int = DEFAULT_QUALITY,
@@ -180,10 +175,8 @@ def gif(document: Document, *, scale: float = 1.0, pixels: tuple[int, int] | int
         return encode_gif(to_uint8(document.rasterize(**options)))
     frames = _frames(document, fps, length, processes=processes, **options)
     return encode_gif_animation(frames, fps, loop=loop)
-register("ppm", extensions=(".ppm", ".pgm", ".pnm"))(_raster("ppm"))
 
 
-@register("ico", extensions=(".ico",))
 def ico(document: Document, **options: Any) -> bytes:
     """Windows icon: square PNGs at ``sizes`` (16..256, ``padding`` in drawing units).
 
@@ -214,7 +207,6 @@ def ico(document: Document, **options: Any) -> bytes:
     return to_ico(document, **options)
 
 
-@register("icns", extensions=(".icns",))
 def icns(document: Document, **options: Any) -> bytes:
     """macOS icon family: PNGs at ``sizes`` (16..1024) under standard and Retina types.
 
@@ -245,7 +237,6 @@ def icns(document: Document, **options: Any) -> bytes:
     return to_icns(document, **options)
 
 
-@register_importer("icon", extensions=(".ico", ".icns"))
 def read_icon(data: bytes) -> Document:
     """The largest image in an ICO or ICNS file.
 
@@ -272,7 +263,7 @@ def read_icon(data: bytes) -> Document:
     --------
     >>> import svgwriter as svg
     >>> data = svg.export.export(svg.Document(8, 8), "ico", sizes=(16,))
-    >>> svg.export.find_importer(".ico").function(data).root.view_box.width
+    >>> svg.formats.reader(".ico").read(data).root.view_box.width
     16
     """
     from ._icons import read_icon as read
@@ -280,7 +271,6 @@ def read_icon(data: bytes) -> Document:
     return read(data)
 
 
-@register_importer("image",extensions=(".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp"))
 def read_image(data: bytes) -> Document:
     """A raster image as a document holding one embedded ``<image>`` at its pixel size.
 
@@ -302,7 +292,7 @@ def read_image(data: bytes) -> Document:
     --------
     >>> import svgwriter as svg
     >>> png = svg.export.export(svg.Document(4, 2), "png")
-    >>> doc = svg.export.find_importer(".png").function(png)
+    >>> doc = svg.formats.reader(".png").read(png)
     >>> doc.root.view_box.width, len(doc)
     (4, 1)
     """
@@ -311,7 +301,6 @@ def read_image(data: bytes) -> Document:
     return _image_document(Pixels.decode(data))
 
 
-@register_importer("pnm", extensions=(".ppm", ".pgm", ".pbm", ".pnm"))
 def read_pnm(data: bytes) -> Document:
     """A PBM, PGM or PPM file as a document holding one embedded ``<image>`` at its pixel size.
 
@@ -337,7 +326,7 @@ def read_pnm(data: bytes) -> Document:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> doc = svg.export.find_importer(".pgm").function(b"P2\\n2 1\\n255\\n0 255\\n")
+    >>> doc = svg.formats.reader(".pgm").read(b"P2\\n2 1\\n255\\n0 255\\n")
     >>> doc.root.view_box.width, len(doc)
     (2, 1)
     """
@@ -356,3 +345,47 @@ def _image_document(pixels: Any) -> Document:
     document = Document(columns, rows)
     document.add(Image(pixels.rgba(), 0, 0, columns, rows))
     return document
+
+
+class PngFormat(Format, name="png", extensions=(".png",)):
+    write = staticmethod(_raster("png"))
+
+
+class JpegFormat(Format, name="jpeg", extensions=(".jpg", ".jpeg")):
+    write = staticmethod(_raster("jpeg"))
+
+
+class WebpFormat(Format, name="webp", extensions=(".webp",)):
+    write = staticmethod(_raster("webp"))
+
+
+class BmpFormat(Format, name="bmp", extensions=(".bmp",)):
+    write = staticmethod(_raster("bmp"))
+
+
+class GifFormat(Format, name="gif", extensions=(".gif",)):
+    write = staticmethod(gif)
+
+
+class PpmFormat(Format, name="ppm", extensions=(".ppm", ".pgm", ".pnm")):
+    write = staticmethod(_raster("ppm"))
+
+
+class IcoFormat(Format, name="ico", extensions=(".ico",)):
+    write = staticmethod(ico)
+
+
+class IcnsFormat(Format, name="icns", extensions=(".icns",)):
+    write = staticmethod(icns)
+
+
+class IconFormat(Format, name="icon", extensions=(".ico", ".icns")):
+    read = staticmethod(read_icon)
+
+
+class ImageFormat(Format, name="image", extensions=(".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp")):
+    read = staticmethod(read_image)
+
+
+class PnmFormat(Format, name="pnm", extensions=(".ppm", ".pgm", ".pbm", ".pnm")):
+    read = staticmethod(read_pnm)

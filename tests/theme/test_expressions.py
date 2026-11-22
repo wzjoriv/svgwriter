@@ -5,11 +5,12 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter.model.theme import Palette, ThemeError
+from svgwriter.errors import ThemeError
+from svgwriter.model.theme import Palette
 from svgwriter.model.theme._constants import MAX_EXPRESSION_DEPTH, MAX_EXPRESSION_LENGTH, MAX_REFERENCE_DEPTH
 from svgwriter.model.theme._expression import evaluate, is_expression
 
-LIGHT = svg.Theme.get("light")
+LIGHT = svg.themes.get("light")
 SIZES = {"fonts.sizes.text": 14.0, "fonts.sizes.caption": 11.0}
 
 
@@ -62,7 +63,7 @@ class TestColors:
     def test_builtin_derived_entries(self) -> None:
         sources = LIGHT.palette.sources
         assert sources["on_primary"] == "=readable({palette.primary}, {palette.background}, {palette.foreground})"
-        assert LIGHT.palette.on_primary.hex == "#ffffff" and svg.Theme.get("dark").palette.on_primary.hex == "#042f2e"
+        assert LIGHT.palette.on_primary.hex == "#ffffff" and svg.themes.get("dark").palette.on_primary.hex == "#042f2e"
         assert LIGHT.palette.border == LIGHT.palette.foreground.mix(LIGHT.palette.background, 0.7)
         assert LIGHT.palette.shadow == LIGHT.palette.foreground.with_alpha(0.2)
 

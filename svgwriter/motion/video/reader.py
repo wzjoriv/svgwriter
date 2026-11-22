@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
+from ...errors import FFmpegError
 from ._constants import (
     CHANNELS,
     DURATION_RE,
@@ -20,7 +21,7 @@ from ._constants import (
     SECONDS_PER_MINUTE,
     STREAM_RE,
 )
-from ._ffmpeg import FFmpegError, find_ffmpeg
+from ._ffmpeg import find_ffmpeg
 
 if TYPE_CHECKING:
     from ..._internal._typing import AnyPath

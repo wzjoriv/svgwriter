@@ -41,7 +41,7 @@ def needs_engine(element: Element) -> bool:
     --------
     >>> import svgwriter as svg
     >>> from svgwriter.ops._filters._filtered import needs_engine
-    >>> needs_engine(svg.Rect())
+    >>> needs_engine(svg.Rect(0, 0, 1, 1))
     False
     """
     from ...model.elements.structure import Image

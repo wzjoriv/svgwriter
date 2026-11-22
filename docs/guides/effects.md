@@ -34,4 +34,4 @@ print(len(stacked.primitives))
 ```
 
 Ready-made filters live in `svg.filters` (`drop_shadow`, `glow`, `long_shadow`, `outline`, `goo`, ...),
-with patterns, gradients, markers and text effects beside them; see the [Presets guide](presets.md).
+with patterns, gradients, markers and effects beside them; see the [Presets guide](presets.md).

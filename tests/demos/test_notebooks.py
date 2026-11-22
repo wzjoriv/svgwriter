@@ -15,7 +15,7 @@ CONTROLLED = {
     "calculator-kit": {"style", "shape", "layout", "accent"},
     "playing-card": {"rank", "suit", "hue", "iridescence"},
     "poster": {"theme", "hue", "title"},
-    "text-effects": {"smoke", "metal", "wind", "sparks", "snow"},
+    "effects": {"smoke", "metal", "wind", "sparks", "snow", "logo", "button"},
 }
 
 
@@ -54,10 +54,10 @@ def test_poster_controls_restyle_it(tmp_path: Path) -> None:
     assert "Wave" in styled and "Wave" not in plain and styled != plain
 
 
-def test_text_effect_dropdowns_swap_the_effects(tmp_path: Path) -> None:
-    project = _quick_copy("text-effects", tmp_path)
+def test_effect_dropdowns_swap_the_effects(tmp_path: Path) -> None:
+    project = _quick_copy("effects", tmp_path)
     plain = project.build(["svg"])[0].read_text(encoding="utf-8")
-    swapped = project.build(["svg"], values={"smoke": "ice", "snow": "neon"})[0].read_text(encoding="utf-8")
+    swapped = project.build(["svg"], values={"smoke": "ice", "snow": "neon", "logo": "fire"})[0].read_text(encoding="utf-8")
     assert swapped != plain
 
 

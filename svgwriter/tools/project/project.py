@@ -26,7 +26,7 @@ from ._entry import (
 )
 from ._gallery import Preview
 from ._notebook import headless, kernel_object, run_notebook
-from .presets import SizeChoice, create
+from ._presets import SizeChoice, create
 
 __all__ = ["Project"]
 
@@ -46,7 +46,7 @@ class Project:
 
     See Also
     --------
-    svgwriter.tools.project.register_preset : Add a starter folder for :meth:`new`.
+    svgwriter.tools.project.presets : Register a starter folder for :meth:`new`.
 
     Notes
     -----
@@ -111,7 +111,7 @@ class Project:
         path : str or os.PathLike
             The new folder; it must not exist or be empty.
         preset : str, optional
-            A name from :data:`svgwriter.tools.project.PRESETS`. Defaults to ``"blank"``.
+            A name from :data:`svgwriter.tools.project.presets`. Defaults to ``"blank"``.
         notebook : bool, optional
             Write ``main.ipynb`` instead of ``main.py``. Defaults to False.
         name : str, optional

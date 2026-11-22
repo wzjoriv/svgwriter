@@ -6,6 +6,7 @@ import pytest
 
 import svgwriter as svg
 from svgwriter import Matrix, Transform
+from tests.conftest import make
 
 
 def close(p, q, tol=1e-9) -> bool:
@@ -148,17 +149,17 @@ class TestOperators:
 
     def test_times_transform_points_to_at(self) -> None:
         with pytest.raises(TypeError, match="@"):
-            _ = svg.Circle() * Transform.scale(2)
+            _ = svg.Circle(0, 0, 1) * Transform.scale(2)
 
     def test_junk_rejected(self) -> None:
         with pytest.raises(TypeError):
-            _ = svg.Circle() @ object()  # type: ignore[operator]
+            _ = svg.Circle(0, 0, 1) @ object()  # type: ignore[operator]
         with pytest.raises(TypeError):
-            _ = svg.Circle() + (1, "x")  # type: ignore[operator]
+            _ = svg.Circle(0, 0, 1) + (1, "x")  # type: ignore[operator]
         with pytest.raises(ZeroDivisionError):
-            _ = svg.Circle() / 0
+            _ = svg.Circle(0, 0, 1) / 0
         with pytest.raises(TypeError):
-            _ = svg.Circle() * "x"  # type: ignore[operator]
+            _ = svg.Circle(0, 0, 1) * "x"  # type: ignore[operator]
 
     def test_to_path_bakes(self) -> None:
         p = svg.Rect(0, 0, 1, 1, fill="red").translate(2).to_path()
@@ -227,7 +228,7 @@ TRANSFORMABLE_TAGS = {
 def test_every_transformable_element_has_the_methods(tag: str) -> None:
     cls = svg.Element.lookup(tag)
     assert cls is not None and issubclass(cls, svg.elements.Transformable)
-    el = cls()
+    el = make(tag)
     el.translate(1, 2).rotate(10).scale(2).skew(5)
     attribute = {"linearGradient": "gradientTransform", "radialGradient": "gradientTransform",
                  "pattern": "patternTransform"}.get(tag, "transform")
@@ -354,7 +355,7 @@ class TestNumpy:
     def test_color_array(self) -> None:
         np = pytest.importorskip("numpy")
         assert np.allclose(np.asarray(svg.Color(1, 0.5, 0)), [1, 0.5, 0, 1])
-        assert svg.Rect(fill=np.array([0, 0, 1.0])).get("fill").hex == "#0000ff"
+        assert svg.Rect(0, 0, 1, 1, fill=np.array([0, 0, 1.0])).get("fill").hex == "#0000ff"
 
 
 class TestNamedPoints:

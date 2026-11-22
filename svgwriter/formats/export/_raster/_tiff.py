@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ...._internal._constants import PX_PER_INCH
-from .._registry import register
+from ..._format import Format
 from .._units import dpi_scale
 
 if TYPE_CHECKING:
@@ -18,7 +18,6 @@ if TYPE_CHECKING:
 __all__ = ["tiff"]
 
 
-@register("tiff", extensions=(".tif", ".tiff"))
 def tiff(document: Document, *, scale: float = 1.0, pixels: tuple[int, int] | int | None = None, padding: float = 0.0,
          background: ColorLike | None = None, dpi: float | None = None,
          units_per_inch: float = PX_PER_INCH, icc: IccLike | None = None) -> bytes:
@@ -80,3 +79,7 @@ def tiff(document: Document, *, scale: float = 1.0, pixels: tuple[int, int] | in
         image = to_profile(image, target)
     return encode_tiff(image, "CMYK" if cmyk else "RGB", dpi=dpi if dpi is not None else scale * PX_PER_INCH,
                        profile=None if target is None else target.data)
+
+
+class TiffFormat(Format, name="tiff", extensions=(".tif", ".tiff")):
+    write = staticmethod(tiff)

@@ -44,6 +44,6 @@ SHELLS: dict[str, Callable[[svg.Rect, svg.Color], None]] = {
 
 def shell(style: str, *, radius: float, accent: svg.Color) -> svg.Rect:
     """The shell's background rect in *style*; the layout group sizes it."""
-    body = svg.rect(rx=radius, **SOLID.get(style, {}))
+    body = svg.rect(0, 0, 1, 1, rx=radius, **SOLID.get(style, {}))
     SHELLS[style](body, accent)
     return body

@@ -12,7 +12,8 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter.tools.project import PreviewConfig, ProjectError
+from svgwriter.errors import ProjectError
+from svgwriter.tools.project import PreviewConfig
 from svgwriter.tools.project._server import LiveProject, LiveServer
 
 MAIN = '''import svgwriter as svg

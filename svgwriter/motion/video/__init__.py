@@ -20,33 +20,28 @@ Example
 from __future__ import annotations
 
 from . import behaviors
-from ._ffmpeg import FFmpegError, FFmpegNotFoundError, find_ffmpeg
+from ._ffmpeg import find_ffmpeg
 from .animation import (
     DEFAULT_FPS,
-    RENDERERS,
     Renderer,
     Update,
     animation_duration,
     iter_frames,
-    register_renderer,
     render_animation,
+    renderers,
     resolve_renderer,
-    unregister_renderer,
 )
 from .frames import Frame, FrameData, RGBAArray, frame_times
-from .loader import SceneError, load_scenes
+from .loader import load_scenes
 from .reader import Video
 from .scene import Scene
 
 __all__ = [
     "Scene",
     "behaviors",
-    "SceneError",
     "Video",
     "DEFAULT_FPS",
-    "RENDERERS",
-    "FFmpegError",
-    "FFmpegNotFoundError",
+    "renderers",
     "Frame",
     "FrameData",
     "RGBAArray",
@@ -57,8 +52,6 @@ __all__ = [
     "frame_times",
     "iter_frames",
     "load_scenes",
-    "register_renderer",
     "render_animation",
     "resolve_renderer",
-    "unregister_renderer",
 ]

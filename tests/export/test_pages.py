@@ -15,10 +15,10 @@ def _pages():
 
 def test_pdf_writes_one_page_per_document_with_its_own_size():
     data = svg.export.export(_pages(), "pdf")
-    back = svg.export.find_importer("pdf").function(data, page=None)
+    back = svg.formats.reader("pdf").read(data, page=None)
     assert [(p.root.get("width"), p.root.get("height")) for p in back] == [(200.0, 100.0), (100.0, 50.0)]
     assert back[0][0].get("fill") == "#ff0000"
-    assert svg.export.find_importer("pdf").function(data, page=1).root.get("width") == 100.0
+    assert svg.formats.reader("pdf").read(data, page=1).root.get("width") == 100.0
 
 
 def test_single_document_list_and_tuple_are_accepted():
@@ -46,14 +46,14 @@ def test_time_applies_to_every_page():
     doc = svg.Document(100, 20)
     ball = doc.circle(10, 10, 5, fill="red")
     ball.append(svg.Animate(attribute_name="cx", from_=10, to=90, dur=2))
-    back = svg.export.find_importer("pdf").function(svg.export.export([doc, doc], "pdf", seconds=1.0), page=None)
+    back = svg.formats.reader("pdf").read(svg.export.export([doc, doc], "pdf", seconds=1.0), page=None)
     assert all(page[0].bounds().x == pytest.approx(45, abs=1) for page in back)
 
 
 def test_registry_flags():
-    assert svg.export.exporters()["pdf"].multipage and not svg.export.exporters()["svg"].multipage
-    assert svg.export.importers()["pptx"].page_option == "slide"
-    assert svg.export.importers()["svg"].page_option is None
+    assert svg.formats.get("pdf").multipage and not svg.formats.get("svg").multipage
+    assert svg.formats.get("pptx").page_option == "slide"
+    assert svg.formats.get("svg").page_option is None
 
 
 def test_pptx_one_slide_per_document_centred_on_the_largest_size():
@@ -64,9 +64,9 @@ def test_pptx_one_slide_per_document_centred_on_the_largest_size():
     assert (deck.slide_width, deck.slide_height) == (200 * 9525, 100 * 9525)
     circle = next(iter(deck.slides[1].shapes))
     assert (circle.left, circle.top) == ((50 + 30) * 9525, (25 + 5) * 9525)
-    back = svg.export.find_importer("pptx").function(data, slide=None)
+    back = svg.formats.reader("pptx").read(data, slide=None)
     assert len(back) == 2 and back[1][0].bounds().x == pytest.approx(80, abs=0.5)
-    assert svg.export.find_importer("pptx").function(data).root.get("width") == 200.0
+    assert svg.formats.reader("pptx").read(data).root.get("width") == 200.0
 
 
 def test_pptx_open_all(tmp_path):

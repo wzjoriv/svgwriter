@@ -12,7 +12,8 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
-from ._config import ProjectConfig, ProjectError
+from ...errors import ProjectError
+from ._config import ProjectConfig
 from ._constants import (
     CELL_MARKER,
     HEADLESS_ENV,

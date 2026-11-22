@@ -92,7 +92,7 @@ def css_declarations(element: Element, rules: Iterable[Rule]) -> dict[str, str]:
     >>> import svgwriter as svg
     >>> from svgwriter.model.attributes.cascade import css_declarations
     >>> from svgwriter.model.attributes.rules import parse_css
-    >>> rect = svg.Rect(class_="a", id="r")
+    >>> rect = svg.Rect(0, 0, 1, 1, class_="a", id="r")
     >>> rules = parse_css(".a { fill: red } #r { fill: blue }")
     >>> css_declarations(rect, rules)
     {'fill': 'blue'}
@@ -178,9 +178,9 @@ def specified(element: Element, name: str, rules: Iterable[Rule] | None = None) 
     --------
     >>> import svgwriter as svg
     >>> from svgwriter.model.attributes.cascade import specified
-    >>> specified(svg.Rect(fill="red", style="opacity:.5"), "opacity")
+    >>> specified(svg.Rect(0, 0, 1, 1, fill="red", style="opacity:.5"), "opacity")
     '.5'
-    >>> specified(svg.Rect(), "fill") is None
+    >>> specified(svg.Rect(0, 0, 1, 1), "fill") is None
     True
     """
     raw = element.attributes.get("style")

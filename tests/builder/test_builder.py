@@ -21,7 +21,7 @@ class TestPresets:
             doc += [builder.outline(1, 1, 18, 18), builder.dashed_line(0, 10, 20, 10), builder.dot(10, 10)]
             doc += builder.star(10, 10, 5, stroke="red")
             text = doc.to_string()
-            theme = svg.Theme.get(name)
+            theme = svg.themes.get(name)
             for role in ("outline", "line", "dot", "shape"):
                 assert str(theme.css([role])) in text
 
@@ -32,13 +32,13 @@ class TestPresets:
 
 class TestRegistry:
     def test_builtin_shapes(self) -> None:
-        assert {"star", "polygon", "gear", "arrow"} <= set(svg.preset.list("shape"))
-        star = svg.preset.get("shape", "star")(50, 50, 40, fill="gold")
+        assert {"star", "polygon", "gear", "arrow"} <= set(svg.preset.shape.list())
+        star = svg.preset.shape.get("star")(50, 50, 40, fill="gold")
         assert len(star.points) == 10
         assert star.style["fill"] == "gold" and star.classes == ["role-shape"]
         assert builder.star.__name__ == "star"
         assert builder.star.__wrapped__ is not None  # type: ignore[attr-defined]
-        assert len(svg.preset.get("shape", "polygon")(0, 0, 5, sides=5).points) == 5
+        assert len(svg.preset.shape.get("polygon")(0, 0, 5, sides=5).points) == 5
         assert len(svg.Polygon.regular(0, 0, 5).points) == 6
         assert len(builder.gear(0, 0, 10, teeth=8).points) == 32
         assert builder.arrow(0, 0, 10, 0).get("fill") == "none"
@@ -52,7 +52,7 @@ class TestRegistry:
         try:
             assert plain(fill="red").get("fill") == "red" and plain().classes == []
         finally:
-            svg.preset.unregister("shape", "test-plain")
+            svg.preset.shape.unregister("test-plain")
 
     def test_plugin_registration_and_validation(self) -> None:
         @svg.preset.shape(name="test-bad")
@@ -64,20 +64,20 @@ class TestRegistry:
             return svg.Rect.square(size, **kwargs)
 
         try:
-            assert "test-ok" in svg.preset.list("shape") and len(svg.preset.list("shape")) >= 6
+            assert "test-ok" in svg.preset.shape.list() and len(svg.preset.shape.list()) >= 6
             assert ok(3).get("width") == 3
             with pytest.raises(TypeError):
                 bad()
             with pytest.raises(ValueError, match="already registered by .*ok; pass replace=True"):
                 svg.preset.shape(name="test-ok")(ok)
             with pytest.raises(KeyError, match="unknown shape 'nothing'"):
-                svg.preset.get("shape", "nothing")
+                svg.preset.shape.get("nothing")
         finally:
-            svg.preset.unregister("shape", "test-ok")
-            svg.preset.unregister("shape", "test-bad")
+            svg.preset.shape.unregister("test-ok")
+            svg.preset.shape.unregister("test-bad")
 
     def test_replace_builtin_and_restore(self) -> None:
-        original = svg.preset.get("shape", "star")
+        original = svg.preset.shape.get("star")
         with pytest.raises(ValueError, match=r"star \(built in\)"):
             svg.preset.shape(name="star")(svg.Rect.square)
 
@@ -86,16 +86,16 @@ class TestRegistry:
             return svg.Rect(cx - r, cy - r, 2 * r, 2 * r, **kwargs)
 
         try:
-            assert svg.preset.get("shape", "star")(0, 0, 1).tag == "rect"
+            assert svg.preset.shape.get("star")(0, 0, 1).tag == "rect"
         finally:
-            svg.preset.unregister("shape", "star")
-        assert svg.preset.get("shape", "star") is original
+            svg.preset.shape.unregister("star")
+        assert svg.preset.shape.get("star") is original
         with pytest.raises(KeyError, match="built in"):
-            svg.preset.unregister("shape", "star")
+            svg.preset.shape.unregister("star")
 
     def test_unknown_kind(self) -> None:
-        with pytest.raises(ValueError, match="kinds: animation, behavior, shape"):
-            svg.preset.list("nope")
+        with pytest.raises(AttributeError, match="nope"):
+            svg.preset.nope.list()
 
 
 class TestDrawing:

@@ -127,7 +127,7 @@ class Document(Building, Sizing, Theming, Typography, Output, Access, InkscapeDa
         text : str or bytes
             The source; ``str`` is encoded as UTF-8 for formats read as bytes.
         format : str, optional
-            A registered importer name (see ``svg.export.importers()``). Defaults to ``"svg"``.
+            A format name or extension (see ``svg.formats.readers()``). Defaults to ``"svg"``.
         strictness : Strictness, optional
             How SVG treats unknown elements and unsupported attributes. Defaults to
             ``Strictness.LENIENT``. SVG only.
@@ -166,16 +166,12 @@ class Document(Building, Sizing, Theming, Typography, Output, Access, InkscapeDa
         from .formats.io.parser import Strictness, parse
 
         if format.lower() != "svg":
-            from .formats.export import find_importer
+            from .formats import reader
 
             if strictness is not None:
                 raise TypeError("strictness= applies to SVG only")
-            try:
-                importer = find_importer(format)
-            except ValueError:
-                importer = find_importer(f"text.{format.lstrip('.')}")
             data = text.encode("utf-8") if isinstance(text, str) else text
-            return importer.function(data, **options)  # type: ignore[no-any-return]
+            return reader(format).read(data, **options)  # type: ignore[return-value]
         theme = options.pop("theme", None)
         if options:
             raise TypeError(f"SVG takes no option {', '.join(map(repr, sorted(options)))}; only theme=")

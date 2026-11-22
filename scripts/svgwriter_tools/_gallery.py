@@ -53,7 +53,7 @@ GALLERY = {
     "scenes": Picture("13_scenes", scenes=("Title", "Bars")),
     "themes": Picture("14_themes", "14_themes.svg"),
     "powerpoint": Picture("15_powerpoint", "15_powerpoint.svg"),
-    "text_effects": Picture("19_presets", "19_sentence.gif"),
+    "effects": Picture("19_presets", "19_sentence.gif"),
     "goo": Picture("19_presets", "19_goo.gif"),
     "pattern_catalogue": Picture("19_presets", "19_patterns.svg"),
     "gradient_catalogue": Picture("19_presets", "19_gradients.svg"),
@@ -77,7 +77,7 @@ class DemoPicture(NamedTuple):
 DEMO_GALLERY = {
     "playing-card": DemoPicture("playing-card", "png", "playing-card.png", {"scale": 1}),
     "calculator-kit": DemoPicture("calculator-kit", "png", "calculator-kit.png", {"scale": 1}),
-    "text-effects": DemoPicture("text-effects", "gif", "text-effects.gif", {"fps": 8, "scale": 0.5}),
+    "effects": DemoPicture("effects", "gif", "effects.gif", {"fps": 8, "scale": 0.5}),
     "planets-explainer": DemoPicture("planets-explainer", "gif", "planets-explainer-Planets.gif",
                                      {"fps": 8, "scale": 0.375}),
     "blobs": DemoPicture("blobs", "gif", "blobs.gif", {"fps": 12, "scale": 0.75}),

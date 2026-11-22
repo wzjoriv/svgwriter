@@ -12,7 +12,8 @@ from typing import Any
 import tomlkit
 
 from ..._document.sizes import PageSize, page_size
-from ...formats.export import exporters
+from ...errors import ProjectError
+from ...formats import writers as format_writers
 from ...model.attributes.length import Length
 from ...model.color import parse_color
 from ._constants import (
@@ -36,23 +37,11 @@ from ._constants import (
     VIDEO_FORMATS,
 )
 
-__all__ = ["PreviewConfig", "ProjectConfig", "ProjectError", "check_formats", "check_preview", "check_size",
+__all__ = ["PreviewConfig", "ProjectConfig", "check_formats", "check_preview", "check_size",
            "find_manifest", "read_config"]
 
 SizeSpec = str | PageSize | tuple[Length, Length] | None
 
-
-class ProjectError(ValueError):
-    """A project file is missing or invalid, or its entry cannot be loaded; the message names the file.
-
-    Subclasses :class:`ValueError`.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> issubclass(svg.project.ProjectError, ValueError)
-    True
-    """
 
 
 @dataclass(frozen=True)
@@ -204,7 +193,7 @@ def check_size(source: Path, value: object) -> SizeSpec:
 
 def check_formats(where: str, formats: Sequence[object]) -> tuple[str, ...]:
     """*formats* in lower case; an unknown one raises :class:`ProjectError` naming *where*."""
-    known = {*exporters(), *ANIMATED_FORMATS, *VIDEO_FORMATS}
+    known = {*format_writers(), *ANIMATED_FORMATS, *VIDEO_FORMATS}
     names = tuple(str(name).lower() for name in formats)
     for name in names:
         if name not in known:
@@ -274,7 +263,7 @@ def read_config(start: Path) -> ProjectConfig:
     project = data.get("project", {})
     outputs = data.get("outputs", {})
     _unknown(source, "project.", project, PROJECT_KEYS)
-    _unknown(source, "outputs.", outputs, OUTPUT_KEYS | {*exporters(), *ANIMATED_FORMATS, *VIDEO_FORMATS})
+    _unknown(source, "outputs.", outputs, OUTPUT_KEYS | {*format_writers(), *ANIMATED_FORMATS, *VIDEO_FORMATS})
     formats = check_formats(f"{source}: outputs.formats", outputs.get("formats", DEFAULT_FORMATS))
     options: dict[str, dict[str, Any]] = {}
     for key, value in outputs.items():

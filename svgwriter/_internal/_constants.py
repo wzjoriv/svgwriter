@@ -150,6 +150,7 @@ __all__ = [
     "RGBA_CHANNELS",
     "RTL_ANCHORS",
     "SUGGESTIONS",
+    "ENTRY_POINT_PREFIX",
     "SECONDS_PER_HOUR",
     "SECONDS_PER_MINUTE",
     "SHAKE_DISTANCE",
@@ -413,6 +414,7 @@ ANIMATED_DEFAULTS: Final = {
 RENDER_LANGUAGE: Final = "en"
 FEATURE_PREFIX: Final = "http://www.w3.org/TR/SVG11/feature#"
 SUGGESTIONS: Final = 3
+ENTRY_POINT_PREFIX: Final = "svgwriter."
 MOTION_HELPERS: Final = frozenset({"apply", "stagger", "element"})
 
 PAGE_LENGTH_DIGITS: Final = 9

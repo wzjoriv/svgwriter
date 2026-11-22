@@ -12,30 +12,13 @@ import tempfile
 from collections.abc import Iterable, Iterator
 
 from ..._internal._typing import AnyPath
+from ...errors import FFmpegError, FFmpegNotFoundError
 from ._constants import FFMPEG, OUTPUTS, STDERR_TAIL
 from .frames import Frame
 
-__all__ = ["FFmpegError", "FFmpegNotFoundError", "encode", "find_ffmpeg", "input_args", "output_args"]
+__all__ = ["encode", "find_ffmpeg", "input_args", "output_args"]
 
 
-class FFmpegNotFoundError(RuntimeError):
-    """``ffmpeg`` is not installed or not on ``PATH``.
-
-    See Also
-    --------
-    find_ffmpeg : Raises it.
-    """
-
-
-class FFmpegError(RuntimeError):
-    """``ffmpeg`` ran but failed.
-
-    The message carries the exit status and the tail of ffmpeg's error output.
-
-    See Also
-    --------
-    encode : Raises it.
-    """
 
 
 def find_ffmpeg(executable: str | None = None) -> str:
@@ -62,7 +45,8 @@ def find_ffmpeg(executable: str | None = None) -> str:
 
     Examples
     --------
-    >>> from svgwriter.motion.video import FFmpegNotFoundError, find_ffmpeg
+    >>> from svgwriter.errors import FFmpegNotFoundError
+    >>> from svgwriter.motion.video import find_ffmpeg
     >>> try:
     ...     find_ffmpeg("no-such-ffmpeg")
     ... except FFmpegNotFoundError:

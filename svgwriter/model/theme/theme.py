@@ -10,20 +10,21 @@ from types import MappingProxyType, TracebackType
 from typing import Any, Final, TypeAlias
 
 from ..._internal._registry import Registry
+from ...errors import ThemeError
 from ..attributes.style import Style, StyleLike, StyleSheet
 from ._constants import DEFAULT_THEME, ROLE_CLASS_PREFIX
-from ._errors import ThemeError
 from ._files import ThemeFiles
 from ._resolve import check_role_name, resolve_role
 from ._roles import DERIVED_PALETTE, STANDARD_ROLES
 from .fonts import Fonts
 from .palette import Palette, PaletteSource
 
-__all__ = ["THEMES", "RoleSource", "Theme"]
+__all__ = ["themes", "RoleSource", "Theme"]
 
 RoleSource: TypeAlias = "StyleLike | Callable[[Theme], StyleLike]"
 
-THEMES: Final[Registry[Theme]] = Registry("theme")
+themes: Final[Registry[Theme]] = Registry("theme")
+"""Every theme by name: ``svg.themes.register(theme)`` adds one, ``list()``, ``get(name)`` and ``unregister(name)``."""
 _ACTIVE: ContextVar[Theme | None] = ContextVar("svgwriter_theme", default=None)
 _TOKENS: ContextVar[tuple[Token[Theme | None], ...]] = ContextVar("svgwriter_theme_tokens", default=())
 
@@ -65,7 +66,7 @@ class Theme(ThemeFiles):
     Examples
     --------
     >>> import svgwriter as svg
-    >>> dark = svg.Theme.get("dark")
+    >>> dark = svg.themes.get("dark")
     >>> dark.style("box")["fill"].hex
     '#1f2937'
     >>> brand = dark.replace(name="brand", palette={"primary": "#ff6600"})
@@ -121,9 +122,9 @@ class Theme(ThemeFiles):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> svg.Theme.get("dark").replace(name="night").extends
+        >>> svg.themes.get("dark").replace(name="night").extends
         'dark'
-        >>> svg.Theme.get("dark").extends is None
+        >>> svg.themes.get("dark").extends is None
         True
         """
         return self._extends
@@ -154,7 +155,7 @@ class Theme(ThemeFiles):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> str(svg.Theme.get("light").style("line"))
+        >>> str(svg.themes.get("light").style("line"))
         'fill:none;stroke:#0f766e;stroke-width:2px'
         """
         if role not in self._styles:
@@ -204,7 +205,7 @@ class Theme(ThemeFiles):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> svg.Theme.get("mono").css(["dot"]).css()
+        >>> svg.themes.get("mono").css(["dot"]).css()
         '.role-dot { fill:#000000;stroke:#000000;stroke-width:1px }'
         """
         wanted = set(self._styles) if roles is None else set(roles)
@@ -240,7 +241,7 @@ class Theme(ThemeFiles):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> light = svg.Theme.get("light")
+        >>> light = svg.themes.get("light")
         >>> bold = light.replace(roles={"line": {"stroke-width": 4}}, fonts={"sizes": {"text": 16}})
         >>> str(bold.style("line")), bold.fonts.sizes["text"]
         ('fill:none;stroke:#0f766e;stroke-width:4px', 16)
@@ -256,36 +257,9 @@ class Theme(ThemeFiles):
             fonts = self._fonts.replace(**fonts)
         variant = Theme(name if name is not None else self._name, self._palette.replace(**(palette or {})),
                         fonts if fonts is not None else self._fonts, merged)
-        if self._name in THEMES and THEMES.get(self._name) is self:
+        if themes.find(self._name, plugins=False) is self:
             return variant._from_file(self._name, None)
         return variant._from_file(self._extends, self._document)
-
-    @staticmethod
-    def get(name: str) -> Theme:
-        """The registered theme called *name*.
-
-        Parameters
-        ----------
-        name : str
-            A registered name: ``"light"``, ``"dark"``, ``"print"``, ... (see :data:`THEMES`).
-
-        Returns
-        -------
-        Theme
-            The theme.
-
-        Raises
-        ------
-        KeyError
-            If no theme has that name.
-
-        Examples
-        --------
-        >>> import svgwriter as svg
-        >>> svg.Theme.get("paper").name
-        'paper'
-        """
-        return THEMES.get(name)
 
     @staticmethod
     def current() -> Theme:
@@ -301,12 +275,12 @@ class Theme(ThemeFiles):
         >>> import svgwriter as svg
         >>> svg.Theme.current().name
         'light'
-        >>> with svg.Theme.get("dark"):
+        >>> with svg.themes.get("dark"):
         ...     svg.Theme.current().name
         'dark'
         """
         active = _ACTIVE.get()
-        return active if active is not None else THEMES.get(DEFAULT_THEME)
+        return active if active is not None else themes.get(DEFAULT_THEME)
 
     @staticmethod
     def of(theme: Theme | str | None) -> Theme:
@@ -325,13 +299,13 @@ class Theme(ThemeFiles):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> svg.Theme.of("dark") is svg.Theme.get("dark"), svg.Theme.of(None).name
+        >>> svg.Theme.of("dark") is svg.themes.get("dark"), svg.Theme.of(None).name
         (True, 'light')
         """
         if theme is None:
             return Theme.current()
         if isinstance(theme, str):
-            return Theme.get(theme)
+            return themes.get(theme)
         if not isinstance(theme, Theme):
             raise TypeError(f"expected a Theme or a theme name, got {type(theme).__name__}")
         return theme

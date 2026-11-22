@@ -4,13 +4,15 @@ Methods of the style and presentation attribute groups: classes, ``style`` and C
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, TypeVar
 
 from ...._internal._registry import chainable
 from ...attributes.names import PRESENTATION_ATTRIBUTES
 from ...attributes.style import Style, StyleLike
 
 __all__ = ["PresentationMethods", "StyleMethods"]
+
+E = TypeVar("E")
 
 
 class PresentationMethods:
@@ -33,6 +35,45 @@ class PresentationMethods:
         {'fill': 'red'}
         """
         return {k: v for k, v in self.attributes.items() if k in PRESENTATION_ATTRIBUTES}
+
+    def effect(self: E, name: str, /, **options: Any) -> E:
+        """Apply the effect registered as *name*: paint, a filter and a small animation sized to this element.
+
+        Parameters
+        ----------
+        name : str
+            An effect: ``"fire"``, ``"ice"``, ``"smoke"``, ``"metal"``, ``"wind"``, ``"snow"``, ``"neon"``,
+            ``"glitch"`` or one registered with :data:`svgwriter.preset.effect`.
+        **options
+            The effect's options.
+
+        Returns
+        -------
+        Element
+            This element, styled.
+
+        Raises
+        ------
+        UnknownNameError
+            If no effect has that name; the message suggests the closest names.
+
+        See Also
+        --------
+        svgwriter.catalog.effects : The built-in effects.
+        svgwriter.CharacterRange.effect : The same for a range of a text's characters.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> title = svg.text("Neon", x=0, y=30, font_size=28)
+        >>> title.effect("neon", color="deeppink") is title
+        True
+        >>> svg.rect(0, 0, 40, 20).effect("metal", animate=False).fill.element.tag
+        'linearGradient'
+        """
+        from ...._internal._presets import EFFECTS
+
+        return EFFECTS.get(name)(self, **options)  # type: ignore[no-any-return]
 
     @chainable
     def to_css(self) -> None:

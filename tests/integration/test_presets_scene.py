@@ -28,7 +28,7 @@ def presets():
     yield integration_badge
     for kind, name in (("shape", "integration_badge"), ("animation", "integration_pop"),
                        ("behavior", "integration_slide"), ("size", "integration-card")):
-        svg.preset.unregister(kind, name)
+        svg.preset.KINDS[kind].unregister(name)
 
 
 def scene(badge):

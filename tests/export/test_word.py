@@ -9,7 +9,7 @@ import svgwriter as svg
 
 docx = pytest.importorskip("docx")
 WP = "{http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing}"
-READ = svg.export.find_importer("docx").function
+READ = svg.formats.reader("docx").read
 
 
 def _saved(word):

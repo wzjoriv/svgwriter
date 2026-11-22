@@ -90,8 +90,8 @@ def test_item_assignment_replaces_in_place():
     doc.rect(2, 2, 1, 1)
     doc[0] = svg.circle(1, 1, 1)
     assert [e.tag for e in doc] == ["circle", "rect"] and doc[0].id == "a"
-    group = svg.group(svg.rect(), svg.rect())
-    group[1] = svg.circle()
+    group = svg.group(svg.rect(0, 0, 1, 1), svg.rect(0, 0, 1, 1))
+    group[1] = svg.circle(0, 0, 1)
     assert [e.tag for e in group] == ["rect", "circle"]
 
 

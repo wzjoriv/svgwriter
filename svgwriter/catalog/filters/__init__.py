@@ -3,7 +3,7 @@
 Every function returns a :class:`~svgwriter.Filter` that goes into the document's ``<defs>`` when an element
 refers to it, with a region enlarged so blurs and shadows are not clipped, computed in sRGB. Single
 colors (shadows, outlines) default to theme roles (``"filter.shadow"``, ``"filter.ink"``), so they follow
-the document theme. Filters registered with :func:`svgwriter.catalog.preset.filter` answer here too.
+the document theme. Filters registered with :data:`svgwriter.catalog.preset.filter` answer here too.
 
 Example
 -------

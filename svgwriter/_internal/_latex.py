@@ -27,7 +27,8 @@ from ._constants import (
     TEX_SIZE,
     ZIAMATH_SIZE,
 )
-from ._tools import DiagramToolError, find_tool, run_tool, svg_document
+from ._errors import DiagramToolError
+from ._tools import find_tool, run_tool, svg_document
 
 if TYPE_CHECKING:
     from ..model.elements.structure import Group

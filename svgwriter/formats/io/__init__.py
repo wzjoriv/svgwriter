@@ -13,10 +13,9 @@ from .writer import SerializeOptions, Writer, iter_chunks, to_string, write
 
 if TYPE_CHECKING:
     from ._async import aiter_chunks, write_async, write_many_async
-    from .parser import Strictness, SVGParseError, parse, parse_file
+    from .parser import Strictness, parse, parse_file
 
 _LAZY = {
-    "SVGParseError": ".parser",
     "Strictness": ".parser",
     "parse": ".parser",
     "parse_file": ".parser",
@@ -26,7 +25,6 @@ _LAZY = {
 }
 
 __all__ = [
-    "SVGParseError",
     "SerializeOptions",
     "Strictness",
     "Writer",

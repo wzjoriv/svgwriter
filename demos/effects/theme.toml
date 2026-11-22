@@ -1,5 +1,5 @@
 # A night sky: deep blue card, pale ink, a book serif.
-name = "text-effects"
+name = "effects"
 extends = "dark"
 
 [palette]

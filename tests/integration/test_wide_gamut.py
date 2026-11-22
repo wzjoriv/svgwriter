@@ -11,7 +11,7 @@ P3_RED = "color(display-p3 1 0 0)"
 
 
 def theme() -> svg.Theme:
-    return svg.Theme.get("light").replace(palette={
+    return svg.themes.get("light").replace(palette={
         "primary": "oklch(0.7 0.25 30)",
         "accent": P3_RED,
         "blend": lambda p: p.primary.mix(p.accent, space="oklch"),

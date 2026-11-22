@@ -69,3 +69,11 @@ def test_form_html() -> None:
 
     with pytest.raises(TypeError, match="no preview input"):
         controls_form({"x": Knob()}, {})
+
+
+def test_segmented_becomes_a_select_past_the_wrap_limit() -> None:
+    few = svg.widgets.Segmented([str(n) for n in range(6)])
+    many = svg.widgets.Segmented([str(n) for n in range(7)])
+    assert "class='segmented'" in controls_form({"few": few}, {})
+    form = controls_form({"many": many}, {})
+    assert "<select" in form and "segmented" not in form and 'data-kind="index"' in form

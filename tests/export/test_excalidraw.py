@@ -41,7 +41,7 @@ class TestImport:
     def test_deleted_skipped_and_bad_input(self) -> None:
         assert all(e.get("width") != 5 for e in scene())
         with pytest.raises(ValueError, match="not an Excalidraw scene"):
-            svg.export.find_importer(".excalidraw").function(b'{"type": "other"}')
+            svg.formats.reader(".excalidraw").read(b'{"type": "other"}')
 
     def test_renders(self) -> None:
         assert scene().rasterize(background="white")[..., :3].min() < 0.2
