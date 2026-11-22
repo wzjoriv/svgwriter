@@ -13,7 +13,7 @@ from ...._internal._constants import PX_PER_INCH
 from ...._internal._platform import missing
 from ....errors import OfficeExtraError
 from ..._format import Format
-from ._constants import EXTRA_HINT, PICTURE_SCALE
+from ._constants import PICTURE_SCALE
 
 if TYPE_CHECKING:
     from ....document import Document
