@@ -78,9 +78,9 @@ def test_language_hint_is_used_for_fallback():
 
 
 def test_sans_serif_resolves_to_an_installed_candidate():
-    from svgwriter._internal._constants import GENERIC_CANDIDATES
+    from svgwriter._internal._platform import generic_candidates
 
-    candidates = GENERIC_CANDIDATES["sans-serif"]
+    candidates = generic_candidates("sans-serif")
     installed = [name for name in candidates if skia.Typeface(name).getFamilyName() == name]
     if not installed:
         pytest.skip("no sans-serif candidate installed")

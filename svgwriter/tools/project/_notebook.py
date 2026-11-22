@@ -12,6 +12,7 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
+from ..._internal._platform import missing
 from ...errors import ProjectError
 from ._config import ProjectConfig
 from ._constants import (
@@ -86,8 +87,7 @@ def run_notebook(config: ProjectConfig, notebook: Path, formats: Sequence[str]) 
         from nbclient import NotebookClient
         from nbclient.exceptions import CellExecutionError
     except ImportError:
-        raise ProjectError(f"{config.source}: running {notebook.name} needs the notebook extra: "
-                           "pip install pysvgwriter[notebook]") from None
+        raise missing("notebook", f"{config.source}: running {notebook.name}", ProjectError) from None
     if not notebook.is_file():
         raise ProjectError(f"{config.source}: project.entry {config.entry!r}: no notebook {notebook.name} in {config.root}")
     document = nbformat.read(notebook, as_version=NBFORMAT)

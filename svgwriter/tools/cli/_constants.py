@@ -14,11 +14,15 @@ __all__ = [
     "DEFAULT_CANVAS",
     "DEFAULT_FONT",
     "DEFAULT_TEXT_SIZE",
+    "DOCTOR_COLUMNS",
+    "DOCTOR_FEW_FAMILIES",
+    "DOCTOR_MARKS",
     "DRAW_LAYOUTS",
     "EXIT_ERROR",
     "EXIT_FAILURE",
     "DEFAULT_PRESET",
     "FRAME_FORMAT",
+    "JSON_INDENT",
     "KEEP_CHOICE",
     "PRESET_COLUMN",
     "SIZE_COLUMN",
@@ -41,6 +45,12 @@ SIZE_COLUMN: Final = 20
 PRESET_COLUMN: Final = 12
 DEFAULT_PRESET: Final = "blank"
 SIZE_SEPARATOR: Final = ","
+DOCTOR_COLUMNS: Final = (12, 60)
+"""Width of the capability name column and the longest version shown by ``doctor``."""
+DOCTOR_MARKS: Final = {True: "ok  ", False: "--  "}
+DOCTOR_FEW_FAMILIES: Final = 10
+"""Below this many installed families, ``doctor`` suggests the distribution's font packages."""
+JSON_INDENT: Final = 2
 KEEP_CHOICE: Final = "the preset's own"
 CUSTOM_SIZE: Final = "custom width and height"
 COMMON_SIZES: Final = ("a4", "a3", "a5", "letter", "slide-16:9", "slide-4:3", "video-1080p", "instagram-post",

@@ -13,6 +13,7 @@ format, info        re-serialize or summarize an SVG file
 animate             render the scenes of a file to mp4/gif/webm/png frames (ffmpeg)
 render              rasterize scenes or an SVG file to PNG (skia-python)
 outline             write text as glyph outlines (skia-python)
+doctor              what works here, what is missing and how to install it
 
 Packages add commands through the ``svgwriter.command`` entry-point group (see :data:`commands`).
 """
@@ -28,6 +29,7 @@ from ... import __version__
 from ..._internal._registry import Registry
 from ._basic import add_basic_commands
 from ._constants import EXIT_ERROR, EXIT_FAILURE
+from ._doctor import add_doctor_command
 from ._media import add_media_commands
 from ._project import add_project_commands
 
@@ -75,6 +77,7 @@ def app(context: click.Context) -> None:
 add_project_commands(app)
 add_basic_commands(app)
 add_media_commands(app)
+add_doctor_command(app)
 
 
 def main(argv: Sequence[str] | None = None) -> int:

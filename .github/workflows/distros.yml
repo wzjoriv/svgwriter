@@ -1,0 +1,56 @@
+name: Linux distributions
+
+# Weekly and by hand only: install svgwriter in distribution containers with each one's own
+# Python and packages, print `svgwriter doctor`, and run the tests (optional programs absent,
+# so their tests skip). debian:stable-slim has no fonts at all and runs only the tests that
+# need none. Alpine (musl) is not here: skia-python ships no musllinux wheels.
+
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  distro:
+    name: ${{ matrix.image }}
+    runs-on: ubuntu-latest
+    container: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: fedora:latest
+            setup: dnf install -y python3 python3-pip git mesa-libEGL mesa-libGL fontconfig dejavu-sans-fonts google-noto-color-emoji-fonts
+            tests: tests
+          - image: archlinux:latest
+            setup: pacman -Syu --noconfirm python python-pip git libglvnd fontconfig ttf-dejavu noto-fonts-emoji
+            tests: tests
+          - image: opensuse/tumbleweed
+            setup: zypper --non-interactive install python3 python3-pip git libEGL1 libGL1 fontconfig dejavu-fonts noto-coloremoji-fonts
+            tests: tests
+          - image: ubuntu:24.04
+            setup: apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3 python3-venv git libegl1 libgl1 libfontconfig1 fonts-dejavu-core fonts-noto-color-emoji
+            tests: tests
+          - image: debian:stable-slim
+            setup: apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3 python3-venv git libegl1 libgl1 libfontconfig1
+            tests: tests/platform tests/pathdata tests/transform tests/io
+    steps:
+      - name: Distribution packages
+        run: ${{ matrix.setup }}
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install
+        run: |
+          python3 -m venv /opt/venv
+          /opt/venv/bin/pip install --upgrade pip
+          /opt/venv/bin/pip install -e ".[test]"
+      - name: svgwriter doctor
+        run: |
+          /opt/venv/bin/svgwriter doctor
+          /opt/venv/bin/svgwriter doctor --json > doctor.json
+      - name: Tests
+        run: /opt/venv/bin/python -m pytest -q -p no:cacheprovider ${{ matrix.tests }}

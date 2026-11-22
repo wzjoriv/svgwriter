@@ -4,7 +4,6 @@ Font resolution: registered faces, generic families and system fallbacks.
 
 from __future__ import annotations
 
-import sys
 import warnings
 from functools import lru_cache
 from typing import TYPE_CHECKING, Any
@@ -22,14 +21,13 @@ from .._constants import (
     FONT_CACHE,
     FONT_SIZE_KEYWORDS,
     FONT_WEIGHTS,
-    GENERIC_CANDIDATES,
     GENERIC_FAMILIES,
     GLYPH_CACHE,
-    MAC_FALLBACK_FAMILIES,
     NORMAL_WEIGHT,
     NORMAL_WIDTH,
     PERCENT,
 )
+from .._platform import fallback_families, generic_candidates, scans_fallback
 from ._font_match import FaceStyle, instance, match_rank
 
 if TYPE_CHECKING:
@@ -104,7 +102,7 @@ def resolve_font(font_family: str, size: float, weight: FontWeight, italic: bool
             return skia.Font(face, size)
     typeface = None
     for family in families or [DEFAULT_FAMILY]:
-        for concrete in GENERIC_CANDIDATES.get(family.lower(), ()):
+        for concrete in generic_candidates(family):
             match = skia.Typeface(concrete, skia.FontStyle(weight_value(weight), NORMAL_WIDTH, slant))
             if match.getFamilyName().lower() == concrete.lower():
                 return skia.Font(match, size)
@@ -161,7 +159,7 @@ def font_for(char: str, font_family: str, size: float, weight: FontWeight = "nor
         return font
     slant = skia.FontStyle.kItalic_Slant if italic else skia.FontStyle.kUpright_Slant
     style = skia.FontStyle(weight_value(weight), NORMAL_WIDTH, slant)
-    if sys.platform == "darwin":
+    if scans_fallback():
         name = _scanned_family(ord(char[0]), weight_value(weight), italic)
     else:
         family = font.getTypeface().getFamilyName()
@@ -183,7 +181,7 @@ def _scanned_family(code: int, weight: int, italic: bool) -> str | None:
     slant = skia.FontStyle.kItalic_Slant if italic else skia.FontStyle.kUpright_Slant
     style = skia.FontStyle(weight, NORMAL_WIDTH, slant)
     installed = [manager.getFamilyName(index) for index in range(manager.countFamilies())]
-    for name in dict.fromkeys([*MAC_FALLBACK_FAMILIES, *installed]):
+    for name in dict.fromkeys([*fallback_families(), *installed]):
         typeface = skia.Typeface(name, style)
         if typeface.getFamilyName().lower() == name.lower() and skia.Font(typeface).unicharToGlyph(code):
             return name

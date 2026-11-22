@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
+from .._internal._platform import missing
 from ._constants import CLOSEPOLY, CURVE4, LINETO, MOVETO, POINTS_PER_UNIT
 
 if TYPE_CHECKING:
@@ -93,7 +94,7 @@ def to_matplotlib(item: Element | Document, ax: Any, *, flip: bool = True) -> li
         from matplotlib.patches import PathPatch
         from matplotlib.path import Path as MplPath
     except ImportError as error:
-        raise ImportError("drawing into matplotlib needs matplotlib; pip install 'pysvgwriter[plot]'") from error
+        raise missing("matplotlib", "drawing into matplotlib") from error
 
     from .._internal._flat._flatten import flatten
     from ..document import Document

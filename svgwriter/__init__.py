@@ -125,6 +125,7 @@ from .tools.widgets import interact, sweep
 
 if TYPE_CHECKING:
     from ._internal._latex import latex
+    from ._internal._platform import capabilities
     from .formats.io import write_async
     from .formats.io.parser import Strictness, parse, parse_file
 
@@ -132,6 +133,7 @@ __version__ = "2.4.0"
 __author__ = "Josue N Rivera"
 
 _LAZY = {
+    "capabilities": ("_internal._platform", "capabilities"),
     "latex": ("_internal._latex", "latex"),
     "parse": ("formats.io.parser", "parse"),
     "parse_file": ("formats.io.parser", "parse_file"),
@@ -194,6 +196,7 @@ __all__ = [
     "ViewBox",
     "__author__",
     "__version__",
+    "capabilities",
     "cm",
     "drawing",
     "em",

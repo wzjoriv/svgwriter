@@ -4,8 +4,6 @@ LaTeX formulas as vector outlines, through TeX, Ziamath or matplotlib mathtext.
 
 from __future__ import annotations
 
-import os
-import shutil
 import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -28,6 +26,7 @@ from ._constants import (
     ZIAMATH_SIZE,
 )
 from ._errors import DiagramToolError
+from ._platform import available, missing
 from ._tools import find_tool, run_tool, svg_document
 
 if TYPE_CHECKING:
@@ -77,8 +76,7 @@ def latex(source: str, *, display: bool = False, preamble: str = "", engine: str
 
     if engine not in ENGINES:
         raise ValueError(f"unknown engine {engine!r}; use one of {', '.join(ENGINES)}")
-    has_tex = bool((os.environ.get("SVGWRITER_LATEX") or shutil.which(LATEX))
-                   and (os.environ.get("SVGWRITER_DVISVGM") or shutil.which(DVISVGM)))
+    has_tex = available("latex")
     if engine in ("ziamath", "mathtext") or (engine == "auto" and not has_tex):
         for name, typeset in (("ziamath", _ziamath), ("mathtext", _mathtext)):
             if engine in (name, "auto"):
@@ -87,8 +85,8 @@ def latex(source: str, *, display: bool = False, preamble: str = "", engine: str
                     size = MATHTEXT_SIZE * (DISPLAY_SCALE if display else 1.0) if name == "mathtext" else ZIAMATH_SIZE
                     return _remember(result, source, size)
         if engine != "auto":
-            raise DiagramToolError(f"the {engine} engine is not installed; pip install "
-                                   f"{'ziamath' if engine == 'ziamath' else 'matplotlib'}")
+            raise missing("ziamath" if engine == "ziamath" else "matplotlib", f"the {engine} engine",
+                          DiagramToolError)
     body = source if ("$" in source or r"\begin" in source) else (
         rf"$\displaystyle {source}$" if display else f"${source}$")
     latex_tool, svg_tool = find_tool(LATEX), find_tool(DVISVGM)

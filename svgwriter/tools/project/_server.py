@@ -12,13 +12,13 @@ import json
 import threading
 import time
 import traceback
-import webbrowser
 from collections.abc import Mapping, Sequence
 from contextlib import ExitStack, nullcontext
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
+from ..._internal import _platform
 from ...model.theme import Theme
 from ...motion.video import Scene
 from ..widgets import Control, controls_of
@@ -371,7 +371,7 @@ class LiveServer:
         watcher = threading.Thread(target=self._watch, daemon=True)
         watcher.start()
         if open_browser:
-            webbrowser.open(self.url)
+            _platform.open_browser(self.url)
         try:
             self.server.serve_forever()
         except KeyboardInterrupt:

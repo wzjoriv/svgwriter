@@ -4,14 +4,13 @@ External command-line tools: finding them, running them and reading the SVG they
 
 from __future__ import annotations
 
-import os
-import shutil
 import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ._constants import INSTALL_HINT, TIMEOUT_SECONDS
+from ._constants import TIMEOUT_SECONDS
 from ._errors import DiagramToolError
+from ._platform import capability_of, find_executable, missing
 
 if TYPE_CHECKING:
     from ..document import Document
@@ -22,9 +21,9 @@ __all__ = ["find_tool", "run_tool", "svg_document"]
 
 def find_tool(name: str) -> str:
     """The executable for *name*, from ``SVGWRITER_<NAME>`` or ``PATH``."""
-    found = os.environ.get(f"SVGWRITER_{name.upper()}") or shutil.which(name)
+    found = find_executable(name)
     if not found:
-        raise DiagramToolError(f"`{name}` not found; {INSTALL_HINT[name]}")
+        raise missing(capability_of(name), f"running `{name}`", DiagramToolError)
     return found
 
 

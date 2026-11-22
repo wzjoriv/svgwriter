@@ -28,7 +28,6 @@ __all__ = [
     "DEFAULT_WEIGHT",
     "DEFAULT_X_HEIGHT",
     "FONT_FORMATS",
-    "FONTS_EXTRA",
     "FS_ITALIC",
     "FS_REGULAR",
     "ITALIC_STYLES",
@@ -44,7 +43,6 @@ __all__ = [
     "TRUETYPE_FORMATS",
     "USE_TYPO_METRICS",
     "WEB_FLAVORS",
-    "WOFF2_EXTRA",
 ]
 
 DEFAULT_FAMILY: Final = "Untitled"
@@ -79,8 +77,6 @@ FONT_FORMATS: Final = ("otf", "ttf", "woff", "woff2")
 TRUETYPE_FORMATS: Final = frozenset({"ttf"})
 WEB_FLAVORS: Final = frozenset({"woff", "woff2"})
 CSS_FORMATS: Final = {"otf": "opentype", "ttf": "truetype", "woff": "woff", "woff2": "woff2"}
-FONTS_EXTRA: Final = "building fonts needs fontTools: pip install 'pysvgwriter[fonts]'"
-WOFF2_EXTRA: Final = "woff2 fonts need brotli: pip install 'pysvgwriter[fonts]'"
 
 CHEAT_COLUMNS: Final = 6
 CHEAT_CELL: Final = 120
