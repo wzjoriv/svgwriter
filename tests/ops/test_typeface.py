@@ -277,3 +277,12 @@ def test_unknown_installed_family_suggests_close_names(monkeypatch: pytest.Monke
     monkeypatch.setattr(_sources, "_installed_families", lambda: ("Gill Sans", "Georgia", "Helvetica"))
     with pytest.raises(LookupError, match="did you mean 'Georgia'"):
         svg.Typeface("georgai")
+
+
+def test_generic_family_falls_back_when_no_candidate_is_installed(monkeypatch):
+    from svgwriter.ops._text import _sources
+
+    monkeypatch.setattr(_sources, "generic_candidates", lambda name: ("NoSuchFontAnywhere",))
+    with pytest.warns(UserWarning, match="no installed font for 'serif'"):
+        family, faces = _sources.installed_faces("serif")
+    assert family and faces

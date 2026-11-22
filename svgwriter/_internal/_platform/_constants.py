@@ -150,9 +150,9 @@ PYTHON_CAPABILITIES: Final = {
 
 SYSTEM_FONTS: Final = {
     APT: "libegl1 libgl1 libfontconfig1 fonts-dejavu-core fonts-noto-color-emoji",
-    DNF: "mesa-libEGL mesa-libGL fontconfig dejavu-sans-fonts google-noto-color-emoji-fonts",
+    DNF: "mesa-libEGL mesa-libGL fontconfig dejavu-sans-fonts dejavu-serif-fonts dejavu-sans-mono-fonts google-noto-color-emoji-fonts",
     PACMAN: "libglvnd fontconfig ttf-dejavu noto-fonts-emoji",
-    ZYPPER: "libEGL1 libGL1 fontconfig dejavu-fonts noto-coloremoji-fonts",
+    ZYPPER: "Mesa-libEGL1 Mesa-libGL1 fontconfig dejavu-fonts noto-coloremoji-fonts",
 }
 """Linux system libraries skia loads and a baseline of fonts, per package manager."""
 
