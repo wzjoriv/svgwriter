@@ -16,9 +16,9 @@ from ..pathdata.data import BBox, PathData
 from ..transform.matrix import Matrix
 from ._constants import TOLERANCE
 from ._lengths import Edges, LayoutLength, PaddingLike, edges, resolve, user_scale
-from ._measure import extent, move, resizable, resize
+from ._measure import extent, measuring, move, resizable, resize
 
-__all__ = ["Frame", "settle"]
+__all__ = ["Frame", "settle", "settled"]
 
 _DONE: ContextVar[set[int] | None] = ContextVar("svgwriter_layout_pass", default=None)
 
@@ -32,7 +32,7 @@ def _layout_pass() -> Generator[set[int], None, None]:
         return
     token = _DONE.set(set())
     try:
-        with frozen_rules():
+        with frozen_rules(), measuring():
             yield _DONE.get()  # type: ignore[misc]
     finally:
         _DONE.reset(token)
@@ -65,6 +65,41 @@ def settle(root: Element) -> None:
         for element in root.iter():
             if isinstance(element, Frame):
                 element.arrange()
+
+
+
+@contextmanager
+def settled(root: Element) -> Generator[None, None, None]:
+    """Arrange every layout group under *root* and keep that arrangement for the block.
+
+    Measuring inside the block (output asks each group for its box while writing) reuses the
+    arrangement instead of laying the tree out again, so the tree must not change inside it.
+    Joins an enclosing block.
+
+    Parameters
+    ----------
+    root : Element
+        The tree to arrange.
+
+    Yields
+    ------
+    None
+
+    See Also
+    --------
+    settle : Arrange once, without holding the arrangement.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> stack = svg.VStack(svg.rect(0, 0, 10, 10), svg.rect(0, 0, 10, 10), gap=5)
+    >>> with svg.layout.settled(stack):
+    ...     stack.bounds().height
+    25.0
+    """
+    with _layout_pass():
+        settle(root)
+        yield
 
 
 class Frame(Group):

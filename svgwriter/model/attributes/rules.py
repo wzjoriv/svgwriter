@@ -4,21 +4,34 @@ Style rules: parsing CSS sheets and collecting the rules a tree's ``<style>`` el
 
 from __future__ import annotations
 
-from collections.abc import Generator
+from collections.abc import Generator, Iterable
 from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import TYPE_CHECKING
 
-from ._constants import AT_BLOCK_RE, COMMENT_RE, IMPORTANT, ROOT_RULES, RULE_RE
-from ._selectors import specificity
+from ._constants import (
+    AT_BLOCK_RE,
+    CLASS_KEY,
+    COMMENT_RE,
+    ID_KEY,
+    IMPORTANT,
+    ROOT_RULES,
+    RULE_RE,
+    RULE_SET_CACHE_SIZE,
+    SHEET_CACHE_SIZE,
+    TAG_KEY,
+    UNIVERSAL_KEY,
+)
+from ._selectors import Selector, compile_selector, specificity
 
 if TYPE_CHECKING:
     from ..elements.core import Element
 
-__all__ = ["Rule", "frozen_rules", "parse_css", "rules_of", "set_class_rules"]
+__all__ = ["Rule", "RuleSet", "frozen_rules", "parse_css", "rule_set", "rules_of", "set_class_rules"]
 
-_FROZEN: ContextVar[dict[int, list[Rule]] | None] = ContextVar("svgwriter_frozen_rules", default=None)
+_FROZEN: ContextVar[dict[int, RuleSet] | None] = ContextVar("svgwriter_frozen_rules", default=None)
 
 
 @dataclass(frozen=True)
@@ -82,6 +95,11 @@ def parse_css(text: str, start: int = 0) -> list[Rule]:
     >>> [r.selector for r in parse_css("rect, .a { fill: red } /* x */ #b{stroke:blue}")]
     ['rect', '.a', '#b']
     """
+    return list(_parse_css(text, start))
+
+
+@lru_cache(maxsize=SHEET_CACHE_SIZE)
+def _parse_css(text: str, start: int) -> tuple[Rule, ...]:
     text = AT_BLOCK_RE.sub("", COMMENT_RE.sub("", text))
     rules: list[Rule] = []
     for selectors, body in RULE_RE.findall(text):
@@ -99,7 +117,115 @@ def parse_css(text: str, start: int = 0) -> list[Rule]:
             selector = " ".join(selector.split())
             if selector:
                 rules.append(Rule(selector, specificity(selector), start + len(rules), tuple(declarations)))
-    return rules
+    return tuple(rules)
+
+
+Candidate = tuple[int, Rule, Selector]
+"""A rule with its position in its set and its compiled selector."""
+
+
+class RuleSet(list[Rule]):
+    """Rules in cascade order, indexed by the rightmost compound selector of each, as browsers do.
+
+    Parameters
+    ----------
+    rules : iterable of Rule
+        The rules, in the order ties are broken.
+
+    Attributes
+    ----------
+    buckets : dict
+        Candidates by ``(kind, name)``: the rightmost compound's id, first class or tag, else universal.
+    attribute_names : tuple of str
+        Every attribute an attribute selector of the set tests.
+
+    See Also
+    --------
+    rule_set : The shared set for some rules.
+
+    Examples
+    --------
+    >>> from svgwriter.model.attributes.rules import RuleSet, parse_css
+    >>> rules = RuleSet(parse_css("rect { fill: red } .a > .b { fill: blue } :hover { fill: none }"))
+    >>> sorted(rules.buckets)
+    [('.', 'b'), ('tag', 'rect')]
+    """
+
+    def __init__(self, rules: Iterable[Rule] = ()) -> None:
+        super().__init__(rules)
+        self.buckets: dict[tuple[str, str], list[Candidate]] = {}
+        names: set[str] = set()
+        for position, rule in enumerate(self):
+            selector = compile_selector(rule.selector)
+            if selector is None:
+                continue
+            self.buckets.setdefault(selector.key, []).append((position, rule, selector))
+            names.update(name for compound in selector.compounds for name, _, _ in compound.attributes)
+        self.attribute_names = tuple(sorted(names))
+
+    def candidates(self, tag: str, ident: str | None, classes: Iterable[str]) -> list[Candidate]:
+        """The rules that can match an element, by its tag, id and classes, in set order.
+
+        Parameters
+        ----------
+        tag : str
+            The element's tag.
+        ident : str or None
+            Its id.
+        classes : iterable of str
+            Its distinct class names.
+
+        Returns
+        -------
+        list of Candidate
+            ``(position, rule, selector)`` triples, by position.
+
+        Examples
+        --------
+        >>> from svgwriter.model.attributes.rules import RuleSet, parse_css
+        >>> rules = RuleSet(parse_css("rect { fill: red } .a { fill: blue } #x { fill: none }"))
+        >>> [rule.selector for _, rule, _ in rules.candidates("rect", None, ["a"])]
+        ['rect', '.a']
+        """
+        buckets = self.buckets
+        found: list[Candidate] = []
+        for key in ((TAG_KEY, tag), (UNIVERSAL_KEY, ""), *((CLASS_KEY, name) for name in classes)):
+            found.extend(buckets.get(key, ()))
+        if ident is not None:
+            found.extend(buckets.get((ID_KEY, ident), ()))
+        found.sort(key=_position)
+        return found
+
+
+def _position(candidate: Candidate) -> int:
+    return candidate[0]
+
+
+@lru_cache(maxsize=RULE_SET_CACHE_SIZE)
+def _shared(rules: tuple[Rule, ...]) -> RuleSet:
+    return RuleSet(rules)
+
+
+def rule_set(rules: Iterable[Rule]) -> RuleSet:
+    """The shared, indexed set for some rules: equal rules give the same set, so per-element memos stay valid.
+
+    Parameters
+    ----------
+    rules : iterable of Rule
+        The rules, in cascade order; a `RuleSet` is returned as is.
+
+    Returns
+    -------
+    RuleSet
+        The indexed rules.
+
+    Examples
+    --------
+    >>> from svgwriter.model.attributes.rules import parse_css, rule_set
+    >>> rule_set(parse_css(".a { fill: red }")) is rule_set(parse_css(".a { fill: red }"))
+    True
+    """
+    return rules if isinstance(rules, RuleSet) else _shared(tuple(rules))
 
 
 @contextmanager
@@ -131,7 +257,7 @@ def frozen_rules() -> Generator[None, None, None]:
         _FROZEN.reset(token)
 
 
-def rules_of(root: Element) -> list[Rule]:
+def rules_of(root: Element) -> RuleSet:
     """Collect the rules of every ``<style>`` element under an element.
 
     Rules a document attaches to its root by class name (its theme's role styles) come first, for the
@@ -144,8 +270,8 @@ def rules_of(root: Element) -> list[Rule]:
 
     Returns
     -------
-    list of Rule
-        The rules in document order, numbered consecutively.
+    RuleSet
+        The rules in document order, indexed; equal rules give the same shared set.
 
     See Also
     --------
@@ -172,10 +298,11 @@ def rules_of(root: Element) -> list[Rule]:
             used.update(str(element.attributes.get("class", "")).split())
     rules = [rule for name in sorted(used & by_class.keys()) for rule in by_class[name]]
     for css in sheets:
-        rules.extend(parse_css(css, start=len(rules)))
+        rules.extend(_parse_css(css, len(rules)))
+    shared = rule_set(rules)
     if cache is not None:
-        cache[id(root)] = rules
-    return rules
+        cache[id(root)] = shared
+    return shared
 
 
 def set_class_rules(root: Element, rules: dict[str, list[Rule]]) -> None:

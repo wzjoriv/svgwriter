@@ -45,10 +45,10 @@ class Displayable:
         '<circle cx="0" cy="0" r="1"/>'
         """
         from ....formats.io.writer import to_string
-        from ...layout import settle
+        from ...layout import settled
 
-        settle(self)
-        return to_string(self, **options)
+        with settled(self):
+            return to_string(self, **options)
 
     def save(self, target: AnyPath | TextSink, **options: Any) -> None:
         """Write to a path or text stream.
@@ -74,10 +74,10 @@ class Displayable:
         '<circle cx="0" cy="0" r="1"/>'
         """
         from ....formats.io.writer import write
-        from ...layout import settle
+        from ...layout import settled
 
-        settle(self)
-        write(self, target, **options)
+        with settled(self):
+            write(self, target, **options)
 
     def _preview(self) -> Any:
         """A copy of this element alone in a fitted document, enlarged to at least 200 px on its longer side."""

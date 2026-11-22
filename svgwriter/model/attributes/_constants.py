@@ -9,6 +9,18 @@ import re
 from typing import Final
 
 __all__ = [
+    "ANY_TAG",
+    "CLASS_KEY",
+    "DESCENDANT",
+    "FIRST_CHILD",
+    "ID_KEY",
+    "INLINE_CACHE_SIZE",
+    "RULE_SET_CACHE_SIZE",
+    "SELECTOR_CACHE_SIZE",
+    "SHEET_CACHE_SIZE",
+    "STYLE_MEMO",
+    "TAG_KEY",
+    "UNIVERSAL_KEY",
     "ROOT_RULES",
     "ANGLE_ATTRIBUTES",
     "ANGLE_RE",
@@ -116,3 +128,18 @@ FUNC_IRI_RE: Final = re.compile(r"""^\s*url\(\s*(['"]?)(.*?)\1\s*\)\s*$""")
 
 SEPARATORS: Final = re.compile(r"[\s,]+")
 COMBINATORS: Final = frozenset({">", "+", "~"})
+DESCENDANT: Final = " "
+ANY_TAG: Final = "*"
+FIRST_CHILD: Final = ":first-child"
+ID_KEY: Final = "#"
+CLASS_KEY: Final = "."
+TAG_KEY: Final = "tag"
+UNIVERSAL_KEY: Final = "*"
+"""Index buckets of a rule set, by the rightmost compound's id, first class, tag, or none of them."""
+SELECTOR_CACHE_SIZE: Final = 4096
+SHEET_CACHE_SIZE: Final = 256
+RULE_SET_CACHE_SIZE: Final = 64
+INLINE_CACHE_SIZE: Final = 4096
+"""Bounds of the caches of compiled selectors, parsed sheets, indexed rule sets and parsed inline styles."""
+STYLE_MEMO: Final = "_style_memo"
+"""Element attribute holding its last matched declarations, with the key they are valid for."""

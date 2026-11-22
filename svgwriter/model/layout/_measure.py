@@ -4,6 +4,9 @@ Measuring, moving and stretching the children of a layout group.
 
 from __future__ import annotations
 
+from collections.abc import Generator
+from contextlib import contextmanager
+from contextvars import ContextVar
 from typing import Any
 
 from ..._internal._constants import DEFAULT_FONT_SIZE
@@ -14,10 +17,39 @@ from ..pathdata.data import BBox
 from ..transform.matrix import Matrix
 from ._constants import RESIZABLE_TAGS, TOLERANCE
 
-__all__ = ["extent", "move", "release", "resizable", "resize", "text_box"]
+__all__ = ["extent", "measuring", "move", "release", "resizable", "resize", "text_box"]
 
 ASSIGNED = "_layout_assigned"
 SIDES = ("width", "height")
+_TEXT_BOXES: ContextVar[dict[int, tuple[Element, BBox | None]] | None] = ContextVar(
+    "svgwriter_text_boxes", default=None)
+
+
+@contextmanager
+def measuring() -> Generator[None, None, None]:
+    """Measure each text once for the block, a layout pass in which no text changes (joins an open block).
+
+    Yields
+    ------
+    None
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.model.layout._measure import measuring, text_box
+    >>> label = svg.text("7", font_size=20)
+    >>> with measuring():
+    ...     text_box(label) is text_box(label)
+    True
+    """
+    if _TEXT_BOXES.get() is not None:
+        yield
+        return
+    token = _TEXT_BOXES.set({})
+    try:
+        yield
+    finally:
+        _TEXT_BOXES.reset(token)
 
 
 def _transformed(box: BBox, matrix: Matrix) -> BBox:
@@ -51,6 +83,16 @@ def text_box(text: Element) -> BBox | None:
     >>> text_box(svg.text("7", font_size=20)).height == text_box(svg.text("-", font_size=20)).height
     True
     """
+    cache = _TEXT_BOXES.get()
+    if cache is None:
+        return _text_box(text)
+    known = cache.get(id(text))
+    if known is None or known[0] is not text:
+        known = cache[id(text)] = (text, _text_box(text))
+    return known[1]
+
+
+def _text_box(text: Element) -> BBox | None:
     boxes = text.layout()  # type: ignore[attr-defined]
     if not boxes:
         return None
