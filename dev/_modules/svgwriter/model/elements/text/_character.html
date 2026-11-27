@@ -314,6 +314,8 @@
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">....ops.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">GlyphBox</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">...attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">LengthLike</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">...color.paint</span><span class="w"> </span><span class="kn">import</span> <span class="n">PaintValue</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">...pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">BBox</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">...transform.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
@@ -327,6 +329,20 @@
 <span class="w">    </span><span class="sd">"""Shared behaviour of the characters ``[start, stop)`` of a text."""</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"start"</span><span class="p">,</span> <span class="s2">"stop"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">)</span>
+
+    <span class="n">fill</span><span class="p">:</span> <span class="n">PaintValue</span>
+    <span class="n">stroke</span><span class="p">:</span> <span class="n">PaintValue</span>
+    <span class="n">stroke_width</span><span class="p">:</span> <span class="n">LengthLike</span>
+    <span class="n">opacity</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">fill_opacity</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">stroke_opacity</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">font_family</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">font_size</span><span class="p">:</span> <span class="n">LengthLike</span>
+    <span class="n">font_weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span>
+    <span class="n">font_style</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">text_decoration</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">letter_spacing</span><span class="p">:</span> <span class="n">LengthLike</span>
+    <span class="n">baseline_shift</span><span class="p">:</span> <span class="n">LengthLike</span> <span class="o">|</span> <span class="nb">str</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="n">Text</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
