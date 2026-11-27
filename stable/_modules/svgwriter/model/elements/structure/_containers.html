@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.model.elements.structure._containers - svgwriter 2.5.0</title>
+        <title>svgwriter.model.elements.structure._containers - svgwriter 2.6.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">svgwriter 2.5.0</div></a>
+      <a href="../../../../../index.html"><div class="brand">svgwriter 2.6.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.5.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.6.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.5.0</span>
+  <span class="sidebar-versions-label">2.6.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
@@ -357,7 +357,6 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Child</span><span class="p">,</span>
-        <span class="n">t</span><span class="p">:</span> <span class="n">TransformLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">transform</span><span class="p">:</span> <span class="n">TransformLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">anchor</span><span class="p">:</span> <span class="n">Pivot</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">fill</span><span class="p">:</span> <span class="n">PaintValue</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -439,7 +438,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        *args</span>
 <span class="sd">            See the class docstring.</span>
-<span class="sd">        t, transform, anchor, fill, fill_opacity, fill_rule, stroke, stroke_width, stroke_opacity, stroke_linecap, stroke_linejoin, stroke_miterlimit, stroke_dasharray, stroke_dashoffset, opacity, display, visibility, color, clip_path, mask, filter, font_family, font_size, font_weight, text_anchor, alignment_baseline, baseline_shift, clip, clip_rule, color_interpolation, color_interpolation_filters, color_profile, color_rendering, direction, dominant_baseline, enable_background, flood_color, flood_opacity, font, font_size_adjust, font_stretch, font_style, font_variant, glyph_orientation_horizontal, glyph_orientation_vertical, image_rendering, kerning, letter_spacing, lighting_color, marker, marker_end, marker_mid, marker_start, overflow, pointer_events, shape_rendering, stop_color, stop_opacity, text_decoration, text_rendering, unicode_bidi, word_spacing, writing_mode, class_, style, required_features, required_extensions, system_language, external_resources_required, xml_base, xml_lang, xml_space, id, attrs</span>
+<span class="sd">        transform, anchor, fill, fill_opacity, fill_rule, stroke, stroke_width, stroke_opacity, stroke_linecap, stroke_linejoin, stroke_miterlimit, stroke_dasharray, stroke_dashoffset, opacity, display, visibility, color, clip_path, mask, filter, font_family, font_size, font_weight, text_anchor, alignment_baseline, baseline_shift, clip, clip_rule, color_interpolation, color_interpolation_filters, color_profile, color_rendering, direction, dominant_baseline, enable_background, flood_color, flood_opacity, font, font_size_adjust, font_stretch, font_style, font_variant, glyph_orientation_horizontal, glyph_orientation_vertical, image_rendering, kerning, letter_spacing, lighting_color, marker, marker_end, marker_mid, marker_start, overflow, pointer_events, shape_rendering, stop_color, stop_opacity, text_decoration, text_rendering, unicode_bidi, word_spacing, writing_mode, class_, style, required_features, required_extensions, system_language, external_resources_required, xml_base, xml_lang, xml_space, id, attrs</span>
 <span class="sd">            The attribute groups of :class:`~svgwriter.Transformable`, :class:`~svgwriter.PresentationAttributes`, :class:`~svgwriter.StyleAttributes`, :class:`~svgwriter.ConditionalAttributes`, :class:`~svgwriter.ExternalResourcesAttribute`, :class:`~svgwriter.CoreAttributes`, :class:`~svgwriter.Element`. Defaults to None (unset).</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Any other SVG attribute in Python spelling, including namespaced and open ones</span>
@@ -456,7 +455,7 @@
             <span class="n">font_stretch</span><span class="p">,</span> <span class="n">font_style</span><span class="p">,</span> <span class="n">font_variant</span><span class="p">,</span> <span class="n">glyph_orientation_horizontal</span><span class="p">,</span> <span class="n">glyph_orientation_vertical</span><span class="p">,</span>
             <span class="n">image_rendering</span><span class="p">,</span> <span class="n">kerning</span><span class="p">,</span> <span class="n">letter_spacing</span><span class="p">,</span> <span class="n">lighting_color</span><span class="p">,</span> <span class="n">marker</span><span class="p">,</span> <span class="n">marker_end</span><span class="p">,</span> <span class="n">marker_mid</span><span class="p">,</span> <span class="n">marker_start</span><span class="p">,</span>
             <span class="n">overflow</span><span class="p">,</span> <span class="n">pointer_events</span><span class="p">,</span> <span class="n">shape_rendering</span><span class="p">,</span> <span class="n">stop_color</span><span class="p">,</span> <span class="n">stop_opacity</span><span class="p">,</span> <span class="n">text_decoration</span><span class="p">,</span> <span class="n">text_rendering</span><span class="p">,</span>
-            <span class="n">unicode_bidi</span><span class="p">,</span> <span class="n">word_spacing</span><span class="p">,</span> <span class="n">writing_mode</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">anchor</span>
+            <span class="n">unicode_bidi</span><span class="p">,</span> <span class="n">word_spacing</span><span class="p">,</span> <span class="n">writing_mode</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">anchor</span>
         <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="c1"># endregion</span>
@@ -528,7 +527,6 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Child</span><span class="p">,</span>
-        <span class="n">t</span><span class="p">:</span> <span class="n">TransformLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">transform</span><span class="p">:</span> <span class="n">TransformLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">anchor</span><span class="p">:</span> <span class="n">Pivot</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">fill</span><span class="p">:</span> <span class="n">PaintValue</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -610,7 +608,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        *args</span>
 <span class="sd">            See the class docstring.</span>
-<span class="sd">        t, transform, anchor, fill, fill_opacity, fill_rule, stroke, stroke_width, stroke_opacity, stroke_linecap, stroke_linejoin, stroke_miterlimit, stroke_dasharray, stroke_dashoffset, opacity, display, visibility, color, clip_path, mask, filter, font_family, font_size, font_weight, text_anchor, alignment_baseline, baseline_shift, clip, clip_rule, color_interpolation, color_interpolation_filters, color_profile, color_rendering, direction, dominant_baseline, enable_background, flood_color, flood_opacity, font, font_size_adjust, font_stretch, font_style, font_variant, glyph_orientation_horizontal, glyph_orientation_vertical, image_rendering, kerning, letter_spacing, lighting_color, marker, marker_end, marker_mid, marker_start, overflow, pointer_events, shape_rendering, stop_color, stop_opacity, text_decoration, text_rendering, unicode_bidi, word_spacing, writing_mode, class_, style, required_features, required_extensions, system_language, external_resources_required, xml_base, xml_lang, xml_space, id, attrs</span>
+<span class="sd">        transform, anchor, fill, fill_opacity, fill_rule, stroke, stroke_width, stroke_opacity, stroke_linecap, stroke_linejoin, stroke_miterlimit, stroke_dasharray, stroke_dashoffset, opacity, display, visibility, color, clip_path, mask, filter, font_family, font_size, font_weight, text_anchor, alignment_baseline, baseline_shift, clip, clip_rule, color_interpolation, color_interpolation_filters, color_profile, color_rendering, direction, dominant_baseline, enable_background, flood_color, flood_opacity, font, font_size_adjust, font_stretch, font_style, font_variant, glyph_orientation_horizontal, glyph_orientation_vertical, image_rendering, kerning, letter_spacing, lighting_color, marker, marker_end, marker_mid, marker_start, overflow, pointer_events, shape_rendering, stop_color, stop_opacity, text_decoration, text_rendering, unicode_bidi, word_spacing, writing_mode, class_, style, required_features, required_extensions, system_language, external_resources_required, xml_base, xml_lang, xml_space, id, attrs</span>
 <span class="sd">            The attribute groups of :class:`~svgwriter.Transformable`, :class:`~svgwriter.PresentationAttributes`, :class:`~svgwriter.StyleAttributes`, :class:`~svgwriter.ConditionalAttributes`, :class:`~svgwriter.ExternalResourcesAttribute`, :class:`~svgwriter.CoreAttributes`, :class:`~svgwriter.Element`. Defaults to None (unset).</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Any other SVG attribute in Python spelling, including namespaced and open ones</span>
@@ -627,7 +625,7 @@
             <span class="n">font_stretch</span><span class="p">,</span> <span class="n">font_style</span><span class="p">,</span> <span class="n">font_variant</span><span class="p">,</span> <span class="n">glyph_orientation_horizontal</span><span class="p">,</span> <span class="n">glyph_orientation_vertical</span><span class="p">,</span>
             <span class="n">image_rendering</span><span class="p">,</span> <span class="n">kerning</span><span class="p">,</span> <span class="n">letter_spacing</span><span class="p">,</span> <span class="n">lighting_color</span><span class="p">,</span> <span class="n">marker</span><span class="p">,</span> <span class="n">marker_end</span><span class="p">,</span> <span class="n">marker_mid</span><span class="p">,</span> <span class="n">marker_start</span><span class="p">,</span>
             <span class="n">overflow</span><span class="p">,</span> <span class="n">pointer_events</span><span class="p">,</span> <span class="n">shape_rendering</span><span class="p">,</span> <span class="n">stop_color</span><span class="p">,</span> <span class="n">stop_opacity</span><span class="p">,</span> <span class="n">text_decoration</span><span class="p">,</span> <span class="n">text_rendering</span><span class="p">,</span>
-            <span class="n">unicode_bidi</span><span class="p">,</span> <span class="n">word_spacing</span><span class="p">,</span> <span class="n">writing_mode</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">anchor</span>
+            <span class="n">unicode_bidi</span><span class="p">,</span> <span class="n">word_spacing</span><span class="p">,</span> <span class="n">writing_mode</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">anchor</span>
         <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -664,7 +662,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=5574521d"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=f82422d1"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/scripts/furo.js?v=46bd48cc"></script>

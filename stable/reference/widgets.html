@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Widgets - svgwriter 2.5.0</title>
+        <title>Widgets - svgwriter 2.6.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.5.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.6.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.5.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.6.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.5.0</span>
+  <span class="sidebar-versions-label">2.6.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -2176,7 +2176,7 @@ registered with <code class="xref py py-data docutils literal notranslate"><span
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">slide</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">svg</span><span class="o">.</span><span class="n">Element</span><span class="p">,</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">element</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">home</span><span class="o">.</span><span class="n">t</span>
+<span class="gp">... </span>    <span class="n">element</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">home</span><span class="o">.</span><span class="n">matrix</span>
 <span class="gp">... </span>    <span class="n">element</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">speed</span> <span class="o">*</span> <span class="n">seconds</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Train</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">2.0</span>
@@ -2185,7 +2185,7 @@ registered with <code class="xref py py-data docutils literal notranslate"><span
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span> <span class="o">=</span> <span class="n">Train</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)[:</span><span class="mi">4</span><span class="p">]</span>
 <span class="go">b'\x89PNG'</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">car</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">e</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">car</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">e</span>
 <span class="go">20.0</span>
 </pre></div>
 </div>
@@ -3139,7 +3139,7 @@ controls (<a class="reference internal" href="#svgwriter.tools.widgets.controls"
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=5574521d"></script>
+</div><script src="../_static/documentation_options.js?v=f82422d1"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

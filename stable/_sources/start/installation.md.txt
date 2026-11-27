@@ -98,7 +98,7 @@ Arial and Times faces.
 ### Fedora, RHEL and derivatives (dnf)
 
 ```console
-$ sudo dnf install mesa-libEGL mesa-libGL fontconfig dejavu-sans-fonts google-noto-color-emoji-fonts
+$ sudo dnf install mesa-libEGL mesa-libGL fontconfig dejavu-sans-fonts dejavu-serif-fonts dejavu-sans-mono-fonts google-noto-color-emoji-fonts
 $ sudo dnf install ffmpeg-free graphviz texlive-scheme-basic texlive-standalone texlive-dvisvgm
 ```
 
@@ -112,7 +112,7 @@ $ sudo pacman -S ffmpeg graphviz texlive-basic texlive-latexextra texlive-binext
 ### openSUSE (zypper)
 
 ```console
-$ sudo zypper install libEGL1 libGL1 fontconfig dejavu-fonts noto-coloremoji-fonts
+$ sudo zypper install Mesa-libEGL1 Mesa-libGL1 fontconfig dejavu-fonts noto-coloremoji-fonts
 $ sudo zypper install ffmpeg-7 graphviz texlive-latex texlive-standalone texlive-dvisvgm
 ```
 

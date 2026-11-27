@@ -13,7 +13,7 @@ c = svg.circle(50, 50, 10)
 c.translate(20, 0).rotate(90)
 print(c.cx)          # 50.0: the local geometry never changes
 print(c.position)    # Point(x=70.0, y=50.0): where the anchor (centre) is now
-print(c.t)           # the shortest equivalent transform text
+print(c.matrix)           # the shortest equivalent transform text
 print(c)             # <circle cx="50" cy="50" r="10" transform="..."/>
 ```
 
@@ -109,6 +109,19 @@ print(note.bounds().top, badge.bounds().left)
 `place(x, y, at=...)` moves a named point onto a coordinate; `align(target, at, to=...)` moves it onto a
 point of another element, box or `(x, y)`, so `a.align(b, "top", to="bottom")` stacks `a` under `b`.
 
+Elements also have the box's edges and points as attributes. Reading one gives the edge (a number) or
+point of the element's bounds; assigning one moves the element so that edge or point lands there:
+
+```python
+card = svg.rect(20, 20, 100, 50)
+heading = svg.rect(0, 0, 40, 8)
+heading.center = card.center              # centred on the card
+heading.top = card.top + 4                # then 4 units below the card's top edge
+pin = svg.circle(0, 0, 3)
+pin.center = card.bottom_right            # on the card's corner
+print(heading.top_left, pin.center)
+```
+
 ## Units and angles
 
 Plain numbers are user units (CSS pixels, 96 per inch). Lengths carry units and combine across them;
@@ -133,7 +146,10 @@ by physical size, and a user-unit length equals the plain number: `svg.Length(5)
 `svg.inch(1) == svg.mm(25.4)`.
 
 The units are `px`, `pt`, `pc`, `mm`, `q` (quarter millimetres, written `Q`), `cm`, `inch`, `em`, `ex`
-and `percent`, plus `m` and `ft`, which SVG lacks and so are written as millimetres and inches.
+and `percent`. Units SVG has no suffix for are written in the nearest SVG unit: `m`, `km`, `um`
+(micrometres) and `nmi` (nautical miles) as millimetres; `ft`, `yd`, `mi`, `furlong` and `mil`
+(thousandths of an inch) as inches. A unit on its own is one of itself, so `height=svg.inch` is one
+inch and `svg.turn` is a full turn.
 `svg.length(value, unit)` and `svg.angle(value, unit)` take the unit as text, spelled short or in full
 (`"mm"`, `"millimetres"`, `"inches"`, `"degrees"`, `"gon"`, `"turns"`, ...); output always uses the
 short suffix.

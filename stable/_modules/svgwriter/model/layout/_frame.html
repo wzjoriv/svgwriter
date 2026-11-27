@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.model.layout._frame - svgwriter 2.5.0</title>
+        <title>svgwriter.model.layout._frame - svgwriter 2.6.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">svgwriter 2.5.0</div></a>
+      <a href="../../../../index.html"><div class="brand">svgwriter 2.6.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.5.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.6.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.5.0</span>
+  <span class="sidebar-versions-label">2.6.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
@@ -341,7 +341,7 @@
 
 <span class="sd">    Output (strings, files, rendering and every exporter) calls this, and a group arranges itself</span>
 <span class="sd">    whenever it or one of its children is measured, so calling it is only needed to read</span>
-<span class="sd">    children's transforms (``child.t``) directly.</span>
+<span class="sd">    children's transforms (``child.matrix``) directly.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -354,7 +354,7 @@
 <span class="sd">    &gt;&gt;&gt; a, b = svg.rect(0, 0, 10, 10), svg.rect(0, 0, 10, 10)</span>
 <span class="sd">    &gt;&gt;&gt; stack = svg.VStack(a, b, gap=5)</span>
 <span class="sd">    &gt;&gt;&gt; svg.layout.settle(stack)</span>
-<span class="sd">    &gt;&gt;&gt; b.t.apply(0, 0)</span>
+<span class="sd">    &gt;&gt;&gt; b.matrix.apply(0, 0)</span>
 <span class="sd">    Point(x=0.0, y=15.0)</span>
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">Frame</span><span class="o">.</span><span class="n">made</span><span class="p">:</span>
@@ -576,7 +576,7 @@
 <span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">        &gt;&gt;&gt; a, b = svg.rect(0, 0, 10, 4), svg.rect(0, 0, 10, 4)</span>
 <span class="sd">        &gt;&gt;&gt; _ = svg.HStack(a, b, gap=2).arrange()</span>
-<span class="sd">        &gt;&gt;&gt; b.t.apply(0, 0)</span>
+<span class="sd">        &gt;&gt;&gt; b.matrix.apply(0, 0)</span>
 <span class="sd">        Point(x=12.0, y=0.0)</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arranging</span><span class="p">:</span>
@@ -637,7 +637,7 @@
         <span class="k">if</span> <span class="n">local</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">local</span><span class="o">.</span><span class="n">width</span> <span class="o">&lt;</span> <span class="n">TOLERANCE</span> <span class="ow">or</span> <span class="n">local</span><span class="o">.</span><span class="n">height</span> <span class="o">&lt;</span> <span class="n">TOLERANCE</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span> <span class="o">=</span> <span class="n">width</span> <span class="o">/</span> <span class="n">local</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">/</span> <span class="n">local</span><span class="o">.</span><span class="n">height</span>
-        <span class="n">background</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">sx</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">sy</span><span class="p">,</span> <span class="o">-</span><span class="n">local</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">sx</span><span class="p">,</span> <span class="o">-</span><span class="n">local</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">sy</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
+        <span class="n">background</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">sx</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">sy</span><span class="p">,</span> <span class="o">-</span><span class="n">local</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">sx</span><span class="p">,</span> <span class="o">-</span><span class="n">local</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">sy</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
 
 <div class="viewcode-block" id="Frame.local_bbox">
 <a class="viewcode-back" href="../../../../reference/layout.html#svgwriter.model.layout.Frame.local_bbox">[docs]</a>
@@ -751,7 +751,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=5574521d"></script>
+</div><script src="../../../../_static/documentation_options.js?v=f82422d1"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

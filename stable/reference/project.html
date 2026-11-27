@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Project - svgwriter 2.5.0</title>
+        <title>Project - svgwriter 2.6.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.5.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.6.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.5.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.6.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.5.0</span>
+  <span class="sidebar-versions-label">2.6.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -512,7 +512,7 @@ values. Notebook entries declare none here.</p>
 <p>The page shows every page and scene as SVG, drawn in memory. Controls the entry declares
 (<a class="reference internal" href="widgets.html#svgwriter.tools.widgets.controls" title="svgwriter.tools.widgets.controls"><code class="xref py py-func docutils literal notranslate"><span class="pre">svgwriter.tools.widgets.controls()</span></code></a>) appear in a panel beside or below the drawing, and the drawing
 follows them as they move. Saving a file imports the project again and redraws; once the project has been
-quiet for a moment the output files are written too, as the page’s Build outputs button does. A failed
+quiet for a moment the output files are written too, as the page’s Export button does. A failed
 drawing shows its traceback under the last drawing that worked. The manifest’s <code class="docutils literal notranslate"><span class="pre">[preview]</span></code> table
 (<a class="reference internal" href="#svgwriter.tools.project.PreviewConfig" title="svgwriter.tools.project.PreviewConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">PreviewConfig</span></code></a>) sets the layout, backdrop, port and more.</p>
 <dl class="field-list simple">
@@ -642,7 +642,7 @@ drawing shows its traceback under the last drawing that worked. The manifest’s
 <li><p><strong>open</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – Open the page in a browser on start.</p></li>
 <li><p><strong>debounce_ms</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – Milliseconds the page waits after a control moves before asking for a new drawing.</p></li>
 <li><p><strong>build_on_save</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – Write the outputs after a file is saved and the project has been quiet for a moment.</p></li>
-<li><p><strong>formats_on_build</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>None</em>) – The formats that saving and the page’s Build outputs button write. None writes <code class="docutils literal notranslate"><span class="pre">[outputs]</span> <span class="pre">formats</span></code>.</p></li>
+<li><p><strong>formats_on_build</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>None</em>) – The formats that saving and the page’s Export button write. None writes <code class="docutils literal notranslate"><span class="pre">[outputs]</span> <span class="pre">formats</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -942,7 +942,7 @@ entry-point group.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=5574521d"></script>
+</div><script src="../_static/documentation_options.js?v=f82422d1"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

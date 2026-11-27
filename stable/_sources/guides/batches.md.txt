@@ -93,7 +93,7 @@ field.set(opacity=np.linspace(1, 0.3, n))
 print(field.bounds())
 ```
 
-The batch's own `<g>` transform is `batch.t`, and roles style the whole batch: `batch.as_role("dot")`.
+The batch's own `<g>` transform is `batch.matrix`, and roles style the whole batch: `batch.as_role("dot")`.
 
 ## Items, expanding and animation
 

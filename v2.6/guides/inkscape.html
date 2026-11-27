@@ -1,0 +1,574 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Widgets" href="widgets.html"><link rel="prev" title="Themes" href="themes.html">
+        <link rel="prefetch" href="../_static/logo.svg" as="image">
+
+    <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
+        <title>Inkscape - svgwriter 2.6.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f0f0f0;
+  --color-code-foreground: black;
+  --color-brand-primary: #0f766e;
+  --color-brand-content: #0f766e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #5eead4;
+  --color-brand-content: #99f6e4;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #5eead4;
+  --color-brand-content: #99f6e4;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">svgwriter 2.6.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">svgwriter 2.6.0</span>
+  
+</a><div class="sidebar-versions">
+  <span class="sidebar-versions-label">2.6.0</span>
+  <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
+  <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Start</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../start/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../start/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos.html">Demos</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry and transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="paths.html">Paths, boolean operations and measurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="text.html">Text</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fonts.html">Making fonts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="colors-and-images.html">Colors and images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="presets.html">Presets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documents.html">Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rendering.html">Rendering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batches.html">Performance and batches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export-import.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="animation.html">Animation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logos.html">Logos and icons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending svgwriter</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../explanation/design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanation/conformance.html">Conformance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/document.html">Document</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/elements.html">Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry.html">Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/layout.html">Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/batch.html">Batches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/color.html">Colors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/ops.html">Geometry operations and rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/fonts.html">Fonts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/export.html">Export and import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/io.html">Reading and writing SVG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/attributes.html">Attribute values and styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/presets.html">Preset libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/inkscape.html">Inkscape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/video.html">Animation export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/widgets.html">Widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/project.html">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli.html">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/errors.html">Errors</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/wzjoriv/svgwriter/blob/main/docs/guides/inkscape.md?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/wzjoriv/svgwriter/edit/main/docs/guides/inkscape.md" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="inkscape">
+<h1>Inkscape<a class="headerlink" href="#inkscape" title="Link to this heading">¶</a></h1>
+<p>Drawings saved by Inkscape open as ordinary documents and save back with everything Inkscape stores
+alongside the SVG: layers, object names, editable stars and arcs, connectors, guides, path effects and
+export settings. Their <code class="docutils literal notranslate"><span class="pre">inkscape:</span></code> and <code class="docutils literal notranslate"><span class="pre">sodipodi:</span></code> attributes keep their prefixes, declared once on the
+root, so the file reads the same in Inkscape after svgwriter has edited it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+
+<span class="n">INKSCAPE_FILE</span> <span class="o">=</span> <span class="s2">"""&lt;svg xmlns="http://www.w3.org/2000/svg" width="200mm" height="100mm" viewBox="0 0 200 100"</span>
+<span class="s2">     xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"</span>
+<span class="s2">     xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"&gt;</span>
+<span class="s2">  &lt;sodipodi:namedview inkscape:document-units="mm"&gt;</span>
+<span class="s2">    &lt;sodipodi:guide position="20,100" orientation="1,0" inkscape:label="margin"/&gt;</span>
+<span class="s2">  &lt;/sodipodi:namedview&gt;</span>
+<span class="s2">  &lt;g inkscape:groupmode="layer" inkscape:label="Shapes"&gt;</span>
+<span class="s2">    &lt;path id="star" inkscape:label="Logo" sodipodi:type="star" sodipodi:sides="5" sodipodi:cx="150"</span>
+<span class="s2">          sodipodi:cy="50" sodipodi:r1="20" sodipodi:r2="10" sodipodi:arg1="-1.5707963"</span>
+<span class="s2">          sodipodi:arg2="-0.9424778" inkscape:flatsided="false" inkscape:rounded="0" d="M150 30 Z"/&gt;</span>
+<span class="s2">    &lt;rect id="box" x="90" y="20" width="20" height="10"/&gt;</span>
+<span class="s2">  &lt;/g&gt;</span>
+<span class="s2">&lt;/svg&gt;"""</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"drawing.svg"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+    <span class="n">handle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">INKSCAPE_FILE</span><span class="p">)</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"drawing.svg"</span><span class="p">)</span>
+<span class="n">doc</span><span class="p">[</span><span class="s2">"Logo"</span><span class="p">]</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>                 <span class="c1"># found by its Inkscape label</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">layers</span><span class="p">),</span> <span class="n">doc</span><span class="o">.</span><span class="n">guides</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"drawing.svg"</span><span class="p">)</span>                <span class="c1"># still an Inkscape drawing</span>
+</pre></div>
+</div>
+<section id="layers">
+<h2>Layers<a class="headerlink" href="#layers" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">doc.layer(label)</span></code> returns the layer with that name at the insertion point, adding it when it is missing.
+Use it with <code class="docutils literal notranslate"><span class="pre">with</span></code> to draw into it; inside a layer it finds or adds a sublayer. <code class="docutils literal notranslate"><span class="pre">doc.layers</span></code> lists every
+layer and sublayer by label, including those read from a file.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">doc</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="s2">"Background"</span><span class="p">):</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"#eeeeee"</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">doc</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="s2">"Shapes"</span><span class="p">):</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">doc</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="s2">"Labels"</span><span class="p">):</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"A"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">55</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">layers</span><span class="p">))</span>                 <span class="c1"># ['Background', 'Shapes', 'Labels']</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">inkscape</span><span class="o">.</span><span class="n">is_layer</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">"Shapes"</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>A layer is a <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span></code> with <code class="docutils literal notranslate"><span class="pre">inkscape:groupmode=&quot;layer&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">inkscape:label</span></code>, so browsers and every
+exporter treat it as a plain group.</p>
+</section>
+<section id="labels-as-names">
+<h2>Labels as names<a class="headerlink" href="#labels-as-names" title="Link to this heading">¶</a></h2>
+<p>Inkscape names objects with <code class="docutils literal notranslate"><span class="pre">inkscape:label</span></code> (the name in its Objects panel). <code class="docutils literal notranslate"><span class="pre">element.label</span></code> reads and
+sets it, and <code class="docutils literal notranslate"><span class="pre">doc[&quot;name&quot;]</span></code> looks for an id first and then for a label, so names chosen in Inkscape work
+in code. A label shared by several elements raises <code class="docutils literal notranslate"><span class="pre">KeyError</span></code>; give those elements ids instead.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">sun</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"gold"</span><span class="p">)</span>
+<span class="n">sun</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">"Sun"</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="s2">"Sun"</span><span class="p">]</span> <span class="ow">is</span> <span class="n">sun</span><span class="p">,</span> <span class="s2">"Sun"</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="rotation-centres">
+<h2>Rotation centres<a class="headerlink" href="#rotation-centres" title="Link to this heading">¶</a></h2>
+<p>When an object’s rotation centre was moved in Inkscape (<code class="docutils literal notranslate"><span class="pre">inkscape:transform-center-x</span></code> and <code class="docutils literal notranslate"><span class="pre">-y</span></code>), it
+becomes the element’s <code class="xref py py-attr docutils literal notranslate"><span class="pre">anchor</span></code>, so <code class="docutils literal notranslate"><span class="pre">rotate</span></code>, <code class="docutils literal notranslate"><span class="pre">scale</span></code> and
+animations turn around the same point. Writing an Inkscape document stores the anchor back for Inkscape.
+Inkscape keeps the centre as an offset from the middle of the bounding box, in user units with y pointing
+up; svgwriter converts both ways.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">doc</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="s2">"Parts"</span><span class="p">):</span>
+    <span class="n">arm</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">25</span><span class="p">))</span>     <span class="c1"># pivot on the left edge</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'inkscape:transform-center-x="-10"'</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>   <span class="c1"># True</span>
+<span class="n">arm</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>                                          <span class="c1"># turns around the same point</span>
+</pre></div>
+</div>
+</section>
+<section id="stars-polygons-and-arcs">
+<h2>Stars, polygons and arcs<a class="headerlink" href="#stars-polygons-and-arcs" title="Link to this heading">¶</a></h2>
+<p>Inkscape draws stars, polygons, ellipses and pie slices as paths with their parameters alongside.
+<code class="docutils literal notranslate"><span class="pre">svg.inkscape.Star</span></code> and <code class="docutils literal notranslate"><span class="pre">svg.inkscape.Arc</span></code> are live views on those parameters: assigning one redraws the
+path the way Inkscape does, and the parameters stay editable with Inkscape’s tools.
+<code class="docutils literal notranslate"><span class="pre">svg.inkscape.shape(element)</span></code> returns the right view, or None for any other element. Angles are in
+degrees.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">logo</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">inkscape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"gold"</span><span class="p">))</span>
+<span class="n">hexagon</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">regular_polygon</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">inkscape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">))</span>
+
+<span class="n">star</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">inkscape</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">logo</span><span class="p">)</span>
+<span class="n">star</span><span class="o">.</span><span class="n">sides</span> <span class="o">=</span> <span class="mi">7</span>                          <span class="c1"># 7 tips, redrawn</span>
+<span class="n">star</span><span class="o">.</span><span class="n">rounded</span> <span class="o">=</span> <span class="mf">0.2</span>                      <span class="c1"># Inkscape's rounding</span>
+<span class="n">pie</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">inkscape</span><span class="o">.</span><span class="n">Arc</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mi">270</span><span class="p">))</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">inkscape</span><span class="o">.</span><span class="n">Arc</span><span class="p">(</span><span class="n">pie</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="s2">"chord"</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">star</span><span class="o">.</span><span class="n">sides</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">star</span><span class="o">.</span><span class="n">angle</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">inkscape</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">hexagon</span><span class="p">)</span><span class="o">.</span><span class="n">flatsided</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">svg.builder.star(...,</span> <span class="pre">inkscape=True)</span></code> and <code class="docutils literal notranslate"><span class="pre">svg.builder.regular_polygon(...,</span> <span class="pre">inkscape=True)</span></code> build these
+paths; <code class="docutils literal notranslate"><span class="pre">corner_radius</span></code> does not combine with them (use <code class="docutils literal notranslate"><span class="pre">rounded</span></code> instead).</p>
+</section>
+<section id="connectors">
+<h2>Connectors<a class="headerlink" href="#connectors" title="Link to this heading">¶</a></h2>
+<p>A connector is a path attached to two objects (<code class="docutils literal notranslate"><span class="pre">inkscape:connection-start</span></code> and <code class="docutils literal notranslate"><span class="pre">-end</span></code>); Inkscape reroutes
+it when either object moves. <code class="docutils literal notranslate"><span class="pre">path.connects</span></code> gives the two elements, and assigning a pair attaches a path
+(it is drawn as a straight line between their centres until Inkscape reroutes it).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">170</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+<span class="n">wire</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">stroke</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"none"</span><span class="p">)</span>
+<span class="n">wire</span><span class="o">.</span><span class="n">connects</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">wire</span><span class="o">.</span><span class="n">connects</span><span class="o">.</span><span class="n">start</span> <span class="ow">is</span> <span class="n">a</span><span class="p">,</span> <span class="n">wire</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+<span class="n">wire</span><span class="o">.</span><span class="n">connects</span> <span class="o">=</span> <span class="kc">None</span>                     <span class="c1"># a plain path again</span>
+</pre></div>
+</div>
+</section>
+<section id="guides">
+<h2>Guides<a class="headerlink" href="#guides" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">doc.guides</span></code> lists Inkscape’s guide lines as <a class="reference internal" href="../reference/inkscape.html#svgwriter.formats.inkscape.Guide" title="svgwriter.formats.inkscape.Guide"><code class="xref py py-class docutils literal notranslate"><span class="pre">Guide</span></code></a> values in the drawing’s
+own coordinates (y down), and assigning a list replaces them. <code class="docutils literal notranslate"><span class="pre">doc.guide(x=...)</span></code> adds a vertical guide,
+<code class="docutils literal notranslate"><span class="pre">doc.guide(y=...)</span></code> a horizontal one, and <code class="docutils literal notranslate"><span class="pre">doc.guide(x,</span> <span class="pre">y,</span> <span class="pre">angle=...)</span></code> a slanted one.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">guide</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"margin"</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">guide</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">guide</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"#ff0000"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">([(</span><span class="n">g</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">guides</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="export-hints">
+<h2>Export hints<a class="headerlink" href="#export-hints" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">doc.export_hints</span></code> holds what Inkscape remembers about exporting: the bitmap resolution
+(<code class="docutils literal notranslate"><span class="pre">inkscape:export-xdpi</span></code>), the last export file name and the document units. Raster exports
+(<code class="docutils literal notranslate"><span class="pre">doc.save(&quot;a.png&quot;)</span></code>, JPEG, WebP, BMP) use the stored resolution when no <code class="docutils literal notranslate"><span class="pre">scale</span></code>, <code class="docutils literal notranslate"><span class="pre">dpi</span></code> or <code class="docutils literal notranslate"><span class="pre">size</span></code> is
+given.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">export_hints</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">inkscape</span><span class="o">.</span><span class="n">ExportHints</span><span class="p">(</span><span class="n">dpi</span><span class="o">=</span><span class="mi">192</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">"mm"</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"preview.png"</span><span class="p">)</span>                  <span class="c1"># 200 x 100 pixels</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">export_hints</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="kept-as-they-are">
+<h2>Kept as they are<a class="headerlink" href="#kept-as-they-are" title="Link to this heading">¶</a></h2>
+<p>Path effects (<code class="docutils literal notranslate"><span class="pre">inkscape:path-effect</span></code>, <code class="docutils literal notranslate"><span class="pre">inkscape:original-d</span></code> and the <code class="docutils literal notranslate"><span class="pre">&lt;inkscape:path-effect&gt;</span></code> definitions),
+<code class="docutils literal notranslate"><span class="pre">sodipodi:namedview</span></code> settings, metadata (<code class="docutils literal notranslate"><span class="pre">rdf:</span></code>, <code class="docutils literal notranslate"><span class="pre">cc:</span></code>, <code class="docutils literal notranslate"><span class="pre">dc:</span></code>) and attributes of any other namespace are
+kept untouched, with the prefixes the file declared. svgwriter draws a path effect’s result (<code class="docutils literal notranslate"><span class="pre">d</span></code>), which is
+what Inkscape saved.</p>
+</section>
+<section id="the-inkscape-extension">
+<h2>The Inkscape extension<a class="headerlink" href="#the-inkscape-extension" title="Link to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">plugins/inkscape</span></code> folder of the repository (also attached to each release as
+<code class="docutils literal notranslate"><span class="pre">svgwriter-inkscape.zip</span></code>) adds three effects under <strong>Extensions &gt; svgwriter</strong>:</p>
+<ul class="simple">
+<li><p><strong>Run svgwriter Code</strong> runs Python on the open drawing: <code class="docutils literal notranslate"><span class="pre">doc</span></code> is the drawing as a <code class="docutils literal notranslate"><span class="pre">Document</span></code>, <code class="docutils literal notranslate"><span class="pre">svg</span></code> the
+module, <code class="docutils literal notranslate"><span class="pre">selection</span></code> the selected objects. Write ordinary svgwriter code, such as
+<code class="docutils literal notranslate"><span class="pre">doc[&quot;title&quot;].animate.typewriter(dur=2)</span></code>, loops and functions; the result appears on the canvas, and
+Live preview shows it before you apply it. Errors appear with the failing line. The box runs Python with
+your permissions, so run only code you trust.</p></li>
+<li><p><strong>Save with svgwriter</strong> saves the drawing to PowerPoint (with animations), Word, PDF, TikZ, EPS, G-code,
+HPGL, DXF, HTML, PNG, GIF, WebP or Excalidraw.</p></li>
+<li><p><strong>Apply svgwriter Theme</strong> styles objects that carry svgwriter roles with a built-in theme or a
+<code class="docutils literal notranslate"><span class="pre">theme.toml</span></code>, and can give the selection a role first.</p></li>
+</ul>
+<p>Animations added from the code box are stored as SMIL in the drawing: Inkscape shows the first frame,
+keeps them when it saves, and the exporters play them (PowerPoint, GIF, HTML, APNG). Text is measured with
+svgwriter’s font fallback, so generic families (<code class="docutils literal notranslate"><span class="pre">sans-serif</span></code>, <code class="docutils literal notranslate"><span class="pre">serif</span></code>, <code class="docutils literal notranslate"><span class="pre">monospace</span></code>) resolve to fonts
+installed on Windows, macOS or Linux, and a missing family falls back with a warning rather than an error.</p>
+<p>To install, copy the folder’s <code class="docutils literal notranslate"><span class="pre">.inx</span></code> and <code class="docutils literal notranslate"><span class="pre">.py</span></code> files into a folder inside Inkscape’s user extensions
+folder (shown under <strong>Edit &gt; Preferences &gt; System</strong>) and restart Inkscape. The extensions need a Python
+with svgwriter: either set Inkscape’s <code class="docutils literal notranslate"><span class="pre">python-interpreter</span></code> preference to one, or set the
+<code class="docutils literal notranslate"><span class="pre">SVGWRITER_PYTHON</span></code> environment variable so only the svgwriter extensions use it. The folder’s
+<code class="docutils literal notranslate"><span class="pre">README.md</span></code> has the details for each system.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="widgets.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Widgets</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="themes.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Themes</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Josue N Rivera
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Inkscape</a><ul>
+<li><a class="reference internal" href="#layers">Layers</a></li>
+<li><a class="reference internal" href="#labels-as-names">Labels as names</a></li>
+<li><a class="reference internal" href="#rotation-centres">Rotation centres</a></li>
+<li><a class="reference internal" href="#stars-polygons-and-arcs">Stars, polygons and arcs</a></li>
+<li><a class="reference internal" href="#connectors">Connectors</a></li>
+<li><a class="reference internal" href="#guides">Guides</a></li>
+<li><a class="reference internal" href="#export-hints">Export hints</a></li>
+<li><a class="reference internal" href="#kept-as-they-are">Kept as they are</a></li>
+<li><a class="reference internal" href="#the-inkscape-extension">The Inkscape extension</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=f82422d1"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

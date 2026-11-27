@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Animation export - svgwriter 2.5.0</title>
+        <title>Animation export - svgwriter 2.6.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.5.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.6.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.5.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.6.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.5.0</span>
+  <span class="sidebar-versions-label">2.6.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -1151,7 +1151,7 @@ anchor, so it never drifts. Attach one by name (<code class="docutils literal no
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">heart</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">breathe</span><span class="p">(</span><span class="n">amount</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">element</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span> <span class="o">=</span> <span class="n">Heart</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">breathe</span><span class="p">(</span><span class="n">scene</span><span class="o">.</span><span class="n">heart</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">amount</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">heart</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">a</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">heart</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">a</span>
 <span class="go">1.5</span>
 </pre></div>
 </div>
@@ -1179,7 +1179,7 @@ anchor, so it never drifts. Attach one by name (<code class="docutils literal no
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">balloon</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">hover</span><span class="p">()</span><span class="o">.</span><span class="n">element</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span> <span class="o">=</span> <span class="n">Balloon</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">hover</span><span class="p">(</span><span class="n">scene</span><span class="o">.</span><span class="n">balloon</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">balloon</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">f</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span><span class="o">.</span><span class="n">balloon</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">f</span>
 <span class="go">-4.0</span>
 </pre></div>
 </div>
@@ -1207,7 +1207,7 @@ anchor, so it never drifts. Attach one by name (<code class="docutils literal no
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">bell</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">wiggle</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">element</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span> <span class="o">=</span> <span class="n">Bell</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wiggle</span><span class="p">(</span><span class="n">scene</span><span class="o">.</span><span class="n">bell</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">scene</span><span class="o">.</span><span class="n">bell</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">decompose</span><span class="p">()[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">6</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">scene</span><span class="o">.</span><span class="n">bell</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">decompose</span><span class="p">()[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">6</span><span class="p">)</span>
 <span class="go">10.0</span>
 </pre></div>
 </div>
@@ -1332,7 +1332,7 @@ anchor, so it never drifts. Attach one by name (<code class="docutils literal no
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=5574521d"></script>
+</div><script src="../_static/documentation_options.js?v=f82422d1"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
