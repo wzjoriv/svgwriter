@@ -354,7 +354,7 @@
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">    &gt;&gt;&gt; float(svg.turn(0.25)), str(svg.rad(1) + 30)</span>
 <span class="sd">    (90.0, '1.5236rad')</span>
-<span class="sd">    &gt;&gt;&gt; svg.rect(0, 0, 4, 2).rotate(svg.rad(math.pi / 2)).t.decompose()[2]</span>
+<span class="sd">    &gt;&gt;&gt; svg.rect(0, 0, 4, 2).rotate(svg.rad(math.pi / 2)).matrix.decompose()[2]</span>
 <span class="sd">    90.0</span>
 <span class="sd">    &gt;&gt;&gt; str(Angle(2, "radians"))</span>
 <span class="sd">    '2rad'</span>

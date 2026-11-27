@@ -13,7 +13,7 @@ c = svg.circle(50, 50, 10)
 c.translate(20, 0).rotate(90)
 print(c.cx)          # 50.0: the local geometry never changes
 print(c.position)    # Point(x=70.0, y=50.0): where the anchor (centre) is now
-print(c.t)           # the shortest equivalent transform text
+print(c.matrix)           # the shortest equivalent transform text
 print(c)             # <circle cx="50" cy="50" r="10" transform="..."/>
 ```
 

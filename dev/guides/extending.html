@@ -405,7 +405,7 @@
 
 <span class="nd">@svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">behavior</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">drift</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">svg</span><span class="o">.</span><span class="n">Element</span><span class="p">,</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">element</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">home</span><span class="o">.</span><span class="n">t</span>
+    <span class="n">element</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">home</span><span class="o">.</span><span class="n">matrix</span>
     <span class="n">element</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">speed</span> <span class="o">*</span> <span class="n">seconds</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
 

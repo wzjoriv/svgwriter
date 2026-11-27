@@ -418,7 +418,7 @@ arguments use Python spelling (<code class="docutils literal notranslate"><span 
 <dt class="sig sig-object py" id="svgwriter.model.elements.Element.home">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">home</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.model.elements.Element" title="svgwriter.model.elements.core._element.Element"><span class="pre">Element</span></a></span><a class="headerlink" href="#svgwriter.model.elements.Element.home" title="Link to this definition">¶</a></dt>
 <dd><p>a detached copy to start each frame from.</p>
-<p>A behavior that sets the state from <a class="reference internal" href="#svgwriter.model.elements.Element.home" title="svgwriter.model.elements.Element.home"><code class="xref py py-attr docutils literal notranslate"><span class="pre">home</span></code></a> (<code class="docutils literal notranslate"><span class="pre">element.t</span> <span class="pre">=</span> <span class="pre">element.home.t</span></code>, then a relative move)
+<p>A behavior that sets the state from <a class="reference internal" href="#svgwriter.model.elements.Element.home" title="svgwriter.model.elements.Element.home"><code class="xref py py-attr docutils literal notranslate"><span class="pre">home</span></code></a> (<code class="docutils literal notranslate"><span class="pre">element.matrix</span> <span class="pre">=</span> <span class="pre">element.home.matrix</span></code>, then a relative move)
 computes every frame afresh, so the motion never drifts and frames can be drawn in any order.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1139,7 +1139,7 @@ element itself does the same.</p>
 <p>An element placed by a transform.</p>
 <p>The element’s own geometry attributes (<code class="docutils literal notranslate"><span class="pre">cx</span></code>, <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">d</span></code>, …) are
 local coordinates and stay as written; every move goes through
-<a class="reference internal" href="#svgwriter.model.elements.Transformable.t" title="svgwriter.model.elements.Transformable.t"><code class="xref py py-attr docutils literal notranslate"><span class="pre">t</span></code></a>. Rotation, scaling and skewing pivot on <code class="xref py py-attr docutils literal notranslate"><span class="pre">anchor</span></code>.</p>
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">t</span></code>. Rotation, scaling and skewing pivot on <code class="xref py py-attr docutils literal notranslate"><span class="pre">anchor</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1162,7 +1162,7 @@ appending to a list; output is the shortest equivalent <code class="docutils lit
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
 <span class="go">'rotate(90 55 55)'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">position</span>
 <span class="go">Point(x=60.0, y=50.0)</span>
@@ -1174,13 +1174,13 @@ appending to a list; output is the shortest equivalent <code class="docutils lit
 <dd></dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="svgwriter.model.elements.Transformable.t">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">t</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="geometry.html#svgwriter.model.transform.Matrix" title="svgwriter.model.transform.matrix.Matrix"><span class="pre">Matrix</span></a></span><a class="headerlink" href="#svgwriter.model.elements.Transformable.t" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="svgwriter.model.elements.Transformable.matrix">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">matrix</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="geometry.html#svgwriter.model.transform.Matrix" title="svgwriter.model.transform.matrix.Matrix"><span class="pre">Matrix</span></a></span><a class="headerlink" href="#svgwriter.model.elements.Transformable.matrix" title="Link to this definition">¶</a></dt>
 <dd><p>The transform as an affine <code class="xref py py-class docutils literal notranslate"><span class="pre">Matrix</span></code>; assign to replace it.</p>
 <p>Written to SVG as the shortest equivalent <code class="docutils literal notranslate"><span class="pre">transform</span></code> text.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="go">Point(x=2.0, y=3.0)</span>
 </pre></div>
 </div>
@@ -1189,11 +1189,11 @@ appending to a list; output is the shortest equivalent <code class="docutils lit
 <dl class="py property">
 <dt class="sig sig-object py" id="svgwriter.model.elements.Transformable.transform">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">transform</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="geometry.html#svgwriter.model.transform.Matrix" title="svgwriter.model.transform.matrix.Matrix"><span class="pre">Matrix</span></a></span><a class="headerlink" href="#svgwriter.model.elements.Transformable.transform" title="Link to this definition">¶</a></dt>
-<dd><p>Same as <a class="reference internal" href="#svgwriter.model.elements.Transformable.t" title="svgwriter.model.elements.Transformable.t"><code class="xref py py-attr docutils literal notranslate"><span class="pre">t</span></code></a>, under the SVG attribute’s name.</p>
+<dd><p>Same as <code class="xref py py-attr docutils literal notranslate"><span class="pre">t</span></code>, under the SVG attribute’s name.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">transform</span> <span class="o">==</span> <span class="n">r</span><span class="o">.</span><span class="n">t</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">transform</span> <span class="o">==</span> <span class="n">r</span><span class="o">.</span><span class="n">matrix</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -1202,7 +1202,7 @@ appending to a list; output is the shortest equivalent <code class="docutils lit
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.model.elements.Transformable.local_bbox">
 <span class="sig-name descname"><span class="pre">local_bbox</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.BBox" title="svgwriter.model.pathdata.data.BBox"><span class="pre">BBox</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/elements/_behavior/_transformable.html#Transformable.local_bbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.elements.Transformable.local_bbox" title="Link to this definition">¶</a></dt>
-<dd><p>Bounding box in local coordinates (before <a class="reference internal" href="#svgwriter.model.elements.Transformable.t" title="svgwriter.model.elements.Transformable.t"><code class="xref py py-attr docutils literal notranslate"><span class="pre">t</span></code></a>), if known.</p>
+<dd><p>Bounding box in local coordinates (before <code class="xref py py-attr docutils literal notranslate"><span class="pre">t</span></code>), if known.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><em>BBox or None</em> – The box, or None when the element has no known extent. Subclasses override this.</p>
@@ -7873,7 +7873,7 @@ rewritten to the matched start shape, which looks the same.</p>
 </li>
 <li><a class="reference internal" href="#svgwriter.model.elements.Transformable"><code class="docutils literal notranslate"><span class="pre">Transformable</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.model.elements.Transformable.transform_attribute"><code class="docutils literal notranslate"><span class="pre">Transformable.transform_attribute</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.elements.Transformable.t"><code class="docutils literal notranslate"><span class="pre">Transformable.t</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.model.elements.Transformable.matrix"><code class="docutils literal notranslate"><span class="pre">Transformable.matrix</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.elements.Transformable.transform"><code class="docutils literal notranslate"><span class="pre">Transformable.transform</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.elements.Transformable.local_bbox"><code class="docutils literal notranslate"><span class="pre">Transformable.local_bbox()</span></code></a></li>
 </ul>

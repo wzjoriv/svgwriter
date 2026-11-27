@@ -41,7 +41,7 @@ def bob(motion: svg.Motion, *, height: float = 8, dur: float = 1) -> svg.Motion:
 
 @svg.preset.behavior
 def drift(element: svg.Element, seconds: float, *, speed: float = 20) -> None:
-    element.t = element.home.t
+    element.matrix = element.home.matrix
     element.translate(speed * seconds, 0)
 
 

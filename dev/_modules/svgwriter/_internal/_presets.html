@@ -445,7 +445,7 @@
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">    &gt;&gt;&gt; @svg.preset.behavior</span>
 <span class="sd">    ... def sway(element: svg.Element, seconds: float, *, angle: float = 10, period: float = 2) -&gt; None:</span>
-<span class="sd">    ...     element.t = element.home.t</span>
+<span class="sd">    ...     element.matrix = element.home.matrix</span>
 <span class="sd">    ...     element.rotate(angle * math.sin(2 * math.pi * seconds / period))</span>
 <span class="sd">    &gt;&gt;&gt; class Flag(svg.Scene):</span>
 <span class="sd">    ...     width, height, duration = 40, 40, 2.0</span>

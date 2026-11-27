@@ -488,7 +488,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">home</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Element</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""The element as it was when its first behavior was attached: a detached copy to start each frame from.</span>
 
-<span class="sd">        A behavior that sets the state from :attr:`home` (``element.t = element.home.t``, then a relative move)</span>
+<span class="sd">        A behavior that sets the state from :attr:`home` (``element.matrix = element.home.matrix``, then a relative move)</span>
 <span class="sd">        computes every frame afresh, so the motion never drifts and frames can be drawn in any order.</span>
 
 <span class="sd">        Returns</span>

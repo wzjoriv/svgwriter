@@ -366,10 +366,10 @@
 <span class="sd">    ...         self.bell = doc.rect(10, 10, 20, 20).animate.wiggle(angle=10, period=1).element</span>
 <span class="sd">    &gt;&gt;&gt; scene = Bell()</span>
 <span class="sd">    &gt;&gt;&gt; wiggle(scene.bell, 0.25, angle=10, period=1)</span>
-<span class="sd">    &gt;&gt;&gt; round(scene.bell.t.decompose()[2], 6)</span>
+<span class="sd">    &gt;&gt;&gt; round(scene.bell.matrix.decompose()[2], 6)</span>
 <span class="sd">    10.0</span>
 <span class="sd">    """</span>
-    <span class="n">element</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">home</span><span class="o">.</span><span class="n">t</span>
+    <span class="n">element</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">home</span><span class="o">.</span><span class="n">matrix</span>
     <span class="n">element</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">angle</span> <span class="o">*</span> <span class="n">_wave</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="n">period</span><span class="p">))</span></div>
 
 
@@ -400,10 +400,10 @@
 <span class="sd">    ...         self.balloon = doc.circle(20, 20, 6).animate.hover().element</span>
 <span class="sd">    &gt;&gt;&gt; scene = Balloon()</span>
 <span class="sd">    &gt;&gt;&gt; hover(scene.balloon, 0.5)</span>
-<span class="sd">    &gt;&gt;&gt; scene.balloon.t.f</span>
+<span class="sd">    &gt;&gt;&gt; scene.balloon.matrix.f</span>
 <span class="sd">    -4.0</span>
 <span class="sd">    """</span>
-    <span class="n">element</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">home</span><span class="o">.</span><span class="n">t</span>
+    <span class="n">element</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">home</span><span class="o">.</span><span class="n">matrix</span>
     <span class="n">element</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="n">height</span> <span class="o">*</span> <span class="n">_wave</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="n">period</span><span class="p">))</span></div>
 
 
@@ -434,10 +434,10 @@
 <span class="sd">    ...         self.heart = doc.circle(20, 20, 10).animate.breathe(amount=0.5).element</span>
 <span class="sd">    &gt;&gt;&gt; scene = Heart()</span>
 <span class="sd">    &gt;&gt;&gt; breathe(scene.heart, 0.5, amount=0.5)</span>
-<span class="sd">    &gt;&gt;&gt; scene.heart.t.a</span>
+<span class="sd">    &gt;&gt;&gt; scene.heart.matrix.a</span>
 <span class="sd">    1.5</span>
 <span class="sd">    """</span>
-    <span class="n">element</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">home</span><span class="o">.</span><span class="n">t</span>
+    <span class="n">element</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">home</span><span class="o">.</span><span class="n">matrix</span>
     <span class="n">element</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">amount</span> <span class="o">*</span> <span class="n">_wave</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="n">period</span><span class="p">))</span></div>
 
 
