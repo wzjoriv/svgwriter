@@ -277,7 +277,7 @@ class TextAccess:
         """
         from ..structure import Group
 
-        group = Group(t=self.matrix)
+        group = Group(transform=self.matrix)
         for box in self.layout():
             data = box.placed()
             if skip_blank and not len(data):

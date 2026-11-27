@@ -83,7 +83,6 @@ class Rect(RectConstructors, Shape, tag="rect"):
         *,
         rx: LengthLike | None = None,
         ry: LengthLike | None = None,
-        t: TransformLike | None = None,
         transform: TransformLike | None = None,
         anchor: Pivot | None = None,
         fill: PaintValue = None,
@@ -165,7 +164,7 @@ class Rect(RectConstructors, Shape, tag="rect"):
         ----------
         x, y, width, height, rx, ry
             See the class docstring.
-        t, transform, anchor, fill, fill_opacity, fill_rule, stroke, stroke_width, stroke_opacity, stroke_linecap, stroke_linejoin, stroke_miterlimit, stroke_dasharray, stroke_dashoffset, opacity, display, visibility, color, clip_path, mask, filter, font_family, font_size, font_weight, text_anchor, alignment_baseline, baseline_shift, clip, clip_rule, color_interpolation, color_interpolation_filters, color_profile, color_rendering, direction, dominant_baseline, enable_background, flood_color, flood_opacity, font, font_size_adjust, font_stretch, font_style, font_variant, glyph_orientation_horizontal, glyph_orientation_vertical, image_rendering, kerning, letter_spacing, lighting_color, marker, marker_end, marker_mid, marker_start, overflow, pointer_events, shape_rendering, stop_color, stop_opacity, text_decoration, text_rendering, unicode_bidi, word_spacing, writing_mode, class_, style, required_features, required_extensions, system_language, external_resources_required, xml_base, xml_lang, xml_space, id, attrs
+        transform, anchor, fill, fill_opacity, fill_rule, stroke, stroke_width, stroke_opacity, stroke_linecap, stroke_linejoin, stroke_miterlimit, stroke_dasharray, stroke_dashoffset, opacity, display, visibility, color, clip_path, mask, filter, font_family, font_size, font_weight, text_anchor, alignment_baseline, baseline_shift, clip, clip_rule, color_interpolation, color_interpolation_filters, color_profile, color_rendering, direction, dominant_baseline, enable_background, flood_color, flood_opacity, font, font_size_adjust, font_stretch, font_style, font_variant, glyph_orientation_horizontal, glyph_orientation_vertical, image_rendering, kerning, letter_spacing, lighting_color, marker, marker_end, marker_mid, marker_start, overflow, pointer_events, shape_rendering, stop_color, stop_opacity, text_decoration, text_rendering, unicode_bidi, word_spacing, writing_mode, class_, style, required_features, required_extensions, system_language, external_resources_required, xml_base, xml_lang, xml_space, id, attrs
             The attribute groups of :class:`~svgwriter.Transformable`, :class:`~svgwriter.PresentationAttributes`, :class:`~svgwriter.StyleAttributes`, :class:`~svgwriter.ConditionalAttributes`, :class:`~svgwriter.ExternalResourcesAttribute`, :class:`~svgwriter.CoreAttributes`, :class:`~svgwriter.Element`. Defaults to None (unset).
         **kwargs
             Any other SVG attribute in Python spelling, including namespaced and open ones
@@ -182,7 +181,7 @@ class Rect(RectConstructors, Shape, tag="rect"):
             font_stretch, font_style, font_variant, glyph_orientation_horizontal, glyph_orientation_vertical,
             image_rendering, kerning, letter_spacing, lighting_color, marker, marker_end, marker_mid, marker_start,
             overflow, pointer_events, shape_rendering, stop_color, stop_opacity, text_decoration, text_rendering,
-            unicode_bidi, word_spacing, writing_mode, t, transform, anchor
+            unicode_bidi, word_spacing, writing_mode, transform, anchor
         )
         # endregion
         super().__init__(**kwargs)

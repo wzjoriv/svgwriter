@@ -129,14 +129,13 @@ class Transformable(Placement, TransformMethods, Element):
     def __init__(
         self,
         *args: Child,
-        t: TransformLike | None = None,
         transform: TransformLike | None = None,
         anchor: Pivot | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
-        if t is not None or transform is not None:
-            self.matrix = t if t is not None else transform
+        if transform is not None:
+            self.matrix = transform
         if anchor is not None:
             self.anchor = anchor
 

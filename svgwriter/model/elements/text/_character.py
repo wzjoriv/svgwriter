@@ -14,6 +14,8 @@ from ._textlayout import collect, number_list
 
 if TYPE_CHECKING:
     from ....ops.text import GlyphBox
+    from ...attributes.length import LengthLike
+    from ...color.paint import PaintValue
     from ...pathdata.data import BBox
     from ...transform.matrix import Point
     from ..shapes import Path
@@ -27,6 +29,20 @@ class _Characters(RangeEffects):
     """Shared behaviour of the characters ``[start, stop)`` of a text."""
 
     __slots__ = ("start", "stop", "text")
+
+    fill: PaintValue
+    stroke: PaintValue
+    stroke_width: LengthLike
+    opacity: float
+    fill_opacity: float
+    stroke_opacity: float
+    font_family: str
+    font_size: LengthLike
+    font_weight: str | int
+    font_style: str
+    text_decoration: str
+    letter_spacing: LengthLike
+    baseline_shift: LengthLike | str
 
     def __init__(self, text: Text, start: int, stop: int) -> None:
         object.__setattr__(self, "text", text)

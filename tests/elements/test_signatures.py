@@ -50,7 +50,7 @@ def test_presentation_keywords_complete_the_presentation_attributes() -> None:
 
 def test_lowercase_aliases_share_the_signature() -> None:
     assert svg.text is svg.Text and inspect.signature(svg.text) == inspect.signature(svg.Text)
-    assert {"x", "y", "font_size", "fill", "font_style", "class_", "t"} <= set(inspect.signature(svg.text).parameters)
+    assert {"x", "y", "font_size", "fill", "font_style", "class_", "transform"} <= set(inspect.signature(svg.text).parameters)
     assert list(inspect.signature(svg.rect).parameters)[:4] == ["x", "y", "width", "height"]
 
 

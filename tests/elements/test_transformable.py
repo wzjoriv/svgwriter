@@ -24,7 +24,7 @@ class TestT:
         assert str(c.matrix) == "translate(4 6)"
 
     def test_assign_and_clear(self) -> None:
-        r = svg.Rect(0, 0, 10, 10, t="scale(2)")
+        r = svg.Rect(0, 0, 10, 10, transform="scale(2)")
         assert str(r.matrix) == "scale(2)" and r.transform == r.matrix
         r.matrix = None
         assert not r.has("transform")

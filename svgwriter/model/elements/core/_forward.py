@@ -105,7 +105,6 @@ def forward_common(
     unicode_bidi: str | None = None,
     word_spacing: LengthLike | str | None = None,
     writing_mode: str | None = None,
-    t: TransformLike | None = None,
     transform: TransformLike | None = None,
     anchor: Pivot | None = None,
 ) -> None:
@@ -129,8 +128,8 @@ def forward_common(
     enable_background, flood_color, flood_opacity, font, font_size_adjust, font_stretch, font_style, font_variant,
     glyph_orientation_horizontal, glyph_orientation_vertical, image_rendering, kerning, letter_spacing,
     lighting_color, marker, marker_end, marker_mid, marker_start, overflow, pointer_events, shape_rendering,
-    stop_color, stop_opacity, text_decoration, text_rendering, unicode_bidi, word_spacing, writing_mode, t,
-    transform, anchor
+    stop_color, stop_opacity, text_decoration, text_rendering, unicode_bidi, word_spacing, writing_mode, transform,
+    anchor
         The keywords of `Element`, `CoreAttributes`, `ConditionalAttributes`, `ExternalResourcesAttribute`, `XLinkAttributes`, `StyleAttributes`, `PresentationAttributes`, `Transformable`, None when not given.
 
     Examples
@@ -295,8 +294,6 @@ def forward_common(
         kwargs["word_spacing"] = word_spacing
     if writing_mode is not None:
         kwargs["writing_mode"] = writing_mode
-    if t is not None:
-        kwargs["t"] = t
     if transform is not None:
         kwargs["transform"] = transform
     if anchor is not None:
