@@ -19,6 +19,7 @@ from ._constants import (
     LABEL_WIDTH,
     PANEL_SUMMARY,
     READOUT_WIDTH,
+    SWATCH_CHECK,
     SWATCH_SIZE,
 )
 from ._control import Control
@@ -59,12 +60,12 @@ def _swatches(w: Any, control: Swatches, value: Any, changed: Callable[[int], No
 
     def pick(position: int) -> None:
         for index, button in enumerate(buttons):
-            button.icon = "check" if index == position else ""
+            button.description = SWATCH_CHECK if index == position else ""
         changed(position)
 
     for position, button in enumerate(buttons):
         button.on_click(lambda _, position=position: pick(position))
-    buttons[control.index(value)].icon = "check"
+    buttons[control.index(value)].description = SWATCH_CHECK
     return w.HBox(buttons, layout=w.Layout(flex_flow="row wrap"))
 
 

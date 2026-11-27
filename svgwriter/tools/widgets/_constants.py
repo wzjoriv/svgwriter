@@ -25,6 +25,7 @@ __all__ = [
     "SEGMENTED_WRAP",
     "SLIDER_SPAN",
     "SLIDER_STEPS",
+    "SWATCH_CHECK",
     "SWATCH_SIZE",
     "SWEEP_DURATION",
 ]
@@ -49,6 +50,8 @@ GRID_GAP: Final = "4px 24px"
 LABEL_WIDTH: Final = "96px"
 READOUT_WIDTH: Final = "64px"
 PANEL_SUMMARY: Final = "Controls for {names}; they appear while the notebook runs."
+SWATCH_CHECK: Final = "✓"
+"""The mark on the chosen swatch, drawn as the button text (icons do not clear in every notebook)."""
 SWATCH_SIZE: Final = "28px"
 IMAGE_STYLE: Final = "width:100%;overflow:auto"
 IMAGE_RULE: Final = "<style>.svgwriter-drawing svg{max-width:100%;height:auto}</style>"

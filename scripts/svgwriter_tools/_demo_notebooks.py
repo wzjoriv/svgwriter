@@ -45,9 +45,8 @@ STILLS: dict[str, tuple[dict[str, Any], ...]] = {
                 {"sparks": "neon", "snow": "fire", "smoke": "snow", "button": "glitch"}),
 }
 SETUP = """project = svg.Project.load()
-theme = svg.Theme.load(project.config.theme)
-theme.__enter__();"""
-SETUP_NOTE = "The project's theme applies to everything below, as it does when the project builds."
+theme = svg.Theme.load(project.config.theme)"""
+SETUP_NOTE = "The project's theme applies to every drawing below, as it does when the project builds."
 IMPORTS = ("import functools", "from IPython import display as ipy", "import svgwriter as svg")
 IMPORT_STARTS = ("import ", "from ")
 IMPORT_GROUPS = 3

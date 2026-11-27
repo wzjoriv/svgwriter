@@ -4,8 +4,10 @@ Child editing for ``Element``: append, insert, remove and text content.
 
 from __future__ import annotations
 
+import dataclasses
 from collections.abc import Iterable, Iterator, Mapping
-from typing import TYPE_CHECKING
+from copy import deepcopy
+from typing import TYPE_CHECKING, Any
 
 from ._categories import ContentModel
 
@@ -22,6 +24,35 @@ def references_of(element: Element) -> Iterator[Element]:
             target = getattr(item, "element", None)
             if target is not None:
                 yield target
+
+
+def _foreign_definition(target: Element, root: Element) -> bool:
+    """Whether *target* is a top-level definition of another document that this one has no copy of."""
+    owner = target.root()
+    if owner is root or owner.tag != "svg" or target.parent is None or target.parent.tag != "defs":
+        return False
+    return target.id is None or root.get_element_by_id(target.id) is None  # type: ignore[attr-defined]
+
+
+def _point_at_copy(element: Element, target: Element, root: Element) -> None:
+    """Point *element* at this document's copy of *target*, a definition owned by another document."""
+    copies = root.__dict__.setdefault("_foreign_definitions", {})
+    copy = copies.get(id(target))
+    if copy is None:
+        copy = copies[id(target)] = deepcopy(target)
+        root.defs().append(copy)  # type: ignore[attr-defined]
+    for name, value in list(element.attributes.items()):
+        if isinstance(value, Mapping):
+            element.attributes[name] = type(value)({key: _swap(item, target, copy) for key, item in value.items()})
+        else:
+            element.attributes[name] = _swap(value, target, copy)
+
+
+def _swap(value: Any, target: Element, copy: Element) -> Any:
+    """*value* pointing at *copy* instead of *target*; other values unchanged."""
+    if getattr(value, "element", None) is target and dataclasses.is_dataclass(value):
+        return dataclasses.replace(value, element=copy)
+    return value
 
 
 class TreeEditing:
@@ -94,6 +125,8 @@ class TreeEditing:
             for target in list(references_of(element)):
                 if target.parent is None and target is not root:
                     root.defs().append(target)  # type: ignore[attr-defined]
+                elif _foreign_definition(target, root):
+                    _point_at_copy(element, target, root)
 
     def extend(self, children: Iterable[Child]) -> None:
         """Append every child in *children*.
