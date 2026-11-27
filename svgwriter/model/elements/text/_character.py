@@ -65,7 +65,7 @@ class _Characters(RangeEffects):
         from ...pathdata.data import PathData
 
         data = sum((b.placed() for b in self._boxes()), PathData())
-        return data.transformed(self.text.t).bbox if len(data) else None
+        return data.transformed(self.text.matrix).bbox if len(data) else None
 
     def _shift(self, name: str, amount: float) -> None:
         count = len(self.text.characters)
@@ -208,7 +208,7 @@ class _Characters(RangeEffects):
         from ...pathdata.data import PathData
 
         boxes = self._boxes()
-        data = sum((b.placed() for b in boxes), PathData()).transformed(self.text.t)
+        data = sum((b.placed() for b in boxes), PathData()).transformed(self.text.matrix)
         path = self.text._styled_path(data, boxes[0].source if boxes else None)
         path.update(**kwargs)
         return path

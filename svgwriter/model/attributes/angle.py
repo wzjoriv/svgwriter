@@ -52,7 +52,7 @@ class Angle:
     >>> import svgwriter as svg
     >>> float(svg.turn(0.25)), str(svg.rad(1) + 30)
     (90.0, '1.5236rad')
-    >>> svg.rect(0, 0, 4, 2).rotate(svg.rad(math.pi / 2)).t.decompose()[2]
+    >>> svg.rect(0, 0, 4, 2).rotate(svg.rad(math.pi / 2)).matrix.decompose()[2]
     90.0
     >>> str(Angle(2, "radians"))
     '2rad'

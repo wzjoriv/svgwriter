@@ -189,7 +189,7 @@ class TestEps:
         pixels[0, 0], pixels[3, 5] = (1, 0, 0), (0, 0, 1)
         doc = svg.Document(100, 80)
         original = doc.add(svg.Image(pixels, 20, 10, 36, 24, preserve_aspect_ratio="none"))
-        original.t = svg.Matrix.rotate(angle, 38, 22)
+        original.matrix = svg.Matrix.rotate(angle, 38, 22)
         back = formats.reader("eps").read(svg.export.export(doc, "eps"))
         image = next(e for e in back.root.iter() if e.tag == "image")
         assert image.bounds() == pytest.approx(original.bounds(), abs=0.5)
@@ -206,12 +206,12 @@ class TestEps:
         text = next(e for e in formats.reader("eps").read(program).root.iter() if e.tag == "text")
         assert text.text_content == "Hi" and text.get("font-size") == 12
         assert text.get("font-family") == "Helvetica" and text.get("font-weight") == "bold"
-        assert text.t.apply(0, 0) == pytest.approx((10 * PT, 40 * PT))
+        assert text.matrix.apply(0, 0) == pytest.approx((10 * PT, 40 * PT))
 
     def test_text_advances_current_point(self) -> None:
         program = b"%!PS\n%%BoundingBox: 0 0 100 50\n/Times-Roman 10 selectfont 5 5 moveto (AB) show (C) show"
         first, second = (e for e in formats.reader("eps").read(program).root.iter() if e.tag == "text")
-        assert second.t.apply(0, 0)[0] > first.t.apply(0, 0)[0] + 5
+        assert second.matrix.apply(0, 0)[0] > first.matrix.apply(0, 0)[0] + 5
 
     def test_clip_intersects_and_restores(self) -> None:
         program = b"""%!PS

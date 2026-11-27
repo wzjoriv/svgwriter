@@ -210,7 +210,7 @@ def test_tikz_rotated_text_keeps_its_turn():
     doc.text("Turn", x=100, y=50, font_size=12).rotate(30, about=(100, 50))
     back = svg.formats.reader("tikz").read(svg.export.export(doc, "tikz").encode())
     assert back[0].bounds().y < 50 < back[0].bounds().y + back[0].bounds().height + 10
-    assert back[0].t.b == pytest.approx(0.5, abs=1e-6)
+    assert back[0].matrix.b == pytest.approx(0.5, abs=1e-6)
 
 
 def test_markers_from_a_parsed_file_render(tmp_path) -> None:

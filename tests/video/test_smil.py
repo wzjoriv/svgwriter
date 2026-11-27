@@ -43,10 +43,10 @@ def test_colors_set_transform_and_motion():
     ball.append(svg.AnimateTransform(type="rotate", from_="0 50 20", to="90 50 20", dur=2))
     frame = doc.at(1.0)[0]
     assert frame.get("fill") == "#800080" and frame.get("stroke") == "black"
-    assert frame.t.decompose()[2] == pytest.approx(45)
+    assert frame.matrix.decompose()[2] == pytest.approx(45)
     doc2, ball2 = _ball()
     ball2.append(svg.AnimateMotion(path="M0 0 L80 0", dur=4))
-    assert doc2.at(2.0)[0].t.apply(0, 0).x == pytest.approx(40)
+    assert doc2.at(2.0)[0].matrix.apply(0, 0).x == pytest.approx(40)
 
 
 def test_rendered_frames_play_smil_without_update():

@@ -87,7 +87,7 @@ class TestGlyphGroup:
     def test_one_path_per_character_aligned(self) -> None:
         t = text("a b", fill="red").rotate(5)
         g = t.glyphs()
-        assert len(g) == 3 and len(g[1].d) == 0 and str(g.t) == str(t.t)
+        assert len(g) == 3 and len(g[1].d) == 0 and str(g.matrix) == str(t.matrix)
         assert len(t.glyphs(skip_blank=True)) == 2
 
     def test_glyphs_transform_freely(self) -> None:

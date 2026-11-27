@@ -61,7 +61,7 @@ def _record(element: Element, previous: int | None) -> Record:
             values[name] = str(value)
         else:
             loose.append(f"{name}:{value}")
-    matrix = element.t if _transform_attribute(element) else None  # type: ignore[attr-defined]
+    matrix = element.matrix if _transform_attribute(element) else None  # type: ignore[attr-defined]
     text = tuple(child for child in element.children if isinstance(child, str))
     parent = id(element.parent) if element.parent is not None else None
     return Record(values, ";".join(loose), matrix, text, parent, previous)

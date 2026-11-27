@@ -234,7 +234,7 @@ def settle_parent(element: Element) -> None:
     >>> a, b = svg.rect(0, 0, 4, 4), svg.rect(0, 0, 4, 4)
     >>> _ = svg.HStack(a, b, gap=1)
     >>> settle_parent(b)
-    >>> b.t.apply(0, 0)
+    >>> b.matrix.apply(0, 0)
     Point(x=5.0, y=0.0)
     """
     parent = element.parent

@@ -129,4 +129,4 @@ class TestReadableTransformText:
         circle = svg.circle(50, 50, 10).translate(20, 0).rotate(45)
         again = svg.parse(f'<svg xmlns="http://www.w3.org/2000/svg">{circle}</svg>')[0]
         assert svg.Transform.parse(again.get("transform")).to_matrix().as_tuple() == pytest.approx(
-            circle.t.as_tuple(), abs=1e-3)
+            circle.matrix.as_tuple(), abs=1e-3)

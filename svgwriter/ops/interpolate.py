@@ -289,10 +289,10 @@ def _elements(a: Element, b: Element, t: float) -> Element:
                 result.set(key, value)
     else:
         result = _morph(a, b, t)
-    if hasattr(a, "t") and hasattr(b, "t"):
+    if hasattr(a, "matrix") and hasattr(b, "matrix"):
         pivot = interpolate(a.anchor, b.anchor, t)  # type: ignore[attr-defined]
         about = Matrix.translate(pivot.x, pivot.y)
-        result.t = about @ _matrix(about.inverse() @ a.t @ about, about.inverse() @ b.t @ about, t) @ about.inverse()  # type: ignore[attr-defined]
+        result.matrix = about @ _matrix(about.inverse() @ a.matrix @ about, about.inverse() @ b.matrix @ about, t) @ about.inverse()  # type: ignore[attr-defined]
     return result
 
 

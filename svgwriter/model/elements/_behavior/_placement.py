@@ -117,7 +117,7 @@ class Placement:
         >>> r.position
         Point(x=20.0, y=20.0)
         """
-        return self.t.apply(*self.anchor)
+        return self.matrix.apply(*self.anchor)
 
     @position.setter
     def position(self, value: PointLike) -> None:
@@ -234,7 +234,7 @@ class Placement:
         box = self.local_bbox()
         if box is None:
             return None
-        m = self.t
+        m = self.matrix
         corners = [(box.x, box.y), (box.x + box.width, box.y), (box.x, box.y + box.height),
                    (box.x + box.width, box.y + box.height)]
         return BBox.from_points(m.apply(*p) for p in corners)

@@ -16,37 +16,37 @@ def close(p, q, tol=1e-9) -> bool:
 class TestT:
     def test_geometry_stays_local(self) -> None:
         c = svg.Circle(50, 50, 10).translate(5, 0)
-        assert c.cx == 50 and str(c.t) == "translate(5)"
+        assert c.cx == 50 and str(c.matrix) == "translate(5)"
         assert 'cx="50"' in str(c) and 'transform="translate(5)"' in str(c)
 
     def test_translates_merge_in_parent_frame(self) -> None:
         c = svg.Circle(0, 0, 1).translate(1, 2).translate(3, 4)
-        assert str(c.t) == "translate(4 6)"
+        assert str(c.matrix) == "translate(4 6)"
 
     def test_assign_and_clear(self) -> None:
         r = svg.Rect(0, 0, 10, 10, t="scale(2)")
-        assert str(r.t) == "scale(2)" and r.transform == r.t
-        r.t = None
+        assert str(r.matrix) == "scale(2)" and r.transform == r.matrix
+        r.matrix = None
         assert not r.has("transform")
-        r.t = Matrix.translate(1)
-        assert r.t.isclose(Matrix.translate(1)) and str(r.t) == "translate(1)"
+        r.matrix = Matrix.translate(1)
+        assert r.matrix.isclose(Matrix.translate(1)) and str(r.matrix) == "translate(1)"
 
     def test_t_is_an_immutable_matrix(self) -> None:
         r = svg.Rect(0, 0, 1, 1)
-        assert isinstance(r.t, Matrix) and r.t.is_identity
+        assert isinstance(r.matrix, Matrix) and r.matrix.is_identity
         with pytest.raises(AttributeError):
-            r.t.e = 5  # type: ignore[misc]
+            r.matrix.e = 5  # type: ignore[misc]
 
     def test_composes_into_one_matrix(self) -> None:
         r = svg.Rect(0, 0, 10, 10).translate(5).rotate(90).scale(2).translate(-5)
-        assert str(r.t).count("(") <= 2 and r.t.isclose(
+        assert str(r.matrix).count("(") <= 2 and r.matrix.isclose(
             Matrix.translate(-5) @ Matrix.translate(10, 5) @ Matrix.scale(2) @ Matrix.translate(-10, -5)
             @ Matrix.rotate(90, 10, 5) @ Matrix.translate(5)
         )
 
     def test_parsed_transform_is_kept_until_changed(self) -> None:
         r = svg.parse('<rect transform="translate(1) translate(2)"/>')
-        assert str(r.get("transform")) == "translate(1) translate(2)" and r.t.isclose("translate(3)")
+        assert str(r.get("transform")) == "translate(1) translate(2)" and r.matrix.isclose("translate(3)")
         r.rotate(0)
         assert str(r.get("transform")) == "translate(3)"
 
@@ -69,7 +69,7 @@ class TestAnchor:
 
     def test_rotate_about_anchor(self) -> None:
         r = svg.Rect(0, 0, 10, 10).rotate(90)
-        assert str(r.t) == "rotate(90 5 5)"
+        assert str(r.matrix) == "rotate(90 5 5)"
         assert close(r.position, (5, 5))
 
     def test_scale_about_anchor_keeps_position(self) -> None:
@@ -107,14 +107,14 @@ class TestFrames:
 
     def test_apply(self) -> None:
         r = svg.Rect(0, 0, 1, 1).apply("translate(1 2)")
-        assert str(r.t) == "translate(1 2)"
+        assert str(r.matrix) == "translate(1 2)"
 
 
 class TestPosition:
     def test_set_position(self) -> None:
         c = svg.Circle(0, 0, 5)
         c.position = (10, 20)
-        assert close(c.position, (10, 20)) and str(c.t) == "translate(10 20)"
+        assert close(c.position, (10, 20)) and str(c.matrix) == "translate(10 20)"
 
     def test_place_chains(self) -> None:
         assert close(svg.Rect(0, 0, 4, 4).rotate(30).place(0, 0).position, (0, 0))
@@ -183,7 +183,7 @@ class TestPaintServers:
 
     def test_clip_path(self) -> None:
         cp = svg.ClipPath(svg.Circle(5, 5, 5)).translate(1)
-        assert cp.anchor == (5, 5) and str(cp.t) == "translate(1)"
+        assert cp.anchor == (5, 5) and str(cp.matrix) == "translate(1)"
 
 
 def test_path_move_to_draws_and_place_places() -> None:
@@ -232,7 +232,7 @@ def test_every_transformable_element_has_the_methods(tag: str) -> None:
     el.translate(1, 2).rotate(10).scale(2).skew(5)
     attribute = {"linearGradient": "gradientTransform", "radialGradient": "gradientTransform",
                  "pattern": "patternTransform"}.get(tag, "transform")
-    assert el.has(attribute) and not el.t.is_identity
+    assert el.has(attribute) and not el.matrix.is_identity
 
 
 def test_no_other_element_pretends_to_transform() -> None:
@@ -245,7 +245,7 @@ class TestArithmetic:
         c = svg.Circle(0, 0, 1)
         assert close((c + (3, 4)).position, (3, 4)) and close((c - (3, 4)).position, (-3, -4))
         assert close((c + 2).position, (2, 2)) and close(((1, 1) + c).position, (1, 1))
-        assert c.t.is_identity
+        assert c.matrix.is_identity
 
     def test_in_place(self) -> None:
         c = svg.Circle(0, 0, 1)
@@ -259,7 +259,7 @@ class TestArithmetic:
 
     def test_at_number_rotates_about_anchor(self) -> None:
         r = svg.Rect(0, 0, 4, 2) @ 90
-        assert str(r.t) == "rotate(90 2 1)" and r.bounds() == pytest.approx((1, -1, 2, 4))
+        assert str(r.matrix) == "rotate(90 2 1)" and r.bounds() == pytest.approx((1, -1, 2, 4))
 
     def test_divide(self) -> None:
         assert (svg.Circle(5, 5, 4) / 2).bounds() == pytest.approx((3, 3, 4, 4))
@@ -295,12 +295,12 @@ class TestArithmetic:
 class TestFlip:
     def test_flip_about_anchor(self) -> None:
         tri = svg.Polygon([(0, 0), (10, 0), (0, 5)]).flip_x()
-        assert tri.bounds() == pytest.approx((0, 0, 10, 5)) and str(tri.t) == "matrix(-1 0 0 1 10 0)"
-        assert close(tri.t.apply(0, 0), (10, 0))
-        assert close(svg.Rect(0, 0, 4, 4).flip_y().t.apply(0, 0), (0, 4))
+        assert tri.bounds() == pytest.approx((0, 0, 10, 5)) and str(tri.matrix) == "matrix(-1 0 0 1 10 0)"
+        assert close(tri.matrix.apply(0, 0), (10, 0))
+        assert close(svg.Rect(0, 0, 4, 4).flip_y().matrix.apply(0, 0), (0, 4))
 
     def test_flip_twice_is_identity_and_about(self) -> None:
-        assert svg.Rect(0, 0, 4, 4).flip_x().flip_x().t.is_identity
+        assert svg.Rect(0, 0, 4, 4).flip_x().flip_x().matrix.is_identity
         assert close(svg.Circle(5, 0, 1).flip_x(about=(0, 0)).position, (-5, 0))
 
     def test_matrix_flips(self) -> None:

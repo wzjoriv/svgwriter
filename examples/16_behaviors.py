@@ -24,7 +24,7 @@ BRASS = "#d97706"
 @svg.preset.behavior
 def turn(element: svg.Element, seconds: float, *, speed: float = 90.0) -> None:
     """Turn about the anchor at *speed* degrees per second."""
-    element.t = element.home.t
+    element.matrix = element.home.matrix
     element.rotate(speed * seconds)
 
 

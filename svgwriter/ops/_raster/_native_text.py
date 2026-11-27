@@ -119,7 +119,7 @@ def draw_text(canvas: skia.Canvas, text: Text, root: Element, view: Matrix, *, o
     canvas.concat(skia_matrix(view))
     for node in _chain(text, root):
         if isinstance(node, Transformable):
-            canvas.concat(skia_matrix(node.t))
+            canvas.concat(skia_matrix(node.matrix))
         clip = clip_outline(node)
         if clip is not None:
             canvas.clipPath(to_skia(clip), doAntiAlias=True)

@@ -28,7 +28,7 @@ def _timing(effect: Effect) -> dict[str, Any]:
 
 def _local(element: Any, points: tuple[tuple[float, float], ...]) -> str:
     """Page offsets as a motion path in the element's own frame."""
-    inverse = element.t.inverse()
+    inverse = element.matrix.inverse()
     origin = inverse.apply(0.0, 0.0)
     local = [inverse.apply(x, y) for x, y in points]
     return "M" + " L".join(f"{p.x - origin.x:g} {p.y - origin.y:g}" for p in local)

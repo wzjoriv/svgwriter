@@ -78,15 +78,15 @@ class TransformPresets:
             return (box.x + box.width / 2, box.y + box.height / 2) if box is not None else (0.0, 0.0)
         point: Point = element._pivot(about, True)
         if about is not None and not isinstance(about, str) and not local:
-            point = element.t.inverse().apply(point.x, point.y)
+            point = element.matrix.inverse().apply(point.x, point.y)
         return point.x, point.y
 
     def _vector(self, dx: float, dy: float, local: bool) -> tuple[float, float]:
         """An offset in the element's own axes; *dx*, *dy* are along the parent's unless *local*."""
         element: Any = self.element
-        if local or not hasattr(element, "t"):
+        if local or not hasattr(element, "matrix"):
             return dx, dy
-        inverse = element.t.inverse()
+        inverse = element.matrix.inverse()
         origin, end = inverse.apply(0.0, 0.0), inverse.apply(dx, dy)
         return end.x - origin.x, end.y - origin.y
 

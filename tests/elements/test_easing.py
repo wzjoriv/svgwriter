@@ -150,7 +150,7 @@ def test_colors_and_transforms_take_ease():
     box.append(svg.AnimateTransform("translate", from_="0 0", to="10 0", dur=1, ease="ease-in"))
     frame = doc.at(0.5)[0]
     assert frame.get("fill") != "#000000"
-    assert frame.t.e == pytest.approx(10 * svg.Ease("ease-in")(0.5), abs=1e-4)
+    assert frame.matrix.e == pytest.approx(10 * svg.Ease("ease-in")(0.5), abs=1e-4)
 
 
 def test_motion_along_a_path_uses_key_points():
@@ -159,7 +159,7 @@ def test_motion_along_a_path_uses_key_points():
     doc = svg.Document(100, 10)
     dot = doc.circle(0, 0, 2)
     dot.animate.follow("M0 0L100 0", ease=_bounce, rotate=False)
-    assert doc.at(0.5)[0].t.e == pytest.approx(100 * _bounce(0.5), abs=1e-2)
+    assert doc.at(0.5)[0].matrix.e == pytest.approx(100 * _bounce(0.5), abs=1e-2)
 
 
 def test_paced_spaces_values_by_distance():

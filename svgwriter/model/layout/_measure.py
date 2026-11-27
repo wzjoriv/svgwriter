@@ -141,7 +141,7 @@ def extent(child: Element) -> BBox | None:
         return None
     if child.tag == "text":
         box = text_box(child)
-        return None if box is None else _transformed(box, child.t)
+        return None if box is None else _transformed(box, child.matrix)
     return child.bounds()
 
 

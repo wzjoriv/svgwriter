@@ -272,7 +272,7 @@ import math
 @svg.preset.behavior
 def sway(element: svg.Element, seconds: float, *, angle: float = 10, period: float = 2) -> None:
     """Rock about the anchor by up to *angle* degrees."""
-    element.t = element.home.t
+    element.matrix = element.home.matrix
     element.rotate(angle * math.sin(2 * math.pi * seconds / period))
 
 
@@ -298,7 +298,7 @@ name once the element is in a scene's document (outside one it raises `ValueErro
 the order they were attached, all before `update(seconds)`, so `update` sees their result.
 
 `element.home` is a copy of the element taken when its first behaviour is attached. Start each frame
-from it (`element.t = element.home.t`, then a relative move) rather than from the current state: the
+from it (`element.matrix = element.home.matrix`, then a relative move) rather than from the current state: the
 motion is computed afresh every frame, so it never drifts and frames can be drawn in any order. The
 built-in behaviours `wiggle`, `hover` and `breathe` (in `svg.video.behaviors`) work this way, about the
 element's anchor. `@svg.preset.behavior(name=..., replace=True)`, `svg.preset.behavior.list()`,

@@ -139,7 +139,7 @@ def _instance(marker: Element, rules: list, serial: int) -> list[Element]:
         value = computed(marker, name, None, rules)
         if value is not None:
             content.attributes[name] = value
-    content.t = _content_matrix(marker)  # type: ignore[attr-defined]
+    content.matrix = _content_matrix(marker)  # type: ignore[attr-defined]
     if str(computed(marker, "overflow", "hidden", rules)) in VISIBLE_OVERFLOW:
         return [content]
     clip = ClipPath(Rect(0, 0, _number(marker, "markerWidth", MARKER_DEFAULT_SIZE),
@@ -204,7 +204,7 @@ def expand_markers(root: Element) -> None:
         except (TypeError, ValueError):
             stroke_width = 1.0
         placed = Group()
-        placed.t = shape.t  # type: ignore[attr-defined]
+        placed.matrix = shape.matrix  # type: ignore[attr-defined]
         for name, marker, chosen in zip(MARKER_PROPERTIES, markers, (points[:1], points[1:-1], points[-1:]),
                                         strict=True):
             if marker is None:
@@ -219,7 +219,7 @@ def expand_markers(root: Element) -> None:
                     angle = float(orient.removesuffix("deg"))
                 serial += 1
                 copy = Group(*_instance(marker, rules, serial))
-                copy.t = _placement(marker, x, y, angle, stroke_width)
+                copy.matrix = _placement(marker, x, y, angle, stroke_width)
                 placed.add(copy)
         parent = shape.parent
         if len(placed) and parent is not None:

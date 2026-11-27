@@ -32,7 +32,7 @@ class TransformMethods:
     def _pivot(self, about: Pivot | None, local: bool) -> Point:
         if isinstance(about, str):
             point = self._local_point(about)
-            return point if local else self.t.apply(*point)
+            return point if local else self.matrix.apply(*point)
         if about is not None:
             return Point(float(about[0]), float(about[1]))
         return self.anchor if local else self.position
@@ -41,7 +41,7 @@ class TransformMethods:
         if pivot:
             p = self._pivot(about, local)
             op = Matrix.translate(p.x, p.y) @ op @ Matrix.translate(-p.x, -p.y)
-        self.t = self.t @ op if local else op @ self.t
+        self.matrix = self.matrix @ op if local else op @ self.matrix
         return self
 
     def translate(self: E, dx: float, dy: float = 0.0, *, local: bool = False) -> E:
@@ -253,10 +253,10 @@ class TransformMethods:
         Examples
         --------
         >>> import svgwriter as svg
-        >>> svg.rect(0, 0, 1, 1).translate(3, 3).reset().t.is_identity
+        >>> svg.rect(0, 0, 1, 1).translate(3, 3).reset().matrix.is_identity
         True
         """
-        self.t = None
+        self.matrix = None
         return self
 
     def _transformed_by(self: E, operator: str, operand: object, in_place: bool) -> E:

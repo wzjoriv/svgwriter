@@ -68,12 +68,12 @@ def poster(doc: svg.Document, *, theme: str = "project", hue: float = 0, title: 
 
     doc.text("Grounds", x=MARGIN, y=SHORE + 14, font_family=DISPLAY).as_role("subtitle")
     key = legend(width - 2 * MARGIN, swatch=20, gap=6, family=TEXT)
-    key.t = svg.Matrix.translate(MARGIN, SHORE + 19)
+    key.matrix = svg.Matrix.translate(MARGIN, SHORE + 19)
     doc += key
 
     doc.text("Tides today", x=MARGIN, y=SHORE + 60, font_family=DISPLAY).as_role("subtitle")
     table = tide_table(width - 2 * MARGIN, family=TEXT, gap=1.6)
-    table.t = svg.Matrix.translate(MARGIN, SHORE + 65)
+    table.matrix = svg.Matrix.translate(MARGIN, SHORE + 65)
     doc += table
 
     doc.line(MARGIN, box.height - 20, width - MARGIN, box.height - 20, stroke="#c9bfae", stroke_width=0.3)

@@ -72,7 +72,7 @@ def gradient(objects: dict[Any, Any], shading: Any, matrix: Matrix) -> Element |
     else:
         made = RadialGradient(*children, fx=coords[0], fy=coords[1], cx=coords[3], cy=coords[4], r=coords[5],
                               gradient_units="userSpaceOnUse")
-    made.t = matrix  # type: ignore[attr-defined]
+    made.matrix = matrix  # type: ignore[attr-defined]
     return made
 
 
@@ -126,7 +126,7 @@ def _tiling(painter: _Painter, pattern: Any, matrix: Matrix) -> Element | None:
         cell.add(_path(item) if isinstance(item, Shape) else item)
     if not len(cell):
         return None
-    cell.t = matrix
+    cell.matrix = matrix
     return cell
 
 

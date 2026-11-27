@@ -134,7 +134,7 @@ class BehaviorPresets(Registry[Callable[..., None]]):
     >>> import svgwriter as svg
     >>> @svg.preset.behavior
     ... def sway(element: svg.Element, seconds: float, *, angle: float = 10, period: float = 2) -> None:
-    ...     element.t = element.home.t
+    ...     element.matrix = element.home.matrix
     ...     element.rotate(angle * math.sin(2 * math.pi * seconds / period))
     >>> class Flag(svg.Scene):
     ...     width, height, duration = 40, 40, 2.0

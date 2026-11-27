@@ -186,7 +186,7 @@ class Element(Construction, AttributeAccess, TreeEditing, Queryable, Displayable
     def home(self) -> Element:
         """The element as it was when its first behavior was attached: a detached copy to start each frame from.
 
-        A behavior that sets the state from :attr:`home` (``element.t = element.home.t``, then a relative move)
+        A behavior that sets the state from :attr:`home` (``element.matrix = element.home.matrix``, then a relative move)
         computes every frame afresh, so the motion never drifts and frames can be drawn in any order.
 
         Returns

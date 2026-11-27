@@ -187,7 +187,7 @@ class PathOperand(BooleanOps, Measurement, AlongPath, Element):
         outline = self.clone()
         outline.set("fill", "none")
         outline.discard("transform")
-        result = Group(tiles, transform=self.t)
+        result = Group(tiles, transform=self.matrix)
         if outline.get("stroke") not in (None, "none"):
             result.add(outline)
         return result

@@ -9,7 +9,7 @@ from svgwriter.motion.video.behaviors import breathe, hover, wiggle
 
 
 def sway(element: svg.Element, seconds: float, *, angle: float = 10.0) -> None:
-    element.t = element.home.t
+    element.matrix = element.home.matrix
     element.rotate(angle * math.sin(math.tau * seconds))
 
 
@@ -99,7 +99,7 @@ class TestAttach:
         scene = Stage()
         assert scene.box.animate.sway(angle=30).element is scene.box
         scene.render(0.25)
-        assert scene.box.t.decompose()[2] == pytest.approx(30)
+        assert scene.box.matrix.decompose()[2] == pytest.approx(30)
         assert "sway" in dir(scene.box.animate)
 
     def test_by_name_in_build(self) -> None:
@@ -110,7 +110,7 @@ class TestAttach:
 
         scene = Built()
         scene.render(0.5)
-        assert scene.box.t.f == pytest.approx(-6)
+        assert scene.box.matrix.f == pytest.approx(-6)
 
     def test_by_name_outside_a_scene(self) -> None:
         with pytest.raises(ValueError, match="runs in a scene"):
@@ -134,15 +134,15 @@ class TestBuiltins:
         scene.attach(scene.box, breathe, amount=0.5, period=1)
         for seconds in (0.3, 0.7, 0.3):
             scene.render(seconds)
-        first = scene.box.t
+        first = scene.box.matrix
         scene.render(0.3)
-        assert scene.box.t.isclose(first)
+        assert scene.box.matrix.isclose(first)
         scene.render(0.0)
-        assert scene.box.t.is_identity
+        assert scene.box.matrix.is_identity
 
     def test_turns_about_the_centre(self) -> None:
         scene = Stage()
         scene.attach(scene.box, wiggle, angle=90, period=4)
         scene.render(1.0)
-        assert scene.box.t.apply(20, 20).x == pytest.approx(20)
-        assert scene.box.t.decompose()[2] == pytest.approx(90)
+        assert scene.box.matrix.apply(20, 20).x == pytest.approx(20)
+        assert scene.box.matrix.decompose()[2] == pytest.approx(90)

@@ -26,7 +26,7 @@ class TestImport:
         group = scene()[1]
         ellipse, diamond = list(group)
         assert group.id == "group-g1" and ellipse.get("stroke-dasharray") == "8 10"
-        assert diamond.tag == "polygon" and not diamond.t.is_identity
+        assert diamond.tag == "polygon" and not diamond.matrix.is_identity
 
     def test_arrow_text_and_image(self) -> None:
         doc = scene()

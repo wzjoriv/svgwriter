@@ -158,7 +158,7 @@ def _apply(animation: Element, target: Element, p: float, base_t: dict[int, Matr
         a, b, fraction = _segment(animation, _values(animation, "0"), p)
         moved = _transform_matrix(kind, _numbers(blend(a, b, fraction)))
         sum_mode = str(animation.get("additive", "replace")) == "sum"
-        target.t = (target.t @ moved) if sum_mode else moved  # type: ignore[attr-defined]
+        target.matrix = (target.matrix @ moved) if sum_mode else moved  # type: ignore[attr-defined]
         return
     base = target.get(name)
     if base is None:
@@ -195,8 +195,8 @@ def _motion(animation: Element, target: Element, p: float, base_t: dict[int, Mat
         angle = math.degrees(math.atan2(tangent.y, tangent.x)) + (180.0 if rotate == "auto-reverse" else 0.0)
     elif _numbers(rotate):
         angle = _numbers(rotate)[0]
-    start = base_t.setdefault(id(target), getattr(target, "t", IDENTITY))
-    target.t = Matrix.translate(point.x, point.y) @ Matrix.rotate(angle) @ start  # type: ignore[attr-defined]
+    start = base_t.setdefault(id(target), getattr(target, "matrix", IDENTITY))
+    target.matrix = Matrix.translate(point.x, point.y) @ Matrix.rotate(angle) @ start  # type: ignore[attr-defined]
 
 
 def _motion_path(animation: Element) -> Any:

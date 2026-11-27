@@ -135,7 +135,7 @@ class TestElementsAndTransforms:
 
     def test_growing_from_nothing_replaces_the_transform(self) -> None:
         def update(self: svg.Scene, t: float) -> None:
-            self.dot.t = None
+            self.dot.matrix = None
             self.dot.scale(t)
 
         scene = scene_of(lambda self, doc: setattr(self, "dot", doc.circle(50, 30, 10)), update)

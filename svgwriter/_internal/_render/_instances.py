@@ -143,7 +143,7 @@ def _replace(use: Element, target: Element, root: Element, serial: int) -> None:
 
     group = Group()
     group.attributes.update((k, v) for k, v in use.attributes.items() if k not in USE_GEOMETRY)
-    group.t = use.t @ Matrix.translate(_number(use.get("x")), _number(use.get("y")))  # type: ignore[attr-defined]
+    group.matrix = use.matrix @ Matrix.translate(_number(use.get("x")), _number(use.get("y")))  # type: ignore[attr-defined]
     if target.tag in ("symbol", "svg"):
         for part in _viewport(use, target, root, serial):
             group.add(part)
@@ -217,7 +217,7 @@ def _viewport(use: Element, target: Element, root: Element, serial: int) -> list
     content = Group(*(_instance(child) for child in target if not isinstance(child, str)))
     content.attributes.update((k, v) for k, v in target.attributes.items()
                               if k not in USE_GEOMETRY and k not in ("viewBox", "preserveAspectRatio", "overflow"))
-    content.t = matrix  # type: ignore[attr-defined]
+    content.matrix = matrix  # type: ignore[attr-defined]
     holder = Group(content)
     if target.tag == "svg":
         holder.attributes["transform"] = (f"translate({_size(use, target, 'x', view.width if view else 0.0, own=True)} "
