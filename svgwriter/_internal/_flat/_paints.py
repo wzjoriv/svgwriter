@@ -46,8 +46,8 @@ def _paint(element: Element, name: str, default: str, rules: list) -> Color | No
 def _stops(server: Element, rules: list) -> list[tuple[float, Color]]:
     """The ``(offset, colour)`` stops of a gradient, offsets clamped to ``0..1``."""
     from ...model.attributes.cascade import computed
-    from ...model.attributes.length import Length
     from ...model.color.color import as_color
+    from ...model.units.lengths import Length
 
     return [(min(max(float(Length.parse(stop.get("offset", 0)).value) / (PERCENT if "%" in str(stop.get("offset", ""))
              else 1.0), 0.0), 1.0), as_color(str(computed(stop, "stop-color", "black", rules))))
@@ -89,8 +89,8 @@ class Shading:
 def _shading(element: Element, to_page: Matrix, rules: list) -> Shading | None:
     """The gradient behind ``fill``, when it is a linear or radial gradient with stops."""
     from ...model.attributes.cascade import computed
-    from ...model.attributes.length import Length
     from ...model.transform.matrix import Matrix
+    from ...model.units.lengths import Length
 
     value = computed(element, "fill", "black", rules)
     if not str(getattr(value, "svg_value", lambda: value)()).startswith("url("):

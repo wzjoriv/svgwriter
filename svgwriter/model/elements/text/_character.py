@@ -14,10 +14,10 @@ from ._textlayout import collect, number_list
 
 if TYPE_CHECKING:
     from ....ops.text import GlyphBox
-    from ...attributes.length import LengthLike
     from ...color.paint import PaintValue
     from ...pathdata.data import BBox
     from ...transform.matrix import Point
+    from ...units.lengths import LengthLike
     from ..shapes import Path
     from ._spans import TSpan
     from ._text import Text

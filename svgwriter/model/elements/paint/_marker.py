@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal, TypeAlias
 
-from ...attributes.length import LengthLike
+from ...units.lengths import LengthLike
 from .._behavior import (
     CoreAttributes,
     ExternalResourcesAttribute,

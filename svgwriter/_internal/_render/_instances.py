@@ -231,7 +231,7 @@ def _viewport(use: Element, target: Element, root: Element, serial: int) -> list
 
 def _size(use: Element, target: Element, name: str, viewport: float, *, own: bool = False) -> float:
     """A ``<use>`` viewport length, the ``<use>``'s value winning unless *own* asks for the target's."""
-    from ...model.attributes.length import Length, Unit
+    from ...model.units.lengths import Length, Unit
 
     value = None if own else use.get(name)
     value = target.get(name) if value is None else value

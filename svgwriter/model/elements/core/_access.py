@@ -13,12 +13,12 @@ from ...._internal._ids import next_id
 from ...._internal._page import page_length, page_unit
 from ...._internal._registry import chainable
 from ...._internal._typing import ElementId
-from ...attributes.length import Length, Unit
+from ...attributes.dimensions import check_dimension
 from ...attributes.names import LENGTH_ATTRIBUTES, PRESENTATION_ATTRIBUTES, UNSUPPORTED_ATTRIBUTES, svg_name
-from ...attributes.quantity import check_dimension
 from ...attributes.reference import IRI, FuncIRI
 from ...attributes.style import Style
 from ...color.color import Color, as_color
+from ...units.lengths import Length, Unit
 from ._categories import Category
 from ._constants import COLOR_ATTRIBUTES, COLOR_OPACITY, HREF_ATTRIBUTES, XML_NAME_RE
 

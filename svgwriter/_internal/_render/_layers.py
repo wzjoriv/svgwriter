@@ -95,8 +95,8 @@ def viewport_extent(element: Element) -> tuple[float, float]:
     >>> viewport_extent(doc.rect(0, 0, 1, 1))
     (40.0, 30.0)
     """
-    from ...model.attributes.length import Length, Unit
     from ...model.attributes.viewbox import ViewBox
+    from ...model.units.lengths import Length, Unit
 
     node = element.parent
     while node is not None:
@@ -113,7 +113,7 @@ def viewport_extent(element: Element) -> tuple[float, float]:
 
 
 def _number(value: object, default: float = 0.0) -> float:
-    from ...model.attributes.length import Length
+    from ...model.units.lengths import Length
 
     return default if value is None else Length.parse(value).to_user_units()
 

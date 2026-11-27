@@ -11,7 +11,7 @@ from ...transform.matrix import Point
 
 if TYPE_CHECKING:
     from ....ops.corners import Corner, CornerFilter, Fillet
-    from ...attributes.length import Length
+    from ...units.lengths import Length
     from ..shapes import Path
 
 __all__ = ["AlongPath"]

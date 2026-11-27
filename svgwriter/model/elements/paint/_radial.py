@@ -7,9 +7,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from ...._internal._typing import Opacity, SpreadMethod, Units
-from ...attributes.length import LengthLike
 from ...color.color import Color
 from ...pathdata.data import BBox
+from ...units.lengths import LengthLike
 from .._behavior import (
     user_units,
 )

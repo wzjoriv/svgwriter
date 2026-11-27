@@ -1,16 +1,13 @@
 # Attribute values and styles
 
-Lengths, viewBox, styles, CSS cascade and attribute names.
+viewBox, styles, CSS cascade and attribute names. Lengths and angles are in [Units](units.md).
 
 ```{eval-rst}
 .. automodule:: svgwriter.model.attributes
    :members:
 
-.. automodule:: svgwriter.model.attributes.quantity
-   :members: check_dimension, dimension_name
-
-.. automodule:: svgwriter.model.attributes.units
-   :members: length, angle
+.. automodule:: svgwriter.model.attributes.dimensions
+   :members: check_dimension
 
 .. automodule:: svgwriter.model.attributes.cascade
    :members:

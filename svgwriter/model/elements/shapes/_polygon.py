@@ -18,11 +18,11 @@ if TYPE_CHECKING:
 
     from ...._internal._typing import FillRule, LineCap, LineJoin, Opacity
     from ....ops.typeface import Typeface
-    from ...attributes.length import LengthLike
     from ...attributes.style import StyleLike
     from ...color.color import Color
     from ...color.paint import PaintValue
     from ...transform.transform import TransformLike
+    from ...units.lengths import LengthLike
     from .._behavior import Pivot, XmlSpace
     from ..core import AttrValue, Element
     from ..text import TextDecoration

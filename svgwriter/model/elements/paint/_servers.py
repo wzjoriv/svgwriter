@@ -7,8 +7,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, ClassVar, TypeAlias
 
 from ...._internal._typing import Opacity, SpreadMethod, Units
-from ...attributes.length import LengthLike
 from ...color.color import Color
+from ...units.lengths import LengthLike
 from .._behavior import (
     CoreAttributes,
     ExternalResourcesAttribute,

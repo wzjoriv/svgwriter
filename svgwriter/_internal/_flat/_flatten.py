@@ -189,7 +189,7 @@ def to_cubic(data: PathData) -> list[tuple[str, tuple[float, ...]]]:
 
 def _number(element: Element, name: str, default: float, rules: list) -> float:
     from ...model.attributes.cascade import computed
-    from ...model.attributes.length import Length
+    from ...model.units.lengths import Length
 
     value = computed(element, name, default, rules)
     try:

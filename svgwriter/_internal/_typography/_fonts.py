@@ -44,7 +44,7 @@ def font_weight(value: object) -> int:
 
 def font_size(value: object) -> float:
     """A ``font-size`` value (keyword, length or percentage of the default) in user units."""
-    from ...model.attributes.length import Length, Unit
+    from ...model.units.lengths import Length, Unit
 
     text = str(value).strip()
     if text in FONT_SIZE_KEYWORDS:

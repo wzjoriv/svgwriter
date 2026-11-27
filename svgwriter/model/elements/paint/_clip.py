@@ -7,8 +7,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from ...._internal._typing import Units
-from ...attributes.length import LengthLike
 from ...pathdata.data import BBox, PathData
+from ...units.lengths import LengthLike
 from .._behavior import (
     ConditionalAttributes,
     CoreAttributes,

@@ -3,7 +3,7 @@ import math
 import pytest
 
 import svgwriter as svg
-from svgwriter.model.attributes import Quantity
+from svgwriter.model.units import Quantity
 
 
 class TestDimensions:

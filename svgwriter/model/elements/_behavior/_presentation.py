@@ -9,8 +9,8 @@ from typing import TYPE_CHECKING, TypedDict
 if TYPE_CHECKING:
     from ...._internal._typing import FillRule, Opacity
     from ....ops.typeface import Typeface
-    from ...attributes.length import LengthLike
     from ...color.color import Color
+    from ...units.lengths import LengthLike
     from ..core import Element
     from ..text import TextDecoration
 

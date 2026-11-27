@@ -72,19 +72,30 @@ from .model import elements as elements
 from .model import layout, theme
 from .model import pathdata as pathdata
 from .model import transform as transform
+from .model import units as units
 from .model.attributes import (
     IRI,
     Align,
-    Angle,
     FuncIRI,
-    Length,
     MeetOrSlice,
     PreserveAspectRatio,
-    Quantity,
     Style,
     StyleSheet,
-    Unit,
     ViewBox,
+)
+from .model.color import Color, PaintKeyword, parse_color, parse_paint
+from .model.elements import *  # noqa: F403
+from .model.elements import __all__ as _elements_all
+from .model.layout import Grid, HStack, Spacer, VStack
+from .model.pathdata import BBox, PathBuilder, PathData
+from .model.theme import Theme, themes
+from .model.transform import Matrix, Point, Transform
+from .model.units import (
+    Angle,
+    Length,
+    Quantity,
+    Unit,
+    angle,
     cm,
     deg,
     em,
@@ -93,6 +104,7 @@ from .model.attributes import (
     grad,
     inch,
     km,
+    length,
     m,
     mi,
     mil,
@@ -107,14 +119,6 @@ from .model.attributes import (
     um,
     yd,
 )
-from .model.attributes.units import angle, length
-from .model.color import Color, PaintKeyword, parse_color, parse_paint
-from .model.elements import *  # noqa: F403
-from .model.elements import __all__ as _elements_all
-from .model.layout import Grid, HStack, Spacer, VStack
-from .model.pathdata import BBox, PathBuilder, PathData
-from .model.theme import Theme, themes
-from .model.transform import Matrix, Point, Transform
 from .motion import video
 from .motion.video import Scene, renderers
 from .ops import (

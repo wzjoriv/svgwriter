@@ -93,7 +93,7 @@ def _bisect(incoming: float, outgoing: float) -> float:
 
 
 def _number(marker: Element, name: str, default: float) -> float:
-    from ...model.attributes.length import Length
+    from ...model.units.lengths import Length
 
     value = marker.get(name)
     return float(Length.parse(value).to_user_units()) if value is not None else default
@@ -184,9 +184,9 @@ def expand_markers(root: Element) -> None:
     ['path', 'g']
     """
     from ...model.attributes.cascade import computed
-    from ...model.attributes.length import Length
     from ...model.attributes.rules import rules_of
     from ...model.elements import Group
+    from ...model.units.lengths import Length
 
     rules = rules_of(root)
     ids = {str(e.get("id")): e for e in root.iter() if e.get("id")}

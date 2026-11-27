@@ -25,7 +25,7 @@ from .model.theme.theme import Theme
 
 if TYPE_CHECKING:
     from .formats.io.parser import Strictness
-    from .model.attributes.length import Length
+    from .model.units.lengths import Length
 
 __all__ = ["Document"]
 
