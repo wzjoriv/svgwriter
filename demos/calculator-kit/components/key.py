@@ -11,6 +11,8 @@ PRESSED_OPACITY = 0.6
 """Key background opacity while the key is pressed (a short flash; SVG viewers only)."""
 PRESS_SECONDS = 0.15
 """Length of the press flash."""
+HOVER_OPACITY = 0.85
+"""Key opacity under the pointer (SVG viewers only)."""
 FUNCTIONS = frozenset({"C", "±", "%", "(", ")", "sin", "cos", "tan", "log", "ln", "x²", "√", "π"})
 
 
@@ -31,4 +33,5 @@ def key(label: str, *, shape: str, height: float, colors: Mapping[str, tuple[svg
     square = height if shape == "circle" else None
     stack = svg.VStack(text, width=square, height=height, align="center", justify="center", background=background)
     background.animate.on("press", stack).tween("opacity", 1, PRESSED_OPACITY, PRESS_SECONDS, freeze=False)
+    stack.on_hover(opacity=HOVER_OPACITY)
     return stack

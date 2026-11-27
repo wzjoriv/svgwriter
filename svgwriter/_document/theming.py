@@ -7,6 +7,7 @@ from __future__ import annotations
 from collections.abc import Generator
 from contextlib import contextmanager
 
+from .._internal._hover import hover_sheet
 from ..model.attributes.rules import set_class_rules
 from ..model.layout import settle
 from ..model.theme.sheet import applied, role_rules
@@ -39,7 +40,7 @@ class Theming:
 
     @contextmanager
     def _prepared(self) -> Generator[None, None, None]:
-        with applied(self._theme, self.root):
+        with applied(self._theme, self.root), hover_sheet(self.root):
             settle(self.root)
             with self._sized():
                 yield

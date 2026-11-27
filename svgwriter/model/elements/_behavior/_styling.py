@@ -6,8 +6,9 @@ from __future__ import annotations
 
 from typing import Any, TypeVar
 
+from ...._internal._constants import HOVER_STYLE
 from ...._internal._registry import chainable
-from ...attributes.names import PRESENTATION_ATTRIBUTES
+from ...attributes.names import PRESENTATION_ATTRIBUTES, svg_name
 from ...attributes.style import Style, StyleLike
 
 __all__ = ["PresentationMethods", "StyleMethods"]
@@ -19,6 +20,45 @@ class PresentationMethods:
     """Presentation attributes as a dict and as CSS; mixed into :class:`~svgwriter.model.elements.PresentationAttributes`."""
 
     __slots__ = ()
+
+    @chainable
+    def on_hover(self, **properties: Any) -> None:
+        """Style the element while the pointer is over it: ``button.on_hover(fill="tomato")``.
+
+        Written as a CSS ``:hover`` rule, so it needs no script; browsers and SVG viewers show it,
+        and still images, PDF, video and office formats show the resting state. Calling it again adds
+        to the hover style.
+
+        Parameters
+        ----------
+        **properties
+            Presentation properties by Python name (``fill``, ``stroke``, ``stroke_width``,
+            ``opacity``, ``font_weight``, ...) and their hover values.
+
+        Raises
+        ------
+        ValueError
+            If a name is not a presentation property (geometry such as ``r`` cannot change on hover
+            in SVG 1.1).
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> doc = svg.Document(width=40, height=20)
+        >>> _ = doc.rect(0, 0, 40, 20, id="b", fill="teal").on_hover(fill="tomato", stroke_width=2)
+        >>> "#b:hover { fill:tomato !important;stroke-width:2 !important }" in doc.to_string()
+        True
+        """
+        from ...attributes.values import format_value
+
+        style = {}
+        for name, value in properties.items():
+            key = svg_name(name)
+            if key not in PRESENTATION_ATTRIBUTES:
+                raise ValueError(f"{name!r} is not a presentation property, so it cannot change on hover")
+            style[key] = format_value(value)
+        self.ensure_id()  # type: ignore[attr-defined]
+        self.__dict__[HOVER_STYLE] = {**self.__dict__.get(HOVER_STYLE, {}), **style}
 
     def presentation(self) -> dict[str, Any]:
         """Presentation attributes currently set as XML attributes.
