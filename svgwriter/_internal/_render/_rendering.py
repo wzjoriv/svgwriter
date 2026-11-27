@@ -147,7 +147,7 @@ def outlined(text: Text) -> Element:
     """*text* as a ``<g>`` of per-run outline paths (keeps its transform, clip and opacity)."""
     from ...model.elements.structure import Group
 
-    group = Group(*text.runs(), id=text.id, t=text.matrix)
+    group = Group(*text.runs(), id=text.id, transform=text.matrix)
     for name in ("clip-path", "mask", "filter", "opacity", "display", "visibility"):
         if text.has(name):
             group.attributes[name] = text.attributes[name]
