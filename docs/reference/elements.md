@@ -2,6 +2,9 @@
 
 Element classes. Every class also has a lowercase alias (`svgwriter.circle` is `svgwriter.Circle`).
 
+Each class lists its own members and links to its bases: moving, rotating, aligning and the
+`center`/`top`/... attributes are on `Transformable`, which every shape, group, image and text inherits.
+
 ## Base classes
 
 ```{eval-rst}
@@ -11,6 +14,7 @@ Element classes. Every class also has a lowercase alias (`svgwriter.circle` is `
 
 .. autoclass:: svgwriter.model.elements.Transformable
    :members:
+   :inherited-members: Element
 
 .. autoclass:: svgwriter.model.elements._behavior.Convertible
    :members:

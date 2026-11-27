@@ -31,7 +31,7 @@ extensions = [
 autodoc_default_options = {
     "members": True,
     "undoc-members": False,
-    "show-inheritance": False,
+    "show-inheritance": True,
     "member-order": "bysource",
 }
 autodoc_typehints = "signature"
