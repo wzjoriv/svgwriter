@@ -109,6 +109,19 @@ print(note.bounds().top, badge.bounds().left)
 `place(x, y, at=...)` moves a named point onto a coordinate; `align(target, at, to=...)` moves it onto a
 point of another element, box or `(x, y)`, so `a.align(b, "top", to="bottom")` stacks `a` under `b`.
 
+Elements also have the box's edges and points as attributes. Reading one gives the edge (a number) or
+point of the element's bounds; assigning one moves the element so that edge or point lands there:
+
+```python
+card = svg.rect(20, 20, 100, 50)
+heading = svg.rect(0, 0, 40, 8)
+heading.center = card.center              # centred on the card
+heading.top = card.top + 4                # then 4 units below the card's top edge
+pin = svg.circle(0, 0, 3)
+pin.center = card.bottom_right            # on the card's corner
+print(heading.top_left, pin.center)
+```
+
 ## Units and angles
 
 Plain numbers are user units (CSS pixels, 96 per inch). Lengths carry units and combine across them;

@@ -434,6 +434,17 @@ same names to move by their bounds:</p>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">place(x,</span> <span class="pre">y,</span> <span class="pre">at=...)</span></code> moves a named point onto a coordinate; <code class="docutils literal notranslate"><span class="pre">align(target,</span> <span class="pre">at,</span> <span class="pre">to=...)</span></code> moves it onto a
 point of another element, box or <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code>, so <code class="docutils literal notranslate"><span class="pre">a.align(b,</span> <span class="pre">&quot;top&quot;,</span> <span class="pre">to=&quot;bottom&quot;)</span></code> stacks <code class="docutils literal notranslate"><span class="pre">a</span></code> under <code class="docutils literal notranslate"><span class="pre">b</span></code>.</p>
+<p>Elements also have the box’s edges and points as attributes. Reading one gives the edge (a number) or
+point of the element’s bounds; assigning one moves the element so that edge or point lands there:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">card</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">heading</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">heading</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">card</span><span class="o">.</span><span class="n">center</span>              <span class="c1"># centred on the card</span>
+<span class="n">heading</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="n">card</span><span class="o">.</span><span class="n">top</span> <span class="o">+</span> <span class="mi">4</span>                <span class="c1"># then 4 units below the card's top edge</span>
+<span class="n">pin</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">pin</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">card</span><span class="o">.</span><span class="n">bottom_right</span>            <span class="c1"># on the card's corner</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">heading</span><span class="o">.</span><span class="n">top_left</span><span class="p">,</span> <span class="n">pin</span><span class="o">.</span><span class="n">center</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="units-and-angles">
 <h2>Units and angles<a class="headerlink" href="#units-and-angles" title="Link to this heading">¶</a></h2>
