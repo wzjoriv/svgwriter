@@ -455,6 +455,8 @@ element, and redraws it as they change. It needs the <code class="docutils liter
 <span class="n">view</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"badge.svg"</span><span class="p">)</span>                           <span class="c1"># the drawing for the current values</span>
 </pre></div>
 </div>
+<p>The panel looks like the preview page: the drawing on the left, the controls in a column on the right
+(under the drawing when the cell is narrow), in the notebook’s light or dark theme.</p>
 <p>Controls given as keywords are added to declared ones (<code class="docutils literal notranslate"><span class="pre">svg.interact(fn,</span> <span class="pre">size=(0,</span> <span class="pre">100))</span></code>); with none
 at all, they are inferred from the function’s keyword defaults. A function whose first parameter is not
 a control, such as a project’s <code class="docutils literal notranslate"><span class="pre">build(doc,</span> <span class="pre">...)</span></code>, receives a new document there.</p>

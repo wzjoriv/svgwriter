@@ -93,6 +93,9 @@ print(view.code())                               # badge(size=70.0, color='#f43f
 view.save("badge.svg")                           # the drawing for the current values
 ```
 
+The panel looks like the preview page: the drawing on the left, the controls in a column on the right
+(under the drawing when the cell is narrow), in the notebook's light or dark theme.
+
 Controls given as keywords are added to declared ones (`svg.interact(fn, size=(0, 100))`); with none
 at all, they are inferred from the function's keyword defaults. A function whose first parameter is not
 a control, such as a project's `build(doc, ...)`, receives a new document there.
