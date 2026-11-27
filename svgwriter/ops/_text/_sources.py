@@ -75,17 +75,21 @@ def family_of(source: FontSource) -> str:
 
 
 @cache
-@cache
 def _installed_families() -> tuple[str, ...]:
     """Every installed family name, indexed once on first need."""
     manager = skia.FontMgr.RefDefault()
     return tuple(manager.getFamilyName(index) for index in range(manager.countFamilies()))
 
 
+def _belongs(typeface: Any, family: str) -> bool:
+    """Whether a face's own name table names *family*; some font managers list other families' files under it."""
+    return family_names(typeface)[0].lower().startswith(family.lower())
+
+
 def installed_faces(name: str) -> tuple[str, list[Face]]:
     """The concrete family and its installed faces; generic names pick the first installed candidate.
 
-    The font manager names each style, so no font tables are read here.
+    The font manager names each style; faces whose name table names another family are dropped.
     """
     manager = skia.FontMgr.RefDefault()
     for family in (*generic_candidates(name), name):
@@ -95,7 +99,8 @@ def installed_faces(name: str) -> tuple[str, list[Face]]:
             for index in range(styles.count()):
                 typeface, subfamily = styles.createTypeface(index), styles.getStyle(index)[1] or REGULAR_SUBFAMILY
                 faces.append(Face.of(family, typeface, describe(typeface, subfamily=subfamily), subfamily=subfamily))
-            return family, faces
+            own = [face for face in faces if _belongs(face.typeface, family)]
+            return family, own or faces
     if generic_candidates(name):
         fallback = manager.legacyMakeTypeface("", skia.FontStyle())
         if fallback is not None:
