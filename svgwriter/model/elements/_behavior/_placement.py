@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from ...._internal._page import to_page
 from ...._internal._tree import settle_parent
 from ...pathdata.data import BBox
 from ...transform.matrix import Point
@@ -209,6 +210,52 @@ class Placement:
         """
         goal = _target_point(target, to or at)
         return self.place(goal.x + float(offset[0]), goal.y + float(offset[1]), at=at)
+
+    def _move_point(self, name: str, value: PointLike) -> None:
+        here = self._named_point(name)
+        self.translate(to_page(value[0], self) - here.x, to_page(value[1], self) - here.y)  # type: ignore[arg-type]
+
+    def _edge(self, side: str) -> float:
+        box = self._named_point("top_left"), self._named_point("bottom_right")
+        return {"left": box[0].x, "top": box[0].y, "right": box[1].x, "bottom": box[1].y}[side]
+
+    def _move_edge(self, side: str, value: Any) -> None:
+        shift = to_page(value, self) - self._edge(side)
+        self.translate(shift, 0.0) if side in ("left", "right") else self.translate(0.0, shift)  # type: ignore[attr-defined]
+
+    left = property(lambda self: self._edge("left"), lambda self, v: self._move_edge("left", v),
+                    doc="Smallest x of :meth:`bounds`; assign to move the element so its left edge is there.")
+    right = property(lambda self: self._edge("right"), lambda self, v: self._move_edge("right", v),
+                     doc="Largest x of :meth:`bounds`; assign to move the right edge there.")
+    top = property(lambda self: self._edge("top"), lambda self, v: self._move_edge("top", v),
+                   doc="Smallest y of :meth:`bounds`; assign to move the top edge there.")
+    bottom = property(lambda self: self._edge("bottom"), lambda self, v: self._move_edge("bottom", v),
+                      doc="Largest y of :meth:`bounds`; assign to move the bottom edge there.")
+    center = property(lambda self: self._named_point("center"), lambda self, v: self._move_point("center", v),
+                      doc="Centre of :meth:`bounds`; assign a point (``a.center = b.center``) to move it there.")
+    top_left = property(lambda self: self._named_point("top_left"), lambda self, v: self._move_point("top_left", v),
+                        doc="Top-left corner of :meth:`bounds`; assign to move it there.")
+    top_center = property(lambda self: self._named_point("top_center"),
+                          lambda self, v: self._move_point("top_center", v),
+                          doc="Middle of the top edge of :meth:`bounds`; assign to move it there.")
+    top_right = property(lambda self: self._named_point("top_right"),
+                         lambda self, v: self._move_point("top_right", v),
+                         doc="Top-right corner of :meth:`bounds`; assign to move it there.")
+    center_left = property(lambda self: self._named_point("center_left"),
+                           lambda self, v: self._move_point("center_left", v),
+                           doc="Middle of the left edge of :meth:`bounds`; assign to move it there.")
+    center_right = property(lambda self: self._named_point("center_right"),
+                            lambda self, v: self._move_point("center_right", v),
+                            doc="Middle of the right edge of :meth:`bounds`; assign to move it there.")
+    bottom_left = property(lambda self: self._named_point("bottom_left"),
+                           lambda self, v: self._move_point("bottom_left", v),
+                           doc="Bottom-left corner of :meth:`bounds`; assign to move it there.")
+    bottom_center = property(lambda self: self._named_point("bottom_center"),
+                             lambda self, v: self._move_point("bottom_center", v),
+                             doc="Middle of the bottom edge of :meth:`bounds`; assign to move it there.")
+    bottom_right = property(lambda self: self._named_point("bottom_right"),
+                            lambda self, v: self._move_point("bottom_right", v),
+                            doc="Bottom-right corner of :meth:`bounds`; assign to move it there.")
 
     def _named_point(self, name: str) -> Point:
         box = self.bounds()
