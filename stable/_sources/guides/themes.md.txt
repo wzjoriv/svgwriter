@@ -11,8 +11,8 @@ doc = svg.Document(240, 100, theme="dark")
 doc.rect(0, 0, 240, 100).as_role("background")
 doc.text("Results", x=16, y=34).as_role("title")
 doc.rect(16, 50, 90, 34, rx=6).as_role("box")
-doc += svg.builder.star(200, 60, 20, 8)          # builder shapes carry roles already
-doc += svg.builder.arrow(110, 67, 160, 67)
+doc += svg.paths.star(200, 60, 20, 8)          # builder shapes carry roles already
+doc += svg.paths.arrow(110, 67, 160, 67)
 
 doc.theme = "paper"                               # restyle everything
 print(doc.to_string()[:200])
@@ -26,6 +26,10 @@ the file stays portable: browsers, editors and every svgwriter renderer and expo
 PowerPoint, ...) resolve the sheet. A themed file read back with `Document.open` keeps its sheet; setting
 `doc.theme` replaces the rules on output.
 
+Corner radii and radius (`rx`, `ry`, `r`) are geometry, which SVG 1.1 style sheets cannot set, so a role
+that gives them writes them as attributes on its elements instead (an `rx` set on the element wins):
+`theme.replace(roles={"card": {"fill": "{surface}", "rx": "6"}})` rounds every card.
+
 Role rules override plain attributes, as CSS rules do. `as_role` moves the presentation attributes already
 on an element into its inline `style`, so values given when the element is made still win:
 
@@ -36,7 +40,7 @@ warn = svg.rect(0, 0, 40, 20, stroke="red").as_role("box")   # fill from the the
 print(warn.style["stroke"], warn.classes)
 ```
 
-Builder presets work the same way: `svg.builder.star(..., fill="gold")` keeps its gold fill and takes the
+Builder presets work the same way: `svg.paths.star(..., fill="gold")` keeps its gold fill and takes the
 rest of the `shape` role.
 
 ## Standard roles

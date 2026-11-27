@@ -3,11 +3,11 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Composite shapes and effects" href="builder.html"><link rel="prev" title="Reading and writing SVG" href="io.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Units" href="units.html"><link rel="prev" title="Reading and writing SVG" href="io.html">
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Attribute values and styles - svgwriter 2.6.0</title>
+        <title>Attribute values and styles - svgwriter 2.7.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.6.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.6.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.7.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.6.0</span>
+  <span class="sidebar-versions-label">2.7.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -253,7 +253,8 @@
 <li class="toctree-l2"><a class="reference internal" href="export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Attribute values and styles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="units.html">Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
@@ -306,247 +307,8 @@
         <article role="main" id="furo-main-content">
           <section id="attribute-values-and-styles">
 <h1>Attribute values and styles<a class="headerlink" href="#attribute-values-and-styles" title="Link to this heading">¶</a></h1>
-<p>Lengths, viewBox, styles, CSS cascade and attribute names.</p>
-<p id="module-svgwriter.model.attributes">Attribute value types: lengths, view boxes, styles, references, names.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'deg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/model/attributes/angle.html#Angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Angle" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>An angle with a unit; <code class="docutils literal notranslate"><span class="pre">float(angle)</span></code> is degrees, as every svgwriter rotation expects.</p>
-<p>Any two angles add, subtract and compare whatever their units; plain
-numbers count as degrees, as in SVG. Positive angles turn from +x towards
-+y, which is clockwise on screen. Multiplying or dividing by lengths and
-angles gives a <cite>~svgwriter.model.attributes.quantity.Quantity</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The magnitude.</p></li>
-<li><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">&quot;deg&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;rad&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;grad&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;turn&quot;</span></code>, or a spelled-out name
-(<code class="docutils literal notranslate"><span class="pre">&quot;degrees&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;radians&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;gon&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;turns&quot;</span></code>, …). Defaults to “deg”.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">rad</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">30</span><span class="p">)</span>
-<span class="go">(90.0, '1.5236rad')</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">rad</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">decompose</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
-<span class="go">90.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">Angle</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"radians"</span><span class="p">))</span>
-<span class="go">'2rad'</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle.value">
-<span class="sig-name descname"><span class="pre">value</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.Angle.value" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle.unit">
-<span class="sig-name descname"><span class="pre">unit</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.Angle.unit" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle.parse">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.angle.Angle"><span class="pre">Angle</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.angle.Angle"><span class="pre">Angle</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/angle.html#Angle.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Angle.parse" title="Link to this definition">¶</a></dt>
-<dd><p>An angle from <code class="docutils literal notranslate"><span class="pre">&quot;45deg&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;1.2rad&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;0.5turn&quot;</span></code>, a number (degrees) or an angle.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> or </em><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.Angle"><em>Angle</em></a>) – The value.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Angle</em> – The parsed angle.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the text is not an angle.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If the value is a length or another non-angle quantity.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Angle</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"0.5turn"</span><span class="p">)</span><span class="o">.</span><span class="n">degrees</span>
-<span class="go">180.0</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle.degrees">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">degrees</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.Angle.degrees" title="Link to this definition">¶</a></dt>
-<dd><p>The angle in degrees.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle.radians">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">radians</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.Angle.radians" title="Link to this definition">¶</a></dt>
-<dd><p>The angle in radians.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle.to">
-<span class="sig-name descname"><span class="pre">to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.angle.Angle"><span class="pre">Angle</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/angle.html#Angle.to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Angle.to" title="Link to this definition">¶</a></dt>
-<dd><p>The same angle in another unit (<code class="docutils literal notranslate"><span class="pre">&quot;deg&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;rad&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;grad&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;turn&quot;</span></code> or a spelled-out name).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle.wrap">
-<span class="sig-name descname"><span class="pre">wrap</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.angle.Angle"><span class="pre">Angle</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/angle.html#Angle.wrap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Angle.wrap" title="Link to this definition">¶</a></dt>
-<dd><p>The same direction within one turn, from 0 up to (not including) a full turn.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Angle</em> – The wrapped angle, in this angle’s unit.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">wrap</span><span class="p">()),</span> <span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mf">1.25</span><span class="p">)</span><span class="o">.</span><span class="n">wrap</span><span class="p">())</span>
-<span class="go">('270deg', '0.25turn')</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle.diff">
-<span class="sig-name descname"><span class="pre">diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.angle.Angle"><span class="pre">Angle</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ccw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.angle.Angle"><span class="pre">Angle</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/angle.html#Angle.diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Angle.diff" title="Link to this definition">¶</a></dt>
-<dd><p>The turn from this angle to <em>other</em>, the short way round unless a direction is given.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>other</strong> (<a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.Angle"><em>Angle</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The target angle; numbers are degrees.</p></li>
-<li><p><strong>ccw</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – None takes the shorter arc (at most half a turn either way);
-True turns counter-clockwise on screen (negative angles) and False
-clockwise (positive angles). Defaults to None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Angle</em> – The signed turn, in this angle’s unit.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">350</span><span class="p">)</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">350</span><span class="p">)</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">ccw</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-<span class="go">('20deg', '-340deg')</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle.lerp">
-<span class="sig-name descname"><span class="pre">lerp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.angle.Angle"><span class="pre">Angle</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ccw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.angle.Angle"><span class="pre">Angle</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/angle.html#Angle.lerp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Angle.lerp" title="Link to this definition">¶</a></dt>
-<dd><p>The angle a fraction <em>t</em> of the way to <em>other</em>, turning as <cite>diff</cite> does.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>other</strong> (<a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.Angle"><em>Angle</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The end angle; numbers are degrees.</p></li>
-<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – 0 gives this angle, 1 gives <em>other</em> (as the same direction).</p></li>
-<li><p><strong>ccw</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – Turning direction, as in <cite>diff</cite>. Defaults to None (the shorter arc).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Angle</em> – The blended angle, in this angle’s unit.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">350</span><span class="p">)</span><span class="o">.</span><span class="n">lerp</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
-<span class="go">'360deg'</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle.clamp">
-<span class="sig-name descname"><span class="pre">clamp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.angle.Angle"><span class="pre">Angle</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.angle.Angle"><span class="pre">Angle</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">circular</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.angle.Angle"><span class="pre">Angle</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/angle.html#Angle.clamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Angle.clamp" title="Link to this definition">¶</a></dt>
-<dd><p>This angle limited to the range from <em>low</em> to <em>high</em>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>low</strong> (<a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.Angle"><em>Angle</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The limits; numbers are degrees.</p></li>
-<li><p><strong>high</strong> (<a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.Angle"><em>Angle</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The limits; numbers are degrees.</p></li>
-<li><p><strong>circular</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – Treat the range as the arc swept clockwise from <em>low</em> to <em>high</em>,
-so directions are compared modulo a turn and an angle outside snaps
-to the nearer end. Defaults to False (plain numeric clamping).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Angle</em> – The limited angle, in this angle’s unit.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="mi">350</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-<span class="go">('90deg', '5deg')</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="mi">350</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-<span class="go">'20deg'</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle.sin">
-<span class="sig-name descname"><span class="pre">sin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/angle.html#Angle.sin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Angle.sin" title="Link to this definition">¶</a></dt>
-<dd><p>The sine of this angle.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle.cos">
-<span class="sig-name descname"><span class="pre">cos</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/angle.html#Angle.cos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Angle.cos" title="Link to this definition">¶</a></dt>
-<dd><p>The cosine of this angle.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle.tan">
-<span class="sig-name descname"><span class="pre">tan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/angle.html#Angle.tan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Angle.tan" title="Link to this definition">¶</a></dt>
-<dd><p>The tangent of this angle.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle.arclength">
-<span class="sig-name descname"><span class="pre">arclength</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.Length"><span class="pre">Length</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.Length"><span class="pre">Length</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/angle.html#Angle.arclength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Angle.arclength" title="Link to this definition">¶</a></dt>
-<dd><p>Length of the arc this angle sweeps on a circle of <em>radius</em>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>radius</strong> (<a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.Length"><em>Length</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The radius; numbers are user units.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Length</em> – The arc length, in the radius’s unit.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">arclength</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">10</span><span class="p">)))</span>
-<span class="go">'31.4159mm'</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Angle.svg_value">
-<span class="sig-name descname"><span class="pre">svg_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/angle.html#Angle.svg_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Angle.svg_value" title="Link to this definition">¶</a></dt>
-<dd><p>The angle as SVG writes it: degrees, without a unit.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.AngleUnit">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">AngleUnit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/model/attributes/units.html#AngleUnit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.AngleUnit" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.angle.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a></p>
-<p>One of a unit, usable as an angle or as a factory: <code class="docutils literal notranslate"><span class="pre">deg(30)</span></code>, <code class="docutils literal notranslate"><span class="pre">30</span> <span class="pre">*</span> <span class="pre">deg</span></code> and <code class="docutils literal notranslate"><span class="pre">rotate=turn</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The unit, by suffix or spelled out (<code class="docutils literal notranslate"><span class="pre">&quot;deg&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;radians&quot;</span></code>).</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="mi">30</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">turn</span><span class="p">)</span>
-<span class="go">('30deg', '0.5turn', '1turn')</span>
-</pre></div>
-</div>
-</dd></dl>
-
+<p>viewBox, styles, CSS cascade and attribute names. Lengths and angles are in <a class="reference internal" href="units.html"><span class="std std-doc">Units</span></a>.</p>
+<p id="module-svgwriter.model.attributes">Attribute value types: view boxes, styles, references, names. Lengths and angles are in <cite>svgwriter.model.units</cite>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="svgwriter.model.attributes.IRI">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">IRI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.model.elements.Element" title="svgwriter.model.elements.Element"><span class="pre">Element</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/model/attributes/reference.html#IRI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.IRI" title="Link to this definition">¶</a></dt>
@@ -837,189 +599,6 @@ lets documents put unplaced definitions into <code class="docutils literal notra
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Length">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.length.Unit"><span class="pre">Unit</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Unit.NONE</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/model/attributes/length.html#Length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Length" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>A number with an optional unit.</p>
-<p>The unit may be spelled out (<code class="docutils literal notranslate"><span class="pre">&quot;millimetres&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;inches&quot;</span></code>); metres and
-feet are accepted too and stored as millimetres and inches, since SVG has
-no such units. Multiplying or dividing by other lengths and angles gives a
-<cite>~svgwriter.model.attributes.quantity.Quantity</cite> (an area, for instance) that turns
-back into a length when the dimensions cancel.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The magnitude.</p></li>
-<li><p><strong>unit</strong> (<a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.Unit"><em>Unit</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – The unit; <code class="docutils literal notranslate"><span class="pre">Unit.NONE</span></code> means user units. Defaults to <code class="docutils literal notranslate"><span class="pre">Unit.NONE</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.Unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Unit</span></code></a></dt><dd><p>The available units.</p>
-</dd>
-</dl>
-</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.model.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span><span class="p">,</span> <span class="n">Unit</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">Length</span><span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">Unit</span><span class="o">.</span><span class="n">MM</span><span class="p">))</span>
-<span class="go">'2.5mm'</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Length</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"1in"</span><span class="p">)</span><span class="o">.</span><span class="n">to_user_units</span><span class="p">()</span>
-<span class="go">96.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">Length</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="s2">"metres"</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">Length</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"ft"</span><span class="p">))</span>
-<span class="go">('1500mm', '24in')</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Length</span><span class="p">(</span><span class="mi">96</span><span class="p">)</span> <span class="o">==</span> <span class="mi">96</span><span class="p">,</span> <span class="n">Length</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"in"</span><span class="p">)</span> <span class="o">==</span> <span class="mi">96</span><span class="p">,</span> <span class="n">Length</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"em"</span><span class="p">)</span> <span class="o">==</span> <span class="mi">16</span>
-<span class="go">(True, True, False)</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Length.value">
-<span class="sig-name descname"><span class="pre">value</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.Length.value" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Length.unit">
-<span class="sig-name descname"><span class="pre">unit</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.length.Unit"><span class="pre">Unit</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.Length.unit" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Length.parse">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.length.Length"><span class="pre">Length</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/length.html#Length.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Length.parse" title="Link to this definition">¶</a></dt>
-<dt class="sig sig-object py">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.length.Length"><span class="pre">Length</span></a></span></span></dt>
-<dt class="sig sig-object py">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.length.Length"><span class="pre">Length</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.length.Length"><span class="pre">Length</span></a></span></span></dt>
-<dd><p>Parse length text such as <code class="docutils literal notranslate"><span class="pre">&quot;12.5mm&quot;</span></code>.</p>
-<p>Numbers become unitless lengths and <cite>Length</cite> values pass through unchanged.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> or </em><a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.Length"><em>Length</em></a>) – The value to convert.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Length</em> – The parsed length.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the text is not a valid length.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If the value is an angle or another non-length quantity.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.model.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Length</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"12.5mm"</span><span class="p">)</span>
-<span class="go">Length(value=12.5, unit=&lt;Unit.MM: 'mm'&gt;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Length</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
-<span class="go">3.0</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Length.to_user_units">
-<span class="sig-name descname"><span class="pre">to_user_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">units_per_inch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">96.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">16.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/length.html#Length.to_user_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Length.to_user_units" title="Link to this definition">¶</a></dt>
-<dd><p>Convert to user units (pixels).</p>
-<p>Absolute units use <cite>units_per_inch</cite>; <code class="docutils literal notranslate"><span class="pre">em</span></code> and <code class="docutils literal notranslate"><span class="pre">ex</span></code> use the font size.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>units_per_inch</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – User units per inch for absolute units. Defaults to 96, as SVG defines.</p></li>
-<li><p><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Font size in pixels for <code class="docutils literal notranslate"><span class="pre">em</span></code> and <code class="docutils literal notranslate"><span class="pre">ex</span></code>. Defaults to the library default font size.</p></li>
-<li><p><strong>reference</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – The length that <code class="docutils literal notranslate"><span class="pre">100%</span></code> resolves to. Defaults to None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>float</em> – The length in user units.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the length is a percentage and no <cite>reference</cite> is given.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.model.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span><span class="p">,</span> <span class="n">Unit</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Length</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Unit</span><span class="o">.</span><span class="n">IN</span><span class="p">)</span><span class="o">.</span><span class="n">to_user_units</span><span class="p">(</span><span class="n">units_per_inch</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>
-<span class="go">72.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Length</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">Unit</span><span class="o">.</span><span class="n">PERCENT</span><span class="p">)</span><span class="o">.</span><span class="n">to_user_units</span><span class="p">(</span><span class="n">reference</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
-<span class="go">100.0</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Length.svg_value">
-<span class="sig-name descname"><span class="pre">svg_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/length.html#Length.svg_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Length.svg_value" title="Link to this definition">¶</a></dt>
-<dd><p>Serialize the length as attribute text.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of decimal places. Defaults to the library default precision.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>str</em> – The number followed by its unit.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.model.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span><span class="p">,</span> <span class="n">Unit</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Length</span><span class="p">(</span><span class="mf">1.23456</span><span class="p">,</span> <span class="n">Unit</span><span class="o">.</span><span class="n">PX</span><span class="p">)</span><span class="o">.</span><span class="n">svg_value</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="go">'1.23px'</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Length.absolute">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">absolute</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.Length.absolute" title="Link to this definition">¶</a></dt>
-<dd><p>Whether the unit converts to user units without context (not <code class="docutils literal notranslate"><span class="pre">em</span></code>, <code class="docutils literal notranslate"><span class="pre">ex</span></code> or <code class="docutils literal notranslate"><span class="pre">%</span></code>).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Length.to">
-<span class="sig-name descname"><span class="pre">to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.length.Unit"><span class="pre">Unit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.length.Length"><span class="pre">Length</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/length.html#Length.to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Length.to" title="Link to this definition">¶</a></dt>
-<dd><p>The same length in another absolute unit.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>unit</strong> (<a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.Unit"><em>Unit</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Target unit (<code class="docutils literal notranslate"><span class="pre">&quot;mm&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;in&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;px&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> for user units, …).</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Length</em> – The converted length, at 96 user units per inch as SVG defines.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If either unit is relative (<code class="docutils literal notranslate"><span class="pre">em</span></code>, <code class="docutils literal notranslate"><span class="pre">ex</span></code>, <code class="docutils literal notranslate"><span class="pre">%</span></code>).</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">inch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">"mm"</span><span class="p">)</span>
-<span class="go">Length(value=25.4, unit=&lt;Unit.MM: 'mm'&gt;)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.LengthUnit">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">LengthUnit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.length.Unit"><span class="pre">Unit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/model/attributes/units.html#LengthUnit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.LengthUnit" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.length.Length"><code class="xref py py-class docutils literal notranslate"><span class="pre">Length</span></code></a></p>
-<p>One of a unit, usable as a length or as a factory: <code class="docutils literal notranslate"><span class="pre">mm(5)</span></code>, <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">mm</span></code> and <code class="docutils literal notranslate"><span class="pre">height=inch</span></code>.</p>
-<p>A unit is a <cite>Length</cite> of 1 in that unit, so it goes anywhere a length does. Units SVG has no name
-for (metres, feet, miles…) are written in the nearest SVG unit.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>unit</strong> (<a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.Unit"><em>Unit</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The unit, by suffix or spelled out (<code class="docutils literal notranslate"><span class="pre">&quot;mm&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;miles&quot;</span></code>).</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">inch</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">ft</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-<span class="go">('5mm', '1.6063in', '12in')</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">inch</span> <span class="o">==</span> <span class="mi">96</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">mi</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-<span class="go">(True, '63360in')</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="svgwriter.model.attributes.MeetOrSlice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">MeetOrSlice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/model/attributes/viewbox.html#MeetOrSlice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.MeetOrSlice" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Keyword</span></code></p>
@@ -1130,119 +709,6 @@ for (metres, feet, miles…) are written in the nearest SVG unit.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.model.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">PreserveAspectRatio</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">PreserveAspectRatio</span><span class="p">()</span><span class="o">.</span><span class="n">svg_value</span><span class="p">()</span>
 <span class="go">'xMidYMid'</span>
-</pre></div>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Quantity">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Quantity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length_unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.Unit"><span class="pre">Unit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/model/attributes/quantity.html#Quantity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Quantity" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>A value of dimension length^n · angle^m, the result of multiplying or dividing lengths and angles.</p>
-<p>Arithmetic works like a maths problem: products add exponents, quotients
-subtract them, and sums need equal dimensions. Results that are plain
-lengths, angles or numbers come back as <cite>Length</cite>, <cite>Angle</cite> or <code class="docutils literal notranslate"><span class="pre">float</span></code>,
-in the unit of the first length or angle involved.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Magnitude in user units^length · radians^angle.</p></li>
-<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>optional</em>) – Exponents of length and angle. Default to 0.</p></li>
-<li><p><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>optional</em>) – Exponents of length and angle. Default to 0.</p></li>
-<li><p><strong>length_unit</strong> (<a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.Unit"><em>Unit</em></a><em>, </em><em>optional</em>) – Unit used to show lengths and to give back a <cite>Length</cite>. Defaults to user units.</p></li>
-<li><p><strong>angle_unit</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Unit used to show angles and to give back an <cite>Angle</cite>. Defaults to “rad”.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">dimension_name</span></code></dt><dd><p>How a dimension reads.</p>
-</dd>
-</dl>
-</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">area</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">area</span><span class="p">),</span> <span class="n">area</span><span class="o">.</span><span class="n">dimension</span>
-<span class="go">('6mm²', 'length²')</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">area</span> <span class="o">/</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="go">Length(value=1.5, unit=&lt;Unit.MM: 'mm'&gt;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="o">/</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="go">2.0</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Quantity.value">
-<span class="sig-name descname"><span class="pre">value</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.Quantity.value" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Quantity.length">
-<span class="sig-name descname"><span class="pre">length</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.Quantity.length" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Quantity.angle">
-<span class="sig-name descname"><span class="pre">angle</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.Quantity.angle" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Quantity.length_unit">
-<span class="sig-name descname"><span class="pre">length_unit</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.Unit"><span class="pre">Unit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.Quantity.length_unit" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Quantity.angle_unit">
-<span class="sig-name descname"><span class="pre">angle_unit</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.Quantity.angle_unit" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Quantity.of">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.quantity.Quantity" title="svgwriter.model.attributes.quantity.Quantity"><span class="pre">Quantity</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/quantity.html#Quantity.of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Quantity.of" title="Link to this definition">¶</a></dt>
-<dd><p>The quantity behind a length, angle, number or quantity.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>value</strong> (<a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.Length"><em>Length</em></a><em>, </em><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.Angle"><em>Angle</em></a><em>, </em><a class="reference internal" href="#svgwriter.model.attributes.Quantity" title="svgwriter.model.attributes.Quantity"><em>Quantity</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The value; lengths must be absolute (not <code class="docutils literal notranslate"><span class="pre">em</span></code>, <code class="docutils literal notranslate"><span class="pre">ex</span></code> or <code class="docutils literal notranslate"><span class="pre">%</span></code>).</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Quantity</em> – The value in base units with its exponents.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If the value is not a number, length, angle or quantity.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If a length is relative.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quantity</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">inch</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">value</span>
-<span class="go">96.0</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Quantity.dimension">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">dimension</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.Quantity.dimension" title="Link to this definition">¶</a></dt>
-<dd><p>The dimension as text, such as <code class="docutils literal notranslate"><span class="pre">&quot;length²&quot;</span></code>.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Quantity.simplify">
-<span class="sig-name descname"><span class="pre">simplify</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.Quantity" title="svgwriter.model.attributes.Quantity"><span class="pre">Quantity</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.Length"><span class="pre">Length</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.Angle"><span class="pre">Angle</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/quantity.html#Quantity.simplify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Quantity.simplify" title="Link to this definition">¶</a></dt>
-<dd><p>This value as a <cite>Length</cite>, <cite>Angle</cite> or <code class="docutils literal notranslate"><span class="pre">float</span></code> when its dimension allows.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Quantity, Length, Angle or float</em> – The simplest type for the dimension.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Quantity</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span>
-<span class="go">2.0</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1421,7 +887,8 @@ mutable mapping that keeps insertion order.</p>
 </dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.model.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span><span class="p">,</span> <span class="n">SupportsSVG</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.model.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">SupportsSVG</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.model.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">Length</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">SupportsSVG</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
@@ -1470,100 +937,6 @@ such as an open text file or <cite>io.StringIO</cite>.</p>
 </dd>
 </dl>
 </dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Unit">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/model/attributes/length.html#Unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.Unit" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Keyword</span></code></p>
-<p>Length units: SVG 1.1’s plus CSS’s <code class="docutils literal notranslate"><span class="pre">Q</span></code> (quarter millimetres).</p>
-<p><code class="docutils literal notranslate"><span class="pre">NONE</span></code> (also <code class="docutils literal notranslate"><span class="pre">USER</span></code>) means user units. <code class="docutils literal notranslate"><span class="pre">PIXEL</span></code> and <code class="docutils literal notranslate"><span class="pre">INCH</span></code> are
-aliases of <code class="docutils literal notranslate"><span class="pre">PX</span></code> and <code class="docutils literal notranslate"><span class="pre">IN</span></code>. <code class="docutils literal notranslate"><span class="pre">str(unit)</span></code> gives the suffix as written in SVG.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.Length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Length</span></code></a></dt><dd><p>A value with a unit.</p>
-</dd>
-</dl>
-</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.model.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Unit</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Unit</span><span class="p">(</span><span class="s2">"mm"</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Unit</span><span class="o">.</span><span class="n">MM</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">Unit</span><span class="o">.</span><span class="n">PERCENT</span><span class="p">)</span>
-<span class="go">'%'</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Unit.NONE">
-<span class="sig-name descname"><span class="pre">NONE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="headerlink" href="#svgwriter.model.attributes.Unit.NONE" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Unit.PX">
-<span class="sig-name descname"><span class="pre">PX</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'px'</span></span><a class="headerlink" href="#svgwriter.model.attributes.Unit.PX" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Unit.PT">
-<span class="sig-name descname"><span class="pre">PT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'pt'</span></span><a class="headerlink" href="#svgwriter.model.attributes.Unit.PT" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Unit.PC">
-<span class="sig-name descname"><span class="pre">PC</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'pc'</span></span><a class="headerlink" href="#svgwriter.model.attributes.Unit.PC" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Unit.MM">
-<span class="sig-name descname"><span class="pre">MM</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'mm'</span></span><a class="headerlink" href="#svgwriter.model.attributes.Unit.MM" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Unit.CM">
-<span class="sig-name descname"><span class="pre">CM</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cm'</span></span><a class="headerlink" href="#svgwriter.model.attributes.Unit.CM" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Unit.IN">
-<span class="sig-name descname"><span class="pre">IN</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'in'</span></span><a class="headerlink" href="#svgwriter.model.attributes.Unit.IN" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Unit.EM">
-<span class="sig-name descname"><span class="pre">EM</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'em'</span></span><a class="headerlink" href="#svgwriter.model.attributes.Unit.EM" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Unit.EX">
-<span class="sig-name descname"><span class="pre">EX</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ex'</span></span><a class="headerlink" href="#svgwriter.model.attributes.Unit.EX" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Unit.PERCENT">
-<span class="sig-name descname"><span class="pre">PERCENT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'%'</span></span><a class="headerlink" href="#svgwriter.model.attributes.Unit.PERCENT" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Unit.Q">
-<span class="sig-name descname"><span class="pre">Q</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Q'</span></span><a class="headerlink" href="#svgwriter.model.attributes.Unit.Q" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Unit.USER">
-<span class="sig-name descname"><span class="pre">USER</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="headerlink" href="#svgwriter.model.attributes.Unit.USER" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Unit.PIXEL">
-<span class="sig-name descname"><span class="pre">PIXEL</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'px'</span></span><a class="headerlink" href="#svgwriter.model.attributes.Unit.PIXEL" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.Unit.INCH">
-<span class="sig-name descname"><span class="pre">INCH</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'in'</span></span><a class="headerlink" href="#svgwriter.model.attributes.Unit.INCH" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -1824,127 +1197,10 @@ restored, and remaining underscores become hyphens.</p>
 </div>
 </dd></dl>
 
-<p id="module-svgwriter.model.attributes.quantity">Products and quotients of lengths and angles: values carrying dimension exponents.</p>
-<p><code class="docutils literal notranslate"><span class="pre">mm(3)</span> <span class="pre">*</span> <span class="pre">mm(2)</span></code> is an area, <code class="docutils literal notranslate"><span class="pre">deg(90)</span> <span class="pre">/</span> <span class="pre">mm(5)</span></code> an angle per length. Each
-<cite>Quantity</cite> stores its magnitude in base units (user units for length, radians
-for angle) with the exponents of both; once a calculation comes back to a plain
-length, angle or number it is a <cite>Length</cite>, an <cite>Angle</cite> or a <code class="docutils literal notranslate"><span class="pre">float</span></code> again.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.quantity.Quantity">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Quantity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length_unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.Unit"><span class="pre">Unit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/model/attributes/quantity.html#Quantity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.quantity.Quantity" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>A value of dimension length^n · angle^m, the result of multiplying or dividing lengths and angles.</p>
-<p>Arithmetic works like a maths problem: products add exponents, quotients
-subtract them, and sums need equal dimensions. Results that are plain
-lengths, angles or numbers come back as <cite>Length</cite>, <cite>Angle</cite> or <code class="docutils literal notranslate"><span class="pre">float</span></code>,
-in the unit of the first length or angle involved.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Magnitude in user units^length · radians^angle.</p></li>
-<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>optional</em>) – Exponents of length and angle. Default to 0.</p></li>
-<li><p><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>optional</em>) – Exponents of length and angle. Default to 0.</p></li>
-<li><p><strong>length_unit</strong> (<a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.Unit"><em>Unit</em></a><em>, </em><em>optional</em>) – Unit used to show lengths and to give back a <cite>Length</cite>. Defaults to user units.</p></li>
-<li><p><strong>angle_unit</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Unit used to show angles and to give back an <cite>Angle</cite>. Defaults to “rad”.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#svgwriter.model.attributes.quantity.dimension_name" title="svgwriter.model.attributes.quantity.dimension_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dimension_name</span></code></a></dt><dd><p>How a dimension reads.</p>
-</dd>
-</dl>
-</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">area</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">area</span><span class="p">),</span> <span class="n">area</span><span class="o">.</span><span class="n">dimension</span>
-<span class="go">('6mm²', 'length²')</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">area</span> <span class="o">/</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="go">Length(value=1.5, unit=&lt;Unit.MM: 'mm'&gt;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="o">/</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="go">2.0</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.quantity.Quantity.value">
-<span class="sig-name descname"><span class="pre">value</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.quantity.Quantity.value" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.quantity.Quantity.length">
-<span class="sig-name descname"><span class="pre">length</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.quantity.Quantity.length" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.quantity.Quantity.angle">
-<span class="sig-name descname"><span class="pre">angle</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.quantity.Quantity.angle" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.quantity.Quantity.length_unit">
-<span class="sig-name descname"><span class="pre">length_unit</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.Unit"><span class="pre">Unit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.quantity.Quantity.length_unit" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.quantity.Quantity.angle_unit">
-<span class="sig-name descname"><span class="pre">angle_unit</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.quantity.Quantity.angle_unit" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.quantity.Quantity.of">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.quantity.Quantity" title="svgwriter.model.attributes.quantity.Quantity"><span class="pre">Quantity</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/quantity.html#Quantity.of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.quantity.Quantity.of" title="Link to this definition">¶</a></dt>
-<dd><p>The quantity behind a length, angle, number or quantity.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>value</strong> (<a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.Length"><em>Length</em></a><em>, </em><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.Angle"><em>Angle</em></a><em>, </em><a class="reference internal" href="#svgwriter.model.attributes.quantity.Quantity" title="svgwriter.model.attributes.quantity.Quantity"><em>Quantity</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The value; lengths must be absolute (not <code class="docutils literal notranslate"><span class="pre">em</span></code>, <code class="docutils literal notranslate"><span class="pre">ex</span></code> or <code class="docutils literal notranslate"><span class="pre">%</span></code>).</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Quantity</em> – The value in base units with its exponents.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If the value is not a number, length, angle or quantity.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If a length is relative.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quantity</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">inch</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">value</span>
-<span class="go">96.0</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.quantity.Quantity.dimension">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">dimension</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><a class="headerlink" href="#svgwriter.model.attributes.quantity.Quantity.dimension" title="Link to this definition">¶</a></dt>
-<dd><p>The dimension as text, such as <code class="docutils literal notranslate"><span class="pre">&quot;length²&quot;</span></code>.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.quantity.Quantity.simplify">
-<span class="sig-name descname"><span class="pre">simplify</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.quantity.Quantity" title="svgwriter.model.attributes.quantity.Quantity"><span class="pre">Quantity</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.Length"><span class="pre">Length</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.Angle"><span class="pre">Angle</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/quantity.html#Quantity.simplify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.quantity.Quantity.simplify" title="Link to this definition">¶</a></dt>
-<dd><p>This value as a <cite>Length</cite>, <cite>Angle</cite> or <code class="docutils literal notranslate"><span class="pre">float</span></code> when its dimension allows.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Quantity, Length, Angle or float</em> – The simplest type for the dimension.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Quantity</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span>
-<span class="go">2.0</span>
-</pre></div>
-</div>
-</dd></dl>
-
-</dd></dl>
-
+<p id="module-svgwriter.model.attributes.dimensions">Checking that a value’s dimension (length, angle, number) fits the attribute it is set on.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.quantity.check_dimension">
-<span class="sig-name descname"><span class="pre">check_dimension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/quantity.html#check_dimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.quantity.check_dimension" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="svgwriter.model.attributes.dimensions.check_dimension">
+<span class="sig-name descname"><span class="pre">check_dimension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/dimensions.html#check_dimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.dimensions.check_dimension" title="Link to this definition">¶</a></dt>
 <dd><p>Refuse a value whose dimension does not fit the attribute <em>name</em>.</p>
 <p>Lengths may not go where SVG wants an angle and angles not where it wants a
 length; a <cite>Quantity</cite> (an area, a length per angle, …) fits no attribute.</p>
@@ -1967,342 +1223,6 @@ length; a <cite>Quantity</cite> (an area, a length per angle, …) fits no attri
 <span class="gr">TypeError</span>: <span class="n">width needs a length, got length²</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.quantity.dimension_name">
-<span class="sig-name descname"><span class="pre">dimension_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/quantity.html#dimension_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.quantity.dimension_name" title="Link to this definition">¶</a></dt>
-<dd><p>How a dimension reads in messages: <code class="docutils literal notranslate"><span class="pre">&quot;length²&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;length·angle⁻¹&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;number&quot;</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – The exponents of length and angle.</p></li>
-<li><p><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – The exponents of length and angle.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>str</em> – The dimension written with superscript exponents.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.model.attributes.quantity</span><span class="w"> </span><span class="kn">import</span> <span class="n">dimension_name</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dimension_name</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dimension_name</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">dimension_name</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="go">('length²', 'length·angle⁻¹', 'number')</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<p id="module-svgwriter.model.attributes.units">Unit factories: <code class="docutils literal notranslate"><span class="pre">mm(5)</span></code>, <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">mm</span></code>, <code class="docutils literal notranslate"><span class="pre">length(5,</span> <span class="pre">&quot;mm&quot;)</span></code>, <code class="docutils literal notranslate"><span class="pre">deg(30)</span></code>, <code class="docutils literal notranslate"><span class="pre">angle(30,</span> <span class="pre">&quot;degrees&quot;)</span></code>.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.AngleUnit">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">AngleUnit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/model/attributes/units.html#AngleUnit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.units.AngleUnit" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.angle.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a></p>
-<p>One of a unit, usable as an angle or as a factory: <code class="docutils literal notranslate"><span class="pre">deg(30)</span></code>, <code class="docutils literal notranslate"><span class="pre">30</span> <span class="pre">*</span> <span class="pre">deg</span></code> and <code class="docutils literal notranslate"><span class="pre">rotate=turn</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The unit, by suffix or spelled out (<code class="docutils literal notranslate"><span class="pre">&quot;deg&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;radians&quot;</span></code>).</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="mi">30</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">turn</span><span class="p">)</span>
-<span class="go">('30deg', '0.5turn', '1turn')</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.LengthUnit">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">LengthUnit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.length.Unit"><span class="pre">Unit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/model/attributes/units.html#LengthUnit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.units.LengthUnit" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.length.Length"><code class="xref py py-class docutils literal notranslate"><span class="pre">Length</span></code></a></p>
-<p>One of a unit, usable as a length or as a factory: <code class="docutils literal notranslate"><span class="pre">mm(5)</span></code>, <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">mm</span></code> and <code class="docutils literal notranslate"><span class="pre">height=inch</span></code>.</p>
-<p>A unit is a <cite>Length</cite> of 1 in that unit, so it goes anywhere a length does. Units SVG has no name
-for (metres, feet, miles…) are written in the nearest SVG unit.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>unit</strong> (<a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.Unit"><em>Unit</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The unit, by suffix or spelled out (<code class="docutils literal notranslate"><span class="pre">&quot;mm&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;miles&quot;</span></code>).</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">inch</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">ft</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-<span class="go">('5mm', '1.6063in', '12in')</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">inch</span> <span class="o">==</span> <span class="mi">96</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">mi</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-<span class="go">(True, '63360in')</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.angle">
-<span class="sig-name descname"><span class="pre">angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'deg'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.Angle" title="svgwriter.model.attributes.angle.Angle"><span class="pre">Angle</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/units.html#angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.units.angle" title="Link to this definition">¶</a></dt>
-<dd><p>An angle from a number and a unit, which may be spelled out.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The magnitude.</p></li>
-<li><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">&quot;deg&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;rad&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;grad&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;turn&quot;</span></code> or a name such as
-<code class="docutils literal notranslate"><span class="pre">&quot;degrees&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;radians&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;gon&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;turns&quot;</span></code>. Defaults to “deg”.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Angle</em> – The angle.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the unit is unknown.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="s2">"turns"</span><span class="p">)),</span> <span class="n">svg</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"radians"</span><span class="p">)</span><span class="o">.</span><span class="n">unit</span>
-<span class="go">('0.25turn', 'rad')</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.cm">
-<span class="sig-name descname"><span class="pre">cm</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit('cm')</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.cm" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">cm(5)</span></code> or <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">cm</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Centimetres</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.deg">
-<span class="sig-name descname"><span class="pre">deg</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">AngleUnit('deg')</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.deg" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">deg(30)</span></code> or <code class="docutils literal notranslate"><span class="pre">30</span> <span class="pre">*</span> <span class="pre">deg</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Degrees</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.em">
-<span class="sig-name descname"><span class="pre">em</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit('em')</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.em" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">em(5)</span></code> or <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">em</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Font-size multiples</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.ex">
-<span class="sig-name descname"><span class="pre">ex</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit('ex')</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.ex" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">ex(5)</span></code> or <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">ex</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>x-height multiples</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.ft">
-<span class="sig-name descname"><span class="pre">ft</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit(12in)</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.ft" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">ft(1)</span></code> is <code class="docutils literal notranslate"><span class="pre">12in</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Feet, written as inches</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.furlong">
-<span class="sig-name descname"><span class="pre">furlong</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit(7920in)</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.furlong" title="Link to this definition">¶</a></dt>
-<dd><p>Furlongs (220 yards), written as inches.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.grad">
-<span class="sig-name descname"><span class="pre">grad</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">AngleUnit('grad')</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.grad" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">grad(50)</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Gradians, 400 per turn</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.inch">
-<span class="sig-name descname"><span class="pre">inch</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit('in')</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.inch" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">inch(5)</span></code> or <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">inch</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Inches</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.km">
-<span class="sig-name descname"><span class="pre">km</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit(1e+06mm)</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.km" title="Link to this definition">¶</a></dt>
-<dd><p>Kilometres, written as millimetres.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.length">
-<span class="sig-name descname"><span class="pre">length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.length.Unit"><span class="pre">Unit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Unit.NONE</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.attributes.Length" title="svgwriter.model.attributes.length.Length"><span class="pre">Length</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/attributes/units.html#length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.attributes.units.length" title="Link to this definition">¶</a></dt>
-<dd><p>A length from a number and a unit, which may be spelled out.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The magnitude.</p></li>
-<li><p><strong>unit</strong> (<a class="reference internal" href="#svgwriter.model.attributes.Unit" title="svgwriter.model.attributes.Unit"><em>Unit</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">&quot;mm&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;in&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;millimetres&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;inches&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;m&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;ft&quot;</span></code>, …;
-metres and feet are stored as millimetres and inches. Defaults to user units.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Length</em> – The length.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the unit is unknown.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"centimetres"</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="s2">"m"</span><span class="p">))</span>
-<span class="go">('2cm', '500mm')</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.m">
-<span class="sig-name descname"><span class="pre">m</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit(1000mm)</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.m" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">m(1)</span></code> is <code class="docutils literal notranslate"><span class="pre">1000mm</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Metres, written as millimetres</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.mi">
-<span class="sig-name descname"><span class="pre">mi</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit(63360in)</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.mi" title="Link to this definition">¶</a></dt>
-<dd><p>Miles, written as inches.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.mil">
-<span class="sig-name descname"><span class="pre">mil</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit(0.001in)</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.mil" title="Link to this definition">¶</a></dt>
-<dd><p>Thousandths of an inch (thou).</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.mm">
-<span class="sig-name descname"><span class="pre">mm</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit('mm')</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.mm" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">mm(5)</span></code> or <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">mm</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Millimetres</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.nmi">
-<span class="sig-name descname"><span class="pre">nmi</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit(1.852e+06mm)</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.nmi" title="Link to this definition">¶</a></dt>
-<dd><p>Nautical miles (1852 m), written as millimetres.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.pc">
-<span class="sig-name descname"><span class="pre">pc</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit('pc')</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.pc" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">pc(5)</span></code> or <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">pc</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Picas, 6 per inch</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.percent">
-<span class="sig-name descname"><span class="pre">percent</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit('%')</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.percent" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">percent(5)</span></code> or <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">percent</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Percentages</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.pt">
-<span class="sig-name descname"><span class="pre">pt</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit('pt')</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.pt" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">pt(5)</span></code> or <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">pt</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Points, 72 per inch</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.px">
-<span class="sig-name descname"><span class="pre">px</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit('px')</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.px" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">px(5)</span></code> or <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">px</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="elements.html#svgwriter.model.elements.structure.Pixels" title="svgwriter.model.elements.structure.Pixels">Pixels</a> (user units)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.q">
-<span class="sig-name descname"><span class="pre">q</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit('Q')</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.q" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">q(5)</span></code> or <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">q</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Quarter millimetres, written <code class="docutils literal notranslate"><span class="pre">Q</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.rad">
-<span class="sig-name descname"><span class="pre">rad</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">AngleUnit('rad')</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.rad" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">rad(1)</span></code> or <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">*</span> <span class="pre">rad</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Radians</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.turn">
-<span class="sig-name descname"><span class="pre">turn</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">AngleUnit('turn')</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.turn" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">turn(0.25)</span></code> is 90 degrees.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Full turns</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.um">
-<span class="sig-name descname"><span class="pre">um</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit(0.001mm)</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.um" title="Link to this definition">¶</a></dt>
-<dd><p>Micrometres, written as millimetres.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="svgwriter.model.attributes.units.yd">
-<span class="sig-name descname"><span class="pre">yd</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">LengthUnit(36in)</span></span><a class="headerlink" href="#svgwriter.model.attributes.units.yd" title="Link to this definition">¶</a></dt>
-<dd><p>Yards, written as inches.</p>
 </dd></dl>
 
 <p id="module-svgwriter.model.attributes.cascade">CSS style sheets and computed values: parsing, selector matching and inheritance.</p>
@@ -2721,12 +1641,12 @@ classes the tree uses, so measuring before output sees the same styles as the ou
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="builder.html">
+          <a class="next-page" href="units.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Composite shapes and effects</div>
+                <div class="title">Units</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -2772,25 +1692,6 @@ classes the tree uses, so measuring before output sees the same styles as the ou
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Attribute values and styles</a><ul>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle"><code class="docutils literal notranslate"><span class="pre">Angle</span></code></a><ul>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle.value"><code class="docutils literal notranslate"><span class="pre">Angle.value</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle.unit"><code class="docutils literal notranslate"><span class="pre">Angle.unit</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle.parse"><code class="docutils literal notranslate"><span class="pre">Angle.parse()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle.degrees"><code class="docutils literal notranslate"><span class="pre">Angle.degrees</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle.radians"><code class="docutils literal notranslate"><span class="pre">Angle.radians</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle.to"><code class="docutils literal notranslate"><span class="pre">Angle.to()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle.wrap"><code class="docutils literal notranslate"><span class="pre">Angle.wrap()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle.diff"><code class="docutils literal notranslate"><span class="pre">Angle.diff()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle.lerp"><code class="docutils literal notranslate"><span class="pre">Angle.lerp()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle.clamp"><code class="docutils literal notranslate"><span class="pre">Angle.clamp()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle.sin"><code class="docutils literal notranslate"><span class="pre">Angle.sin()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle.cos"><code class="docutils literal notranslate"><span class="pre">Angle.cos()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle.tan"><code class="docutils literal notranslate"><span class="pre">Angle.tan()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle.arclength"><code class="docutils literal notranslate"><span class="pre">Angle.arclength()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Angle.svg_value"><code class="docutils literal notranslate"><span class="pre">Angle.svg_value()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.AngleUnit"><code class="docutils literal notranslate"><span class="pre">AngleUnit</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.attributes.IRI"><code class="docutils literal notranslate"><span class="pre">IRI</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.model.attributes.IRI.target"><code class="docutils literal notranslate"><span class="pre">IRI.target</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.attributes.IRI.element"><code class="docutils literal notranslate"><span class="pre">IRI.element</span></code></a></li>
@@ -2826,17 +1727,6 @@ classes the tree uses, so measuring before output sees the same styles as the ou
 <li><a class="reference internal" href="#svgwriter.model.attributes.FuncIRI.svg_value"><code class="docutils literal notranslate"><span class="pre">FuncIRI.svg_value()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Length"><code class="docutils literal notranslate"><span class="pre">Length</span></code></a><ul>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Length.value"><code class="docutils literal notranslate"><span class="pre">Length.value</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Length.unit"><code class="docutils literal notranslate"><span class="pre">Length.unit</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Length.parse"><code class="docutils literal notranslate"><span class="pre">Length.parse()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Length.to_user_units"><code class="docutils literal notranslate"><span class="pre">Length.to_user_units()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Length.svg_value"><code class="docutils literal notranslate"><span class="pre">Length.svg_value()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Length.absolute"><code class="docutils literal notranslate"><span class="pre">Length.absolute</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Length.to"><code class="docutils literal notranslate"><span class="pre">Length.to()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.LengthUnit"><code class="docutils literal notranslate"><span class="pre">LengthUnit</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.attributes.MeetOrSlice"><code class="docutils literal notranslate"><span class="pre">MeetOrSlice</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.model.attributes.MeetOrSlice.MEET"><code class="docutils literal notranslate"><span class="pre">MeetOrSlice.MEET</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.attributes.MeetOrSlice.SLICE"><code class="docutils literal notranslate"><span class="pre">MeetOrSlice.SLICE</span></code></a></li>
@@ -2848,17 +1738,6 @@ classes the tree uses, so measuring before output sees the same styles as the ou
 <li><a class="reference internal" href="#svgwriter.model.attributes.PreserveAspectRatio.defer"><code class="docutils literal notranslate"><span class="pre">PreserveAspectRatio.defer</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.attributes.PreserveAspectRatio.parse"><code class="docutils literal notranslate"><span class="pre">PreserveAspectRatio.parse()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.attributes.PreserveAspectRatio.svg_value"><code class="docutils literal notranslate"><span class="pre">PreserveAspectRatio.svg_value()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Quantity"><code class="docutils literal notranslate"><span class="pre">Quantity</span></code></a><ul>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Quantity.value"><code class="docutils literal notranslate"><span class="pre">Quantity.value</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Quantity.length"><code class="docutils literal notranslate"><span class="pre">Quantity.length</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Quantity.angle"><code class="docutils literal notranslate"><span class="pre">Quantity.angle</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Quantity.length_unit"><code class="docutils literal notranslate"><span class="pre">Quantity.length_unit</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Quantity.angle_unit"><code class="docutils literal notranslate"><span class="pre">Quantity.angle_unit</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Quantity.of"><code class="docutils literal notranslate"><span class="pre">Quantity.of()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Quantity.dimension"><code class="docutils literal notranslate"><span class="pre">Quantity.dimension</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Quantity.simplify"><code class="docutils literal notranslate"><span class="pre">Quantity.simplify()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#svgwriter.model.attributes.Style"><code class="docutils literal notranslate"><span class="pre">Style</span></code></a><ul>
@@ -2880,23 +1759,6 @@ classes the tree uses, so measuring before output sees the same styles as the ou
 <li><a class="reference internal" href="#svgwriter.model.attributes.TextSink.write"><code class="docutils literal notranslate"><span class="pre">TextSink.write()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Unit"><code class="docutils literal notranslate"><span class="pre">Unit</span></code></a><ul>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Unit.NONE"><code class="docutils literal notranslate"><span class="pre">Unit.NONE</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Unit.PX"><code class="docutils literal notranslate"><span class="pre">Unit.PX</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Unit.PT"><code class="docutils literal notranslate"><span class="pre">Unit.PT</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Unit.PC"><code class="docutils literal notranslate"><span class="pre">Unit.PC</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Unit.MM"><code class="docutils literal notranslate"><span class="pre">Unit.MM</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Unit.CM"><code class="docutils literal notranslate"><span class="pre">Unit.CM</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Unit.IN"><code class="docutils literal notranslate"><span class="pre">Unit.IN</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Unit.EM"><code class="docutils literal notranslate"><span class="pre">Unit.EM</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Unit.EX"><code class="docutils literal notranslate"><span class="pre">Unit.EX</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Unit.PERCENT"><code class="docutils literal notranslate"><span class="pre">Unit.PERCENT</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Unit.Q"><code class="docutils literal notranslate"><span class="pre">Unit.Q</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Unit.USER"><code class="docutils literal notranslate"><span class="pre">Unit.USER</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Unit.PIXEL"><code class="docutils literal notranslate"><span class="pre">Unit.PIXEL</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.Unit.INCH"><code class="docutils literal notranslate"><span class="pre">Unit.INCH</span></code></a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#svgwriter.model.attributes.ViewBox"><code class="docutils literal notranslate"><span class="pre">ViewBox</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.model.attributes.ViewBox.min_x"><code class="docutils literal notranslate"><span class="pre">ViewBox.min_x</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.attributes.ViewBox.min_y"><code class="docutils literal notranslate"><span class="pre">ViewBox.min_y</span></code></a></li>
@@ -2911,46 +1773,7 @@ classes the tree uses, so measuring before output sees the same styles as the ou
 <li><a class="reference internal" href="#svgwriter.model.attributes.parse_func_iri"><code class="docutils literal notranslate"><span class="pre">parse_func_iri()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.attributes.py_name"><code class="docutils literal notranslate"><span class="pre">py_name()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.attributes.svg_name"><code class="docutils literal notranslate"><span class="pre">svg_name()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.quantity.Quantity"><code class="docutils literal notranslate"><span class="pre">Quantity</span></code></a><ul>
-<li><a class="reference internal" href="#svgwriter.model.attributes.quantity.Quantity.value"><code class="docutils literal notranslate"><span class="pre">Quantity.value</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.quantity.Quantity.length"><code class="docutils literal notranslate"><span class="pre">Quantity.length</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.quantity.Quantity.angle"><code class="docutils literal notranslate"><span class="pre">Quantity.angle</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.quantity.Quantity.length_unit"><code class="docutils literal notranslate"><span class="pre">Quantity.length_unit</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.quantity.Quantity.angle_unit"><code class="docutils literal notranslate"><span class="pre">Quantity.angle_unit</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.quantity.Quantity.of"><code class="docutils literal notranslate"><span class="pre">Quantity.of()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.quantity.Quantity.dimension"><code class="docutils literal notranslate"><span class="pre">Quantity.dimension</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.quantity.Quantity.simplify"><code class="docutils literal notranslate"><span class="pre">Quantity.simplify()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.quantity.check_dimension"><code class="docutils literal notranslate"><span class="pre">check_dimension()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.quantity.dimension_name"><code class="docutils literal notranslate"><span class="pre">dimension_name()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.AngleUnit"><code class="docutils literal notranslate"><span class="pre">AngleUnit</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.LengthUnit"><code class="docutils literal notranslate"><span class="pre">LengthUnit</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.angle"><code class="docutils literal notranslate"><span class="pre">angle()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.cm"><code class="docutils literal notranslate"><span class="pre">cm</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.deg"><code class="docutils literal notranslate"><span class="pre">deg</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.em"><code class="docutils literal notranslate"><span class="pre">em</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.ex"><code class="docutils literal notranslate"><span class="pre">ex</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.ft"><code class="docutils literal notranslate"><span class="pre">ft</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.furlong"><code class="docutils literal notranslate"><span class="pre">furlong</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.grad"><code class="docutils literal notranslate"><span class="pre">grad</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.inch"><code class="docutils literal notranslate"><span class="pre">inch</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.km"><code class="docutils literal notranslate"><span class="pre">km</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.length"><code class="docutils literal notranslate"><span class="pre">length()</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.m"><code class="docutils literal notranslate"><span class="pre">m</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.mi"><code class="docutils literal notranslate"><span class="pre">mi</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.mil"><code class="docutils literal notranslate"><span class="pre">mil</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.mm"><code class="docutils literal notranslate"><span class="pre">mm</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.nmi"><code class="docutils literal notranslate"><span class="pre">nmi</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.pc"><code class="docutils literal notranslate"><span class="pre">pc</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.percent"><code class="docutils literal notranslate"><span class="pre">percent</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.pt"><code class="docutils literal notranslate"><span class="pre">pt</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.px"><code class="docutils literal notranslate"><span class="pre">px</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.q"><code class="docutils literal notranslate"><span class="pre">q</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.rad"><code class="docutils literal notranslate"><span class="pre">rad</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.turn"><code class="docutils literal notranslate"><span class="pre">turn</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.um"><code class="docutils literal notranslate"><span class="pre">um</span></code></a></li>
-<li><a class="reference internal" href="#svgwriter.model.attributes.units.yd"><code class="docutils literal notranslate"><span class="pre">yd</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.model.attributes.dimensions.check_dimension"><code class="docutils literal notranslate"><span class="pre">check_dimension()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.attributes.cascade.INHERITED"><code class="docutils literal notranslate"><span class="pre">INHERITED</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.attributes.cascade.computed"><code class="docutils literal notranslate"><span class="pre">computed()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.attributes.cascade.css_declarations"><code class="docutils literal notranslate"><span class="pre">css_declarations()</span></code></a></li>
@@ -2985,7 +1808,7 @@ classes the tree uses, so measuring before output sees the same styles as the ou
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=f82422d1"></script>
+</div><script src="../_static/documentation_options.js?v=9cebf295"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

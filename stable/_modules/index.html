@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Overview: module code - svgwriter 2.6.0</title>
+        <title>Overview: module code - svgwriter 2.7.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.6.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.6.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.7.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.6.0</span>
+  <span class="sidebar-versions-label">2.7.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -252,7 +252,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/attributes.html">Attribute values and styles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/units.html">Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/inkscape.html">Inkscape</a></li>
@@ -298,11 +299,6 @@
 <li><a href="svgwriter/_internal/_platform/_capabilities.html">svgwriter._internal._platform._capabilities</a></li>
 <li><a href="svgwriter/_internal/_presets.html">svgwriter._internal._presets</a></li>
 <li><a href="svgwriter/_internal/_registry.html">svgwriter._internal._registry</a></li>
-<li><a href="svgwriter/catalog/builder/_drawing.html">svgwriter.catalog.builder._drawing</a></li>
-<li><a href="svgwriter/catalog/builder/_functions.html">svgwriter.catalog.builder._functions</a></li>
-<li><a href="svgwriter/catalog/builder/_lines.html">svgwriter.catalog.builder._lines</a></li>
-<li><a href="svgwriter/catalog/builder/_shapes.html">svgwriter.catalog.builder._shapes</a></li>
-<li><a href="svgwriter/catalog/builder/_symbols.html">svgwriter.catalog.builder._symbols</a></li>
 <li><a href="svgwriter/catalog/effects/_elements.html">svgwriter.catalog.effects._elements</a></li>
 <li><a href="svgwriter/catalog/effects/_materials.html">svgwriter.catalog.effects._materials</a></li>
 <li><a href="svgwriter/catalog/filters/_edges.html">svgwriter.catalog.filters._edges</a></li>
@@ -311,6 +307,11 @@
 <li><a href="svgwriter/catalog/fonts/builder.html">svgwriter.catalog.fonts.builder</a></li>
 <li><a href="svgwriter/catalog/gradients/_library.html">svgwriter.catalog.gradients._library</a></li>
 <li><a href="svgwriter/catalog/markers/_library.html">svgwriter.catalog.markers._library</a></li>
+<li><a href="svgwriter/catalog/paths/_drawing.html">svgwriter.catalog.paths._drawing</a></li>
+<li><a href="svgwriter/catalog/paths/_functions.html">svgwriter.catalog.paths._functions</a></li>
+<li><a href="svgwriter/catalog/paths/_lines.html">svgwriter.catalog.paths._lines</a></li>
+<li><a href="svgwriter/catalog/paths/_shapes.html">svgwriter.catalog.paths._shapes</a></li>
+<li><a href="svgwriter/catalog/paths/_symbols.html">svgwriter.catalog.paths._symbols</a></li>
 <li><a href="svgwriter/catalog/patterns/_geometric.html">svgwriter.catalog.patterns._geometric</a></li>
 <li><a href="svgwriter/catalog/patterns/_organic.html">svgwriter.catalog.patterns._organic</a></li>
 <li><a href="svgwriter/document.html">svgwriter.document</a></li>
@@ -322,17 +323,14 @@
 <li><a href="svgwriter/formats/inkscape/layers.html">svgwriter.formats.inkscape.layers</a></li>
 <li><a href="svgwriter/formats/inkscape/shapes.html">svgwriter.formats.inkscape.shapes</a></li>
 <li><a href="svgwriter/formats/io/writer.html">svgwriter.formats.io.writer</a></li>
-<li><a href="svgwriter/model/attributes/angle.html">svgwriter.model.attributes.angle</a></li>
 <li><a href="svgwriter/model/attributes/cascade.html">svgwriter.model.attributes.cascade</a></li>
 <li><a href="svgwriter/model/attributes/descriptors.html">svgwriter.model.attributes.descriptors</a></li>
-<li><a href="svgwriter/model/attributes/length.html">svgwriter.model.attributes.length</a></li>
+<li><a href="svgwriter/model/attributes/dimensions.html">svgwriter.model.attributes.dimensions</a></li>
 <li><a href="svgwriter/model/attributes/names.html">svgwriter.model.attributes.names</a></li>
 <li><a href="svgwriter/model/attributes/protocols.html">svgwriter.model.attributes.protocols</a></li>
-<li><a href="svgwriter/model/attributes/quantity.html">svgwriter.model.attributes.quantity</a></li>
 <li><a href="svgwriter/model/attributes/reference.html">svgwriter.model.attributes.reference</a></li>
 <li><a href="svgwriter/model/attributes/rules.html">svgwriter.model.attributes.rules</a></li>
 <li><a href="svgwriter/model/attributes/style.html">svgwriter.model.attributes.style</a></li>
-<li><a href="svgwriter/model/attributes/units.html">svgwriter.model.attributes.units</a></li>
 <li><a href="svgwriter/model/attributes/values.html">svgwriter.model.attributes.values</a></li>
 <li><a href="svgwriter/model/attributes/viewbox.html">svgwriter.model.attributes.viewbox</a></li>
 <li><a href="svgwriter/model/batch/_batch.html">svgwriter.model.batch._batch</a></li>
@@ -393,6 +391,7 @@
 <li><a href="svgwriter/model/elements/text/_fontface.html">svgwriter.model.elements.text._fontface</a></li>
 <li><a href="svgwriter/model/elements/text/_fonts.html">svgwriter.model.elements.text._fonts</a></li>
 <li><a href="svgwriter/model/elements/text/_glyphs.html">svgwriter.model.elements.text._glyphs</a></li>
+<li><a href="svgwriter/model/elements/text/_selection.html">svgwriter.model.elements.text._selection</a></li>
 <li><a href="svgwriter/model/elements/text/_spans.html">svgwriter.model.elements.text._spans</a></li>
 <li><a href="svgwriter/model/elements/text/_text.html">svgwriter.model.elements.text._text</a></li>
 <li><a href="svgwriter/model/elements/text/_textpath.html">svgwriter.model.elements.text._textpath</a></li>
@@ -412,6 +411,10 @@
 <li><a href="svgwriter/model/transform/matrix.html">svgwriter.model.transform.matrix</a></li>
 <li><a href="svgwriter/model/transform/ops.html">svgwriter.model.transform.ops</a></li>
 <li><a href="svgwriter/model/transform/transform.html">svgwriter.model.transform.transform</a></li>
+<li><a href="svgwriter/model/units/_factories.html">svgwriter.model.units._factories</a></li>
+<li><a href="svgwriter/model/units/angles.html">svgwriter.model.units.angles</a></li>
+<li><a href="svgwriter/model/units/lengths.html">svgwriter.model.units.lengths</a></li>
+<li><a href="svgwriter/model/units/quantities.html">svgwriter.model.units.quantities</a></li>
 <li><a href="svgwriter/motion/video/_ffmpeg.html">svgwriter.motion.video._ffmpeg</a></li>
 <li><a href="svgwriter/motion/video/animation.html">svgwriter.motion.video.animation</a></li>
 <li><a href="svgwriter/motion/video/behaviors.html">svgwriter.motion.video.behaviors</a></li>
@@ -477,7 +480,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=f82422d1"></script>
+</div><script src="../_static/documentation_options.js?v=9cebf295"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

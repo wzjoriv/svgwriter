@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Themes - svgwriter 2.6.0</title>
+        <title>Themes - svgwriter 2.7.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.6.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.6.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.7.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.6.0</span>
+  <span class="sidebar-versions-label">2.7.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -253,7 +253,8 @@
 <li class="toctree-l2"><a class="reference internal" href="export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="attributes.html">Attribute values and styles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="units.html">Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="presets.html">Preset libraries</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
@@ -664,6 +665,29 @@ Outside any block the default is the registered <code class="docutils literal no
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.model.theme.Theme.attributes">
+<span class="sig-name descname"><span class="pre">attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/model/theme/theme.html#Theme.attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.theme.Theme.attributes" title="Link to this definition">¶</a></dt>
+<dd><p>The geometry a role sets as attributes (<code class="docutils literal notranslate"><span class="pre">rx</span></code>, <code class="docutils literal notranslate"><span class="pre">ry</span></code>, <code class="docutils literal notranslate"><span class="pre">r</span></code>); SVG 1.1 CSS cannot style them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>role</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The role name.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>dict of str to str</em> – Attribute names and values; empty when the role sets no geometry.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#svgwriter.errors.ThemeError" title="svgwriter.errors.ThemeError"><strong>ThemeError</strong></a> – If the theme has no such role.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"light"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">roles</span><span class="o">=</span><span class="p">{</span><span class="s2">"card"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"rx"</span><span class="p">:</span> <span class="s2">"6"</span><span class="p">}})</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="s2">"card"</span><span class="p">)</span>
+<span class="go">{'rx': '6'}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.model.theme.Theme.replace">
 <span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">palette</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PaletteSource</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fonts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.model.theme.Fonts" title="svgwriter.model.theme.Fonts"><span class="pre">Fonts</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">RoleSource</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.theme.Theme" title="svgwriter.model.theme.Theme"><span class="pre">Theme</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/theme/theme.html#Theme.replace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.theme.Theme.replace" title="Link to this definition">¶</a></dt>
 <dd><p>A variant: palette entries, font values and role properties merge into this theme’s.</p>
@@ -927,6 +951,7 @@ with the sheet’s role styles, named <code class="docutils literal notranslate"
 <li><a class="reference internal" href="#svgwriter.model.theme.Theme.style"><code class="docutils literal notranslate"><span class="pre">Theme.style()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.theme.Theme.class_name"><code class="docutils literal notranslate"><span class="pre">Theme.class_name()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.theme.Theme.css"><code class="docutils literal notranslate"><span class="pre">Theme.css()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.model.theme.Theme.attributes"><code class="docutils literal notranslate"><span class="pre">Theme.attributes()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.theme.Theme.replace"><code class="docutils literal notranslate"><span class="pre">Theme.replace()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.theme.Theme.current"><code class="docutils literal notranslate"><span class="pre">Theme.current()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.theme.Theme.of"><code class="docutils literal notranslate"><span class="pre">Theme.of()</span></code></a></li>
@@ -947,7 +972,7 @@ with the sheet’s role styles, named <code class="docutils literal notranslate"
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=f82422d1"></script>
+</div><script src="../_static/documentation_options.js?v=9cebf295"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

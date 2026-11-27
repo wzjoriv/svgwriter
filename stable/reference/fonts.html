@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Fonts - svgwriter 2.6.0</title>
+        <title>Fonts - svgwriter 2.7.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.6.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.6.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.7.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.6.0</span>
+  <span class="sidebar-versions-label">2.7.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -253,7 +253,8 @@
 <li class="toctree-l2"><a class="reference internal" href="export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="attributes.html">Attribute values and styles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="units.html">Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
@@ -615,7 +616,7 @@ to quadratic TrueType curves. Defaults to “otf”.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fb</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">FontBuilder</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">fb</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s2">"star"</span><span class="p">,</span> <span class="n">svg</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">fb</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s2">"star"</span><span class="p">,</span> <span class="n">svg</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="s2">"U+E000"</span> <span class="ow">in</span> <span class="n">fb</span><span class="o">.</span><span class="n">cheatsheet</span><span class="p">()</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
 <span class="go">True</span>
 </pre></div>
@@ -707,7 +708,7 @@ to quadratic TrueType curves. Defaults to “otf”.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=f82422d1"></script>
+</div><script src="../_static/documentation_options.js?v=9cebf295"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

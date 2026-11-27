@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Themes - svgwriter 2.6.0</title>
+        <title>Themes - svgwriter 2.7.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.6.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.6.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.7.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.6.0</span>
+  <span class="sidebar-versions-label">2.7.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -253,7 +253,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/attributes.html">Attribute values and styles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/units.html">Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/inkscape.html">Inkscape</a></li>
@@ -315,8 +316,8 @@ decides how each role looks. Changing the theme restyles the whole drawing.</p>
 <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"background"</span><span class="p">)</span>
 <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Results"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">34</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"title"</span><span class="p">)</span>
 <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"box"</span><span class="p">)</span>
-<span class="n">doc</span> <span class="o">+=</span> <span class="n">svg</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>          <span class="c1"># builder shapes carry roles already</span>
-<span class="n">doc</span> <span class="o">+=</span> <span class="n">svg</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">67</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">+=</span> <span class="n">svg</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>          <span class="c1"># builder shapes carry roles already</span>
+<span class="n">doc</span> <span class="o">+=</span> <span class="n">svg</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">67</span><span class="p">)</span>
 
 <span class="n">doc</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="s2">"paper"</span>                               <span class="c1"># restyle everything</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">to_string</span><span class="p">()[:</span><span class="mi">200</span><span class="p">])</span>
@@ -329,6 +330,9 @@ decides how each role looks. Changing the theme restyles the whole drawing.</p>
 the file stays portable: browsers, editors and every svgwriter renderer and exporter (PNG, PDF, EPS,
 PowerPoint, …) resolve the sheet. A themed file read back with <code class="docutils literal notranslate"><span class="pre">Document.open</span></code> keeps its sheet; setting
 <code class="docutils literal notranslate"><span class="pre">doc.theme</span></code> replaces the rules on output.</p>
+<p>Corner radii and radius (<code class="docutils literal notranslate"><span class="pre">rx</span></code>, <code class="docutils literal notranslate"><span class="pre">ry</span></code>, <code class="docutils literal notranslate"><span class="pre">r</span></code>) are geometry, which SVG 1.1 style sheets cannot set, so a role
+that gives them writes them as attributes on its elements instead (an <code class="docutils literal notranslate"><span class="pre">rx</span></code> set on the element wins):
+<code class="docutils literal notranslate"><span class="pre">theme.replace(roles={&quot;card&quot;:</span> <span class="pre">{&quot;fill&quot;:</span> <span class="pre">&quot;{surface}&quot;,</span> <span class="pre">&quot;rx&quot;:</span> <span class="pre">&quot;6&quot;}})</span></code> rounds every card.</p>
 <p>Role rules override plain attributes, as CSS rules do. <code class="docutils literal notranslate"><span class="pre">as_role</span></code> moves the presentation attributes already
 on an element into its inline <code class="docutils literal notranslate"><span class="pre">style</span></code>, so values given when the element is made still win:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
@@ -337,7 +341,7 @@ on an element into its inline <code class="docutils literal notranslate"><span c
 <span class="nb">print</span><span class="p">(</span><span class="n">warn</span><span class="o">.</span><span class="n">style</span><span class="p">[</span><span class="s2">"stroke"</span><span class="p">],</span> <span class="n">warn</span><span class="o">.</span><span class="n">classes</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Builder presets work the same way: <code class="docutils literal notranslate"><span class="pre">svg.builder.star(...,</span> <span class="pre">fill=&quot;gold&quot;)</span></code> keeps its gold fill and takes the
+<p>Builder presets work the same way: <code class="docutils literal notranslate"><span class="pre">svg.paths.star(...,</span> <span class="pre">fill=&quot;gold&quot;)</span></code> keeps its gold fill and takes the
 rest of the <code class="docutils literal notranslate"><span class="pre">shape</span></code> role.</p>
 </section>
 <section id="standard-roles">
@@ -810,7 +814,7 @@ new keys change. A theme built directly with <code class="docutils literal notra
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=f82422d1"></script>
+</div><script src="../_static/documentation_options.js?v=9cebf295"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

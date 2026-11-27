@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Inkscape - svgwriter 2.6.0</title>
+        <title>Inkscape - svgwriter 2.7.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.6.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.6.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.7.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.6.0</span>
+  <span class="sidebar-versions-label">2.7.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -253,7 +253,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/attributes.html">Attribute values and styles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/units.html">Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/inkscape.html">Inkscape</a></li>
@@ -372,7 +373,7 @@ in code. A label shared by several elements raises <code class="docutils literal
 <section id="rotation-centres">
 <h2>Rotation centres<a class="headerlink" href="#rotation-centres" title="Link to this heading">¶</a></h2>
 <p>When an object’s rotation centre was moved in Inkscape (<code class="docutils literal notranslate"><span class="pre">inkscape:transform-center-x</span></code> and <code class="docutils literal notranslate"><span class="pre">-y</span></code>), it
-becomes the element’s <code class="xref py py-attr docutils literal notranslate"><span class="pre">anchor</span></code>, so <code class="docutils literal notranslate"><span class="pre">rotate</span></code>, <code class="docutils literal notranslate"><span class="pre">scale</span></code> and
+becomes the element’s <a class="reference internal" href="../reference/elements.html#svgwriter.model.elements.Transformable.anchor" title="svgwriter.model.elements.Transformable.anchor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">anchor</span></code></a>, so <code class="docutils literal notranslate"><span class="pre">rotate</span></code>, <code class="docutils literal notranslate"><span class="pre">scale</span></code> and
 animations turn around the same point. Writing an Inkscape document stores the anchor back for Inkscape.
 Inkscape keeps the centre as an offset from the middle of the bounding box, in user units with y pointing
 up; svgwriter converts both ways.</p>
@@ -396,8 +397,8 @@ degrees.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 
 <span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">logo</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">inkscape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"gold"</span><span class="p">))</span>
-<span class="n">hexagon</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">regular_polygon</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">inkscape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">))</span>
+<span class="n">logo</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">inkscape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"gold"</span><span class="p">))</span>
+<span class="n">hexagon</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">regular_polygon</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">inkscape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">))</span>
 
 <span class="n">star</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">inkscape</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">logo</span><span class="p">)</span>
 <span class="n">star</span><span class="o">.</span><span class="n">sides</span> <span class="o">=</span> <span class="mi">7</span>                          <span class="c1"># 7 tips, redrawn</span>
@@ -407,7 +408,7 @@ degrees.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">star</span><span class="o">.</span><span class="n">sides</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">star</span><span class="o">.</span><span class="n">angle</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">inkscape</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">hexagon</span><span class="p">)</span><span class="o">.</span><span class="n">flatsided</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">svg.builder.star(...,</span> <span class="pre">inkscape=True)</span></code> and <code class="docutils literal notranslate"><span class="pre">svg.builder.regular_polygon(...,</span> <span class="pre">inkscape=True)</span></code> build these
+<p><code class="docutils literal notranslate"><span class="pre">svg.paths.star(...,</span> <span class="pre">inkscape=True)</span></code> and <code class="docutils literal notranslate"><span class="pre">svg.paths.regular_polygon(...,</span> <span class="pre">inkscape=True)</span></code> build these
 paths; <code class="docutils literal notranslate"><span class="pre">corner_radius</span></code> does not combine with them (use <code class="docutils literal notranslate"><span class="pre">rounded</span></code> instead).</p>
 </section>
 <section id="connectors">
@@ -566,7 +567,7 @@ with svgwriter: either set Inkscape’s <code class="docutils literal notranslat
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=f82422d1"></script>
+</div><script src="../_static/documentation_options.js?v=9cebf295"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

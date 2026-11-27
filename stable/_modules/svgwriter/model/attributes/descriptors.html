@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.model.attributes.descriptors - svgwriter 2.6.0</title>
+        <title>svgwriter.model.attributes.descriptors - svgwriter 2.7.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">svgwriter 2.6.0</div></a>
+      <a href="../../../../index.html"><div class="brand">svgwriter 2.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.6.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.7.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.6.0</span>
+  <span class="sidebar-versions-label">2.7.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
@@ -252,7 +252,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/attributes.html">Attribute values and styles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/units.html">Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/inkscape.html">Inkscape</a></li>
@@ -422,7 +423,7 @@
         <span class="n">raw</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">raw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span><span class="p">,</span> <span class="n">Unit</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..units.lengths</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span><span class="p">,</span> <span class="n">Unit</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">length</span> <span class="o">=</span> <span class="n">Length</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
@@ -461,7 +462,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=f82422d1"></script>
+</div><script src="../../../../_static/documentation_options.js?v=9cebf295"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

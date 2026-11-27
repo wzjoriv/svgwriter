@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.model.theme.sheet - svgwriter 2.6.0</title>
+        <title>svgwriter.model.theme.sheet - svgwriter 2.7.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">svgwriter 2.6.0</div></a>
+      <a href="../../../../index.html"><div class="brand">svgwriter 2.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.6.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.7.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.6.0</span>
+  <span class="sidebar-versions-label">2.7.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
@@ -252,7 +252,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/attributes.html">Attribute values and styles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/units.html">Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/inkscape.html">Inkscape</a></li>
@@ -390,13 +391,41 @@
 <span class="sd">    &gt;&gt;&gt; len(root)</span>
 <span class="sd">    1</span>
 <span class="sd">    """</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">StyleElement</span><span class="p">,</span> <span class="n">Title</span>
-
     <span class="n">roles</span> <span class="o">=</span> <span class="n">used_roles</span><span class="p">(</span><span class="n">theme</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
     <span class="n">existing</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">get_element_by_id</span><span class="p">(</span><span class="n">STYLE_ID</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">roles</span> <span class="ow">and</span> <span class="n">existing</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">yield</span>
         <span class="k">return</span>
+    <span class="k">with</span> <span class="n">_role_attributes</span><span class="p">(</span><span class="n">theme</span><span class="p">,</span> <span class="n">roles</span><span class="p">,</span> <span class="n">root</span><span class="p">),</span> <span class="n">_sheet</span><span class="p">(</span><span class="n">theme</span><span class="p">,</span> <span class="n">roles</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">existing</span><span class="p">):</span>
+        <span class="k">yield</span></div>
+
+
+
+<span class="nd">@contextmanager</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_role_attributes</span><span class="p">(</span><span class="n">theme</span><span class="p">:</span> <span class="n">Theme</span><span class="p">,</span> <span class="n">roles</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">root</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Set role geometry (``rx``, ``ry``, ``r``) on elements that carry the role and lack it, for the block."""</span>
+    <span class="n">by_class</span> <span class="o">=</span> <span class="p">{</span><span class="n">Theme</span><span class="o">.</span><span class="n">class_name</span><span class="p">(</span><span class="n">role</span><span class="p">):</span> <span class="n">theme</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">role</span><span class="p">)</span> <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">}</span>
+    <span class="n">by_class</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">values</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">by_class</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">values</span><span class="p">}</span>
+    <span class="n">added</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">by_class</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">by_class</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">attributes</span><span class="p">:</span>
+                        <span class="n">element</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                        <span class="n">added</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">element</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">element</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">added</span><span class="p">:</span>
+            <span class="n">element</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+
+<span class="nd">@contextmanager</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_sheet</span><span class="p">(</span><span class="n">theme</span><span class="p">:</span> <span class="n">Theme</span><span class="p">,</span> <span class="n">roles</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">root</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">existing</span><span class="p">:</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Hold the role style sheet in *root* for the block."""</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..elements.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">StyleElement</span><span class="p">,</span> <span class="n">Title</span>
+
     <span class="n">css</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">css</span><span class="p">(</span><span class="n">roles</span><span class="p">)</span><span class="o">.</span><span class="n">css</span><span class="p">()</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">existing</span><span class="p">,</span> <span class="n">StyleElement</span><span class="p">):</span>
         <span class="n">saved</span> <span class="o">=</span> <span class="n">existing</span><span class="o">.</span><span class="n">css</span>
@@ -411,8 +440,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="k">yield</span>
     <span class="k">finally</span><span class="p">:</span>
-        <span class="n">root</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">sheet</span><span class="p">)</span></div>
-
+        <span class="n">root</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">sheet</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="sheet_theme">
@@ -534,7 +562,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=f82422d1"></script>
+</div><script src="../../../../_static/documentation_options.js?v=9cebf295"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

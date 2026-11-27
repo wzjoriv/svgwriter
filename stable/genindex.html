@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#"><link rel="search" title="Search" href="search.html">
         <link rel="prefetch" href="_static/logo.svg" as="image">
 
-    <link rel="shortcut icon" href="_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 --><title>Index - svgwriter 2.6.0</title>
+    <link rel="shortcut icon" href="_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 --><title>Index - svgwriter 2.7.0</title>
 <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">svgwriter 2.6.0</div></a>
+      <a href="index.html"><div class="brand">svgwriter 2.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,10 +191,10 @@
     <img class="sidebar-logo" src="_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.6.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.7.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.6.0</span>
+  <span class="sidebar-versions-label">2.7.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -251,7 +251,8 @@
 <li class="toctree-l2"><a class="reference internal" href="reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/attributes.html">Attribute values and styles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/units.html">Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/inkscape.html">Inkscape</a></li>
@@ -331,7 +332,7 @@
           <li><a href="reference/geometry.html#svgwriter.model.transform.Matrix.a">(Matrix attribute)</a>
 </li>
         </ul></li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Length.absolute">absolute (Length property)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Length.absolute">absolute (Length property)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Length.absolute">[1]</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.Accumulate">Accumulate (class in svgwriter.model.elements.animation)</a>
 </li>
@@ -350,6 +351,8 @@
         <li><a href="reference/attributes.html#svgwriter.model.attributes.Align">Align (class in svgwriter.model.attributes)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.PreserveAspectRatio.align">align (PreserveAspectRatio attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.align">align() (Transformable method)</a>
 </li>
         <li><a href="reference/layout.html#svgwriter.model.layout.Grid.align_items">align_items (Grid property)</a>
 
@@ -373,16 +376,22 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.Restart.ALWAYS">ALWAYS (Restart attribute)</a>
 </li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.anchor">anchor (Transformable property)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.model.elements.text.Character.angle">angle (Character property)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle">Angle (class in svgwriter.model.attributes)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle">Angle (class in svgwriter.model.units)</a>
+
+        <ul>
+          <li><a href="reference/units.html#svgwriter.model.units.angles.Angle">(class in svgwriter.model.units.angles)</a>
 </li>
+        </ul></li>
         <li><a href="reference/ops.html#svgwriter.ops.Corner.angle">angle (Corner attribute)</a>
 
         <ul>
           <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Guide.angle">(Guide attribute)</a>
 </li>
-          <li><a href="reference/attributes.html#svgwriter.model.attributes.Quantity.angle">(Quantity attribute)</a>, <a href="reference/attributes.html#svgwriter.model.attributes.quantity.Quantity.angle">[1]</a>
+          <li><a href="reference/units.html#svgwriter.model.units.Quantity.angle">(Quantity attribute)</a>, <a href="reference/units.html#svgwriter.model.units.quantities.Quantity.angle">[1]</a>
 </li>
           <li><a href="reference/geometry.html#svgwriter.model.transform.Rotate.angle">(Rotate attribute)</a>
 </li>
@@ -393,16 +402,12 @@
           <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Star.angle">(Star property)</a>
 </li>
         </ul></li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.angle">angle() (in module svgwriter.model.attributes.units)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.angle">angle() (in module svgwriter.model.units)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Quantity.angle_unit">angle_unit (Quantity attribute)</a>, <a href="reference/attributes.html#svgwriter.model.attributes.quantity.Quantity.angle_unit">[1]</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Quantity.angle_unit">angle_unit (Quantity attribute)</a>, <a href="reference/units.html#svgwriter.model.units.quantities.Quantity.angle_unit">[1]</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.AngleUnit">AngleUnit (class in svgwriter.model.attributes)</a>
-
-        <ul>
-          <li><a href="reference/attributes.html#svgwriter.model.attributes.units.AngleUnit">(class in svgwriter.model.attributes.units)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.AngleUnit">AngleUnit (class in svgwriter.model.units)</a>
 </li>
-        </ul></li>
         <li><a href="reference/batch.html#svgwriter.model.batch.Batch.animate">animate (Batch property)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.Animate">Animate (class in svgwriter.model.elements.animation)</a>
@@ -421,12 +426,16 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.AnimationFill">AnimationFill (class in svgwriter.model.elements.animation)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.AnimationPresets">AnimationPresets (class in svgwriter.catalog.preset)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.preset.AnimationPresets">AnimationPresets (class in svgwriter.catalog.preset)</a>
 </li>
         <li><a href="reference/cli.html#svgwriter.tools.cli.app">app (in module svgwriter.tools.cli)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.append">append() (Element method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.append">(Transformable method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/theme.html#svgwriter.model.theme.sheet.applied">applied() (in module svgwriter.model.theme.sheet)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.transform.Matrix.apply">apply() (Matrix method)</a>
@@ -435,6 +444,8 @@
           <li><a href="reference/elements.html#svgwriter.Motion.apply">(Motion method)</a>
 </li>
           <li><a href="reference/geometry.html#svgwriter.model.transform.Transform.apply">(Transform method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.apply">(Transformable method)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -445,7 +456,7 @@
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.PathBuilder.arc_to">arc_to() (PathBuilder method)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.arclength">arclength() (Angle method)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle.arclength">arclength() (Angle method)</a>, <a href="reference/units.html#svgwriter.model.units.angles.Angle.arclength">[1]</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.ArcTo">ArcTo (class in svgwriter.model.pathdata)</a>
 </li>
@@ -505,10 +516,10 @@
         </ul></li>
         <li><a href="reference/video.html#svgwriter.motion.video.Video.array_at">array_at() (Video method)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.builder.arrow">arrow() (in module svgwriter.catalog.builder)</a>
+        <li><a href="reference/presets.html#svgwriter.catalog.markers.arrow">arrow() (in module svgwriter.catalog.markers)</a>
 
         <ul>
-          <li><a href="reference/presets.html#svgwriter.catalog.markers.arrow">(in module svgwriter.catalog.markers)</a>
+          <li><a href="reference/paths.html#svgwriter.catalog.paths.arrow">(in module svgwriter.catalog.paths)</a>
 </li>
         </ul></li>
         <li><a href="reference/color.html#svgwriter.model.color.as_color">as_color() (in module svgwriter.model.color)</a>
@@ -540,6 +551,10 @@
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.Sweep.attach">attach() (Sweep method)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.Attr">Attr (class in svgwriter.model.attributes)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.attributes">attributes (Transformable attribute)</a>
+</li>
+        <li><a href="reference/theme.html#svgwriter.model.theme.Theme.attributes">attributes() (Theme method)</a>
 </li>
         <li><a href="reference/document.html#svgwriter.Document.auto_size">auto_size (Document property)</a>
 </li>
@@ -585,6 +600,8 @@
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.markers.bar">bar() (in module svgwriter.catalog.markers)</a>
 </li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.baseline_shift">baseline_shift (CharacterSelection attribute)</a>
+</li>
         <li><a href="reference/batch.html#svgwriter.model.batch.BatchMotion.batch">batch (BatchMotion attribute)</a>
 </li>
         <li><a href="reference/batch.html#svgwriter.model.batch.Batch">Batch (class in svgwriter.model.batch)</a>
@@ -611,12 +628,12 @@
           <li><a href="reference/elements.html#svgwriter.model.elements.shapes.Shape.bbox">(Shape property)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.BehaviorPresets">BehaviorPresets (class in svgwriter.catalog.preset)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.preset.BehaviorPresets">BehaviorPresets (class in svgwriter.catalog.preset)</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.filters.bevel">bevel() (in module svgwriter.catalog.filters)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/presets.html#svgwriter.catalog.gradients.blend">blend() (in module svgwriter.catalog.gradients)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.BlendMode">BlendMode (class in svgwriter.model.elements.filters)</a>
@@ -634,15 +651,35 @@
         <li><a href="reference/ops.html#svgwriter.ops.BooleanOp">BooleanOp (class in svgwriter.ops)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.bottom">bottom (BBox property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.bottom">(Transformable property)</a>
 </li>
+        </ul></li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.bottom_center">bottom_center (BBox property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.bottom_center">(Transformable property)</a>
 </li>
+        </ul></li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.bottom_left">bottom_left (BBox property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.bottom_left">(Transformable property)</a>
 </li>
+        </ul></li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.bottom_right">bottom_right (BBox property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.bottom_right">(Transformable property)</a>
 </li>
+        </ul></li>
         <li><a href="reference/ops.html#svgwriter.ops.bounds">bounds() (in module svgwriter.ops)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.bounds">(Transformable method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/video.html#svgwriter.motion.video.behaviors.breathe">breathe() (in module svgwriter.motion.video.behaviors)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.rules.RuleSet.buckets">buckets (RuleSet attribute)</a>
@@ -673,7 +710,7 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.CalcMode">CalcMode (class in svgwriter.model.elements.animation)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.builder.callout">callout() (in module svgwriter.catalog.builder)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.paths.callout">callout() (in module svgwriter.catalog.paths)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.rules.RuleSet.candidates">candidates() (RuleSet method)</a>
 </li>
@@ -758,11 +795,23 @@
         <li><a href="reference/attributes.html#svgwriter.model.attributes.Align.CENTER">CENTER (Align attribute)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.center">center (BBox property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.center">(Transformable property)</a>
 </li>
+        </ul></li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.center_left">center_left (BBox property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.center_left">(Transformable property)</a>
 </li>
+        </ul></li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.center_right">center_right (BBox property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.center_right">(Transformable property)</a>
 </li>
+        </ul></li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.CenterArc">CenterArc (class in svgwriter.model.pathdata)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.Channel">Channel (class in svgwriter.model.elements.filters)</a>
@@ -772,6 +821,10 @@
         <li><a href="reference/elements.html#svgwriter.model.elements.text.Character">Character (class in svgwriter.model.elements.text)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterRange">CharacterRange (class in svgwriter.model.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection">CharacterSelection (class in svgwriter.model.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.chars">chars (CharacterSelection property)</a>
 </li>
         <li><a href="reference/fonts.html#svgwriter.catalog.fonts.FontBuilder.cheatsheet">cheatsheet() (FontBuilder method)</a>
 </li>
@@ -803,11 +856,13 @@
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.Toggle.check">(Toggle method)</a>
 </li>
         </ul></li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.quantity.check_dimension">check_dimension() (in module svgwriter.model.attributes.quantity)</a>
+        <li><a href="reference/attributes.html#svgwriter.model.attributes.dimensions.check_dimension">check_dimension() (in module svgwriter.model.attributes.dimensions)</a>
 </li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.Checkbox">Checkbox (class in svgwriter.tools.widgets)</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.patterns.checker">checker() (in module svgwriter.catalog.patterns)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.children">children (Transformable attribute)</a>
 </li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.Swatches.chips">chips (Swatches property)</a>
 </li>
@@ -827,7 +882,7 @@
 </li>
         <li><a href="reference/batch.html#svgwriter.model.batch.circles">circles() (in module svgwriter.model.batch)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.clamp">clamp() (Angle method)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle.clamp">clamp() (Angle method)</a>, <a href="reference/units.html#svgwriter.model.units.angles.Angle.clamp">[1]</a>
 
         <ul>
           <li><a href="reference/color.html#svgwriter.model.color.clamp">(in module svgwriter.model.color)</a>
@@ -836,7 +891,11 @@
         <li><a href="reference/theme.html#svgwriter.model.theme.Theme.class_name">class_name() (Theme static method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.clear">clear() (Element method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.clear">(Transformable method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements._behavior.Convertible.clip">clip() (Convertible method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements._behavior.Convertible.clip_region">clip_region (Convertible property)</a>
@@ -857,9 +916,7 @@
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.ClosePath">ClosePath (class in svgwriter.model.pathdata)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.cm">cm (in module svgwriter.model.attributes.units)</a>
-</li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.CM">CM (Unit attribute)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Unit.CM">CM (Unit attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Unit.CM">[1]</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.ArcTo.code">code (ArcTo attribute)</a>
 
@@ -885,6 +942,8 @@
           <li><a href="reference/geometry.html#svgwriter.model.pathdata.VLineTo.code">(VLineTo attribute)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.Control.code">code() (Control method)</a>
 
         <ul>
@@ -899,8 +958,6 @@
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.Slider.code">(Slider method)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.Filter.collect">collect() (Filter method)</a>
 </li>
         <li><a href="reference/color.html#svgwriter.model.color.Color">Color (class in svgwriter.model.color)</a>
@@ -1055,7 +1112,7 @@
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.corners">corners() (in module svgwriter.ops)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.cos">cos() (Angle method)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle.cos">cos() (Angle method)</a>, <a href="reference/units.html#svgwriter.model.units.angles.Angle.cos">[1]</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.PathData.count">count() (PathData method)</a>
 </li>
@@ -1067,7 +1124,7 @@
           <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Star.create">(Star class method)</a>
 </li>
         </ul></li>
-        <li><a href="reference/builder.html#svgwriter.catalog.builder.cross">cross() (in module svgwriter.catalog.builder)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.paths.cross">cross() (in module svgwriter.catalog.paths)</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.patterns.crosshatch">crosshatch() (in module svgwriter.catalog.patterns)</a>
 </li>
@@ -1141,7 +1198,7 @@
 </li>
         <li><a href="reference/color.html#svgwriter.model.color.Color.darken">darken() (Color method)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.builder.dashed_line">dashed_line() (in module svgwriter.catalog.builder)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.paths.dashed_line">dashed_line() (in module svgwriter.catalog.paths)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.Face.data">data (Face property)</a>
 
@@ -1163,7 +1220,7 @@
 </li>
         <li><a href="reference/document.html#svgwriter.Document.define">define() (Document method)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.DefinitionPresets">DefinitionPresets (class in svgwriter.catalog.preset)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.preset.DefinitionPresets">DefinitionPresets (class in svgwriter.catalog.preset)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.structure.Defs">Defs (class in svgwriter.model.elements.structure)</a>
 </li>
@@ -1171,9 +1228,7 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.structure.Svg.defs">defs() (Svg method)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.deg">deg (in module svgwriter.model.attributes.units)</a>
-</li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.degrees">degrees (Angle property)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle.degrees">degrees (Angle property)</a>, <a href="reference/units.html#svgwriter.model.units.angles.Angle.degrees">[1]</a>
 </li>
         <li><a href="reference/color.html#svgwriter.model.color.Color.delta">delta() (Color method)</a>
 </li>
@@ -1195,19 +1250,19 @@
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.markers.diamond">diamond() (in module svgwriter.catalog.markers)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.diff">diff() (Angle method)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle.diff">diff() (Angle method)</a>, <a href="reference/units.html#svgwriter.model.units.angles.Angle.diff">[1]</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.BooleanOp.DIFFERENCE">DIFFERENCE (BooleanOp attribute)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/ops.html#svgwriter.ops.difference">difference() (in module svgwriter.ops)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.MorphologyOperator.DILATE">DILATE (MorphologyOperator attribute)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Quantity.dimension">dimension (Quantity property)</a>, <a href="reference/attributes.html#svgwriter.model.attributes.quantity.Quantity.dimension">[1]</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Quantity.dimension">dimension (Quantity property)</a>, <a href="reference/units.html#svgwriter.model.units.quantities.Quantity.dimension">[1]</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.quantity.dimension_name">dimension_name() (in module svgwriter.model.attributes.quantity)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.quantities.dimension_name">dimension_name() (in module svgwriter.model.units.quantities)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.FeDistantLight.directional">directional (FeDistantLight property)</a>
 
@@ -1220,7 +1275,11 @@
         <li><a href="reference/project.html#svgwriter.tools.project.Preset.directory">directory (Preset attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.discard">discard() (Element method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.discard">(Transformable method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.CalcMode.DISCRETE">DISCRETE (CalcMode attribute)</a>
 
         <ul>
@@ -1241,10 +1300,10 @@
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.Sweep.document">(Sweep property)</a>
 </li>
         </ul></li>
-        <li><a href="reference/builder.html#svgwriter.catalog.builder.dot">dot() (in module svgwriter.catalog.builder)</a>
+        <li><a href="reference/presets.html#svgwriter.catalog.markers.dot">dot() (in module svgwriter.catalog.markers)</a>
 
         <ul>
-          <li><a href="reference/presets.html#svgwriter.catalog.markers.dot">(in module svgwriter.catalog.markers)</a>
+          <li><a href="reference/paths.html#svgwriter.catalog.paths.dot">(in module svgwriter.catalog.paths)</a>
 </li>
         </ul></li>
         <li><a href="reference/presets.html#svgwriter.catalog.patterns.dots">dots() (in module svgwriter.catalog.patterns)</a>
@@ -1261,7 +1320,7 @@
         </ul></li>
         <li><a href="reference/ops.html#svgwriter.ops.draw_graph">draw_graph() (in module svgwriter.ops)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.builder.drawing">drawing() (in module svgwriter.catalog.builder)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.paths.drawing">drawing() (in module svgwriter.catalog.paths)</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.filters.drop_shadow">drop_shadow() (in module svgwriter.catalog.filters)</a>
 </li>
@@ -1291,7 +1350,9 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.EdgeMode">EdgeMode (class in svgwriter.model.elements.filters)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.EffectPresets">EffectPresets (class in svgwriter.catalog.preset)</a>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.effect">effect() (CharacterSelection method)</a>
+</li>
+        <li><a href="reference/paths.html#svgwriter.catalog.preset.EffectPresets">EffectPresets (class in svgwriter.catalog.preset)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element">Element (class in svgwriter.model.elements)</a>
 </li>
@@ -1303,9 +1364,7 @@
         </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements.shapes.Ellipse">Ellipse (class in svgwriter.model.elements.shapes)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.em">em (in module svgwriter.model.attributes.units)</a>
-</li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.EM">EM (Unit attribute)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Unit.EM">EM (Unit attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Unit.EM">[1]</a>
 </li>
         <li><a href="reference/document.html#svgwriter.Document.embed_fonts">embed_fonts() (Document method)</a>
 </li>
@@ -1342,16 +1401,18 @@
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.endpoint_to_center">endpoint_to_center() (in module svgwriter.model.pathdata)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.ensure_id">ensure_id() (Element method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.ensure_id">(Transformable method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/project.html#svgwriter.tools.project.ProjectConfig.entry">entry (ProjectConfig attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.MorphologyOperator.ERODE">ERODE (MorphologyOperator attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.FeFunc.evaluate">evaluate() (FeFunc method)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.ex">ex (in module svgwriter.model.attributes.units)</a>
-</li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.EX">EX (Unit attribute)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Unit.EX">EX (Unit attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Unit.EX">[1]</a>
 </li>
         <li><a href="reference/batch.html#svgwriter.model.batch.Batch.expand">expand() (Batch method)</a>
 </li>
@@ -1373,6 +1434,8 @@
 
         <ul>
           <li><a href="reference/geometry.html#svgwriter.model.pathdata.PathBuilder.extend">(PathBuilder method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.extend">(Transformable method)</a>
 </li>
         </ul></li>
         <li><a href="reference/project.html#svgwriter.tools.project.Preset.extends">extends (Preset attribute)</a>
@@ -1473,6 +1536,10 @@
 </li>
         <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.ExportHints.filename">filename (ExportHints attribute)</a>
 </li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.fill">fill (CharacterSelection attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.fill_opacity">fill_opacity (CharacterSelection attribute)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.StandardInput.FILL_PAINT">FILL_PAINT (StandardInput attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.Filter">Filter (class in svgwriter.model.elements.filters)</a>
@@ -1484,9 +1551,15 @@
         <ul>
           <li><a href="reference/presets.html#svgwriter.Registry.find">(Registry method)</a>
 </li>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.find">(Transformable method)</a>
+</li>
         </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.find_all">find_all() (Element method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.find_all">(Transformable method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/video.html#svgwriter.motion.video.find_ffmpeg">find_ffmpeg() (in module svgwriter.motion.video)</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.effects.fire">fire() (in module svgwriter.catalog.effects)</a>
@@ -1500,14 +1573,30 @@
         <li><a href="reference/elements.html#svgwriter.model.elements.PathOperand.flatten_clip">flatten_clip() (PathOperand method)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.transform.Matrix.flip_x">flip_x() (Matrix class method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.flip_x">(Transformable method)</a>
 </li>
-        <li><a href="reference/geometry.html#svgwriter.model.transform.Matrix.flip_y">flip_y() (Matrix class method)</a>
-</li>
+        </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.model.transform.Matrix.flip_y">flip_y() (Matrix class method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.flip_y">(Transformable method)</a>
+</li>
+        </ul></li>
         <li><a href="reference/elements.html#svgwriter.Motion.follow">follow() (Motion method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.text.Font">Font (class in svgwriter.model.elements.text)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.font_family">font_family (CharacterSelection attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.font_size">font_size (CharacterSelection attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.font_style">font_style (CharacterSelection attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.font_weight">font_weight (CharacterSelection attribute)</a>
 </li>
         <li><a href="reference/fonts.html#svgwriter.catalog.fonts.FontBuilder">FontBuilder (class in svgwriter.catalog.fonts)</a>
 </li>
@@ -1584,7 +1673,11 @@
 </li>
         </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.from_attributes">from_attributes() (Element class method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.from_attributes">(Transformable class method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements.shapes.Circle.from_bbox">from_bbox() (Circle class method)</a>
 
         <ul>
@@ -1625,11 +1718,7 @@
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.rules.frozen_rules">frozen_rules() (in module svgwriter.model.attributes.rules)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.ft">ft (in module svgwriter.model.attributes.units)</a>
-</li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.FuncIRI">FuncIRI (class in svgwriter.model.attributes)</a>
-</li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.furlong">furlong (in module svgwriter.model.attributes.units)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -1657,7 +1746,7 @@
           <li><a href="reference/layout.html#svgwriter.model.layout.Stack.gap">(Stack property)</a>
 </li>
         </ul></li>
-        <li><a href="reference/builder.html#svgwriter.catalog.builder.gear">gear() (in module svgwriter.catalog.builder)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.paths.gear">gear() (in module svgwriter.catalog.paths)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.shapes.Circle.geometry_attributes">geometry_attributes (Circle attribute)</a>
 
@@ -1684,11 +1773,15 @@
         <ul>
           <li><a href="reference/presets.html#svgwriter.Registry.get">(Registry method)</a>
 </li>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.get">(Transformable method)</a>
+</li>
         </ul></li>
         <li><a href="reference/document.html#svgwriter.Document.get_element_by_id">get_element_by_id() (Document method)</a>
 
         <ul>
           <li><a href="reference/elements.html#svgwriter.model.elements.Element.get_element_by_id">(Element method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.get_element_by_id">(Transformable method)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -1705,8 +1798,6 @@
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.filters.goo">goo() (in module svgwriter.catalog.filters)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.grad">grad (in module svgwriter.model.attributes.units)</a>
-</li>
         <li><a href="reference/elements.html#svgwriter.model.elements.paint.Gradient">Gradient (class in svgwriter.model.elements.paint)</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.filters.grain">grain() (in module svgwriter.catalog.filters)</a>
@@ -1717,7 +1808,7 @@
 </li>
         <li><a href="reference/layout.html#svgwriter.model.layout.Grid">Grid (class in svgwriter.model.layout)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.builder.grid">grid() (in module svgwriter.catalog.builder)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.paths.grid">grid() (in module svgwriter.catalog.paths)</a>
 
         <ul>
           <li><a href="reference/presets.html#svgwriter.catalog.patterns.grid">(in module svgwriter.catalog.patterns)</a>
@@ -1744,10 +1835,14 @@
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.has">has() (Element method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.has">(Transformable method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/presets.html#svgwriter.catalog.patterns.hatch">hatch() (in module svgwriter.catalog.patterns)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.builder.heart">heart() (in module svgwriter.catalog.builder)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.paths.heart">heart() (in module svgwriter.catalog.paths)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.height">height (BBox attribute)</a>
 
@@ -1767,10 +1862,10 @@
           <li><a href="reference/attributes.html#svgwriter.model.attributes.ViewBox.height">(ViewBox attribute)</a>
 </li>
         </ul></li>
-        <li><a href="reference/color.html#svgwriter.model.color.Color.hex">hex (Color property)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/color.html#svgwriter.model.color.Color.hex">hex (Color property)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.Motion.hide">hide() (Motion method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.text.HKern">HKern (class in svgwriter.model.elements.text)</a>
@@ -1814,7 +1909,11 @@
         <li><a href="reference/fonts.html#svgwriter.catalog.fonts.FontBuilder.icons">icons (FontBuilder property)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.id">id (Element property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.id">(Transformable property)</a>
 </li>
+        </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.TransferType.IDENTITY">IDENTITY (TransferType attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.structure.Image">Image (class in svgwriter.model.elements.structure)</a>
@@ -1822,14 +1921,12 @@
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.CompositeOperator.IN">IN (CompositeOperator attribute)</a>
 
         <ul>
-          <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.IN">(Unit attribute)</a>
+          <li><a href="reference/units.html#svgwriter.model.units.Unit.IN">(Unit attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Unit.IN">[1]</a>
 </li>
         </ul></li>
         <li><a href="reference/color.html#svgwriter.model.color.Color.in_gamut">in_gamut (Color property)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.inch">inch (in module svgwriter.model.attributes.units)</a>
-</li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.INCH">INCH (Unit attribute)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Unit.INCH">INCH (Unit attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Unit.INCH">[1]</a>
 </li>
         <li><a href="reference/io.html#svgwriter.formats.io.SerializeOptions.indent">indent (SerializeOptions attribute)</a>
 </li>
@@ -1864,13 +1961,17 @@
         <li><a href="reference/presets.html#svgwriter.catalog.filters.inner_shadow">inner_shadow() (in module svgwriter.catalog.filters)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.insert">insert() (Element method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.insert">(Transformable method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/ops.html#svgwriter.ops.Typeface.installed">installed (Typeface property)</a>
+</li>
+        <li><a href="reference/batch.html#svgwriter.model.batch.instances">instances() (in module svgwriter.model.batch)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="reference/batch.html#svgwriter.model.batch.instances">instances() (in module svgwriter.model.batch)</a>
-</li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.RangeSlider.integer">integer (RangeSlider attribute)</a>
 </li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.interact">interact() (in module svgwriter.tools.widgets)</a>
@@ -1900,6 +2001,8 @@
         <ul>
           <li><a href="reference/color.html#svgwriter.model.color.PaintRef.iri">(PaintRef attribute)</a>
 </li>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.iri">(Transformable property)</a>
+</li>
         </ul></li>
         <li><a href="reference/presets.html#svgwriter.catalog.gradients.iridescent">iridescent() (in module svgwriter.catalog.gradients)</a>
 </li>
@@ -1922,7 +2025,11 @@
         <li><a href="reference/batch.html#svgwriter.model.batch.Batch.items">items (Batch property)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.iter">iter() (Element method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.iter">(Transformable method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/io.html#svgwriter.formats.io.iter_chunks">iter_chunks() (in module svgwriter.formats.io)</a>
 
         <ul>
@@ -1979,8 +2086,6 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Arc.kind">kind (Arc property)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.km">km (in module svgwriter.model.attributes.units)</a>
-</li>
     </ul></td>
   </tr></table>
 </section>
@@ -1995,6 +2100,8 @@
           <li><a href="reference/elements.html#svgwriter.model.elements.Element.label">(Element property)</a>
 </li>
           <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Guide.label">(Guide attribute)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.label">(Transformable property)</a>
 </li>
         </ul></li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.Dropdown.labels">labels (Dropdown property)</a>
@@ -2020,30 +2127,36 @@
         <li><a href="reference/project.html#svgwriter.tools.project.PreviewConfig.layout">layout (PreviewConfig attribute)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.left">left (BBox property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.left">(Transformable property)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Length">Length (class in svgwriter.model.attributes)</a>
+        </ul></li>
+        <li><a href="reference/units.html#svgwriter.model.units.Length">Length (class in svgwriter.model.units)</a>
+
+        <ul>
+          <li><a href="reference/units.html#svgwriter.model.units.lengths.Length">(class in svgwriter.model.units.lengths)</a>
 </li>
+        </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements.shapes.Line.length">length (Line property)</a>
 
         <ul>
-          <li><a href="reference/attributes.html#svgwriter.model.attributes.Quantity.length">(Quantity attribute)</a>, <a href="reference/attributes.html#svgwriter.model.attributes.quantity.Quantity.length">[1]</a>
+          <li><a href="reference/units.html#svgwriter.model.units.Quantity.length">(Quantity attribute)</a>, <a href="reference/units.html#svgwriter.model.units.quantities.Quantity.length">[1]</a>
 </li>
         </ul></li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.length">length() (in module svgwriter.model.attributes.units)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.length">length() (in module svgwriter.model.units)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Quantity.length_unit">length_unit (Quantity attribute)</a>, <a href="reference/attributes.html#svgwriter.model.attributes.quantity.Quantity.length_unit">[1]</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Quantity.length_unit">length_unit (Quantity attribute)</a>, <a href="reference/units.html#svgwriter.model.units.quantities.Quantity.length_unit">[1]</a>
 </li>
         <li><a href="reference/document.html#svgwriter.PageSize.lengths">lengths (PageSize property)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.LengthUnit">LengthUnit (class in svgwriter.model.attributes)</a>
-
-        <ul>
-          <li><a href="reference/attributes.html#svgwriter.model.attributes.units.LengthUnit">(class in svgwriter.model.attributes.units)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.LengthUnit">LengthUnit (class in svgwriter.model.units)</a>
 </li>
-        </ul></li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.lerp">lerp() (Angle method)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle.lerp">lerp() (Angle method)</a>, <a href="reference/units.html#svgwriter.model.units.angles.Angle.lerp">[1]</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.PathCommand.letter">letter (PathCommand property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.letter_spacing">letter_spacing (CharacterSelection attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.FeDistantLight.light_vector">light_vector() (FeDistantLight method)</a>
 
@@ -2073,10 +2186,10 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.FeFunc.linear">linear() (FeFunc class method)</a>
 </li>
-        <li><a href="reference/elements.html#svgwriter.model.elements.paint.LinearGradient">LinearGradient (class in svgwriter.model.elements.paint)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/elements.html#svgwriter.model.elements.paint.LinearGradient">LinearGradient (class in svgwriter.model.elements.paint)</a>
+</li>
         <li><a href="reference/batch.html#svgwriter.model.batch.lines">lines() (in module svgwriter.model.batch)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.LineTo">LineTo (class in svgwriter.model.pathdata)</a>
@@ -2156,6 +2269,8 @@
         <ul>
           <li><a href="reference/theme.html#svgwriter.model.theme.Fonts.lookup">(Fonts method)</a>
 </li>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.lookup">(Transformable class method)</a>
+</li>
         </ul></li>
         <li><a href="reference/color.html#svgwriter.model.color.Color.luminance">luminance (Color property)</a>
 </li>
@@ -2169,14 +2284,16 @@
   <h2>M</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.m">m (in module svgwriter.model.attributes.units)</a>
-</li>
         <li><a href="reference/layout.html#svgwriter.model.layout.Frame.made">made (Frame attribute)</a>
 </li>
         <li><a href="reference/cli.html#svgwriter.tools.cli.main">main() (in module svgwriter.tools.cli)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.many">many() (Element class method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.many">(Transformable class method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements.paint.Marker">Marker (class in svgwriter.model.elements.paint)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.paint.Mask">Mask (class in svgwriter.model.elements.paint)</a>
@@ -2229,10 +2346,6 @@
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.Face.metrics">metrics (Face property)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.mi">mi (in module svgwriter.model.attributes.units)</a>
-</li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.mil">mil (in module svgwriter.model.attributes.units)</a>
-</li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.IntSlider.min">min (IntSlider attribute)</a>
 
         <ul>
@@ -2251,16 +2364,12 @@
 </li>
         <li><a href="reference/color.html#svgwriter.model.color.Color.mix">mix() (Color method)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.mm">mm (in module svgwriter.model.attributes.units)</a>
-</li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.MM">MM (Unit attribute)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Unit.MM">MM (Unit attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Unit.MM">[1]</a>
 </li>
         <li>
     module
 
         <ul>
-          <li><a href="reference/builder.html#module-svgwriter.catalog.builder">svgwriter.catalog.builder</a>
-</li>
           <li><a href="reference/presets.html#module-svgwriter.catalog.effects">svgwriter.catalog.effects</a>
 </li>
           <li><a href="reference/presets.html#module-svgwriter.catalog.filters">svgwriter.catalog.filters</a>
@@ -2271,9 +2380,11 @@
 </li>
           <li><a href="reference/presets.html#module-svgwriter.catalog.markers">svgwriter.catalog.markers</a>
 </li>
+          <li><a href="reference/paths.html#module-svgwriter.catalog.paths">svgwriter.catalog.paths</a>
+</li>
           <li><a href="reference/presets.html#module-svgwriter.catalog.patterns">svgwriter.catalog.patterns</a>
 </li>
-          <li><a href="reference/builder.html#module-svgwriter.catalog.preset">svgwriter.catalog.preset</a>
+          <li><a href="reference/paths.html#module-svgwriter.catalog.preset">svgwriter.catalog.preset</a>
 </li>
           <li><a href="reference/errors.html#module-svgwriter.errors">svgwriter.errors</a>
 </li>
@@ -2287,11 +2398,9 @@
 </li>
           <li><a href="reference/attributes.html#module-svgwriter.model.attributes.cascade">svgwriter.model.attributes.cascade</a>
 </li>
-          <li><a href="reference/attributes.html#module-svgwriter.model.attributes.quantity">svgwriter.model.attributes.quantity</a>
+          <li><a href="reference/attributes.html#module-svgwriter.model.attributes.dimensions">svgwriter.model.attributes.dimensions</a>
 </li>
           <li><a href="reference/attributes.html#module-svgwriter.model.attributes.rules">svgwriter.model.attributes.rules</a>
-</li>
-          <li><a href="reference/attributes.html#module-svgwriter.model.attributes.units">svgwriter.model.attributes.units</a>
 </li>
           <li><a href="reference/batch.html#module-svgwriter.model.batch">svgwriter.model.batch</a>
 </li>
@@ -2318,6 +2427,14 @@
           <li><a href="reference/theme.html#module-svgwriter.model.theme.sheet">svgwriter.model.theme.sheet</a>
 </li>
           <li><a href="reference/geometry.html#module-svgwriter.model.transform">svgwriter.model.transform</a>
+</li>
+          <li><a href="reference/units.html#module-svgwriter.model.units">svgwriter.model.units</a>
+</li>
+          <li><a href="reference/units.html#module-svgwriter.model.units.angles">svgwriter.model.units.angles</a>
+</li>
+          <li><a href="reference/units.html#module-svgwriter.model.units.lengths">svgwriter.model.units.lengths</a>
+</li>
+          <li><a href="reference/units.html#module-svgwriter.model.units.quantities">svgwriter.model.units.quantities</a>
 </li>
           <li><a href="reference/video.html#module-svgwriter.motion.video">svgwriter.motion.video</a>
 </li>
@@ -2375,7 +2492,7 @@
         <li><a href="reference/presets.html#svgwriter.Registry.name_of">name_of() (Registry method)</a>
 
         <ul>
-          <li><a href="reference/builder.html#svgwriter.catalog.preset.SizePresets.name_of">(SizePresets method)</a>
+          <li><a href="reference/paths.html#svgwriter.catalog.preset.SizePresets.name_of">(SizePresets method)</a>
 </li>
         </ul></li>
         <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.namedview">namedview() (in module svgwriter.formats.inkscape)</a>
@@ -2398,8 +2515,6 @@
 </li>
         <li><a href="reference/io.html#svgwriter.formats.io.SerializeOptions.newline">newline (SerializeOptions attribute)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.nmi">nmi (in module svgwriter.model.attributes.units)</a>
-</li>
         <li><a href="reference/elements.html#svgwriter.model.elements.shapes.Path.nodes">nodes (Path property)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.PathData.nodes">nodes() (PathData method)</a>
@@ -2417,7 +2532,7 @@
 </li>
           <li><a href="reference/elements.html#svgwriter.model.elements.text.TextDecoration.NONE">(TextDecoration attribute)</a>
 </li>
-          <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.NONE">(Unit attribute)</a>
+          <li><a href="reference/units.html#svgwriter.model.units.Unit.NONE">(Unit attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Unit.NONE">[1]</a>
 </li>
         </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.BlendMode.NORMAL">NORMAL (BlendMode attribute)</a>
@@ -2436,17 +2551,21 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/presets.html#svgwriter.catalog.gradients.ocean">ocean() (in module svgwriter.catalog.gradients)</a>
 </li>
-        <li><a href="reference/ops.html#svgwriter.ops.Face.of">of() (Face class method)</a>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.of">of() (CharacterSelection class method)</a>
 
         <ul>
+          <li><a href="reference/ops.html#svgwriter.ops.Face.of">(Face class method)</a>
+</li>
           <li><a href="reference/document.html#svgwriter.PageSize.of">(PageSize class method)</a>
 </li>
-          <li><a href="reference/attributes.html#svgwriter.model.attributes.Quantity.of">(Quantity class method)</a>, <a href="reference/attributes.html#svgwriter.model.attributes.quantity.Quantity.of">[1]</a>
+          <li><a href="reference/units.html#svgwriter.model.units.Quantity.of">(Quantity class method)</a>, <a href="reference/units.html#svgwriter.model.units.quantities.Quantity.of">[1]</a>
 </li>
           <li><a href="reference/theme.html#svgwriter.model.theme.Theme.of">(Theme static method)</a>
 </li>
         </ul></li>
         <li><a href="reference/errors.html#svgwriter.errors.OfficeExtraError">OfficeExtraError</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.opacity">opacity (CharacterSelection attribute)</a>
 </li>
         <li><a href="reference/color.html#svgwriter.model.color.Color.opaque">opaque (Color property)</a>
 </li>
@@ -2462,6 +2581,8 @@
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.markers.open_arrow">open_arrow() (in module svgwriter.catalog.markers)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.Dropdown.options">options (Dropdown attribute)</a>
 
         <ul>
@@ -2474,18 +2595,16 @@
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.Swatches.options">(Swatches attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.rules.Rule.order">order (Rule attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.CompositeOperator.OUT">OUT (CompositeOperator attribute)</a>
 </li>
         <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Star.outer">outer (Star property)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.builder.outline">outline() (in module svgwriter.catalog.builder)</a>
+        <li><a href="reference/presets.html#svgwriter.catalog.filters.outline">outline() (in module svgwriter.catalog.filters)</a>
 
         <ul>
-          <li><a href="reference/presets.html#svgwriter.catalog.filters.outline">(in module svgwriter.catalog.filters)</a>
+          <li><a href="reference/paths.html#svgwriter.catalog.paths.outline">(in module svgwriter.catalog.paths)</a>
 </li>
           <li><a href="reference/elements.html#svgwriter.model.elements.PathOperand.outline">(PathOperand method)</a>
 </li>
@@ -2532,12 +2651,14 @@
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.Recorder.panel">(Recorder method)</a>
 </li>
         </ul></li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.parse">parse() (Angle class method)</a>
+        <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.parent">parent (Transformable attribute)</a>
+</li>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle.parse">parse() (Angle class method)</a>, <a href="reference/units.html#svgwriter.model.units.angles.Angle.parse">[1]</a>
 
         <ul>
           <li><a href="reference/color.html#svgwriter.model.color.Color.parse">(Color class method)</a>
 </li>
-          <li><a href="reference/attributes.html#svgwriter.model.attributes.Length.parse">(Length class method)</a>
+          <li><a href="reference/units.html#svgwriter.model.units.Length.parse">(Length class method)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Length.parse">[1]</a>
 </li>
           <li><a href="reference/attributes.html#svgwriter.model.attributes.PreserveAspectRatio.parse">(PreserveAspectRatio class method)</a>
 </li>
@@ -2576,26 +2697,24 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.paint.Pattern">Pattern (class in svgwriter.model.elements.paint)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.pc">pc (in module svgwriter.model.attributes.units)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Unit.PC">PC (Unit attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Unit.PC">[1]</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.PC">PC (Unit attribute)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Unit.PERCENT">PERCENT (Unit attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Unit.PERCENT">[1]</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.percent">percent (in module svgwriter.model.attributes.units)</a>
-</li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.PERCENT">PERCENT (Unit attribute)</a>
-</li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.PIXEL">PIXEL (Unit attribute)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Unit.PIXEL">PIXEL (Unit attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Unit.PIXEL">[1]</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.structure.Pixels">Pixels (class in svgwriter.model.elements.structure)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.structure.Image.pixels">pixels (Image property)</a>
 </li>
-        <li><a href="reference/video.html#svgwriter.motion.video.Frame.png">png (Frame attribute)</a>
+        <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.place">place() (Transformable method)</a>
 </li>
-        <li><a href="reference/geometry.html#svgwriter.model.transform.Point">Point (class in svgwriter.model.transform)</a>
+        <li><a href="reference/video.html#svgwriter.motion.video.Frame.png">png (Frame attribute)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/geometry.html#svgwriter.model.transform.Point">Point (class in svgwriter.model.transform)</a>
+</li>
         <li><a href="reference/ops.html#svgwriter.ops.Corner.point">point (Corner attribute)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.point">point() (BBox method)</a>
@@ -2625,19 +2744,23 @@
         <li><a href="reference/document.html#svgwriter.PageSize.portrait">portrait (PageSize property)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.text.Character.position">position (Character property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.position">(Transformable property)</a>
 </li>
+        </ul></li>
         <li><a href="reference/color.html#svgwriter.model.color.Color.posterize">posterize() (Color method)</a>
 </li>
         <li><a href="reference/io.html#svgwriter.formats.io.SerializeOptions.precision">precision (SerializeOptions attribute)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.AnimationPresets.prepare">prepare() (AnimationPresets method)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.preset.AnimationPresets.prepare">prepare() (AnimationPresets method)</a>
 
         <ul>
-          <li><a href="reference/builder.html#svgwriter.catalog.preset.BehaviorPresets.prepare">(BehaviorPresets method)</a>
+          <li><a href="reference/paths.html#svgwriter.catalog.preset.BehaviorPresets.prepare">(BehaviorPresets method)</a>
 </li>
-          <li><a href="reference/builder.html#svgwriter.catalog.preset.DefinitionPresets.prepare">(DefinitionPresets method)</a>
+          <li><a href="reference/paths.html#svgwriter.catalog.preset.DefinitionPresets.prepare">(DefinitionPresets method)</a>
 </li>
-          <li><a href="reference/builder.html#svgwriter.catalog.preset.EffectPresets.prepare">(EffectPresets method)</a>
+          <li><a href="reference/paths.html#svgwriter.catalog.preset.EffectPresets.prepare">(EffectPresets method)</a>
 </li>
           <li><a href="reference/project.html#svgwriter.tools.project.ProjectPresets.prepare">(ProjectPresets method)</a>
 </li>
@@ -2672,13 +2795,9 @@
 </li>
         <li><a href="reference/project.html#svgwriter.tools.project.ProjectPresets">ProjectPresets (class in svgwriter.tools.project)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.pt">pt (in module svgwriter.model.attributes.units)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Unit.PT">PT (Unit attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Unit.PT">[1]</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.PT">PT (Unit attribute)</a>
-</li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.px">px (in module svgwriter.model.attributes.units)</a>
-</li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.PX">PX (Unit attribute)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Unit.PX">PX (Unit attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Unit.PX">[1]</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.py_name">py_name() (in module svgwriter.model.attributes)</a>
 </li>
@@ -2690,9 +2809,7 @@
   <h2>Q</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.q">q (in module svgwriter.model.attributes.units)</a>
-</li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.Q">Q (Unit attribute)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Unit.Q">Q (Unit attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Unit.Q">[1]</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.PathBuilder.quad_to">quad_to() (PathBuilder method)</a>
 </li>
@@ -2700,10 +2817,10 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.QuadTo">QuadTo (class in svgwriter.model.pathdata)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Quantity">Quantity (class in svgwriter.model.attributes)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Quantity">Quantity (class in svgwriter.model.units)</a>
 
         <ul>
-          <li><a href="reference/attributes.html#svgwriter.model.attributes.quantity.Quantity">(class in svgwriter.model.attributes.quantity)</a>
+          <li><a href="reference/units.html#svgwriter.model.units.quantities.Quantity">(class in svgwriter.model.units.quantities)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -2722,11 +2839,11 @@
           <li><a href="reference/color.html#svgwriter.model.color.Color.r">(Color attribute)</a>
 </li>
         </ul></li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.rad">rad (in module svgwriter.model.attributes.units)</a>
-</li>
         <li><a href="reference/elements.html#svgwriter.model.elements.paint.RadialGradient">RadialGradient (class in svgwriter.model.elements.paint)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.radians">radians (Angle property)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle.radians">radians (Angle property)</a>, <a href="reference/units.html#svgwriter.model.units.angles.Angle.radians">[1]</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.ranges">ranges (CharacterSelection attribute)</a>
 </li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.RangeSlider">RangeSlider (class in svgwriter.tools.widgets)</a>
 </li>
@@ -2758,18 +2875,18 @@
           <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Star.redraw">(Star method)</a>
 </li>
         </ul></li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.AnimationPresets.register">register() (AnimationPresets method)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.preset.AnimationPresets.register">register() (AnimationPresets method)</a>
 
         <ul>
-          <li><a href="reference/builder.html#svgwriter.catalog.preset.BehaviorPresets.register">(BehaviorPresets method)</a>
+          <li><a href="reference/paths.html#svgwriter.catalog.preset.BehaviorPresets.register">(BehaviorPresets method)</a>
 </li>
-          <li><a href="reference/builder.html#svgwriter.catalog.preset.DefinitionPresets.register">(DefinitionPresets method)</a>
+          <li><a href="reference/paths.html#svgwriter.catalog.preset.DefinitionPresets.register">(DefinitionPresets method)</a>
 </li>
-          <li><a href="reference/builder.html#svgwriter.catalog.preset.EffectPresets.register">(EffectPresets method)</a>
+          <li><a href="reference/paths.html#svgwriter.catalog.preset.EffectPresets.register">(EffectPresets method)</a>
 </li>
           <li><a href="reference/presets.html#svgwriter.Registry.register">(Registry method)</a>
 </li>
-          <li><a href="reference/builder.html#svgwriter.catalog.preset.ShapePresets.register">(ShapePresets method)</a>
+          <li><a href="reference/paths.html#svgwriter.catalog.preset.ShapePresets.register">(ShapePresets method)</a>
 </li>
           <li><a href="reference/ops.html#svgwriter.ops.Typeface.register">(Typeface method)</a>
 </li>
@@ -2779,12 +2896,16 @@
         <li><a href="reference/ops.html#svgwriter.ops.register_interpolator">register_interpolator() (in module svgwriter.ops)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.registered">registered() (Element class method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.registered">(Transformable class method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/presets.html#svgwriter.Registry">Registry (class in svgwriter)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.shapes.Polyline.regular">regular() (Polyline class method)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.builder.regular_polygon">regular_polygon() (in module svgwriter.catalog.builder)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.paths.regular_polygon">regular_polygon() (in module svgwriter.catalog.paths)</a>
 
         <ul>
           <li><a href="reference/geometry.html#svgwriter.model.pathdata.PathBuilder.regular_polygon">(PathBuilder method)</a>
@@ -2819,7 +2940,11 @@
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.AnimationFill.REMOVE">REMOVE (AnimationFill attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.remove">remove() (Element method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.remove">(Transformable method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/video.html#svgwriter.motion.video.Scene.render">render() (Scene method)</a>
 
         <ul>
@@ -2836,14 +2961,14 @@
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.render_frame">render_frame() (in module svgwriter.ops)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/document.html#svgwriter.Document.render_png">render_png() (Document method)</a>
 
         <ul>
           <li><a href="reference/ops.html#svgwriter.ops.render_png">(in module svgwriter.ops)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/ops.html#svgwriter.ops.render_svg">render_svg() (in module svgwriter.ops)</a>
 </li>
         <li><a href="reference/video.html#svgwriter.motion.video.Scene.renderer">renderer (Scene attribute)</a>
@@ -2862,6 +2987,8 @@
           <li><a href="reference/theme.html#svgwriter.model.theme.Theme.replace">(Theme method)</a>
 </li>
         </ul></li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.reset">reset() (Transformable method)</a>
+</li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.resolve_input">resolve_input() (in module svgwriter.model.elements.filters)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.resolve_operator">resolve_operator() (in module svgwriter.ops)</a>
@@ -2891,7 +3018,11 @@
         <li><a href="reference/video.html#svgwriter.motion.video.RGBAArray">RGBAArray (class in svgwriter.motion.video)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.right">right (BBox property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.right">(Transformable property)</a>
 </li>
+        </ul></li>
         <li><a href="reference/theme.html#svgwriter.model.theme.sheet.role_rules">role_rules() (in module svgwriter.model.theme.sheet)</a>
 </li>
         <li><a href="reference/theme.html#svgwriter.model.theme.Theme.roles">roles (Theme property)</a>
@@ -2905,7 +3036,11 @@
 </li>
         </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.root">root() (Element method)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.root">(Transformable method)</a>
 </li>
+        </ul></li>
         <li><a href="reference/geometry.html#svgwriter.model.transform.Rotate">Rotate (class in svgwriter.model.transform)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.TransformType.ROTATE">ROTATE (TransformType attribute)</a>
@@ -2914,6 +3049,8 @@
 
         <ul>
           <li><a href="reference/geometry.html#svgwriter.model.transform.Transform.rotate">(Transform method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.rotate">(Transformable method)</a>
 </li>
         </ul></li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.ArcTo.rotation">rotation (ArcTo attribute)</a>
@@ -2995,6 +3132,8 @@
 </li>
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.Sweep.save">(Sweep method)</a>
 </li>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.save">(Transformable method)</a>
+</li>
         </ul></li>
         <li><a href="reference/document.html#svgwriter.Document.save_async">save_async() (Document method)</a>
 </li>
@@ -3010,6 +3149,8 @@
           <li><a href="reference/geometry.html#svgwriter.model.transform.Matrix.scale">(Matrix class method)</a>
 </li>
           <li><a href="reference/geometry.html#svgwriter.model.transform.Transform.scale">(Transform method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.scale">(Transformable method)</a>
 </li>
         </ul></li>
         <li><a href="reference/video.html#svgwriter.motion.video.Scene">Scene (class in svgwriter.motion.video)</a>
@@ -3042,6 +3183,8 @@
           <li><a href="reference/elements.html#svgwriter.model.elements.Element.set">(Element method)</a>
 </li>
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.Recorder.set">(Recorder method)</a>
+</li>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.set">(Transformable method)</a>
 </li>
         </ul></li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.rules.set_class_rules">set_class_rules() (in module svgwriter.model.attributes.rules)</a>
@@ -3076,7 +3219,7 @@
           <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Star.shape_type">(Star attribute)</a>
 </li>
         </ul></li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.ShapePresets">ShapePresets (class in svgwriter.catalog.preset)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.preset.ShapePresets">ShapePresets (class in svgwriter.catalog.preset)</a>
 </li>
         <li><a href="reference/theme.html#svgwriter.model.theme.sheet.sheet_theme">sheet_theme() (in module svgwriter.model.theme.sheet)</a>
 </li>
@@ -3097,10 +3240,10 @@
         <li><a href="reference/ops.html#svgwriter.ops.simplify">simplify() (in module svgwriter.ops)</a>
 
         <ul>
-          <li><a href="reference/attributes.html#svgwriter.model.attributes.Quantity.simplify">(Quantity method)</a>, <a href="reference/attributes.html#svgwriter.model.attributes.quantity.Quantity.simplify">[1]</a>
+          <li><a href="reference/units.html#svgwriter.model.units.Quantity.simplify">(Quantity method)</a>, <a href="reference/units.html#svgwriter.model.units.quantities.Quantity.simplify">[1]</a>
 </li>
         </ul></li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.sin">sin() (Angle method)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle.sin">sin() (Angle method)</a>, <a href="reference/units.html#svgwriter.model.units.angles.Angle.sin">[1]</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.SingleInput">SingleInput (class in svgwriter.model.elements.filters)</a>
 </li>
@@ -3114,11 +3257,13 @@
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.Sweep.size">(Sweep attribute)</a>
 </li>
         </ul></li>
-        <li><a href="reference/builder.html#svgwriter.catalog.preset.SizePresets">SizePresets (class in svgwriter.catalog.preset)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.preset.SizePresets">SizePresets (class in svgwriter.catalog.preset)</a>
 </li>
         <li><a href="reference/theme.html#svgwriter.model.theme.Fonts.sizes">sizes (Fonts attribute)</a>
 </li>
         <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Star.skew">skew (Star property)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.skew">skew() (Transformable method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.TransformType.SKEW_X">SKEW_X (TransformType attribute)</a>
 </li>
@@ -3184,7 +3329,7 @@
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.cascade.specified">specified() (in module svgwriter.model.attributes.cascade)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.builder.spiral">spiral() (in module svgwriter.catalog.builder)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.paths.spiral">spiral() (in module svgwriter.catalog.paths)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.animation.CalcMode.SPLINE">SPLINE (CalcMode attribute)</a>
 </li>
@@ -3198,7 +3343,7 @@
 </li>
         <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Star">Star (class in svgwriter.formats.inkscape)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.builder.star">star() (in module svgwriter.catalog.builder)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.paths.star">star() (in module svgwriter.catalog.paths)</a>
 </li>
         <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.Arc.start">start (Arc property)</a>
 
@@ -3226,13 +3371,19 @@
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.Face.stretch">stretch (Face attribute)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/presets.html#svgwriter.catalog.patterns.stripes">stripes() (in module svgwriter.catalog.patterns)</a>
 </li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.stroke">stroke (CharacterSelection attribute)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.stroke_opacity">stroke_opacity (CharacterSelection attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.StandardInput.STROKE_PAINT">STROKE_PAINT (StandardInput attribute)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.stroke_to_path">stroke_to_path() (in module svgwriter.ops)</a>
+</li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.stroke_width">stroke_width (CharacterSelection attribute)</a>
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.Style">Style (class in svgwriter.model.attributes)</a>
 </li>
@@ -3270,7 +3421,7 @@
 </li>
         <li><a href="reference/attributes.html#svgwriter.model.attributes.svg_name">svg_name() (in module svgwriter.model.attributes)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.svg_value">svg_value() (Angle method)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle.svg_value">svg_value() (Angle method)</a>, <a href="reference/units.html#svgwriter.model.units.angles.Angle.svg_value">[1]</a>
 
         <ul>
           <li><a href="reference/color.html#svgwriter.model.color.Color.svg_value">(Color method)</a>
@@ -3279,7 +3430,7 @@
 </li>
           <li><a href="reference/attributes.html#svgwriter.model.attributes.IRI.svg_value">(IRI method)</a>
 </li>
-          <li><a href="reference/attributes.html#svgwriter.model.attributes.Length.svg_value">(Length method)</a>
+          <li><a href="reference/units.html#svgwriter.model.units.Length.svg_value">(Length method)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Length.svg_value">[1]</a>
 </li>
           <li><a href="reference/geometry.html#svgwriter.model.transform.Matrix.svg_value">(Matrix method)</a>
 </li>
@@ -3310,13 +3461,6 @@
         </ul></li>
         <li><a href="reference/errors.html#svgwriter.errors.SVGParseError">SVGParseError</a>
 </li>
-        <li>
-    svgwriter.catalog.builder
-
-        <ul>
-          <li><a href="reference/builder.html#module-svgwriter.catalog.builder">module</a>
-</li>
-        </ul></li>
         <li>
     svgwriter.catalog.effects
 
@@ -3353,6 +3497,13 @@
 </li>
         </ul></li>
         <li>
+    svgwriter.catalog.paths
+
+        <ul>
+          <li><a href="reference/paths.html#module-svgwriter.catalog.paths">module</a>
+</li>
+        </ul></li>
+        <li>
     svgwriter.catalog.patterns
 
         <ul>
@@ -3363,7 +3514,7 @@
     svgwriter.catalog.preset
 
         <ul>
-          <li><a href="reference/builder.html#module-svgwriter.catalog.preset">module</a>
+          <li><a href="reference/paths.html#module-svgwriter.catalog.preset">module</a>
 </li>
         </ul></li>
         <li>
@@ -3409,10 +3560,10 @@
 </li>
         </ul></li>
         <li>
-    svgwriter.model.attributes.quantity
+    svgwriter.model.attributes.dimensions
 
         <ul>
-          <li><a href="reference/attributes.html#module-svgwriter.model.attributes.quantity">module</a>
+          <li><a href="reference/attributes.html#module-svgwriter.model.attributes.dimensions">module</a>
 </li>
         </ul></li>
         <li>
@@ -3420,13 +3571,6 @@
 
         <ul>
           <li><a href="reference/attributes.html#module-svgwriter.model.attributes.rules">module</a>
-</li>
-        </ul></li>
-        <li>
-    svgwriter.model.attributes.units
-
-        <ul>
-          <li><a href="reference/attributes.html#module-svgwriter.model.attributes.units">module</a>
 </li>
         </ul></li>
         <li>
@@ -3518,6 +3662,34 @@
 
         <ul>
           <li><a href="reference/geometry.html#module-svgwriter.model.transform">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.model.units
+
+        <ul>
+          <li><a href="reference/units.html#module-svgwriter.model.units">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.model.units.angles
+
+        <ul>
+          <li><a href="reference/units.html#module-svgwriter.model.units.angles">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.model.units.lengths
+
+        <ul>
+          <li><a href="reference/units.html#module-svgwriter.model.units.lengths">module</a>
+</li>
+        </ul></li>
+        <li>
+    svgwriter.model.units.quantities
+
+        <ul>
+          <li><a href="reference/units.html#module-svgwriter.model.units.quantities">module</a>
 </li>
         </ul></li>
         <li>
@@ -3738,7 +3910,7 @@
           <li><a href="reference/elements.html#svgwriter.model.elements.text.VKern.tag">(VKern attribute)</a>
 </li>
         </ul></li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.tan">tan() (Angle method)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle.tan">tan() (Angle method)</a>, <a href="reference/units.html#svgwriter.model.units.angles.Angle.tan">[1]</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.tangent_at_length">tangent_at_length() (in module svgwriter.ops)</a>
 </li>
@@ -3777,6 +3949,12 @@
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.text_content">text_content (Element property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.text_content">(Transformable property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/elements.html#svgwriter.model.elements.text.CharacterSelection.text_decoration">text_decoration (CharacterSelection attribute)</a>
 </li>
         <li><a href="reference/ops.html#svgwriter.ops.text_outline">text_outline() (in module svgwriter.ops)</a>
 </li>
@@ -3814,10 +3992,10 @@
 </li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.Control.titled">titled() (Control method)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.to">to() (Angle method)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle.to">to() (Angle method)</a>, <a href="reference/units.html#svgwriter.model.units.angles.Angle.to">[1]</a>
 
         <ul>
-          <li><a href="reference/attributes.html#svgwriter.model.attributes.Length.to">(Length method)</a>
+          <li><a href="reference/units.html#svgwriter.model.units.Length.to">(Length method)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Length.to">[1]</a>
 </li>
         </ul></li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.PathCommand.to_absolute">to_absolute() (PathCommand method)</a>
@@ -3873,23 +4051,41 @@
 </li>
           <li><a href="reference/io.html#svgwriter.formats.io.to_string">(in module svgwriter.formats.io)</a>
 </li>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.to_string">(Transformable method)</a>
+</li>
           <li><a href="reference/io.html#svgwriter.formats.io.Writer.to_string">(Writer method)</a>
 </li>
         </ul></li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Length.to_user_units">to_user_units() (Length method)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Length.to_user_units">to_user_units() (Length method)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Length.to_user_units">[1]</a>
 </li>
         <li><a href="reference/video.html#svgwriter.motion.video.RGBAArray.tobytes">tobytes() (RGBAArray method)</a>
 </li>
         <li><a href="reference/widgets.html#svgwriter.tools.widgets.Toggle">Toggle (class in svgwriter.tools.widgets)</a>
 </li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.top">top (BBox property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.top">(Transformable property)</a>
 </li>
+        </ul></li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.top_center">top_center (BBox property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.top_center">(Transformable property)</a>
 </li>
+        </ul></li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.top_left">top_left (BBox property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.top_left">(Transformable property)</a>
 </li>
+        </ul></li>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.BBox.top_right">top_right (BBox property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.top_right">(Transformable property)</a>
 </li>
+        </ul></li>
         <li><a href="reference/ops.html#svgwriter.ops.total_length">total_length() (in module svgwriter.ops)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.TransferType">TransferType (class in svgwriter.model.elements.filters)</a>
@@ -3927,6 +4123,8 @@
         <ul>
           <li><a href="reference/geometry.html#svgwriter.model.transform.Transform.translate">(Transform method)</a>
 </li>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.translate">(Transformable method)</a>
+</li>
         </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements.text.TRef">TRef (class in svgwriter.model.elements.text)</a>
 </li>
@@ -3935,8 +4133,6 @@
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.TurbulenceType.TURBULENCE">TURBULENCE (TurbulenceType attribute)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.TurbulenceType">TurbulenceType (class in svgwriter.model.elements.filters)</a>
-</li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.turn">turn (in module svgwriter.model.attributes.units)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.Motion.tween">tween() (Motion method)</a>
 </li>
@@ -3964,8 +4160,6 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/color.html#svgwriter.model.color.Color.uint8">uint8 (Color property)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.um">um (in module svgwriter.model.attributes.units)</a>
-</li>
         <li><a href="reference/elements.html#svgwriter.model.elements._behavior.Convertible.unclip">unclip() (Convertible method)</a>
 </li>
         <li><a href="reference/elements.html#svgwriter.Motion.uncreate">uncreate() (Motion method)</a>
@@ -3980,11 +4174,15 @@
           <li><a href="reference/ops.html#svgwriter.ops.union">(in module svgwriter.ops)</a>
 </li>
         </ul></li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.unit">unit (Angle attribute)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle.unit">unit (Angle attribute)</a>, <a href="reference/units.html#svgwriter.model.units.angles.Angle.unit">[1]</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit">Unit (class in svgwriter.model.attributes)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Unit">Unit (class in svgwriter.model.units)</a>
+
+        <ul>
+          <li><a href="reference/units.html#svgwriter.model.units.lengths.Unit">(class in svgwriter.model.units.lengths)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Length.unit">unit (Length attribute)</a>
+        </ul></li>
+        <li><a href="reference/units.html#svgwriter.model.units.Length.unit">unit (Length attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Length.unit">[1]</a>
 </li>
         <li><a href="reference/inkscape.html#svgwriter.formats.inkscape.ExportHints.units">units (ExportHints attribute)</a>
 
@@ -4025,16 +4223,22 @@
 </li>
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.Sweep.update">(Sweep method)</a>
 </li>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.update">(Transformable method)</a>
+</li>
         </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements.Element.url">url (Element property)</a>
+
+        <ul>
+          <li><a href="reference/elements.html#svgwriter.model.elements.Transformable.url">(Transformable property)</a>
 </li>
+        </ul></li>
         <li><a href="reference/elements.html#svgwriter.model.elements.structure.Use">Use (class in svgwriter.model.elements.structure)</a>
 </li>
         <li><a href="reference/document.html#svgwriter.Document.used_faces">used_faces() (Document method)</a>
 </li>
         <li><a href="reference/theme.html#svgwriter.model.theme.sheet.used_roles">used_roles() (in module svgwriter.model.theme.sheet)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Unit.USER">USER (Unit attribute)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Unit.USER">USER (Unit attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Unit.USER">[1]</a>
 </li>
     </ul></td>
   </tr></table>
@@ -4044,7 +4248,7 @@
   <h2>V</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.value">value (Angle attribute)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle.value">value (Angle attribute)</a>, <a href="reference/units.html#svgwriter.model.units.angles.Angle.value">[1]</a>
 
         <ul>
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.Checkbox.value">(Checkbox attribute)</a>
@@ -4055,13 +4259,13 @@
 </li>
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.IntSlider.value">(IntSlider attribute)</a>
 </li>
-          <li><a href="reference/attributes.html#svgwriter.model.attributes.Length.value">(Length attribute)</a>
+          <li><a href="reference/units.html#svgwriter.model.units.Length.value">(Length attribute)</a>, <a href="reference/units.html#svgwriter.model.units.lengths.Length.value">[1]</a>
 </li>
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.MultiSelect.value">(MultiSelect attribute)</a>
 </li>
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.Number.value">(Number attribute)</a>
 </li>
-          <li><a href="reference/attributes.html#svgwriter.model.attributes.Quantity.value">(Quantity attribute)</a>, <a href="reference/attributes.html#svgwriter.model.attributes.quantity.Quantity.value">[1]</a>
+          <li><a href="reference/units.html#svgwriter.model.units.Quantity.value">(Quantity attribute)</a>, <a href="reference/units.html#svgwriter.model.units.quantities.Quantity.value">[1]</a>
 </li>
           <li><a href="reference/widgets.html#svgwriter.tools.widgets.RangeSlider.value">(RangeSlider attribute)</a>
 </li>
@@ -4124,7 +4328,7 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="reference/geometry.html#svgwriter.model.pathdata.PathData.walk">walk() (PathData method)</a>
 </li>
-        <li><a href="reference/builder.html#svgwriter.catalog.builder.wave">wave() (in module svgwriter.catalog.builder)</a>
+        <li><a href="reference/paths.html#svgwriter.catalog.paths.wave">wave() (in module svgwriter.catalog.paths)</a>
 </li>
         <li><a href="reference/presets.html#svgwriter.catalog.patterns.waves">waves() (in module svgwriter.catalog.patterns)</a>
 </li>
@@ -4170,7 +4374,7 @@
 </li>
         <li><a href="reference/elements.html#svgwriter.model.elements.filters.EdgeMode.WRAP">WRAP (EdgeMode attribute)</a>
 </li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.Angle.wrap">wrap() (Angle method)</a>
+        <li><a href="reference/units.html#svgwriter.model.units.Angle.wrap">wrap() (Angle method)</a>, <a href="reference/units.html#svgwriter.model.units.angles.Angle.wrap">[1]</a>
 </li>
         <li><a href="reference/io.html#svgwriter.formats.io.write">write() (in module svgwriter.formats.io)</a>
 
@@ -4320,8 +4524,6 @@
           <li><a href="reference/geometry.html#svgwriter.model.pathdata.SmoothCurveTo.y2">(SmoothCurveTo attribute)</a>
 </li>
         </ul></li>
-        <li><a href="reference/attributes.html#svgwriter.model.attributes.units.yd">yd (in module svgwriter.model.attributes.units)</a>
-</li>
     </ul></td>
   </tr></table>
 </section>
@@ -4368,7 +4570,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=f82422d1"></script>
+</div><script src="_static/documentation_options.js?v=9cebf295"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
