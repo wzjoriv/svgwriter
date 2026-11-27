@@ -41,6 +41,16 @@ note[0:6].wrap(font_weight="bold")
 print(note)
 ```
 
+A list of positions, a mask with one bool per character, or a stepped slice picks several runs at
+once as a `CharacterSelection`; setting an attribute styles every run:
+
+```python
+word = svg.text("Mississippi", x=0, y=20)
+word[[c == "s" for c in word.characters]].fill = "crimson"   # every s
+word[[0, -1]].font_weight = "bold"                           # first and last letters
+print(word[::2].chars)
+```
+
 Scaling or skewing one character has no SVG text form; those calls raise and point to
 `text.glyphs()`, which returns one outline `<path>` per character, styled like its run:
 
