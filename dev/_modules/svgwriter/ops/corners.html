@@ -256,6 +256,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/attributes.html">Attribute values and styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/units.html">Units</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/theme.html">Themes</a></li>
@@ -311,10 +312,10 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..model.attributes.angle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..model.pathdata.commands</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArcTo</span><span class="p">,</span> <span class="n">ClosePath</span><span class="p">,</span> <span class="n">CurveTo</span><span class="p">,</span> <span class="n">LineTo</span><span class="p">,</span> <span class="n">MoveTo</span><span class="p">,</span> <span class="n">PathCommand</span><span class="p">,</span> <span class="n">QuadTo</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..model.pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathData</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..model.transform.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..model.units.angles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ARC_HANDLE</span><span class="p">,</span> <span class="n">CORNER_TOLERANCE</span><span class="p">,</span> <span class="n">LENGTH_SEARCH_STEPS</span><span class="p">,</span> <span class="n">PIXEL_EPSILON</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._skia</span><span class="w"> </span><span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">from_skia</span><span class="p">,</span> <span class="n">geometry_data</span><span class="p">,</span> <span class="n">to_skia</span>
 

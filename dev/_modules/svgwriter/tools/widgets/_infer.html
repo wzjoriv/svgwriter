@@ -256,6 +256,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/attributes.html">Attribute values and styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/units.html">Units</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/theme.html">Themes</a></li>
@@ -310,8 +311,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Real</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TypeVar</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">...model.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">...model.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...model.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._choices</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColorPicker</span><span class="p">,</span> <span class="n">Dropdown</span><span class="p">,</span> <span class="n">Segmented</span><span class="p">,</span> <span class="n">Swatches</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">Toggle</span><span class="p">,</span> <span class="n">hex_color</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTROLS_ATTRIBUTE</span><span class="p">,</span> <span class="n">SEGMENTED_MAX</span><span class="p">,</span> <span class="n">SLIDER_SPAN</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._control</span><span class="w"> </span><span class="kn">import</span> <span class="n">Control</span>

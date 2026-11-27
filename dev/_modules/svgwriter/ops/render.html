@@ -256,6 +256,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/attributes.html">Attribute values and styles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/units.html">Units</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/theme.html">Themes</a></li>
@@ -311,8 +312,8 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">skia</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._render._rendering</span><span class="w"> </span><span class="kn">import</span> <span class="n">view_matrix</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..model.attributes.length</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span><span class="p">,</span> <span class="n">Unit</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..model.attributes.viewbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">ViewBox</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..model.units.lengths</span><span class="w"> </span><span class="kn">import</span> <span class="n">Length</span><span class="p">,</span> <span class="n">Unit</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">CHANNEL_MAX</span><span class="p">,</span> <span class="n">DEFAULT_QUALITY</span><span class="p">,</span> <span class="n">FORMATS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._raster</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_surface</span><span class="p">,</span> <span class="n">paint_svg</span><span class="p">,</span> <span class="n">paint_tree</span><span class="p">,</span> <span class="n">read_pixels</span><span class="p">,</span> <span class="n">render_tree</span>
 
