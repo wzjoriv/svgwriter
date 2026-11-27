@@ -73,7 +73,7 @@ class TestLength:
         assert Length.parse(length) is length
         assert Length.parse(3) == Length(3.0)
 
-    @pytest.mark.parametrize("bad", ["", "abc", "10 px px", "5furlongs"])
+    @pytest.mark.parametrize("bad", ["", "abc", "10 px px", "5parsecs"])
     def test_parse_rejects(self, bad: str) -> None:
         with pytest.raises(ValueError):
             Length.parse(bad)

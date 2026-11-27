@@ -69,8 +69,18 @@ LENGTH_SPELLINGS: Final = {
     "millimeter": "mm", "millimeters": "mm", "millimetre": "mm", "millimetres": "mm",
     "centimeter": "cm", "centimeters": "cm", "centimetre": "cm", "centimetres": "cm",
     "meter": "m", "meters": "m", "metre": "m", "metres": "m",
+    "km": "km", "kilometer": "km", "kilometers": "km", "kilometre": "km", "kilometres": "km",
+    "um": "um", "µm": "um", "micrometer": "um", "micrometers": "um", "micrometre": "um", "micrometres": "um",
+    "micron": "um", "microns": "um", "foot": "ft", "feet": "ft", "yd": "yd", "yard": "yd", "yards": "yd",
+    "mi": "mi", "mile": "mi", "miles": "mi", "furlong": "furlong", "furlongs": "furlong",
+    "mil": "mil", "mils": "mil", "thou": "mil", "nmi": "nmi", "nautical mile": "nmi", "nautical miles": "nmi",
+    "pica": "pc", "picas": "pc", "quarter millimeter": "Q", "quarter millimetre": "Q",
 }
-LENGTH_SCALES: Final = {"m": ("mm", 1000.0), "ft": ("in", 12.0)}
+LENGTH_SCALES: Final = {
+    "m": ("mm", 1000.0), "km": ("mm", 1_000_000.0), "um": ("mm", 0.001), "nmi": ("mm", 1_852_000.0),
+    "ft": ("in", 12.0), "yd": ("in", 36.0), "mi": ("in", 63_360.0), "furlong": ("in", 7920.0), "mil": ("in", 0.001),
+}
+"""Units SVG has no suffix for, as (SVG suffix, how many of it make one)."""
 
 ANGLE_ATTRIBUTES: Final = frozenset({"rotate", "azimuth", "elevation", "limitingConeAngle", "orient"})
 LENGTH_ATTRIBUTES: Final = frozenset({
