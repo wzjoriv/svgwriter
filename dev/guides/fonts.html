@@ -257,7 +257,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/attributes.html">Attribute values and styles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/inkscape.html">Inkscape</a></li>
@@ -391,7 +391,7 @@ characters or icon names; negative values pull the pair together.</p>
 <h2>Icon fonts<a class="headerlink" href="#icon-fonts" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">icons</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">FontBuilder</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="s2">"Icons"</span><span class="p">)</span>
 <span class="n">icons</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s2">"rocket"</span><span class="p">,</span> <span class="n">svg</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">"M12 2 C16 5 17 10 16 16 H8 C7 10 8 5 12 2 Z"</span><span class="p">))</span>
-<span class="n">icons</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s2">"star"</span><span class="p">,</span> <span class="n">svg</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">icons</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s2">"star"</span><span class="p">,</span> <span class="n">svg</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">icons</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"Icons.woff"</span><span class="p">)</span>                             <span class="c1"># .woff2 with brotli installed</span>
 <span class="n">icons</span><span class="o">.</span><span class="n">save_css</span><span class="p">(</span><span class="s2">"icons.css"</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s2">"Icons.woff"</span><span class="p">)</span>
 <span class="n">icons</span><span class="o">.</span><span class="n">cheatsheet</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"icons.svg"</span><span class="p">)</span>

@@ -65,7 +65,7 @@ The suffix picks the format:
 ```python
 icons = svg.FontBuilder(family="Icons")
 icons.icon("rocket", svg.path("M12 2 C16 5 17 10 16 16 H8 C7 10 8 5 12 2 Z"))
-icons.icon("star", svg.builder.star(12, 12, 10))
+icons.icon("star", svg.paths.star(12, 12, 10))
 icons.save("Icons.woff")                             # .woff2 with brotli installed
 icons.save_css("icons.css", font="Icons.woff")
 icons.cheatsheet().save("icons.svg")

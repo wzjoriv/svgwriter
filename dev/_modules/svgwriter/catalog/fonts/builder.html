@@ -256,7 +256,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/attributes.html">Attribute values and styles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../reference/paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../reference/inkscape.html">Inkscape</a></li>
@@ -705,7 +705,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">        &gt;&gt;&gt; fb = svg.FontBuilder()</span>
-<span class="sd">        &gt;&gt;&gt; _ = fb.icon("star", svg.builder.star(0, 0, 10))</span>
+<span class="sd">        &gt;&gt;&gt; _ = fb.icon("star", svg.paths.star(0, 0, 10))</span>
 <span class="sd">        &gt;&gt;&gt; "U+E000" in fb.cheatsheet().to_string()</span>
 <span class="sd">        True</span>
 <span class="sd">        """</span>

@@ -257,7 +257,7 @@
 <li class="toctree-l2"><a class="reference internal" href="reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/attributes.html">Attribute values and styles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/inkscape.html">Inkscape</a></li>
@@ -320,7 +320,7 @@ PDF, TikZ, DXF, G-code, Excalidraw, icons and more.</p>
 <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">LinearGradient</span><span class="o">.</span><span class="n">horizontal</span><span class="p">(</span><span class="s2">"gold"</span><span class="p">,</span> <span class="s2">"tomato"</span><span class="p">))</span>
 <span class="n">title</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"svgwriter"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">88</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">36</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">text_anchor</span><span class="o">=</span><span class="s2">"middle"</span><span class="p">)</span>
 <span class="n">title</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span><span class="o">.</span><span class="n">fill</span> <span class="o">=</span> <span class="s2">"navy"</span>
-<span class="n">doc</span> <span class="o">+=</span> <span class="n">svg</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"navy"</span><span class="p">)</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">+=</span> <span class="n">svg</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"navy"</span><span class="p">)</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
 <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"badge.png"</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -379,7 +379,7 @@ PDF, TikZ, DXF, G-code, Excalidraw, icons and more.</p>
 <li class="toctree-l2"><a class="reference internal" href="reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/attributes.html">Attribute values and styles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/inkscape.html">Inkscape</a></li>

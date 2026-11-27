@@ -12,7 +12,7 @@ doc = svg.Document()
 doc.rect(0, 0, 160, 60, rx=12, fill=svg.LinearGradient.horizontal("gold", "tomato"))
 title = doc.text("svgwriter", x=88, y=36, font_size=18, text_anchor="middle")
 title[3:].fill = "navy"
-doc += svg.builder.star(0, 0, 10, fill="navy").place(30, 30).rotate(15)
+doc += svg.paths.star(0, 0, 10, fill="navy").place(30, 30).rotate(15)
 doc.save("badge.png", scale=3)
 ```
 

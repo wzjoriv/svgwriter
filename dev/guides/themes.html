@@ -257,7 +257,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/export.html">Export and import</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/io.html">Reading and writing SVG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/attributes.html">Attribute values and styles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/builder.html">Composite shapes and effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/paths.html">Composite shapes and effects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/presets.html">Preset libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/theme.html">Themes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/inkscape.html">Inkscape</a></li>
@@ -319,8 +319,8 @@ decides how each role looks. Changing the theme restyles the whole drawing.</p>
 <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"background"</span><span class="p">)</span>
 <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Results"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">34</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"title"</span><span class="p">)</span>
 <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"box"</span><span class="p">)</span>
-<span class="n">doc</span> <span class="o">+=</span> <span class="n">svg</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>          <span class="c1"># builder shapes carry roles already</span>
-<span class="n">doc</span> <span class="o">+=</span> <span class="n">svg</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">67</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">+=</span> <span class="n">svg</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>          <span class="c1"># builder shapes carry roles already</span>
+<span class="n">doc</span> <span class="o">+=</span> <span class="n">svg</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">67</span><span class="p">)</span>
 
 <span class="n">doc</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="s2">"paper"</span>                               <span class="c1"># restyle everything</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">to_string</span><span class="p">()[:</span><span class="mi">200</span><span class="p">])</span>
@@ -341,7 +341,7 @@ on an element into its inline <code class="docutils literal notranslate"><span c
 <span class="nb">print</span><span class="p">(</span><span class="n">warn</span><span class="o">.</span><span class="n">style</span><span class="p">[</span><span class="s2">"stroke"</span><span class="p">],</span> <span class="n">warn</span><span class="o">.</span><span class="n">classes</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Builder presets work the same way: <code class="docutils literal notranslate"><span class="pre">svg.builder.star(...,</span> <span class="pre">fill=&quot;gold&quot;)</span></code> keeps its gold fill and takes the
+<p>Builder presets work the same way: <code class="docutils literal notranslate"><span class="pre">svg.paths.star(...,</span> <span class="pre">fill=&quot;gold&quot;)</span></code> keeps its gold fill and takes the
 rest of the <code class="docutils literal notranslate"><span class="pre">shape</span></code> role.</p>
 </section>
 <section id="standard-roles">

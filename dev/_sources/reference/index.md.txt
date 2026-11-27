@@ -17,7 +17,7 @@ fonts
 export
 io
 attributes
-builder
+paths
 presets
 theme
 inkscape
