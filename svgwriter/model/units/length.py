@@ -44,7 +44,7 @@ class Unit(Keyword):
 
     Examples
     --------
-    >>> from svgwriter.model.attributes import Unit
+    >>> from svgwriter.model.units import Unit
     >>> Unit("mm") is Unit.MM
     True
     >>> str(Unit.PERCENT)
@@ -87,7 +87,7 @@ class Length:
     The unit may be spelled out (``"millimetres"``, ``"inches"``); metres and
     feet are accepted too and stored as millimetres and inches, since SVG has
     no such units. Multiplying or dividing by other lengths and angles gives a
-    `~svgwriter.model.attributes.quantity.Quantity` (an area, for instance) that turns
+    `~svgwriter.model.units.quantity.Quantity` (an area, for instance) that turns
     back into a length when the dimensions cancel.
 
     Parameters
@@ -103,7 +103,7 @@ class Length:
 
     Examples
     --------
-    >>> from svgwriter.model.attributes import Length, Unit
+    >>> from svgwriter.model.units import Length, Unit
     >>> str(Length(2.5, Unit.MM))
     '2.5mm'
     >>> Length.parse("1in").to_user_units()
@@ -161,7 +161,7 @@ class Length:
 
         Examples
         --------
-        >>> from svgwriter.model.attributes import Length
+        >>> from svgwriter.model.units import Length
         >>> Length.parse("12.5mm")
         Length(value=12.5, unit=<Unit.MM: 'mm'>)
         >>> Length.parse(3).value
@@ -207,7 +207,7 @@ class Length:
 
         Examples
         --------
-        >>> from svgwriter.model.attributes import Length, Unit
+        >>> from svgwriter.model.units import Length, Unit
         >>> Length(1, Unit.IN).to_user_units(units_per_inch=72)
         72.0
         >>> Length(50, Unit.PERCENT).to_user_units(reference=200)
@@ -240,7 +240,7 @@ class Length:
 
         Examples
         --------
-        >>> from svgwriter.model.attributes import Length, Unit
+        >>> from svgwriter.model.units import Length, Unit
         >>> Length(1.23456, Unit.PX).svg_value(2)
         '1.23px'
         """

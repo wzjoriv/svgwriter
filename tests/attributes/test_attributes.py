@@ -7,22 +7,18 @@ from svgwriter.model.attributes import (
     Align,
     Attr,
     FuncIRI,
-    Length,
     MeetOrSlice,
     PreserveAspectRatio,
     Style,
     StyleSheet,
-    Unit,
     ViewBox,
     format_value,
-    mm,
     parse_func_iri,
-    percent,
-    px,
     py_name,
     svg_name,
 )
 from svgwriter.model.attributes.names import CAMEL_CASE_ATTRIBUTES
+from svgwriter.model.units import Length, Unit, mm, percent, px
 
 
 @pytest.mark.parametrize(

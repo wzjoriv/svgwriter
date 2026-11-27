@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, TypeVar
 
 from ...._internal._constants import SVG_NS, XLINK_NS
-from ...attributes.length import Length
+from ...units.length import Length
 from ..core import Element, references_of
 from ._constants import DEFAULT_STROKE_WIDTH
 from ._transformable import Transformable

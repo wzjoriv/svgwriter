@@ -7,9 +7,9 @@ from __future__ import annotations
 from typing import Any
 
 from ...attributes.descriptors import LengthAttr
-from ...attributes.length import Length, LengthLike
 from ...attributes.viewbox import PreserveAspectRatio, ViewBox
 from ...pathdata.data import BBox
+from ...units.length import Length, LengthLike
 from ..core import Child, Element
 
 __all__ = ["FitToViewBox", "Positioned", "ViewBoxLike", "positioned_bbox", "user_units"]

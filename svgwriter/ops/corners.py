@@ -11,10 +11,10 @@ from typing import Literal, NamedTuple
 
 import numpy as np
 
-from ..model.attributes.angle import Angle
 from ..model.pathdata.commands import ArcTo, ClosePath, CurveTo, LineTo, MoveTo, PathCommand, QuadTo
 from ..model.pathdata.data import PathData
 from ..model.transform.matrix import Point
+from ..model.units.angle import Angle
 from ._constants import ARC_HANDLE, CORNER_TOLERANCE, LENGTH_SEARCH_STEPS, PIXEL_EPSILON
 from ._skia import Geometry, from_skia, geometry_data, to_skia
 

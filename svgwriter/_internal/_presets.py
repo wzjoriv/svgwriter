@@ -17,10 +17,10 @@ from ._typing import P
 
 if TYPE_CHECKING:
     from .._document.sizes import PageSize
-    from ..model.attributes.length import LengthLike
     from ..model.elements import Motion
     from ..model.elements.core import Element
     from ..model.elements.text import Character, CharacterRange
+    from ..model.units.length import LengthLike
 
 __all__ = [
     "ANIMATIONS",

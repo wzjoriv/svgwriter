@@ -7,9 +7,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, ClassVar
 
 from ...._internal._typing import Opacity, Units
-from ...attributes.length import LengthLike
 from ...color.color import Color
 from ...pathdata.data import BBox
+from ...units.length import LengthLike
 from .._behavior import (
     ConditionalAttributes,
     CoreAttributes,

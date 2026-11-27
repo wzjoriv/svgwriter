@@ -10,8 +10,8 @@ from typing import TYPE_CHECKING, Any
 
 from ...._internal._typography._fonts import font_size, font_weight
 from ...attributes.cascade import computed
-from ...attributes.length import Length, Unit
 from ...attributes.rules import Rule, rules_of
+from ...units.length import Length, Unit
 from ._constants import (
     DEFAULT_FONT_FAMILY,
     DEFAULT_FONT_SIZE,

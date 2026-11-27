@@ -8,7 +8,7 @@ import enum
 from typing import TYPE_CHECKING, Any, ClassVar
 
 from ...._internal._constants import DEFAULT_PRECISION
-from ...attributes.length import LengthLike
+from ...units.length import LengthLike
 from .._behavior import (
     GraphicsElement,
     PathOperand,

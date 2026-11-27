@@ -10,8 +10,8 @@ from typing import TYPE_CHECKING, Any
 from ._character import CharacterRange
 
 if TYPE_CHECKING:
-    from ...attributes.length import LengthLike
     from ...color.paint import PaintValue
+    from ...units.length import LengthLike
     from ._text import Text
 
 __all__ = ["CharacterSelection", "runs_of"]

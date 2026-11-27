@@ -23,7 +23,7 @@ __all__ = ["Frame", "filter_region", "image_source"]
 
 def _length(value: object, extent: float, bounding: bool, origin: float) -> float:
     """One region coordinate: a fraction (or percentage) of *extent* past *origin*, or a user length."""
-    from ...model.attributes.length import Length, Unit
+    from ...model.units.length import Length, Unit
 
     length = Length.parse(value)
     if bounding:

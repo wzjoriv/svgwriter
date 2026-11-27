@@ -16,10 +16,10 @@ if TYPE_CHECKING:
 
     from ...._internal._typing import FillRule, LineCap, LineJoin, Opacity
     from ....ops.typeface import Typeface
-    from ...attributes.length import LengthLike
     from ...attributes.style import StyleLike
     from ...color.color import Color
     from ...color.paint import PaintValue
+    from ...units.length import LengthLike
     from .._behavior import XmlSpace
     from ..core import AttrValue
     from . import TextDecoration

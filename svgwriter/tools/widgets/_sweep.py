@@ -12,10 +12,11 @@ from typing import Any
 from ..._internal._codecs._gif import encode_gif_animation
 from ..._internal._codecs._rgba import to_uint8
 from ..._internal._typing import AnyPath
-from ...model.attributes import Length, ViewBox
+from ...model.attributes import ViewBox
 from ...model.color import parse_color
 from ...model.elements.animation import Ease, EaseLike
 from ...model.pathdata import BBox
+from ...model.units import Length
 from ...motion.video import DEFAULT_FPS, Renderer, Scene, frame_times
 from ...ops import interpolate
 from ._choices import ColorPicker, Dropdown, MultiSelect, Text, Toggle, hex_color

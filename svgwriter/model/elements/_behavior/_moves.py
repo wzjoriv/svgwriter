@@ -7,10 +7,10 @@ from __future__ import annotations
 from numbers import Real
 from typing import TYPE_CHECKING, Any
 
-from ...attributes.angle import Angle
 from ...transform.matrix import Matrix, Point
 from ...transform.ops import TransformOp
 from ...transform.transform import Transform, TransformLike, as_transform
+from ...units.angle import Angle
 
 if TYPE_CHECKING:
     from ._transformable import E, Pivot

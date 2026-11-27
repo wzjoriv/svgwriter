@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 
 from ...._internal._constants import SVG_VERSION
 from ...._internal._typing import Self
-from ...attributes.length import LengthLike
+from ...units.length import LengthLike
 from .._behavior import (
     ConditionalAttributes,
     CoreAttributes,
@@ -232,7 +232,7 @@ class Svg(
         >>> str(svg.Svg.with_size(100, 50))
         '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="50" viewBox="0 0 100 50" version="1.1"/>'
         """
-        from ...attributes.length import Length
+        from ...units.length import Length
 
         if isinstance(width, Length) or isinstance(height, Length):
             first = width if isinstance(width, Length) else Length(float(width))

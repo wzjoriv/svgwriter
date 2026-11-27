@@ -21,7 +21,8 @@ class SupportsSVG(Protocol):
 
     Examples
     --------
-    >>> from svgwriter.model.attributes import Length, SupportsSVG
+    >>> from svgwriter.model.attributes import SupportsSVG
+    >>> from svgwriter.model.units import Length
     >>> isinstance(Length(1), SupportsSVG)
     True
     """

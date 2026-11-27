@@ -26,7 +26,7 @@ __all__ = ["user_space_patterns"]
 
 def _tile(pattern: Element, box: BBox | None, extent: tuple[float, float]) -> list[float] | None:
     """``x``, ``y``, ``width``, ``height`` of the tile in user units, or None without a box to scale by."""
-    from ...model.attributes.length import Length, Unit
+    from ...model.units.length import Length, Unit
 
     bounding = str(pattern.get("patternUnits", OBJECT_BOUNDING_BOX)) == OBJECT_BOUNDING_BOX
     if bounding and box is None:

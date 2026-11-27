@@ -4,8 +4,10 @@ The SVG object model: elements, their attributes and the values they hold.
 Sub-packages
 ------------
 attributes
-    Lengths and units, ``viewBox``, ``preserveAspectRatio``, inline styles
-    and style sheets, IRI references, attribute-name mapping.
+    ``viewBox``, ``preserveAspectRatio``, inline styles and style sheets, IRI
+    references, attribute-name mapping.
+units
+    Lengths, angles, quantities and unit factories (``mm``, ``inch``, ``deg``, ...).
 color
     Color keywords and syntaxes and the ``<paint>`` type.
 elements

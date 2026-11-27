@@ -17,9 +17,9 @@ if TYPE_CHECKING:
 
     from ...._internal._typing import FillRule, LineCap, LineJoin
     from ....ops.typeface import Typeface
-    from ...attributes.length import LengthLike
     from ...attributes.style import StyleLike
     from ...color.paint import PaintValue
+    from ...units.length import LengthLike
     from .._behavior import XmlSpace
     from ..core import AttrValue, Element
     from ..text import TextDecoration

@@ -15,13 +15,13 @@ from typing import TYPE_CHECKING, Any
 
 from ..._internal._constants import DEFAULT_PRECISION
 from ..._internal._numbers import format_number
-from ._constants import ANGLE_ATTRIBUTES, EQUAL_DIGITS, LENGTH_ATTRIBUTES, PLAIN_VALUE_TYPES, SUPERSCRIPTS
+from ._constants import EQUAL_DIGITS, SUPERSCRIPTS
 
 if TYPE_CHECKING:
     from .angle import Angle
     from .length import Length, Unit
 
-__all__ = ["Quantity", "check_dimension", "dimension_name"]
+__all__ = ["Quantity", "dimension_name"]
 
 
 def dimension_name(length: int, angle: int) -> str:
@@ -39,7 +39,7 @@ def dimension_name(length: int, angle: int) -> str:
 
     Examples
     --------
-    >>> from svgwriter.model.attributes.quantity import dimension_name
+    >>> from svgwriter.model.units.quantity import dimension_name
     >>> dimension_name(2, 0), dimension_name(1, -1), dimension_name(0, 0)
     ('length²', 'length·angle⁻¹', 'number')
     """
@@ -246,43 +246,3 @@ class Quantity:
                  for suffix, power in (((self.length_unit.value if self.length_unit else "") or "px", self.length),
                                        (self.angle_unit, self.angle)) if power]
         return format_number(self.value / self._scale(), DEFAULT_PRECISION) + "·".join(units)
-
-
-def check_dimension(name: str, value: object) -> None:
-    """Refuse a value whose dimension does not fit the attribute *name*.
-
-    Lengths may not go where SVG wants an angle and angles not where it wants a
-    length; a `Quantity` (an area, a length per angle, ...) fits no attribute.
-
-    Parameters
-    ----------
-    name : str
-        The SVG attribute name.
-    value : object
-        The value about to be stored.
-
-    Raises
-    ------
-    TypeError
-        If the dimension does not fit, naming the attribute and the dimension.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> check_dimension("width", svg.mm(3) * svg.mm(2))
-    Traceback (most recent call last):
-    ...
-    TypeError: width needs a length, got length²
-    """
-    if type(value) in PLAIN_VALUE_TYPES:
-        return
-    from .angle import Angle
-    from .length import Length
-
-    wants = "an angle" if name in ANGLE_ATTRIBUTES else "a length" if name in LENGTH_ATTRIBUTES else "a number"
-    if isinstance(value, Quantity):
-        raise TypeError(f"{name} needs {wants}, got {value.dimension}")
-    if isinstance(value, Angle) and name in LENGTH_ATTRIBUTES:
-        raise TypeError(f"{name} needs a length, got angle")
-    if isinstance(value, Length) and name in ANGLE_ATTRIBUTES:
-        raise TypeError(f"{name} needs an angle, got length")

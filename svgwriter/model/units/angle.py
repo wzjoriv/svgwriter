@@ -37,7 +37,7 @@ class Angle:
     Any two angles add, subtract and compare whatever their units; plain
     numbers count as degrees, as in SVG. Positive angles turn from +x towards
     +y, which is clockwise on screen. Multiplying or dividing by lengths and
-    angles gives a `~svgwriter.model.attributes.quantity.Quantity`.
+    angles gives a `~svgwriter.model.units.quantity.Quantity`.
 
     Parameters
     ----------
