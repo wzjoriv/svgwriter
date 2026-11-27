@@ -61,13 +61,13 @@ def card(doc: svg.Document, *, rank: str = "Q", suit: str = "♥", hue: float = 
         else:
             middle = pips(rank, suit, ink, width=middle_w * 0.8, height=middle_h * 0.9, size=width * 0.15)
         holder = svg.HStack(middle, width=middle_w, height=middle_h, align="center", justify="center")
-        holder.t = svg.Matrix.translate(MARGIN + inner, MARGIN + inner)
+        holder.matrix = svg.Matrix.translate(MARGIN + inner, MARGIN + inner)
         doc += holder
 
         centre = (MARGIN + width / 2, MARGIN + height / 2)
         for turn in (0, 180):
             index = corner_index(rank, suit, ink)
-            index.t = svg.Matrix.rotate(turn, *centre) @ svg.Matrix.translate(MARGIN + inner * 0.12, MARGIN + inner * 0.15)
+            index.matrix = svg.Matrix.rotate(turn, *centre) @ svg.Matrix.translate(MARGIN + inner * 0.12, MARGIN + inner * 0.15)
             doc += index
     face.animate.apply(deal)
     return doc.fit()

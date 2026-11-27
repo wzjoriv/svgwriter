@@ -40,7 +40,7 @@ class Batch(ItemTransforms, ItemMeasures, Group):
 
     Values given once for every item go on the ``<g>`` when they are inherited (``fill``,
     ``stroke``, ``font-size``...) and on each item otherwise (``opacity``). Style the whole batch
-    through the ``<g>``: ``batch.as_role("dot")``, ``batch.t``, ``batch.id``.
+    through the ``<g>``: ``batch.as_role("dot")``, ``batch.matrix``, ``batch.id``.
 
     See Also
     --------
@@ -227,7 +227,7 @@ class Batch(ItemTransforms, ItemMeasures, Group):
         key = svg_name(name)
         if self._columns is None:
             if key == "transform":
-                matrices = [item.t for item in self.items]  # type: ignore[attr-defined]
+                matrices = [item.matrix for item in self.items]  # type: ignore[attr-defined]
                 return np.array([[m.a, m.b, m.c, m.d, m.e, m.f] for m in matrices])
             return np.array([item.get(key) for item in self.items])
         if key == "transform":

@@ -287,7 +287,7 @@ class TestOwnership:
         doc = svg.Document(20, 20)
         r = doc.rect(0, 0, 1, 1)
         r -= (1, 1)
-        assert r in doc and str(r.t) == "translate(-1 -1)"
+        assert r in doc and str(r.matrix) == "translate(-1 -1)"
 
     def test_plus_copies_operands_that_have_a_parent(self):
         doc = svg.Document(20, 20)

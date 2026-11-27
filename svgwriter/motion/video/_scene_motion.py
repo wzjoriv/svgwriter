@@ -66,7 +66,7 @@ class SceneMotion:
         --------
         >>> import svgwriter as svg
         >>> def slide(element: svg.Element, seconds: float, *, speed: float = 10) -> None:
-        ...     element.t = element.home.t
+        ...     element.matrix = element.home.matrix
         ...     element.translate(speed * seconds)
         >>> class Train(svg.Scene):
         ...     width, height, duration = 60, 20, 2.0
@@ -75,7 +75,7 @@ class SceneMotion:
         >>> scene = Train()
         >>> scene.render(1.0)[:4]
         b'\\x89PNG'
-        >>> scene.car.t.e
+        >>> scene.car.matrix.e
         20.0
         """
         if "_home" not in element.__dict__:

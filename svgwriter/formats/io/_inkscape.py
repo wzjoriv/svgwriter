@@ -33,7 +33,7 @@ def read_transform_centers(root: Element) -> None:
         except ValueError:
             continue
         centre = box.center
-        element.anchor = element.t.inverse().apply(centre.x + dx, centre.y - dy)  # type: ignore[attr-defined]
+        element.anchor = element.matrix.inverse().apply(centre.x + dx, centre.y - dy)  # type: ignore[attr-defined]
         attributes.pop(CENTER_X, None)
         attributes.pop(CENTER_Y, None)
 
@@ -45,7 +45,7 @@ def transform_center(element: Element) -> dict[str, float]:
     box: Any = element.bounds()  # type: ignore[attr-defined]
     if box is None:
         return {}
-    pivot = element.t.apply(*element.anchor)  # type: ignore[attr-defined]
+    pivot = element.matrix.apply(*element.anchor)  # type: ignore[attr-defined]
     dx, dy = pivot.x - box.center.x, box.center.y - pivot.y
     if abs(dx) < CENTER_TOLERANCE and abs(dy) < CENTER_TOLERANCE:
         return {}

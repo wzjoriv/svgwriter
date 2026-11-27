@@ -152,7 +152,7 @@ class PatternTiling:
         from ..structure import Group
 
         tile = self.tile(target)
-        inverse = self.t.inverse()
+        inverse = self.matrix.inverse()
         corners = [inverse.apply(x, y) for x in (area.left, area.right) for y in (area.top, area.bottom)]
         box = BBox.from_points(corners)
         first_x, last_x = math.floor((box.left - tile.x) / tile.width), math.ceil((box.right - tile.x) / tile.width)
@@ -160,7 +160,7 @@ class PatternTiling:
         content = self._tile_document(tile).root
         content.discard("width")
         content.discard("height")
-        group = Group(transform=self.t) if self.get(self.transform_attribute) is not None else Group()
+        group = Group(transform=self.matrix) if self.get(self.transform_attribute) is not None else Group()
         for row in range(first_y, last_y):
             for column in range(first_x, last_x):
                 cell = content.clone()

@@ -54,7 +54,7 @@ class TestDistribute:
         result = svg.distribute(dots, along=svg.polyline([(0, 0), (10, 0), (10, 10)]))
         assert result == dots
         assert [d.position for d in dots] == [(0, 0), (10, 0), (10, 10)]
-        assert dots[2].t.decompose()[2] == pytest.approx(90)
+        assert dots[2].matrix.decompose()[2] == pytest.approx(90)
 
     def test_without_orientation_and_on_closed_paths(self):
         marks = svg.distribute([svg.circle(0, 0, 1) for _ in range(4)], along=svg.circle(0, 0, 10), orient=False)

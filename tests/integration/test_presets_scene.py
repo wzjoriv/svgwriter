@@ -21,7 +21,7 @@ def presets():
 
     @svg.preset.behavior
     def integration_slide(element: svg.Element, seconds: float, *, dx: float = SLIDE_PX) -> None:
-        element.t = element.home.t
+        element.matrix = element.home.matrix
         element.translate(dx * seconds, 0)
 
     svg.preset.size("integration-card", 320, 180)
@@ -66,7 +66,7 @@ def test_baking_keeps_layout_roles_and_motion(presets):
     assert all(f".role-{role}" in text for role in ("surface", "accent", "text"))
     assert "<animateTransform" in text and 'attributeName="opacity"' in text
     group = baked.at(1.0).root.find(svg.Group)
-    assert group.t.apply(0, 0).x == pytest.approx(SLIDE_PX)
+    assert group.matrix.apply(0, 0).x == pytest.approx(SLIDE_PX)
 
 
 def test_powerpoint_of_the_baked_scene_keeps_the_effects(presets, tmp_path):

@@ -32,7 +32,7 @@ def test_morph_between_themed_shapes_keeps_the_role():
 def test_behaviours_and_smil_play_together():
     @svg.preset.behavior
     def integration_drift(element: svg.Element, seconds: float, *, speed: float = SPEED) -> None:
-        element.t = element.home.t
+        element.matrix = element.home.matrix
         element.translate(speed * seconds, 0)
 
     class Both(svg.Scene):

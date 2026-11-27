@@ -77,7 +77,7 @@ def _run(machine: _Machine, text: str) -> tuple[float, float]:
         run = Text(text, x=0, y=0, font_size=size, font_family=family, fill=_hex(machine.state.color),
                    font_weight="bold" if bold else None, font_style="italic" if italic else None,
                    xml_space="preserve")
-        run.t = machine.state.ctm @ Matrix.translate(*current) @ unit @ Matrix.scale(1, -1)
+        run.matrix = machine.state.ctm @ Matrix.translate(*current) @ unit @ Matrix.scale(1, -1)
         if machine.state.clip:
             _clip(run, machine.state.clip)
         machine.shapes.append(run)

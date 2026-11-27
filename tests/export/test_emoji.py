@@ -66,7 +66,7 @@ def test_png_draws_emoji_in_colour() -> None:
 def test_png_keeps_transform_opacity_and_clip() -> None:
     doc = svg.Document(200, 100)
     text = doc.text(SMILE, x=100, y=60, font_size=40, opacity=0.5)
-    text.t = svg.Matrix.translate(-80, 0)
+    text.matrix = svg.Matrix.translate(-80, 0)
     alpha = doc.rasterize()[..., 3]
     assert alpha[:, :60].max() == pytest.approx(0.5, abs=0.02)
     assert alpha[:, 80:].max() == 0

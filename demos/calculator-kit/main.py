@@ -64,7 +64,7 @@ def calculator(doc: svg.Document, *, style: str = "default", shape: str = "round
     desk = doc.rect(0, 0, 1, 1).as_role("desk")
     blobs = doc.group() if style == "glass" else None
     doc += body
-    body.t = svg.Matrix.translate(DESK, DESK)
+    body.matrix = svg.Matrix.translate(DESK, DESK)
     box = body.bounds()
     desk.width, desk.height = box.width + 2 * DESK, box.height + 2 * DESK
     doc.fit()

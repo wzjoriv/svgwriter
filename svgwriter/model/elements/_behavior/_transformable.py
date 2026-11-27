@@ -116,7 +116,7 @@ class Transformable(Placement, TransformMethods, Element):
     --------
     >>> import svgwriter as svg
     >>> c = svg.circle(50, 50, 10).translate(10, 0).rotate(90)
-    >>> str(c.t)
+    >>> str(c.matrix)
     'rotate(90 55 55)'
     >>> c.position
     Point(x=60.0, y=50.0)
@@ -136,12 +136,12 @@ class Transformable(Placement, TransformMethods, Element):
     ) -> None:
         super().__init__(*args, **kwargs)
         if t is not None or transform is not None:
-            self.t = t if t is not None else transform
+            self.matrix = t if t is not None else transform
         if anchor is not None:
             self.anchor = anchor
 
     @property
-    def t(self) -> Matrix:
+    def matrix(self) -> Matrix:
         """The transform as an affine :class:`~svgwriter.Matrix`; assign to replace it.
 
         Written to SVG as the shortest equivalent ``transform`` text.
@@ -149,7 +149,7 @@ class Transformable(Placement, TransformMethods, Element):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> svg.rect(0, 0, 1, 1).translate(2, 3).t.apply(0, 0)
+        >>> svg.rect(0, 0, 1, 1).translate(2, 3).matrix.apply(0, 0)
         Point(x=2.0, y=3.0)
         """
         raw = self.attributes.get(self.transform_attribute)
@@ -157,8 +157,8 @@ class Transformable(Placement, TransformMethods, Element):
             return IDENTITY
         return raw if isinstance(raw, Matrix) else as_transform(raw).to_matrix()
 
-    @t.setter
-    def t(self, value: TransformLike | None) -> None:
+    @matrix.setter
+    def matrix(self, value: TransformLike | None) -> None:
         matrix = None if value is None else _as_matrix(value)
         if matrix is None or matrix.is_identity:
             self.attributes.pop(self.transform_attribute, None)
@@ -173,14 +173,14 @@ class Transformable(Placement, TransformMethods, Element):
         --------
         >>> import svgwriter as svg
         >>> r = svg.rect(0, 0, 1, 1).translate(2, 3)
-        >>> r.transform == r.t
+        >>> r.transform == r.matrix
         True
         """
-        return self.t
+        return self.matrix
 
     @transform.setter
     def transform(self, value: TransformLike | None) -> None:
-        self.t = value
+        self.matrix = value
 
     def local_bbox(self) -> BBox | None:
         """Bounding box in local coordinates (before :attr:`t`), if known.

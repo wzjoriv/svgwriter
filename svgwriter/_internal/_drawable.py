@@ -69,7 +69,7 @@ def matrix_picture(matrix: Any) -> Any:
             grid.line(step * GRID_STEP, 0, step * GRID_STEP, size)
             grid.line(0, step * GRID_STEP, size, step * GRID_STEP)
         if transform is not None:
-            grid.t = transform
+            grid.matrix = transform
             grid.line(0, 0, size, 0, stroke="crimson", stroke_width=STROKE)
         del layer
     return group

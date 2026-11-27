@@ -107,7 +107,7 @@ def _shading(element: Element, to_page: Matrix, rules: list) -> Shading | None:
         if box is None or not box.width or not box.height:
             return None
         matrix = matrix @ Matrix(box.width, 0, 0, box.height, box.x, box.y)
-    transform = getattr(server, "t", None)
+    transform = getattr(server, "matrix", None)
     if transform is not None:
         matrix = matrix @ transform
 

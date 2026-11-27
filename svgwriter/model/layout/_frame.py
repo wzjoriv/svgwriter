@@ -43,7 +43,7 @@ def settle(root: Element) -> None:
 
     Output (strings, files, rendering and every exporter) calls this, and a group arranges itself
     whenever it or one of its children is measured, so calling it is only needed to read
-    children's transforms (``child.t``) directly.
+    children's transforms (``child.matrix``) directly.
 
     Parameters
     ----------
@@ -56,7 +56,7 @@ def settle(root: Element) -> None:
     >>> a, b = svg.rect(0, 0, 10, 10), svg.rect(0, 0, 10, 10)
     >>> stack = svg.VStack(a, b, gap=5)
     >>> svg.layout.settle(stack)
-    >>> b.t.apply(0, 0)
+    >>> b.matrix.apply(0, 0)
     Point(x=0.0, y=15.0)
     """
     if not Frame.made:
@@ -270,7 +270,7 @@ class Frame(Group):
         >>> import svgwriter as svg
         >>> a, b = svg.rect(0, 0, 10, 4), svg.rect(0, 0, 10, 4)
         >>> _ = svg.HStack(a, b, gap=2).arrange()
-        >>> b.t.apply(0, 0)
+        >>> b.matrix.apply(0, 0)
         Point(x=12.0, y=0.0)
         """
         if self._arranging:
@@ -330,7 +330,7 @@ class Frame(Group):
         if local is None or local.width < TOLERANCE or local.height < TOLERANCE:
             return
         sx, sy = width / local.width, height / local.height
-        background.t = Matrix(sx, 0.0, 0.0, sy, -local.x * sx, -local.y * sy)  # type: ignore[attr-defined]
+        background.matrix = Matrix(sx, 0.0, 0.0, sy, -local.x * sx, -local.y * sy)  # type: ignore[attr-defined]
 
     def local_bbox(self) -> BBox:
         """The frame's box: its local origin to its outer size.

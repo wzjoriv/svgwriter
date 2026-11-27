@@ -98,8 +98,8 @@ def test_images_have_no_compositing_operators():
 
 def test_numbers_and_offsets_keep_transform_meaning():
     image = svg.Image(np.zeros((2, 2)))
-    assert str((image * 2).t) == "matrix(2 0 0 2 -1 -1)"
-    assert str((image - (1, 1)).t) == "translate(-1 -1)"
+    assert str((image * 2).matrix) == "matrix(2 0 0 2 -1 -1)"
+    assert str((image - (1, 1)).matrix) == "translate(-1 -1)"
 
 
 def test_lone_image_rasterizes():

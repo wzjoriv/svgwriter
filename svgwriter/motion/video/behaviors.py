@@ -64,10 +64,10 @@ def wiggle(element: Transformable, seconds: float, *, angle: float = WIGGLE_ANGL
     ...         self.bell = doc.rect(10, 10, 20, 20).animate.wiggle(angle=10, period=1).element
     >>> scene = Bell()
     >>> wiggle(scene.bell, 0.25, angle=10, period=1)
-    >>> round(scene.bell.t.decompose()[2], 6)
+    >>> round(scene.bell.matrix.decompose()[2], 6)
     10.0
     """
-    element.t = element.home.t
+    element.matrix = element.home.matrix
     element.rotate(angle * _wave(seconds, period))
 
 
@@ -95,10 +95,10 @@ def hover(element: Transformable, seconds: float, *, height: float = HOVER_HEIGH
     ...         self.balloon = doc.circle(20, 20, 6).animate.hover().element
     >>> scene = Balloon()
     >>> hover(scene.balloon, 0.5)
-    >>> scene.balloon.t.f
+    >>> scene.balloon.matrix.f
     -4.0
     """
-    element.t = element.home.t
+    element.matrix = element.home.matrix
     element.translate(0.0, -height * _wave(seconds, period))
 
 
@@ -126,10 +126,10 @@ def breathe(element: Transformable, seconds: float, *, amount: float = BREATHE_A
     ...         self.heart = doc.circle(20, 20, 10).animate.breathe(amount=0.5).element
     >>> scene = Heart()
     >>> breathe(scene.heart, 0.5, amount=0.5)
-    >>> scene.heart.t.a
+    >>> scene.heart.matrix.a
     1.5
     """
-    element.t = element.home.t
+    element.matrix = element.home.matrix
     element.scale(1.0 + amount * _wave(seconds, period))
 
 

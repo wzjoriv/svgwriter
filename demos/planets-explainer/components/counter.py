@@ -31,4 +31,4 @@ class Counter:
             position = value // unit % 10
             below = value % unit
             position += min(max(below - (unit - 1), 0.0), 1.0) if place else value % 1
-            wheel.t = svg.Matrix.translate(0, -position * self.size)
+            wheel.matrix = svg.Matrix.translate(0, -position * self.size)

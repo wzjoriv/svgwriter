@@ -60,7 +60,7 @@ def test_same_shape_elements_blend_attributes_and_transform():
     b = svg.rect(10, 0, 20, 10, fill="blue").rotate(90)
     mid = svg.interpolate(a, b, 0.5)
     assert mid.tag == "rect" and (mid.x, mid.width) == (5, 15) and mid.fill.hex == "#800080"
-    assert str(svg.interpolate(svg.rect(0, 0, 10, 10), svg.rect(0, 0, 10, 10).rotate(90), 0.5).t) == "rotate(45 5 5)"
+    assert str(svg.interpolate(svg.rect(0, 0, 10, 10), svg.rect(0, 0, 10, 10).rotate(90), 0.5).matrix) == "rotate(45 5 5)"
     assert a.x == 0 and b.x == 10
 
 

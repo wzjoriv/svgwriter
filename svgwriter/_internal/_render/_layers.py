@@ -209,7 +209,7 @@ def ancestry(element: Element, root: Element) -> tuple[Matrix, float]:
         if node is root and root.tag == "svg":
             break
         if isinstance(node, Transformable):
-            matrix = node.t @ matrix
+            matrix = node.matrix @ matrix
         opacity *= float(node.get("opacity", 1.0))
         if node is root:
             break

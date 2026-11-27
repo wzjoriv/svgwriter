@@ -87,7 +87,7 @@ def draw_image(painter: _Painter, stream: Any) -> None:
         return
     rows, columns = pixels.shape[:2]
     image = Image(pixels, 0, 0, columns, rows, preserve_aspect_ratio="none")
-    image.t = painter.state.ctm @ Matrix(1 / columns, 0, 0, -1 / rows, 0, 1)
+    image.matrix = painter.state.ctm @ Matrix(1 / columns, 0, 0, -1 / rows, 0, 1)
     if painter.state.clip:
         _clip(image, painter.state.clip)
     painter.shapes.append(image)
@@ -98,7 +98,7 @@ def _clip(element: Any, ops: list[Any]) -> None:
     from ._reading import Shape, _path
 
     outline = _path(Shape(ops))
-    outline.t = element.t.inverse() if element.t is not None else outline.t
+    outline.matrix = element.matrix.inverse() if element.matrix is not None else outline.matrix
     element.clip(outline)
 
 
@@ -207,7 +207,7 @@ def _show(painter: _Painter, text: str) -> None:
                xml_space="preserve")
     if painter.state.fill_alpha * painter.state.group_alpha < 1:
         run.set("fill-opacity", painter.state.fill_alpha * painter.state.group_alpha)
-    run.t = painter.state.ctm @ painter.text_matrix @ Matrix.scale(1, -1)
+    run.matrix = painter.state.ctm @ painter.text_matrix @ Matrix.scale(1, -1)
     if painter.state.clip:
         _clip(run, painter.state.clip)
     painter.shapes.append(run)

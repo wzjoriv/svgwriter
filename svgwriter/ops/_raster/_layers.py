@@ -209,7 +209,7 @@ def draw_image(canvas: skia.Canvas, image: Image, root: Element, view: Matrix) -
     canvas.concat(skia_matrix(view))
     for node in _chain(image, root):
         if isinstance(node, Transformable):
-            canvas.concat(skia_matrix(node.t))
+            canvas.concat(skia_matrix(node.matrix))
         clip = clip_outline(node)
         if clip is not None:
             canvas.clipPath(to_skia(clip), doAntiAlias=True)

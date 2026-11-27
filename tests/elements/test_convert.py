@@ -150,7 +150,7 @@ class TestClone:
         assert type(c) is svg.Group and c is not g and c[0] is not g[0] and c.parent is None
         c[0].fill = "blue"
         c.translate(5)
-        assert str(g[0].get("fill")) == "red" and str(g.t) == "rotate(10 0.5 0.5)"
+        assert str(g[0].get("fill")) == "red" and str(g.matrix) == "rotate(10 0.5 0.5)"
 
     def test_clone_copies_pixels_and_anchor(self) -> None:
         img = svg.Image(np.zeros((2, 2, 3)), anchor=(0, 0))

@@ -74,8 +74,8 @@ class TestAngles:
         assert svg.rad(2).arclength(svg.mm(3)) == svg.mm(6) and svg.deg(-180).arclength(1).value == pytest.approx(math.pi)
 
     def test_rotations_accept_angles(self):
-        assert str(svg.rect(0, 0, 4, 2).rotate(svg.rad(math.pi / 2)).t) == "rotate(90 2 1)"
-        assert str((svg.rect(0, 0, 4, 2) @ svg.turn(0.25)).t) == "rotate(90 2 1)"
+        assert str(svg.rect(0, 0, 4, 2).rotate(svg.rad(math.pi / 2)).matrix) == "rotate(90 2 1)"
+        assert str((svg.rect(0, 0, 4, 2) @ svg.turn(0.25)).matrix) == "rotate(90 2 1)"
 
 
 def test_physical_documents_and_dpi():

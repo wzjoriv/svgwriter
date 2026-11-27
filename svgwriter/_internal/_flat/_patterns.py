@@ -23,7 +23,7 @@ def _ancestry(leaf: Element, root: Element) -> tuple[Matrix, float]:
     node = leaf.parent
     while node is not None and node is not root:
         if isinstance(node, Transformable):
-            matrix = node.t @ matrix
+            matrix = node.matrix @ matrix
         opacity *= float(node.get("opacity", 1.0))
         node = node.parent
     return matrix, opacity
@@ -47,7 +47,7 @@ def _expand_patterns(root: Element) -> None:
         except ValueError:
             continue
         holder = Group(*tiles)
-        holder.t = leaf.t
+        holder.matrix = leaf.matrix
         if leaf.get("stroke") not in (None, "none"):
             outline = leaf.clone()
             outline.set("fill", "none")
@@ -63,14 +63,14 @@ def _cut_tiles(pattern: Any, box: Any, outline: PathData) -> list[Any]:
     from ...ops.boolean import intersection
 
     tile = pattern.tile(box)
-    inverse = pattern.t.inverse()
+    inverse = pattern.matrix.inverse()
     corners = [inverse.apply(x, y) for x in (box.x, box.x + box.width) for y in (box.y, box.y + box.height)]
     xs, ys = [c.x for c in corners], [c.y for c in corners]
     paths = []
     for row in range(math.floor((min(ys) - tile.y) / tile.height), math.ceil((max(ys) - tile.y) / tile.height)):
         for column in range(math.floor((min(xs) - tile.x) / tile.width),
                             math.ceil((max(xs) - tile.x) / tile.width)):
-            offset = pattern.t @ Matrix.translate(tile.x + column * tile.width, tile.y + row * tile.height)
+            offset = pattern.matrix @ Matrix.translate(tile.x + column * tile.width, tile.y + row * tile.height)
             for shape in pattern.iter():
                 if shape is pattern or not isinstance(shape, PathOperand) or len(shape):
                     continue

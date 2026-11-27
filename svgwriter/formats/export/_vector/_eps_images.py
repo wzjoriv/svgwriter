@@ -75,7 +75,7 @@ def _place_image(machine: _Machine, depth: int, operands: list[Any], sources: li
         rgb = samples
     pixels = np.concatenate([rgb, np.ones((rows, columns, 1), np.float32)], axis=2)
     image = Image(pixels, 0, 0, columns, rows, preserve_aspect_ratio="none")
-    image.t = machine.state.ctm @ Matrix(*(float(v) for v in matrix[:6])).inverse()
+    image.matrix = machine.state.ctm @ Matrix(*(float(v) for v in matrix[:6])).inverse()
     if machine.state.clip:
         _clip(image, machine.state.clip)
     machine.shapes.append(image)

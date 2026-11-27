@@ -55,7 +55,7 @@ class TestNamedAbout:
         arg = {"rotate": 30, "scale": 2, "skew": 20}[method]
         a = getattr(svg.rect(0, 0, 10, 4).translate(5, 5), method)(arg, about="bottom_left")
         b = getattr(svg.rect(0, 0, 10, 4).translate(5, 5), method)(arg, about=(5, 9))
-        assert a.t == b.t
+        assert a.matrix == b.matrix
 
     def test_flip_about_name(self) -> None:
         assert svg.rect(0, 0, 10, 10).flip_x(about="left").bounds().x == -10

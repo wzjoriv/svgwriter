@@ -313,7 +313,7 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
         skipped += dropped
         matrix = view @ inherited
         opacity *= float(leaf.get("opacity", 1.0))
-        stretch = math.sqrt(abs((matrix @ leaf.t).determinant)) or 1.0
+        stretch = math.sqrt(abs((matrix @ leaf.matrix).determinant)) or 1.0
         dashes = computed(leaf, "stroke-dasharray", NONE, rules)
         items.append(Item(
             data=outline.transformed(matrix),
@@ -328,7 +328,7 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
             miter_limit=_number(leaf, "stroke-miterlimit", DEFAULT_MITER, rules),
             dashes=() if str(dashes) == NONE else tuple(
                 v * stretch for v in (float(p) for p in str(dashes).replace(",", " ").split())),
-            shading=_shading(leaf, matrix @ leaf.t, rules),
+            shading=_shading(leaf, matrix @ leaf.matrix, rules),
             link=link,
             source=leaf,
         ))
