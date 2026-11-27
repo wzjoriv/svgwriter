@@ -43,7 +43,7 @@ def effect_choice(label: str, value: str) -> svg.widgets.Dropdown:
 def badges(doc: svg.Document, logo: str, button: str) -> None:
     """The logo and the two buttons beside the passage, each with an effect sized to its shape."""
     center, radius = LOGO
-    doc.add(svg.builder.star(PANEL, center, radius, points=6, inner=radius * LOGO_INNER)).effect(logo)
+    doc.add(svg.paths.star(PANEL, center, radius, points=6, inner=radius * LOGO_INNER)).effect(logo)
     width, height, middle = BUTTON
     for label, offset in BUTTONS:
         doc.rect(PANEL + offset - width / 2, middle - height / 2, width, height, rx=height / 2,

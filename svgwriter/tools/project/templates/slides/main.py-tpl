@@ -29,7 +29,7 @@ def cover(doc: svg.Document) -> None:
     title = title_block("{{ project_name }}", "Made with svgwriter", x=MARGIN, y=box.height / 2 - 20, gap=56)
     doc += title
     title.animate.fade_in(1)
-    star = svg.builder.star(box.width - 220, box.height / 2, 110, 48)
+    star = svg.paths.star(box.width - 220, box.height / 2, 110, 48)
     doc += star
     star.animate.apply(bob, height=20)
 
@@ -41,7 +41,7 @@ def agenda(doc: svg.Document) -> None:
     points = svg.Group()
     for index, line in enumerate(("Why it matters", "What we built", "What comes next")):
         y = 260 + index * 90
-        points += svg.Group(svg.builder.dot(MARGIN + 12, y - 9, 10),
+        points += svg.Group(svg.paths.dot(MARGIN + 12, y - 9, 10),
                             svg.text(line, x=MARGIN + 44, y=y).as_role("text"))
     doc += points
     points.animate.stagger("fade_in", step=0.6, dur=0.5)

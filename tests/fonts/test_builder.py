@@ -115,7 +115,7 @@ def test_icon_fills_the_em() -> None:
 
 def test_css_and_cheatsheet(tmp_path: Path) -> None:
     fb = _letters()
-    fb.icon("rocket", svg.builder.star(0, 0, 10))
+    fb.icon("rocket", svg.paths.star(0, 0, 10))
     css = fb.save_css(tmp_path / "icons.css", font="Icons.woff2").read_text(encoding="utf-8")
     assert 'src: url("Icons.woff2") format("woff2")' in css
     assert r'.icon-rocket::before { content: "\e000"; }' in css

@@ -22,7 +22,7 @@ doc.circle(30, 30, 18, fill=(1, 1, 1, 0.8))             # colors: names, CSS, or
 title = doc.text("svgwriter", x=104, y=35, font_size=15.3, text_anchor="middle")
 title[3:].fill = "navy"                                  # style a character range (becomes a <tspan>)
 
-star = svg.builder.star(0, 0, 10, points=5, fill="navy")
+star = svg.paths.star(0, 0, 10, points=5, fill="navy")
 doc += star.place(30, 30).rotate(15)                    # placement and rotation go through `t`
 
 doc.save("badge.svg")                                    # also .png .pdf .tex .eps .dxf .ico ...

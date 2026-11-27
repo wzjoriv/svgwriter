@@ -129,15 +129,15 @@ class TestShapes:
         assert (first.x1, first.y1) == pytest.approx((153.98439, 50), abs=1e-4)
 
     def test_polygon(self) -> None:
-        hexagon = svg.builder.regular_polygon(0, 0, 10, 6, inkscape=True)
+        hexagon = svg.paths.regular_polygon(0, 0, 10, 6, inkscape=True)
         assert Star(hexagon).flatsided and hexagon.bbox.height == pytest.approx(20)
 
     def test_builder_star(self) -> None:
-        drawn = svg.builder.star(50, 50, 40, inkscape=True, fill="gold")
-        plain = svg.builder.star(50, 50, 40)
+        drawn = svg.paths.star(50, 50, 40, inkscape=True, fill="gold")
+        plain = svg.paths.star(50, 50, 40)
         assert drawn.bbox.width == pytest.approx(plain.bbox.width)
         with pytest.raises(ValueError, match="corner_radius"):
-            svg.builder.star(0, 0, 4, inkscape=True, corner_radius=1)
+            svg.paths.star(0, 0, 4, inkscape=True, corner_radius=1)
 
     def test_arc(self, doc: svg.Document) -> None:
         pie = Arc(doc["pie"])

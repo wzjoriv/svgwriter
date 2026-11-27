@@ -42,7 +42,7 @@ def build(doc: svg.Document) -> None:
     doc.rect(0, 0, box.width, 70).as_role("surface")
     doc += title_block("{{ project_name }}", "A poster in millimetres", x=MARGIN, y=40, gap=14)
     doc += bar_chart(rows, x=MARGIN, y=100, width=box.width - 2 * MARGIN, height=120)
-    badge = svg.builder.star(box.width - 40, 36, 14, 6).as_role("accent")
+    badge = svg.paths.star(box.width - 40, 36, 14, 6).as_role("accent")
     doc += badge
     badge.animate.apply(bob, height=3)
     doc.text("Source: assets/data/values.csv", x=MARGIN, y=box.height - MARGIN).as_role("caption")

@@ -30,12 +30,12 @@ def card(theme: svg.Theme | str = "light") -> svg.Document:
         doc.rect(x, 90, 80, 50, rx=8).as_role("box")
         doc.text(label, x=x + 40, y=120, text_anchor="middle").as_role("text")
         if index:
-            doc += svg.builder.arrow(x - 18, 115, x - 2, 115, head=6)
+            doc += svg.paths.arrow(x - 18, 115, x - 2, 115, head=6)
     for index in range(3):
-        doc += svg.builder.dot(26 + index * 16, 166, 5)
+        doc += svg.paths.dot(26 + index * 16, 166, 5)
     doc.rect(220, 154, 80, 24, rx=12).as_role("shape")
     doc.text("done", x=260, y=171, text_anchor="middle").as_role("label")
-    doc += svg.builder.star(290, 34, 14, 6)
+    doc += svg.paths.star(290, 34, 14, 6)
     return doc
 
 

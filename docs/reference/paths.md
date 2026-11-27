@@ -20,14 +20,14 @@ operations like any other element.
 
 ```python
 import svgwriter as svg
-from svgwriter import builder
+from svgwriter import paths
 
 doc = svg.Document(240, 120)
-doc += builder.callout(10, 10, 120, 50, tail=(40, 100), fill="white", stroke="black")
-doc += builder.heart(180, 40, 50, fill="crimson")
-doc += builder.wave(10, 100, 220, amplitude=6, wavelength=40, stroke="steelblue")
-badge = builder.regular_polygon(180, 85, 14, 6, corner_radius=3, fill="gold")
-cutout = badge - builder.cross(180, 85, 14)
+doc += paths.callout(10, 10, 120, 50, tail=(40, 100), fill="white", stroke="black")
+doc += paths.heart(180, 40, 50, fill="crimson")
+doc += paths.wave(10, 100, 220, amplitude=6, wavelength=40, stroke="steelblue")
+badge = paths.regular_polygon(180, 85, 14, 6, corner_radius=3, fill="gold")
+cutout = badge - paths.cross(180, 85, 14)
 ```
 
 Presets carry a [theme role](../guides/themes.md), so they follow the document theme: registered shapes
@@ -77,6 +77,6 @@ effects (see the [Presets guide](../guides/presets.md)).
 ```
 
 ```{eval-rst}
-.. automodule:: svgwriter.catalog.builder
+.. automodule:: svgwriter.catalog.paths
    :members:
 ```

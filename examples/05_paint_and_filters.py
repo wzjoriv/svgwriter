@@ -35,7 +35,7 @@ paint
 
 # %%
 stripes = paint.define(svg.Pattern(svg.rect(0, 0, 6, 12, fill="#fb7185"), width=12, height=12, pattern_units="userSpaceOnUse"))
-star_clip = paint.define(svg.ClipPath(svg.builder.star(300, 145, 45, points=5)))
+star_clip = paint.define(svg.ClipPath(svg.paths.star(300, 145, 45, points=5)))
 paint.add(svg.Rect(250, 100, 100, 90, fill=stripes, clip_path=star_clip))
 paint
 
@@ -119,7 +119,7 @@ spot = fe.FeDiffuseLighting(
     in_=height, surface_scale=6, diffuse_constant=1.3, lighting_color="#fde68a",
 )
 lit = stage.define(svg.Filter(height, spot, fe.FeComposite(fe.CompositeOperator.IN, in2=fe.StandardInput.SOURCE_ALPHA)))
-stage.add(svg.builder.star(70, 82, 66, 30, fill="white", filter=lit))
+stage.add(svg.paths.star(70, 82, 66, 30, fill="white", filter=lit))
 
 ripple = fe.FeTurbulence(0.02, 2, seed=5)
 warp = stage.define(svg.Filter(ripple, fe.FeDisplacementMap(7, svg.Channel.R, svg.Channel.G,

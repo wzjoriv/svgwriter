@@ -32,7 +32,7 @@ def outline(x: float, y: float, width: float, height: float, **kwargs: Any) -> R
 
     Examples
     --------
-    >>> from svgwriter.catalog.builder import outline
+    >>> from svgwriter.catalog.paths import outline
     >>> str(outline(0, 0, 5, 5))
     '<rect x="0" y="0" width="5" height="5" fill="none" stroke="black" class="role-outline"/>'
     """
@@ -56,7 +56,7 @@ def dashed_line(x1: float, y1: float, x2: float, y2: float, **kwargs: Any) -> Li
 
     Examples
     --------
-    >>> from svgwriter.catalog.builder import dashed_line
+    >>> from svgwriter.catalog.paths import dashed_line
     >>> line = dashed_line(0, 0, 10, 0, stroke="red")
     >>> line.style["stroke"], line.get("stroke-dasharray")
     ('red', (4, 2))
@@ -88,7 +88,7 @@ def dot(cx: float, cy: float, r: float = DOT_RADIUS, **kwargs: Any) -> Circle:
     --------
     >>> import svgwriter as svg
     >>> doc = svg.Document(10, 10, theme="dark")
-    >>> doc += svg.builder.dot(5, 5)
+    >>> doc += svg.paths.dot(5, 5)
     >>> ".role-dot { fill:#b45309" in doc.to_string()
     True
     """

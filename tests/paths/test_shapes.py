@@ -5,7 +5,7 @@ import math
 import pytest
 
 import svgwriter as svg
-from svgwriter import builder
+from svgwriter import paths as builder
 from tests.conftest import wellformed
 
 

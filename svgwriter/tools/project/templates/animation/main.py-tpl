@@ -28,7 +28,7 @@ class Intro(svg.Scene):
         title.animate.fade_in(0.8)
         dots = svg.Group()
         for index in range(5):
-            dots += svg.builder.dot(96 + index * 60, 420, 16)
+            dots += svg.paths.dot(96 + index * 60, 420, 16)
         doc += dots
         dots.animate.stagger("bob", step=0.15, height=40, dur=1.2)
         self.bar = doc.rect(96, 560, 0, 12, rx=6).as_role("shape")

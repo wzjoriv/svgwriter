@@ -41,7 +41,7 @@ doc
 # %%
 vector = doc.group(stroke="#f9fafb", stroke_width=3, fill="none")
 vector.add(svg.circle(240, 90, 50))
-vector.add(svg.builder.gear(240, 90, 32, teeth=12, fill="#f59e0b", stroke="none"))
+vector.add(svg.paths.gear(240, 90, 32, teeth=12, fill="#f59e0b", stroke="none"))
 snapshot = vector.to_image(scale=0.5)
 doc += snapshot.place(240, 155) * 0.35
 doc
@@ -61,7 +61,7 @@ TILE = 96
 tile = svg.Image(pixels[:TILE, :TILE], 0, 0, TILE, TILE).pixels
 
 masked = tile & svg.circle(48, 48, 46)
-cut = tile - svg.builder.star(48, 48, 40, points=5)
+cut = tile - svg.paths.star(48, 48, 40, points=5)
 label = svg.text("pixels", x=48, y=54, font_size=20, font_family="Arial, Helvetica, sans-serif",
                  font_weight="bold", text_anchor="middle", fill="white")
 labelled = tile.on_grid(label) | tile
