@@ -8,6 +8,7 @@ import re
 from typing import Final
 
 __all__ = [
+    "ROLE_ATTRIBUTES",
     "ARRAY_CHANNELS",
     "ARRAY_INTEGER_MAX",
     "BOOLEAN_WORDS",
@@ -59,6 +60,8 @@ __all__ = [
 ]
 
 DEFAULT_THEME: Final = "light"
+ROLE_ATTRIBUTES: Final = frozenset({"rx", "ry", "r"})
+"""Role properties written as attributes, not CSS: geometry SVG 1.1 does not style (corner radii, radius)."""
 ROLE_CLASS_PREFIX: Final = "role-"
 STYLE_ID: Final = "svgwriter-theme"
 SHEET_THEME_NAME: Final = "document"

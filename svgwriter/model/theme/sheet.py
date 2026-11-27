@@ -89,13 +89,40 @@ def applied(theme: Theme, root: Element) -> Generator[None, None, None]:
     >>> len(root)
     1
     """
-    from ..elements.structure import StyleElement, Title
-
     roles = used_roles(theme, root)
     existing = root.get_element_by_id(STYLE_ID)
     if not roles and existing is None:
         yield
         return
+    with _role_attributes(theme, roles, root), _sheet(theme, roles, root, existing):
+        yield
+
+
+@contextmanager
+def _role_attributes(theme: Theme, roles: list[str], root: Element) -> Generator[None, None, None]:
+    """Set role geometry (``rx``, ``ry``, ``r``) on elements that carry the role and lack it, for the block."""
+    by_class = {Theme.class_name(role): theme.attributes(role) for role in roles}
+    by_class = {name: values for name, values in by_class.items() if values}
+    added: list[tuple[Element, str]] = []
+    if by_class:
+        for element in root.iter():
+            for name in str(element.attributes.get("class", "")).split():
+                for key, value in by_class.get(name, {}).items():
+                    if key not in element.attributes:
+                        element.attributes[key] = value
+                        added.append((element, key))
+    try:
+        yield
+    finally:
+        for element, key in added:
+            element.attributes.pop(key, None)
+
+
+@contextmanager
+def _sheet(theme: Theme, roles: list[str], root: Element, existing: Element | None) -> Generator[None, None, None]:
+    """Hold the role style sheet in *root* for the block."""
+    from ..elements.structure import StyleElement, Title
+
     css = theme.css(roles).css()
     if isinstance(existing, StyleElement):
         saved = existing.css

@@ -12,7 +12,7 @@ from typing import Any, Final, TypeAlias
 from ..._internal._registry import Registry
 from ...errors import ThemeError
 from ..attributes.style import Style, StyleLike, StyleSheet
-from ._constants import DEFAULT_THEME, ROLE_CLASS_PREFIX
+from ._constants import DEFAULT_THEME, ROLE_ATTRIBUTES, ROLE_CLASS_PREFIX
 from ._files import ThemeFiles
 from ._resolve import check_role_name, resolve_role
 from ._roles import DERIVED_PALETTE, STANDARD_ROLES
@@ -212,7 +212,34 @@ class Theme(ThemeFiles):
         missing = sorted(wanted - set(self._styles))
         if missing:
             raise ThemeError(f"theme {self._name!r} has no role {', '.join(map(repr, missing))}")
-        return StyleSheet((f".{self.class_name(k)}", v) for k, v in self._styles.items() if k in wanted)
+        return StyleSheet((f".{self.class_name(k)}", {p: x for p, x in v.items() if p not in ROLE_ATTRIBUTES})
+                          for k, v in self._styles.items() if k in wanted)
+
+    def attributes(self, role: str) -> dict[str, str]:
+        """The geometry a role sets as attributes (``rx``, ``ry``, ``r``); SVG 1.1 CSS cannot style them.
+
+        Parameters
+        ----------
+        role : str
+            The role name.
+
+        Returns
+        -------
+        dict of str to str
+            Attribute names and values; empty when the role sets no geometry.
+
+        Raises
+        ------
+        ThemeError
+            If the theme has no such role.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.themes.get("light").replace(roles={"card": {"rx": "6"}}).attributes("card")
+        {'rx': '6'}
+        """
+        return {name: value for name, value in self.style(role).items() if name in ROLE_ATTRIBUTES}
 
     def replace(self, *, name: str | None = None, palette: Mapping[str, PaletteSource] | None = None,
                 fonts: Fonts | Mapping[str, Any] | None = None, roles: Mapping[str, RoleSource] | None = None) -> Theme:
