@@ -16,11 +16,16 @@ __all__ = [
     "em",
     "ex",
     "ft",
+    "furlong",
     "grad",
     "inch",
+    "km",
     "length",
     "m",
+    "mi",
+    "mil",
     "mm",
+    "nmi",
     "pc",
     "percent",
     "pt",
@@ -28,6 +33,8 @@ __all__ = [
     "q",
     "rad",
     "turn",
+    "um",
+    "yd",
 ]
 
 
@@ -91,61 +98,60 @@ def angle(value: float, unit: str = "deg") -> Angle:
     return Angle(float(value), unit)
 
 
-class LengthUnit:
-    """A unit you can call or multiply: ``mm(5)`` and ``5 * mm`` are both ``Length(5, Unit.MM)``.
+class LengthUnit(Length):
+    """One of a unit, usable as a length or as a factory: ``mm(5)``, ``5 * mm`` and ``height=inch``.
+
+    A unit is a `Length` of 1 in that unit, so it goes anywhere a length does. Units SVG has no name
+    for (metres, feet, miles...) are written in the nearest SVG unit.
 
     Parameters
     ----------
     unit : Unit or str
-        The unit this factory produces; ``"m"`` and ``"ft"`` give millimetres and inches.
+        The unit, by suffix or spelled out (``"mm"``, ``"miles"``).
 
     Examples
     --------
     >>> import svgwriter as svg
     >>> str(5 * svg.mm), str(svg.inch(2) - 10 * svg.mm), str(svg.ft(1))
     ('5mm', '1.6063in', '12in')
+    >>> svg.inch == 96, str(svg.mi(1))
+    (True, '63360in')
     """
 
-    __slots__ = ("unit",)
+    __slots__ = ()
 
     def __init__(self, unit: Unit | str) -> None:
-        self.unit = unit
+        super().__init__(1.0, unit)
 
     def __call__(self, value: float) -> Length:
-        return Length(float(value), self.unit)
-
-    def __rmul__(self, value: float) -> Length:
-        return Length(float(value), self.unit)
+        return Length(float(value) * self.value, self.unit)
 
     def __repr__(self) -> str:
-        return f"LengthUnit({str(self.unit)!r})"
+        return f"LengthUnit({str(self.unit)!r})" if self.value == 1 else f"LengthUnit({self.value:g}{self.unit})"
 
 
-class AngleUnit:
-    """A unit you can call or multiply: ``deg(30)`` and ``30 * deg`` are both ``Angle(30, "deg")``.
+class AngleUnit(Angle):
+    """One of a unit, usable as an angle or as a factory: ``deg(30)``, ``30 * deg`` and ``rotate=turn``.
 
     Parameters
     ----------
     unit : str
-        The unit this factory produces.
+        The unit, by suffix or spelled out (``"deg"``, ``"radians"``).
 
     Examples
     --------
     >>> import svgwriter as svg
-    >>> str(30 * svg.deg), str(svg.turn(0.5))
-    ('30deg', '0.5turn')
+    >>> str(30 * svg.deg), str(svg.turn(0.5)), str(svg.turn)
+    ('30deg', '0.5turn', '1turn')
     """
 
-    __slots__ = ("unit",)
+    __slots__ = ()
 
     def __init__(self, unit: str) -> None:
-        self.unit = unit
+        super().__init__(1.0, unit)
 
     def __call__(self, value: float) -> Angle:
-        return Angle(float(value), self.unit)
-
-    def __rmul__(self, value: float) -> Angle:
-        return Angle(float(value), self.unit)
+        return Angle(float(value) * self.value, self.unit)
 
     def __repr__(self) -> str:
         return f"AngleUnit({self.unit!r})"
@@ -169,6 +175,20 @@ inch = LengthUnit(Unit.IN)
 """Inches: ``inch(5)`` or ``5 * inch``."""
 ft = LengthUnit("ft")
 """Feet, written as inches: ``ft(1)`` is ``12in``."""
+km = LengthUnit("km")
+"""Kilometres, written as millimetres."""
+um = LengthUnit("um")
+"""Micrometres, written as millimetres."""
+yd = LengthUnit("yd")
+"""Yards, written as inches."""
+mi = LengthUnit("mi")
+"""Miles, written as inches."""
+furlong = LengthUnit("furlong")
+"""Furlongs (220 yards), written as inches."""
+mil = LengthUnit("mil")
+"""Thousandths of an inch (thou)."""
+nmi = LengthUnit("nmi")
+"""Nautical miles (1852 m), written as millimetres."""
 em = LengthUnit(Unit.EM)
 """Font-size multiples: ``em(5)`` or ``5 * em``."""
 ex = LengthUnit(Unit.EX)
