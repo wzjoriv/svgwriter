@@ -4,11 +4,13 @@ Pictures for svgwriter's own value objects (colors, path data, boxes, matrices, 
 
 from __future__ import annotations
 
+import hashlib
+import re
 from typing import Any
 
-from ._constants import GHOST, GRID, GRID_STEP, OUTLINE, STROKE, SWATCH
+from ._constants import GHOST, GRID, GRID_STEP, ID_ATTRIBUTE_RE, OUTLINE, STROKE, SWATCH, TIMING_ATTRIBUTE_RE
 
-__all__ = ["Drawable", "ascii_markup"]
+__all__ = ["Drawable", "notebook_markup"]
 
 
 class Drawable:
@@ -82,9 +84,21 @@ def pixels_picture(pixels: Any) -> Any:
     return Image(pixels.rgba())
 
 
-def ascii_markup(markup: str) -> str:
-    """*markup* with every non-ASCII character as an XML character reference.
+def notebook_markup(markup: str) -> str:
+    """*markup* ready for a notebook output: ids made unique to this drawing and non-ASCII as references.
 
-    Notebook viewers that mishandle non-ASCII in SVG outputs (GitHub shows ``\xe0...``) still read these.
+    Notebook pages put every SVG output in one HTML page, so a second drawing's ``url(#filter1)`` would use
+    the first drawing's filter. Ids get a prefix from a hash of the drawing, and every reference
+    (``#id``, ``url(#id)``, ``id.begin`` timing) follows. Viewers that mishandle non-ASCII in SVG outputs
+    (GitHub shows escaped bytes) still read character references.
     """
+    ids = set(ID_ATTRIBUTE_RE.findall(markup))
+    if ids:
+        prefix = "s" + hashlib.blake2s(markup.encode("utf-8"), digest_size=3).hexdigest() + "-"
+        names = "|".join(re.escape(name) for name in sorted(ids, key=len, reverse=True))
+        references = re.compile(rf"""((?<![\w-])id="|#)({names})(?=["'\s){{,:.>+~]|$)""")
+        timing = re.compile(rf"(?<![\w.-])({names})(?=\.)")
+        markup = references.sub(rf"\g<1>{prefix}\g<2>", markup)
+        markup = TIMING_ATTRIBUTE_RE.sub(
+            lambda match: match[1] + '="' + timing.sub(prefix + r"\g<1>", match[2]) + '"', markup)
     return markup.encode("ascii", "xmlcharrefreplace").decode("ascii")
