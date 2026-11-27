@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 import numpy as np
 
-from .._internal._drawable import ascii_markup
+from .._internal._drawable import notebook_markup
 from .._internal._typing import AnyPath
 from ..model.elements.core import Element
 from ..motion.video.animation import DEFAULT_FPS
@@ -62,7 +62,7 @@ class Output:
         return self.to_string(xml_declaration=False)
 
     def _repr_svg_(self) -> str:
-        return ascii_markup(self.to_string(xml_declaration=False))
+        return notebook_markup(self.to_string(xml_declaration=False))
 
     def _repr_html_(self) -> str:
         """Jupyter display as inline SVG, so text in the drawing stays selectable and copyable."""

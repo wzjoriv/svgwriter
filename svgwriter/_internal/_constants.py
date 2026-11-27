@@ -8,6 +8,8 @@ import re
 from typing import Final
 
 __all__ = [
+    "ID_ATTRIBUTE_RE",
+    "TIMING_ATTRIBUTE_RE",
     "PAGE_LENGTH_DIGITS",
     "ANCHOR_SHIFT",
     "ANIMATED_DEFAULTS",
@@ -396,3 +398,8 @@ MOTION_HELPERS: Final = frozenset({"apply", "stagger", "element"})
 
 PAGE_LENGTH_DIGITS: Final = 9
 """Decimal places kept when a length converts to user units of a physically sized page."""
+
+ID_ATTRIBUTE_RE: Final = re.compile(r'(?<![\w-])id="([^"]+)"')
+"""An ``id`` attribute in serialized markup; group 1 is the id."""
+TIMING_ATTRIBUTE_RE: Final = re.compile(r'(?<![\w-])(begin|end)="([^"]*)"')
+"""A SMIL ``begin`` or ``end`` attribute; group 2 is its value (may name other elements' ids)."""
