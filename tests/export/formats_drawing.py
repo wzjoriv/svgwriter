@@ -36,7 +36,7 @@ def formats_drawing(*, formula: bool = True) -> svg.Document:
     """
     doc = svg.Document(WIDTH, HEIGHT)
     doc.rect(0, 0, WIDTH, HEIGHT, fill="white")
-    doc.add(svg.builder.grid(10, 10, 180, 120, spacing=20, stroke="#94a3b8", stroke_width=1, fill="none"))
+    doc.add(svg.paths.grid(10, 10, 180, 120, spacing=20, stroke="#94a3b8", stroke_width=1, fill="none"))
     doc.rect(20, 20, 70, 40, fill="#ef4444", stroke="black", stroke_width=2)
     doc.rect(100, 20, 80, 40, fill=svg.LinearGradient.horizontal("#facc15", "#2563eb"))
     doc.circle(55, 100, 25, fill=svg.RadialGradient(svg.Stop(0, "white"), svg.Stop(1, "#16a34a")))
@@ -55,7 +55,7 @@ def formats_drawing(*, formula: bool = True) -> svg.Document:
     tilted.add(svg.rect(30, 180, 60, 30, fill="#a855f7", stroke="#3b0764", stroke_width=2))
     head = svg.markers.arrow(6, color="#dc2626")
     doc.path("M110 220 Q150 160 190 220", fill="none", stroke="#dc2626", stroke_width=3, marker_end=head)
-    doc.add(svg.builder.star(240, 240, 35, 15, points=5, fill="#fbbf24", stroke="#92400e", stroke_width=2))
+    doc.add(svg.paths.star(240, 240, 35, 15, points=5, fill="#fbbf24", stroke="#92400e", stroke_width=2))
     doc.add(svg.Image(_picture(), 300, 215, 60, 60))
     title = doc.text("Formats audit", x=20, y=275, font_size=22, font_family="Helvetica", fill="#111827")
     title[8:13].wrap(fill="#be123c", font_weight="bold")

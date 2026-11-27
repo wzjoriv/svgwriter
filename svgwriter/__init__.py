@@ -26,7 +26,7 @@ model
     ``transform``, ``layout``, ``theme`` and ``batch`` (``svg.Rect``, ``svg.Theme``,
     ``svg.batch.circles``).
 catalog
-    Ready-made content: ``builder``, ``patterns``, ``gradients``, ``filters``,
+    Ready-made content: ``paths``, ``patterns``, ``gradients``, ``filters``,
     ``markers``, ``effects``, ``preset`` and ``fonts``
     (``fill=svg.patterns.stripes()``, ``svg.FontBuilder``).
 formats
@@ -57,10 +57,10 @@ from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
 from .aliases import filter as filter  # noqa: A004, E402
 from .aliases import set as set
-from .catalog import builder as builder
 from .catalog import effects, filters, fonts, gradients, markers, patterns, preset
-from .catalog.builder import drawing
+from .catalog import paths as paths
 from .catalog.fonts import FontBuilder
+from .catalog.paths import drawing
 from .document import Document
 from .formats import Format, export, inkscape
 from .formats import io as io

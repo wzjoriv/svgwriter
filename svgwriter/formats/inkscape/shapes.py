@@ -85,7 +85,7 @@ class Star(_Shape):
     See Also
     --------
     Arc : The same for ellipses and arcs.
-    svgwriter.catalog.builder.star : ``inkscape=True`` builds one.
+    svgwriter.catalog.paths.star : ``inkscape=True`` builds one.
 
     Notes
     -----

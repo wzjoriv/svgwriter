@@ -98,8 +98,8 @@ degrees.
 import svgwriter as svg
 
 doc = svg.Document(200, 100)
-logo = doc.add(svg.builder.star(50, 50, 30, 12, 5, inkscape=True, fill="gold"))
-hexagon = doc.add(svg.builder.regular_polygon(150, 50, 25, 6, inkscape=True, fill="teal"))
+logo = doc.add(svg.paths.star(50, 50, 30, 12, 5, inkscape=True, fill="gold"))
+hexagon = doc.add(svg.paths.regular_polygon(150, 50, 25, 6, inkscape=True, fill="teal"))
 
 star = svg.inkscape.shape(logo)
 star.sides = 7                          # 7 tips, redrawn
@@ -109,7 +109,7 @@ svg.inkscape.Arc(pie).kind = "chord"
 print(star.sides, round(star.angle), svg.inkscape.shape(hexagon).flatsided)
 ```
 
-`svg.builder.star(..., inkscape=True)` and `svg.builder.regular_polygon(..., inkscape=True)` build these
+`svg.paths.star(..., inkscape=True)` and `svg.paths.regular_polygon(..., inkscape=True)` build these
 paths; `corner_radius` does not combine with them (use `rounded` instead).
 
 ## Connectors

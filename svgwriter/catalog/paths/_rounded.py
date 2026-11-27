@@ -52,7 +52,7 @@ def rounded_outline(points: Sequence[Vertex], radii: Sequence[float], **kwargs: 
 
     Examples
     --------
-    >>> from svgwriter.catalog.builder._rounded import rounded_outline
+    >>> from svgwriter.catalog.paths._rounded import rounded_outline
     >>> rounded_outline([(0, 0), (10, 0), (10, 10), (0, 10)], [2] * 4).bbox.width
     10.0
     """

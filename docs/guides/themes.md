@@ -11,8 +11,8 @@ doc = svg.Document(240, 100, theme="dark")
 doc.rect(0, 0, 240, 100).as_role("background")
 doc.text("Results", x=16, y=34).as_role("title")
 doc.rect(16, 50, 90, 34, rx=6).as_role("box")
-doc += svg.builder.star(200, 60, 20, 8)          # builder shapes carry roles already
-doc += svg.builder.arrow(110, 67, 160, 67)
+doc += svg.paths.star(200, 60, 20, 8)          # builder shapes carry roles already
+doc += svg.paths.arrow(110, 67, 160, 67)
 
 doc.theme = "paper"                               # restyle everything
 print(doc.to_string()[:200])
@@ -36,7 +36,7 @@ warn = svg.rect(0, 0, 40, 20, stroke="red").as_role("box")   # fill from the the
 print(warn.style["stroke"], warn.classes)
 ```
 
-Builder presets work the same way: `svg.builder.star(..., fill="gold")` keeps its gold fill and takes the
+Builder presets work the same way: `svg.paths.star(..., fill="gold")` keeps its gold fill and takes the
 rest of the `shape` role.
 
 ## Standard roles

@@ -96,7 +96,7 @@ def star(
 
     Examples
     --------
-    >>> from svgwriter.catalog.builder import star
+    >>> from svgwriter.catalog.paths import star
     >>> len(star(50, 50, 40).points)
     10
     >>> round(star(50, 50, 40, corner_radius=4).bbox.height, 1)
@@ -139,7 +139,7 @@ def gear(cx: float, cy: float, radius: float, teeth: int = DEFAULT_TEETH, **kwar
 
     Examples
     --------
-    >>> from svgwriter.catalog.builder import gear
+    >>> from svgwriter.catalog.paths import gear
     >>> len(gear(0, 0, 20, teeth=8).points)
     32
     """
@@ -171,11 +171,11 @@ def arrow(x1: float, y1: float, x2: float, y2: float, head: float = DEFAULT_HEAD
 
     See Also
     --------
-    svgwriter.catalog.builder.arrow_marker : An arrowhead as a reusable marker.
+    svgwriter.catalog.paths.arrow_marker : An arrowhead as a reusable marker.
 
     Examples
     --------
-    >>> from svgwriter.catalog.builder import arrow
+    >>> from svgwriter.catalog.paths import arrow
     >>> arrow(0, 0, 10, 0).to_string(xml_declaration=False, pretty=False)
     '<path d="M0 0 L10 0 M1.3397 5 L10 0 M1.3397 -5 L10 0" fill="none" class="role-arrow-line"/>'
     """
@@ -239,7 +239,7 @@ def regular_polygon(
 
     Examples
     --------
-    >>> from svgwriter.catalog.builder import regular_polygon
+    >>> from svgwriter.catalog.paths import regular_polygon
     >>> len(regular_polygon(0, 0, 10, 6).points)
     6
     >>> regular_polygon(0, 0, 10, 5, corner_radius=2).tag

@@ -61,7 +61,7 @@ icons.icon("rocket", svg.group(
     svg.path("M16 11 L20 17 L16 16 Z"),
     svg.path("M10 17 H14 L12 22 Z"),
 ))
-icons.icon("star", svg.builder.star(12, 12, 10))
+icons.icon("star", svg.paths.star(12, 12, 10))
 icons.icon("home", svg.path("M2 11 L12 2 L22 11 V22 H15 V15 H9 V22 H2 Z"))
 icons.icon("bell", svg.group(
     svg.path("M6 17 V11 C6 7 8.5 4.5 12 4.5 C15.5 4.5 18 7 18 11 V17 L20 19 H4 Z"),

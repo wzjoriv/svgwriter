@@ -18,7 +18,7 @@ png = doc.render_png(scale=2)
 Single elements render on their own, over their stroke-inclusive bounds:
 
 ```python
-star = svg.builder.star(0, 0, 20, fill="gold", stroke="black")
+star = svg.paths.star(0, 0, 20, fill="gold", stroke="black")
 print(star.rasterize(scale=2, padding=2).shape)
 ```
 

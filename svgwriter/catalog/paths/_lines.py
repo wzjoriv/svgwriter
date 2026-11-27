@@ -76,11 +76,11 @@ def grid(
 
     See Also
     --------
-    svgwriter.catalog.builder.dashed_line : A single dashed line.
+    svgwriter.catalog.paths.dashed_line : A single dashed line.
 
     Examples
     --------
-    >>> from svgwriter.catalog.builder import grid
+    >>> from svgwriter.catalog.paths import grid
     >>> str(grid(0, 0, 20, 10, rows=1, cols=2))
     '<path d="M0 0 L20 0 M0 10 L20 10 M0 0 L0 10 M10 0 L10 10 M20 0 L20 10" fill="none" class="role-grid"/>'
     >>> int(grid(0, 0, 20, 20, spacing=5).bbox.width)
@@ -138,7 +138,7 @@ def spiral(cx: float, cy: float, *, turns: float, start_radius: float, end_radiu
 
     Examples
     --------
-    >>> from svgwriter.catalog.builder import spiral
+    >>> from svgwriter.catalog.paths import spiral
     >>> round(spiral(0, 0, turns=2, start_radius=0, end_radius=20).bbox.width)
     35
     """
@@ -288,7 +288,7 @@ def wave(
 
     Examples
     --------
-    >>> from svgwriter.catalog.builder import wave
+    >>> from svgwriter.catalog.paths import wave
     >>> box = wave(0, 20, 100, amplitude=10, wavelength=50).bbox
     >>> round(box.height, 1)
     20.0

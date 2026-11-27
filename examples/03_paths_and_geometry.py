@@ -10,7 +10,7 @@ Run it as ``python 03_paths_and_geometry.py`` or open ``03_paths_and_geometry.ip
 import numpy as np
 
 import svgwriter as svg
-from svgwriter import builder
+from svgwriter import paths as builder
 
 # %% [markdown]
 # `PathBuilder` writes path data with chained commands. Relative quadratic curves make a wave,
@@ -38,7 +38,7 @@ doc += slice_.clone().rotate(180, about=(150, 150))
 doc
 
 # %% [markdown]
-# `svgwriter.catalog.builder` has registered composite shapes (star, gear, arrow, dashed line) that return
+# `svgwriter.catalog.paths` has registered composite shapes (star, gear, arrow, dashed line) that return
 # ordinary shapes, here added together to one group.
 
 # %%

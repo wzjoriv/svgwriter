@@ -19,7 +19,7 @@ def build(doc: svg.Document) -> None:
     box = doc.root.get("viewBox")
     doc.rect(0, 0, box.width, box.height).as_role("background")
     doc += title_block("{{ project_name }}", "Edit main.py, then run svgwriter build", x=56, y=96)
-    star = svg.builder.star(box.width / 2, box.height / 2 + 60, 110, 48)
+    star = svg.paths.star(box.width / 2, box.height / 2 + 60, 110, 48)
     doc += star
     star.animate.apply(bob, height=16)
 

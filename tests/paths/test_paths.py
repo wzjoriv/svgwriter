@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 import svgwriter as svg
-from svgwriter import builder
+from svgwriter import paths as builder
 
 
 class TestPresets:

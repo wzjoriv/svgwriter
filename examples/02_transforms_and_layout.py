@@ -33,7 +33,7 @@ doc
 # Subtracting one shape from another (`-`) gives a path with a cut-out: a disc minus a star.
 
 # %%
-core = svg.circle(*CENTER, 46) - svg.builder.star(*CENTER, 30, points=8)
+core = svg.circle(*CENTER, 46) - svg.paths.star(*CENTER, 30, points=8)
 doc += core.update(fill="#fde047")
 doc
 
@@ -50,7 +50,7 @@ doc
 # `flip_x` and `flip_y` mirror a clone about a point: one arrow becomes four corners.
 
 # %%
-corner = svg.builder.arrow(20, 20, 70, 20, head=10, stroke="#38bdf8", stroke_width=3)
+corner = svg.paths.arrow(20, 20, 70, 20, head=10, stroke="#38bdf8", stroke_width=3)
 doc += [corner, corner.clone().flip_x(about=CENTER), corner.clone().flip_y(about=CENTER),
         corner.clone().flip_x(about=CENTER).flip_y(about=CENTER)]
 doc

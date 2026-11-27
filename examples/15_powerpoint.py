@@ -29,9 +29,9 @@ def slide(title: str, subtitle: str) -> svg.Document:
 
 
 cover = slide("Quarterly review", "Made with svgwriter")
-cover += svg.builder.star(420, 200, 36, 16)
+cover += svg.paths.star(420, 200, 36, 16)
 for index in range(3):
-    cover += svg.builder.dot(36 + index * 18, 236, 5)
+    cover += svg.paths.dot(36 + index * 18, 236, 5)
 cover
 
 # %% [markdown]
@@ -44,7 +44,7 @@ for index, label in enumerate(("collect", "model", "report")):
     flow.rect(x, 130, 110, 60, rx=10).as_role("box")
     flow.text(label, x=x + 55, y=166, text_anchor="middle").as_role("text")
     if index:
-        flow += svg.builder.arrow(x - 36, 160, x - 4, 160, head=7)
+        flow += svg.paths.arrow(x - 36, 160, x - 4, 160, head=7)
 flow
 
 # %% [markdown]

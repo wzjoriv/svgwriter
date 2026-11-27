@@ -374,7 +374,7 @@ class FontBuilder:
         --------
         >>> import svgwriter as svg
         >>> fb = svg.FontBuilder()
-        >>> _ = fb.icon("star", svg.builder.star(0, 0, 10))
+        >>> _ = fb.icon("star", svg.paths.star(0, 0, 10))
         >>> "U+E000" in fb.cheatsheet().to_string()
         True
         """

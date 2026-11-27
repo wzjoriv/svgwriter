@@ -3,7 +3,7 @@ Ready-made content: composite shapes, paints, filters, markers, effects, presets
 
 Sub-packages
 ------------
-builder
+paths
     Composite shapes (star, gear, arrow) and the ``drawing`` decorator.
 patterns, gradients, filters, markers, effects
     Ready-made paints, filters, line markers and effects for any element.

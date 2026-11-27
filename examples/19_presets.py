@@ -113,7 +113,7 @@ sentence
 shapes = svg.Document(500, 110)
 shapes.rect(0, 0, 500, 110, fill="#0f172a")
 for column, effect in enumerate(("fire", "ice", "metal", "neon", "glitch")):
-    shapes.add(svg.builder.star(50 + column * 100, 55, 34, points=5)).effect(effect)
+    shapes.add(svg.paths.star(50 + column * 100, 55, 34, points=5)).effect(effect)
 shapes.save("19_shapes.svg")
 shapes
 
