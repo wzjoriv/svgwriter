@@ -516,7 +516,7 @@ values. Notebook entries declare none here.</p>
 <p>The page shows every page and scene as SVG, drawn in memory. Controls the entry declares
 (<a class="reference internal" href="widgets.html#svgwriter.tools.widgets.controls" title="svgwriter.tools.widgets.controls"><code class="xref py py-func docutils literal notranslate"><span class="pre">svgwriter.tools.widgets.controls()</span></code></a>) appear in a panel beside or below the drawing, and the drawing
 follows them as they move. Saving a file imports the project again and redraws; once the project has been
-quiet for a moment the output files are written too, as the page’s Build outputs button does. A failed
+quiet for a moment the output files are written too, as the page’s Export button does. A failed
 drawing shows its traceback under the last drawing that worked. The manifest’s <code class="docutils literal notranslate"><span class="pre">[preview]</span></code> table
 (<a class="reference internal" href="#svgwriter.tools.project.PreviewConfig" title="svgwriter.tools.project.PreviewConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">PreviewConfig</span></code></a>) sets the layout, backdrop, port and more.</p>
 <dl class="field-list simple">
@@ -646,7 +646,7 @@ drawing shows its traceback under the last drawing that worked. The manifest’s
 <li><p><strong>open</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – Open the page in a browser on start.</p></li>
 <li><p><strong>debounce_ms</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – Milliseconds the page waits after a control moves before asking for a new drawing.</p></li>
 <li><p><strong>build_on_save</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – Write the outputs after a file is saved and the project has been quiet for a moment.</p></li>
-<li><p><strong>formats_on_build</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>None</em>) – The formats that saving and the page’s Build outputs button write. None writes <code class="docutils literal notranslate"><span class="pre">[outputs]</span> <span class="pre">formats</span></code>.</p></li>
+<li><p><strong>formats_on_build</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>None</em>) – The formats that saving and the page’s Export button write. None writes <code class="docutils literal notranslate"><span class="pre">[outputs]</span> <span class="pre">formats</span></code>.</p></li>
 </ul>
 </dd>
 </dl>

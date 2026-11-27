@@ -194,7 +194,7 @@ under the last drawing that worked, until a change fixes it.
 
 The project's code is imported once and reused for every control change. Saving a file imports it again,
 so edits always show, and the page updates without a reload. Once the project has been quiet for a second
-after a save, the output files are written as `svgwriter build` writes them; the **Build outputs** button
+after a save, the output files are written as `svgwriter build` writes them; the **Export** button
 in the header writes them on demand, with the current control values. `svgwriter build` uses the
 controls' starting values. See {doc}`widgets`.
 
@@ -208,7 +208,7 @@ port = 8000
 open = true                       # open a browser on start
 debounce_ms = 80                  # pause after a control moves before drawing
 build_on_save = true              # write the outputs after a save
-formats_on_build = ["svg"]        # what saves and Build outputs write
+formats_on_build = ["svg"]        # what saves and Export write
 ```
 
 | Key | Default | Meaning |
@@ -221,6 +221,6 @@ formats_on_build = ["svg"]        # what saves and Build outputs write
 | `preview.open` | `true` | Open the page in a browser on start |
 | `preview.debounce_ms` | `80` | Milliseconds the page waits after a control moves |
 | `preview.build_on_save` | `true` | Write the output files after a save |
-| `preview.formats_on_build` | `outputs.formats` | The formats that saves and the Build outputs button write |
+| `preview.formats_on_build` | `outputs.formats` | The formats that saves and the Export button write |
 
 In a `pyproject.toml` the table is `[tool.svgwriter.preview]`.
