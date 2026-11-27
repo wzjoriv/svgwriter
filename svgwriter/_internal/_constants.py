@@ -10,6 +10,7 @@ from typing import Final
 __all__ = [
     "HOVER_SHEET_ID",
     "HOVER_STYLE",
+    "POINTER_EVENTS",
     "ID_ATTRIBUTE_RE",
     "TIMING_ATTRIBUTE_RE",
     "PAGE_LENGTH_DIGITS",
@@ -410,3 +411,8 @@ HOVER_STYLE: Final = "_hover_style"
 """Where an element keeps the properties ``on_hover`` gave it (SVG names to value text)."""
 HOVER_SHEET_ID: Final = "svgwriter-hover"
 """Id of the ``<style>`` holding the ``:hover`` rules while a document is written."""
+POINTER_EVENTS: Final = {
+    "click": "click", "hover": "mouseover", "leave": "mouseout", "press": "mousedown", "release": "mouseup",
+    "focus": "focusin", "blur": "focusout",
+}
+"""Event names for ``element.animate.on(...)`` and the SVG 1.1 event each starts on."""

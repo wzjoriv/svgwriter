@@ -22,6 +22,7 @@ from ..._internal._constants import (
 )
 from ..._internal._presets import ANIMATIONS, BEHAVIORS
 from ..._internal._typing import P
+from ._motion_events import Triggered
 from ._motion_transform import TransformPresets, timing
 from .animation import Animate, AnimateMotion, Ease, EaseLike, Set
 
@@ -113,6 +114,43 @@ class Motion(TransformPresets):
 
     def __init__(self, element: Element) -> None:
         self.element = element
+
+    def on(self, event: str, source: Element | None = None) -> Triggered:
+        """The presets started by a pointer event instead of the clock: ``el.animate.on("click").pulse()``.
+
+        Each preset's ``begin`` becomes a delay after the event. SVG in browsers and viewers plays the
+        animation when the event happens, and can replay it; still images, PDF and video show the resting
+        state.
+
+        Parameters
+        ----------
+        event : str
+            ``"click"``, ``"hover"``, ``"leave"``, ``"press"``, ``"release"``, ``"focus"`` or ``"blur"``.
+        source : Element, optional
+            The element the event happens on, such as a button that animates something else. Defaults to
+            this element.
+
+        Returns
+        -------
+        Triggered
+            The presets, each returning the same object to chain.
+
+        Raises
+        ------
+        ValueError
+            If *event* is not a known event name.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> doc = svg.Document(width=80, height=30)
+        >>> button = doc.rect(0, 0, 30, 20, id="go")
+        >>> ball = doc.circle(50, 10, 5)
+        >>> _ = ball.animate.on("click", button).move_to(70, 10, begin=0.2)
+        >>> str(ball.children[-1].get("begin"))
+        'go.click+0.2s'
+        """
+        return Triggered(self, event, source)
 
     def _add(self, animation: Element) -> Motion:
         self.element.append(animation)
