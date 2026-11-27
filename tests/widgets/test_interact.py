@@ -143,7 +143,9 @@ def test_notebook_backend_widgets() -> None:
         "text": svg.widgets.Text("hi").titled("text"), "color": svg.widgets.ColorPicker("#ff000080").titled("color"),
     }
     view = Interactive(lambda **kw: svg.circle(5, 5, 5), controls, panel, delay=0)
-    rows = panel._box.children[2].children
+    stage, side = panel._box.children
+    assert stage.children[0] is panel._image and side.layout.flex.endswith("340px")
+    rows = side.children[0].children
     rows[0].children[1].children[0].value = 7.0
     assert rows[0].children[1].children[1].value == "7mm"
     rows[5].children[1].value = 4

@@ -1,5 +1,5 @@
 """
-The notebook backend: one ipywidgets input per control, the drawing above them and errors under it.
+The notebook backend: one ipywidgets input per control beside the drawing, and errors under it.
 """
 
 from __future__ import annotations
@@ -11,6 +11,7 @@ from typing import Any
 from ..._internal._platform import missing
 from ._choices import ColorPicker, Dropdown, MultiSelect, Segmented, Swatches, Text, Toggle
 from ._constants import (
+    CONTROLS_WIDTH,
     ERROR_STYLE,
     GRID_COLUMNS,
     GRID_GAP,
@@ -106,7 +107,11 @@ def _observe(widget: Any, send: Callable[[Any], None]) -> Any:
 
 
 class NotebookBackend:
-    """The drawing on top, fit to the cell, the last error under it and the controls in a wrapping grid."""
+    """The drawing on the left, fit to its space, with the last error under it and the controls on the right.
+
+    As on the preview page; a cell too narrow for both wraps the controls under the drawing. Colours follow
+    the notebook's light or dark theme.
+    """
 
     def __init__(self) -> None:
         self._w = _widgets()
@@ -125,7 +130,10 @@ class NotebookBackend:
             rows.append(w.HBox([title, shown], layout=w.Layout(align_items="center", min_width="0")))
         self._summary = PANEL_SUMMARY.format(names=", ".join(c.label or n for n, c in controls.items()))
         grid = w.GridBox(rows, layout=w.Layout(grid_template_columns=GRID_COLUMNS, grid_gap=GRID_GAP, width="100%"))
-        self._box = w.VBox([self._image, self._error, grid], layout=w.Layout(width="100%"))
+        stage = w.VBox([self._image, self._error], layout=w.Layout(flex="1 1 320px", min_width="0"))
+        side = w.VBox([grid], layout=w.Layout(flex=f"0 1 {CONTROLS_WIDTH}", min_width="0"))
+        self._box = w.HBox([stage, side], layout=w.Layout(width="100%", flex_flow="row wrap", grid_gap=GRID_GAP,
+                                                          align_items="flex-start"))
 
     def draw(self, svg: str) -> None:
         """Replace the drawing."""

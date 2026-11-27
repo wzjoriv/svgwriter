@@ -15,6 +15,7 @@ __all__ = [
     "GIF_SUFFIX",
     "IMAGE_RULE",
     "IMAGE_STYLE",
+    "CONTROLS_WIDTH",
     "GRID_COLUMNS",
     "GRID_GAP",
     "LABEL_WIDTH",
@@ -45,7 +46,10 @@ SWEEP_DURATION: Final = 2.0
 BOUNDS_SAMPLES: Final = 9
 GIF_SUFFIX: Final = ".gif"
 
-GRID_COLUMNS: Final = "repeat(auto-fill, minmax(300px, 1fr))"
+GRID_COLUMNS: Final = "1fr"
+"""One column of controls beside the drawing, as in the preview page."""
+CONTROLS_WIDTH: Final = "340px"
+"""Width of the controls column; narrower cells wrap it under the drawing."""
 GRID_GAP: Final = "4px 24px"
 LABEL_WIDTH: Final = "96px"
 READOUT_WIDTH: Final = "64px"
