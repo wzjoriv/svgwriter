@@ -68,7 +68,7 @@ class PreviewConfig:
     build_on_save : bool
         Write the outputs after a file is saved and the project has been quiet for a moment.
     formats_on_build : tuple of str or None
-        The formats that saving and the page's Build outputs button write. None writes ``[outputs] formats``.
+        The formats that saving and the page's Export button write. None writes ``[outputs] formats``.
 
     Examples
     --------

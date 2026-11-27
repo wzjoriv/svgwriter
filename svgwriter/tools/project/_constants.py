@@ -144,7 +144,7 @@ PAGE_TEMPLATE: Final = (
     "<meta name='viewport' content='width=device-width,initial-scale=1'><title>{title}</title><style>{style}</style>"
     "<header><h1>{title}</h1><nav id='svgwriter-tabs' role='tablist' aria-label='Pages and scenes'></nav>"
     "<button type='button' id='svgwriter-build' title='Write the output files into the output folder'>"
-    "Build outputs</button></header>"
+    "Export</button></header>"
     "<main class='layout-{layout}'><section class='stage' aria-label='Drawing'>"
     "<div id='svgwriter-canvas' class='canvas fit-{fit} backdrop-{backdrop}'{backdrop_style}></div>"
     "<p id='svgwriter-status' class='status' role='status' aria-live='polite'></p>"

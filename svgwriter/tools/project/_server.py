@@ -2,7 +2,7 @@
 ``svgwriter preview``: a local page that redraws the project as its controls move and its files change.
 
 Control changes draw only what the page shows, in memory; the output files are written by the page's
-Build outputs button and after a file is saved.
+Export button and after a file is saved.
 """
 
 from __future__ import annotations

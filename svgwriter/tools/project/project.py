@@ -277,7 +277,7 @@ class Project:
         The page shows every page and scene as SVG, drawn in memory. Controls the entry declares
         (:func:`svgwriter.tools.widgets.controls`) appear in a panel beside or below the drawing, and the drawing
         follows them as they move. Saving a file imports the project again and redraws; once the project has been
-        quiet for a moment the output files are written too, as the page's Build outputs button does. A failed
+        quiet for a moment the output files are written too, as the page's Export button does. A failed
         drawing shows its traceback under the last drawing that worked. The manifest's ``[preview]`` table
         (:class:`~svgwriter.tools.project.PreviewConfig`) sets the layout, backdrop, port and more.
 
