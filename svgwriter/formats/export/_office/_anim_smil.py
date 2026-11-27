@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 from ...._internal._animation._timing import clock
-from ._constants import COLOR_ATTRIBUTES, PATH_TOLERANCE
+from ._constants import CLICK_EVENTS, CLICK_START_RE, COLOR_ATTRIBUTES, PATH_TOLERANCE
 
 if TYPE_CHECKING:
     from ....model.elements.core import Element
@@ -49,6 +49,9 @@ class Effect:
         ``"fill"`` or ``"stroke"`` for a colour change.
     color : str
         Target colour as ``#rrggbb``.
+    trigger : str
+        Id of the element whose click starts the effect (then `begin` is the delay after the click);
+        empty for effects that start with the slide.
 
     Examples
     --------
@@ -70,6 +73,7 @@ class Effect:
     end: Pair = (1.0, 1.0)
     attribute: str = "fill"
     color: str = ""
+    trigger: str = ""
 
 
 def _values(animation: Element) -> list[str]:
@@ -86,7 +90,11 @@ def _numbers(value: str) -> list[float]:
 
 def _timing(animation: Element) -> dict[str, Any] | None:
     """Begin, duration, repeats, fill and ease of *animation*, or None when not a plain clock schedule."""
-    begin = clock(animation.get("begin", "0s"))
+    text = str(animation.get("begin", "0s"))
+    begin, trigger = clock(text), ""
+    event = CLICK_START_RE.match(text) if begin is None else None
+    if event is not None and event.group(2) in CLICK_EVENTS:
+        begin, trigger = clock(event.group(3) or "0s"), event.group(1)
     dur = clock(animation.get("dur", "0s")) if animation.tag != "set" else 0.0
     if begin is None or dur is None:
         return None
@@ -100,7 +108,8 @@ def _timing(animation: Element) -> dict[str, Any] | None:
         if total > 1:
             accel, decel = accel / total, decel / total
     return {"begin": begin, "dur": dur, "repeat": math.inf if count == "indefinite" else float(count),
-            "freeze": str(animation.get("fill", "remove")) == "freeze", "accel": accel, "decel": decel}
+            "freeze": str(animation.get("fill", "remove")) == "freeze", "accel": accel, "decel": decel,
+            "trigger": trigger}
 
 
 def _page(frame: Matrix, x: float, y: float) -> Pair:

@@ -23,7 +23,7 @@ from ._constants import (
 )
 from ._drawingml import read_gradient, read_line_style
 from ._pptx import _a
-from ._pptx_timing_read import read_timing
+from ._pptx_timing_read import read_timing, read_triggers
 
 if TYPE_CHECKING:
     from ....document import Document
@@ -48,8 +48,24 @@ def read_pptx(data: bytes, index: int | None) -> Document | list[Document]:
         for spid, effect in read_timing(slide._element, size):
             for element in drawn.get(spid, []):
                 apply_effect(element, effect)
+        for clicked, spid, effect in read_triggers(slide._element, size):
+            sources = drawn.get(clicked, [])
+            for element in drawn.get(spid, []) if sources else []:
+                _clicked_effect(element, effect, sources[0])
         docs.append(doc)
     return docs if index is None else docs[0]
+
+
+def _clicked_effect(element: Any, effect: Any, source: Any) -> None:
+    """Apply *effect* to *element* so it starts when *source* is clicked (``id.click+delay``)."""
+    from ....model.elements.animation import AnimationElement
+
+    before = {id(node) for node in element.iter()}
+    apply_effect(element, effect)
+    start = f"{source.ensure_id()}.click"
+    for node in element.iter():
+        if id(node) not in before and isinstance(node, AnimationElement):
+            node.set("begin", f"{start}+{effect.begin:g}s" if effect.begin else start)
 
 
 def _read_shape(parent: Any, shape: Any, drawn: dict[int, list[Any]]) -> None:

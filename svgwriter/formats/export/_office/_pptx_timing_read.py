@@ -20,7 +20,7 @@ from ._constants import (
     REPEAT_SCALE,
 )
 
-__all__ = ["read_timing"]
+__all__ = ["read_timing", "read_triggers"]
 
 _PATH_POINT = re.compile(r"[MLC]\s*((?:[-+.\deE]+\s+[-+.\deE]+\s*)+)", re.IGNORECASE)
 _SHAPE_ATTRIBUTES = {value: key for key, value in COLOR_ATTRIBUTES.items()}
@@ -162,4 +162,45 @@ def read_timing(slide: Any, size: tuple[float, float]) -> list[tuple[int, Effect
                 group_end = max(group_end, effect.begin + length)
             group_start = group_end
         cursor = group_start
+    return found
+
+
+def read_triggers(slide: Any, size: tuple[float, float]) -> list[tuple[int, int, Effect]]:
+    """The effects of a slide's trigger sequences: played each time a shape is clicked.
+
+    Parameters
+    ----------
+    slide : lxml element
+        The ``<p:sld>`` element.
+    size : (float, float)
+        Slide width and height in page units, to scale motion paths.
+
+    Returns
+    -------
+    list of (int, int, Effect)
+        The clicked shape's id, the animated shape's id and the effect; ``begin`` is the delay after
+        the click.
+
+    Examples
+    --------
+    >>> from lxml import etree
+    >>> from svgwriter.formats.export._office._anim_smil import Effect
+    >>> from svgwriter.formats.export._office._constants import P_NS
+    >>> from svgwriter.formats.export._office._pptx_timing import timing_xml
+    >>> xml = timing_xml([(4, Effect("rotate", angle=90, trigger="k"))], (10, 10), {"k": 2})
+    >>> slide = etree.fromstring(f'<p:sld xmlns:p="{P_NS}">{xml}</p:sld>')
+    >>> [(clicked, shape, effect.angle) for clicked, shape, effect in read_triggers(slide, (10, 10))]
+    [(2, 4, 90.0)]
+    """
+    found: list[tuple[int, int, Effect]] = []
+    for sequence in (n for n in slide.iter(_p("cTn")) if n.get("nodeType") == "interactiveSeq"):
+        target = sequence.find(f"{_p('stCondLst')}/{_p('cond')}/{_p('tgtEl')}/{_p('spTgt')}")
+        if target is None or target.get("spid") is None:
+            continue
+        clicked = int(target.get("spid"))
+        for group in sequence.findall(f"{_p('childTnLst')}/{_p('par')}/{_p('cTn')}"):
+            for node in group.findall(f"{_p('childTnLst')}/{_p('par')}/{_p('cTn')}"):
+                item = _effect(node, _delay(group) + _delay(node), size)
+                if item is not None:
+                    found.append((clicked, item[0], item[1]))
     return found

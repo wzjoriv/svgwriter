@@ -93,8 +93,31 @@ def _effect(effect: Effect, spid: int, ids: Iterator[int], first: bool, size: tu
     return f"{head}<p:childTnLst>{_behaviours(effect, ids, spid, dur, size)}</p:childTnLst></p:cTn></p:par>"
 
 
-def timing_xml(effects: list[tuple[int, Effect]], size: tuple[float, float]) -> str:
-    """The ``<p:timing>`` of a slide whose effects all start with the slide, each after its own delay.
+def _sequence(effects: list[tuple[int, Effect]], ids: Iterator[int], size: tuple[float, float]) -> str:
+    """The effects of one sequence, each after its own delay, as one group of a click."""
+    effects = sorted(effects, key=lambda pair: pair[1].begin)
+    return "".join(_effect(effect, spid, ids, index == 0, size) for index, (spid, effect) in enumerate(effects))
+
+
+def _interactive(trigger: int, effects: list[tuple[int, Effect]], ids: Iterator[int], size: tuple[float, float]) -> str:
+    """A trigger sequence: the effects play each time shape *trigger* is clicked in the slide show."""
+    target = f'<p:tgtEl><p:spTgt spid="{trigger}"/></p:tgtEl>'
+    sequence, group = next(ids), next(ids)
+    body = _sequence(effects, ids, size).replace('nodeType="afterEffect"', 'nodeType="clickEffect"', 1)
+    return (f'<p:seq concurrent="1" nextAc="seek"><p:cTn id="{sequence}" restart="whenNotActive" fill="hold" '
+            f'evtFilter="cancelBubble" nodeType="interactiveSeq"><p:stCondLst><p:cond evt="onClick" delay="0">'
+            f'{target}</p:cond></p:stCondLst><p:endSync evt="end" delay="0"><p:rtn val="all"/></p:endSync>'
+            f'<p:childTnLst><p:par><p:cTn id="{group}" fill="hold"><p:stCondLst><p:cond delay="0"/></p:stCondLst>'
+            f"<p:childTnLst>{body}</p:childTnLst></p:cTn></p:par></p:childTnLst></p:cTn>"
+            f'<p:nextCondLst><p:cond evt="onClick" delay="0">{target}</p:cond></p:nextCondLst></p:seq>')
+
+
+def timing_xml(effects: list[tuple[int, Effect]], size: tuple[float, float],
+               triggers: dict[str, int] | None = None) -> str:
+    """The ``<p:timing>`` of a slide: effects that start with the slide, and effects started by a click.
+
+    Effects with a :attr:`~Effect.trigger` play each time that shape is clicked in the slide show (a
+    PowerPoint trigger); the others start with the slide, each after its own delay.
 
     Parameters
     ----------
@@ -103,6 +126,9 @@ def timing_xml(effects: list[tuple[int, Effect]], size: tuple[float, float]) -> 
     size : (float, float)
         Slide width and height in page units, for motion paths (written as
         fractions of the slide).
+    triggers : dict of str to int, optional
+        The shape id of each trigger element, by element id. Defaults to None (no triggers);
+        effects whose trigger has no shape are left out.
 
     Returns
     -------
@@ -115,20 +141,32 @@ def timing_xml(effects: list[tuple[int, Effect]], size: tuple[float, float]) -> 
     >>> xml = timing_xml([(2, Effect("fade_in", begin=0.5))], (100, 100))
     >>> 'presetClass="entr"' in xml and '<p:cond delay="500"/>' in xml
     True
+    >>> xml = timing_xml([(2, Effect("fade_in", trigger="key"))], (100, 100), {"key": 3})
+    >>> 'nodeType="interactiveSeq"' in xml and '<p:spTgt spid="3"/>' in xml
+    True
     """
+    triggers = triggers or {}
     ids = itertools.count(1)
-    effects = sorted(effects, key=lambda pair: pair[1].begin)
-    root, main, click, group = next(ids), next(ids), next(ids), next(ids)
-    body = "".join(_effect(effect, spid, ids, index == 0, size) for index, (spid, effect) in enumerate(effects))
-    slide_target = "<p:tgtEl><p:sldTgt/></p:tgtEl>"
-    return (f'<p:timing xmlns:p="{P_NS}" xmlns:a="{A_NS}"><p:tnLst><p:par>'
-            f'<p:cTn id="{root}" dur="indefinite" restart="never" nodeType="tmRoot"><p:childTnLst>'
+    timed = [(spid, effect) for spid, effect in effects if not effect.trigger]
+    clicked: dict[int, list[tuple[int, Effect]]] = {}
+    for spid, effect in effects:
+        if effect.trigger and effect.trigger in triggers:
+            clicked.setdefault(triggers[effect.trigger], []).append((spid, effect))
+    root = next(ids)
+    sequences = []
+    if timed:
+        main, click, group = next(ids), next(ids), next(ids)
+        slide_target = "<p:tgtEl><p:sldTgt/></p:tgtEl>"
+        sequences.append(
             f'<p:seq concurrent="1" nextAc="seek"><p:cTn id="{main}" dur="indefinite" nodeType="mainSeq">'
             f'<p:childTnLst><p:par><p:cTn id="{click}" fill="hold"><p:stCondLst><p:cond delay="indefinite"/>'
             f'<p:cond evt="onBegin" delay="0"><p:tn val="{main}"/></p:cond></p:stCondLst><p:childTnLst>'
             f'<p:par><p:cTn id="{group}" fill="hold"><p:stCondLst><p:cond delay="0"/></p:stCondLst>'
-            f"<p:childTnLst>{body}</p:childTnLst></p:cTn></p:par>"
+            f"<p:childTnLst>{_sequence(timed, ids, size)}</p:childTnLst></p:cTn></p:par>"
             f"</p:childTnLst></p:cTn></p:par></p:childTnLst></p:cTn>"
             f'<p:prevCondLst><p:cond evt="onPrev" delay="0">{slide_target}</p:cond></p:prevCondLst>'
-            f'<p:nextCondLst><p:cond evt="onNext" delay="0">{slide_target}</p:cond></p:nextCondLst>'
-            f"</p:seq></p:childTnLst></p:cTn></p:par></p:tnLst></p:timing>")
+            f'<p:nextCondLst><p:cond evt="onNext" delay="0">{slide_target}</p:cond></p:nextCondLst></p:seq>')
+    sequences += [_interactive(trigger, found, ids, size) for trigger, found in clicked.items()]
+    return (f'<p:timing xmlns:p="{P_NS}" xmlns:a="{A_NS}"><p:tnLst><p:par>'
+            f'<p:cTn id="{root}" dur="indefinite" restart="never" nodeType="tmRoot"><p:childTnLst>'
+            f'{"".join(sequences)}</p:childTnLst></p:cTn></p:par></p:tnLst></p:timing>')

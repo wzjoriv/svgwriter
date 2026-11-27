@@ -10,7 +10,7 @@ from typing import Final
 from ...._internal._constants import PT_PER_INCH, PX_PER_INCH, PX_PER_PT
 
 __all__ = [
-    "ACCEL_SCALE", "ANIMATION_KEY", "A14_NS", "COLOR_ATTRIBUTES", "EFFECT_PRESETS", "MS_PER_SECOND", "P_NS",
+    "ACCEL_SCALE", "ANIMATION_KEY", "CLICK_EVENTS", "CLICK_START_RE", "TRIGGER_KEY", "A14_NS", "COLOR_ATTRIBUTES", "EFFECT_PRESETS", "MS_PER_SECOND", "P_NS",
     "PATH_TOLERANCE", "PERCENT_SCALE", "REPEAT_SCALE", "ALPHA_SCALE", "ANGLE_UNIT", "ASCENT", "A_NS", "BAR_CHARS", "BLANK_LAYOUT", "CAPS",
     "DEFAULT_TEXT_PT", "EMU_PER_INCH", "EMU_PER_POINT", "EMU_PER_UNIT", "EQUATION_ID", "GENERIC_FONTS",
     "GROUP_CHARS", "HALF_POINTS_PER_UNIT", "HEADING_STYLE_RE", "HEX_COLOR_RE", "INLINE_GAP", "JOINS", "LINE_HEIGHT", "LIST_STYLE", "MARGIN", "MATHML_NS",
@@ -68,6 +68,12 @@ LIST_STYLE: Final = "List"
 P_NS: Final = "http://schemas.openxmlformats.org/presentationml/2006/main"
 ANIMATION_KEY: Final = "data-svgwriter-animation"
 """Attribute tying animated elements of an export copy to the shapes drawn from them."""
+TRIGGER_KEY: Final = "data-svgwriter-trigger"
+"""Attribute marking elements whose click starts animations, tying them to the shapes drawn from them."""
+CLICK_EVENTS: Final = frozenset({"click", "mousedown", "mouseup"})
+"""SMIL events PowerPoint plays as a click trigger on the shape (it has no hover trigger)."""
+CLICK_START_RE: Final = re.compile(r"^\s*([^\s.;]+)\.(\w+)\s*(?:\+\s*([^;]+))?$")
+"""An event ``begin`` such as ``key.click+0.5s``: the element id, the event and the delay."""
 MS_PER_SECOND: Final = 1000
 REPEAT_SCALE: Final = 1000
 """PowerPoint ``repeatCount`` is in thousandths."""

@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 from ._anim_smil import Effect, smil_effect
-from ._constants import ANIMATION_KEY, P_NS
+from ._constants import ANIMATION_KEY, P_NS, TRIGGER_KEY
 from ._pptx_timing import timing_xml
 
 if TYPE_CHECKING:
@@ -39,6 +39,8 @@ class SlideAnimations:
         Keys that reached at least one shape.
     targets : dict of str to str
         The tag of each animated element, per key.
+    triggers : dict of str to int
+        The shape drawn from each element whose click starts effects, per element id.
 
     Examples
     --------
@@ -55,11 +57,15 @@ class SlideAnimations:
     shapes: list[tuple[int, Effect]] = field(default_factory=list)
     used: set[str] = field(default_factory=set)
     targets: dict[str, str] = field(default_factory=dict)
+    triggers: dict[str, int] = field(default_factory=dict)
 
     def attach(self, shape: Any, source: Element | None) -> None:
         """Queue the effects of *source* and its ancestors for the drawn *shape*."""
         node = source
         while shape is not None and node is not None:
+            trigger = node.get(TRIGGER_KEY)
+            if trigger is not None:
+                self.triggers.setdefault(str(trigger), shape.shape_id)
             key = node.get(ANIMATION_KEY)
             if key is not None:
                 self.used.add(str(key))
@@ -73,7 +79,7 @@ class SlideAnimations:
         missing = [f"animation on <{tag}>" for key, tag in self.targets.items() if key not in self.used]
         if self.shapes:
             root = slide._element
-            timing = etree.fromstring(timing_xml(self.shapes, size))
+            timing = etree.fromstring(timing_xml(self.shapes, size, self.triggers))
             extension = root.find(f"{{{P_NS}}}extLst")
             if extension is not None:
                 extension.addprevious(timing)
@@ -130,6 +136,13 @@ def slide_animations(document: Document) -> SlideAnimations:
         if effect is None:
             result.dropped.append(_describe(animation))
         elif effect.kind:
+            if effect.trigger:
+                source = root.get_element_by_id(effect.trigger)
+                if source is None:
+                    result.dropped.append(_describe(animation))
+                    target.remove(animation)
+                    continue
+                source.set(TRIGGER_KEY, effect.trigger)
             key = str(target.get(ANIMATION_KEY) or len(result.targets))
             target.set(ANIMATION_KEY, key)
             result.targets[key] = target.tag
