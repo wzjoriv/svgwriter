@@ -283,6 +283,6 @@ def test_generic_family_falls_back_when_no_candidate_is_installed(monkeypatch):
     from svgwriter.ops._text import _sources
 
     monkeypatch.setattr(_sources, "generic_candidates", lambda name: ("NoSuchFontAnywhere",))
-    with pytest.warns(UserWarning, match="no installed font for 'serif'"):
-        family, faces = _sources.installed_faces("serif")
+    with pytest.warns(UserWarning, match="no installed font for 'nosuchgeneric'"):
+        family, faces = _sources.installed_faces("nosuchgeneric")
     assert family and faces
