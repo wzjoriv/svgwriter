@@ -89,8 +89,10 @@ lamp = doc.circle(150, 30, 12, fill="gold", opacity=0.3)
 lamp.animate.on("hover", key).fade_in(0.4)              # the lamp lights up when the pointer reaches the key
 ```
 
-No script is involved: the file stays plain SVG 1.1 and plays in browsers and SVG viewers. Still images,
-PDF, video and other formats without events show the resting state.
+No script is involved: the file stays plain SVG 1.1 and plays in browsers and SVG viewers. PowerPoint
+plays click, press and release starts as triggers on the clicked shape (and reading the deck back gives
+click starts again); it has no hover trigger. Still images, PDF, video and other formats without events
+show the resting state.
 
 For a style that holds only while the pointer is over an element, use `on_hover` with presentation
 properties; it is written as a CSS `:hover` rule:
