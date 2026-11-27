@@ -316,11 +316,16 @@
     <span class="s2">"em"</span><span class="p">,</span>
     <span class="s2">"ex"</span><span class="p">,</span>
     <span class="s2">"ft"</span><span class="p">,</span>
+    <span class="s2">"furlong"</span><span class="p">,</span>
     <span class="s2">"grad"</span><span class="p">,</span>
     <span class="s2">"inch"</span><span class="p">,</span>
+    <span class="s2">"km"</span><span class="p">,</span>
     <span class="s2">"length"</span><span class="p">,</span>
     <span class="s2">"m"</span><span class="p">,</span>
+    <span class="s2">"mi"</span><span class="p">,</span>
+    <span class="s2">"mil"</span><span class="p">,</span>
     <span class="s2">"mm"</span><span class="p">,</span>
+    <span class="s2">"nmi"</span><span class="p">,</span>
     <span class="s2">"pc"</span><span class="p">,</span>
     <span class="s2">"percent"</span><span class="p">,</span>
     <span class="s2">"pt"</span><span class="p">,</span>
@@ -328,6 +333,8 @@
     <span class="s2">"q"</span><span class="p">,</span>
     <span class="s2">"rad"</span><span class="p">,</span>
     <span class="s2">"turn"</span><span class="p">,</span>
+    <span class="s2">"um"</span><span class="p">,</span>
+    <span class="s2">"yd"</span><span class="p">,</span>
 <span class="p">]</span>
 
 
@@ -399,64 +406,63 @@
 
 <div class="viewcode-block" id="LengthUnit">
 <a class="viewcode-back" href="../../../../reference/attributes.html#svgwriter.model.attributes.LengthUnit">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">LengthUnit</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""A unit you can call or multiply: ``mm(5)`` and ``5 * mm`` are both ``Length(5, Unit.MM)``.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LengthUnit</span><span class="p">(</span><span class="n">Length</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""One of a unit, usable as a length or as a factory: ``mm(5)``, ``5 * mm`` and ``height=inch``.</span>
+
+<span class="sd">    A unit is a `Length` of 1 in that unit, so it goes anywhere a length does. Units SVG has no name</span>
+<span class="sd">    for (metres, feet, miles...) are written in the nearest SVG unit.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    unit : Unit or str</span>
-<span class="sd">        The unit this factory produces; ``"m"`` and ``"ft"`` give millimetres and inches.</span>
+<span class="sd">        The unit, by suffix or spelled out (``"mm"``, ``"miles"``).</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">    &gt;&gt;&gt; str(5 * svg.mm), str(svg.inch(2) - 10 * svg.mm), str(svg.ft(1))</span>
 <span class="sd">    ('5mm', '1.6063in', '12in')</span>
+<span class="sd">    &gt;&gt;&gt; svg.inch == 96, str(svg.mi(1))</span>
+<span class="sd">    (True, '63360in')</span>
 <span class="sd">    """</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"unit"</span><span class="p">,)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Unit</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">unit</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Length</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Length</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Length</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Length</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Length</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">"LengthUnit(</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span><span class="si">!r}</span><span class="s2">)"</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"LengthUnit(</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span><span class="si">!r}</span><span class="s2">)"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">"LengthUnit(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">g</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="si">}</span><span class="s2">)"</span></div>
 
 
 
 <div class="viewcode-block" id="AngleUnit">
 <a class="viewcode-back" href="../../../../reference/attributes.html#svgwriter.model.attributes.AngleUnit">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">AngleUnit</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""A unit you can call or multiply: ``deg(30)`` and ``30 * deg`` are both ``Angle(30, "deg")``.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AngleUnit</span><span class="p">(</span><span class="n">Angle</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""One of a unit, usable as an angle or as a factory: ``deg(30)``, ``30 * deg`` and ``rotate=turn``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    unit : str</span>
-<span class="sd">        The unit this factory produces.</span>
+<span class="sd">        The unit, by suffix or spelled out (``"deg"``, ``"radians"``).</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; str(30 * svg.deg), str(svg.turn(0.5))</span>
-<span class="sd">    ('30deg', '0.5turn')</span>
+<span class="sd">    &gt;&gt;&gt; str(30 * svg.deg), str(svg.turn(0.5)), str(svg.turn)</span>
+<span class="sd">    ('30deg', '0.5turn', '1turn')</span>
 <span class="sd">    """</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"unit"</span><span class="p">,)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">unit</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Angle</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Angle</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Angle</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Angle</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Angle</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">"AngleUnit(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="si">!r}</span><span class="s2">)"</span></div>
@@ -481,6 +487,20 @@
 <span class="sd">"""Inches: ``inch(5)`` or ``5 * inch``."""</span>
 <span class="n">ft</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="s2">"ft"</span><span class="p">)</span>
 <span class="sd">"""Feet, written as inches: ``ft(1)`` is ``12in``."""</span>
+<span class="n">km</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="s2">"km"</span><span class="p">)</span>
+<span class="sd">"""Kilometres, written as millimetres."""</span>
+<span class="n">um</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="s2">"um"</span><span class="p">)</span>
+<span class="sd">"""Micrometres, written as millimetres."""</span>
+<span class="n">yd</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="s2">"yd"</span><span class="p">)</span>
+<span class="sd">"""Yards, written as inches."""</span>
+<span class="n">mi</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="s2">"mi"</span><span class="p">)</span>
+<span class="sd">"""Miles, written as inches."""</span>
+<span class="n">furlong</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="s2">"furlong"</span><span class="p">)</span>
+<span class="sd">"""Furlongs (220 yards), written as inches."""</span>
+<span class="n">mil</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="s2">"mil"</span><span class="p">)</span>
+<span class="sd">"""Thousandths of an inch (thou)."""</span>
+<span class="n">nmi</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="s2">"nmi"</span><span class="p">)</span>
+<span class="sd">"""Nautical miles (1852 m), written as millimetres."""</span>
 <span class="n">em</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="n">Unit</span><span class="o">.</span><span class="n">EM</span><span class="p">)</span>
 <span class="sd">"""Font-size multiples: ``em(5)`` or ``5 * em``."""</span>
 <span class="n">ex</span> <span class="o">=</span> <span class="n">LengthUnit</span><span class="p">(</span><span class="n">Unit</span><span class="o">.</span><span class="n">EX</span><span class="p">)</span>
