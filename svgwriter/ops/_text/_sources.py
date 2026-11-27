@@ -8,6 +8,7 @@ import base64
 import difflib
 import os
 import urllib.parse
+import warnings
 from functools import cache
 from pathlib import Path
 from typing import Any, BinaryIO, TypeAlias
@@ -95,6 +96,11 @@ def installed_faces(name: str) -> tuple[str, list[Face]]:
                 typeface, subfamily = styles.createTypeface(index), styles.getStyle(index)[1] or REGULAR_SUBFAMILY
                 faces.append(Face.of(family, typeface, describe(typeface, subfamily=subfamily), subfamily=subfamily))
             return family, faces
+    if generic_candidates(name):
+        fallback = manager.legacyMakeTypeface("", skia.FontStyle())
+        if fallback is not None:
+            warnings.warn(f"no installed font for {name!r}; using {fallback.getFamilyName()!r}", stacklevel=3)
+            return fallback.getFamilyName(), [Face.of(fallback.getFamilyName(), fallback, describe(fallback))]
     families = {family.lower(): family for family in _installed_families()}
     close = [families[match] for match in difflib.get_close_matches(name.lower(), families, n=SUGGESTIONS)]
     hint = f"; did you mean {' or '.join(repr(match) for match in close)}?" if close else ""
