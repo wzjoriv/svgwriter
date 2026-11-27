@@ -75,6 +75,23 @@ badge = svg.circle(50, 50, 30, fill="teal")
 badge.animate.create(1).uncreate(1, begin=3)
 ```
 
+## Started by a click or hover
+
+`element.animate.on(event)` gives the same presets, started by a pointer event instead of the clock;
+`begin` becomes a delay after the event. Events are `"click"`, `"hover"`, `"leave"`, `"press"`,
+`"release"`, `"focus"` and `"blur"`, and a second argument names another element to watch:
+
+```python
+doc = svg.Document(width=200, height=60)
+key = doc.rect(10, 10, 40, 40, rx=6, fill="teal")
+key.animate.on("click").pulse(0.3, repeat=1)            # the key bounces when clicked
+lamp = doc.circle(150, 30, 12, fill="gold", opacity=0.3)
+lamp.animate.on("hover", key).fade_in(0.4)              # the lamp lights up when the pointer reaches the key
+```
+
+No script is involved: the file stays plain SVG 1.1 and plays in browsers and SVG viewers. Still images,
+PDF, video and other formats without events show the resting state.
+
 ## Presets of your own
 
 A reusable animation is a typed function decorated with `@svg.preset.animation`. Its first positional

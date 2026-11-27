@@ -8,6 +8,7 @@ import re
 from typing import Final
 
 __all__ = [
+    "POINTER_EVENTS",
     "ID_ATTRIBUTE_RE",
     "TIMING_ATTRIBUTE_RE",
     "PAGE_LENGTH_DIGITS",
@@ -403,3 +404,9 @@ ID_ATTRIBUTE_RE: Final = re.compile(r'(?<![\w-])id="([^"]+)"')
 """An ``id`` attribute in serialized markup; group 1 is the id."""
 TIMING_ATTRIBUTE_RE: Final = re.compile(r'(?<![\w-])(begin|end)="([^"]*)"')
 """A SMIL ``begin`` or ``end`` attribute; group 2 is its value (may name other elements' ids)."""
+
+POINTER_EVENTS: Final = {
+    "click": "click", "hover": "mouseover", "leave": "mouseout", "press": "mousedown", "release": "mouseup",
+    "focus": "focusin", "blur": "focusout",
+}
+"""Event names for ``element.animate.on(...)`` and the SVG 1.1 event each starts on."""
