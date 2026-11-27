@@ -4,7 +4,8 @@ Layout, indexing and run access for ``<text>``.
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+import operator
+from collections.abc import Iterator, Sequence
 from typing import TYPE_CHECKING, Any, overload
 
 from ...attributes.names import PRESENTATION_ATTRIBUTES
@@ -12,6 +13,7 @@ from ...transform.matrix import Point
 from ..core import Element
 from ._character import Character, CharacterRange
 from ._clusters import cluster_bounds
+from ._selection import CharacterSelection
 from ._textlayout import collect, layout
 
 if TYPE_CHECKING:
@@ -24,6 +26,21 @@ if TYPE_CHECKING:
 
 __all__ = ["TextAccess"]
 
+
+
+def _positions(index: Sequence[int] | Sequence[bool], count: int) -> list[int]:
+    """Character positions from a list of indices (negatives count from the end) or a mask of *count* bools."""
+    items = list(index)
+    if items and all(type(item).__name__ in ("bool", "bool_") for item in items):
+        if len(items) != count:
+            raise IndexError(f"a mask needs one bool per character ({count}), got {len(items)}")
+        return [position for position, chosen in enumerate(items) if chosen]
+    positions = []
+    for item in items:
+        if not -count <= int(item) < count:
+            raise IndexError(f"text has {count} characters, index {item} is out of range")
+        positions.append(int(item) % count)
+    return positions
 
 class TextAccess:
     """Characters, layout, runs and glyphs; mixed into :class:`~svgwriter.model.elements.Text`."""
@@ -114,9 +131,16 @@ class TextAccess:
     @overload
     def __getitem__(self, index: int) -> Character: ...
     @overload
-    def __getitem__(self, index: slice) -> CharacterRange: ...
-    def __getitem__(self, index: int | slice) -> Character | CharacterRange:
-        """A live :class:`Character` (``text[i]``) or :class:`CharacterRange` (``text[a:b]``).
+    def __getitem__(self, index: slice) -> CharacterRange | CharacterSelection: ...
+    @overload
+    def __getitem__(self, index: Sequence[int] | Sequence[bool]) -> CharacterSelection: ...
+    def __getitem__(
+        self, index: int | slice | Sequence[int] | Sequence[bool]
+    ) -> Character | CharacterRange | CharacterSelection:
+        """A live :class:`Character` (``text[i]``), :class:`CharacterRange` (``text[a:b]``) or selection.
+
+        A list of positions (``text[[0, 3]]``), a mask with one bool per character, or a stepped slice
+        (``text[::2]``) gives a :class:`CharacterSelection` of contiguous runs.
 
         Examples
         --------
@@ -133,8 +157,12 @@ class TextAccess:
         if isinstance(index, slice):
             start, stop, step = index.indices(count)
             if step != 1:
-                raise ValueError("text ranges must be contiguous (step 1)")
+                return CharacterSelection.of(self, range(start, stop, step), bounds)  # type: ignore[arg-type]
             return CharacterRange(self, bounds[start], bounds[max(start, stop)])
+        if not isinstance(index, int) and hasattr(index, "__index__") and getattr(index, "ndim", 0) == 0:
+            index = operator.index(index)
+        if not isinstance(index, int):
+            return CharacterSelection.of(self, _positions(index, count), bounds)  # type: ignore[arg-type]
         if not -count <= index < count:
             raise IndexError(f"text has {count} characters, index {index} is out of range")
         index %= count

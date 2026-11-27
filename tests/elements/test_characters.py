@@ -146,8 +146,7 @@ class TestRanges:
         t = text("Hello world")
         rng = t[6:]
         assert rng.chars == "world" and len(rng) == 5 and [g.char for g in rng] == list("world")
-        with pytest.raises(ValueError, match="contiguous"):
-            _ = t[::2]
+        assert type(t[::2]).__name__ == "CharacterSelection"
 
     def test_translate_range_moves_only_it(self) -> None:
         t = text("Hello world")
@@ -233,3 +232,28 @@ class TestTextPath:
     def test_start_offset_percent_and_overflow_hidden(self) -> None:
         assert self._text("50%").layout()[0].x == pytest.approx(100, abs=1)
         assert not len(self._text(199).layout()[-1].outline)
+
+
+class TestSelections:
+    def test_lists_masks_and_steps_pick_runs(self):
+        t = svg.text("Hello world", x=0, y=20)
+        assert t[[0, 1, 4]].chars == "Heo" and len(t[[0, 1, 4]].ranges) == 2
+        assert t[[c == "o" for c in "Hello world"]].chars == "oo"
+        assert t[::2].chars == "Hlowrd" and t[[-1, 0]].chars == "Hd"
+
+    def test_setting_an_attribute_styles_every_run(self):
+        t = svg.text("Hello", x=0, y=20)
+        t[[0, 1, 4]].fill = "red"
+        assert str(t) == '<text x="0" y="20"><tspan fill="red">He</tspan>ll<tspan fill="red">o</tspan></text>'
+
+    def test_numpy_masks_and_scalars(self):
+        np = pytest.importorskip("numpy")
+        t = svg.text("abcd", x=0, y=20)
+        assert t[np.array([True, False, False, True])].chars == "ad" and t[np.int64(2)].char == "c"
+
+    def test_bad_masks_and_indices(self):
+        t = svg.text("abc", x=0, y=20)
+        with pytest.raises(IndexError, match="one bool per character"):
+            _ = t[[True, False]]
+        with pytest.raises(IndexError, match="out of range"):
+            _ = t[[0, 7]]

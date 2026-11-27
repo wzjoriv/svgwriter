@@ -9,6 +9,7 @@ from ._character import Character, CharacterRange
 from ._fontface import FontFace, FontFaceFormat, FontFaceName, FontFaceSrc, FontFaceUri
 from ._fonts import Font, HKern, VKern
 from ._glyphs import Glyph, MissingGlyph
+from ._selection import CharacterSelection
 from ._spans import TRef, TSpan
 from ._text import Text, TextDecoration
 from ._textpath import AltGlyph, TextPath
@@ -19,6 +20,7 @@ __all__ = [
     "AltGlyphItem",
     "Character",
     "CharacterRange",
+    "CharacterSelection",
     "Font",
     "FontFace",
     "FontFaceFormat",
