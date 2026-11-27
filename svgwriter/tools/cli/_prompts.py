@@ -11,7 +11,7 @@ from typing import Any
 import click
 
 from ...model.theme import themes
-from ...model.units.length import Length
+from ...model.units.lengths import Length
 from ..project import presets
 from ._constants import COMMON_SIZES, CUSTOM_SIZE, KEEP_CHOICE, PRESET_COLUMN, SIZE_SEPARATOR
 

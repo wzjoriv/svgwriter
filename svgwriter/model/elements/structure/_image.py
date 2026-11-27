@@ -11,7 +11,7 @@ import numpy as np
 
 from ...attributes.viewbox import PreserveAspectRatio
 from ...pathdata.data import BBox
-from ...units.length import LengthLike
+from ...units.lengths import LengthLike
 from .._behavior import GraphicsElement, Positioned, XLinkAttributes, positioned_bbox
 from ..core import Category, ContentModel
 from ._constants import DATA_URI_PREFIX, HREF

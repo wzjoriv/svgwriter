@@ -12,7 +12,7 @@ import skia
 
 from .._internal._render._rendering import view_matrix
 from ..model.attributes.viewbox import ViewBox
-from ..model.units.length import Length, Unit
+from ..model.units.lengths import Length, Unit
 from ._constants import CHANNEL_MAX, DEFAULT_QUALITY, FORMATS
 from ._raster import make_surface, paint_svg, paint_tree, read_pixels, render_tree
 

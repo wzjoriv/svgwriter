@@ -34,9 +34,9 @@ from ._factories import (
     um,
     yd,
 )
-from .angle import Angle
-from .length import Length, LengthLike, Unit
-from .quantity import Quantity
+from .angles import Angle
+from .lengths import Length, LengthLike, Unit
+from .quantities import Quantity
 
 __all__ = [
     "Angle",

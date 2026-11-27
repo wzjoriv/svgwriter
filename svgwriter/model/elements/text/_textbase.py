@@ -8,7 +8,7 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, TypeAlias
 
 from ...._internal._typing import LengthAdjust
-from ...units.length import LengthLike
+from ...units.lengths import LengthLike
 from ..core import Child, Element
 
 if TYPE_CHECKING:

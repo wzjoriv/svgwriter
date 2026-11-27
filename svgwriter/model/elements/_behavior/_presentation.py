@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from ...._internal._typing import FillRule, Opacity
     from ....ops.typeface import Typeface
     from ...color.color import Color
-    from ...units.length import LengthLike
+    from ...units.lengths import LengthLike
     from ..core import Element
     from ..text import TextDecoration
 

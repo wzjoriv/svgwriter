@@ -8,7 +8,7 @@ from dataclasses import dataclass
 
 from .._internal._presets import SIZES
 from ..errors import UnknownNameError
-from ..model.units.length import Length, LengthLike, Unit
+from ..model.units.lengths import Length, LengthLike, Unit
 from ._constants import BUILTIN_SIZES, IDENTIFIER_SEPARATORS, LANDSCAPE_SUFFIX, PORTRAIT_SUFFIX
 
 __all__ = ["PageSize", "page_size", "size"]

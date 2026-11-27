@@ -18,8 +18,8 @@ from ..._internal._numbers import format_number
 from ._constants import EQUAL_DIGITS, SUPERSCRIPTS
 
 if TYPE_CHECKING:
-    from .angle import Angle
-    from .length import Length, Unit
+    from .angles import Angle
+    from .lengths import Length, Unit
 
 __all__ = ["Quantity", "dimension_name"]
 
@@ -39,7 +39,7 @@ def dimension_name(length: int, angle: int) -> str:
 
     Examples
     --------
-    >>> from svgwriter.model.units.quantity import dimension_name
+    >>> from svgwriter.model.units.quantities import dimension_name
     >>> dimension_name(2, 0), dimension_name(1, -1), dimension_name(0, 0)
     ('length²', 'length·angle⁻¹', 'number')
     """
@@ -117,8 +117,8 @@ class Quantity:
         >>> Quantity.of(svg.inch(1)).value
         96.0
         """
-        from .angle import Angle
-        from .length import Length
+        from .angles import Angle
+        from .lengths import Length
 
         if isinstance(value, Quantity):
             return value
@@ -139,8 +139,8 @@ class Quantity:
         return dimension_name(self.length, self.angle)
 
     def _scale(self) -> float:
-        from .angle import Angle
-        from .length import Length
+        from .angles import Angle
+        from .lengths import Length
 
         unit_length = Length(1, self.length_unit).to_user_units() if self.length_unit is not None else 1.0
         return unit_length ** self.length * Angle(1, self.angle_unit).radians ** self.angle
@@ -158,8 +158,8 @@ class Quantity:
         >>> Quantity(2.0, 0, 0).simplify()
         2.0
         """
-        from .angle import Angle
-        from .length import Length, Unit
+        from .angles import Angle
+        from .lengths import Length, Unit
 
         if (self.length, self.angle) == (0, 0):
             return self.value

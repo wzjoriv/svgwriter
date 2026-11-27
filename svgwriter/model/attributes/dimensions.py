@@ -4,7 +4,7 @@ Checking that a value's dimension (length, angle, number) fits the attribute it 
 
 from __future__ import annotations
 
-from ..units.quantity import Quantity
+from ..units.quantities import Quantity
 from ._constants import ANGLE_ATTRIBUTES, LENGTH_ATTRIBUTES, PLAIN_VALUE_TYPES
 
 __all__ = ["check_dimension"]
@@ -38,8 +38,8 @@ def check_dimension(name: str, value: object) -> None:
     """
     if type(value) in PLAIN_VALUE_TYPES:
         return
-    from ..units.angle import Angle
-    from ..units.length import Length
+    from ..units.angles import Angle
+    from ..units.lengths import Length
 
     wants = "an angle" if name in ANGLE_ATTRIBUTES else "a length" if name in LENGTH_ATTRIBUTES else "a number"
     if isinstance(value, Quantity):

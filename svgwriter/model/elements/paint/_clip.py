@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 
 from ...._internal._typing import Units
 from ...pathdata.data import BBox, PathData
-from ...units.length import LengthLike
+from ...units.lengths import LengthLike
 from .._behavior import (
     ConditionalAttributes,
     CoreAttributes,

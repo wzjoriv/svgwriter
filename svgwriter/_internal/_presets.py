@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from ..model.elements import Motion
     from ..model.elements.core import Element
     from ..model.elements.text import Character, CharacterRange
-    from ..model.units.length import LengthLike
+    from ..model.units.lengths import LengthLike
 
 __all__ = [
     "ANIMATIONS",

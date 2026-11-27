@@ -179,7 +179,7 @@ def resolve_links(root: Element) -> None:
 
 def _absolute_geometry(image: Element) -> None:
     """Rewrite percentage ``x``/``y``/``width``/``height`` of *image* as user units of its viewport."""
-    from ...model.units.length import Length, Unit
+    from ...model.units.lengths import Length, Unit
 
     extent = None
     for name, axis in VIEWPORT_AXES.items():
@@ -198,7 +198,7 @@ def _ratio(image: Element) -> str:
 
 
 def _length(value: object) -> float:
-    from ...model.units.length import Length
+    from ...model.units.lengths import Length
 
     try:
         return Length.parse(value).to_user_units() if value is not None else 0.0

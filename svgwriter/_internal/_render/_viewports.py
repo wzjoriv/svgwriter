@@ -15,7 +15,7 @@ __all__ = ["flatten_viewports"]
 
 
 def _length(element: Element, name: str, extent: float, default: str) -> float:
-    from ...model.units.length import Length, Unit
+    from ...model.units.lengths import Length, Unit
 
     length = Length.parse(element.get(name, default))
     return length.value * extent / PERCENT if length.unit is Unit.PERCENT else float(length.to_user_units())

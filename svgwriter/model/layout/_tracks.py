@@ -8,7 +8,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import TypeAlias
 
-from ..units.length import Length
+from ..units.lengths import Length
 from ._constants import AUTO, FR, IMPLICIT_TRACK
 from ._lengths import resolve
 

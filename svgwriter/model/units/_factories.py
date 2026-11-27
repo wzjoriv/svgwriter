@@ -4,8 +4,8 @@ Unit factories: ``mm(5)``, ``5 * mm``, ``length(5, "mm")``, ``deg(30)``, ``angle
 
 from __future__ import annotations
 
-from .angle import Angle
-from .length import Length, Unit
+from .angles import Angle
+from .lengths import Length, Unit
 
 __all__ = [
     "AngleUnit",

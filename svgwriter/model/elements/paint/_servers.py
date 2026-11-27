@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, ClassVar, TypeAlias
 
 from ...._internal._typing import Opacity, SpreadMethod, Units
 from ...color.color import Color
-from ...units.length import LengthLike
+from ...units.lengths import LengthLike
 from .._behavior import (
     CoreAttributes,
     ExternalResourcesAttribute,

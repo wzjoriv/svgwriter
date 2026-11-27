@@ -18,7 +18,7 @@ from ...attributes.names import LENGTH_ATTRIBUTES, PRESENTATION_ATTRIBUTES, UNSU
 from ...attributes.reference import IRI, FuncIRI
 from ...attributes.style import Style
 from ...color.color import Color, as_color
-from ...units.length import Length, Unit
+from ...units.lengths import Length, Unit
 from ._categories import Category
 from ._constants import COLOR_ATTRIBUTES, COLOR_OPACITY, HREF_ATTRIBUTES, XML_NAME_RE
 

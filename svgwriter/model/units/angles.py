@@ -18,10 +18,10 @@ from ._constants import (
     FULL_TURN_DEGREES,
     HALF_TURN_DEGREES,
 )
-from .quantity import Quantity
+from .quantities import Quantity
 
 if TYPE_CHECKING:
-    from .length import Length
+    from .lengths import Length
 
 __all__ = ["Angle"]
 
@@ -37,7 +37,7 @@ class Angle:
     Any two angles add, subtract and compare whatever their units; plain
     numbers count as degrees, as in SVG. Positive angles turn from +x towards
     +y, which is clockwise on screen. Multiplying or dividing by lengths and
-    angles gives a `~svgwriter.model.units.quantity.Quantity`.
+    angles gives a `~svgwriter.model.units.quantities.Quantity`.
 
     Parameters
     ----------
@@ -259,7 +259,7 @@ class Angle:
         >>> str(svg.turn(0.5).arclength(svg.mm(10)))
         '31.4159mm'
         """
-        from .length import Length
+        from .lengths import Length
 
         return Length.parse(radius) * abs(self.radians)
 

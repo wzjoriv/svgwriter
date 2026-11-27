@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from ...color.color import Color
     from ...color.paint import PaintValue
     from ...transform.transform import TransformLike
-    from ...units.length import LengthLike
+    from ...units.lengths import LengthLike
     from .._behavior import Pivot, XmlSpace
     from ..text import TextDecoration
     from . import Element

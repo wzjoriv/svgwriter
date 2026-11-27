@@ -77,7 +77,7 @@ class Measurement:
         """
         from ...._internal._constants import DEFAULT_MITER_LIMIT
         from ....ops.measure import stroke_to_path
-        from ...units.length import Length
+        from ...units.lengths import Length
 
         width = width if width is not None else Length.parse(self.get("stroke-width", 1)).to_user_units()
         data = stroke_to_path(

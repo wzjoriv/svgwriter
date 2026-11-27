@@ -15,7 +15,7 @@ from ._constants import PAGE_LENGTH_DIGITS
 
 if TYPE_CHECKING:
     from ..model.elements.core import Element
-    from ..model.units.length import Length, Unit
+    from ..model.units.lengths import Length, Unit
 
 __all__ = ["adopt_page_lengths", "page_length", "page_unit", "to_page"]
 
@@ -43,7 +43,7 @@ def page_unit(element: Element) -> tuple[Unit, float] | None:
     >>> page_unit(svg.Document(100, 50).root) is None
     True
     """
-    from ..model.units.length import Length, Unit
+    from ..model.units.lengths import Length, Unit
 
     root = element.root()
     width, box = root.attributes.get("width"), root.attributes.get("viewBox")
@@ -82,7 +82,7 @@ def page_length(value: Length, unit: tuple[Unit, float] | None) -> Length | floa
     >>> page_length(svg.Length(2, "em"), (svg.Unit.MM, 1.0))
     Length(value=2.0, unit=<Unit.EM: 'em'>)
     """
-    from ..model.units.length import Unit
+    from ..model.units.lengths import Unit
 
     if unit is None or value.unit is Unit.NONE or not value.absolute:
         return value
@@ -112,7 +112,7 @@ def to_page(value: Any, element: Element) -> float:
     >>> to_page(svg.cm(2), doc.root), to_page(svg.cm(2), svg.group()) == svg.cm(2).to_user_units()
     (20.0, True)
     """
-    from ..model.units.length import Length
+    from ..model.units.lengths import Length
 
     length = Length.parse(value)
     resolved = page_length(length, page_unit(element))
@@ -121,7 +121,7 @@ def to_page(value: Any, element: Element) -> float:
 
 def _converted(key: str, value: object, unit: tuple[Unit, float]) -> object:
     from ..model.attributes.names import LENGTH_ATTRIBUTES
-    from ..model.units.length import Length
+    from ..model.units.lengths import Length
 
     if key in LENGTH_ATTRIBUTES and isinstance(value, Length):
         return page_length(value, unit)

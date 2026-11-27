@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any, ClassVar
 from ...._internal._typing import Opacity, Units
 from ...color.color import Color
 from ...pathdata.data import BBox
-from ...units.length import LengthLike
+from ...units.lengths import LengthLike
 from .._behavior import (
     ConditionalAttributes,
     CoreAttributes,

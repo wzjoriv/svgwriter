@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any
 from ...transform.matrix import Matrix, Point
 from ...transform.ops import TransformOp
 from ...transform.transform import Transform, TransformLike, as_transform
-from ...units.angle import Angle
+from ...units.angles import Angle
 
 if TYPE_CHECKING:
     from ._transformable import E, Pivot

@@ -123,7 +123,7 @@ class LengthAttr(Attr["float | Length"]):
         raw = obj.get(self.key)
         if raw is None:
             return self.default
-        from ..units.length import Length, Unit
+        from ..units.lengths import Length, Unit
 
         try:
             length = Length.parse(raw)

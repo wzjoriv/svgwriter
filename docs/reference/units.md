@@ -8,12 +8,12 @@ are written in the nearest SVG unit.
 .. automodule:: svgwriter.model.units
    :members: length, angle, LengthUnit, AngleUnit
 
-.. automodule:: svgwriter.model.units.length
+.. automodule:: svgwriter.model.units.lengths
    :members: Length, Unit
 
-.. automodule:: svgwriter.model.units.angle
+.. automodule:: svgwriter.model.units.angles
    :members: Angle
 
-.. automodule:: svgwriter.model.units.quantity
+.. automodule:: svgwriter.model.units.quantities
    :members: Quantity, dimension_name
 ```

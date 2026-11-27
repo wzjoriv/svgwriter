@@ -23,11 +23,11 @@ from ..._internal._constants import (
 from ..._internal._enums import Keyword
 from ..._internal._numbers import format_number
 from ._constants import EQUAL_DIGITS, LENGTH_RE, LENGTH_SCALES, LENGTH_SPELLINGS
-from .quantity import Quantity
+from .quantities import Quantity
 
 if TYPE_CHECKING:
     from ..transform.matrix import Point
-    from .angle import Angle
+    from .angles import Angle
 
 __all__ = ["Length", "LengthLike", "Unit"]
 
@@ -87,7 +87,7 @@ class Length:
     The unit may be spelled out (``"millimetres"``, ``"inches"``); metres and
     feet are accepted too and stored as millimetres and inches, since SVG has
     no such units. Multiplying or dividing by other lengths and angles gives a
-    `~svgwriter.model.units.quantity.Quantity` (an area, for instance) that turns
+    `~svgwriter.model.units.quantities.Quantity` (an area, for instance) that turns
     back into a length when the dimensions cancel.
 
     Parameters
@@ -351,7 +351,7 @@ class Length:
         (0.0, 2.0)
         """
         from ..transform.matrix import Point
-        from .angle import Angle
+        from .angles import Angle
 
         direction = Angle.parse(angle)
         radius = self.to_user_units()
@@ -392,7 +392,7 @@ LengthLike: TypeAlias = Length | float | int | str
 
 
 def _dimension(value: object) -> str:
-    from .angle import Angle
+    from .angles import Angle
 
     if isinstance(value, Quantity):
         return value.dimension

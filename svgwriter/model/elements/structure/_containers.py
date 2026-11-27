@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from ...pathdata.data import BBox, PathData
-from ...units.length import LengthLike
+from ...units.lengths import LengthLike
 from .._behavior import (
     GraphicsElement,
     PathOperand,

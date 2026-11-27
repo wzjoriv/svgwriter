@@ -11,7 +11,7 @@ from ._character import CharacterRange
 
 if TYPE_CHECKING:
     from ...color.paint import PaintValue
-    from ...units.length import LengthLike
+    from ...units.lengths import LengthLike
     from ._text import Text
 
 __all__ = ["CharacterSelection", "runs_of"]

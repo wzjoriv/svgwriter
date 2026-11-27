@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from ...color.paint import PaintValue
     from ...pathdata.data import BBox
     from ...transform.matrix import Point
-    from ...units.length import LengthLike
+    from ...units.lengths import LengthLike
     from ..shapes import Path
     from ._spans import TSpan
     from ._text import Text

@@ -11,7 +11,7 @@ from typing import TypeAlias
 from ..._internal._constants import PAGE_LENGTH_DIGITS
 from ..._internal._page import page_unit
 from ..elements.core import Element
-from ..units.length import Length, Unit
+from ..units.lengths import Length, Unit
 
 __all__ = ["Edges", "LayoutLength", "PaddingLike", "edges", "pair", "resolve", "user_scale"]
 

@@ -48,7 +48,7 @@ def _merge(server: Element, done: set[int], chain: set[int]) -> None:
 
 
 def _fraction(value: object, default: float) -> tuple[float, bool]:
-    from ...model.units.length import Length, Unit
+    from ...model.units.lengths import Length, Unit
 
     if value is None:
         return default, False
@@ -129,7 +129,7 @@ def resolve_servers(root: Element) -> None:
 
 def _empty_tile(server: Element) -> bool:
     """Whether *server* is a pattern whose tile has no area, which disables the paint."""
-    from ...model.units.length import Length
+    from ...model.units.lengths import Length
 
     if server.tag != "pattern":
         return False

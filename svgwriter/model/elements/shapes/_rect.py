@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any, ClassVar
 from ...attributes.descriptors import LengthAttr
 from ...pathdata.builder import PathBuilder
 from ...pathdata.data import BBox, PathData
-from ...units.length import LengthLike
+from ...units.lengths import LengthLike
 from ._base import Shape, require_sizes, user_units
 from ._rectbuild import RectConstructors
 

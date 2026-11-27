@@ -17,7 +17,7 @@ from ...._internal._typing import FillRule, LineCap, LineJoin, Opacity
 from ...attributes.descriptors import Attr, LengthAttr
 from ...attributes.style import Style, StyleLike
 from ...color.paint import PaintValue, parse_paint
-from ...units.length import LengthLike
+from ...units.lengths import LengthLike
 from ..core import Child, Element
 from ._convert import Convertible
 from ._styling import PresentationMethods, StyleMethods

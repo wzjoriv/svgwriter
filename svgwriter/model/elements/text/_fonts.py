@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from ...attributes.style import StyleLike
     from ...color.color import Color
     from ...color.paint import PaintValue
-    from ...units.length import LengthLike
+    from ...units.lengths import LengthLike
     from .._behavior import XmlSpace
     from ..core import AttrValue
     from . import TextDecoration
