@@ -26,6 +26,10 @@ the file stays portable: browsers, editors and every svgwriter renderer and expo
 PowerPoint, ...) resolve the sheet. A themed file read back with `Document.open` keeps its sheet; setting
 `doc.theme` replaces the rules on output.
 
+Corner radii and radius (`rx`, `ry`, `r`) are geometry, which SVG 1.1 style sheets cannot set, so a role
+that gives them writes them as attributes on its elements instead (an `rx` set on the element wins):
+`theme.replace(roles={"card": {"fill": "{surface}", "rx": "6"}})` rounds every card.
+
 Role rules override plain attributes, as CSS rules do. `as_role` moves the presentation attributes already
 on an element into its inline `style`, so values given when the element is made still win:
 
