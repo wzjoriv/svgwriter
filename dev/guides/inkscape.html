@@ -376,7 +376,7 @@ in code. A label shared by several elements raises <code class="docutils literal
 <section id="rotation-centres">
 <h2>Rotation centres<a class="headerlink" href="#rotation-centres" title="Link to this heading">¶</a></h2>
 <p>When an object’s rotation centre was moved in Inkscape (<code class="docutils literal notranslate"><span class="pre">inkscape:transform-center-x</span></code> and <code class="docutils literal notranslate"><span class="pre">-y</span></code>), it
-becomes the element’s <code class="xref py py-attr docutils literal notranslate"><span class="pre">anchor</span></code>, so <code class="docutils literal notranslate"><span class="pre">rotate</span></code>, <code class="docutils literal notranslate"><span class="pre">scale</span></code> and
+becomes the element’s <a class="reference internal" href="../reference/elements.html#svgwriter.model.elements.Transformable.anchor" title="svgwriter.model.elements.Transformable.anchor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">anchor</span></code></a>, so <code class="docutils literal notranslate"><span class="pre">rotate</span></code>, <code class="docutils literal notranslate"><span class="pre">scale</span></code> and
 animations turn around the same point. Writing an Inkscape document stores the anchor back for Inkscape.
 Inkscape keeps the centre as an offset from the middle of the bounding box, in user units with y pointing
 up; svgwriter converts both ways.</p>
