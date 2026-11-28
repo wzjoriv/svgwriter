@@ -36,7 +36,7 @@ pixels = doc.rasterize(scale=2)                          # numpy float32 RGBA, s
 | Area | What you get |
 | --- | --- |
 | Elements | Every static SVG 1.1 element as a class with a lowercase alias (`svg.Circle` / `svg.circle`); every attribute readable and writable by its Python name (`el.stroke_width`, `el.view_box`) |
-| Placement | `el.matrix` is one affine `Matrix`; `translate`, `rotate`, `scale`, `skew`, `flip_x`/`flip_y` (parent or `local=True` frame) about an `anchor` (bounding-box centre unless pinned); `place(x, y)`, `position`, `bounds()`; points and edges as attributes (`a.center = b.center`, `a.top = b.bottom + 4`) |
+| Placement | `el.matrix` is one affine `Matrix`; `translate`, `rotate`, `scale`, `skew`, `flip_x`/`flip_y` (parent or `local=True` frame) about an `anchor` (bounding-box centre unless pinned); `place(x, y)`, `position`, `bounds()`; points and edges as attributes (`a.center = b.center`, `a.top = b.bottom + 4`); `doc.wireframe(bounds=True)` to see the geometry |
 | Operators | `el + (dx, dy)`, `el * 2`, `el @ 30` (rotate), `M @ el`; `a \| b`, `a & b`, `a - b`, `a ^ b` boolean ops on shapes, text, groups and `<use>` |
 | Paths | Fluent `svg.path().move_to(0, 0).line_to(10, 0).arc_to(5, 5, 10, 10).close()`; `path.nodes` as an `(N, 2)` array; length, point at length, contains, exact bounds, stroke-to-path, simplify |
 | Conversions | `to_path()` (text via glyph outlines, groups merged, clips flattened), `to_image()`, `rasterize()`, `to_group()`, `clone(linked=True)` for `<use>`; clear errors when impossible |

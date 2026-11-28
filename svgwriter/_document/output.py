@@ -61,6 +61,37 @@ class Output:
     def __str__(self) -> str:
         return self.to_string(xml_declaration=False)
 
+    def wireframe(self, *, color: str = "#0ea5e9", width: float | None = None, bounds: bool = False) -> Any:
+        """A copy drawn as thin outlines, to see the geometry under the paint (for debugging).
+
+        Parameters
+        ----------
+        color : str, optional
+            Outline colour. Defaults to sky blue.
+        width : float, optional
+            Outline width in user units. Defaults to None: a hairline scaled to the drawing.
+        bounds : bool, optional
+            Also draw each shape's bounding box, dashed. Defaults to False.
+
+        Returns
+        -------
+        Document
+            The wireframe; this one is unchanged.
+
+        See Also
+        --------
+        svgwriter.ops.wireframe : The function behind it.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.Document(width=10, height=10).wireframe().root.get("fill") or "none"
+        'none'
+        """
+        from ..ops.wireframe import wireframe
+
+        return wireframe(self, color=color, width=width, bounds=bounds)
+
     def _repr_svg_(self) -> str:
         return notebook_markup(self.to_string(xml_declaration=False))
 

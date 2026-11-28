@@ -201,6 +201,37 @@ class Element(Construction, AttributeAccess, TreeEditing, Queryable, Displayable
 
         return Interactions(self)
 
+    def wireframe(self, *, color: str = "#0ea5e9", width: float | None = None, bounds: bool = False) -> Any:
+        """A copy drawn as thin outlines, to see the geometry under the paint (for debugging).
+
+        Parameters
+        ----------
+        color : str, optional
+            Outline colour. Defaults to sky blue.
+        width : float, optional
+            Outline width in user units. Defaults to None: a hairline scaled to the drawing.
+        bounds : bool, optional
+            Also draw each shape's bounding box, dashed. Defaults to False.
+
+        Returns
+        -------
+        Element
+            The wireframe; this one is unchanged.
+
+        See Also
+        --------
+        svgwriter.ops.wireframe : The function behind it.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.circle(5, 5, 4, fill="red").wireframe().style["fill"]
+        'none'
+        """
+        from ....ops.wireframe import wireframe
+
+        return wireframe(self, color=color, width=width, bounds=bounds)
+
     @property
     def home(self) -> Element:
         """The element as it was when its first behavior was attached: a detached copy to start each frame from.
