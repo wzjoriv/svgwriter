@@ -8,10 +8,12 @@ Colors are {class}`~svgwriter.Color` values with red, green, blue and alpha as f
 ```python
 import svgwriter as svg
 
-svg.rect(0, 0, 1, 1, fill="tomato")
-svg.rect(0, 0, 1, 1, fill="#ff6347cc")
-svg.rect(0, 0, 1, 1, fill="rgba(255, 99, 71, 0.8)")
-svg.rect(0, 0, 1, 1, fill=(1.0, 0.39, 0.28, 0.8))
+swatches = svg.Document(185, 50)
+swatches.rect(0, 0, 185, 50, fill="#ddd")                     # something behind, so the alpha shows
+swatches.rect(5, 5, 40, 40, fill="tomato")
+swatches.rect(50, 5, 40, 40, fill="#ff6347cc")
+swatches.rect(95, 5, 40, 40, fill="rgba(255, 99, 71, 0.8)")
+swatches.rect(140, 5, 40, 40, fill=(1.0, 0.39, 0.28, 0.8))
 c = svg.Color.from_uint8(255, 99, 71)          # 0..255 values are explicit
 print(c.hex, c.rgba, c.uint8)
 print(c.lighten(0.2).hex, c.mix("navy").hex, (c * 0.5).hex)
@@ -152,6 +154,9 @@ tile = dots.to_image(scale=4)                 # one tile as pixels
 again = svg.Pattern.from_image(tile)          # pixels as a pattern
 badge = svg.circle(30, 30, 25, fill=dots, stroke="black")
 plain = badge.expand_pattern()                # tiles clipped to the circle: plain vector graphics
+view = svg.Document(200, 70)                  # the tile enlarged beside the pattern it makes
+tile.x, tile.y, tile.width, tile.height = 5, 5, 60, 60
+view += [tile, svg.rect(75, 5, 120, 60, fill=again)]
 ```
 
 `expand_pattern()` is for targets without pattern support (plotters, cutters, some editors);
@@ -173,6 +178,9 @@ glow = photo.pixels.composite(shadow.pixels, "screen")
 badge = photo.pixels & svg.circle(32, 32, 32)               # masked by a shape
 title = photo.pixels.on_grid(svg.text("hi", x=4, y=20, fill="white")) | photo.pixels   # text over the photo
 print(card.shape, svg.Image(badge.rgba()).shape)
+scene = svg.Document(80, 80)                                # the shadow offset behind the photo
+scene.rect(0, 0, 80, 80, fill="#eee")
+scene += [shadow.translate(8, 8), photo.translate(2, 2)]
 ```
 
 Two pixel grids combine pixel for pixel, so their shapes must broadcast. An element or a whole document

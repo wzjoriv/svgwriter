@@ -14,6 +14,7 @@ doc.rect(16, 50, 90, 34, rx=6).as_role("box")
 doc += svg.paths.star(200, 60, 20, 8)          # builder shapes carry roles already
 doc += svg.paths.arrow(110, 67, 160, 67)
 
+dark = doc.at(0)                                  # a still of the dark one, to compare
 doc.theme = "paper"                               # restyle everything
 print(doc.to_string()[:200])
 ```
@@ -118,6 +119,8 @@ brand = svg.themes.get("light").replace(
     },
 )
 print(brand.style("box"), brand.style("badge"))
+tag = svg.Document(120, 50, theme=brand)
+tag.rect(10, 10, 100, 30, rx=15).as_role("badge")
 ```
 
 A role value may also be a reference, `"{palette.primary}"` or `"{fonts.sizes.title}"`, alone or inside
@@ -150,6 +153,8 @@ brand = svg.themes.get("light").replace(
     }},
 )
 print(brand.palette.on_primary.hex, brand.style("badge"))
+tag = svg.Document(120, 50, theme=brand)
+tag.rect(10, 10, 100, 30, rx=15, stroke="#7c3aed", stroke_width=2).as_role("badge")
 ```
 
 | Kind | Forms |
@@ -229,8 +234,9 @@ Every error is a `ThemeError` that names the key, and the file when one was load
 import svgwriter as svg
 
 with svg.themes.get("print"):
-    figure = svg.Document(100, 40)
-    figure.text("Figure 1", x=4, y=24).as_role("caption")
+    figure = svg.Document(200, 80)
+    figure.rect(4, 4, 192, 72).as_role("box")
+    figure.text("Figure 1", x=16, y=50).as_role("caption")
 print(figure.theme.name, svg.Theme.current().name)
 ```
 

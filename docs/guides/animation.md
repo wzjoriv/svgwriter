@@ -12,6 +12,7 @@ doc = svg.Document(100, 100)
 ball = doc.circle(20, 50, 10, fill="tomato")
 ball.append(svg.Animate(attribute_name="cx", from_=20, to=80, dur="2s", repeat_count="indefinite"))
 doc.save("ball.svg")
+doc.at(1.0)        # the ball halfway along, as a still
 ```
 
 ## Presets
@@ -19,8 +20,11 @@ doc.save("ball.svg")
 `element.animate` adds ready-made SMIL animations and chains:
 
 ```python
-logo = svg.circle(50, 50, 20, fill="teal")
+stage = svg.Document(100, 100)
+stage.rect(30, 30, 40, 40, rx=6, fill="none", stroke="#ccc")          # where it starts, for comparison
+logo = stage.rect(30, 30, 40, 40, rx=6, fill="teal")
 logo.animate.fade_in(0.5).spin(2, begin=0.5)
+stage.at(0.8)       # faded in and part-way through the first spin
 ```
 
 | Group | Presets |
@@ -52,16 +56,22 @@ coordinates (local ones with `local=True`). `move_by` measures along the parent'
 transform and preset pivots there; an unknown name raises `ValueError` listing the valid ones:
 
 ```python
-door = svg.rect(20, 20, 30, 60, fill="sienna")
+stage = svg.Document(110, 100)
+stage.rect(20, 20, 30, 60, fill="#ddd")        # the door at rest, for comparison
+door = stage.rect(20, 20, 30, 60, fill="sienna")
 door.animate.rotate(-30, about="left")        # swings on its hinge
-needle = svg.rect(48, 20, 4, 40, fill="crimson", anchor="bottom")
+needle = stage.rect(78, 20, 4, 40, fill="crimson", anchor="bottom")
 needle.rotate(45)                              # turns about its base
 needle.animate.spin(4, repeat="indefinite")    # and so does the animation
+stage.at(1.0)
 ```
 
 ```python
-card = svg.rect(20, 20, 60, 30, fill="slateblue")
+stage = svg.Document(160, 100)
+stage.rect(20, 20, 60, 30, fill="none", stroke="#ccc")           # the start, for comparison
+card = stage.rect(20, 20, 60, 30, fill="slateblue")
 card.animate.rotate(90).scale(1.5, begin=1).skew(x=20, begin=2).move_by(40, 0, begin=3)
+stage.at(4.0)       # the end of the chain
 ```
 
 `create`, `uncreate` and `write` animate `stroke-dasharray`/`stroke-dashoffset` and `fill-opacity`.
@@ -69,10 +79,13 @@ A shape without a stroke is drawn with its fill color, every contour of a shape 
 `write` starts each character a little before the previous one finishes:
 
 ```python
-title = svg.text("Hello", x=10, y=60, font_size=48, fill="tomato")
+stage = svg.Document(260, 100)
+title = stage.text("Hello", x=10, y=70, font_size=48, fill="tomato")
 title.animate.write(1.5)
-badge = svg.circle(50, 50, 30, fill="teal")
+badge = stage.circle(210, 50, 30, fill="teal", stroke="navy", stroke_width=3)
 badge.animate.create(1).uncreate(1, begin=3)
+stage.at(0.6)       # half written; the badge's outline drawn, its fill fading in
+stage.at(1.6)       # written; the badge complete
 ```
 
 ## Started by a click or hover
@@ -132,12 +145,14 @@ def bob(motion: svg.Motion, *, height: float = 8, dur: float = 1, begin: float =
                                                                             ease=ease)
 
 
-dot = svg.circle(20, 40, 6, fill="teal")
+stage = svg.Document(100, 100)
+dot = stage.circle(20, 40, 6, fill="teal")
 dot.animate.apply(bob, height=12).fade_out(begin=1)   # typed: editors complete and check the options
 dot.animate.bob(begin=2)                              # by name, like the built-in presets
-row = svg.Group()
-row += [svg.circle(20 + 20 * index, 80, 6) for index in range(4)]
+row = stage.group()
+row += [svg.circle(20 + 20 * index, 80, 6, fill="tomato") for index in range(4)]
 row.animate.stagger("bob", step=0.2, height=6)
+stage.at(0.5)       # the dot at the top of its bob, the row part-way through its stagger
 print(svg.preset.animation.list()[-1])
 svg.preset.animation.unregister("bob")
 ```
@@ -169,7 +184,9 @@ timing curve for the whole animation. The named curves are the standard cubic b√
 | `"step-start"`, `"step-end"`, `("steps", n)` | | jumps instead of gliding |
 
 ```python
-box = doc.rect(10, 10, 20, 20, fill="teal")
+race = svg.Document(200, 40)
+race.rect(10, 18, 180, 4, fill="#ddd")                      # the track
+box = race.rect(10, 10, 20, 20, fill="teal")
 box.animate.move_to(180, 20, dur=1, ease="ease-in-out")
 box.animate.fade_in(0.5, ease=(0.2, 0.9, 0.3, 1.0))         # a custom b√©zier
 ```
@@ -180,7 +197,10 @@ Any Python function from time to progress works too, overshoot included:
 def back_out(t):
     return 1 + 2.7 * (t - 1) ** 3 + 1.7 * (t - 1) ** 2
 
+entry = svg.Document(200, 40)
+box = entry.rect(90, 10, 20, 20, fill="tomato")
 box.animate.slide_in("left", ease=back_out)
+entry.at(0.5)       # sliding in, overshooting a little
 ```
 
 The curve covers the whole timeline, so a preset with several `values` (`bounce`, `shake`, `pulse`,
@@ -198,7 +218,7 @@ timing, repeats, `fill="freeze"`, `values`/`keyTimes`, every `calcMode` (discret
 spline with `keySplines`), `keyPoints` and `additive="sum"`, so frames match what browsers play.
 
 ```python
-frame = doc.at(1.0)          # the ball halfway along
+frame = race.at(0.5)         # the box halfway along
 ```
 
 Saving keeps the animation where the format can play it: `.svg` and `.svgz` keep the SMIL elements,
@@ -276,6 +296,7 @@ class Pulse(svg.Scene):
 
 pulse = Pulse()
 still = pulse.render(1.0)        # PNG bytes of the frame at 1 s
+pulse.at(1.0)                    # the same frame as a Document
 frames = list(pulse.frames())    # 48 frames, not encoded
 # pulse.save()                   # Pulse.mp4; or save("pulse.gif"), save("pulse.png") for numbered frames
 ```
@@ -353,8 +374,8 @@ the animation runs anywhere SMIL does. Saving a scene as `.svg`, `.svgz`, `.html
 automatically (no ffmpeg needed):
 
 ```python
-baked = garden.bake()                     # a Document; garden.document keeps its Python state
-frame = baked.at(1.0)                     # the same frame the video shows at 1 s
+frame = garden.bake().at(1.0)             # bake() is a Document; garden.document keeps its Python state
+                                          # the frame is the one the video shows at 1 s
 # garden.save("garden.svg")               # plays in a browser like the video
 # garden.save("garden.pptx")              # slide effects where PowerPoint has them
 ```
@@ -399,6 +420,8 @@ start = svg.Polygon.regular(50, 50, 40, 5, fill="gold")
 end = svg.circle(50, 50, 30, fill="teal")
 frames = [svg.interpolate(start, end, i / 10) for i in range(11)]
 print(frames[5].tag, frames[5].get("fill"))
+row = svg.Document(600, 100)              # the morph in six steps
+row += [el.translate(100 * n, 0) for n, el in enumerate([start, *frames[2:9:2], end])]
 ```
 
 In an `update` callback this gives morphs and tweens per frame, for instance

@@ -25,7 +25,8 @@ Indic conjuncts, Thai, ...) are shaped; Latin text keeps glyph-by-glyph layout. 
 character of each cluster carries its glyphs.
 
 ```python
-t = doc.text("wavy text", x=10, y=40, font_size=24)
+wavy = svg.Document(300, 60)
+t = wavy.text("wavy text", x=10, y=40, font_size=36)
 for i, glyph in enumerate(t):
     glyph.translate(0, (-1) ** i * 3)
 t[5:].rotate(-10)
@@ -64,6 +65,7 @@ outlines[1].scale(1.5)
 ```python
 word = svg.text("Outline", x=0, y=40, font_size=36)
 path = word.to_path()                       # glyph outlines as a <path>
+path.update(fill="none", stroke="crimson", stroke_width=1.5)      # drawn as outlines only
 print(word.exact_bbox())
 print(svg.ops.text_width("Outline", "sans-serif", 36))
 ```
