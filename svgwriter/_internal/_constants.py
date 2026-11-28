@@ -326,8 +326,9 @@ COLOR_PROPERTIES: Final = frozenset({"fill", "stroke", "stop-color", "flood-colo
 COLOR_OPACITIES: Final = {"fill": "fill-opacity", "stroke": "stroke-opacity", "stop-color": "stop-opacity",
                           "flood-color": "flood-opacity"}
 """The opacity property that carries the alpha of each colour property on a render copy."""
-LEGACY_COLOR_RE: Final = re.compile(r"^(#[0-9a-fA-F]{3}|#[0-9a-fA-F]{6}|rgb\(\s*[\d.%]+\s*,\s*[\d.%]+\s*,\s*[\d.%]+\s*\)|[a-zA-Z]+)$")
-"""Colour syntaxes every SVG 1.1 renderer reads: short and long hex, comma ``rgb()`` and keywords."""
+LEGACY_COLOR_RE: Final = re.compile(r"^(#[0-9a-fA-F]{3}|#[0-9a-fA-F]{6}|rgb\(\s*[\d.%]+\s*,\s*[\d.%]+\s*,\s*[\d.%]+\s*\))$")
+"""Colour syntaxes every SVG 1.1 renderer reads: short and long hex and comma ``rgb()``. Colour keywords are
+written as hex too, since renderers know different keyword lists (skia lacks ``lightgray``)."""
 PERCENT: Final = 100.0
 DEFAULT_SIZE: Final = 16.0
 JOIN_TOLERANCE: Final = 0.01

@@ -16,3 +16,12 @@ def test_a_paint_shared_by_two_documents_is_written_in_both():
         defined = set(re.findall(r'<(?:pattern|linearGradient) id="([^"]+)"', text))
         used = set(re.findall(r"url\(#([^)]+)\)", text))
         assert used and used <= defined
+
+
+def test_every_colour_keyword_renders_as_its_colour():
+    import numpy as np
+
+    for name, value in (("lightgray", 211), ("lightgrey", 211), ("darkslategray", 47), ("dimgray", 105)):
+        doc = svg.Document(width=4, height=4)
+        doc.rect(0, 0, 4, 4, fill=name)
+        assert round(float(np.asarray(doc.rasterize())[2, 2, 0]) * 255) == value, name
