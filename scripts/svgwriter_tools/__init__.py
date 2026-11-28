@@ -17,7 +17,7 @@ import typer
 
 from ._conformance import run_suite, write_report
 from ._demo_notebooks import app as demo_notebooks
-from ._snippets import app as snippets
+from ._snippets_cli import app as snippets
 from ._suite import SUITE_DIR, SUITE_URL, fetch
 
 app = typer.Typer(name="svgwriter", help=__doc__, add_completion=False, no_args_is_help=True)

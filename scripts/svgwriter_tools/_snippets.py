@@ -14,9 +14,7 @@ import tempfile
 import warnings
 from collections.abc import Iterator
 from pathlib import Path
-from typing import Annotated, Any
-
-import typer
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 DOCS = ROOT / "docs"
@@ -26,9 +24,6 @@ SAVES = re.compile(r"\.(save|write|to_file)\(")
 MAX_PICTURES = 4
 """Most pictures shown under one block (the last ones it draws)."""
 SAMPLE = ROOT / "tests" / "export" / "data" / "sample.excalidraw"
-
-app = typer.Typer(name="snippets", help="Pictures of what the docs' code snippets draw.", no_args_is_help=True)
-
 
 def pages() -> list[Path]:
     """Docs pages with Python blocks."""
@@ -138,10 +133,3 @@ def write_images(out: Path = OUTPUT) -> dict[str, dict[int, list[str]]]:
                 names.append(name)
             found.setdefault(page.relative_to(DOCS).with_suffix("").as_posix(), {})[index] = names
     return found
-
-
-@app.command()
-def build(out: Annotated[Path, typer.Option(help="Folder for the SVGs.")] = OUTPUT) -> None:
-    """Render the pictures (the docs build does this itself; use this to look at them)."""
-    found = write_images(out)
-    typer.echo(f"{sum(map(len, found.values()))} picture(s) for {len(found)} page(s) in {out}")
