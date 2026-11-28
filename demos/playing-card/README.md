@@ -1,5 +1,7 @@
 # Playing card
 
+![The playing-card demo's output](../../docs/_static/demos/playing-card.png)
+
 An adjustable playing card: rank and suit on rows of buttons, the hue, the iridescence, the glow, the corner
 radius and the card width on sliders and a toggle.
 

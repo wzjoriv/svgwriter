@@ -3,7 +3,7 @@
 ## Local geometry, one transform
 
 An element's SVG coordinates (`cx`, `x`, `width`, `d`, `points`) are its *local* geometry and are written
-exactly as given. Everything that places the element afterwards edits its transform, `t`, an immutable
+exactly as given. Everything that places the element afterwards edits its transform, `el.matrix`, an immutable
 affine {class}`~svgwriter.Matrix`.
 
 ```python
@@ -13,7 +13,7 @@ c = svg.circle(50, 50, 10)
 c.translate(20, 0).rotate(90)
 print(c.cx)          # 50.0: the local geometry never changes
 print(c.position)    # Point(x=70.0, y=50.0): where the anchor (centre) is now
-print(c.matrix)           # the shortest equivalent transform text
+print(c.matrix)      # the transform as one matrix
 print(c)             # <circle cx="50" cy="50" r="10" transform="..."/>
 ```
 
@@ -71,7 +71,7 @@ dot += (1, 1)                   # in place
 ```
 
 `*` and `@` never bake coordinates. To fold the transform into the geometry, convert:
-`el.to_path()` returns a `<path>` whose `d` already includes `t`.
+`el.to_path()` returns a `<path>` whose `d` already includes the transform.
 
 Things to keep in mind:
 
@@ -132,7 +132,7 @@ width = 5 * svg.inch - 7 * svg.mm            # 4.7244in
 print(width.to("mm"), svg.inch(1) / svg.mm(25.4))
 page = svg.Document(210 * svg.mm, 297 * svg.mm)   # A4; coordinates inside are millimetres
 # page.save("print.png", dpi=300)
-spin = svg.rect(0, 0, 4, 2) @ svg.turn(0.25)  # angles: deg, rad, grad, turn
+spin = svg.rect(0, 0, 4, 2) @ svg.turn(0.25)  # angles: deg, rad, turn (svg.units.grad too)
 ```
 
 A document sized in a physical unit with a matching `viewBox`, such as `svg.Document(size="a4")` or
@@ -149,8 +149,14 @@ The everyday units are on `svg` itself: `px`, `pt`, `mm`, `cm`, `inch`, `em`, `p
 `turn`. Every unit, the rarer ones included, is in `svg.units`: `pc`, `q` (quarter millimetres, written `Q`),
 `ex`, `grad`, and units SVG has no suffix for, written in the nearest SVG unit: `m`, `km`, `um`
 (micrometres) and `nmi` (nautical miles) as millimetres; `ft`, `yd`, `mi`, `furlong` and `mil`
-(thousandths of an inch) as inches (`svg.units.mi(2)`). A unit on its own is one of itself, so `height=svg.inch` is one
+(thousandths of an inch) as inches. A unit on its own is one of itself, so `height=svg.inch` is one
 inch and `svg.turn` is a full turn.
+
+```python
+print(svg.units.mi(2), svg.units.km(1.5), svg.units.pc(3))   # 126720in 1500000mm 3pc
+print(svg.units.grad(100).to("deg"))                         # 90deg
+```
+
 `svg.length(value, unit)` and `svg.angle(value, unit)` take the unit as text, spelled short or in full
 (`"mm"`, `"millimetres"`, `"inches"`, `"degrees"`, `"gon"`, `"turns"`, ...); output always uses the
 short suffix.

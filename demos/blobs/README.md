@@ -1,5 +1,7 @@
 # Blobs
 
+![The blobs demo's output](../../docs/_static/demos/blobs.gif)
+
 A website hero banner: a headline, a line of text and a "Get started" button beside gooey metaballs that
 drift, stretch bridges when they come close, merge and split apart again, on a seamless four-second loop.
 The SVG goes on the page (it loops by itself, and the button dims on hover and flashes when pressed); the GIF

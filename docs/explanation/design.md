@@ -3,7 +3,7 @@
 The main ideas behind the API:
 
 **Geometry is local; placement is a transform.** SVG coordinates are written as given and never rewritten
-by moves. A single immutable affine matrix, `t`, places each element, and the writer turns it into the
+by moves. A single immutable affine matrix, `el.matrix`, places each element, and the writer turns it into the
 shortest equivalent `transform` text. Rewriting `cx` on every move would not work for paths, groups or
 images and could not express rotation.
 

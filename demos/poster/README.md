@@ -1,5 +1,7 @@
 # Poster
 
+![The poster demo's output](../../docs/_static/demos/poster.png)
+
 *Beach clean-up*: an A4 print poster inviting people to a beach clean-up, drawn in millimetres. `size = "a4"`
 makes every coordinate a millimetre, so the PDF prints at true size (210 x 297 mm) and the PNG comes out at
 300 dpi.

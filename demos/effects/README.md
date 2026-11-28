@@ -1,5 +1,7 @@
 # Effects
 
+![The effects demo's output](../../docs/_static/demos/effects.gif)
+
 A retro game title screen: **Star Drift** in big letters, the first word on fire and the second in polished
 metal, a "Press start" prompt that blinks forever, and a menu of glowing buttons that dim under the pointer and
 flash when clicked (in the SVG).

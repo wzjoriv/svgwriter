@@ -1,5 +1,7 @@
 # Planets explainer
 
+![The planets-explainer demo's output](../../docs/_static/demos/planets-explainer.gif)
+
 A four-slide classroom lesson on the Solar System, written as `Scene` classes:
 
 1. **Title**: "The Solar System" and the lesson's three goals, fading in one by one.
