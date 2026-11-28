@@ -7,18 +7,21 @@ from __future__ import annotations
 import importlib
 import io
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 from ...._internal._constants import PX_PER_INCH
 from ...._internal._platform import missing
 from ....errors import OfficeExtraError
 from ..._format import Format
-from ._constants import PICTURE_SCALE
+from ._constants import FALLBACK_DPI, PICTURE_SCALE
 
 if TYPE_CHECKING:
     from ....document import Document
 
 __all__: list[str] = []
+
+Fallback = Literal["image", "drop"]
+"""What an office export does with filters and masks: draw a picture of the element, or drop the effect."""
 
 
 
@@ -30,7 +33,7 @@ def require(module: str) -> Any:
         raise missing("office", f"{module.split('.')[0]} for this format", OfficeExtraError) from error
 
 
-def pptx(document: Document | Sequence[Document]) -> bytes:
+def pptx(document: Document | Sequence[Document], *, fallback: Fallback = "image", dpi: float = FALLBACK_DPI) -> bytes:
     """A PowerPoint deck with one slide per drawing, as editable shapes.
 
     Every painted outline becomes a freeform shape with its curves, solid
@@ -44,6 +47,11 @@ def pptx(document: Document | Sequence[Document]) -> bytes:
         The drawing, or several drawings for one slide each. A deck has a
         single slide size, so it fits the widest and tallest drawing and
         smaller drawings are centred on their slides.
+    fallback : {"image", "drop"}, optional
+        What happens to filters and masks, which PowerPoint cannot draw: ``"image"`` places a picture of the
+        element as it looks, ``"drop"`` keeps it as a shape without the effect. Defaults to "image".
+    dpi : float, optional
+        Resolution of those pictures. Defaults to 192.
 
     Returns
     -------
@@ -82,7 +90,8 @@ def pptx(document: Document | Sequence[Document]) -> bytes:
     """
     from ._pptx import write_pptx
 
-    return write_pptx(list(document) if isinstance(document, Sequence) else [document])
+    scale = dpi / PX_PER_INCH if fallback == "image" else None
+    return write_pptx(list(document) if isinstance(document, Sequence) else [document], effect_scale=scale)
 
 
 def read_pptx(data: bytes, *, slide: int | None = 0) -> Document | list[Document]:
@@ -137,7 +146,7 @@ def _picture(document: Document) -> tuple[bytes, float, float]:
     return png, width / PX_PER_INCH, height / PX_PER_INCH
 
 
-def docx(document: Document) -> bytes:
+def docx(document: Document, *, fallback: Fallback = "image", dpi: float = FALLBACK_DPI) -> bytes:
     """A Word document holding the drawing as native, editable Word shapes at its natural size.
 
     Every painted outline becomes a floating freeform shape with its curves,
@@ -152,6 +161,11 @@ def docx(document: Document) -> bytes:
     ----------
     document : Document
         The drawing.
+    fallback : {"image", "drop"}, optional
+        What happens to filters and masks, which Word cannot draw: ``"image"`` places a picture of the element
+        as it looks, ``"drop"`` keeps it as a shape without the effect. Defaults to "image".
+    dpi : float, optional
+        Resolution of those pictures. Defaults to 192.
 
     Returns
     -------
@@ -181,7 +195,7 @@ def docx(document: Document) -> bytes:
     """
     from ._docx import write_docx
 
-    return write_docx(document)
+    return write_docx(document, effect_scale=dpi / PX_PER_INCH if fallback == "image" else None)
 
 
 def xlsx(document: Document) -> bytes:

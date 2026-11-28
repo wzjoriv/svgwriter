@@ -65,7 +65,7 @@ class _Place:
                 round(width * self.scale), round(height * self.scale))
 
 
-def write_pptx(documents: list[Document]) -> bytes:
+def write_pptx(documents: list[Document], *, effect_scale: float | None = None) -> bytes:
     """Write the deck, one slide per document; see :func:`svgwriter.formats.export._office.pptx`."""
     presentation_module = require("pptx")
     from ...._internal._flat._flatten import flatten
@@ -76,7 +76,7 @@ def write_pptx(documents: list[Document]) -> bytes:
     animations = [slide_animations(document) for document in documents]
     parts = [split_equations(animated.document) for animated in animations]
     documents = [rest for rest, _ in parts]
-    scenes = [flatten(document, handled=frozenset({"image"}), text=True) for document in documents]
+    scenes = [flatten(document, handled=frozenset({"image"}), text=True, effect_scale=effect_scale) for document in documents]
     width, height = max(scene.width for scene in scenes), max(scene.height for scene in scenes)
     scale = _emu_scale(width, height)
     deck = presentation_module.Presentation()
