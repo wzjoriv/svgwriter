@@ -50,6 +50,14 @@ doc.embed_fonts()                                     # the SVG carries the font
 
 `fb.to_bytes(".ttf")` returns the file's content without writing it.
 
+To reach the font by name everywhere, register the file (or its bytes) as a font preset; a plugin can
+ship it through the `svgwriter.font` entry-point group (see [Typography](text.md#registering-fonts-by-name)):
+
+```python
+[family] = svg.preset.font(fb.to_bytes(".ttf"), name="My Hand", replace=True)
+svg.text("lo", x=0, y=70, font_family=family, font_size=64).to_path()
+```
+
 ## Formats
 
 The suffix picks the format:

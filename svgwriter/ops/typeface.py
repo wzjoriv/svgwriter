@@ -10,23 +10,21 @@ from pathlib import Path
 from typing import Any
 
 from .._internal._constants import NORMAL_WEIGHT
+from .._internal._presets import FONTS
 from .._internal._typography._font_constants import (
     FONT_FILE_SUFFIXES,
 )
 from .._internal._typography._font_match import FontStyle, match_rank, style_of
 from ._constants import DEFAULT_FONT_SIZE
 from ._text import Face, FaceMetrics, FontSource, css_family, family_of, installed_faces, load, load_face
-from .text import register_font
 
-__all__ = ["Face", "FaceMetrics", "FontSource", "Typeface", "known_typefaces"]
+__all__ = ["Face", "FaceMetrics", "FontSource", "Typeface", "font_families", "known_typefaces"]
 
-
-_REGISTERED: set[tuple[str, Any, Any, str]] = set()
 _KNOWN: dict[str, Typeface] = {}
 
 
 def known_typefaces() -> list[Typeface]:
-    """Every typeface made in this session, the latest per family name.
+    """Every typeface made in this session or registered as a font plugin, the latest per family name.
 
     Returns
     -------
@@ -41,6 +39,7 @@ def known_typefaces() -> list[Typeface]:
     >>> serif in known_typefaces()
     True
     """
+    FONTS.list()
     return list(_KNOWN.values())
 
 
@@ -76,7 +75,7 @@ class Typeface:
 
     See Also
     --------
-    register_font : Register one file (what this does for each face).
+    svgwriter.preset.font : Register font files or folders by family name.
 
     Examples
     --------
@@ -105,6 +104,11 @@ class Typeface:
 
     def _fill(self, name: str, entries: list[tuple[Any, FontSource]]) -> None:
         """Load file faces (with optional ``(weight, style)`` overrides) and register them."""
+        self._load(name, entries)
+        self.register()
+
+    def _load(self, name: str, entries: list[tuple[Any, FontSource]]) -> None:
+        """Load file faces (with optional ``(weight, style)`` overrides) without registering them."""
         if not entries:
             raise ValueError(f"typeface {name!r} needs at least one face")
         self._name, self._installed = name, False
@@ -112,7 +116,6 @@ class Typeface:
         for override, source in entries:
             loaded.extend(load_face(name, typeface, override, path, blob) for typeface, path, blob in load(source))
         self._faces = tuple(loaded)
-        self.register()
         _KNOWN[name.lower()] = self
 
     @classmethod
@@ -228,7 +231,10 @@ class Typeface:
         return self._installed
 
     def register(self) -> Typeface:
-        """Register every file face with :func:`register_font` (done on construction; repeats are skipped).
+        """Register the family in :data:`svgwriter.preset.font` under its name (done on construction).
+
+        A family registered earlier under the same name is replaced. Installed
+        families need no registering, so this does nothing for them.
 
         Returns
         -------
@@ -241,12 +247,8 @@ class Typeface:
         >>> svg.Typeface("serif").register().installed
         True
         """
-        for face in () if self._installed else self._faces:
-            key = (self._name.lower(), face.source or face.blob, face.weight, face.style)
-            if key not in _REGISTERED:
-                register_font(face.data, self._name,
-                              weight=face.weight, style=face.style)
-                _REGISTERED.add(key)
+        if not self._installed and FONTS.user.get(self._name) is not self:
+            FONTS.add(self._name, self, replace=True)
         return self
 
     def face(self, weight: float | str = NORMAL_WEIGHT, style: FontStyle | bool = "normal") -> Face:
@@ -362,3 +364,76 @@ class Typeface:
 
     def __len__(self) -> int:
         return len(self._faces)
+
+
+def font_families(sources: Iterable[Any], name: str | None = None) -> list[Typeface]:
+    """Typefaces from font sources, one per family, not yet registered.
+
+    Parameters
+    ----------
+    sources : iterable
+        Font files, folders of font files (``.ttf``, ``.otf``, ``.ttc``,
+        ``.otc``), their contents, mappings of ``(weight, style)`` to a file,
+        :class:`Typeface` instances, or nested iterables of these.
+    name : str, optional
+        One family name for every face. Defaults to None, which groups the
+        faces by the family stored in each file.
+
+    Returns
+    -------
+    list of Typeface
+        The families in the order first seen.
+
+    Raises
+    ------
+    ValueError
+        If there are no faces, a folder holds no fonts, or a file is not a font.
+    TypeError
+        If a source is an installed typeface or not a font source.
+
+    Examples
+    --------
+    >>> from svgwriter.ops.typeface import font_families
+    >>> font_families([])
+    Traceback (most recent call last):
+    ...
+    ValueError: no font faces given
+    """
+    groups: dict[str, list[tuple[Any, FontSource]]] = {}
+    for override, source in _entries(sources):
+        family = name or (source.name if isinstance(source, Typeface) else family_of(source))
+        if isinstance(source, Typeface):
+            groups.setdefault(family, []).extend(((face.weight, face.style), face.data) for face in source.faces)
+        else:
+            groups.setdefault(family, []).append((override, source))
+    if not groups:
+        raise ValueError("no font faces given")
+    families = []
+    for family, entries in groups.items():
+        typeface = Typeface.__new__(Typeface)
+        typeface._load(family, entries)
+        families.append(typeface)
+    return families
+
+
+def _entries(sources: Iterable[Any]) -> Iterator[tuple[Any, Any]]:
+    """Every ``(override, source)`` in *sources*, folders expanded to their font files."""
+    for source in sources:
+        if isinstance(source, Typeface):
+            if source.installed:
+                raise TypeError(f"{source.name!r} is installed already; register font files instead")
+            yield None, source
+        elif isinstance(source, Mapping):
+            yield from source.items()
+        elif isinstance(source, (str, os.PathLike)) and Path(os.fspath(source)).is_dir():
+            files = sorted(path for path in Path(os.fspath(source)).iterdir()
+                           if path.suffix.lower() in FONT_FILE_SUFFIXES)
+            if not files:
+                raise ValueError(f"no font files in {source}")
+            yield from ((None, path) for path in files)
+        elif isinstance(source, (str, os.PathLike, bytes)) or hasattr(source, "read"):
+            yield None, source
+        elif isinstance(source, Iterable):
+            yield from _entries(source)
+        else:
+            raise TypeError(f"not a font source: {source!r}")

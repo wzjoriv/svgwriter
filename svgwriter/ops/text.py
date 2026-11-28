@@ -4,16 +4,12 @@ Text outlines and measurement from installed fonts.
 
 from __future__ import annotations
 
-import os
 from functools import lru_cache
 from typing import TYPE_CHECKING, Any, Literal
 
-import skia
-
 from .._internal._constants import ANCHOR_SHIFT
-from .._internal._typography._font_match import FontStyle, describe
-from .._internal._typography._font_names import family_names
-from .._internal._typography._fonts import font_for, registered_typefaces, resolve_font
+from .._internal._presets import FONTS
+from .._internal._typography._fonts import font_for, resolve_font
 from ..model.pathdata.data import PathData
 from ..model.transform.matrix import Matrix
 from ._constants import DEFAULT_FAMILY, DEFAULT_FONT_SIZE, GLYPH_CACHE
@@ -24,69 +20,12 @@ if TYPE_CHECKING:
     from ..model.elements.shapes import Path
 
 __all__ = [
-    "Anchor", "FontWeight", "GlyphBox", "glyph_shape", "layout_glyphs", "register_font", "text_outline", "text_to_path",
+    "Anchor", "FontWeight", "GlyphBox", "glyph_shape", "layout_glyphs", "text_outline", "text_to_path",
     "text_width",
 ]
 
 Anchor = Literal["start", "middle", "end"]
 FontWeight = int | Literal["normal", "bold"]
-
-
-def register_font(source: str | os.PathLike[str] | bytes, family: str | None = None, *,
-                  weight: float | tuple[float, float] | None = None, style: FontStyle | None = None) -> str:
-    """Make a TrueType/OpenType font file usable by name in ``font_family``.
-
-    Text layout, measurement, outlines and rendering then use it, without
-    installing it on the system. Register each style file (regular, bold,
-    italic) of a family; text picks among them with the CSS font matching
-    rules, and variable fonts are set to the requested weight. This is the
-    low-level call under :class:`~svgwriter.ops.Typeface`, which registers
-    a whole family at once.
-
-    Parameters
-    ----------
-    source : str, os.PathLike or bytes
-        A ``.ttf``/``.otf``/``.ttc`` file or its contents.
-    family : str, optional
-        Name to register under. Defaults to None, which uses the family name
-        stored in the font (typographic family first, then WWS, then legacy).
-    weight : float or (float, float), optional
-        The weight (or variable range) the face stands for, as the
-        ``font-weight`` descriptor of ``@font-face``. Defaults to None, which
-        reads it from the font (OS/2 weight class or ``wght`` axis).
-    style : {"normal", "italic", "oblique"}, optional
-        The style the face stands for. Defaults to None, which reads it from the font.
-
-    Returns
-    -------
-    str
-        The family name to use in ``font_family``.
-
-    Raises
-    ------
-    ValueError
-        If the data is not a font skia can read.
-
-    Examples
-    --------
-    >>> import svgwriter as svg
-    >>> # name = svg.register_font("Inter-Regular.ttf")
-    >>> # svg.text("Hello", x=0, y=20, font_family=name).to_path()
-    """
-    if isinstance(source, bytes):
-        typeface = skia.Typeface.MakeFromData(skia.Data.MakeWithCopy(source))
-    else:
-        typeface = skia.Typeface.MakeFromFile(os.fspath(source))
-    if typeface is None:
-        raise ValueError(f"cannot read a font from {source if not isinstance(source, bytes) else 'the data'!r}")
-    names = family_names(typeface)
-    name = family or names[0]
-    registered_typefaces.setdefault(name.lower(), []).append(
-        (typeface, describe(typeface, weight, style, subfamily=names[1])))
-    resolve_font.cache_clear()
-    font_for.cache_clear()
-    glyph_shape.cache_clear()
-    return name
 
 
 @lru_cache(maxsize=GLYPH_CACHE)
@@ -129,6 +68,9 @@ def glyph_shape(char: str, font_family: str, size: float, weight: FontWeight = "
         return PathData(), 0.0
     outline = font.getPath(glyphs[0])
     return (from_skia(outline) if outline is not None else PathData()), float(font.getWidths(glyphs)[0])
+
+
+FONTS.on_change(glyph_shape.cache_clear)
 
 
 def text_width(

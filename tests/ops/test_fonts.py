@@ -34,7 +34,7 @@ def _box_font(family: str) -> bytes:
 
 
 def test_registered_font_drives_layout_and_outlines():
-    name = svg.register_font(_box_font("SvgwBoxTest"))
+    [name] = svg.preset.font(_box_font("SvgwBoxTest"), replace=True)
     assert name == "SvgwBoxTest"
     text = svg.text("A", x=0, y=100, font_family=name, font_size=100)
     box = text.to_path().exact_bbox()
@@ -43,9 +43,9 @@ def test_registered_font_drives_layout_and_outlines():
 
 
 def test_family_override_and_bad_data():
-    assert svg.register_font(_box_font("Ignored"), family="My Boxes") == "My Boxes"
+    assert svg.preset.font(_box_font("Ignored"), name="My Boxes", replace=True) == ["My Boxes"]
     with pytest.raises(ValueError, match="font"):
-        svg.register_font(b"not a font")
+        svg.preset.font(b"not a font")
 
 
 def _covered(char):
@@ -89,7 +89,7 @@ def test_sans_serif_resolves_to_an_installed_candidate():
 
 @pytest.mark.parametrize(("adjust", "second_x", "scale"), [("spacing", 130.0, 1.0), ("spacingAndGlyphs", 100.0, 200 / 140)])
 def test_text_length_stretches_to_the_given_advance(adjust, second_x, scale):
-    name = svg.register_font(_box_font("SvgwFitTest"))
+    [name] = svg.preset.font(_box_font("SvgwFitTest"), replace=True)
     text = svg.text(svg.tspan("AA", text_length=200, length_adjust=adjust), "A", x=0, y=100, font_family=name,
                     font_size=100)
     first, second, third = text.layout()

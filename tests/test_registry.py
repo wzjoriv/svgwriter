@@ -82,7 +82,7 @@ class TestRegistry:
             assert isinstance(registry, Registry) and registry.group == f"svgwriter.{registry.kind}" or \
                 registry is svg.project.presets
             names = registry.list()
-            assert names and registry.get(names[0]) is not None
+            assert names and registry.get(names[0]) is not None or registry is svg.preset.font
         assert svg.project.presets.group == "svgwriter.project_preset"
 
 

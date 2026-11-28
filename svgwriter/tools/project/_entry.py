@@ -12,7 +12,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
-from ..._internal._presets import KINDS
+from ..._internal._presets import FONTS, KINDS
 from ...errors import ProjectError
 from ...model.theme import Theme, themes
 from ...motion.video import Scene
@@ -24,7 +24,7 @@ __all__ = ["Item", "entry_parts", "items_of", "load_object", "load_theme", "proj
 
 Item = type[Scene] | Scene | Callable[..., Any]
 
-_FONTS: set[tuple[Path, float]] = set()
+_FONTS: set[tuple[tuple[Path, float], ...]] = set()
 
 
 def _local_names(root: Path) -> set[str]:
@@ -131,14 +131,11 @@ def load_theme(config: ProjectConfig) -> Theme | None:
 
 
 def register_fonts(config: ProjectConfig) -> list[str]:
-    """Register every font file in the project's font folder once (again when it changes); return the families."""
-    from ...ops import register_font
-
+    """Register the families in the project's font folder (again when a file changes); return their names."""
     folder = config.root / config.fonts
-    families = []
-    for path in sorted(folder.glob("*")) if folder.is_dir() else []:
-        key = (path.resolve(), path.stat().st_mtime)
-        if path.suffix.lower() in FONT_SUFFIXES and key not in _FONTS:
-            families.append(register_font(path))
-            _FONTS.add(key)
-    return families
+    files = sorted(path for path in folder.glob("*") if path.suffix.lower() in FONT_SUFFIXES) if folder.is_dir() else []
+    key = tuple((path.resolve(), path.stat().st_mtime) for path in files)
+    if not files or key in _FONTS:
+        return []
+    _FONTS.add(key)
+    return FONTS(files, replace=True)
