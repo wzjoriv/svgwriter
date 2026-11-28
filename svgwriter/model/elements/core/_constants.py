@@ -8,6 +8,7 @@ import re
 from typing import Final
 
 __all__ = [
+    "FILTER_INPUTS",
     "COLOR_ATTRIBUTES",
     "COLOR_OPACITY",
     "HREF_ATTRIBUTES",
@@ -38,3 +39,6 @@ PREVIEW_SCALE: Final = 1.0
 PREVIEW_MIN_PIXELS: Final = 200.0
 REPR_WIDTH: Final = 120
 INLINE_STYLE: Final = "display:inline-block;max-width:100%;overflow:auto;line-height:0"
+
+FILTER_INPUTS: Final = ("in", "in2")
+"""Filter primitive attributes that name another primitive's result."""
