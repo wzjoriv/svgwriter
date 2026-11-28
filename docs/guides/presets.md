@@ -139,7 +139,9 @@ svg.preset.pattern.unregister("bricks")
 svg.preset.effect.unregister("ember")
 ```
 
-An effect receives the element (for a range, the copy holding the range's characters) and styles it in
+Interactions (`@svg.preset.interaction`) are functions of an element too: they add hover styles and
+event-started animations, and answer as `el.interact.<name>()` (see the animation guide). An effect
+receives the element (for a range, the copy holding the range's characters) and styles it in
 place; registering it makes it work on every element and on ranges. An effect that only suits some
 elements raises `TypeError` for the others. `svg.preset.filter.list()` lists a catalogue and `svg.preset.marker.get("arrow")` looks one up
 by name. The functions are documented in the [preset reference](../reference/presets.md); packages can ship presets

@@ -183,6 +183,25 @@ class Element(Construction, AttributeAccess, TreeEditing, Queryable, Displayable
         return Motion(self)
 
     @property
+    def interact(self) -> Any:
+        """Interaction presets for this element: ``button.interact.button()``; add your own with
+        ``@svg.preset.interaction``.
+
+        Returns
+        -------
+        Interactions
+            The presets; each call applies one and returns this element.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> _ = svg.rect(0, 0, 10, 10).interact.highlight(color="crimson")
+        """
+        from .._interactions import Interactions
+
+        return Interactions(self)
+
+    @property
     def home(self) -> Element:
         """The element as it was when its first behavior was attached: a detached copy to start each frame from.
 

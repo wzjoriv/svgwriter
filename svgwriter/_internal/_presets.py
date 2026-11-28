@@ -28,7 +28,9 @@ __all__ = [
     "EFFECTS",
     "FILTERS",
     "GRADIENTS",
+    "INTERACTIONS",
     "KINDS",
+    "InteractionPresets",
     "MARKERS",
     "PATTERNS",
     "SHAPES",
@@ -391,6 +393,44 @@ def catalogue(registry: Registry[Any], module: str) -> tuple[Callable[[str], Any
     return lookup, names
 
 
+
+class InteractionPresets(Registry[Callable[..., None]]):
+    """Interactions: a function that makes an element respond to the pointer, reused as ``el.interact.<name>()``.
+
+    Decorate ``function(element, *, option=default, ...)``; it adds hover styles (``element.on_hover``) and
+    event-started animations (``element.animate.on``) in place. Use bare, or with ``name=`` and ``replace=``.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> @svg.preset.interaction
+    ... def glow(element: svg.Element, *, color: str = "gold") -> None:
+    ...     element.on_hover(stroke=color, stroke_width=3)
+    >>> doc = svg.Document(width=40, height=20)
+    >>> button = doc.rect(5, 5, 30, 10, id="b").interact.glow(color="orange")
+    >>> "#b:hover { stroke:orange !important;stroke-width:3 !important }" in doc.to_string()
+    True
+    >>> _ = svg.preset.interaction.unregister("glow")
+    """
+
+    @overload
+    def register(self, item: F, /, *, name: str | None = None, replace: bool = False) -> F: ...
+
+    @overload
+    def register(self, *, name: str | None = None, replace: bool = False) -> Callable[[F], F]: ...
+
+    def register(self, item: F | None = None, /, *, name: str | None = None,
+                 replace: bool = False) -> F | Callable[[F], F]:
+        return super().register(item, name=name, replace=replace)  # type: ignore[arg-type,return-value]
+
+    __call__ = register
+
+    def prepare(self, name: str, item: Callable[..., None]) -> Callable[..., None]:
+        if not callable(item):
+            raise TypeError(f"interaction {name!r} must be a function taking the element first")
+        return item
+
+
 ANIMATIONS: Final = AnimationPresets("animation")
 BEHAVIORS: Final = BehaviorPresets("behavior")
 SHAPES: Final = ShapePresets("shape")
@@ -400,6 +440,8 @@ FILTERS: Final = DefinitionPresets("filter", _types("Filter"))
 GRADIENTS: Final = DefinitionPresets("gradient", _types("LinearGradient", "RadialGradient", "Pattern"))
 MARKERS: Final = DefinitionPresets("marker", _types("Marker"))
 EFFECTS: Final = EffectPresets("effect")
+INTERACTIONS: Final = InteractionPresets("interaction")
 KINDS: Final[dict[str, Registry[Any]]] = {
     "animation": ANIMATIONS, "behavior": BEHAVIORS, "shape": SHAPES, "size": SIZES, "pattern": PATTERNS,
-    "filter": FILTERS, "gradient": GRADIENTS, "marker": MARKERS, "effect": EFFECTS}
+    "filter": FILTERS, "gradient": GRADIENTS, "marker": MARKERS, "effect": EFFECTS,
+    "interaction": INTERACTIONS}

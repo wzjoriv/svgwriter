@@ -8,7 +8,7 @@ import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from ..._internal._constants import DEFAULT_PRECISION, POINTER_EVENTS
+from ..._internal._constants import DEFAULT_PRECISION, POINTER_EVENTS, SVG_EVENTS
 from ..._internal._numbers import format_number
 
 if TYPE_CHECKING:
@@ -65,7 +65,8 @@ class Triggered:
     motion : Motion
         The element's animation presets.
     event : str
-        ``"click"``, ``"hover"``, ``"leave"``, ``"press"``, ``"release"``, ``"focus"`` or ``"blur"``.
+        ``"click"``, ``"hover"``, ``"leave"``, ``"press"``, ``"release"``, ``"focus"`` or ``"blur"``, or an
+        SVG 1.1 event name as written (``"mousemove"``, ``"activate"``, ``"load"``, ...).
     source : Element, optional
         The element the event happens on. Defaults to the animated element.
 
@@ -87,10 +88,11 @@ class Triggered:
     __slots__ = ("event", "motion", "source")
 
     def __init__(self, motion: Motion, event: str, source: Element | None = None) -> None:
-        if event not in POINTER_EVENTS:
-            raise ValueError(f"unknown event {event!r}; choose one of {', '.join(POINTER_EVENTS)}")
+        if event not in POINTER_EVENTS and event not in SVG_EVENTS:
+            raise ValueError(f"unknown event {event!r}; choose one of {', '.join(POINTER_EVENTS)} or an SVG 1.1 "
+                             f"event ({', '.join(sorted(SVG_EVENTS))})")
         self.motion = motion
-        self.event = POINTER_EVENTS[event]
+        self.event = POINTER_EVENTS.get(event, event)
         self.source = motion.element if source is None else source
         self.source.ensure_id()
 
