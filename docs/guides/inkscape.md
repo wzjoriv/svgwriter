@@ -67,29 +67,20 @@ arm.rotate(30)                                          # turns around the same 
 
 ## Stars, polygons and arcs
 
-Inkscape draws stars, polygons, ellipses and pie slices as paths with their parameters alongside.
-`svg.inkscape.Star` and `svg.inkscape.Arc` are live views on those parameters: assigning one redraws the
-path the way Inkscape does, and the parameters stay editable with Inkscape's tools.
-`svg.inkscape.shape(element)` returns the right view, or None for any other element. Angles are in
-degrees.
+Inkscape draws stars, polygons, ellipses and pie slices as paths with their parameters alongside
+(`sodipodi:type="star"` or `"arc"`). These are svgwriter's own
+[parametric shapes](../reference/paths.md#parametric-stars-polygons-and-arcs): read from a file, they give
+`svg.paths.Star` and `svg.paths.Arc` views, and the parameters are saved back so they stay editable with
+Inkscape's tools.
 
 ```python
 import svgwriter as svg
 
-doc = svg.Document(200, 100)
-logo = doc.add(svg.paths.star(50, 50, 30, 12, 5, inkscape=True, fill="gold"))
-hexagon = doc.add(svg.paths.regular_polygon(150, 50, 25, 6, inkscape=True, fill="teal"))
-
-star = svg.inkscape.shape(logo)
-star.sides = 7                          # 7 tips, redrawn
-star.rounded = 0.2                      # Inkscape's rounding
-pie = doc.add(svg.inkscape.Arc.create(100, 80, 15, 15, start=0, end=270, fill="tomato"))
-svg.inkscape.Arc(pie).kind = "chord"
-print(star.sides, round(star.angle), svg.inkscape.shape(hexagon).flatsided)
+doc = svg.Document.open("drawing.svg")
+star = svg.paths.parametric(doc["Logo"])
+star.sides = 6                          # redrawn, still an Inkscape star
+doc.save("drawing.svg")
 ```
-
-`svg.paths.star(..., inkscape=True)` and `svg.paths.regular_polygon(..., inkscape=True)` build these
-paths; `corner_radius` does not combine with them (use `rounded` instead).
 
 ## Connectors
 

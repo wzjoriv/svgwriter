@@ -9,9 +9,6 @@ from typing import Final
 from ..._internal._constants import INKSCAPE_LABEL
 
 __all__ = [
-    "ANGLE_PRECISION",
-    "ARC_ATTRIBUTES",
-    "ARC_TYPES",
     "CONNECTION_END",
     "CONNECTION_START",
     "CONNECTOR_CURVATURE",
@@ -31,21 +28,11 @@ __all__ = [
     "GUIDE_PRECISION",
     "GUIDE_TAG",
     "HALF_TURN_DEGREES",
-    "HANDLE_REACH",
     "HORIZONTAL",
     "LABEL",
     "LAYER",
-    "MAX_ARC_SEGMENTS",
-    "MIN_RADIUS",
     "NAMEDVIEW_TAG",
-    "QUARTER_TURNS",
-    "SHAPE_TYPE",
-    "STAR_ATTRIBUTES",
-    "STAR_FLATSIDED",
-    "STAR_RANDOMIZED",
-    "STAR_ROUNDED",
     "TRUE",
-    "UP",
     "VERTICAL",
 ]
 
@@ -53,38 +40,9 @@ LABEL: Final = INKSCAPE_LABEL
 GROUP_MODE: Final = "inkscape:groupmode"
 LAYER: Final = "layer"
 
-SHAPE_TYPE: Final = "sodipodi:type"
-STAR_FLATSIDED: Final = "inkscape:flatsided"
-STAR_ROUNDED: Final = "inkscape:rounded"
-STAR_RANDOMIZED: Final = "inkscape:randomized"
-STAR_ATTRIBUTES: Final = {
-    "cx": "sodipodi:cx",
-    "cy": "sodipodi:cy",
-    "r1": "sodipodi:r1",
-    "r2": "sodipodi:r2",
-    "arg1": "sodipodi:arg1",
-    "arg2": "sodipodi:arg2",
-    "sides": "sodipodi:sides",
-}
-ARC_ATTRIBUTES: Final = {
-    "cx": "sodipodi:cx",
-    "cy": "sodipodi:cy",
-    "rx": "sodipodi:rx",
-    "ry": "sodipodi:ry",
-    "start": "sodipodi:start",
-    "end": "sodipodi:end",
-    "kind": "sodipodi:arc-type",
-}
-ARC_TYPES: Final = ("slice", "arc", "chord")
 TRUE: Final = "true"
 FALSE: Final = "false"
-UP: Final = -90.0
-ANGLE_PRECISION: Final = 9
 HALF_TURN_DEGREES: Final = 180.0
-QUARTER_TURNS: Final = 4
-MAX_ARC_SEGMENTS: Final = 4
-MIN_RADIUS: Final = 1e-8
-HANDLE_REACH: Final = 100000.0
 
 CONNECTOR_TYPE: Final = "inkscape:connector-type"
 CONNECTION_START: Final = "inkscape:connection-start"
