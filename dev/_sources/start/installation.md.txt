@@ -27,7 +27,7 @@ Optional extras:
 
   Without it, `svgwriter new` asks for the preset with a numbered menu.
 
-- **widget** for {doc}`notebook panels <../guides/widgets>` (`svg.interact`) through ipywidgets:
+- **widget** for {doc}`notebook panels <../guides/widgets>` (`svg.explore`) through ipywidgets:
 
   ```console
   $ pip install "pysvgwriter[widget]"

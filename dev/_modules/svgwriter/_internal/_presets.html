@@ -751,7 +751,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">InteractionPresets</span><span class="p">(</span><span class="n">Registry</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]):</span>
 <span class="w">    </span><span class="sd">"""Interactions: a function that makes an element respond to the pointer, reused as ``el.interact.&lt;name&gt;()``.</span>
 
-<span class="sd">    Decorate ``function(element, *, option=default, ...)``; it adds hover styles (``element.on_hover``) and</span>
+<span class="sd">    Decorate ``function(element, *, option=default, ...)``; it adds hover styles (``element.interact.hover``) and</span>
 <span class="sd">    event-started animations (``element.animate.on``) in place. Use bare, or with ``name=`` and ``replace=``.</span>
 
 <span class="sd">    Examples</span>
@@ -759,7 +759,7 @@
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">    &gt;&gt;&gt; @svg.preset.interaction</span>
 <span class="sd">    ... def glow(element: svg.Element, *, color: str = "gold") -&gt; None:</span>
-<span class="sd">    ...     element.on_hover(stroke=color, stroke_width=3)</span>
+<span class="sd">    ...     element.interact.hover(stroke=color, stroke_width=3)</span>
 <span class="sd">    &gt;&gt;&gt; doc = svg.Document(width=40, height=20)</span>
 <span class="sd">    &gt;&gt;&gt; button = doc.rect(5, 5, 30, 10, id="b").interact.glow(color="orange")</span>
 <span class="sd">    &gt;&gt;&gt; "#b:hover { stroke:orange !important;stroke-width:3 !important }" in doc.to_string()</span>

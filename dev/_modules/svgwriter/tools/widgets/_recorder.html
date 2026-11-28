@@ -334,13 +334,13 @@
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    svgwriter.tools.widgets.interact : Takes ``backend=Recorder()``.</span>
+<span class="sd">    svgwriter.tools.widgets.explore : Takes ``backend=Recorder()``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">    &gt;&gt;&gt; panel = svg.widgets.Recorder()</span>
-<span class="sd">    &gt;&gt;&gt; view = svg.interact(lambda size=10: svg.rect(0, 0, size, size), backend=panel, delay=0)</span>
+<span class="sd">    &gt;&gt;&gt; view = svg.explore(lambda size=10: svg.rect(0, 0, size, size), backend=panel, delay=0)</span>
 <span class="sd">    &gt;&gt;&gt; panel.set("size", 15)</span>
 <span class="sd">    &gt;&gt;&gt; view.values, len(panel.drawings)</span>
 <span class="sd">    ({'size': 15}, 2)</span>
@@ -399,7 +399,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
 <span class="sd">        &gt;&gt;&gt; panel = svg.widgets.Recorder()</span>
-<span class="sd">        &gt;&gt;&gt; view = svg.interact(lambda suit="♠": svg.text(suit), suit=["♠", "♥"], backend=panel, delay=0)</span>
+<span class="sd">        &gt;&gt;&gt; view = svg.explore(lambda suit="♠": svg.text(suit), suit=["♠", "♥"], backend=panel, delay=0)</span>
 <span class="sd">        &gt;&gt;&gt; panel.set("suit", 1)</span>
 <span class="sd">        &gt;&gt;&gt; view.values</span>
 <span class="sd">        {'suit': '♥'}</span>

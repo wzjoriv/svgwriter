@@ -421,9 +421,9 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; str(5 * svg.mm), str(svg.inch(2) - 10 * svg.mm), str(svg.ft(1))</span>
+<span class="sd">    &gt;&gt;&gt; str(5 * svg.mm), str(svg.inch(2) - 10 * svg.mm), str(svg.units.ft(1))</span>
 <span class="sd">    ('5mm', '1.6063in', '12in')</span>
-<span class="sd">    &gt;&gt;&gt; svg.inch == 96, str(svg.mi(1))</span>
+<span class="sd">    &gt;&gt;&gt; svg.inch == 96, str(svg.units.mi(1))</span>
 <span class="sd">    (True, '63360in')</span>
 <span class="sd">    """</span>
 
