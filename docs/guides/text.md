@@ -168,14 +168,29 @@ family = ["fonts/Inter-Regular.ttf", "fonts/Inter-Bold.ttf"]
 
 Projects register every file in `assets/fonts` when they build, so those families are usable by name.
 
-### Registering single files
+### Registering fonts by name
 
-`svg.register_font(path)` is the low-level call under `Typeface`: it registers one file under its
-family name (or `family=`), with optional `weight=` and `style=` descriptors, and returns the name.
+`svg.preset.font` is the registry of font families every renderer and exporter consults: measuring,
+outlines, PNG and PDF text, and `embed_fonts`. Give it font files, folders of them, their contents,
+`{(weight, style): file}` mappings or typefaces; faces group by the family stored in each file unless
+`name=` is given, and the call returns the family names. A registered family wins over an installed one
+of the same name, and every `Typeface` made from files registers itself here.
 
 ```python
-# family = svg.register_font("Inter-Regular.ttf")   # returns the family name stored in the file
-# svg.text("Hello", x=0, y=40, font_family=family, font_size=32).to_path()
+data = svg.Typeface("sans-serif").faces[0].data          # any .ttf/.otf path, folder or bytes
+[family] = svg.preset.font(data, name="Brand Sans")
+label = svg.text("Hello", x=0, y=40, font_family=family, font_size=32)
+print(svg.ops.text_width("Hello", family, 32) > 0)
+svg.preset.font.unregister("Brand Sans")
+```
+
+Packages ship fonts through the `svgwriter.font` entry-point group: the object is a path, a list of
+paths or a function returning them, registered under the entry point's name when a family is first
+looked up.
+
+```toml
+[project.entry-points."svgwriter.font"]
+"Brand Sans" = "brand_fonts:files"
 ```
 
 `svg.Typeface` is not `svg.Font`. `svg.Font` is the SVG 1.1 `<font>` element, which defines glyphs as

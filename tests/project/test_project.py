@@ -8,7 +8,6 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter._internal._typography._fonts import registered_typefaces
 from svgwriter.errors import ProjectError
 
 from ..conftest import wellformed
@@ -98,7 +97,7 @@ class TestPresets:
         project = svg.Project.new(tmp_path / "typed")
         (project.root / "assets" / "fonts" / "box.ttf").write_bytes(_box_font("ProjectBoxTest"))
         project.build(["svg"])
-        assert "projectboxtest" in registered_typefaces
+        assert "ProjectBoxTest" in svg.preset.font
 
     def test_rebuild_sees_edits(self, tmp_path: Path) -> None:
         project = svg.Project.new(tmp_path / "edit")

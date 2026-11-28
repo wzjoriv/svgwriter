@@ -128,9 +128,8 @@ def test_variable_fonts_expose_their_axes_and_pin_instances():
     assert position[int.from_bytes(b"wght", "big")] == 650 and position[int.from_bytes(b"slnt", "big")] == -12
 
 
-def test_register_font_takes_weight_and_style_descriptors():
-    svg.register_font(_font("SvgwLow", 300), weight=BOLD, style="italic")
-    svg.register_font(_font("SvgwLow", 500))
+def test_font_presets_take_weight_and_style_descriptors():
+    svg.preset.font({(BOLD, "italic"): _font("SvgwLow", 300)}, _font("SvgwLow", 500), replace=True)
     assert _fonts.resolve_font("SvgwLow", 100, BOLD, True).measureText("A") == pytest.approx(40)
     assert _fonts.resolve_font("SvgwLow", 100, REGULAR, False).measureText("A") == pytest.approx(60)
 
@@ -235,7 +234,7 @@ def test_typographic_names_keep_a_large_family_together(tmp_path):
     semibold = typeface.face(600)
     assert semibold.weight == (600, 600) and semibold.subfamily == "SemiBold"
     assert typeface.face(600, "italic").subfamily == "SemiBold Italic"
-    assert svg.register_font(_named("SvgwInterish Light", "Light", 300, 300)) == "SvgwInterish"
+    assert svg.preset.font(_named("SvgwInterish Light", "Light", 300, 300), replace=True) == ["SvgwInterish"]
 
 
 def test_collections_load_every_face():

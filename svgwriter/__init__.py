@@ -114,7 +114,6 @@ from .ops import (
     Typeface,
     distribute,
     interpolate,
-    register_font,
     text_to_path,
 )
 from .tools import project, widgets
@@ -214,7 +213,6 @@ __all__ = [
     "page_size",
     "latex",
     "parse",
-    "register_font",
     "parse_color",
     "parse_file",
     "parse_paint",

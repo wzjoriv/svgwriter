@@ -1,8 +1,8 @@
 """Presets of your own, by kind, each found by name.
 
 Every kind is a registry: animations, behaviors, shapes, patterns, filters, gradients, markers,
-effects, interactions, path effects and interpolators register by decorator (bare, or with ``name=`` and ``replace=``) and sizes by a call
-(``svg.preset.size(name, width, height)``); each has ``list()``, ``get(name)`` and ``unregister(name)``. A
+effects, interactions, path effects and interpolators register by decorator (bare, or with ``name=`` and ``replace=``), sizes by a call
+(``svg.preset.size(name, width, height)``) and fonts by a call with files or folders (``svg.preset.font(path)``); each has ``list()``, ``get(name)`` and ``unregister(name)``. A
 taken name raises an error naming its owner, built-in presets included; ``replace=True`` replaces one on
 purpose. Registered patterns, filters, gradients, markers and effects join their catalogues
 (``svg.patterns``, ``svg.filters``, ``svg.gradients``, ``svg.markers``, ``svg.effects``) beside the
@@ -30,6 +30,7 @@ from ..._internal._presets import (
     BEHAVIORS,
     EFFECTS,
     FILTERS,
+    FONTS,
     GRADIENTS,
     INTERACTIONS,
     INTERPOLATORS,
@@ -43,6 +44,7 @@ from ..._internal._presets import (
     BehaviorPresets,
     DefinitionPresets,
     EffectPresets,
+    FontPresets,
     InteractionPresets,
     InterpolatorPresets,
     PathEffectPresets,
@@ -62,6 +64,7 @@ effect: Final = EFFECTS
 interaction: Final = INTERACTIONS
 path_effect: Final = PATH_EFFECTS
 interpolator: Final = INTERPOLATORS
+font: Final = FONTS
 
 __all__ = [
     "KINDS",
@@ -69,6 +72,7 @@ __all__ = [
     "BehaviorPresets",
     "DefinitionPresets",
     "EffectPresets",
+    "FontPresets",
     "InteractionPresets",
     "InterpolatorPresets",
     "PathEffectPresets",
@@ -78,6 +82,7 @@ __all__ = [
     "behavior",
     "effect",
     "filter",
+    "font",
     "gradient",
     "interaction",
     "interpolator",

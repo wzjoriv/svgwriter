@@ -28,12 +28,13 @@ from .._constants import (
     PERCENT,
 )
 from .._platform import fallback_families, generic_candidates, scans_fallback
+from .._presets import FONTS
 from ._font_match import FaceStyle, instance, match_rank, static_font
 
 if TYPE_CHECKING:
     from ...ops.text import FontWeight
 
-__all__ = ["cluster_font", "color_font", "font_for", "font_size", "font_weight", "registered_face", "registered_typefaces", "resolve_font", "weight_value"]
+__all__ = ["cluster_font", "color_font", "font_for", "font_size", "font_weight", "registered_face", "resolve_font", "weight_value"]
 
 
 def font_weight(value: object) -> int:
@@ -65,7 +66,6 @@ def weight_value(value: FontWeight) -> int:
     return int(value)
 
 
-registered_typefaces: dict[str, list[tuple[Any, FaceStyle]]] = {}
 _COLOR_FACES: dict[int, bool] = {}
 
 
@@ -83,7 +83,7 @@ def registered_face(family: str, weight: int, italic: bool) -> Any:
 
     Variable faces come back set to the requested weight.
     """
-    faces = registered_typefaces.get(family.lower())
+    faces: list[tuple[Any, FaceStyle]] = FONTS.faces(family)
     if not faces:
         return None
     style = "italic" if italic else "normal"
@@ -244,3 +244,5 @@ def cluster_font(cluster: str, font_family: str, size: float, weight: FontWeight
 
 resolve_font.cache_clear = _resolve_font.cache_clear  # type: ignore[attr-defined]
 font_for.cache_clear = _font_for.cache_clear  # type: ignore[attr-defined]
+FONTS.on_change(_resolve_font.cache_clear)
+FONTS.on_change(_font_for.cache_clear)

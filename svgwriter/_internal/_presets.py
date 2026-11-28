@@ -1,7 +1,7 @@
 """
 Preset registries, one per kind: animations and behaviors (``element.animate``), shapes, sizes, patterns,
 filters, gradients, markers,
-effects, interactions, path effects and interpolators.
+effects, interactions, path effects, interpolators and fonts.
 """
 
 from __future__ import annotations
@@ -24,12 +24,14 @@ if TYPE_CHECKING:
     from ..model.elements.text import Character, CharacterRange
     from ..model.pathdata.data import PathData
     from ..model.units.lengths import LengthLike
+    from ..ops.typeface import Typeface
 
 __all__ = [
     "ANIMATIONS",
     "BEHAVIORS",
     "EFFECTS",
     "FILTERS",
+    "FONTS",
     "GRADIENTS",
     "INTERACTIONS",
     "INTERPOLATORS",
@@ -46,6 +48,7 @@ __all__ = [
     "BehaviorPresets",
     "DefinitionPresets",
     "EffectPresets",
+    "FontPresets",
     "ShapePresets",
     "SizePresets",
     "catalogue",
@@ -575,6 +578,108 @@ class InterpolatorPresets(Registry[Interpolator]):
         return rules
 
 
+class FontPresets(Registry["Typeface"]):
+    """Font families by name, found by every text measurement, outline, render and export.
+
+    Register with a call, ``svg.preset.font(*sources, name=None, replace=False)``: font files (``.ttf``,
+    ``.otf``, ``.ttc``, ``.otc``), folders of them, their contents, mappings of ``(weight, style)`` to a
+    file, or :class:`~svgwriter.Typeface` instances. Faces group into families by the name stored in each
+    file unless *name* is given; the call returns the family names. A registered family wins over an
+    installed one of the same name, and text picks among its faces with CSS font matching. Packages add
+    fonts through the ``svgwriter.font`` entry-point group, whose object is a source, a list of sources or
+    a function returning them, registered under the entry point's name. Every
+    :class:`~svgwriter.Typeface` made from files registers itself here.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> # families = svg.preset.font("assets/fonts")   # every family in the folder
+    >>> # svg.text("Hi", x=0, y=20, font_family=families[0])
+    >>> "sans-serif" in svg.preset.font
+    False
+    """
+
+    def __init__(self, kind: str, builtins: Callable[[], object] | None = None) -> None:
+        super().__init__(kind, builtins)
+        self._index: dict[str, list[tuple[Any, Any]]] | None = None
+        self._listeners: list[Callable[[], object]] = []
+
+    def __call__(self, *sources: Any, name: str | None = None, replace: bool = False) -> list[str]:
+        """Register the families in *sources* and return their names.
+
+        Parameters
+        ----------
+        *sources : path, bytes, mapping, Typeface or iterable of these
+            Font files, folders of font files, their contents, mappings of ``(weight, style)`` to a file
+            (descriptors that override the file's own), or typefaces.
+        name : str, optional
+            One family name for every face. Defaults to None, which uses the family stored in each file
+            (typographic family first).
+        replace : bool, optional
+            Replace a family registered under the same name. Defaults to False.
+
+        Returns
+        -------
+        list of str
+            The family names, for ``font_family``.
+
+        Raises
+        ------
+        ValueError
+            If a name is taken and *replace* is False, or a source is not a font.
+        """
+        from ..ops.typeface import font_families
+
+        families = font_families(sources, name)
+        if not replace:
+            for typeface in families:
+                if self.find(typeface.name, plugins=False) is not None:
+                    self.add(typeface.name, typeface)
+        for typeface in families:
+            self.add(typeface.name, typeface, replace=True)
+        return [typeface.name for typeface in families]
+
+    def register(self, item: Any = None, /, *, name: str | None = None, replace: bool = False) -> Any:
+        if item is None:
+            raise TypeError("fonts register with a call: svg.preset.font(*sources, name=None)")
+        return self(item() if callable(item) and not hasattr(item, "faces") else item, name=name, replace=replace)
+
+    def on_change(self, clear: Callable[[], object]) -> None:
+        """Call *clear* whenever a family is registered or removed (cache invalidation)."""
+        self._listeners.append(clear)
+
+    def faces(self, family: str) -> list[tuple[Any, Any]]:
+        """The ``(skia typeface, CSS descriptors)`` of every face registered for *family*, any case."""
+        if self._index is None:
+            from ._typography._font_match import FaceStyle
+
+            names = self._names(plugins=True)
+            index: dict[str, list[tuple[Any, Any]]] = {}
+            for label in names:
+                index[label.lower()] = [(face.typeface, FaceStyle(face.weight, face.style, face.stretch, face.axes)) for face in self.get(label).faces]
+            self._index = index
+        return self._index.get(family.lower(), [])
+
+    def add(self, name: str, item: Typeface, *, replace: bool = False) -> Typeface:
+        added = super().add(name, item, replace=replace)
+        self._changed()
+        return added
+
+    def unregister(self, name: str) -> Typeface:
+        removed = super().unregister(name)
+        self._changed()
+        return removed
+
+    def restore(self, state: dict[str, Typeface]) -> None:
+        super().restore(state)
+        self._changed()
+
+    def _changed(self) -> None:
+        self._index = None
+        for clear in self._listeners:
+            clear()
+
+
 ANIMATIONS: Final = AnimationPresets("animation")
 BEHAVIORS: Final = BehaviorPresets("behavior")
 SHAPES: Final = ShapePresets("shape")
@@ -587,7 +692,9 @@ EFFECTS: Final = EffectPresets("effect")
 INTERACTIONS: Final = InteractionPresets("interaction")
 PATH_EFFECTS: Final = PathEffectPresets("path_effect")
 INTERPOLATORS: Final = InterpolatorPresets("interpolator", lambda: importlib.import_module(INTERPOLATOR_LIBRARY))
+FONTS: Final = FontPresets("font")
 KINDS: Final[dict[str, Registry[Any]]] = {
     "animation": ANIMATIONS, "behavior": BEHAVIORS, "shape": SHAPES, "size": SIZES, "pattern": PATTERNS,
     "filter": FILTERS, "gradient": GRADIENTS, "marker": MARKERS, "effect": EFFECTS,
-    "interaction": INTERACTIONS, "path_effect": PATH_EFFECTS, "interpolator": INTERPOLATORS}
+    "interaction": INTERACTIONS, "path_effect": PATH_EFFECTS, "interpolator": INTERPOLATORS,
+    "font": FONTS}
