@@ -120,3 +120,14 @@ card.save(formats / "postcard.png", dpi=300)
 print("viewBox:", card.root.get("viewBox"), "| width:", card.root.get("width"))
 print("postcard.png at 300 dpi:", svg.Document.open(formats / "postcard.png").root.get("width"), "px wide")
 card
+
+# %% [markdown]
+# ## Files made elsewhere
+#
+# `Document.open` also reads drawings from other tools. `sketch.excalidraw`, beside this example, is a
+# whiteboard sketch: its shapes, arrows and labels arrive as native elements you can restyle and export.
+
+# %%
+sketch = svg.Document.open("sketch.excalidraw")
+print(len(list(sketch.root.iter())), "elements read from sketch.excalidraw")
+sketch

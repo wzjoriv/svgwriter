@@ -10,7 +10,7 @@ from typing import Final
 from ...._internal._constants import PT_PER_INCH, PX_PER_INCH, PX_PER_PT
 
 __all__ = [
-    "ACCEL_SCALE", "ANIMATION_KEY", "CLICK_EVENTS", "CLICK_START_RE", "TRIGGER_KEY", "A14_NS", "COLOR_ATTRIBUTES", "EFFECT_PRESETS", "MS_PER_SECOND", "P_NS",
+    "ACCEL_SCALE", "SCHEME_ALIASES", "STYLE_LINE_WIDTH", "THEME_RELATIONSHIP", "HORIZONTAL_ALIGNS", "VERTICAL_ANCHORS", "STAR_INNER_RATIO", "ANIMATION_KEY", "CLICK_EVENTS", "CLICK_START_RE", "TRIGGER_KEY", "A14_NS", "COLOR_ATTRIBUTES", "EFFECT_PRESETS", "MS_PER_SECOND", "P_NS",
     "PATH_TOLERANCE", "PERCENT_SCALE", "REPEAT_SCALE", "ALPHA_SCALE", "ANGLE_UNIT", "ASCENT", "A_NS", "BAR_CHARS", "BLANK_LAYOUT", "CAPS",
     "DEFAULT_TEXT_PT", "EMU_PER_INCH", "EMU_PER_POINT", "EMU_PER_UNIT", "EQUATION_ID", "GENERIC_FONTS",
     "GROUP_CHARS", "HALF_POINTS_PER_UNIT", "HEADING_STYLE_RE", "HEX_COLOR_RE", "INLINE_GAP", "JOINS", "LINE_HEIGHT", "LIST_STYLE", "MARGIN", "MATHML_NS",
@@ -90,3 +90,15 @@ EFFECT_PRESETS: Final = {
 """PowerPoint ``presetClass`` and ``presetID`` per effect kind (Appear, Fade, Grow/Shrink, Spin, Change Fill Color, Custom Path)."""
 COLOR_ATTRIBUTES: Final = {"fill": "fillcolor", "stroke": "stroke.color"}
 """SVG paint attributes and the PowerPoint shape properties a colour effect animates."""
+STAR_INNER_RATIO: Final = 0.382
+"""Inner radius of a five-point star preset as a share of its outer radius."""
+HORIZONTAL_ALIGNS: Final = {"l": (0.0, None), "ctr": (0.5, "middle"), "r": (1.0, "end"), "just": (0.0, None)}
+"""DrawingML paragraph alignment: share of the text box width the line is placed at, and its text-anchor."""
+VERTICAL_ANCHORS: Final = {"t": 0.0, "ctr": 0.5, "b": 1.0}
+"""DrawingML text body anchor: share of the free height above the text."""
+SCHEME_ALIASES: Final = {"bg1": "lt1", "tx1": "dk1", "bg2": "lt2", "tx2": "dk2"}
+"""Theme colour names used in shapes and the colour-scheme slots they stand for."""
+STYLE_LINE_WIDTH: Final = 1.0 / PT_PER_INCH * PX_PER_INCH
+"""Outline width (1 pt, in user units) of a shape painted by its style's line reference."""
+THEME_RELATIONSHIP: Final = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme"
+"""Relationship type from a slide master to its theme."""
