@@ -51,7 +51,7 @@ pixels = doc.rasterize(scale=2)                          # numpy float32 RGBA, s
 | Projects | `svgwriter new my-poster --preset poster` starts a design folder (`svgwriter.toml`, theme, components, animations, assets); `svgwriter build` writes every output and `svgwriter preview` reloads a browser page on save; `blank`, `poster`, `slides` and `animation` presets build out of the box, as scripts or notebooks |
 | Sizes and units | `svg.Document(size="a4")`, `"letter"`, `"slide-16:9"`, `"instagram-story"`, ... with real units, so the drawing counts in mm or inches; `svg.mm`, `svg.inch`, `svg.pt` lengths and `svg.deg`, `svg.turn` angles |
 | Widgets | `@svg.widgets.controls(hue=(0, 360), suit=["♠", "♥"], glow=False)` declares sliders, button rows, toggles and colour pickers as plain data; `svg.explore(fn)` shows them beside the live drawing in a notebook (`pysvgwriter[widget]`) with `.values`, `.save()` and `.code()`; `svgwriter preview` shows the same controls as a form; `svg.sweep(fn, hue=(0, 360))` animates them into baked SVG, GIF, MP4 or PowerPoint |
-| Animation | SMIL elements; `el.animate` presets plus your own as typed functions (`@svg.preset.animation`, per-frame `@svg.preset.behavior`, `el.animate.apply(fn, ...)`); started by a click or hover with `el.animate.on("click")` and hover styles with `el.interact.hover(fill=...)`, bundled as interaction presets (`el.interact.button()`, `@svg.preset.interaction`) (no script); `svg.Scene` classes, several per file, rendered by `svgwriter animate`; Python-driven scenes baked into SMIL so SVG files play like the video; PowerPoint slide effects both ways; `svg.interpolate(a, b, t)` tweens numbers, colors, transforms and morphs any two shapes |
+| Animation | SMIL elements and `el.animate` presets (your own too, started by a click or hover); `svg.Scene` classes rendered to video, GIF or SMIL by `svgwriter animate`; `svg.interpolate(a, b, t)` tweens and morphs any two shapes; PowerPoint slide effects both ways. See the [Animation](https://wzjoriv.github.io/svgwriter/guides/animation.html) and [Scenes and video](https://wzjoriv.github.io/svgwriter/guides/scenes-and-video.html) guides |
 
 ## Geometry in one minute
 
@@ -128,6 +128,8 @@ Formats are found by name or file extension: `doc.save("figure.pdf")`, `svg.Docu
 | D2 | `.d2` | — | ✓ | drawn by `d2` |
 | LaTeX math | `svg.latex(...)` | — | ✓ | formulas as glyph outlines: TeX (`latex` + `dvisvgm`), else Ziamath (`pysvgwriter[math]`), else matplotlib mathtext |
 | Video frames | `.mp4` `.webm` `.mov` | ✓ | ✓ | needs ffmpeg: `render_animation` writes frames, `svgwriter.motion.video.Video` reads them |
+
+Office output (PowerPoint, Word, Excel) needs the `office` extra (`pip install "pysvgwriter[office]"`); elements with a filter or mask become pictures, which `fallback="image"` (default) or `fallback="drop"` and `dpi=` control ([Diagrams and Office files](https://wzjoriv.github.io/svgwriter/guides/diagrams-and-office.html)). Every format and what it keeps is in the [Export and import guide](https://wzjoriv.github.io/svgwriter/guides/export.html); physical sizes and colour profiles are in [Print and colour](https://wzjoriv.github.io/svgwriter/guides/print-and-colour.html).
 
 A `svg.Format` subclass adds a format of your own, and packages add formats, presets, themes and more
 through entry points (see [Extending svgwriter](https://wzjoriv.github.io/svgwriter/guides/extending.html)).

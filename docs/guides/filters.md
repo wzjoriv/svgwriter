@@ -1,4 +1,6 @@
-# Filters and effects
+# Filters
+
+Ready-made filters and the animated effects that keep text as text are in the [Presets guide](presets.md).
 
 A filter is a small graph of `fe*` primitives. Each primitive reads an input (`in_=`, and `in2=` for
 the two-input ones) and produces a result. Pass the primitive itself as an input and svgwriter names
