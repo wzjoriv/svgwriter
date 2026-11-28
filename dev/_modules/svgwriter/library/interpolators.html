@@ -614,6 +614,8 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">color</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Color</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Colours (or colour strings) channel by channel in RGBA.</span>
 
+<span class="sd">    Channels are clamped to 0..1, so easings that overshoot (back, elastic) stay valid colours.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    a, b : Color or str</span>
@@ -635,9 +637,11 @@
 <span class="sd">    &gt;&gt;&gt; from svgwriter.library.interpolators import color</span>
 <span class="sd">    &gt;&gt;&gt; color("red", "blue", 0.5).hex</span>
 <span class="sd">    '#800080'</span>
+<span class="sd">    &gt;&gt;&gt; color("red", "blue", 1.2).hex</span>
+<span class="sd">    '#0000ff'</span>
 <span class="sd">    """</span>
     <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">as_color</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">as_color</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">Color</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">number</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">first</span><span class="o">.</span><span class="n">rgba</span><span class="p">,</span> <span class="n">second</span><span class="o">.</span><span class="n">rgba</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span></div>
+    <span class="k">return</span> <span class="n">Color</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">number</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">first</span><span class="o">.</span><span class="n">rgba</span><span class="p">,</span> <span class="n">second</span><span class="o">.</span><span class="n">rgba</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span></div>
 
 
 

@@ -1653,6 +1653,7 @@ data, arrays, batches, elements, sequences and colours; add your own with <code 
 <dt class="sig sig-object py" id="svgwriter.library.interpolators.color">
 <span class="sig-name descname"><span class="pre">color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="color.html#svgwriter.model.color.Color" title="svgwriter.model.color.color.Color"><span class="pre">Color</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/library/interpolators.html#color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.interpolators.color" title="Link to this definition">¶</a></dt>
 <dd><p>Colours (or colour strings) channel by channel in RGBA.</p>
+<p>Channels are clamped to 0..1, so easings that overshoot (back, elastic) stay valid colours.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1676,6 +1677,8 @@ data, arrays, batches, elements, sequences and colours; add your own with <code 
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.library.interpolators</span><span class="w"> </span><span class="kn">import</span> <span class="n">color</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">color</span><span class="p">(</span><span class="s2">"red"</span><span class="p">,</span> <span class="s2">"blue"</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span>
 <span class="go">'#800080'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">color</span><span class="p">(</span><span class="s2">"red"</span><span class="p">,</span> <span class="s2">"blue"</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#0000ff'</span>
 </pre></div>
 </div>
 </dd></dl>
