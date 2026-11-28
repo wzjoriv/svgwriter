@@ -10,9 +10,9 @@ from typing import Any
 
 import numpy as np
 
-from .._internal._flat._flatten import polylines
-from ..model.pathdata.commands import ClosePath, LineTo, MoveTo
-from ..model.pathdata.data import PathData
+from ..._internal._flat._flatten import polylines
+from ...model.pathdata.commands import ClosePath, LineTo, MoveTo
+from ...model.pathdata.data import PathData
 from ._constants import MORPH_CORNER, MORPH_FLATNESS, MORPH_MAX_POINTS, MORPH_MIN_POINTS, MORPH_SPACING
 
 __all__ = ["blend_outlines", "correspond"]
@@ -39,7 +39,7 @@ def blend_outlines(a: PathData, b: PathData, t: float) -> PathData:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.ops._morph import blend_outlines
+    >>> from svgwriter.library.interpolators._morph import blend_outlines
     >>> square, diamond = svg.PathData("M0 0H10V10H0Z"), svg.PathData("M5 -2L12 5L5 12L-2 5Z")
     >>> len(blend_outlines(square, diamond, 0.5).subpaths())
     1
@@ -78,7 +78,7 @@ def correspond(a: PathData, b: PathData) -> list[Pair]:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.ops._morph import correspond
+    >>> from svgwriter.library.interpolators._morph import correspond
     >>> pairs = correspond(svg.PathData("M0 0H10V10H0Z"), svg.PathData("M0 0H10V10H0ZM2 2H4V4H2Z"))
     >>> [(len(p) == len(q), closed) for p, q, closed in pairs]
     [(True, True), (True, True)]

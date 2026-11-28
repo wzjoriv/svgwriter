@@ -15,9 +15,9 @@ from ..._internal._presets import INTERPOLATORS
 from ...model.color.color import Color, as_color
 from ...model.pathdata.data import PathData
 from ...model.transform.matrix import Matrix, Point
-from ...ops._constants import DISCRETE_SWITCH, FULL_TURN, GEOMETRY_SKIP, HALF_TURN
-from ...ops._morph import blend_outlines
 from ...ops.interpolate import interpolate
+from ._constants import DISCRETE_SWITCH, FULL_TURN, GEOMETRY_SKIP, HALF_TURN
+from ._morph import blend_outlines
 
 if TYPE_CHECKING:
     from ...model.batch import Batch
