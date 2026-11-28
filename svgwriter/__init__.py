@@ -126,7 +126,7 @@ if TYPE_CHECKING:
     from .formats.io import write_async
     from .formats.io.parser import Strictness, parse, parse_file
 
-__version__ = "2.12.0"
+__version__ = "2.13.0"
 __author__ = "Josue N Rivera"
 
 _LAZY = {
