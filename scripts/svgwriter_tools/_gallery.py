@@ -120,6 +120,11 @@ def build_demos(out: Path = DEMO_DIR) -> list[Path]:
     return written
 
 
+def example_script(name: str) -> Path:
+    """The script of example *name* (``NN_topic``): ``examples/NN_topic/topic.py``."""
+    return ROOT / "examples" / name / f"{name.split('_', 1)[1]}.py"
+
+
 def build_gallery(out: Path = GALLERY_DIR, scale: float = SCALE) -> list[Path]:
     """Run each gallery example into a temporary folder and write its picture to *out*.
 
@@ -147,7 +152,7 @@ def build_gallery(out: Path = GALLERY_DIR, scale: float = SCALE) -> list[Path]:
                 written.append(_scenes_gif(picture, out / f"{name}.gif"))
                 continue
             if picture.example not in ran:
-                script = ROOT / "examples" / f"{picture.example}.py"
+                script = example_script(picture.example)
                 subprocess.run([sys.executable, str(script)], cwd=work, env=env, check=True, capture_output=True)
                 ran.add(picture.example)
             source = Path(work) / picture.file
@@ -166,7 +171,7 @@ def _scenes_gif(picture: Picture, target: Path) -> Path:
     """Play *picture*'s scenes one after another, each held on its last frame, and save them as a GIF."""
     from PIL import Image
 
-    namespace = runpy.run_path(str(ROOT / "examples" / f"{picture.example}.py"), run_name="gallery")
+    namespace = runpy.run_path(str(example_script(picture.example)), run_name="gallery")
     frames = []
     for name in picture.scenes:
         scene = namespace[name]()

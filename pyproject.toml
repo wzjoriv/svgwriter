@@ -166,9 +166,10 @@ args = ["tests", "-q", "--cov=svgwriter", "--cov-report=term-missing"]
 
 [tool.devkit.notebooks]
 source = "examples"
+pattern = "*/*.py"
 drop = ["image/png", "text/html"]
 
 [tool.devkit.logo]
-source = "examples.12_logo:logo"
+source = "examples.12_logo.logo:logo"
 variants = { dark = { theme = "dark" }, mono = { theme = "mono" } }
 output = "docs/_static/logo"
