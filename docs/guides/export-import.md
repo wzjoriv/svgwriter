@@ -140,8 +140,12 @@ Pass `text=False` to `pdf`, `tikz` or `eps` to get exact outlines everywhere, fo
 reader of the file may lack the fonts:
 
 ```python
-doc.save("figure.pdf")                 # selectable text
-doc.save("figure.pdf", text=False)     # glyph outlines only
+memo = svg.Document(160, 50)
+memo.rect(0, 0, 160, 50, fill="lavender")
+memo.text("Selectable text", x=80, y=30, font_size=16, text_anchor="middle", fill="indigo")
+memo.save("memo.pdf")                  # selectable text
+memo.save("memo.pdf", text=False)      # glyph outlines only
+memo.save("memo.tex")
 ```
 
 PDF, EPS and TikZ read back as filled and stroked `<path>` elements with solid colours or gradients,
@@ -161,8 +165,8 @@ and xcolor mixes, the common line options, shadings (`top color`, `inner color` 
 `scope` and `\foreach`. Other macros are not expanded.
 
 ```python
-page = svg.export.load("figure.pdf", page=0)
-picture = svg.Document.open("figure.tex")
+page = svg.export.load("memo.pdf", page=0)
+picture = svg.Document.open("memo.tex")
 ```
 
 ## Page sizes
@@ -174,10 +178,15 @@ are pixels. `dpi=` on raster exports then gives the real size in pixels:
 ```python
 poster = svg.Document(size="a4")                     # 210 x 297 mm; coordinates are millimetres
 poster.rect(10, 10, 190, 277, fill="none", stroke="black", stroke_width=0.5)
+poster.rect(20, 20, 170, 40, fill="steelblue")
+poster.text("Poster", x=105, y=48, font_size=20, text_anchor="middle", fill="white")
 poster.save("poster.png", dpi=150)                   # 1241 x 1755 pixels
 wide = svg.Document(size="a4-landscape")             # any name turns with -landscape or -portrait
+wide.rect(20, 20, 257, 40, fill="tomato")
 slide = svg.Document(size="slide-16:9")              # 1280 x 720, PowerPoint's default slide size
+slide.rect(80, 80, 1120, 160, fill="teal")
 typed = svg.Document(size=svg.size.letter.landscape)  # svg.size.<name> is a PageSize (width, height, units)
+typed.rect(0.5, 0.5, 10, 1.5, fill="gold")
 svg.preset.size("poster-50x70", "50cm", "70cm")         # your own, also svg.size.poster_50x70
 print(svg.preset.size.list()[:6], svg.size.poster_50x70.landscape)
 svg.preset.size.unregister("poster-50x70")
@@ -205,9 +214,12 @@ slide per document, and use `Document.open_all` to read them all back as a list:
 
 ```python
 cover = svg.Document(160, 90)
-cover.text("Results", x=80, y=50, font_size=20, text_anchor="middle")
-svg.export.save([cover, doc], "report.pdf")             # two pages, each its own size
-svg.export.save([cover, doc], "deck.pptx")              # two slides
+cover.rect(0, 0, 160, 90, fill="navy")
+cover.text("Results", x=80, y=50, font_size=20, text_anchor="middle", fill="white")
+body = svg.Document(120, 80)
+body.rect(10, 10, 100, 60, rx=8, fill="seagreen")
+svg.export.save([cover, body], "report.pdf")            # two pages, each its own size
+svg.export.save([cover, body], "deck.pptx")             # two slides
 pages = svg.Document.open_all("report.pdf")             # [Document, Document]
 second = svg.Document.open("deck.pptx", slide=1)        # one slide, as before
 ```
@@ -231,7 +243,8 @@ exact pixel size instead.
 
 ```python
 a4 = svg.Document(210 * svg.mm, 297 * svg.mm)   # user units are millimetres through the viewBox
-a4.rect(20, 30, 50, 10, fill="red")
+a4.rect(20, 30, 170, 30, fill="tomato")
+a4.text("A4", x=30, y=52, font_size=20, fill="white")
 a4.save("a4.pdf")                               # prints at 100% on A4
 ```
 
@@ -246,7 +259,8 @@ When the numbers are meant as points (one unit, one point, as in many plotting t
 
 ```python
 chart = svg.Document(144, 72)                     # meant as 2 x 1 inches
-chart.rect(0, 0, 144, 72, fill="none", stroke="black")
+chart.rect(0, 0, 144, 72, fill="aliceblue", stroke="black")
+chart.text("2 × 1 in", x=72, y=42, font_size=18, text_anchor="middle")
 chart.save("chart.pdf", units_per_inch=72)          # 144 x 72 pt
 chart.save("chart.pdf")                          # 108 x 54 pt: CSS pixels
 ```
@@ -258,11 +272,13 @@ attaches an ICC profile, converting the pixels when it is not sRGB (LittleCMS do
 profiles are parsed once):
 
 ```python
-doc.save("figure.png", icc="srgb")               # tagged sRGB, pixels unchanged
-doc.save("figure.png", icc="display-p3")         # pixels converted to Display P3, profile in iCCP
-doc.save("figure.jpg", icc="display-p3")         # profile in APP2 segments
-# doc.save("press.tif", icc=open("press.icc", "rb").read(), dpi=300)   # CMYK ink for a CMYK profile
-# doc.save("print.pdf", icc=open("press.icc", "rb").read())            # PDF/X-style output intent
+swatch = svg.Document(80, 40)
+swatch.rect(0, 0, 80, 40, fill="#00c853")        # a saturated green: it shifts most between profiles
+swatch.save("swatch.png", icc="srgb")               # tagged sRGB, pixels unchanged
+swatch.save("swatch.png", icc="display-p3")         # pixels converted to Display P3, profile in iCCP
+swatch.save("swatch.jpg", icc="display-p3")         # profile in APP2 segments
+# swatch.save("press.tif", icc=open("press.icc", "rb").read(), dpi=300)   # CMYK ink for a CMYK profile
+# swatch.save("print.pdf", icc=open("press.icc", "rb").read())            # PDF/X-style output intent
 ```
 
 Wide-gamut colours (`oklch(...)`, `color(display-p3 ...)`) keep their own space through theme
@@ -303,8 +319,10 @@ class Lines(svg.Format, name="lines", extensions=(".lines",), binary=False):
                                  fill="none", stroke="black"))
         return out
 
-doc.save("figure.lines")
-again = svg.Document.open("figure.lines")
+zigzag = svg.Document(120, 60)
+zigzag.add(svg.polyline([(10, 50), (40, 10), (70, 50), (100, 10)], fill="none", stroke="crimson", stroke_width=4))
+zigzag.save("zigzag.lines")
+again = svg.Document.open("zigzag.lines")
 svg.formats.unregister("lines")                      # plugins and tests can clean up
 ```
 

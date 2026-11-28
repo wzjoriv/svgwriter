@@ -20,6 +20,7 @@ fb.glyph("o", svg.circle(17, -20, 17, **pen), left=60, right=60)
 fb.glyph(" ", advance=300)
 fb.kern("l", "o", -30)
 fb.save("MyHand.otf")
+fb.cheatsheet()                                       # every glyph on a sheet, to check the drawing
 ```
 
 The coordinate convention follows svgwriter, not the font file:
@@ -68,7 +69,8 @@ icons.icon("rocket", svg.path("M12 2 C16 5 17 10 16 16 H8 C7 10 8 5 12 2 Z"))
 icons.icon("star", svg.paths.star(12, 12, 10))
 icons.save("Icons.woff")                             # .woff2 with brotli installed
 icons.save_css("icons.css", font="Icons.woff")
-icons.cheatsheet().save("icons.svg")
+sheet = icons.cheatsheet()
+sheet.save("icons.svg")
 ```
 
 Each icon gets the next private-use code point from U+E000 in the order it is added, and adding a name

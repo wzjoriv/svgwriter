@@ -24,6 +24,7 @@ sun.translate(-20, 10)          # move
 sun.scale(1.5)                  # about its centre (the anchor)
 hill.rotate(-5)                 # 5 degrees counter-clockwise (positive turns clockwise on screen)
 print(sun.position)             # where its centre is now
+doc
 ```
 
 Geometry attributes (`cx`, `x`, `d`, ...) stay as written; placement goes through the element's

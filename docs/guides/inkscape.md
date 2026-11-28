@@ -17,8 +17,9 @@ INKSCAPE_FILE = """<svg xmlns="http://www.w3.org/2000/svg" width="200mm" height=
   <g inkscape:groupmode="layer" inkscape:label="Shapes">
     <path id="star" inkscape:label="Logo" sodipodi:type="star" sodipodi:sides="5" sodipodi:cx="150"
           sodipodi:cy="50" sodipodi:r1="20" sodipodi:r2="10" sodipodi:arg1="-1.5707963"
-          sodipodi:arg2="-0.9424778" inkscape:flatsided="false" inkscape:rounded="0" d="M150 30 Z"/>
-    <rect id="box" x="90" y="20" width="20" height="10"/>
+          sodipodi:arg2="-0.9424778" inkscape:flatsided="false" inkscape:rounded="0" fill="gold" stroke="darkorange" stroke-width="2"
+          d="M150 30 L155.9 41.9 L169 43.8 L159.5 53.1 L161.8 66.2 L150 60 L138.2 66.2 L140.5 53.1 L131 43.8 L144.1 41.9 Z"/>
+    <rect id="box" x="90" y="20" width="20" height="10" fill="teal"/>
   </g>
 </svg>"""
 with open("drawing.svg", "w", encoding="utf-8") as handle:
@@ -81,8 +82,9 @@ import svgwriter as svg
 
 doc = svg.Document(200, 100)
 with doc.layer("Parts"):
-    arm = doc.rect(90, 20, 20, 10, anchor=(90, 25))     # pivot on the left edge
-print('inkscape:transform-center-x="-10"' in doc.to_string())   # True
+    doc.rect(60, 40, 80, 20, fill="#ccc")                # the arm before it turns, as a ghost
+    arm = doc.rect(60, 40, 80, 20, fill="tomato", anchor=(60, 50))     # pivot on the left edge
+print('inkscape:transform-center-x="-40"' in doc.to_string())   # True
 arm.rotate(30)                                          # turns around the same point
 ```
 
@@ -104,7 +106,7 @@ hexagon = doc.add(svg.paths.regular_polygon(150, 50, 25, 6, inkscape=True, fill=
 star = svg.inkscape.shape(logo)
 star.sides = 7                          # 7 tips, redrawn
 star.rounded = 0.2                      # Inkscape's rounding
-pie = doc.add(svg.inkscape.Arc.create(100, 80, 15, 15, start=0, end=270))
+pie = doc.add(svg.inkscape.Arc.create(100, 80, 15, 15, start=0, end=270, fill="tomato"))
 svg.inkscape.Arc(pie).kind = "chord"
 print(star.sides, round(star.angle), svg.inkscape.shape(hexagon).flatsided)
 ```
@@ -122,8 +124,8 @@ it when either object moves. `path.connects` gives the two elements, and assigni
 import svgwriter as svg
 
 doc = svg.Document(200, 60)
-a, b = doc.circle(30, 30, 15), doc.circle(170, 30, 15)
-wire = doc.path(stroke="black", fill="none")
+a, b = doc.circle(30, 30, 15, fill="gold"), doc.circle(170, 30, 15, fill="teal")
+wire = doc.path(stroke="crimson", stroke_width=3, fill="none")
 wire.connects = (a, b)
 print(wire.connects.start is a, wire.d)
 wire.connects = None                     # a plain path again
@@ -139,10 +141,13 @@ own coordinates (y down), and assigning a list replaces them. `doc.guide(x=...)`
 import svgwriter as svg
 
 doc = svg.Document(200, 100)
+doc.rect(20, 20, 160, 60, fill="lightsteelblue")
 doc.guide(x=20, label="margin")
 doc.guide(y=50)
 doc.guide(100, 50, angle=45, color="#ff0000")
 print([(g.x, g.y, g.angle) for g in doc.guides])
+for x1, y1, x2, y2 in [(20, 0, 20, 100), (0, 50, 200, 50), (50, 0, 150, 100)]:     # guides are for the editor:
+    doc.line(x1, y1, x2, y2, stroke="red", stroke_width=0.5, stroke_dasharray="4 2")   # sketched here as dashed lines
 ```
 
 ## Export hints
@@ -156,6 +161,8 @@ given.
 import svgwriter as svg
 
 doc = svg.Document(100, 50)
+doc.rect(5, 5, 90, 40, rx=6, fill="seagreen")
+doc.text("200 x 100 px", x=50, y=30, font_size=10, text_anchor="middle", fill="white")
 doc.export_hints = svg.inkscape.ExportHints(dpi=192, units="mm")
 doc.save("preview.png")                  # 200 x 100 pixels
 print(doc.export_hints)
