@@ -331,6 +331,70 @@ class AlongPath:
 
         return self._result(stamp(self, shape, to_page(spacing, self), offset=to_page(offset, self), orient=orient))  # type: ignore[arg-type, attr-defined, no-any-return]
 
+    def path_effect(self, name: str, /, **options: Any) -> Path:
+        """A ``<path>`` made by the path effect registered as *name* (``svg.path_effects`` or your own).
+
+        Effects registered with ``fills=True`` return an outline to fill, so the stroke paint becomes the fill.
+
+        Parameters
+        ----------
+        name : str
+            A registered effect: ``"roughen"``, ``"dashed"``, ``"stamp"``, ``"taper"`` or one of your own.
+        **options
+            The effect's options.
+
+        Returns
+        -------
+        Path
+            The new outline, with this element's presentation attributes.
+
+        Raises
+        ------
+        svgwriter.errors.UnknownNameError
+            If no effect has that name.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.circle(20, 20, 15, fill="none", stroke="black").path_effect("roughen", seed=1).tag
+        'path'
+        """
+        from ...._internal._presets import PATH_EFFECTS
+
+        function = PATH_EFFECTS.get(name)
+        result = self._result(function(self.outline(), **options))  # type: ignore[attr-defined]
+        if getattr(function, "__svgwriter_fills__", False):
+            paint = result.get("stroke")
+            if paint is not None and str(paint) != "none":
+                result.set("fill", paint)
+            result.set("stroke", "none")
+        return result  # type: ignore[no-any-return]
+
+    def taper(self, *widths: Length | float, samples: int = 64) -> Path:
+        """A brush stroke along this line: its width changes from start to end, drawn as a filled outline.
+
+        Parameters
+        ----------
+        *widths : float or Length
+            Widths spread evenly along the line: ``taper(0, 8, 0)`` swells in the middle, ``taper(6, 0)``
+            thins to a point. One width gives an even stroke.
+        samples : int, optional
+            Points taken along each part of the line. Defaults to 64.
+
+        Returns
+        -------
+        Path
+            The outline, filled with this element's stroke paint.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> str(svg.path("M0 20 C40 0 80 40 120 20", stroke="navy").taper(0, 8, 0).get("fill"))
+        'navy'
+        """
+        lengths = tuple(to_page(width, self) for width in widths) or (1.0,)
+        return self.path_effect("taper", widths=lengths, samples=samples)
+
     def round_corner(self, index: int, radius: Length | float, *, fillet: Fillet = "arc") -> Path:
         """A ``<path>`` with the corner at vertex *index* rounded.
 

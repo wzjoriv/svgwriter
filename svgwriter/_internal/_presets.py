@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from ..model.elements import Motion
     from ..model.elements.core import Element
     from ..model.elements.text import Character, CharacterRange
+    from ..model.pathdata.data import PathData
     from ..model.units.lengths import LengthLike
 
 __all__ = [
@@ -30,6 +31,8 @@ __all__ = [
     "GRADIENTS",
     "INTERACTIONS",
     "KINDS",
+    "PATH_EFFECTS",
+    "PathEffectPresets",
     "InteractionPresets",
     "MARKERS",
     "PATTERNS",
@@ -431,6 +434,41 @@ class InteractionPresets(Registry[Callable[..., None]]):
         return item
 
 
+
+class PathEffectPresets(Registry[Callable[..., "PathData"]]):
+    """Path effects: a function turning path data into new path data, applied as ``el.path_effect(name, ...)``.
+
+    Decorate ``function(data, *, option=default, ...) -> PathData``. With ``fills=True`` the result is an outline to
+    fill (like a tapered stroke): the element's stroke paint becomes the fill. Use bare, or with ``name=``,
+    ``replace=`` and ``fills=``.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> @svg.preset.path_effect
+    ... def shifted(data: svg.PathData, *, dx: float = 5) -> svg.PathData:
+    ...     return data.transformed(svg.Matrix.translate(dx, 0))
+    >>> svg.line(0, 0, 10, 0, stroke="black").path_effect("shifted", dx=3).bounds().x
+    3.0
+    >>> _ = svg.preset.path_effect.unregister("shifted")
+    """
+
+    def register(self, item: Any = None, /, *, name: str | None = None, replace: bool = False,
+                 fills: bool = False) -> Any:
+        def decorate(function: Any) -> Any:
+            function.__svgwriter_fills__ = fills
+            return Registry.register(self, function, name=name, replace=replace)
+
+        return decorate if item is None else decorate(item)
+
+    __call__ = register
+
+    def prepare(self, name: str, item: Callable[..., Any]) -> Callable[..., Any]:
+        if not callable(item):
+            raise TypeError(f"path effect {name!r} must be a function taking path data first")
+        return item
+
+
 ANIMATIONS: Final = AnimationPresets("animation")
 BEHAVIORS: Final = BehaviorPresets("behavior")
 SHAPES: Final = ShapePresets("shape")
@@ -441,7 +479,8 @@ GRADIENTS: Final = DefinitionPresets("gradient", _types("LinearGradient", "Radia
 MARKERS: Final = DefinitionPresets("marker", _types("Marker"))
 EFFECTS: Final = EffectPresets("effect")
 INTERACTIONS: Final = InteractionPresets("interaction")
+PATH_EFFECTS: Final = PathEffectPresets("path_effect")
 KINDS: Final[dict[str, Registry[Any]]] = {
     "animation": ANIMATIONS, "behavior": BEHAVIORS, "shape": SHAPES, "size": SIZES, "pattern": PATTERNS,
     "filter": FILTERS, "gradient": GRADIENTS, "marker": MARKERS, "effect": EFFECTS,
-    "interaction": INTERACTIONS}
+    "interaction": INTERACTIONS, "path_effect": PATH_EFFECTS}

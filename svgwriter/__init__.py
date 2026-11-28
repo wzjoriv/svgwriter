@@ -61,7 +61,7 @@ from .document import Document
 from .formats import Format, export, inkscape
 from .formats import io as io
 from .formats.io.writer import SerializeOptions, to_string, write
-from .library import effects, filters, fonts, gradients, interactions, markers, patterns, preset
+from .library import effects, filters, fonts, gradients, interactions, markers, path_effects, patterns, preset
 from .library import paths as paths
 from .library.fonts import FontBuilder
 from .library.paths import drawing
@@ -254,6 +254,7 @@ __all__ = [
     "VStack",
     "markers",
     "ops",
+    "path_effects",
     "patterns",
     "preset",
     "project",

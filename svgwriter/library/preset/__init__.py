@@ -34,6 +34,7 @@ from ..._internal._presets import (
     INTERACTIONS,
     KINDS,
     MARKERS,
+    PATH_EFFECTS,
     PATTERNS,
     SHAPES,
     SIZES,
@@ -42,6 +43,7 @@ from ..._internal._presets import (
     DefinitionPresets,
     EffectPresets,
     InteractionPresets,
+    PathEffectPresets,
     ShapePresets,
     SizePresets,
 )
@@ -56,6 +58,7 @@ gradient: Final = GRADIENTS
 marker: Final = MARKERS
 effect: Final = EFFECTS
 interaction: Final = INTERACTIONS
+path_effect: Final = PATH_EFFECTS
 
 __all__ = [
     "KINDS",
@@ -64,6 +67,7 @@ __all__ = [
     "DefinitionPresets",
     "EffectPresets",
     "InteractionPresets",
+    "PathEffectPresets",
     "ShapePresets",
     "SizePresets",
     "animation",
@@ -73,6 +77,7 @@ __all__ = [
     "gradient",
     "interaction",
     "marker",
+    "path_effect",
     "pattern",
     "shape",
     "size",

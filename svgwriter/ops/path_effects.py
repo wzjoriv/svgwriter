@@ -5,15 +5,19 @@ shape stamped along a path.
 
 from __future__ import annotations
 
+from collections.abc import Callable, Sequence
 from typing import Any, Literal
 
 import skia
 
 from ..model.pathdata.data import PathData
-from ._constants import STAMP_STYLES
+from ._constants import STAMP_STYLES, TAPER_SAMPLES
 from ._skia import Geometry, from_skia, geometry_data, to_skia
 
-__all__ = ["StampOrient", "dashed", "roughen", "stamp"]
+__all__ = ["StampOrient", "Widths", "dashed", "roughen", "stamp", "taper"]
+
+Widths = float | Sequence[float] | Callable[[float], float]
+"""A stroke width along a path: one number, values spread evenly from start to end, or a function of 0..1."""
 
 StampOrient = Literal["rotate", "translate", "morph"]
 """How a stamped shape follows the path: turned with it, kept upright, or bent along it."""
@@ -144,3 +148,78 @@ def stamp(item: Geometry, shape: Geometry, spacing: float, *, offset: float = 0.
     data, evenodd = geometry_data(shape)
     style = getattr(skia.Path1DPathEffect, STAMP_STYLES[orient])
     return _apply(item, skia.Path1DPathEffect.Make(to_skia(data, evenodd=evenodd), float(spacing), float(offset), style))
+
+
+def _width_at(widths: Widths, t: float) -> float:
+    if callable(widths):
+        return float(widths(t))
+    if isinstance(widths, (int, float)):
+        return float(widths)
+    values = [float(value) for value in widths]
+    if len(values) == 1:
+        return values[0]
+    position = t * (len(values) - 1)
+    index = min(int(position), len(values) - 2)
+    return values[index] + (values[index + 1] - values[index]) * (position - index)
+
+
+def taper(item: Geometry, widths: Widths, *, samples: int = TAPER_SAMPLES) -> PathData:
+    """The outline of a stroke along *item* whose width changes from start to end, as a shape to fill.
+
+    Parameters
+    ----------
+    item : Element or PathData
+        The centre line.
+    widths : float, sequence of float or callable
+        The width: one number, values spread evenly along the line (``(1, 8, 1)`` swells in the middle), or a
+        function of the position ``0..1`` along the line.
+    samples : int, optional
+        Points taken along each part of the line. Defaults to 64.
+
+    Returns
+    -------
+    PathData
+        The closed outline, one shape per part of the line.
+
+    Raises
+    ------
+    ValueError
+        If *samples* is below 2.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> from svgwriter.ops.path_effects import taper
+    >>> brush = taper(svg.line(0, 0, 100, 0), (0, 10, 0))
+    >>> box = brush.bbox
+    >>> round(box.width), round(box.height)
+    (100, 10)
+    """
+    if samples < 2:
+        raise ValueError(f"samples must be at least 2, got {samples}")
+    data, evenodd = geometry_data(item)
+    measure = skia.PathMeasure(to_skia(data, evenodd=evenodd), False)
+    outline = skia.Path()
+    while True:
+        length = measure.getLength()
+        if length > 0:
+            left, right = [], []
+            for step in range(samples):
+                t = step / (samples - 1)
+                found = measure.getPosTan(t * length)
+                if not found:
+                    continue
+                position, tangent = found
+                x, y, tx, ty = position.x(), position.y(), tangent.x(), tangent.y()
+                half = _width_at(widths, t) / 2
+                left.append((x - ty * half, y + tx * half))
+                right.append((x + ty * half, y - tx * half))
+            ring = left + right[::-1]
+            if len(ring) >= 3:
+                outline.moveTo(*ring[0])
+                for point in ring[1:]:
+                    outline.lineTo(*point)
+                outline.close()
+        if not measure.nextContour():
+            break
+    return from_skia(outline)
