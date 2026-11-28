@@ -46,6 +46,14 @@ cut = a - b
 either = a ^ b
 logo = svg.rect(0, 0, 120, 50) - svg.text("SVG", x=10, y=40, font_size=40)
 many = a.union(b, svg.circle(40, 0, 10))      # n-ary, one skia operation
+
+row = svg.Document(780, 110)                  # the results side by side, each in its own colour
+row += [a.update(fill="#ccc", opacity=0.7).translate(50, 45), b.update(fill="#999", opacity=0.7).translate(50, 45)]
+labels = [(union, "a | b", "steelblue"), (inter, "a & b", "tomato"), (cut, "a - b", "seagreen"),
+          (either, "a ^ b", "gold"), (logo, "rect - text", "purple"), (many, "a.union(b, c)", "teal")]
+for x, (shape, label, color) in zip([150, 250, 350, 450, 580, 700], labels):
+    row.add(shape.update(fill=color).place(x, 45))
+    row.text(label, x=x, y=104, font_size=11, text_anchor="middle")
 ```
 
 Results are `<path>` elements carrying the left operand's style. `simplified()` removes overlaps, and
@@ -61,11 +69,16 @@ fill the overlap; with `evenodd` the overlap becomes a hole. `|` computes the tr
 is the same under either rule:
 
 ```python
-a, b = svg.path("M0 0 H10 V10 H0 Z"), svg.path("M5 0 H15 V10 H5 Z")
+a, b = svg.path("M0 0 H40 V40 H0 Z", fill="steelblue"), svg.path("M20 0 H60 V40 H20 Z", fill="tomato")
 joined = a + b                                # two subpaths, overlap filled (nonzero)
 holed = (a + b).update(fill_rule="evenodd")   # overlap left empty
 merged = a | b                                # one outline, overlap filled under any rule
-print(joined.contains_point(7, 5), holed.contains_point(7, 5), merged.contains_point(7, 5))
+print(joined.contains_point(28, 20), holed.contains_point(28, 20), merged.contains_point(28, 20))
+
+row = svg.Document(350, 50, view_box=(-5, 0, 350, 50))                   # the operands, then the three results
+row += [a.update(opacity=0.6), b.update(opacity=0.6)]
+row += [shape.update(fill="seagreen").translate(90 * n + 100, 0) for n, shape in enumerate([joined, holed, merged])]
+
 ```
 
 ## Measurement
@@ -76,6 +89,8 @@ print(ring.total_length())
 print(ring.point_at_length(10))
 print(ring.contains_point(50, 50), ring.contains_point(15, 50))
 print(ring.exact_bbox())
+marked = svg.Document(100, 100)               # the ring with the point 10 units along it marked
+marked += [ring.update(fill="steelblue"), svg.circle(*ring.point_at_length(10), 3, fill="tomato")]
 ```
 
 ## Walking along a path
@@ -83,12 +98,16 @@ print(ring.exact_bbox())
 Every outline can be walked by fraction of its length, 0 at the start and 1 at the end:
 
 ```python
-wave = svg.path("M0 50 C40 0 60 100 100 50", stroke="black", fill="none")
+wave = svg.path("M0 50 C40 0 60 100 100 50", stroke="steelblue", stroke_width=4, fill="none")
 print(wave.at(0.5), wave.tangent_at(0.5), wave.normal_at(0.5))
 points = wave.sample(5)                       # evenly spaced by distance
 middle = wave.between(0.25, 0.75)             # a new <path> with the same style
 first = wave.between(0, 20, by="length")      # or by distance
 ticks = svg.distribute([svg.rect(-1, -4, 2, 8) for _ in range(9)], along=wave)   # turned to follow it
+
+board = svg.Document(100, 100)
+board += [wave, middle.update(stroke="crimson", stroke_width=6), *ticks, first.update(stroke="orange", stroke_width=6)]
+board += [svg.circle(*point, 3, fill="gold", stroke="black") for point in points]
 ```
 
 `normal_at` is the tangent turned a quarter counter-clockwise on screen, which points outwards on
@@ -101,11 +120,16 @@ position and the angle the outline turns there. `round_corners` replaces them wi
 quadratics with `fillet="quad"`) on any shape; fillets shrink when the sides are too short:
 
 ```python
-tri = svg.polygon([(0, 0), (60, 0), (0, 40)], fill="gold")
+tri = svg.polygon([(0, 0), (60, 0), (0, 40)], fill="gold", stroke="black")
 print([(c.index, round(c.angle.degrees)) for c in tri.corners()])
 soft = tri.round_corners(6)                                   # every corner
 blunt = tri.round_corners(6, where=lambda c: c.angle > 120)   # only the sharpest
 one = tri.round_corner(1, 4, fillet="quad")                   # a single vertex
+
+row = svg.Document(340, 70)                                   # the four side by side
+for n, (shape, label) in enumerate([(tri, "tri"), (soft, "soft"), (blunt, "blunt"), (one, "one")]):
+    row.add(shape.update(stroke="black").translate(90 * n + 10, 10))
+    row.text(label, x=90 * n + 40, y=64, font_size=12, text_anchor="middle")
 ```
 
 ## Path effects
@@ -123,8 +147,8 @@ as it looks here:
 doc = svg.Document(width=420, height=150)
 doc.add(svg.rect(20, 20, 110, 70, rx=10, fill="#fde68a", stroke="#92400e", stroke_width=2).roughen(seed=2))
 doc.add(svg.circle(210, 60, 40, fill="none", stroke="#0ea5e9", stroke_width=3).dashed(12, 6))
-arrow = svg.Polygon([(-4, -4), (5, 0), (-4, 4)])
-doc.add(svg.path("M290 90 C320 20 350 140 400 60", fill="#e11d48").stamp(arrow, 14))
+doc.add(svg.path("M290 90 C320 20 350 140 400 60", fill="#e11d48")
+        .stamp(svg.Polygon([(-4, -4), (5, 0), (-4, 4)]), 14))      # an arrowhead every 14 units
 doc.add(svg.path("M20 125 L400 125", fill="#334155").stamp(svg.rect(-1, -6, 2, 12), 10))
 ```
 
@@ -143,17 +167,19 @@ def thicken(data: svg.PathData, *, width: float = 4) -> svg.PathData:
     return svg.path(data).stroked(width=width).get("d")
 
 
-bar = svg.line(20, 100, 200, 100, stroke="#0f766e").path_effect("thicken", width=6)
+bar = svg.line(20, 100, 200, 100, stroke="#0f766e", fill="#0f766e").path_effect("thicken", width=12)
 svg.preset.path_effect.unregister("thicken")
 ```
 
 ## Clipping
 
 ```python
-art = svg.rect(0, 0, 100, 100, fill="teal").clip(svg.circle(50, 50, 40))
+doc = svg.Document(100, 100)
+doc.rect(0, 0, 100, 100, fill="none", stroke="#999", stroke_dasharray="4 2")      # the unclipped square
+art = doc.rect(0, 0, 100, 100, fill="teal").clip(svg.circle(50, 50, 40))
 print(art.clip_region)                  # the <clipPath>, defined automatically
 flat = art.flatten_clip()               # one path with the clip applied
-art.unclip()
+art.clone().unclip()                    # the square again, on a copy
 ```
 
 The clip shapes are in the element's local coordinates, so the clip moves with the element.

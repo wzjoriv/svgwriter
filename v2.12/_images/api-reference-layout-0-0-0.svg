@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="108" height="158.7969" viewBox="0 0 108 158.7969" version="1.1">
+  <style id="s194120-svgwriter-theme" type="text/css">.s194120-role-surface { fill:#f4f6f8;stroke:none }
+.s194120-role-box { fill:#f4f6f8;stroke:#bcbfc2;stroke-width:1px }</style>
+  <g>
+    <rect x="0" y="0" width="108" height="158.7969" class="s194120-role-surface"/>
+    <text font-size="16" transform="translate(12 26.4844)">Calculator</text>
+    <g transform="translate(12 39.875)">
+      <g>
+        <rect x="0" y="0" width="24" height="31.6406" class="s194120-role-box"/>
+        <text font-size="14" transform="translate(8 20.6738)">7</text>
+      </g>
+      <g transform="translate(30)">
+        <rect x="0" y="0" width="24" height="31.6406" class="s194120-role-box"/>
+        <text font-size="14" transform="translate(8 20.6738)">8</text>
+      </g>
+      <g transform="translate(60)">
+        <rect x="0" y="0" width="24" height="31.6406" class="s194120-role-box"/>
+        <text font-size="14" transform="translate(8 20.6738)">9</text>
+      </g>
+      <g transform="translate(0 37.6406)">
+        <rect x="0" y="0" width="24" height="31.6406" class="s194120-role-box"/>
+        <text font-size="14" transform="translate(8 20.6738)">4</text>
+      </g>
+      <g transform="translate(30 37.6406)">
+        <rect x="0" y="0" width="24" height="31.6406" class="s194120-role-box"/>
+        <text font-size="14" transform="translate(8 20.6738)">5</text>
+      </g>
+      <g transform="translate(60 37.6406)">
+        <rect x="0" y="0" width="24" height="31.6406" class="s194120-role-box"/>
+        <text font-size="14" transform="translate(8 20.6738)">6</text>
+      </g>
+      <g transform="translate(0 75.2812)">
+        <rect x="0" y="0" width="24" height="31.6406" class="s194120-role-box"/>
+        <text font-size="14" transform="translate(8 20.6738)">1</text>
+      </g>
+      <g transform="translate(30 75.2812)">
+        <rect x="0" y="0" width="24" height="31.6406" class="s194120-role-box"/>
+        <text font-size="14" transform="translate(8 20.6738)">2</text>
+      </g>
+      <g transform="translate(60 75.2812)">
+        <rect x="0" y="0" width="24" height="31.6406" class="s194120-role-box"/>
+        <text font-size="14" transform="translate(8 20.6738)">3</text>
+      </g>
+    </g>
+  </g>
+</svg>

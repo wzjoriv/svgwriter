@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Quickstart - svgwriter 2.11.0</title>
+        <title>Quickstart - svgwriter 2.12.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.11.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.12.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.11.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.12.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.11.0</span>
+  <span class="sidebar-versions-label">2.12.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -211,7 +211,7 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos.html">Demos</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Drawing</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../guides/geometry.html">Geometry and transforms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/layout.html">Layout</a></li>
@@ -219,18 +219,30 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/fonts.html">Making fonts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/colors-and-images.html">Colors and images</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/filters.html">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/presets.html">Presets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documents &amp; output</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../guides/documents.html">Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/rendering.html">Rendering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/batches.html">Performance and batches</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/export-import.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/export.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/print-and-colour.html">Print and colour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/diagrams-and-office.html">Diagrams and Office files</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Motion</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../guides/animation.html">Animation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/logos.html">Logos and icons</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/themes.html">Themes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/scenes-and-video.html">Scenes and video</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/widgets.html">Widgets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/projects.html">Projects</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">More</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/units.html">Units and angles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/inkscape.html">Working with Inkscape files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -330,17 +342,16 @@ attributes in Python spelling: <code class="docutils literal notranslate"><span 
 <h2>Move things<a class="headerlink" href="#move-things" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sun</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>          <span class="c1"># move</span>
 <span class="n">sun</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>                  <span class="c1"># about its centre (the anchor)</span>
-<span class="n">hill</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">)</span>                 <span class="c1"># degrees, clockwise on screen</span>
+<span class="n">hill</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">)</span>                 <span class="c1"># 5 degrees counter-clockwise (positive turns clockwise on screen)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">sun</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>             <span class="c1"># where its centre is now</span>
+<span class="n">doc</span>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
 <img alt="What the code above draws" src="../_images/start-quickstart-1-0.svg" />
-<img alt="What the code above draws" src="../_images/start-quickstart-1-1.svg" />
-</figcaption>
 </figure>
 <p>Geometry attributes (<code class="docutils literal notranslate"><span class="pre">cx</span></code>, <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">d</span></code>, …) stay as written; placement goes through the element’s
-transform <code class="docutils literal notranslate"><span class="pre">t</span></code>. See <a class="reference internal" href="../guides/geometry.html"><span class="doc">Geometry and transforms</span></a>.</p>
+<code class="docutils literal notranslate"><span class="pre">matrix</span></code> (its transform). See <a class="reference internal" href="../guides/geometry.html"><span class="doc">Geometry and transforms</span></a>.</p>
 </section>
 <section id="combine-and-measure">
 <h2>Combine and measure<a class="headerlink" href="#combine-and-measure" title="Link to this heading">¶</a></h2>
@@ -388,9 +399,21 @@ the command line build it:</p>
 <p>Named sizes work in any document: <code class="docutils literal notranslate"><span class="pre">svg.Document(size=&quot;a4&quot;)</span></code> draws in millimetres. See
 <a class="reference internal" href="../guides/projects.html"><span class="doc">Projects</span></a>.</p>
 </section>
-<section id="more-examples">
-<h2>More examples<a class="headerlink" href="#more-examples" title="Link to this heading">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">examples/</span></code> folder of the repository is a numbered learning path of runnable scripts (<code class="docutils literal notranslate"><span class="pre">examples/01_basic_shapes/</span></code> to <code class="docutils literal notranslate"><span class="pre">examples/21_batches/</span></code>), each a folder with the script and a Jupyter notebook beside it that shows the results as pictures.</p>
+<section id="seeing-your-drawing">
+<h2>Seeing your drawing<a class="headerlink" href="#seeing-your-drawing" title="Link to this heading">¶</a></h2>
+<p>In a Jupyter notebook, a document on the last line of a cell shows as a picture, and <code class="docutils literal notranslate"><span class="pre">svg.explore(fn)</span></code> adds
+sliders and pickers. In a plain script, <code class="docutils literal notranslate"><span class="pre">doc.save(&quot;hello.svg&quot;)</span></code> (or <code class="docutils literal notranslate"><span class="pre">.png</span></code>, <code class="docutils literal notranslate"><span class="pre">.pdf</span></code>) writes the file next to
+the script; open it in a browser or image viewer. In a project, <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">preview</span></code> shows it live.</p>
+</section>
+<section id="next-steps">
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The <a class="reference external" href="https://github.com/wzjoriv/svgwriter/tree/main/examples">examples</a>: a 27-step learning path, from a
+first drawing to animation, PowerPoint and fonts, each a script with a notebook of pictures.</p></li>
+<li><p><a class="reference internal" href="../guides/geometry.html"><span class="doc">Geometry and transforms</span></a> to move, rotate and align, <a class="reference internal" href="../guides/text.html"><span class="doc">Text</span></a> for type,
+<a class="reference internal" href="../guides/themes.html"><span class="doc">Themes</span></a> for colours and roles, <a class="reference internal" href="../guides/animation.html"><span class="doc">Animation</span></a> to make things move, and
+<a class="reference internal" href="../guides/export.html"><span class="doc">Export and import</span></a> for every file format.</p></li>
+</ul>
 </section>
 </section>
 
@@ -456,7 +479,8 @@ the command line build it:</p>
 <li><a class="reference internal" href="#render-and-export">Render and export</a></li>
 <li><a class="reference internal" href="#read-it-back">Read it back</a></li>
 <li><a class="reference internal" href="#start-a-project">Start a project</a></li>
-<li><a class="reference internal" href="#more-examples">More examples</a></li>
+<li><a class="reference internal" href="#seeing-your-drawing">Seeing your drawing</a></li>
+<li><a class="reference internal" href="#next-steps">Next steps</a></li>
 </ul>
 </li>
 </ul>
@@ -468,7 +492,7 @@ the command line build it:</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=3b0a66e6"></script>
+</div><script src="../_static/documentation_options.js?v=965a162a"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

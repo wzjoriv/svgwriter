@@ -1,4 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="111.1111" viewBox="-2.5 -2.5 45 25" version="1.1">
-  <style id="s6963ac-svgwriter-theme" type="text/css">.role-box { fill:#f4f6f8;stroke:#bcbfc2;stroke-width:1px }</style>
-  <rect x="0" y="0" width="40" height="20" style="stroke:red" class="role-box"/>
+  <style id="s6963ac-svgwriter-theme" type="text/css">.s6963ac-role-box { fill:#f4f6f8;stroke:#bcbfc2;stroke-width:1px }</style>
+  <rect x="0" y="0" width="40" height="20" style="stroke:red" class="s6963ac-role-box"/>
 </svg>

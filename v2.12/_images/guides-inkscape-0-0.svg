@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" width="200mm" height="100mm" viewBox="0 0 200 100">
+  <sodipodi:namedview inkscape:document-units="mm">
+    <sodipodi:guide position="20,100" orientation="1,0" inkscape:label="margin"/>
+  </sodipodi:namedview>
+  <g inkscape:groupmode="layer" inkscape:label="Shapes">
+    <path id="s3f41db-star" d="M150 30 L155.9 41.9 L169 43.8 L159.5 53.1 L161.8 66.2 L150 60 L138.2 66.2 L140.5 53.1 L131 43.8 L144.1 41.9 Z" inkscape:label="Logo" sodipodi:type="star" sodipodi:sides="5" sodipodi:cx="150" sodipodi:cy="50" sodipodi:r1="20" sodipodi:r2="10" sodipodi:arg1="-1.5707963" sodipodi:arg2="-0.9424778" inkscape:flatsided="false" inkscape:rounded="0" fill="gold" stroke="darkorange" stroke-width="2" transform="rotate(15 150 48.1)"/>
+    <rect id="s3f41db-box" x="90" y="20" width="20" height="10" fill="teal"/>
+  </g>
+</svg>

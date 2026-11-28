@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="304" height="25.4062" viewBox="-2 -2 304 25.4062" version="1.1">
-  <style id="s0344d8-svgwriter-theme" type="text/css">.role-box { fill:#f4f6f8;stroke:#bcbfc2;stroke-width:1px }</style>
+  <style id="s0344d8-svgwriter-theme" type="text/css">.s0344d8-role-box { fill:#f4f6f8;stroke:#bcbfc2;stroke-width:1px }</style>
   <g>
     <g>
-      <rect x="0" y="0" width="47" height="21.4062" class="role-box"/>
+      <rect x="0" y="0" width="47" height="21.4062" class="s0344d8-role-box"/>
       <text font-size="12" transform="translate(10 14.8633)">Back</text>
     </g>
     <g/>
     <g transform="translate(193)">
-      <rect x="0" y="0" width="48" height="21.4062" class="role-box"/>
+      <rect x="0" y="0" width="48" height="21.4062" class="s0344d8-role-box"/>
       <text font-size="12" transform="translate(10 14.8633)">Save</text>
     </g>
     <g transform="translate(247)">
-      <rect x="0" y="0" width="53" height="21.4062" class="role-box"/>
+      <rect x="0" y="0" width="53" height="21.4062" class="s0344d8-role-box"/>
       <text font-size="12" transform="translate(10 14.8633)">Share</text>
     </g>
   </g>

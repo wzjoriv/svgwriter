@@ -1,16 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60" viewBox="0 0 200 60" version="1.1">
-  <style id="sc35e7b-svgwriter-hover" type="text/css">#sc35e7b-rect1:hover { fill:darkcyan !important;stroke:white !important;stroke-width:2 !important } #sc35e7b-rect2:hover { opacity:0.9 !important }</style>
-  <rect id="sc35e7b-rect1" x="10" y="10" width="40" height="40" rx="6" fill="teal">
-    <animateTransform attributeName="transform" values="30 30;30 30" additive="sum" begin="sc35e7b-rect1.click" dur="0.3s" repeatCount="1" type="translate"/>
-    <animateTransform attributeName="transform" values="1;1.1;1" additive="sum" begin="sc35e7b-rect1.click" dur="0.3s" repeatCount="1" type="scale"/>
-    <animateTransform attributeName="transform" values="-30 -30;-30 -30" additive="sum" begin="sc35e7b-rect1.click" dur="0.3s" repeatCount="1" type="translate"/>
-  </rect>
-  <circle cx="150" cy="30" r="12" fill="gold" opacity="0.3">
-    <animate attributeName="opacity" from="0" to="1" begin="sc35e7b-rect1.mouseover" dur="0.4s" fill="freeze"/>
-  </circle>
-  <rect id="sc35e7b-rect2" x="80" y="10" width="40" height="40" rx="6" fill="slateblue">
-    <animateTransform attributeName="transform" from="0 0" to="0 -6" additive="sum" begin="sc35e7b-rect2.click" dur="0.15s" fill="freeze" type="translate"/>
-  </rect>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="40" viewBox="0 0 200 40" version="1.1">
+  <rect x="10" y="18" width="180" height="4" fill="#ddd"/>
   <rect x="10" y="10" width="20" height="20" fill="teal">
     <animateTransform attributeName="transform" from="0 0" to="160 0" additive="sum" calcMode="spline" keyTimes="0;1" keySplines="0.42 0 0.58 1" begin="0s" dur="1s" fill="freeze" type="translate"/>
     <animate attributeName="opacity" from="0" to="1" calcMode="spline" keyTimes="0;1" keySplines="0.2 0.9 0.3 1" begin="0s" dur="0.5s" fill="freeze"/>

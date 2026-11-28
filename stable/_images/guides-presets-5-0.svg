@@ -1,8 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="144.3951" height="56.19" viewBox="-9.9583 -9.9583 144.3951 56.19" version="1.1">
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="140" viewBox="0 0 240 140" version="1.1">
   <defs>
-    <pattern id="sa9a129-pattern1" width="12" height="6" patternUnits="userSpaceOnUse">
+    <pattern id="s085795-pattern1" width="12" height="6" patternUnits="userSpaceOnUse">
       <rect x="0" y="0" width="12" height="6" fill="firebrick" stroke="white"/>
     </pattern>
+    <linearGradient id="s085795-linearGradient1" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0" stop-color="#fde68a"/>
+      <stop offset="0.1" stop-color="#fdd16c"/>
+      <stop offset="0.2" stop-color="#febc4f"/>
+      <stop offset="0.3" stop-color="#fea535"/>
+      <stop offset="0.4" stop-color="#fc8c1f"/>
+      <stop offset="0.5" stop-color="#f97316"/>
+      <stop offset="0.6" stop-color="#e1601f"/>
+      <stop offset="0.7" stop-color="#c84e22"/>
+      <stop offset="0.8" stop-color="#b03d22"/>
+      <stop offset="0.9" stop-color="#972d21"/>
+      <stop offset="1" stop-color="#7f1d1d"/>
+    </linearGradient>
+    <filter id="s085795-filter1" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="s085795-feGaussianBlur1" in="SourceAlpha" stdDeviation="3" result="feGaussianBlur1-out"/>
+      <feFlood id="s085795-feFlood1" flood-color="#f97316" flood-opacity="1" result="feFlood1-out"/>
+      <feComposite id="s085795-feComposite1" in="feFlood1-out" in2="feGaussianBlur1-out" operator="in" result="feComposite1-out"/>
+      <feMerge>
+        <feMergeNode in="feComposite1-out"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
-  <rect x="0" y="0" width="60" height="30" fill="url(#sa9a129-pattern1)"/>
+  <rect x="10" y="10" width="220" height="70" fill="url(#s085795-pattern1)"/>
+  <text x="10" y="120" font-size="44">still <tspan visibility="hidden">warm</tspan></text>
+  <text x="10" y="120" font-size="44" fill="url(#s085795-linearGradient1)" filter="url(#s085795-filter1)"><tspan visibility="hidden">still </tspan>warm</text>
 </svg>

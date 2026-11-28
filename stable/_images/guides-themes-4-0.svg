@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="100" height="40" viewBox="0 0 100 40" version="1.1">
-  <style id="sb4a6fe-svgwriter-theme" type="text/css">.role-caption { fill:#5f5f5f;stroke:none;font-family:Georgia, 'Times New Roman', serif;font-size:11px;font-weight:400 }</style>
-  <text x="4" y="24" class="role-caption">Figure 1</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="80" viewBox="0 0 200 80" version="1.1">
+  <style id="s3b9959-svgwriter-theme" type="text/css">.s3b9959-role-box { fill:#f8f8f8;stroke:#bbbbbb;stroke-width:1px }
+.s3b9959-role-caption { fill:#5f5f5f;stroke:none;font-family:Georgia, 'Times New Roman', serif;font-size:11px;font-weight:400 }</style>
+  <rect x="4" y="4" width="192" height="72" class="s3b9959-role-box"/>
+  <text x="16" y="50" class="s3b9959-role-caption">Figure 1</text>
 </svg>

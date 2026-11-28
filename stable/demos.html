@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Demos - svgwriter 2.11.0</title>
+        <title>Demos - svgwriter 2.12.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">svgwriter 2.11.0</div></a>
+      <a href="index.html"><div class="brand">svgwriter 2.12.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.11.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.12.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.11.0</span>
+  <span class="sidebar-versions-label">2.12.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -211,7 +211,7 @@
 <li class="toctree-l1"><a class="reference internal" href="start/quickstart.html">Quickstart</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Demos</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Drawing</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="guides/geometry.html">Geometry and transforms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/layout.html">Layout</a></li>
@@ -219,18 +219,30 @@
 <li class="toctree-l1"><a class="reference internal" href="guides/text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/fonts.html">Making fonts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/colors-and-images.html">Colors and images</a></li>
-<li class="toctree-l1"><a class="reference internal" href="guides/effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/filters.html">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/presets.html">Presets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documents &amp; output</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="guides/documents.html">Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/projects.html">Projects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/rendering.html">Rendering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/batches.html">Performance and batches</a></li>
-<li class="toctree-l1"><a class="reference internal" href="guides/export-import.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/export.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/print-and-colour.html">Print and colour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/diagrams-and-office.html">Diagrams and Office files</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Motion</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="guides/animation.html">Animation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="guides/logos.html">Logos and icons</a></li>
-<li class="toctree-l1"><a class="reference internal" href="guides/themes.html">Themes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="guides/inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/scenes-and-video.html">Scenes and video</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/widgets.html">Widgets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="guides/projects.html">Projects</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">More</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guides/units.html">Units and angles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/inkscape.html">Working with Inkscape files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -333,19 +345,20 @@ font, size and alignment, history line, key font and weight, spacing and palette
 </section>
 <section id="effects">
 <h2>Effects<a class="headerlink" href="#effects" title="Link to this heading">¶</a></h2>
-<p><img alt="Words that smoke, shine, blow, burn and snow beside a logo and buttons" src="_images/effects.gif" /></p>
-<p><a class="reference external" href="https://github.com/wzjoriv/svgwriter/tree/main/demos/effects"><code class="docutils literal notranslate"><span class="pre">demos/effects</span></code></a>: a passage on a
-night card where five words carry the smoke, metal, wind, fire and snow effects while staying text, beside a logo and two buttons with effects of their own, and a dropdown
-per word, for the logo and for the buttons to swap each effect.
-Outputs: an animated SVG and a GIF. <a class="reference external" href="https://github.com/wzjoriv/svgwriter/blob/main/demos/effects/effects.ipynb">Notebook</a>.</p>
+<p><img alt="A retro game title screen with fire and metal title words and glowing menu buttons" src="_images/effects.gif" /></p>
+<p><a class="reference external" href="https://github.com/wzjoriv/svgwriter/tree/main/demos/effects"><code class="docutils literal notranslate"><span class="pre">demos/effects</span></code></a>: a retro game title screen
+whose two title words carry their own effects (still selectable text), a blinking “Press start” and menu
+buttons that glow and respond to hover and click, with controls for the title and each effect. Outputs: an
+animated SVG and a GIF. <a class="reference external" href="https://github.com/wzjoriv/svgwriter/blob/main/demos/effects/effects.ipynb">Notebook</a>.</p>
 </section>
-<section id="planets-explainer">
-<h2>Planets explainer<a class="headerlink" href="#planets-explainer" title="Link to this heading">¶</a></h2>
+<section id="planets-lesson">
+<h2>Planets lesson<a class="headerlink" href="#planets-lesson" title="Link to this heading">¶</a></h2>
 <p><img alt="The eight planets with their orbits to scale" src="_images/planets-explainer.gif" /></p>
-<p><a class="reference external" href="https://github.com/wzjoriv/svgwriter/tree/main/demos/planets-explainer"><code class="docutils literal notranslate"><span class="pre">demos/planets-explainer</span></code></a>: two
-scenes, the eight planets on orbits drawn to scale and Betelgeuse beside the Sun with a rolling counter,
-moved by behaviours, SMIL and per-frame updates, then baked; a time scale and a choice of scene drive them in the notebook. Outputs: MP4 (GIF without ffmpeg), animated
-SVG and PowerPoint. <a class="reference external" href="https://github.com/wzjoriv/svgwriter/blob/main/demos/planets-explainer/planets-explainer.ipynb">Notebook</a>.</p>
+<p><a class="reference external" href="https://github.com/wzjoriv/svgwriter/tree/main/demos/planets-explainer"><code class="docutils literal notranslate"><span class="pre">demos/planets-explainer</span></code></a>: a four-slide
+classroom lesson on the Solar System as <code class="docutils literal notranslate"><span class="pre">Scene</span></code> classes: a title slide with the lesson’s goals, the planets’
+orbits to scale, the Sun beside Betelgeuse with 100 Suns counted up, and a quiz whose answers appear when their
+question is clicked. Outputs: a video, an animated SVG per slide and one PowerPoint deck
+(<code class="docutils literal notranslate"><span class="pre">pptx</span> <span class="pre">=</span> <span class="pre">{</span> <span class="pre">deck</span> <span class="pre">=</span> <span class="pre">true</span> <span class="pre">}</span></code>) with slide effects and click triggers for the quiz. <a class="reference external" href="https://github.com/wzjoriv/svgwriter/blob/main/demos/planets-explainer/planets-explainer.ipynb">Notebook</a>.</p>
 </section>
 <section id="blobs">
 <h2>Blobs<a class="headerlink" href="#blobs" title="Link to this heading">¶</a></h2>
@@ -359,7 +372,8 @@ and a “Get started” button (hover and click in the SVG) beside metaballs tha
 <p><a class="reference external" href="https://github.com/wzjoriv/svgwriter/tree/main/demos/poster"><code class="docutils literal notranslate"><span class="pre">demos/poster</span></code></a>: an A4 print poster drawn in
 millimetres: an invitation to a beach clean-up with gradients, patterns, a route with markers, drawn icons of what to bring and a schedule read from CSV, and controls for the theme, an accent hue shift and the event’s title, date, time and place. Outputs: a true-size
 PDF, a 300 dpi PNG and an SVG. <a class="reference external" href="https://github.com/wzjoriv/svgwriter/blob/main/demos/poster/poster.ipynb">Notebook</a>.</p>
-<p>The pictures on this page are built from the demos by <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/dev.py</span> <span class="pre">svgwriter</span> <span class="pre">gallery</span></code>.</p>
+<p>Each demo’s <code class="docutils literal notranslate"><span class="pre">output/</span></code> folder holds its built SVG, PDF, PNG and PowerPoint files, so you can open the results
+without running anything (<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/dev.py</span> <span class="pre">svgwriter</span> <span class="pre">demo-outputs</span> <span class="pre">build</span></code> rebuilds them). The pictures on this page are built from the demos by <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/dev.py</span> <span class="pre">svgwriter</span> <span class="pre">gallery</span></code>.</p>
 </section>
 </section>
 
@@ -422,7 +436,7 @@ PDF, a 300 dpi PNG and an SVG. <a class="reference external" href="https://githu
 <li><a class="reference internal" href="#playing-card">Playing card</a></li>
 <li><a class="reference internal" href="#calculator-kit">Calculator kit</a></li>
 <li><a class="reference internal" href="#effects">Effects</a></li>
-<li><a class="reference internal" href="#planets-explainer">Planets explainer</a></li>
+<li><a class="reference internal" href="#planets-lesson">Planets lesson</a></li>
 <li><a class="reference internal" href="#blobs">Blobs</a></li>
 <li><a class="reference internal" href="#poster">Poster</a></li>
 </ul>
@@ -436,7 +450,7 @@ PDF, a 300 dpi PNG and an SVG. <a class="reference external" href="https://githu
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=3b0a66e6"></script>
+</div><script src="_static/documentation_options.js?v=965a162a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

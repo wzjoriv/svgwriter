@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Layout - svgwriter 2.11.0</title>
+        <title>Layout - svgwriter 2.12.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.11.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.12.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.11.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.12.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.11.0</span>
+  <span class="sidebar-versions-label">2.12.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -211,7 +211,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../start/quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos.html">Demos</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Drawing</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry and transforms</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Layout</a></li>
@@ -219,18 +219,30 @@
 <li class="toctree-l1"><a class="reference internal" href="text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fonts.html">Making fonts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="colors-and-images.html">Colors and images</a></li>
-<li class="toctree-l1"><a class="reference internal" href="effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="presets.html">Presets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documents &amp; output</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="documents.html">Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rendering.html">Rendering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="batches.html">Performance and batches</a></li>
-<li class="toctree-l1"><a class="reference internal" href="export-import.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="print-and-colour.html">Print and colour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diagrams-and-office.html">Diagrams and Office files</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Motion</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="animation.html">Animation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="logos.html">Logos and icons</a></li>
-<li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scenes-and-video.html">Scenes and video</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">More</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units and angles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inkscape.html">Working with Inkscape files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -463,7 +475,7 @@ and path tools.</p>
 <p>A layout writes <code class="docutils literal notranslate"><span class="pre">&lt;g</span> <span class="pre">transform=&quot;...&quot;&gt;</span></code> groups and sized rects: no CSS layout and no <code class="docutils literal notranslate"><span class="pre">foreignObject</span></code>. Read
 back with <code class="docutils literal notranslate"><span class="pre">svg.parse</span></code> or <code class="docutils literal notranslate"><span class="pre">Document.open</span></code>, the groups are plain groups. PDF, PowerPoint, PNG and every
 other format draw the same positions as the SVG.</p>
-<p><code class="docutils literal notranslate"><span class="pre">group.arrange()</span></code> places the children at once, for code that reads a child’s <code class="docutils literal notranslate"><span class="pre">t</span></code> directly. A clone of a
+<p><code class="docutils literal notranslate"><span class="pre">group.arrange()</span></code> places the children at once, for code that reads a child’s <code class="docutils literal notranslate"><span class="pre">matrix</span></code> directly. A clone of a
 layout is a live layout too: changing its gap re-lays out the copy only.</p>
 </section>
 </section>
@@ -541,7 +553,7 @@ layout is a live layout too: changing its gap re-lays out the copy only.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=3b0a66e6"></script>
+</div><script src="../_static/documentation_options.js?v=965a162a"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

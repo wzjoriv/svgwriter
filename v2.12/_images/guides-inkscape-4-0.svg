@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60" viewBox="0 0 200 60" version="1.1">
+  <circle id="sd610a2-circle1" cx="30" cy="30" r="15" fill="gold"/>
+  <circle id="sd610a2-circle2" cx="170" cy="30" r="15" fill="teal"/>
+  <path d="M30 30 L170 30" fill="none" stroke="crimson" stroke-width="3"/>
+</svg>

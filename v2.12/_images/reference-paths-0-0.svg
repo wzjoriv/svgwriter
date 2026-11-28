@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="120" viewBox="0 0 240 120" version="1.1">
+  <style id="s5bdae2-svgwriter-theme" type="text/css">.s5bdae2-role-box { fill:#f4f6f8;stroke:#bcbfc2;stroke-width:1px }
+.s5bdae2-role-shape { fill:#0f766e;stroke:none }
+.s5bdae2-role-line { fill:none;stroke:#0f766e;stroke-width:2px }</style>
+  <path d="M10 18 A8 8 0 0 1 18 10 L122 10 A8 8 0 0 1 130 18 L130 52 A8 8 0 0 1 122 60 L47.5 60 L40 100 L32.5 60 L18 60 A8 8 0 0 1 10 52 Z" style="fill:white;stroke:black" class="s5bdae2-role-box"/>
+  <path d="M180 27.75 C178.5 19.75 174 16.25 167.5 16.25 C160.5 16.25 155 22.25 155 28.75 C155 42.75 170 52.75 180 63.75 C190 52.75 205 42.75 205 28.75 C205 22.25 199.5 16.25 192.5 16.25 C186 16.25 181.5 19.75 180 27.75 Z" style="fill:crimson" class="s5bdae2-role-shape"/>
+  <path d="M10 100 C18.4883 92 21.5117 92 30 100 C38.4883 108 41.5117 108 50 100 C58.4883 92 61.5117 92 70 100 C78.4883 108 81.5117 108 90 100 C98.4883 92 101.5117 92 110 100 C118.4883 108 121.5117 108 130 100 C138.4883 92 141.5117 92 150 100 C158.4883 108 161.5117 108 170 100 C178.4883 92 181.5117 92 190 100 C198.4883 108 201.5117 108 210 100 C218.4883 92 221.5117 92 230 100" fill="none" style="stroke:steelblue" class="s5bdae2-role-line"/>
+</svg>

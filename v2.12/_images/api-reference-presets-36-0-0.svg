@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="73.2975" viewBox="0.4609 7.3604 68.0312 24.9326" version="1.1">
+  <defs>
+    <filter id="s6328df-filter1" x="-16.378" y="-9.479" width="101.71" height="58.611" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feFlood id="s6328df-feFlood1" flood-color="#ff004d" flood-opacity="1" result="feFlood1-out"/>
+      <feComposite id="s6328df-feComposite1" in="feFlood1-out" in2="SourceAlpha" operator="in" result="feComposite1-out"/>
+      <feOffset id="s6328df-feOffset1" in="feComposite1-out" dx="1.308" dy="0" result="feOffset1-out">
+        <animate attributeName="dx" values="1.308;-1.962;2.617;0;-1.308;1.962;0.654" calcMode="discrete" dur="1.4s" repeatCount="indefinite"/>
+      </feOffset>
+      <feFlood id="s6328df-feFlood2" flood-color="#00e5ff" flood-opacity="1" result="feFlood2-out"/>
+      <feComposite id="s6328df-feComposite2" in="feFlood2-out" in2="SourceAlpha" operator="in" result="feComposite2-out"/>
+      <feOffset id="s6328df-feOffset2" in="feComposite2-out" dx="-1.308" dy="0" result="feOffset2-out">
+        <animate attributeName="dx" values="-1.308;1.962;-2.617;-0;1.308;-1.962;-0.654" calcMode="discrete" dur="1.4s" repeatCount="indefinite"/>
+      </feOffset>
+      <feMerge>
+        <feMergeNode in="feOffset1-out"/>
+        <feMergeNode in="feOffset2-out"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <text x="0" y="30" font-size="30" filter="url(#s6328df-filter1)">Error</text>
+</svg>

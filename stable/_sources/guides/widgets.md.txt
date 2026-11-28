@@ -129,6 +129,10 @@ import svgwriter as svg
 @svg.widgets.controls(hue=(0, 360), corners=(0, 24))
 def build(doc: svg.Document, hue=200, corners=12) -> None:
     doc.rect(10, 10, 200, 120, rx=corners, fill=svg.Color.from_hsl(hue, 0.7, 0.5))
+
+
+page = svg.Document(220, 140)
+build(page, hue=280, corners=24)                  # still a plain function, so it draws on any document
 ```
 
 The form is plain HTML inputs and the server only the standard library. Editing `main.py` keeps the
@@ -146,6 +150,7 @@ import svgwriter as svg
 
 grow = svg.sweep(badge, size=(10, 80), color=["#0ea5e9", "#f43f5e"], dur=2, fps=12, ease="ease-in-out")
 print(grow.values_at(1.0))
+grow.at(1.0)              # the drawing half way through
 grow.save("badge.svg")    # baked SMIL: plays in a browser
 grow.save("badge.gif")    # frame by frame, no ffmpeg needed
 # grow.save("badge.mp4")  # through ffmpeg; .pptx works as well

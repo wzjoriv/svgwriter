@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="57.1429" viewBox="2 12 56 16" version="1.1">
+  <g fill="teal">
+    <circle cx="10" cy="20" r="6"/>
+    <circle cx="30" cy="20" r="6" fill="tomato">
+      <animateTransform attributeName="transform" values="30 20;30 20" additive="sum" begin="0s" dur="1s" repeatCount="indefinite" type="translate"/>
+      <animateTransform attributeName="transform" values="1;1.1;1" additive="sum" begin="0s" dur="1s" repeatCount="indefinite" type="scale"/>
+      <animateTransform attributeName="transform" values="-30 -20;-30 -20" additive="sum" begin="0s" dur="1s" repeatCount="indefinite" type="translate"/>
+    </circle>
+    <circle cx="50" cy="20" r="6"/>
+  </g>
+</svg>

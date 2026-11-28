@@ -3,11 +3,11 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Documents" href="documents.html"><link rel="prev" title="Filters and effects" href="effects.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Documents" href="documents.html"><link rel="prev" title="Filters" href="filters.html">
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Presets - svgwriter 2.11.0</title>
+        <title>Presets - svgwriter 2.12.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.11.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.12.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.11.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.12.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.11.0</span>
+  <span class="sidebar-versions-label">2.12.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -211,7 +211,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../start/quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos.html">Demos</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Drawing</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry and transforms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
@@ -219,18 +219,30 @@
 <li class="toctree-l1"><a class="reference internal" href="text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fonts.html">Making fonts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="colors-and-images.html">Colors and images</a></li>
-<li class="toctree-l1"><a class="reference internal" href="effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Presets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documents &amp; output</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="documents.html">Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rendering.html">Rendering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="batches.html">Performance and batches</a></li>
-<li class="toctree-l1"><a class="reference internal" href="export-import.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="print-and-colour.html">Print and colour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diagrams-and-office.html">Diagrams and Office files</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Motion</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="animation.html">Animation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="logos.html">Logos and icons</a></li>
-<li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scenes-and-video.html">Scenes and video</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">More</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units and angles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inkscape.html">Working with Inkscape files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -368,8 +380,15 @@ another role and <code class="docutils literal notranslate"><span class="pre">ba
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sky</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">gradients</span><span class="o">.</span><span class="n">sunset</span><span class="p">()</span>
 <span class="n">brand</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">gradients</span><span class="o">.</span><span class="n">theme</span><span class="p">()</span>                    <span class="c1"># primary to accent of the current theme</span>
 <span class="n">heat</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">gradients</span><span class="o">.</span><span class="n">blend</span><span class="p">(</span><span class="s2">"navy"</span><span class="p">,</span> <span class="s2">"crimson"</span><span class="p">,</span> <span class="s2">"gold"</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+
+<span class="n">bars</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>                     <span class="c1"># the three as bars</span>
+<span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">gradient</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">sky</span><span class="p">,</span> <span class="n">brand</span><span class="p">,</span> <span class="n">heat</span><span class="p">]):</span>
+    <span class="n">bars</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span> <span class="o">+</span> <span class="mi">26</span> <span class="o">*</span> <span class="n">n</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">gradient</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-presets-1-0.svg" />
+</figure>
 <p><img alt="Every built-in gradient" src="../_images/gradient_catalogue.png" /></p>
 <p>A blend between distant colors in sRGB, the space SVG interpolates in, turns grey in the middle. The
 gradient presets sample extra stops in OKLCH, so <code class="docutils literal notranslate"><span class="pre">blend(&quot;red&quot;,</span> <span class="pre">&quot;blue&quot;)</span></code> passes through a clear violet.
@@ -379,7 +398,9 @@ defaults come from the current theme when the gradient is built (<code class="do
 </section>
 <section id="filters">
 <h2>Filters<a class="headerlink" href="#filters" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">card</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"white"</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"#c7d2fe"</span><span class="p">)</span>
+<span class="n">card</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"white"</span><span class="p">)</span>
 <span class="n">card</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">drop_shadow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
 <span class="k">with</span> <span class="n">doc</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">)</span> <span class="k">as</span> <span class="n">blobs</span><span class="p">:</span>
@@ -400,7 +421,8 @@ you pass a color, so they restyle with the document theme. <code class="docutils
 </section>
 <section id="markers">
 <h2>Markers<a class="headerlink" href="#markers" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">"M10 70 L110 20 L210 70"</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"none"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">stroke_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">220</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">"M10 70 L110 20 L210 70"</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"none"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">stroke_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
          <span class="n">marker_start</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">dot</span><span class="p">(),</span> <span class="n">marker_mid</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">diamond</span><span class="p">(),</span> <span class="n">marker_end</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">arrow</span><span class="p">())</span>
 </pre></div>
 </div>
@@ -413,8 +435,9 @@ you pass a color, so they restyle with the document theme. <code class="docutils
 </section>
 <section id="effects">
 <h2>Effects<a class="headerlink" href="#effects" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">520</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
-<span class="n">line</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"A bitter Wind carried sparks"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">28</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">700</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"#0f172a"</span><span class="p">)</span>
+<span class="n">line</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"A bitter Wind carried sparks"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">44</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"white"</span><span class="p">)</span>
 <span class="n">line</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">13</span><span class="p">]</span><span class="o">.</span><span class="n">effect</span><span class="p">(</span><span class="s2">"wind"</span><span class="p">)</span>
 <span class="n">svg</span><span class="o">.</span><span class="n">effects</span><span class="o">.</span><span class="n">fire</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">22</span><span class="p">:</span><span class="mi">28</span><span class="p">])</span>               <span class="c1"># the same, by function</span>
 <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"sparks.gif"</span><span class="p">)</span>
@@ -459,8 +482,9 @@ The wrapper checks the return type, so a mistake fails where it is made.</p>
     <span class="n">element</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">glow</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
 
 
-<span class="n">wall</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">patterns</span><span class="o">.</span><span class="n">bricks</span><span class="p">())</span>
-<span class="n">title</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"still warm"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">36</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">28</span><span class="p">)</span>
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">140</span><span class="p">)</span>
+<span class="n">wall</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">patterns</span><span class="o">.</span><span class="n">bricks</span><span class="p">())</span>
+<span class="n">title</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"still warm"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">44</span><span class="p">)</span>
 <span class="n">title</span><span class="p">[</span><span class="mi">6</span><span class="p">:]</span><span class="o">.</span><span class="n">effect</span><span class="p">(</span><span class="s2">"ember"</span><span class="p">)</span>
 <span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"bricks"</span><span class="p">)</span>
 <span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">effect</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"ember"</span><span class="p">)</span>
@@ -468,9 +492,6 @@ The wrapper checks the return type, so a mistake fails where it is made.</p>
 </div>
 <figure class="snippet-result align-default">
 <img alt="What the code above draws" src="../_images/guides-presets-5-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-presets-5-1.svg" />
-<img alt="What the code above draws" src="../_images/guides-presets-5-2.svg" />
-</figcaption>
 </figure>
 <p>Interactions (<code class="docutils literal notranslate"><span class="pre">&#64;svg.preset.interaction</span></code>) are functions of an element too: they add hover styles and
 event-started animations, and answer as <code class="docutils literal notranslate"><span class="pre">el.interact.&lt;name&gt;()</span></code> (see the animation guide). An effect
@@ -496,14 +517,14 @@ through entry points (see <a class="reference internal" href="extending.html"><s
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="effects.html">
+          <a class="prev-page" href="filters.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Filters and effects</div>
+                <div class="title">Filters</div>
                 
               </div>
             </a>
@@ -556,7 +577,7 @@ through entry points (see <a class="reference internal" href="extending.html"><s
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=3b0a66e6"></script>
+</div><script src="../_static/documentation_options.js?v=965a162a"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

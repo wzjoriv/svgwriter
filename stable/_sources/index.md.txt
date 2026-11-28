@@ -26,7 +26,7 @@ demos
 ```
 
 ```{toctree}
-:caption: Guides
+:caption: Drawing
 :maxdepth: 1
 
 guides/geometry
@@ -35,18 +35,39 @@ guides/paths
 guides/text
 guides/fonts
 guides/colors-and-images
-guides/effects
+guides/filters
 guides/presets
+```
+
+```{toctree}
+:caption: Documents & output
+:maxdepth: 1
+
 guides/documents
+guides/themes
+guides/projects
 guides/rendering
 guides/batches
-guides/export-import
+guides/export
+guides/print-and-colour
+guides/diagrams-and-office
+```
+
+```{toctree}
+:caption: Motion
+:maxdepth: 1
+
 guides/animation
-guides/logos
-guides/themes
-guides/inkscape
+guides/scenes-and-video
 guides/widgets
-guides/projects
+```
+
+```{toctree}
+:caption: More
+:maxdepth: 1
+
+guides/units
+guides/inkscape
 guides/extending
 ```
 

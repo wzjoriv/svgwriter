@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150" version="1.1">
+  <g>
+    <circle cx="20" cy="20" r="8" fill="teal"/>
+    <circle cx="20" cy="45" r="8" fill="teal"/>
+    <circle cx="20" cy="70" r="8" fill="teal"/>
+    <circle cx="80" cy="20" r="8" fill="teal"/>
+    <circle cx="80" cy="45" r="8" fill="teal"/>
+    <circle cx="80" cy="70" r="8" fill="teal"/>
+    <circle cx="80" cy="95" r="8" fill="teal"/>
+    <circle cx="80" cy="120" r="8" fill="teal"/>
+    <circle cx="140" cy="20" r="8" fill="teal"/>
+    <circle cx="140" cy="45" r="8" fill="teal"/>
+  </g>
+</svg>

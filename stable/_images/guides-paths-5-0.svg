@@ -1,3 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="116" height="44.7475" viewBox="-8 27.6263 116 44.7475" version="1.1">
-  <path d="M24.5826 35.6263 C42.6167 37.0399 57.3833 62.9601 75.4174 64.3737" fill="none" stroke="black"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" version="1.1">
+  <path d="M0 50 C40 0 60 100 100 50" fill="none" stroke="steelblue" stroke-width="4"/>
+  <path d="M24.5826 35.6263 C42.6167 37.0399 57.3833 62.9601 75.4174 64.3737" fill="none" stroke="crimson" stroke-width="6"/>
+  <rect x="-1" y="-4" width="2" height="8" transform="translate(0 50) rotate(-51.3402 0 0)"/>
+  <rect x="-1" y="-4" width="2" height="8" transform="translate(10.6314 39.729) rotate(-34.0802 0 0)"/>
+  <rect x="-1" y="-4" width="2" height="8" transform="translate(24.5826 35.6263) rotate(4.4819 0 0)"/>
+  <rect x="-1" y="-4" width="2" height="8" transform="translate(38.2622 40.9417) rotate(33.072 0 0)"/>
+  <rect x="-1" y="-4" width="2" height="8" transform="translate(50 50) rotate(39.8056 0 0)"/>
+  <rect x="-1" y="-4" width="2" height="8" transform="translate(61.7378 59.0583) rotate(33.072 0 0)"/>
+  <rect x="-1" y="-4" width="2" height="8" transform="translate(75.4174 64.3737) rotate(4.482 0 0)"/>
+  <rect x="-1" y="-4" width="2" height="8" transform="translate(89.3686 60.271) rotate(-34.0802 0 0)"/>
+  <rect x="-1" y="-4" width="2" height="8" transform="translate(100 50) rotate(-51.3402 0 0)"/>
+  <path d="M0 50 C5.3814 43.2733 10.4008 39.2615 15.1555 37.2341" fill="none" stroke="orange" stroke-width="6"/>
+  <circle cx="0" cy="50" r="3" fill="gold" stroke="black"/>
+  <circle cx="24.5826" cy="35.6263" r="3" fill="gold" stroke="black"/>
+  <circle cx="50" cy="50" r="3" fill="gold" stroke="black"/>
+  <circle cx="75.4174" cy="64.3737" r="3" fill="gold" stroke="black"/>
+  <circle cx="100" cy="50" r="3" fill="gold" stroke="black"/>
 </svg>

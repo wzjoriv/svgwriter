@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="-3 -3 6 6" version="1.1">
+  <style id="sd3d16f-svgwriter-theme" type="text/css">.sd3d16f-role-box { fill:#f4f6f8;stroke:#bcbfc2;stroke-width:1px }
+.sd3d16f-role-dot { fill:#fbbf24;stroke:#0f766e;stroke-width:1px }</style>
+  <g>
+    <circle cx="0" cy="0" r="1" class="sd3d16f-role-dot"/>
+    <rect x="0" y="0" width="1" height="1" class="sd3d16f-role-box"/>
+  </g>
+</svg>

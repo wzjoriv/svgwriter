@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="90" viewBox="0 0 700 90" version="1.1">
+  <defs>
+    <linearGradient id="s2d815b-linearGradient1" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#e0fbfc"/>
+      <stop offset="0.1" stop-color="#d0f0f4"/>
+      <stop offset="0.2" stop-color="#c1e4ed"/>
+      <stop offset="0.3" stop-color="#b2d9e6"/>
+      <stop offset="0.4" stop-color="#a4cddf"/>
+      <stop offset="0.5" stop-color="#98c1d9"/>
+      <stop offset="0.6" stop-color="#8cb7d1"/>
+      <stop offset="0.7" stop-color="#80adc8"/>
+      <stop offset="0.8" stop-color="#74a3c0"/>
+      <stop offset="0.9" stop-color="#6899b8"/>
+      <stop offset="1" stop-color="#5c8fb0"/>
+    </linearGradient>
+    <filter id="s2d815b-filter1" x="136.112" y="-0.964" width="155.604" height="90.475" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur id="s2d815b-feGaussianBlur1" in="SourceGraphic" stdDeviation="8.078 0" result="feGaussianBlur1-out"/>
+      <feOffset id="s2d815b-feOffset1" in="feGaussianBlur1-out" dx="-10.098" dy="0" result="feOffset1-out">
+        <animate attributeName="dx" values="-6.059;-16.156;-6.059" dur="1.6s" repeatCount="indefinite"/>
+      </feOffset>
+      <feColorMatrix id="s2d815b-feColorMatrix1" in="feOffset1-out" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.55 0" result="feColorMatrix1-out"/>
+      <feMerge>
+        <feMergeNode in="feColorMatrix1-out"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="s2d815b-linearGradient2" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0" stop-color="#fff3b0"/>
+      <stop offset="0.05" stop-color="#fde898"/>
+      <stop offset="0.1" stop-color="#fddd7f"/>
+      <stop offset="0.15" stop-color="#fdd163"/>
+      <stop offset="0.2" stop-color="#fec543"/>
+      <stop offset="0.25" stop-color="#ffb703"/>
+      <stop offset="0.3" stop-color="#ffa500"/>
+      <stop offset="0.35" stop-color="#ff9200"/>
+      <stop offset="0.4" stop-color="#ff7f00"/>
+      <stop offset="0.45" stop-color="#ff6b00"/>
+      <stop offset="0.5" stop-color="#fb5607"/>
+      <stop offset="0.55" stop-color="#f04a11"/>
+      <stop offset="0.6" stop-color="#e43e16"/>
+      <stop offset="0.65" stop-color="#d9311a"/>
+      <stop offset="0.7" stop-color="#cd231d"/>
+      <stop offset="0.75" stop-color="#c1121f"/>
+      <stop offset="0.8" stop-color="#af0f1c"/>
+      <stop offset="0.85" stop-color="#9d0b19"/>
+      <stop offset="0.9" stop-color="#8c0816"/>
+      <stop offset="0.95" stop-color="#7b0612"/>
+      <stop offset="1" stop-color="#6a040f"/>
+    </linearGradient>
+    <filter id="s2d815b-filter2" x="387.312" y="-8.795" width="200.01" height="114.838" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feTurbulence id="s2d815b-feTurbulence1" baseFrequency="0.0195 0.0546" numOctaves="2" seed="0" type="turbulence" result="feTurbulence1-out">
+        <animate attributeName="baseFrequency" values="0.0195 0.0546;0.0234 0.078;0.0172 0.0663;0.0195 0.0546" dur="1.2s" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap id="s2d815b-feDisplacementMap1" in="SourceGraphic" in2="feTurbulence1-out" scale="6.408" xChannelSelector="R" yChannelSelector="G" result="feDisplacementMap1-out"/>
+      <feGaussianBlur id="s2d815b-feGaussianBlur2" in="feDisplacementMap1-out" stdDeviation="5.127" result="feGaussianBlur2-out"/>
+      <feFlood id="s2d815b-feFlood1" flood-color="#ff7b00" flood-opacity="1" result="feFlood1-out"/>
+      <feComposite id="s2d815b-feComposite1" in="feFlood1-out" in2="feGaussianBlur2-out" operator="in" result="feComposite1-out"/>
+      <feMerge>
+        <feMergeNode in="feComposite1-out"/>
+        <feMergeNode in="feDisplacementMap1-out"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect x="0" y="0" width="700" height="90" fill="#0f172a"/>
+  <text x="15" y="60" fill="white" font-size="44">A bitter <tspan visibility="hidden">Wind</tspan> carried <tspan visibility="hidden">sparks</tspan></text>
+  <text x="15" y="60" fill="url(#s2d815b-linearGradient2)" font-size="44" filter="url(#s2d815b-filter2)"><tspan visibility="hidden">A bitter </tspan><tspan visibility="hidden"><tspan visibility="hidden">Wind</tspan></tspan><tspan visibility="hidden"> carried </tspan>sparks</text>
+  <text x="15" y="60" fill="url(#s2d815b-linearGradient1)" font-size="44" filter="url(#s2d815b-filter1)"><tspan visibility="hidden">A bitter </tspan>Wind<tspan visibility="hidden"> carried sparks</tspan></text>
+</svg>

@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Making fonts - svgwriter 2.11.0</title>
+        <title>Making fonts - svgwriter 2.12.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.11.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.12.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.11.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.12.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.11.0</span>
+  <span class="sidebar-versions-label">2.12.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -211,7 +211,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../start/quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos.html">Demos</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Drawing</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry and transforms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
@@ -219,18 +219,30 @@
 <li class="toctree-l1"><a class="reference internal" href="text.html">Text</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Making fonts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="colors-and-images.html">Colors and images</a></li>
-<li class="toctree-l1"><a class="reference internal" href="effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="presets.html">Presets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documents &amp; output</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="documents.html">Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rendering.html">Rendering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="batches.html">Performance and batches</a></li>
-<li class="toctree-l1"><a class="reference internal" href="export-import.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="print-and-colour.html">Print and colour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diagrams-and-office.html">Diagrams and Office files</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Motion</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="animation.html">Animation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="logos.html">Logos and icons</a></li>
-<li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scenes-and-video.html">Scenes and video</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">More</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units and angles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inkscape.html">Working with Inkscape files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -324,6 +336,7 @@ private-use code points, kerning pairs, and files in OpenType (<code class="docu
 <span class="n">fb</span><span class="o">.</span><span class="n">glyph</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="n">advance</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 <span class="n">fb</span><span class="o">.</span><span class="n">kern</span><span class="p">(</span><span class="s2">"l"</span><span class="p">,</span> <span class="s2">"o"</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">)</span>
 <span class="n">fb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"MyHand.otf"</span><span class="p">)</span>
+<span class="n">fb</span><span class="o">.</span><span class="n">cheatsheet</span><span class="p">()</span>                                       <span class="c1"># every glyph on a sheet, to check the drawing</span>
 </pre></div>
 </div>
 <p>The coordinate convention follows svgwriter, not the font file:</p>
@@ -391,7 +404,8 @@ characters or icon names; negative values pull the pair together.</p>
 <span class="n">icons</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s2">"star"</span><span class="p">,</span> <span class="n">svg</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">icons</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"Icons.woff"</span><span class="p">)</span>                             <span class="c1"># .woff2 with brotli installed</span>
 <span class="n">icons</span><span class="o">.</span><span class="n">save_css</span><span class="p">(</span><span class="s2">"icons.css"</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s2">"Icons.woff"</span><span class="p">)</span>
-<span class="n">icons</span><span class="o">.</span><span class="n">cheatsheet</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"icons.svg"</span><span class="p">)</span>
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">icons</span><span class="o">.</span><span class="n">cheatsheet</span><span class="p">()</span>
+<span class="n">sheet</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"icons.svg"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Each icon gets the next private-use code point from U+E000 in the order it is added, and adding a name
@@ -404,7 +418,7 @@ the character, and <code class="docutils literal notranslate"><span class="pre">
 </div>
 <p>so <code class="docutils literal notranslate"><span class="pre">&lt;i</span> <span class="pre">class=&quot;icon-rocket&quot;&gt;&lt;/i&gt;</span></code> shows the rocket; <code class="docutils literal notranslate"><span class="pre">prefix=</span></code> changes <code class="docutils literal notranslate"><span class="pre">icon</span></code>. <code class="docutils literal notranslate"><span class="pre">css()</span></code> returns the same text.
 <code class="docutils literal notranslate"><span class="pre">cheatsheet(columns=)</span></code> returns a document with every glyph drawn with its name and code point.</p>
-<p><code class="docutils literal notranslate"><span class="pre">examples/20_fonts/fonts.py</span></code> in the repository builds a small handwritten alphabet and a four-icon font with its
+<p><code class="docutils literal notranslate"><span class="pre">examples/26_fonts/fonts.py</span></code> in the repository builds a small handwritten alphabet and a four-icon font with its
 stylesheet and cheatsheet.</p>
 </section>
 <section id="limits">
@@ -486,7 +500,7 @@ stylesheet and cheatsheet.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=3b0a66e6"></script>
+</div><script src="../_static/documentation_options.js?v=965a162a"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

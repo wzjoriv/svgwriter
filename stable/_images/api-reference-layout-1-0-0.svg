@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="73.3333" viewBox="-2 -2 60 22" version="1.1">
-  <style id="s61205a-svgwriter-theme" type="text/css">.role-surface { fill:#f4f6f8;stroke:none }</style>
+  <style id="s61205a-svgwriter-theme" type="text/css">.s61205a-role-surface { fill:#f4f6f8;stroke:none }</style>
   <g>
-    <rect x="0" y="0" width="56" height="18" class="role-surface"/>
+    <rect x="0" y="0" width="56" height="18" class="s61205a-role-surface"/>
     <rect x="0" y="0" width="40" height="10" transform="translate(8 4)"/>
   </g>
 </svg>

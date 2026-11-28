@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="185" height="50" viewBox="0 0 185 50" version="1.1">
+  <rect x="0" y="0" width="185" height="50" fill="#ddd"/>
+  <rect x="5" y="5" width="40" height="40" fill="tomato"/>
+  <rect x="50" y="5" width="40" height="40" fill="#ff6347cc"/>
+  <rect x="95" y="5" width="40" height="40" fill="rgba(255, 99, 71, 0.8)"/>
+  <rect x="140" y="5" width="40" height="40" fill-opacity="0.8" fill="#ff6347"/>
+</svg>

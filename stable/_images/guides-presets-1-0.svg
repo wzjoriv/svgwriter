@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="90" viewBox="0 0 180 90" version="1.1">
+  <defs>
+    <linearGradient id="s9c88e8-linearGradient1" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#2b1055"/>
+      <stop offset="0.05" stop-color="#481866"/>
+      <stop offset="0.1" stop-color="#691e72"/>
+      <stop offset="0.15" stop-color="#8c2477"/>
+      <stop offset="0.2" stop-color="#b12a74"/>
+      <stop offset="0.25" stop-color="#d53369"/>
+      <stop offset="0.3" stop-color="#df4365"/>
+      <stop offset="0.35" stop-color="#e85262"/>
+      <stop offset="0.4" stop-color="#f16160"/>
+      <stop offset="0.45" stop-color="#f86f5f"/>
+      <stop offset="0.5" stop-color="#ff7e5f"/>
+      <stop offset="0.55" stop-color="#ff8961"/>
+      <stop offset="0.6" stop-color="#ff9565"/>
+      <stop offset="0.65" stop-color="#ff9f6b"/>
+      <stop offset="0.7" stop-color="#ffaa72"/>
+      <stop offset="0.75" stop-color="#feb47b"/>
+      <stop offset="0.8" stop-color="#ffbd80"/>
+      <stop offset="0.85" stop-color="#ffc786"/>
+      <stop offset="0.9" stop-color="#ffd08d"/>
+      <stop offset="0.95" stop-color="#ffd996"/>
+      <stop offset="1" stop-color="#ffe29f"/>
+    </linearGradient>
+    <linearGradient id="s9c88e8-linearGradient2" x1="0" y1="0.5" x2="1" y2="0.5">
+      <stop offset="0" stop-color="#0f766e"/>
+      <stop offset="0.2" stop-color="#2e8c6b"/>
+      <stop offset="0.4" stop-color="#5a9f5f"/>
+      <stop offset="0.6" stop-color="#8daf4b"/>
+      <stop offset="0.8" stop-color="#c4b931"/>
+      <stop offset="1" stop-color="#fbbf24"/>
+    </linearGradient>
+    <linearGradient id="s9c88e8-linearGradient3" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="navy"/>
+      <stop offset="0.1" stop-color="#390091"/>
+      <stop offset="0.2" stop-color="#660092"/>
+      <stop offset="0.3" stop-color="#920084"/>
+      <stop offset="0.4" stop-color="#bb0068"/>
+      <stop offset="0.5" stop-color="crimson"/>
+      <stop offset="0.6" stop-color="#ef4512"/>
+      <stop offset="0.7" stop-color="#fd6b00"/>
+      <stop offset="0.8" stop-color="#ff9000"/>
+      <stop offset="0.9" stop-color="#ffb400"/>
+      <stop offset="1" stop-color="gold"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="160" height="22" rx="4" fill="url(#s9c88e8-linearGradient1)"/>
+  <rect x="10" y="36" width="160" height="22" rx="4" fill="url(#s9c88e8-linearGradient2)"/>
+  <rect x="10" y="62" width="160" height="22" rx="4" fill="url(#s9c88e8-linearGradient3)"/>
+</svg>

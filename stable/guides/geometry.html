@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Geometry and transforms - svgwriter 2.11.0</title>
+        <title>Geometry and transforms - svgwriter 2.12.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.11.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.12.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.11.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.12.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.11.0</span>
+  <span class="sidebar-versions-label">2.12.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -211,7 +211,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../start/quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos.html">Demos</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Drawing</span></p>
 <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Geometry and transforms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
@@ -219,18 +219,30 @@
 <li class="toctree-l1"><a class="reference internal" href="text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fonts.html">Making fonts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="colors-and-images.html">Colors and images</a></li>
-<li class="toctree-l1"><a class="reference internal" href="effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="presets.html">Presets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documents &amp; output</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="documents.html">Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rendering.html">Rendering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="batches.html">Performance and batches</a></li>
-<li class="toctree-l1"><a class="reference internal" href="export-import.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="print-and-colour.html">Print and colour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diagrams-and-office.html">Diagrams and Office files</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Motion</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="animation.html">Animation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="logos.html">Logos and icons</a></li>
-<li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scenes-and-video.html">Scenes and video</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">More</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units and angles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inkscape.html">Working with Inkscape files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -310,15 +322,15 @@
 <section id="local-geometry-one-transform">
 <h2>Local geometry, one transform<a class="headerlink" href="#local-geometry-one-transform" title="Link to this heading">¶</a></h2>
 <p>An element’s SVG coordinates (<code class="docutils literal notranslate"><span class="pre">cx</span></code>, <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">width</span></code>, <code class="docutils literal notranslate"><span class="pre">d</span></code>, <code class="docutils literal notranslate"><span class="pre">points</span></code>) are its <em>local</em> geometry and are written
-exactly as given. Everything that places the element afterwards edits its transform, <code class="docutils literal notranslate"><span class="pre">t</span></code>, an immutable
+exactly as given. Everything that places the element afterwards edits its transform, <code class="docutils literal notranslate"><span class="pre">el.matrix</span></code>, an immutable
 affine <code class="xref py py-class docutils literal notranslate"><span class="pre">Matrix</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 
-<span class="n">c</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"tomato"</span><span class="p">)</span>
 <span class="n">c</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">cx</span><span class="p">)</span>          <span class="c1"># 50.0: the local geometry never changes</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>    <span class="c1"># Point(x=70.0, y=50.0): where the anchor (centre) is now</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>           <span class="c1"># the shortest equivalent transform text</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>      <span class="c1"># the transform as one matrix</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>             <span class="c1"># &lt;circle cx="50" cy="50" r="10" transform="..."/&gt;</span>
 </pre></div>
 </div>
@@ -330,12 +342,15 @@ affine <code class="xref py py-class docutils literal notranslate"><span class="
 <h2>The anchor<a class="headerlink" href="#the-anchor" title="Link to this heading">¶</a></h2>
 <p>Rotation, scaling, skewing and flipping pivot on the <strong>anchor</strong>, given in local coordinates. By default it
 is the centre of the element’s bounding box and follows geometry edits; set it to pin it.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">140</span><span class="p">,</span> <span class="mi">140</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"#ccc"</span><span class="p">)</span>        <span class="c1"># the original, for comparison</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"steelblue"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">anchor</span><span class="p">)</span>              <span class="c1"># Point(x=20.0, y=10.0)</span>
 <span class="n">r</span><span class="o">.</span><span class="n">anchor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>            <span class="c1"># pivot on the top-left corner from now on</span>
 <span class="n">r</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
 <span class="n">r</span><span class="o">.</span><span class="n">anchor</span> <span class="o">=</span> <span class="kc">None</span>              <span class="c1"># back to the centre</span>
-<span class="n">r</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="n">about</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>     <span class="c1"># or pass a pivot for one call</span>
+<span class="n">r</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="n">about</span><span class="o">=</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>     <span class="c1"># or pass a pivot for one call</span>
+<span class="n">doc</span>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
@@ -346,15 +361,15 @@ is the centre of the element’s bounding box and follows geometry edits; set it
 <h2>Parent frame or local frame<a class="headerlink" href="#parent-frame-or-local-frame" title="Link to this heading">¶</a></h2>
 <p>Each method composes in the <strong>parent</strong> frame by default: <code class="docutils literal notranslate"><span class="pre">translate(10,</span> <span class="pre">0)</span></code> moves ten units right on
 screen whatever the current rotation. <code class="docutils literal notranslate"><span class="pre">local=True</span></code> uses the element’s own (rotated, scaled) axes.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>                 <span class="c1"># right on screen</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>     <span class="c1"># along its own x axis: down</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"#ccc"</span><span class="p">)</span>                                       <span class="c1"># where both start</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"tomato"</span><span class="p">)</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>            <span class="c1"># right on screen</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"royalblue"</span><span class="p">)</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>   <span class="c1"># its own x axis: down</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
 <img alt="What the code above draws" src="../_images/guides-geometry-2-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-geometry-2-1.svg" />
-</figcaption>
 </figure>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
@@ -397,24 +412,26 @@ screen whatever the current rotation. <code class="docutils literal notranslate"
 <section id="operators">
 <h2>Operators<a class="headerlink" href="#operators" title="Link to this heading">¶</a></h2>
 <p>Numbers and pairs transform a <strong>copy</strong>; element operands keep their structural meaning.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dot</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-<span class="n">moved</span> <span class="o">=</span> <span class="n">dot</span> <span class="o">+</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>          <span class="c1"># translated copy</span>
-<span class="n">bigger</span> <span class="o">=</span> <span class="n">dot</span> <span class="o">*</span> <span class="mi">2</span>                <span class="c1"># scaled copy about the anchor</span>
-<span class="n">turned</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">@</span> <span class="mi">45</span>      <span class="c1"># rotated copy ("at 45 degrees")</span>
-<span class="n">shifted</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Matrix</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">@</span> <span class="n">dot</span>      <span class="c1"># matrix in the parent frame</span>
-<span class="n">group</span> <span class="o">=</span> <span class="n">dot</span> <span class="o">+</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>              <span class="c1"># a &lt;g&gt; holding both</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dot</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"steelblue"</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">dot</span><span class="p">,</span>                                                <span class="c1"># the original</span>
+    <span class="n">dot</span> <span class="o">+</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>                                     <span class="c1"># translated copy</span>
+    <span class="n">dot</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>                                            <span class="c1"># scaled copy about the anchor</span>
+    <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"tomato"</span><span class="p">)</span> <span class="o">@</span> <span class="mi">45</span><span class="p">,</span>          <span class="c1"># rotated copy ("at 45 degrees")</span>
+    <span class="n">svg</span><span class="o">.</span><span class="n">Matrix</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">@</span> <span class="n">dot</span><span class="p">,</span>                   <span class="c1"># matrix in the parent frame</span>
+    <span class="n">dot</span> <span class="o">+</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"gold"</span><span class="p">),</span>            <span class="c1"># a &lt;g&gt; holding both</span>
+<span class="p">]</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">340</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>                             <span class="c1"># the results side by side</span>
+<span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+    <span class="n">row</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">el</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="mi">30</span> <span class="o">+</span> <span class="mi">55</span> <span class="o">*</span> <span class="n">n</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
 <span class="n">dot</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>                   <span class="c1"># in place</span>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
 <img alt="What the code above draws" src="../_images/guides-geometry-3-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-geometry-3-1.svg" />
-<img alt="What the code above draws" src="../_images/guides-geometry-3-2.svg" />
-<img alt="What the code above draws" src="../_images/guides-geometry-3-3.svg" />
-</figcaption>
 </figure>
 <p><code class="docutils literal notranslate"><span class="pre">*</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> never bake coordinates. To fold the transform into the geometry, convert:
-<code class="docutils literal notranslate"><span class="pre">el.to_path()</span></code> returns a <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> whose <code class="docutils literal notranslate"><span class="pre">d</span></code> already includes <code class="docutils literal notranslate"><span class="pre">t</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">el.to_path()</span></code> returns a <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> whose <code class="docutils literal notranslate"><span class="pre">d</span></code> already includes the transform.</p>
 <p>Things to keep in mind:</p>
 <ul class="simple">
 <li><p>A bare number broadcasts like numpy: <code class="docutils literal notranslate"><span class="pre">el</span> <span class="pre">+</span> <span class="pre">5</span></code> moves by <code class="docutils literal notranslate"><span class="pre">(5,</span> <span class="pre">5)</span></code>, while the method <code class="docutils literal notranslate"><span class="pre">el.translate(5)</span></code>
@@ -428,10 +445,13 @@ element, numbers and offsets transform, so <code class="docutils literal notrans
 </section>
 <section id="bounds">
 <h2>Bounds<a class="headerlink" href="#bounds" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">box</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">box</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"lightsteelblue"</span><span class="p">)</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">local_bbox</span><span class="p">())</span>     <span class="c1"># before the transform</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">bounds</span><span class="p">())</span>         <span class="c1"># after it, in parent coordinates</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">exact_bbox</span><span class="p">())</span>     <span class="c1"># tight box of the transformed outline</span>
+<span class="k">for</span> <span class="n">found</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="p">((</span><span class="n">box</span><span class="o">.</span><span class="n">local_bbox</span><span class="p">(),</span> <span class="s2">"tomato"</span><span class="p">),</span> <span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">bounds</span><span class="p">(),</span> <span class="s2">"seagreen"</span><span class="p">),</span> <span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">exact_bbox</span><span class="p">(),</span> <span class="s2">"purple"</span><span class="p">)):</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="o">*</span><span class="n">found</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"none"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">stroke_width</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>      <span class="c1"># the three boxes drawn on the shape</span>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
@@ -443,112 +463,41 @@ element, numbers and offsets transform, so <code class="docutils literal notrans
 <p>Boxes have edges (<code class="docutils literal notranslate"><span class="pre">left</span></code>, <code class="docutils literal notranslate"><span class="pre">right</span></code>, <code class="docutils literal notranslate"><span class="pre">top</span></code>, <code class="docutils literal notranslate"><span class="pre">bottom</span></code>) and named points (<code class="docutils literal notranslate"><span class="pre">center</span></code>, <code class="docutils literal notranslate"><span class="pre">top_left</span></code>,
 <code class="docutils literal notranslate"><span class="pre">top_center</span></code>, <code class="docutils literal notranslate"><span class="pre">bottom_right</span></code>, …; <code class="docutils literal notranslate"><span class="pre">box.point(&quot;top&quot;)</span></code> is the middle of the top edge). Elements use the
 same names to move by their bounds:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-<span class="n">badge</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="s2">"center_left"</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="s2">"center_right"</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="n">note</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="s2">"top_left"</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="s2">"bottom_left"</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-<span class="n">logo</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Polygon</span><span class="o">.</span><span class="n">regular</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s2">"bottom_right"</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"steelblue"</span><span class="p">)</span>
+<span class="n">badge</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"tomato"</span><span class="p">)</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="s2">"center_left"</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="s2">"center_right"</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">note</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"gold"</span><span class="p">)</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="s2">"top_left"</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="s2">"bottom_left"</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">logo</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Polygon</span><span class="o">.</span><span class="n">regular</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"seagreen"</span><span class="p">)</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s2">"bottom_right"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">note</span><span class="o">.</span><span class="n">bounds</span><span class="p">()</span><span class="o">.</span><span class="n">top</span><span class="p">,</span> <span class="n">badge</span><span class="o">.</span><span class="n">bounds</span><span class="p">()</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+<span class="n">placed</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="n">view_box</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">110</span><span class="p">))</span>
+<span class="n">placed</span> <span class="o">+=</span> <span class="p">[</span><span class="n">title</span><span class="p">,</span> <span class="n">badge</span><span class="p">,</span> <span class="n">note</span><span class="p">,</span> <span class="n">logo</span><span class="p">]</span>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
 <img alt="What the code above draws" src="../_images/guides-geometry-5-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-geometry-5-1.svg" />
-<img alt="What the code above draws" src="../_images/guides-geometry-5-2.svg" />
-<img alt="What the code above draws" src="../_images/guides-geometry-5-3.svg" />
-</figcaption>
 </figure>
 <p><code class="docutils literal notranslate"><span class="pre">place(x,</span> <span class="pre">y,</span> <span class="pre">at=...)</span></code> moves a named point onto a coordinate; <code class="docutils literal notranslate"><span class="pre">align(target,</span> <span class="pre">at,</span> <span class="pre">to=...)</span></code> moves it onto a
 point of another element, box or <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code>, so <code class="docutils literal notranslate"><span class="pre">a.align(b,</span> <span class="pre">&quot;top&quot;,</span> <span class="pre">to=&quot;bottom&quot;)</span></code> stacks <code class="docutils literal notranslate"><span class="pre">a</span></code> under <code class="docutils literal notranslate"><span class="pre">b</span></code>.</p>
 <p>Elements also have the box’s edges and points as attributes. Reading one gives the edge (a number) or
 point of the element’s bounds; assigning one moves the element so that edge or point lands there:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">card</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
-<span class="n">heading</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">card</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"lightsteelblue"</span><span class="p">)</span>
+<span class="n">heading</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"navy"</span><span class="p">)</span>
 <span class="n">heading</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">card</span><span class="o">.</span><span class="n">center</span>              <span class="c1"># centred on the card</span>
 <span class="n">heading</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="n">card</span><span class="o">.</span><span class="n">top</span> <span class="o">+</span> <span class="mi">4</span>                <span class="c1"># then 4 units below the card's top edge</span>
-<span class="n">pin</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">pin</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"tomato"</span><span class="p">)</span>
 <span class="n">pin</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">card</span><span class="o">.</span><span class="n">bottom_right</span>            <span class="c1"># on the card's corner</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">heading</span><span class="o">.</span><span class="n">top_left</span><span class="p">,</span> <span class="n">pin</span><span class="o">.</span><span class="n">center</span><span class="p">)</span>
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">140</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+<span class="n">sheet</span> <span class="o">+=</span> <span class="p">[</span><span class="n">card</span><span class="p">,</span> <span class="n">heading</span><span class="p">,</span> <span class="n">pin</span><span class="p">]</span>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
 <img alt="What the code above draws" src="../_images/guides-geometry-6-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-geometry-6-1.svg" />
-<img alt="What the code above draws" src="../_images/guides-geometry-6-2.svg" />
-</figcaption>
 </figure>
 </section>
 <section id="units-and-angles">
 <h2>Units and angles<a class="headerlink" href="#units-and-angles" title="Link to this heading">¶</a></h2>
-<p>Plain numbers are user units (CSS pixels, 96 per inch). Lengths carry units and combine across them;
-the result keeps the left side’s unit:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">width</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">inch</span> <span class="o">-</span> <span class="mi">7</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span>            <span class="c1"># 4.7244in</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">width</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">"mm"</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">inch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mf">25.4</span><span class="p">))</span>
-<span class="n">page</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">210</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">,</span> <span class="mi">297</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">)</span>   <span class="c1"># A4; coordinates inside are millimetres</span>
-<span class="c1"># page.save("print.png", dpi=300)</span>
-<span class="n">spin</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">@</span> <span class="n">svg</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>  <span class="c1"># angles: deg, rad, grad, turn</span>
-</pre></div>
-</div>
-<figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-geometry-7-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-geometry-7-1.svg" />
-</figcaption>
-</figure>
-<p>A document sized in a physical unit with a matching <code class="docutils literal notranslate"><span class="pre">viewBox</span></code>, such as <code class="docutils literal notranslate"><span class="pre">svg.Document(size=&quot;a4&quot;)</span></code> or
-the page above, counts its user units in that unit. Lengths you give there mean the same thing
-everywhere: <code class="docutils literal notranslate"><span class="pre">rect(width=svg.mm(20))</span></code>, <code class="docutils literal notranslate"><span class="pre">stroke_width=svg.pt(1)</span></code>, layout gaps and path tools such as
-<code class="docutils literal notranslate"><span class="pre">round_corners(svg.mm(3))</span></code> all resolve against the page, so the rectangle is written as
-<code class="docutils literal notranslate"><span class="pre">width=&quot;20&quot;</span></code> and prints 20 mm wide in browsers and in every export (writing <code class="docutils literal notranslate"><span class="pre">20mm</span></code> there would make
-browsers scale the millimetres a second time). Lengths set on an element before it joins the page
-convert when it is added; attribute text read from an SVG file keeps its SVG meaning. Lengths compare
-by physical size, and a user-unit length equals the plain number: <code class="docutils literal notranslate"><span class="pre">svg.Length(5)</span> <span class="pre">==</span> <span class="pre">5</span></code> and
-<code class="docutils literal notranslate"><span class="pre">svg.inch(1)</span> <span class="pre">==</span> <span class="pre">svg.mm(25.4)</span></code>.</p>
-<p>The everyday units are on <code class="docutils literal notranslate"><span class="pre">svg</span></code> itself: <code class="docutils literal notranslate"><span class="pre">px</span></code>, <code class="docutils literal notranslate"><span class="pre">pt</span></code>, <code class="docutils literal notranslate"><span class="pre">mm</span></code>, <code class="docutils literal notranslate"><span class="pre">cm</span></code>, <code class="docutils literal notranslate"><span class="pre">inch</span></code>, <code class="docutils literal notranslate"><span class="pre">em</span></code>, <code class="docutils literal notranslate"><span class="pre">percent</span></code>, <code class="docutils literal notranslate"><span class="pre">deg</span></code>, <code class="docutils literal notranslate"><span class="pre">rad</span></code> and
-<code class="docutils literal notranslate"><span class="pre">turn</span></code>. Every unit, the rarer ones included, is in <code class="docutils literal notranslate"><span class="pre">svg.units</span></code>: <code class="docutils literal notranslate"><span class="pre">pc</span></code>, <code class="docutils literal notranslate"><span class="pre">q</span></code> (quarter millimetres, written <code class="docutils literal notranslate"><span class="pre">Q</span></code>),
-<code class="docutils literal notranslate"><span class="pre">ex</span></code>, <code class="docutils literal notranslate"><span class="pre">grad</span></code>, and units SVG has no suffix for, written in the nearest SVG unit: <code class="docutils literal notranslate"><span class="pre">m</span></code>, <code class="docutils literal notranslate"><span class="pre">km</span></code>, <code class="docutils literal notranslate"><span class="pre">um</span></code>
-(micrometres) and <code class="docutils literal notranslate"><span class="pre">nmi</span></code> (nautical miles) as millimetres; <code class="docutils literal notranslate"><span class="pre">ft</span></code>, <code class="docutils literal notranslate"><span class="pre">yd</span></code>, <code class="docutils literal notranslate"><span class="pre">mi</span></code>, <code class="docutils literal notranslate"><span class="pre">furlong</span></code> and <code class="docutils literal notranslate"><span class="pre">mil</span></code>
-(thousandths of an inch) as inches (<code class="docutils literal notranslate"><span class="pre">svg.units.mi(2)</span></code>). A unit on its own is one of itself, so <code class="docutils literal notranslate"><span class="pre">height=svg.inch</span></code> is one
-inch and <code class="docutils literal notranslate"><span class="pre">svg.turn</span></code> is a full turn.
-<code class="docutils literal notranslate"><span class="pre">svg.length(value,</span> <span class="pre">unit)</span></code> and <code class="docutils literal notranslate"><span class="pre">svg.angle(value,</span> <span class="pre">unit)</span></code> take the unit as text, spelled short or in full
-(<code class="docutils literal notranslate"><span class="pre">&quot;mm&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;millimetres&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;inches&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;degrees&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;gon&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;turns&quot;</span></code>, …); output always uses the
-short suffix.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="mf">1.2</span><span class="p">,</span> <span class="s2">"metres"</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"ft"</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">Length</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"3 inches"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="s2">"turns"</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s2">"gon"</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">"deg"</span><span class="p">))</span>
-</pre></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">em</span></code>, <code class="docutils literal notranslate"><span class="pre">ex</span></code> and <code class="docutils literal notranslate"><span class="pre">%</span></code> only combine with themselves, because converting them needs a font size or a
-reference length. <code class="docutils literal notranslate"><span class="pre">dpi=</span></code> on raster exports sets pixels per inch (96 is <code class="docutils literal notranslate"><span class="pre">scale=1</span></code>).</p>
-<section id="calculating-with-units">
-<h3>Calculating with units<a class="headerlink" href="#calculating-with-units" title="Link to this heading">¶</a></h3>
-<p>Multiplying and dividing lengths and angles works like a maths problem: the dimensions travel with the
-numbers as powers of length and angle. A length times a length is an area (a <code class="docutils literal notranslate"><span class="pre">Quantity</span></code>), dividing
-it by a length gives a length again, and a length over a length is a plain number. An attribute only
-accepts the dimension it needs, so mistakes surface where the value is used:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">area</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>               <span class="c1"># 600mm², dimension length²</span>
-<span class="n">side</span> <span class="o">=</span> <span class="n">area</span> <span class="o">/</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>                     <span class="c1"># 15mm, a Length again</span>
-<span class="n">ratio</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">inch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mf">25.4</span><span class="p">)</span>           <span class="c1"># 1.0</span>
-<span class="n">spin</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span> <span class="o">/</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>              <span class="c1"># length⁻¹·angle: turn per millimetre</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="n">spin</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>   <span class="c1"># ... 45deg</span>
-<span class="n">box</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">side</span><span class="p">)</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">box</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">area</span>
-<span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>                             <span class="c1"># width needs a length, got length²</span>
-<span class="n">tip</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">@</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>               <span class="c1"># a Point: 10mm at 30 degrees from +x</span>
-</pre></div>
-</div>
-<figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-geometry-9-0.svg" />
-</figure>
-<p>Angles have helpers for direction work. Positive angles turn from +x towards +y, clockwise on screen;
-<code class="docutils literal notranslate"><span class="pre">ccw=True</span></code> asks for the counter-clockwise way round:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">heading</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">350</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">heading</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">heading</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">ccw</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>   <span class="c1"># 20deg, -340deg (shortest arc, then forced)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">heading</span><span class="o">.</span><span class="n">lerp</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">wrap</span><span class="p">(),</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">wrap</span><span class="p">())</span>   <span class="c1"># 0deg, 270deg</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">sin</span><span class="p">(),</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="mi">350</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span><span class="o">.</span><span class="n">arclength</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">20</span><span class="p">)))</span>            <span class="c1"># 31.4159mm</span>
-</pre></div>
-</div>
-</section>
+<p>Plain numbers are user units (CSS pixels, 96 per inch). Lengths such as <code class="docutils literal notranslate"><span class="pre">svg.mm(5)</span></code> or <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">*</span> <span class="pre">svg.inch</span></code> and
+angles such as <code class="docutils literal notranslate"><span class="pre">svg.deg(30)</span></code> carry their unit and combine across units; see the <a class="reference internal" href="units.html"><span class="std std-doc">Units guide</span></a>.</p>
 </section>
 <section id="many-elements-from-arrays">
 <h2>Many elements from arrays<a class="headerlink" href="#many-elements-from-arrays" title="Link to this heading">¶</a></h2>
@@ -562,7 +511,7 @@ value each, like numpy broadcasting. Colors can be names, one color, or an <code
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-geometry-11-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-geometry-7-0.svg" />
 </figure>
 </section>
 <section id="matrices-and-numpy">
@@ -640,10 +589,7 @@ value each, like numpy broadcasting. Colors can be names, one color, or an <code
 <li><a class="reference internal" href="#operators">Operators</a></li>
 <li><a class="reference internal" href="#bounds">Bounds</a></li>
 <li><a class="reference internal" href="#placing-and-aligning">Placing and aligning</a></li>
-<li><a class="reference internal" href="#units-and-angles">Units and angles</a><ul>
-<li><a class="reference internal" href="#calculating-with-units">Calculating with units</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#units-and-angles">Units and angles</a></li>
 <li><a class="reference internal" href="#many-elements-from-arrays">Many elements from arrays</a></li>
 <li><a class="reference internal" href="#matrices-and-numpy">Matrices and numpy</a></li>
 </ul>
@@ -657,7 +603,7 @@ value each, like numpy broadcasting. Colors can be names, one color, or an <code
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=3b0a66e6"></script>
+</div><script src="../_static/documentation_options.js?v=965a162a"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

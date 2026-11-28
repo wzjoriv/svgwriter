@@ -77,18 +77,20 @@ formats = ["pdf", "svg", "png"]
 directory = "output"
 png = { dpi = 150 }         # options for one format, passed to its exporter
 gif = { fps = 12, scale = 0.5 }
+pptx = { deck = true }      # every scene as one slide of a single deck
 ```
 
 | Key | Default | Meaning |
 |---|---|---|
 | `project.name` | folder name | The project name; outputs are `output/<name>.<ext>` |
 | `project.entry` | `"main:build"` | What draws the project (see below) |
-| `project.size` | none (fits the content) | A [named size](export-import.md#page-sizes) or `[width, height]`; `ProjectConfig(size=svg.size.a4)` takes a `PageSize` |
+| `project.size` | none (fits the content) | A [named size](export.md#page-sizes) or `[width, height]`; `ProjectConfig(size=svg.size.a4)` takes a `PageSize` |
 | `project.theme` | none | A theme file or a registered theme name |
 | `project.fonts` | `"assets/fonts"` | Font folder |
 | `outputs.formats` | `["svg", "png"]` | Any export format name, plus `gif`, `mp4`, `webm`, `mov` for animations |
 | `outputs.directory` | `"output"` | Where outputs go |
 | `outputs.<format>` | none | Exporter options for that format, such as `png = { scale = 2 }` |
+| `outputs.<format>.deck` | `false` | For formats with several pages (PowerPoint, PDF): write every scene of the project into one file, one page or slide each, instead of one file per scene |
 
 A `[preview]` table configures `svgwriter preview`; see [Live preview](#live-preview).
 
@@ -121,6 +123,8 @@ The entry object decides what gets drawn:
 
 Still formats such as PDF and PNG show a page once its animations have ended; `png = { seconds = 0 }`
 shows the start instead. SVG, GIF and PowerPoint keep the animations.
+
+A logo kept as a function that writes every size and variant of its assets is a good first entry; see [Logos and icons](logos.md).
 
 ## Presets
 
