@@ -8,7 +8,11 @@ name: Tests
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, labeled]
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
   push:
     branches: [main]
   workflow_dispatch:
@@ -63,7 +67,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python: ["3.10", "3.11", "3.12", "3.13", "3.14", "3.15"]
+        python:
+          - "3.10"
+          - "3.11"
+          - "3.12"
+          - "3.13"
+          - "3.14"
+          - "3.15"
         include:
           - { os: windows-latest, python: "3.10" }
           - { os: windows-latest, python: "3.15" }

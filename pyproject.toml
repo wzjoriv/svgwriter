@@ -19,7 +19,13 @@ dependencies = [
     "click>=8.1",
     "python-lcms2>=0.4.1",
 ]
-keywords = ["svg", "vector", "graphics", "drawing", "animation"]
+keywords = [
+    "svg",
+    "vector",
+    "graphics",
+    "drawing",
+    "animation",
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -109,7 +115,12 @@ version = { attr = "svgwriter.__version__" }
 include = ["svgwriter*"]
 
 [tool.setuptools.package-data]
-svgwriter = ["py.typed", "*.pyi", "**/*.pyi", "tools/project/templates/**/*"]
+svgwriter = [
+    "py.typed",
+    "*.pyi",
+    "**/*.pyi",
+    "tools/project/templates/**/*",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -117,17 +128,54 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 110
 target-version = "py310"
-include = ["svgwriter/**/*.py", "tests/**/*.py", "scripts/**/*.py", "examples/**/*.py", "demos/**/*.py"]
-extend-exclude = ["build", "*.egg-info", "scripts/devkit", ".venv"]
+include = [
+    "svgwriter/**/*.py",
+    "tests/**/*.py",
+    "scripts/**/*.py",
+    "examples/**/*.py",
+    "demos/**/*.py",
+]
+extend-exclude = [
+    "build",
+    "*.egg-info",
+    "scripts/devkit",
+    ".venv",
+]
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "UP", "B", "C4", "ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "ANN205", "ANN206"]
+select = [
+    "E",
+    "F",
+    "W",
+    "I",
+    "UP",
+    "B",
+    "C4",
+    "ANN001",
+    "ANN002",
+    "ANN003",
+    "ANN201",
+    "ANN202",
+    "ANN204",
+    "ANN205",
+    "ANN206",
+]
 ignore = ["E501"]
 
 [tool.ruff.lint.per-file-ignores]
 "scripts/**/*.py" = ["B008", "ANN"]
 "examples/**/*.py" = ["B018"]  # a bare `doc` ends a notebook cell and shows the picture
-"tests/**/*.py" = ["ANN", "UP006", "UP007", "UP035", "UP037", "UP045", "E701", "E702", "E741"]
+"tests/**/*.py" = [
+    "ANN",
+    "UP006",
+    "UP007",
+    "UP035",
+    "UP037",
+    "UP045",
+    "E701",
+    "E702",
+    "E741",
+]
 
 [tool.devkit]
 tools = ["svgwriter_tools:app"]
@@ -148,7 +196,12 @@ source = "docs"
 out = "docs/_build/html"
 
 [tool.devkit.check]
-lint = ["svgwriter", "scripts", "tests", "examples"]
+lint = [
+    "svgwriter",
+    "scripts",
+    "tests",
+    "examples",
+]
 tests = ["-q", "-p", "no:cacheprovider"]
 docs = "docs"
 
@@ -158,11 +211,21 @@ log_dir = "build/test-logs"
 
 [tool.devkit.tiers.quick]
 help = "The whole suite, quiet."
-args = ["tests", "-q", "-p", "no:cacheprovider"]
+args = [
+    "tests",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+]
 
 [tool.devkit.tiers.cov]
 help = "The whole suite with a coverage report."
-args = ["tests", "-q", "--cov=svgwriter", "--cov-report=term-missing"]
+args = [
+    "tests",
+    "-q",
+    "--cov=svgwriter",
+    "--cov-report=term-missing",
+]
 
 [tool.devkit.notebooks]
 source = "examples"
