@@ -109,6 +109,14 @@ def test_poster_is_true_a4_and_300_dpi(tmp_path: Path) -> None:
     assert _png_size(png) == pytest.approx((A4_MM[0] * dots, A4_MM[1] * dots), abs=3)
 
 
+def test_poster_invitation_shows_its_details(tmp_path: Path) -> None:
+    project = _quick_copy("poster", tmp_path)
+    assert {"title", "date", "time", "place"} <= set(project.controls())
+    values = {"title": "Dune Planting", "date": "Sunday 5 April 2026", "place": "North end"}
+    text = project.build(["svg"], values=values)[0].read_text(encoding="utf-8")
+    assert all(value in text for value in values.values()) and "What to bring" in text
+
+
 def test_playing_card_has_controls_and_a_sweep(tmp_path: Path) -> None:
     project = _quick_copy("playing-card", tmp_path)
     assert {"rank", "suit", "hue", "iridescence", "glow", "radius", "width"} <= set(project.controls())

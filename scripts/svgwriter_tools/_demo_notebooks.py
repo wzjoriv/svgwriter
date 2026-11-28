@@ -40,7 +40,8 @@ STILLS: dict[str, tuple[dict[str, Any], ...]] = {
     "planets-explainer": ({"scene": "700× wider"}, {"speed": 3.0}),
     "playing-card": ({"rank": "7", "suit": "♠", "hue": 210}, {"rank": "K", "suit": "♣", "hue": 140},
                      {"rank": "A", "suit": "♦", "iridescence": 0.8, "glow": False}),
-    "poster": ({"theme": "night"}, {"theme": "blueprint"}, {"hue": 120, "title": "Wave"}),
+    "poster": ({"theme": "night"}, {"theme": "mint", "title": "Dune Planting", "date": "Sunday 5 April 2026"},
+               {"hue": 120, "time": "14:00 – 17:00"}),
     "effects": ({"smoke": "ice", "metal": "neon", "wind": "glitch", "logo": "fire"},
                 {"sparks": "neon", "snow": "fire", "smoke": "snow", "button": "glitch"}),
 }

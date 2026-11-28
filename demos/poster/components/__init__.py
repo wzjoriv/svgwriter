@@ -1,7 +1,7 @@
-"""The poster's parts: the legend of ground types, a route with stations and the tide table."""
+"""Parts of the poster."""
 
-from .legend import GROUNDS, legend
+from .bring import ITEMS, bring
 from .route import route
-from .tides import tide_table
+from .schedule import schedule
 
-__all__ = ["GROUNDS", "legend", "route", "tide_table"]
+__all__ = ["ITEMS", "bring", "route", "schedule"]

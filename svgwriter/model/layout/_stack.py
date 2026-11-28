@@ -57,10 +57,13 @@ def check_choice(value: str, choices: tuple[str, ...], what: str) -> str:
     >>> from svgwriter.model.layout._stack import check_choice
     >>> check_choice("end", ("start", "end"), "align")
     'end'
+    >>> check_choice("space-between", ("start", "space_between"), "justify")
+    'space_between'
     """
-    if value not in choices:
+    spelled = value.replace("-", "_") if isinstance(value, str) else value
+    if spelled not in choices:
         raise ValueError(f"unknown {what} {value!r}; choose one of {', '.join(choices)}")
-    return value
+    return spelled
 
 
 class Spacer(Group):
