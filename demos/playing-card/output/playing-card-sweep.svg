@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="268" height="356" viewBox="0 0 268 356" version="1.1">
+  <style id="svgwriter-theme" type="text/css">.role-surface { fill:#fbfaf6;stroke:none }
+.role-text { fill:#1c1917;stroke:none;font-family:Georgia, 'Times New Roman', serif;font-size:18px;font-weight:400 }
+.role-title { fill:#0f766e;stroke:none;font-family:Georgia, 'Times New Roman', serif;font-size:26px;font-weight:700 }
+.role-felt { fill:#0f2a1d }</style>
+  <defs>
+    <filter id="filter1" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="feGaussianBlur1" in="SourceAlpha" stdDeviation="8" result="feGaussianBlur1-out"/>
+      <feFlood id="feFlood1" flood-color="#bd2828" flood-opacity="1" result="feFlood1-out">
+        <animate attributeName="flood-color" values="#bd2828;#bd2b28;#bd3428;#bd4e28;#bd7828;#bdb028;#b4bd28;#83bd28;#2fbd28;#28bd3f;#28bdbd;#283fbd;#2f28bd;#8328bd;#b428bd;#bd28b0;#bd2878;#bd284e;#bd2834;#bd282b;#bd2828" keyTimes="0;0.0416667;0.0833333;0.145833;0.208333;0.270833;0.291667;0.333333;0.395833;0.416667;0.5;0.583333;0.604167;0.666667;0.708333;0.729167;0.791667;0.854167;0.916667;0.958333;1" begin="0s" dur="4s" fill="freeze"/>
+      </feFlood>
+      <feComposite id="feComposite1" in="feFlood1-out" in2="feGaussianBlur1-out" operator="in" result="feComposite1-out"/>
+      <feMerge>
+        <feMergeNode in="feComposite1-out"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="linearGradient1" x1="0.0904" y1="0.2132" x2="0.9096" y2="0.7868">
+      <stop offset="0" stop-color="#ffa3c1">
+        <animate attributeName="stop-color" values="#ffa3c1;#ffa3bd;#ffa3b1;#ffa59c;#ffaf76;#f3b867;#ddc363;#cfc967;#acd47e;#5addc7;#4edcd9;#4ddaea;#57d7f8;#68d2ff;#b0bdff;#d6b0ff;#e0adfb;#f4a6e4;#fca4d6;#ffa3c8;#ffa3c1" keyTimes="0;0.0625;0.125;0.1875;0.270833;0.3125;0.354167;0.375;0.416667;0.5;0.520833;0.541667;0.5625;0.583333;0.666667;0.729167;0.75;0.8125;0.854167;0.916667;1" begin="0s" dur="4s" fill="freeze"/>
+      </stop>
+      <stop offset="0.1667" stop-color="#ffa988">
+        <animate attributeName="stop-color" values="#ffa988;#ffaa85;#fdb171;#e6bf62;#d1c866;#c4cd6d;#a4d585;#69ddb7;#58ddc9;#4ddcdb;#4edaeb;#59d6fa;#6bd1ff;#b9baff;#d7b0ff;#eda8ed;#fca4d6;#ffa3b5;#ffa697;#ffa88c;#ffa988" keyTimes="0;0.0625;0.166667;0.25;0.291667;0.3125;0.354167;0.416667;0.4375;0.458333;0.479167;0.5;0.520833;0.604167;0.645833;0.6875;0.729167;0.791667;0.875;0.9375;1" begin="0s" dur="4s" fill="freeze"/>
+      </stop>
+      <stop offset="0.3333" stop-color="#edbb64">
+        <animate attributeName="stop-color" values="#edbb64;#e5bf62;#d6c665;#c6cc6c;#a3d685;#62ddbe;#54ddcf;#4cdcdf;#4fd9ee;#5bd5fb;#6dd1ff;#aabfff;#ceb3ff;#ddaefe;#eaa9f1;#fca4d5;#ffa59c;#ffae77;#f4b767;#edbb64" keyTimes="0;0.104167;0.166667;0.208333;0.270833;0.354167;0.375;0.395833;0.416667;0.4375;0.458333;0.520833;0.5625;0.583333;0.604167;0.645833;0.729167;0.8125;0.895833;1" begin="0s" dur="4s" fill="freeze"/>
+      </stop>
+      <stop offset="0.5" stop-color="#bad074">
+        <animate attributeName="stop-color" values="#bad074;#b6d177;#aed37c;#a2d686;#90d994;#6dddb3;#55ddcc;#4edcda;#4cdbe7;#53d8f4;#60d4ff;#bfb8ff;#dfadfc;#f7a5df;#ffa3ce;#ffa59b;#ffab80;#ffaf75;#f3b867;#e4c062;#c5cc6d;#bece71;#bad074" keyTimes="0;0.0625;0.104167;0.145833;0.1875;0.25;0.291667;0.3125;0.333333;0.354167;0.375;0.479167;0.520833;0.5625;0.583333;0.645833;0.6875;0.708333;0.75;0.791667;0.895833;0.9375;1" begin="0s" dur="4s" fill="freeze"/>
+      </stop>
+      <stop offset="0.6667" stop-color="#78dca9">
+        <animate attributeName="stop-color" values="#78dca9;#73ddad;#66ddba;#4eddd8;#4ddaeb;#5ed5fd;#7ccdff;#d2b1ff;#e1acfa;#eea8ed;#ffa3cb;#ffaa84;#ffaf77;#f9b46c;#e6bf62;#cfc967;#add37d;#92d993;#80dba2;#78dca9" keyTimes="0;0.0625;0.125;0.208333;0.25;0.291667;0.333333;0.4375;0.458333;0.479167;0.520833;0.604167;0.625;0.645833;0.6875;0.729167;0.791667;0.854167;0.916667;1" begin="0s" dur="4s" fill="freeze"/>
+      </stop>
+      <stop offset="0.8333" stop-color="#4cdbe3">
+        <animate attributeName="stop-color" values="#4cdbe3;#4cdbe6;#50d9f0;#61d4ff;#80cbff;#d7b0ff;#e4abf8;#f9a5da;#ffa3c9;#ffa4a4;#feb073;#f5b668;#ddc363;#bfce70;#83dba0;#62ddbf;#54ddce;#4eddd8;#4cdcdf;#4cdbe3" keyTimes="0;0.0625;0.125;0.1875;0.25;0.375;0.395833;0.4375;0.458333;0.5;0.5625;0.583333;0.625;0.666667;0.75;0.8125;0.854167;0.895833;0.9375;1" begin="0s" dur="4s" fill="freeze"/>
+      </stop>
+      <stop offset="1" stop-color="#76ceff">
+        <animate attributeName="stop-color" values="#76ceff;#7acdff;#82cbff;#96c5ff;#d5b1ff;#e0adfb;#eaa9f1;#fca4d5;#ffa3c5;#ffa4a1;#fdb171;#e7be62;#c8cb6b;#a3d685;#6dddb3;#54ddcf;#4edcda;#4edaed;#5fd4fe;#72cfff;#76ceff" keyTimes="0;0.0625;0.104167;0.166667;0.291667;0.3125;0.333333;0.375;0.395833;0.4375;0.5;0.541667;0.583333;0.625;0.6875;0.729167;0.75;0.791667;0.854167;0.9375;1" begin="0s" dur="4s" fill="freeze"/>
+      </stop>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="268" height="356" class="role-felt"/>
+  <g>
+    <rect x="24" y="24" width="220" height="308" rx="14" style="stroke-width:2" class="role-surface" filter="url(#filter1)" stroke="#bd2828">
+      <animate attributeName="stroke" values="#bd2828;#bd2b28;#bd3428;#bd4e28;#bd7828;#bdb028;#b4bd28;#83bd28;#2fbd28;#28bd3f;#28bdbd;#283fbd;#2f28bd;#8328bd;#b428bd;#bd28b0;#bd2878;#bd284e;#bd2834;#bd282b;#bd2828" keyTimes="0;0.0416667;0.0833333;0.145833;0.208333;0.270833;0.291667;0.333333;0.395833;0.416667;0.5;0.583333;0.604167;0.666667;0.708333;0.729167;0.791667;0.854167;0.916667;0.958333;1" begin="0s" dur="4s" fill="freeze"/>
+    </rect>
+    <rect x="24" y="24" width="220" height="308" rx="14" fill="url(#linearGradient1)" opacity="0.1">
+      <animate attributeName="opacity" values="0.1;0.1218;0.1756;0.2831;0.5723;0.6935;0.7701;0.8" keyTimes="0;0.125;0.229167;0.354167;0.604167;0.729167;0.854167;1" begin="0s" dur="4s" fill="freeze"/>
+    </rect>
+    <rect x="61.4" y="61.4" width="145.2" height="233.2" rx="0" fill="none" stroke="#bd2828" stroke-width="1" stroke-dasharray="4 3">
+      <animate attributeName="stroke" values="#bd2828;#bd2b28;#bd3428;#bd4e28;#bd7828;#bdb028;#b4bd28;#83bd28;#2fbd28;#28bd3f;#28bdbd;#283fbd;#2f28bd;#8328bd;#b428bd;#bd28b0;#bd2878;#bd284e;#bd2834;#bd282b;#bd2828" keyTimes="0;0.0416667;0.0833333;0.145833;0.208333;0.270833;0.291667;0.333333;0.395833;0.416667;0.5;0.583333;0.604167;0.666667;0.708333;0.729167;0.791667;0.854167;0.916667;0.958333;1" begin="0s" dur="4s" fill="freeze"/>
+    </rect>
+    <g transform="translate(68 68)">
+      <g>
+        <rect x="0" y="0" width="132" height="220" rx="2" fill-opacity="0.12" fill="#bd2828" stroke="#bd2828" stroke-width="1.5">
+          <animate attributeName="fill" values="#bd2828;#bd2b28;#bd3428;#bd4e28;#bd7828;#bdb028;#b4bd28;#83bd28;#2fbd28;#28bd3f;#28bdbd;#283fbd;#2f28bd;#8328bd;#b428bd;#bd28b0;#bd2878;#bd284e;#bd2834;#bd282b;#bd2828" keyTimes="0;0.0416667;0.0833333;0.145833;0.208333;0.270833;0.291667;0.333333;0.395833;0.416667;0.5;0.583333;0.604167;0.666667;0.708333;0.729167;0.791667;0.854167;0.916667;0.958333;1" begin="0s" dur="4s" fill="freeze"/>
+          <animate attributeName="stroke" values="#bd2828;#bd2b28;#bd3428;#bd4e28;#bd7828;#bdb028;#b4bd28;#83bd28;#2fbd28;#28bd3f;#28bdbd;#283fbd;#2f28bd;#8328bd;#b428bd;#bd28b0;#bd2878;#bd284e;#bd2834;#bd282b;#bd2828" keyTimes="0;0.0416667;0.0833333;0.145833;0.208333;0.270833;0.291667;0.333333;0.395833;0.416667;0.5;0.583333;0.604167;0.666667;0.708333;0.729167;0.791667;0.854167;0.916667;0.958333;1" begin="0s" dur="4s" fill="freeze"/>
+        </rect>
+        <text fill="#1f2933" font-size="35.2" transform="translate(56.65 -67.0484)"><set attributeName="visibility" begin="1.41667s" fill="freeze" to="hidden"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/><animateTransform attributeName="transform" values="0 0;0 0;-1.1 0;-1.1 0;0.369532 0;0.369532 0;-2.2 0;-2.2 0" keyTimes="0;0.333333;0.354167;0.479167;0.5;0.645833;0.666667;1" additive="sum" begin="0s" dur="4s" fill="freeze" type="translate"/>♠</text>
+        <text fill="#1f2933" font-size="35.2" transform="translate(55.55 -27.7234)" visibility="hidden"><set attributeName="visibility" begin="1.41667s" fill="freeze" to="visible"/><set attributeName="visibility" begin="2s" fill="freeze" to="hidden"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/><animateTransform attributeName="transform" values="0 0;0 0;-1.1 0;-1.1 0;0.369532 0;0.369532 0;-2.2 0;-2.2 0" keyTimes="0;0.333333;0.354167;0.479167;0.5;0.645833;0.666667;1" additive="sum" begin="0s" dur="4s" fill="freeze" type="translate"/>♥</text>
+        <text fill="#1f2933" font-size="35.2" transform="translate(57.0195 11.6016)" visibility="hidden"><set attributeName="visibility" begin="2s" fill="freeze" to="visible"/><set attributeName="visibility" begin="2.66667s" fill="freeze" to="hidden"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/><animateTransform attributeName="transform" values="0 0;0 0;-1.1 0;-1.1 0;0.369532 0;0.369532 0;-2.2 0;-2.2 0" keyTimes="0;0.333333;0.354167;0.479167;0.5;0.645833;0.666667;1" additive="sum" begin="0s" dur="4s" fill="freeze" type="translate"/>♦</text>
+        <text fill="#1f2933" font-size="35.2" transform="translate(54.45 50.9266)" visibility="hidden"><set attributeName="visibility" begin="2.66667s" fill="freeze" to="visible"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/><animateTransform attributeName="transform" values="0 0;0 0;-1.1 0;-1.1 0;0.369532 0;0.369532 0;-2.2 0;-2.2 0" keyTimes="0;0.333333;0.354167;0.479167;0.5;0.645833;0.666667;1" additive="sum" begin="0s" dur="4s" fill="freeze" type="translate"/>♣</text>
+        <text fill="#1f2933" font-size="92.4" font-weight="bold" transform="translate(30.0642 142.0332)"><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/>Q</text>
+        <text fill="#1f2933" font-size="35.2" transform="translate(56.65 190.2313) rotate(180 9.35 -10.5789)"><set attributeName="visibility" begin="1.41667s" fill="freeze" to="hidden"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/><animateTransform attributeName="transform" values="0 0;0 0;-1.1 0;-1.1 0;0.369532 0;0.369532 0;-2.2 0;-2.2 0" keyTimes="0;0.333333;0.354167;0.479167;0.5;0.645833;0.666667;1" additive="sum" begin="0s" dur="4s" fill="freeze" type="translate"/>♠</text>
+        <text fill="#1f2933" font-size="35.2" transform="translate(55.55 229.1438) rotate(180 10.45 -10.3727)" visibility="hidden"><set attributeName="visibility" begin="1.41667s" fill="freeze" to="visible"/><set attributeName="visibility" begin="2s" fill="freeze" to="hidden"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/><animateTransform attributeName="transform" values="0 0;0 0;-1.1 0;-1.1 0;0.369532 0;0.369532 0;-2.2 0;-2.2 0" keyTimes="0;0.333333;0.354167;0.479167;0.5;0.645833;0.666667;1" additive="sum" begin="0s" dur="4s" fill="freeze" type="translate"/>♥</text>
+        <text fill="#1f2933" font-size="35.2" transform="translate(57.0023 268.4688) rotate(180 8.9891 -10.3727)" visibility="hidden"><set attributeName="visibility" begin="2s" fill="freeze" to="visible"/><set attributeName="visibility" begin="2.66667s" fill="freeze" to="hidden"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/><animateTransform attributeName="transform" values="0 0;0 0;-1.1 0;-1.1 0;0.369532 0;0.369532 0;-2.2 0;-2.2 0" keyTimes="0;0.333333;0.354167;0.479167;0.5;0.645833;0.666667;1" additive="sum" begin="0s" dur="4s" fill="freeze" type="translate"/>♦</text>
+        <text fill="#1f2933" font-size="35.2" transform="translate(54.4672 308.2063) rotate(180 11.5414 -10.5789)" visibility="hidden"><set attributeName="visibility" begin="2.66667s" fill="freeze" to="visible"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/><animateTransform attributeName="transform" values="0 0;0 0;-1.1 0;-1.1 0;0.369532 0;0.369532 0;-2.2 0;-2.2 0" keyTimes="0;0.333333;0.354167;0.479167;0.5;0.645833;0.666667;1" additive="sum" begin="0s" dur="4s" fill="freeze" type="translate"/>♣</text>
+      </g>
+    </g>
+    <g transform="translate(29.28 30.6)">
+      <text class="role-title" transform="translate(0 23.8418)" fill="#1f2933"><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/>Q</text>
+      <text class="role-text" transform="translate(4.4966 48.0479)" fill="#1f2933"><set attributeName="visibility" begin="1.41667s" fill="freeze" to="hidden"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/>♠</text>
+      <text class="role-text" transform="translate(4.4966 70.5)" fill="#1f2933" visibility="hidden"><set attributeName="visibility" begin="1.41667s" fill="freeze" to="visible"/><set attributeName="visibility" begin="2s" fill="freeze" to="hidden"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/>♥</text>
+      <text class="role-text" transform="translate(4.4966 92.9521)" fill="#1f2933" visibility="hidden"><set attributeName="visibility" begin="2s" fill="freeze" to="visible"/><set attributeName="visibility" begin="2.66667s" fill="freeze" to="hidden"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/>♦</text>
+      <text class="role-text" transform="translate(4.4966 115.4043)" fill="#1f2933" visibility="hidden"><set attributeName="visibility" begin="2.66667s" fill="freeze" to="visible"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/>♣</text>
+    </g>
+    <g transform="translate(217.4046 206.0494) rotate(180 10.6577 59.6753)">
+      <text class="role-title" transform="translate(0 23.8418)" fill="#1f2933"><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/>Q</text>
+      <text class="role-text" transform="translate(4.4966 48.0479)" fill="#1f2933"><set attributeName="visibility" begin="1.41667s" fill="freeze" to="hidden"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/>♠</text>
+      <text class="role-text" transform="translate(4.4966 70.5)" fill="#1f2933" visibility="hidden"><set attributeName="visibility" begin="1.41667s" fill="freeze" to="visible"/><set attributeName="visibility" begin="2s" fill="freeze" to="hidden"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/>♥</text>
+      <text class="role-text" transform="translate(4.4966 92.9521)" fill="#1f2933" visibility="hidden"><set attributeName="visibility" begin="2s" fill="freeze" to="visible"/><set attributeName="visibility" begin="2.66667s" fill="freeze" to="hidden"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/>♦</text>
+      <text class="role-text" transform="translate(4.4966 115.4043)" fill="#1f2933" visibility="hidden"><set attributeName="visibility" begin="2.66667s" fill="freeze" to="visible"/><animate attributeName="fill" values="#1f2933;#1f2933;#b91c1c;#b91c1c;#1f2933;#1f2933" keyTimes="0;0.333333;0.354167;0.645833;0.666667;1" begin="0s" dur="4s" fill="freeze"/>♣</text>
+    </g>
+    <animateTransform attributeName="transform" values="0 -40;0 0" additive="sum" calcMode="spline" keyTimes="0;1" keySplines="0 0 0.58 1" begin="0s" dur="0.8s" fill="freeze" type="translate"/>
+    <animate attributeName="opacity" values="0;1" begin="0s" dur="0.8s" fill="freeze"/>
+  </g>
+</svg>

@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" version="1.1">
+  <style id="svgwriter-theme" type="text/css">.role-background { fill:#05060f;stroke:none }
+.role-shape { fill:#ffd166;stroke:none }
+.role-title { fill:#ffd166;stroke:none;font-family:Inter, 'Segoe UI', Helvetica, Arial, sans-serif;font-size:64px;font-weight:700 }
+.role-subtitle { fill:#8a91b4;stroke:none;font-family:Inter, 'Segoe UI', Helvetica, Arial, sans-serif;font-size:26px;font-weight:400 }
+.role-caption { fill:#8a91b4;stroke:none;font-family:Inter, 'Segoe UI', Helvetica, Arial, sans-serif;font-size:16px;font-weight:400 }</style>
+  <defs>
+    <linearGradient id="linearGradient1" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#ffb36b"/>
+      <stop offset="0.1" stop-color="#fca65f"/>
+      <stop offset="0.2" stop-color="#fa9954"/>
+      <stop offset="0.3" stop-color="#f78b4a"/>
+      <stop offset="0.4" stop-color="#f37d42"/>
+      <stop offset="0.5" stop-color="#ef6f3c"/>
+      <stop offset="0.6" stop-color="#d75e34"/>
+      <stop offset="0.7" stop-color="#bf4e2c"/>
+      <stop offset="0.8" stop-color="#a83e23"/>
+      <stop offset="0.9" stop-color="#912e1b"/>
+      <stop offset="1" stop-color="#7a1f12"/>
+    </linearGradient>
+    <filter id="filter1" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="feGaussianBlur1" in="SourceAlpha" stdDeviation="24" result="feGaussianBlur1-out"/>
+      <feFlood id="feFlood1" flood-color="#ef6f3c" flood-opacity="0.6" result="feFlood1-out"/>
+      <feComposite id="feComposite1" in="feFlood1-out" in2="feGaussianBlur1-out" operator="in" result="feComposite1-out"/>
+      <feMerge>
+        <feMergeNode in="feComposite1-out"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="clipPath1">
+      <rect x="1080" y="76" width="119.04" height="76.8"/>
+    </clipPath>
+  </defs>
+  <rect x="0" y="0" width="1280" height="720" class="role-background"/>
+  <g transform="translate(80 80)">
+    <text class="role-title" transform="translate(0 62)">700× wider</text>
+    <text class="role-subtitle" transform="translate(0 112.625)">Betelgeuse beside the Sun, to scale</text>
+    <animate attributeName="opacity" from="0" to="1" begin="0s" dur="0.8s" fill="freeze"/>
+  </g>
+  <circle cx="640" cy="1160" r="700" fill="url(#linearGradient1)" filter="url(#filter1)" opacity="0">
+    <animate attributeName="opacity" from="0" to="1" begin="0.3s" dur="1.2s" fill="freeze"/>
+  </circle>
+  <g class="role-shape">
+    <circle cx="541" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="1.53333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="543" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="1.56667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="545" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="1.6s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="547" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="1.63333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="549" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="1.66667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="551" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="1.7s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="553" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="1.73333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="555" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="1.76667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="557" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="1.8s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="559" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="1.8s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="561" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="1.83333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="563" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="1.86667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="565" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="1.9s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="567" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="1.93333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="569" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="1.96667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="571" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="573" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.03333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="575" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.06667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="577" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.1s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="579" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.1s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="581" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.13333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="583" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.16667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="585" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.2s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="587" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.23333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="589" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.26667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="591" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.3s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="593" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.33333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="595" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.36667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="597" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.4s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="599" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.4s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="601" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.43333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="603" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.46667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="605" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.5s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="607" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.53333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="609" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.56667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="611" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.6s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="613" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.63333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="615" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.66667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="617" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.7s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="619" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.7s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="621" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.73333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="623" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.76667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="625" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.8s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="627" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.83333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="629" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.86667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="631" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.9s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="633" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.93333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="635" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="2.96667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="637" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="639" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="641" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.03333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="643" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.06667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="645" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.1s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="647" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.13333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="649" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.16667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="651" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.2s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="653" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.23333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="655" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.26667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="657" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.3s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="659" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.3s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="661" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.33333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="663" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.36667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="665" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.4s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="667" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.43333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="669" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.46667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="671" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.5s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="673" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.53333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="675" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.56667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="677" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.6s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="679" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.6s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="681" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.63333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="683" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.66667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="685" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.7s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="687" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.73333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="689" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.76667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="691" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.8s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="693" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.83333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="695" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.86667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="697" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.9s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="699" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.9s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="701" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.93333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="703" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="3.96667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="705" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="707" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.03333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="709" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.06667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="711" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.1s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="713" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.13333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="715" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.16667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="717" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.2s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="719" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.2s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="721" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.23333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="723" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.26667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="725" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.3s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="727" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.33333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="729" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.36667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="731" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.4s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="733" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.43333s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="735" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.46667s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="737" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.5s" fill="freeze" to="visible"/>
+    </circle>
+    <circle cx="739" cy="420" r="1" visibility="hidden">
+      <set attributeName="visibility" begin="4.5s" fill="freeze" to="visible"/>
+    </circle>
+  </g>
+  <g clip-path="url(#clipPath1)">
+    <g>
+      <animateTransform attributeName="transform" values="0 0;0 0;0 -568.889;0 0;0 -568.889;0 0;0 -568.889;0 0;0 -568.889;0 0;0 -568.889;0 0;0 -568.889;0 0;0 -568.889;0 0;0 -568.889;0 0;0 -568.889;0 0;0 -568.889;0 0;0 0" keyTimes="0;0.25;0.294444;0.3;0.344444;0.35;0.394444;0.4;0.444444;0.45;0.494444;0.5;0.544444;0.55;0.594444;0.6;0.644444;0.65;0.694444;0.7;0.744444;0.75;1" additive="sum" begin="0s" dur="6s" fill="freeze" type="translate"/>
+      <text x="1159.36" y="140" style="font-size:64" class="role-title">0</text>
+      <text x="1159.36" y="204" style="font-size:64" class="role-title">1</text>
+      <text x="1159.36" y="268" style="font-size:64" class="role-title">2</text>
+      <text x="1159.36" y="332" style="font-size:64" class="role-title">3</text>
+      <text x="1159.36" y="396" style="font-size:64" class="role-title">4</text>
+      <text x="1159.36" y="460" style="font-size:64" class="role-title">5</text>
+      <text x="1159.36" y="524" style="font-size:64" class="role-title">6</text>
+      <text x="1159.36" y="588" style="font-size:64" class="role-title">7</text>
+      <text x="1159.36" y="652" style="font-size:64" class="role-title">8</text>
+      <text x="1159.36" y="716" style="font-size:64" class="role-title">9</text>
+      <text x="1159.36" y="780" style="font-size:64" class="role-title">0</text>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" values="0 0;0 0;0 -64;0 -64;0 -128;0 -128;0 -192;0 -192;0 -256;0 -256;0 -320;0 -320;0 -384;0 -384;0 -448;0 -448;0 -512;0 -512;0 -576;0 -576;0 0;0 0" keyTimes="0;0.294444;0.3;0.344444;0.35;0.394444;0.4;0.444444;0.45;0.494444;0.5;0.544444;0.55;0.594444;0.6;0.644444;0.65;0.694444;0.7;0.744444;0.75;1" additive="sum" begin="0s" dur="6s" fill="freeze" type="translate"/>
+      <text x="1119.68" y="140" style="font-size:64" class="role-title">0</text>
+      <text x="1119.68" y="204" style="font-size:64" class="role-title">1</text>
+      <text x="1119.68" y="268" style="font-size:64" class="role-title">2</text>
+      <text x="1119.68" y="332" style="font-size:64" class="role-title">3</text>
+      <text x="1119.68" y="396" style="font-size:64" class="role-title">4</text>
+      <text x="1119.68" y="460" style="font-size:64" class="role-title">5</text>
+      <text x="1119.68" y="524" style="font-size:64" class="role-title">6</text>
+      <text x="1119.68" y="588" style="font-size:64" class="role-title">7</text>
+      <text x="1119.68" y="652" style="font-size:64" class="role-title">8</text>
+      <text x="1119.68" y="716" style="font-size:64" class="role-title">9</text>
+      <text x="1119.68" y="780" style="font-size:64" class="role-title">0</text>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" values="0 0;0 0;0 -64;0 -64" keyTimes="0;0.744444;0.75;1" additive="sum" begin="0s" dur="6s" fill="freeze" type="translate"/>
+      <text x="1080" y="140" style="font-size:64" class="role-title">0</text>
+      <text x="1080" y="204" style="font-size:64" class="role-title">1</text>
+      <text x="1080" y="268" style="font-size:64" class="role-title">2</text>
+      <text x="1080" y="332" style="font-size:64" class="role-title">3</text>
+      <text x="1080" y="396" style="font-size:64" class="role-title">4</text>
+      <text x="1080" y="460" style="font-size:64" class="role-title">5</text>
+      <text x="1080" y="524" style="font-size:64" class="role-title">6</text>
+      <text x="1080" y="588" style="font-size:64" class="role-title">7</text>
+      <text x="1080" y="652" style="font-size:64" class="role-title">8</text>
+      <text x="1080" y="716" style="font-size:64" class="role-title">9</text>
+      <text x="1080" y="780" style="font-size:64" class="role-title">0</text>
+    </g>
+  </g>
+  <text x="640" y="396" style="text-anchor:middle" class="role-caption">a row of 100 Suns</text>
+  <text x="1200" y="190" style="text-anchor:end" class="role-caption">Suns in a row</text>
+</svg>
