@@ -32,7 +32,7 @@ class GlyphRecord:
 
     Examples
     --------
-    >>> from svgwriter.catalog.fonts._compile import GlyphRecord
+    >>> from svgwriter.library.fonts._compile import GlyphRecord
     >>> GlyphRecord("A", 65, PathData(), 600).advance
     600
     """
@@ -49,7 +49,7 @@ class FontInfo:
 
     Examples
     --------
-    >>> from svgwriter.catalog.fonts._compile import FontInfo
+    >>> from svgwriter.library.fonts._compile import FontInfo
     >>> FontInfo("Hand", "Regular", 400, 1000, 800, 200, 700, 500, 0, "1.000").units_per_em
     1000
     """
@@ -97,7 +97,7 @@ def compile_font(info: FontInfo, glyphs: list[GlyphRecord], kerning: dict[tuple[
 
     Examples
     --------
-    >>> from svgwriter.catalog.fonts._compile import FontInfo, GlyphRecord, compile_font
+    >>> from svgwriter.library.fonts._compile import FontInfo, GlyphRecord, compile_font
     >>> info = FontInfo("Hand", "Regular", 400, 1000, 800, 200, 700, 500, 0, "1.000")
     >>> compile_font(info, [GlyphRecord(".notdef", None, PathData(), 500)], {}, "otf")[:4]
     b'OTTO'

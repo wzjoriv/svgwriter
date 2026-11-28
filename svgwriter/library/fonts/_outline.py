@@ -37,7 +37,7 @@ def painted_outline(shape: Element) -> PathData:
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.catalog.fonts._outline import painted_outline
+    >>> from svgwriter.library.fonts._outline import painted_outline
     >>> painted_outline(svg.path("M0 0 H10", fill="none", stroke="black", stroke_width=2)).bbox
     BBox(x=0.0, y=-1.0, width=10.0, height=2.0)
     """
@@ -113,7 +113,7 @@ def draw_contours(data: PathData, pen: Any) -> None:
     Examples
     --------
     >>> from fontTools.pens.recordingPen import RecordingPen
-    >>> from svgwriter.catalog.fonts._outline import draw_contours
+    >>> from svgwriter.library.fonts._outline import draw_contours
     >>> pen = RecordingPen()
     >>> draw_contours(PathData("M0 0 L0 10 L10 10 Z"), pen)
     >>> [operator for operator, _ in pen.value]

@@ -5,19 +5,19 @@ for pictures of each. `@svg.preset.pattern`, `filter`, `gradient`, `marker` and 
 under [Composite shapes and effects](paths.md)) add your own to these catalogues.
 
 ```{eval-rst}
-.. automodule:: svgwriter.catalog.patterns
+.. automodule:: svgwriter.library.patterns
    :members:
 
-.. automodule:: svgwriter.catalog.gradients
+.. automodule:: svgwriter.library.gradients
    :members:
 
-.. automodule:: svgwriter.catalog.filters
+.. automodule:: svgwriter.library.filters
    :members:
 
-.. automodule:: svgwriter.catalog.markers
+.. automodule:: svgwriter.library.markers
    :members:
 
-.. automodule:: svgwriter.catalog.effects
+.. automodule:: svgwriter.library.effects
    :members:
 ```
 

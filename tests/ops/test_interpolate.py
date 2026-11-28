@@ -3,7 +3,7 @@ import pytest
 
 import svgwriter as svg
 from svgwriter._internal._flat._flatten import polylines
-from svgwriter.catalog.paths import star
+from svgwriter.library.paths import star
 
 
 def test_numbers_points_colors_and_discrete_values():

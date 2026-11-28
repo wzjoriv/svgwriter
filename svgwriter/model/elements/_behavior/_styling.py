@@ -99,7 +99,7 @@ class PresentationMethods:
 
         See Also
         --------
-        svgwriter.catalog.effects : The built-in effects.
+        svgwriter.library.effects : The built-in effects.
         svgwriter.CharacterRange.effect : The same for a range of a text's characters.
 
         Examples

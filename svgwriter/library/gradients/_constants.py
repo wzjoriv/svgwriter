@@ -1,5 +1,5 @@
 """
-Constants for ``svgwriter.catalog.gradients``: sampling, palettes and finishes.
+Constants for ``svgwriter.library.gradients``: sampling, palettes and finishes.
 """
 
 from __future__ import annotations

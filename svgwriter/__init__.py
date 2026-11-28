@@ -25,7 +25,7 @@ model
     The object model: ``elements``, ``attributes``, ``color``, ``pathdata``,
     ``transform``, ``layout``, ``theme`` and ``batch`` (``svg.Rect``, ``svg.Theme``,
     ``svg.batch.circles``).
-catalog
+library
     Ready-made content: ``paths``, ``patterns``, ``gradients``, ``filters``,
     ``markers``, ``effects``, ``preset`` and ``fonts``
     (``fill=svg.patterns.stripes()``, ``svg.FontBuilder``).
@@ -57,14 +57,14 @@ from .aliases import *  # noqa: E402, F403
 from .aliases import __all__ as _aliases_all  # noqa: E402
 from .aliases import filter as filter  # noqa: A004, E402
 from .aliases import set as set
-from .catalog import effects, filters, fonts, gradients, markers, patterns, preset
-from .catalog import paths as paths
-from .catalog.fonts import FontBuilder
-from .catalog.paths import drawing
 from .document import Document
 from .formats import Format, export, inkscape
 from .formats import io as io
 from .formats.io.writer import SerializeOptions, to_string, write
+from .library import effects, filters, fonts, gradients, markers, patterns, preset
+from .library import paths as paths
+from .library.fonts import FontBuilder
+from .library.paths import drawing
 from .model import attributes as attributes
 from .model import batch as batch
 from .model import color as color

@@ -1,5 +1,5 @@
 """
-Constants for ``svgwriter.catalog.effects``: palettes, strengths and animation timings.
+Constants for ``svgwriter.library.effects``: palettes, strengths and animation timings.
 
 Lengths and noise frequencies are tuned for glyphs ``REFERENCE_HEIGHT`` units tall and scale with the element.
 """

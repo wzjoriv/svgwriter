@@ -1,5 +1,5 @@
 """
-Constants for ``svgwriter.catalog.markers``: the drawing box, default size and shape proportions.
+Constants for ``svgwriter.library.markers``: the drawing box, default size and shape proportions.
 """
 
 from __future__ import annotations

@@ -38,7 +38,7 @@ doc += slice_.clone().rotate(180, about=(150, 150))
 doc
 
 # %% [markdown]
-# `svgwriter.catalog.paths` has registered composite shapes (star, gear, arrow, dashed line) that return
+# `svgwriter.library.paths` has registered composite shapes (star, gear, arrow, dashed line) that return
 # ordinary shapes, here added together to one group.
 
 # %%

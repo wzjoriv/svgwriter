@@ -1,5 +1,5 @@
 """
-Constants for ``svgwriter.catalog.paths``: defaults, tables and patterns.
+Constants for ``svgwriter.library.paths``: defaults, tables and patterns.
 """
 
 from __future__ import annotations

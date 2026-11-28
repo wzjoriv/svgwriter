@@ -48,7 +48,7 @@ def icon_css(family: str, font: str, css_format: str, prefix: str, icons: dict[s
 
     Examples
     --------
-    >>> from svgwriter.catalog.fonts._sheet import icon_css
+    >>> from svgwriter.library.fonts._sheet import icon_css
     >>> print(icon_css("Icons", "i.woff2", "woff2", "icon", {"x": chr(0xE000)}).splitlines()[-1])
     .icon-x::before { content: "\e000"; }
     """
@@ -92,8 +92,8 @@ def cheatsheet(info: FontInfo, glyphs: list[GlyphRecord], columns: int | None) -
 
     Examples
     --------
-    >>> from svgwriter.catalog.fonts._sheet import cheatsheet
-    >>> from svgwriter.catalog.fonts._compile import FontInfo
+    >>> from svgwriter.library.fonts._sheet import cheatsheet
+    >>> from svgwriter.library.fonts._compile import FontInfo
     >>> cheatsheet(FontInfo("X", "Regular", 400, 1000, 800, 200, 700, 500, 0, "1"), [], None).root[0].tag
     'rect'
     """

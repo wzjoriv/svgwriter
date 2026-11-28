@@ -46,7 +46,7 @@ def heart(cx: float, cy: float, size: float, **kwargs: Any) -> Path:
 
     Examples
     --------
-    >>> from svgwriter.catalog.paths import heart
+    >>> from svgwriter.library.paths import heart
     >>> box = heart(50, 50, 40).bbox
     >>> round(box.width, 1), round(box.height, 1)
     (40.0, 38.0)
@@ -103,7 +103,7 @@ def callout(
 
     Examples
     --------
-    >>> from svgwriter.catalog.paths import callout
+    >>> from svgwriter.library.paths import callout
     >>> bubble = callout(0, 0, 100, 40, tail=(20, 70))
     >>> bubble.bbox.height
     70.0
@@ -163,7 +163,7 @@ def cross(cx: float, cy: float, size: float, *, thickness: float | None = None, 
 
     Examples
     --------
-    >>> from svgwriter.catalog.paths import cross
+    >>> from svgwriter.library.paths import cross
     >>> len(cross(0, 0, 30).points)
     12
     >>> cross(0, 0, 30, thickness=6).bbox.width
