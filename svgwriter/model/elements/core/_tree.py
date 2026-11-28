@@ -10,6 +10,7 @@ from copy import deepcopy
 from typing import TYPE_CHECKING, Any
 
 from ._categories import ContentModel
+from ._constants import FILTER_INPUTS
 
 if TYPE_CHECKING:
     from ._element import C, Child, Element
@@ -24,6 +25,22 @@ def references_of(element: Element) -> Iterator[Element]:
             target = getattr(item, "element", None)
             if target is not None:
                 yield target
+
+
+def _rename_result(element: Element, old: Any, new: Any) -> None:
+    """Follow a renumbered id in a filter primitive's generated ``result`` name and the inputs that read it."""
+    result = element.attributes.get("result")
+    if old is None or str(result) != f"{old}-out":
+        return
+    renamed = f"{new}-out"
+    element.attributes["result"] = renamed
+    scope = element
+    while scope.parent is not None and scope.tag != "filter":
+        scope = scope.parent
+    for node in scope.iter():
+        for key in FILTER_INPUTS:
+            if str(node.attributes.get(key)) == str(result):
+                node.attributes[key] = renamed
 
 
 def _foreign_definition(target: Element, root: Element) -> bool:
@@ -121,7 +138,9 @@ class TreeEditing:
         for element in subtree.iter():
             if element._auto_id and element._id_owner is not root:
                 object.__setattr__(element, "_id_owner", root)
+                old = element.attributes.get("id")
                 element.attributes["id"] = root._auto_id_for(element.tag or "el", element)
+                _rename_result(element, old, element.attributes["id"])
             for target in list(references_of(element)):
                 if target.parent is None and target is not root:
                     root.defs().append(target)  # type: ignore[attr-defined]
