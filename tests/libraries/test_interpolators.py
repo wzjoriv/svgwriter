@@ -125,3 +125,8 @@ def test_plugins_load_from_entry_points(monkeypatch, tmp_path):
     finally:
         INTERPOLATORS.restore(state)
     assert svg.interpolate(a, b, 0.5).get("opacity") == pytest.approx(0.5)
+
+
+def test_color_overshoot_is_clamped() -> None:
+    assert svg.interpolate("red", "blue", -0.3).hex == "#ff0000"
+    assert svg.interpolate("red", "blue", 1.3).hex == "#0000ff"
