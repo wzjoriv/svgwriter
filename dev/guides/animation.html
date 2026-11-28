@@ -447,6 +447,22 @@ properties; it is written as a CSS <code class="docutils literal notranslate"><s
 <figure class="snippet-result align-default">
 <img alt="What the code above draws" src="../_images/guides-animation-6-0.svg" />
 </figure>
+<p>Interactions bundle these under a name: <code class="docutils literal notranslate"><span class="pre">el.interact.button()</span></code> dims an element under the pointer and
+flashes it when pressed, and <code class="docutils literal notranslate"><span class="pre">el.interact.highlight(color=...)</span></code> outlines it on hover. Register your own
+with <code class="docutils literal notranslate"><span class="pre">&#64;svg.preset.interaction</span></code>; <code class="docutils literal notranslate"><span class="pre">on()</span></code> also accepts any SVG 1.1 event name (<code class="docutils literal notranslate"><span class="pre">&quot;mousemove&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;activate&quot;</span></code>, â€¦):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">interaction</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">nudge</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">svg</span><span class="o">.</span><span class="n">Element</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">element</span><span class="o">.</span><span class="n">on_hover</span><span class="p">(</span><span class="n">opacity</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+    <span class="n">element</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">"click"</span><span class="p">)</span><span class="o">.</span><span class="n">move_by</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">distance</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="mf">0.15</span><span class="p">)</span>
+
+
+<span class="n">tile</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"slateblue"</span><span class="p">)</span><span class="o">.</span><span class="n">interact</span><span class="o">.</span><span class="n">nudge</span><span class="p">(</span><span class="n">distance</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">interaction</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"nudge"</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-7-0.svg" />
+</figure>
 </section>
 <section id="presets-of-your-own">
 <h2>Presets of your own<a class="headerlink" href="#presets-of-your-own" title="Link to this heading">Â¶</a></h2>
@@ -473,8 +489,8 @@ default, and it returns the motion so calls chain:</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-animation-7-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-animation-7-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-8-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-8-1.svg" />
 </figcaption>
 </figure>
 <p>The shape is checked when the function is decorated, so a mistake fails at once with a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>
@@ -534,7 +550,7 @@ timing curve for the whole animation. The named curves are the standard cubic bÃ
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-animation-8-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-9-0.svg" />
 </figure>
 <p>Any Python function from time to progress works too, overshoot included:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">back_out</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
@@ -544,7 +560,7 @@ timing curve for the whole animation. The named curves are the standard cubic bÃ
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-animation-9-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-10-0.svg" />
 </figure>
 <p>The curve covers the whole timeline, so a preset with several <code class="docutils literal notranslate"><span class="pre">values</span></code> (<code class="docutils literal notranslate"><span class="pre">bounce</span></code>, <code class="docutils literal notranslate"><span class="pre">shake</span></code>, <code class="docutils literal notranslate"><span class="pre">pulse</span></code>,
 <code class="docutils literal notranslate"><span class="pre">color_cycle</span></code>) moves through all of them along the one curve. BÃ©ziers are written as SMIL
@@ -563,8 +579,8 @@ spline with <code class="docutils literal notranslate"><span class="pre">keySpli
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-animation-10-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-animation-10-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-11-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-11-1.svg" />
 </figcaption>
 </figure>
 <p>Saving keeps the animation where the format can play it: <code class="docutils literal notranslate"><span class="pre">.svg</span></code> and <code class="docutils literal notranslate"><span class="pre">.svgz</span></code> keep the SMIL elements,
@@ -602,7 +618,7 @@ and <code class="docutils literal notranslate"><span class="pre">scene.at(t)</sp
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-animation-11-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-12-0.svg" />
 </figure>
 </section>
 <section id="video-through-ffmpeg">
@@ -645,7 +661,7 @@ the drawing play as well, so a scene can use presets, Python, or both.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-animation-13-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-14-0.svg" />
 </figure>
 <p><code class="docutils literal notranslate"><span class="pre">build</span></code> receives the document rather than returning one, so the size is declared once, as class
 attributes, and <code class="docutils literal notranslate"><span class="pre">build</span></code> holds only drawing code. It runs when the scene is created; keep the elements
@@ -719,8 +735,8 @@ automatically (no ffmpeg needed):</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-animation-15-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-animation-15-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-16-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-16-1.svg" />
 </figcaption>
 </figure>
 <p>The scene is sampled <code class="docutils literal notranslate"><span class="pre">fps</span></code> times a second (<code class="docutils literal notranslate"><span class="pre">bake(fps=...)</span></code> to change it) and every element is compared
@@ -782,8 +798,8 @@ started where the points have least distance to travel, so the in-between shapes
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-animation-16-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-animation-16-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-17-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-17-1.svg" />
 </figcaption>
 </figure>
 <p>In an <code class="docutils literal notranslate"><span class="pre">update</span></code> callback this gives morphs and tweens per frame, for instance

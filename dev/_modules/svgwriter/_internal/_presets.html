@@ -329,7 +329,9 @@
     <span class="s2">"EFFECTS"</span><span class="p">,</span>
     <span class="s2">"FILTERS"</span><span class="p">,</span>
     <span class="s2">"GRADIENTS"</span><span class="p">,</span>
+    <span class="s2">"INTERACTIONS"</span><span class="p">,</span>
     <span class="s2">"KINDS"</span><span class="p">,</span>
+    <span class="s2">"InteractionPresets"</span><span class="p">,</span>
     <span class="s2">"MARKERS"</span><span class="p">,</span>
     <span class="s2">"PATTERNS"</span><span class="p">,</span>
     <span class="s2">"SHAPES"</span><span class="p">,</span>
@@ -740,6 +742,53 @@
     <span class="k">return</span> <span class="n">lookup</span><span class="p">,</span> <span class="n">names</span>
 
 
+
+<div class="viewcode-block" id="InteractionPresets">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.InteractionPresets">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InteractionPresets</span><span class="p">(</span><span class="n">Registry</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]):</span>
+<span class="w">    </span><span class="sd">"""Interactions: a function that makes an element respond to the pointer, reused as ``el.interact.&lt;name&gt;()``.</span>
+
+<span class="sd">    Decorate ``function(element, *, option=default, ...)``; it adds hover styles (``element.on_hover``) and</span>
+<span class="sd">    event-started animations (``element.animate.on``) in place. Use bare, or with ``name=`` and ``replace=``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">    &gt;&gt;&gt; @svg.preset.interaction</span>
+<span class="sd">    ... def glow(element: svg.Element, *, color: str = "gold") -&gt; None:</span>
+<span class="sd">    ...     element.on_hover(stroke=color, stroke_width=3)</span>
+<span class="sd">    &gt;&gt;&gt; doc = svg.Document(width=40, height=20)</span>
+<span class="sd">    &gt;&gt;&gt; button = doc.rect(5, 5, 30, 10, id="b").interact.glow(color="orange")</span>
+<span class="sd">    &gt;&gt;&gt; "#b:hover { stroke:orange !important;stroke-width:3 !important }" in doc.to_string()</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; _ = svg.preset.interaction.unregister("glow")</span>
+<span class="sd">    """</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">F</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">F</span><span class="p">:</span> <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">F</span><span class="p">],</span> <span class="n">F</span><span class="p">]:</span> <span class="o">...</span>
+
+<div class="viewcode-block" id="InteractionPresets.register">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.InteractionPresets.register">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">F</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">F</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">F</span><span class="p">],</span> <span class="n">F</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type,return-value]</span></div>
+
+
+    <span class="fm">__call__</span> <span class="o">=</span> <span class="n">register</span>
+
+<div class="viewcode-block" id="InteractionPresets.prepare">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.InteractionPresets.prepare">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"interaction </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> must be a function taking the element first"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">item</span></div>
+</div>
+
+
+
 <span class="n">ANIMATIONS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">AnimationPresets</span><span class="p">(</span><span class="s2">"animation"</span><span class="p">)</span>
 <span class="n">BEHAVIORS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">BehaviorPresets</span><span class="p">(</span><span class="s2">"behavior"</span><span class="p">)</span>
 <span class="n">SHAPES</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">ShapePresets</span><span class="p">(</span><span class="s2">"shape"</span><span class="p">)</span>
@@ -749,9 +798,11 @@
 <span class="n">GRADIENTS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">DefinitionPresets</span><span class="p">(</span><span class="s2">"gradient"</span><span class="p">,</span> <span class="n">_types</span><span class="p">(</span><span class="s2">"LinearGradient"</span><span class="p">,</span> <span class="s2">"RadialGradient"</span><span class="p">,</span> <span class="s2">"Pattern"</span><span class="p">))</span>
 <span class="n">MARKERS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">DefinitionPresets</span><span class="p">(</span><span class="s2">"marker"</span><span class="p">,</span> <span class="n">_types</span><span class="p">(</span><span class="s2">"Marker"</span><span class="p">))</span>
 <span class="n">EFFECTS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">EffectPresets</span><span class="p">(</span><span class="s2">"effect"</span><span class="p">)</span>
+<span class="n">INTERACTIONS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">InteractionPresets</span><span class="p">(</span><span class="s2">"interaction"</span><span class="p">)</span>
 <span class="n">KINDS</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Registry</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"animation"</span><span class="p">:</span> <span class="n">ANIMATIONS</span><span class="p">,</span> <span class="s2">"behavior"</span><span class="p">:</span> <span class="n">BEHAVIORS</span><span class="p">,</span> <span class="s2">"shape"</span><span class="p">:</span> <span class="n">SHAPES</span><span class="p">,</span> <span class="s2">"size"</span><span class="p">:</span> <span class="n">SIZES</span><span class="p">,</span> <span class="s2">"pattern"</span><span class="p">:</span> <span class="n">PATTERNS</span><span class="p">,</span>
-    <span class="s2">"filter"</span><span class="p">:</span> <span class="n">FILTERS</span><span class="p">,</span> <span class="s2">"gradient"</span><span class="p">:</span> <span class="n">GRADIENTS</span><span class="p">,</span> <span class="s2">"marker"</span><span class="p">:</span> <span class="n">MARKERS</span><span class="p">,</span> <span class="s2">"effect"</span><span class="p">:</span> <span class="n">EFFECTS</span><span class="p">}</span>
+    <span class="s2">"filter"</span><span class="p">:</span> <span class="n">FILTERS</span><span class="p">,</span> <span class="s2">"gradient"</span><span class="p">:</span> <span class="n">GRADIENTS</span><span class="p">,</span> <span class="s2">"marker"</span><span class="p">:</span> <span class="n">MARKERS</span><span class="p">,</span> <span class="s2">"effect"</span><span class="p">:</span> <span class="n">EFFECTS</span><span class="p">,</span>
+    <span class="s2">"interaction"</span><span class="p">:</span> <span class="n">INTERACTIONS</span><span class="p">}</span>
 </pre></div>
         </article>
       </div>

@@ -424,6 +424,31 @@ arguments use Python spelling (<code class="docutils literal notranslate"><span 
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="svgwriter.model.elements.Element.interact">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">interact</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><a class="headerlink" href="#svgwriter.model.elements.Element.interact" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">button.interact.button()</span></code>; add your own with
+<code class="docutils literal notranslate"><span class="pre">&#64;svg.preset.interaction</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Interactions</em> – The presets; each call applies one and returns this element.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">interact</span><span class="o">.</span><span class="n">highlight</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"crimson"</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-3-0-0.svg" />
+</figure>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Interaction presets for this element</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="svgwriter.model.elements.Element.home">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">home</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.model.elements.Element" title="svgwriter.model.elements.core._element.Element"><span class="pre">Element</span></a></span><a class="headerlink" href="#svgwriter.model.elements.Element.home" title="Link to this definition">¶</a></dt>
 <dd><p>a detached copy to start each frame from.</p>
@@ -490,7 +515,7 @@ or <em>default</em>.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-4-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-5-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -524,7 +549,7 @@ both behave like <code class="docutils literal notranslate"><span class="pre">cl
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-5-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-6-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -560,7 +585,7 @@ the child but not yet placed are collected into the root <code class="docutils l
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-6-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-7-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -602,7 +627,7 @@ the child but not yet placed are collected into the root <code class="docutils l
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-8-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-9-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -641,7 +666,7 @@ the child but not yet placed are collected into the root <code class="docutils l
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-10-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-11-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -672,7 +697,7 @@ the child but not yet placed are collected into the root <code class="docutils l
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-11-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-12-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -696,7 +721,7 @@ the child but not yet placed are collected into the root <code class="docutils l
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-12-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-13-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -747,7 +772,7 @@ the attribute.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-14-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-15-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -771,7 +796,7 @@ the attribute.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-15-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-16-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -819,7 +844,7 @@ the attribute.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-17-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-18-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -868,7 +893,7 @@ Defaults to infinity.</p></li>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-19-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-20-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -888,7 +913,7 @@ Assigning None removes it.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-20-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-21-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -982,7 +1007,7 @@ one color, a list of colors or an <code class="docutils literal notranslate"><sp
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-24-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-25-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1004,7 +1029,7 @@ one color, a list of colors or an <code class="docutils literal notranslate"><sp
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-25-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-26-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1084,8 +1109,8 @@ Inkscape writes them) is changed there, where it takes effect.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-27-0-0.svg" />
-<img alt="What the code above draws" src="../_images/api-reference-elements-27-0-1.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-28-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-28-0-1.svg" />
 </figcaption>
 </figure>
 </dd></dl>
@@ -1108,7 +1133,7 @@ Inkscape writes them) is changed there, where it takes effect.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-28-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-29-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1167,7 +1192,7 @@ Inkscape writes them) is changed there, where it takes effect.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-30-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-31-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1231,7 +1256,7 @@ appending to a list; output is the shortest equivalent <code class="docutils lit
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-32-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-33-0-0.svg" />
 </figure>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="svgwriter.model.elements.Transformable.transform_attribute">
@@ -1266,7 +1291,7 @@ Assign <code class="docutils literal notranslate"><span class="pre">None</span><
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-33-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-34-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1323,8 +1348,8 @@ lines up left edges and <code class="docutils literal notranslate"><span class="
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-35-0-0.svg" />
-<img alt="What the code above draws" src="../_images/api-reference-elements-35-0-1.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-36-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-36-0-1.svg" />
 </figcaption>
 </figure>
 </dd></dl>
@@ -1361,7 +1386,7 @@ the child but not yet placed are collected into the root <code class="docutils l
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-36-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-37-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1479,7 +1504,7 @@ the child but not yet placed are collected into the root <code class="docutils l
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-40-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-41-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1518,7 +1543,7 @@ the child but not yet placed are collected into the root <code class="docutils l
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-42-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-43-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1549,7 +1574,7 @@ the child but not yet placed are collected into the root <code class="docutils l
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-43-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-44-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1573,7 +1598,7 @@ the child but not yet placed are collected into the root <code class="docutils l
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-44-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-45-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1684,7 +1709,7 @@ the attribute.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-48-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-49-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1708,7 +1733,7 @@ the attribute.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-49-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-50-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1750,7 +1775,7 @@ the attribute.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-51-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-52-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1778,7 +1803,7 @@ the attribute.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-52-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-53-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1827,7 +1852,7 @@ Defaults to infinity.</p></li>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-54-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-55-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1847,7 +1872,7 @@ Assigning None removes it.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-55-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-56-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1959,7 +1984,7 @@ uses the anchor.</p></li>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-59-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-60-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -2005,7 +2030,7 @@ uses the anchor.</p></li>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-61-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-62-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -2050,7 +2075,7 @@ uses the anchor.</p></li>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-63-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-64-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -2186,8 +2211,8 @@ Inkscape writes them) is changed there, where it takes effect.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-67-0-0.svg" />
-<img alt="What the code above draws" src="../_images/api-reference-elements-67-0-1.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-68-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-68-0-1.svg" />
 </figcaption>
 </figure>
 </dd></dl>
@@ -2235,7 +2260,7 @@ Inkscape writes them) is changed there, where it takes effect.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-69-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-70-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -2351,7 +2376,7 @@ of the parent’s. Defaults to False.</p></li>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-72-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-73-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -2403,7 +2428,7 @@ element itself does the same.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-74-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-75-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -2451,7 +2476,7 @@ the element and the alternatives.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-76-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-77-0-0.svg" />
 </figure>
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.model.elements._behavior.Convertible.to_path">
@@ -2500,7 +2525,7 @@ is for elements that have none.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-78-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-79-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -2528,7 +2553,7 @@ is for elements that have none.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-79-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-80-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -2571,7 +2596,7 @@ path with a boolean intersection.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-80-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-81-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -2592,7 +2617,7 @@ path with a boolean intersection.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-81-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-82-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -2689,8 +2714,8 @@ left operand’s presentation attributes.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-85-0-0.svg" />
-<img alt="What the code above draws" src="../_images/api-reference-elements-85-0-1.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-86-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-86-0-1.svg" />
 </figcaption>
 </figure>
 <dl class="py attribute">
@@ -2774,7 +2799,7 @@ left operand’s presentation attributes.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-89-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-90-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -2809,7 +2834,7 @@ and an unfilled copy for the stroke.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-90-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-91-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -3475,7 +3500,7 @@ built fluently: <code class="docutils literal notranslate"><span class="pre">pat
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-116-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-117-0-0.svg" />
 </figure>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="svgwriter.model.elements.shapes.Path.geometry_attributes">
@@ -3531,7 +3556,7 @@ line between their centres), or None to detach it.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-118-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-119-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -3548,7 +3573,7 @@ line between their centres), or None to detach it.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-119-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-120-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -3567,7 +3592,7 @@ numpy: <code class="docutils literal notranslate"><span class="pre">p.nodes</spa
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-120-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-121-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -3759,7 +3784,7 @@ numpy: <code class="docutils literal notranslate"><span class="pre">p.nodes</spa
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-128-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-129-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -4442,7 +4467,7 @@ place or assign new arrays. Pixels are written as a PNG <code class="docutils li
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-154-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-155-0-0.svg" />
 </figure>
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.model.elements.structure.Image.open">
@@ -4504,7 +4529,7 @@ place or assign new arrays. Pixels are written as a PNG <code class="docutils li
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-157-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-158-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -4523,7 +4548,7 @@ place or assign new arrays. Pixels are written as a PNG <code class="docutils li
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-158-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-159-0-0.svg" />
 </figure>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -5028,7 +5053,7 @@ presentation, conditional and core attributes in Python spelling.</p></li>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-178-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-179-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -5214,7 +5239,7 @@ an id if it has none. Defaults to None.</p></li>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-184-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-185-0-0.svg" />
 </figure>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="svgwriter.model.elements.structure.Use.geometry_attributes">
@@ -5422,7 +5447,7 @@ be transformed freely.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-189-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-190-0-0.svg" />
 </figure>
 <dl class="py property">
 <dt class="sig sig-object py" id="svgwriter.model.elements.text.Character.index">
@@ -5473,7 +5498,7 @@ be transformed freely.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-193-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-194-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -5503,7 +5528,7 @@ be transformed freely.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-194-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-195-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -5529,7 +5554,7 @@ be transformed freely.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-195-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-196-0-0.svg" />
 </figure>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="svgwriter.model.elements.text.CharacterSelection.fill">
@@ -8981,7 +9006,7 @@ one instant, so they take only the moment. Presets added with
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-298-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-299-0-0.svg" />
 </figure>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="svgwriter.Motion.element">
@@ -9021,7 +9046,7 @@ this element.</p></li>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-299-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-300-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -9054,7 +9079,7 @@ function need not be registered; <code class="xref py py-data docutils literal n
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-elements-300-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-301-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -9269,6 +9294,7 @@ rewritten to the matched start shape, which looks the same.</p>
 <li><a class="reference internal" href="#svgwriter.model.elements.Element.content"><code class="docutils literal notranslate"><span class="pre">Element.content</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.elements.Element.id"><code class="docutils literal notranslate"><span class="pre">Element.id</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.elements.Element.animate"><code class="docutils literal notranslate"><span class="pre">Element.animate</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.model.elements.Element.interact"><code class="docutils literal notranslate"><span class="pre">Element.interact</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.elements.Element.home"><code class="docutils literal notranslate"><span class="pre">Element.home</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.elements.Element.computed"><code class="docutils literal notranslate"><span class="pre">Element.computed()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.elements.Element.clone"><code class="docutils literal notranslate"><span class="pre">Element.clone()</span></code></a></li>

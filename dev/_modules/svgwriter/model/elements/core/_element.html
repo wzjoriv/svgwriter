@@ -486,6 +486,25 @@
         <span class="k">return</span> <span class="n">Motion</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">interact</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Interaction presets for this element: ``button.interact.button()``; add your own with</span>
+<span class="sd">        ``@svg.preset.interaction``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Interactions</span>
+<span class="sd">            The presets; each call applies one and returns this element.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">        &gt;&gt;&gt; _ = svg.rect(0, 0, 10, 10).interact.highlight(color="crimson")</span>
+<span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.._interactions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Interactions</span>
+
+        <span class="k">return</span> <span class="n">Interactions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">home</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Element</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""The element as it was when its first behavior was attached: a detached copy to start each frame from.</span>
 

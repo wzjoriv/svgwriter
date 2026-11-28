@@ -1,6 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="80" height="30" viewBox="0 0 80 30" version="1.1">
-  <rect id="s9a36dc-go" x="0" y="0" width="30" height="20"/>
-  <circle cx="50" cy="10" r="5">
-    <animateTransform attributeName="transform" from="0 0" to="20 0" additive="sum" begin="s9a36dc-go.click+0.2s" dur="1s" fill="freeze" type="translate"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="3 3 14 14" version="1.1">
+  <circle cx="10" cy="10" r="5" fill="red">
+    <animate attributeName="opacity" from="0" to="1" begin="0s" dur="0.5s" fill="freeze"/>
+    <animateTransform attributeName="transform" from="0 10 10" to="360 10 10" additive="sum" begin="0.5s" dur="2s" fill="freeze" type="rotate"/>
+    <animateTransform attributeName="transform" from="0 0" to="70 0" additive="sum" calcMode="spline" keyTimes="0;1" keySplines="0.42 0 0.58 1" begin="0s" dur="1s" fill="freeze" type="translate"/>
   </circle>
 </svg>
