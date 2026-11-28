@@ -115,9 +115,7 @@ from .ops import (
     distribute,
     interpolate,
     register_font,
-    register_interpolator,
     text_to_path,
-    unregister_interpolator,
 )
 from .tools import project, widgets
 from .tools.project import Project
@@ -217,7 +215,6 @@ __all__ = [
     "latex",
     "parse",
     "register_font",
-    "register_interpolator",
     "parse_color",
     "parse_file",
     "parse_paint",
@@ -250,7 +247,6 @@ __all__ = [
     "size",
     "text_to_path",
     "theme",
-    "unregister_interpolator",
     "to_string",
     "video",
     "widgets",

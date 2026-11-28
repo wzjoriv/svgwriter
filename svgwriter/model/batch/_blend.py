@@ -92,9 +92,13 @@ def _effective(batch: Batch, name: str) -> np.ndarray | None:
 
 
 def _compatible(a: Batch, b: Batch) -> bool:
+    from ..._internal._presets import INTERPOLATORS
+
     if a._kind is not b._kind or len(a) != len(b) or not (a.compact and b.compact):
         return False
     if a._offsets is not None and not np.array_equal(a._offsets, b._offsets):
+        return False
+    if INTERPOLATORS.attributes() & {*(a._columns or ()), *(b._columns or ())}:
         return False
     return a.shape is None or b.shape is None or a.shape.tag == b.shape.tag
 
@@ -103,7 +107,8 @@ def blend(a: Batch, b: Batch, t: float) -> Batch:
     """The batch a fraction *t* of the way from *a* to *b*, as :func:`svgwriter.interpolate` gives it.
 
     Compact batches of the same kind and size blend every column at once; other pairs of the same
-    size blend item by item; batches of different sizes switch at ``t = 0.5``.
+    size, and batches with a column whose attribute has an interpolator of its own
+    (``svg.preset.interpolator(attribute=...)``), blend item by item; batches of different sizes switch at ``t = 0.5``.
     """
     from ...ops.interpolate import interpolate
 

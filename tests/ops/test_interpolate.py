@@ -25,31 +25,6 @@ def test_attributes_that_do_not_blend_switch_halfway():
     assert str(svg.interpolate(a, b, 0.6).get("fill")) in ("red", "#ff0000")
 
 
-def test_registered_rules_win_and_unregister():
-    class Weight(int):
-        pass
-
-    svg.register_interpolator(Weight, lambda a, b, t: Weight(round(a + (b - a) * t, -2)))
-    try:
-        assert svg.interpolate(Weight(400), Weight(700), 0.5) == 600
-    finally:
-        svg.unregister_interpolator(Weight)
-    assert svg.interpolate(Weight(400), Weight(700), 0.5) == 550
-    with pytest.raises(KeyError):
-        svg.unregister_interpolator(Weight)
-
-
-def test_predicate_rules():
-    def is_word(value):
-        return isinstance(value, str) and value.isalpha()
-
-    svg.register_interpolator(is_word, lambda a, b, t: a if t < 0.5 else b)
-    try:
-        assert svg.interpolate("thin", "bold", 0.7) == "bold"
-    finally:
-        svg.unregister_interpolator(is_word)
-
-
 def test_matrix_turns_the_short_way():
     a, b = svg.Matrix.rotate(350), svg.Matrix.rotate(10)
     assert svg.interpolate(a, b, 0.5).decompose()[2] == pytest.approx(0, abs=1e-9)

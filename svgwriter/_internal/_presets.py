@@ -1,16 +1,18 @@
 """
 Preset registries, one per kind: animations and behaviors (``element.animate``), shapes, sizes, patterns,
-filters, gradients, markers and effects.
+filters, gradients, markers,
+effects, interactions, path effects and interpolators.
 """
 
 from __future__ import annotations
 
 import functools
+import importlib
 import inspect
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, Concatenate, Final, TypeAlias, TypeVar, overload
 
-from ._constants import MOTION_HELPERS
+from ._constants import INTERPOLATOR_LIBRARY, MOTION_HELPERS
 from ._registry import Registry
 from ._roles import with_role
 from ._typing import P
@@ -30,6 +32,8 @@ __all__ = [
     "FILTERS",
     "GRADIENTS",
     "INTERACTIONS",
+    "INTERPOLATORS",
+    "InterpolatorPresets",
     "KINDS",
     "PATH_EFFECTS",
     "PathEffectPresets",
@@ -469,6 +473,108 @@ class PathEffectPresets(Registry[Callable[..., "PathData"]]):
         return item
 
 
+Interpolator: TypeAlias = Callable[[Any, Any, float], Any]
+Rule: TypeAlias = "tuple[Callable[[object], bool] | None, frozenset[str], Interpolator]"
+
+
+def _matcher(kind: type | tuple[type, ...] | Callable[[object], bool]) -> Callable[[object], bool]:
+    if isinstance(kind, (type, tuple)):
+        return lambda value: isinstance(value, kind)
+    return kind
+
+
+class InterpolatorPresets(Registry[Interpolator]):
+    """Interpolators: how :func:`svgwriter.interpolate`, tweens, morphs and batch blends mix two values.
+
+    Decorate ``function(a, b, t) -> value`` with ``kind=`` (a class, whose instances and subclasses match, or a
+    predicate ``kind(value) -> bool``; it applies when both values match), ``attribute=`` (an attribute name or
+    names, for values of that attribute when two elements blend), or both. Yours are tried before the built-in
+    ones, newest first; registering under a built-in's name with ``replace=True`` changes how that kind blends.
+    A batch whose columns include an attribute with an interpolator of its own blends item by item.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> @svg.preset.interpolator(attribute="stroke-width")
+    ... def stepped(a: float, b: float, t: float) -> float:
+    ...     return round(a + (b - a) * t)
+    >>> svg.interpolate(svg.line(0, 0, 9, 0, stroke_width=1), svg.line(0, 0, 9, 0, stroke_width=4), 0.4).get("stroke-width")
+    2
+    >>> _ = svg.preset.interpolator.unregister("stepped")
+    """
+
+    def __init__(self, kind: str, builtins: Callable[[], object] | None = None) -> None:
+        super().__init__(kind, builtins)
+        self._rules: list[Rule] | None = None
+        self._attributes: frozenset[str] = frozenset()
+
+    def register(self, item: Any = None, /, *, name: str | None = None, replace: bool = False,
+                 kind: type | tuple[type, ...] | Callable[[object], bool] | None = None,
+                 attribute: str | tuple[str, ...] | None = None) -> Any:
+        if kind is None and attribute is None:
+            raise TypeError("an interpolator needs kind= (a class or predicate), attribute= (names), or both")
+        from ..model.attributes.names import svg_name
+
+        names = frozenset(svg_name(label) for label in ((attribute,) if isinstance(attribute, str) else attribute or ()))
+        matches = None if kind is None else _matcher(kind)
+
+        def decorate(function: Any) -> Any:
+            function.__svgwriter_interpolates__ = (matches, names)
+            return Registry.register(self, function, name=name, replace=replace)
+
+        return decorate if item is None else decorate(item)
+
+    __call__ = register
+
+    def prepare(self, name: str, item: Interpolator) -> Interpolator:
+        if not callable(item):
+            raise TypeError(f"interpolator {name!r} must be a function (a, b, t) -> value")
+        return item
+
+    def add(self, name: str, item: Interpolator, *, replace: bool = False) -> Interpolator:
+        self._rules = None
+        return super().add(name, item, replace=replace)
+
+    def unregister(self, name: str) -> Interpolator:
+        self._rules = None
+        return super().unregister(name)
+
+    def restore(self, state: dict[str, Interpolator]) -> None:
+        self._rules = None
+        super().restore(state)
+
+    def seal(self) -> None:
+        self._rules = None
+        super().seal()
+
+    def match(self, a: object, b: object, attribute: str | None = None) -> Interpolator | None:
+        """The interpolator that blends *a* with *b* (values of *attribute*, when given), or None."""
+        for matches, names, function in self._rules or self._order():
+            if (not names or attribute in names) and (matches is None or matches(a) and matches(b)):
+                return function
+        return None
+
+    def attributes(self) -> frozenset[str]:
+        """Every attribute name an interpolator is registered for."""
+        if self._rules is None:
+            self._order()
+        return self._attributes
+
+    def _order(self) -> list[Rule]:
+        """Yours newest first, then the built-in ones in order (a replacement where one was registered)."""
+        names = self._names(plugins=True)
+        ordered = [*reversed([name for name in names if name not in self.builtins]),
+                   *(name for name in names if name in self.builtins)]
+        rules = []
+        for name in ordered:
+            function = self.user.get(name, self.builtins.get(name))
+            matches, attributes = getattr(function, "__svgwriter_interpolates__", (None, frozenset()))
+            rules.append((matches, attributes, function))
+        self._attributes = frozenset().union(*(names for _, names, _ in rules))
+        self._rules = rules
+        return rules
+
+
 ANIMATIONS: Final = AnimationPresets("animation")
 BEHAVIORS: Final = BehaviorPresets("behavior")
 SHAPES: Final = ShapePresets("shape")
@@ -480,7 +586,8 @@ MARKERS: Final = DefinitionPresets("marker", _types("Marker"))
 EFFECTS: Final = EffectPresets("effect")
 INTERACTIONS: Final = InteractionPresets("interaction")
 PATH_EFFECTS: Final = PathEffectPresets("path_effect")
+INTERPOLATORS: Final = InterpolatorPresets("interpolator", lambda: importlib.import_module(INTERPOLATOR_LIBRARY))
 KINDS: Final[dict[str, Registry[Any]]] = {
     "animation": ANIMATIONS, "behavior": BEHAVIORS, "shape": SHAPES, "size": SIZES, "pattern": PATTERNS,
     "filter": FILTERS, "gradient": GRADIENTS, "marker": MARKERS, "effect": EFFECTS,
-    "interaction": INTERACTIONS, "path_effect": PATH_EFFECTS}
+    "interaction": INTERACTIONS, "path_effect": PATH_EFFECTS, "interpolator": INTERPOLATORS}

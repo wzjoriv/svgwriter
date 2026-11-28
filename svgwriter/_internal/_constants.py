@@ -156,6 +156,7 @@ __all__ = [
     "RTL_ANCHORS",
     "SUGGESTIONS",
     "ENTRY_POINT_PREFIX",
+    "INTERPOLATOR_LIBRARY",
     "SECONDS_PER_HOUR",
     "SECONDS_PER_MINUTE",
     "SHAKE_DISTANCE",
@@ -403,6 +404,7 @@ RENDER_LANGUAGE: Final = "en"
 FEATURE_PREFIX: Final = "http://www.w3.org/TR/SVG11/feature#"
 SUGGESTIONS: Final = 3
 ENTRY_POINT_PREFIX: Final = "svgwriter."
+INTERPOLATOR_LIBRARY: Final = "svgwriter.library.interpolators"
 MOTION_HELPERS: Final = frozenset({"apply", "stagger", "element"})
 
 PAGE_LENGTH_DIGITS: Final = 9
