@@ -65,3 +65,19 @@ def test_theme_colours_follow_their_brightness(tmp_path):
     fills = [svg.Color.parse(str(e.get("fill"))) for e in doc.root.iter() if e.tag == "path"]
     lightness = [max(c.r, c.g, c.b) + min(c.r, c.g, c.b) for c in fills]
     assert len(fills) == 3 and lightness[1] > lightness[0] > lightness[2]
+
+
+def test_adjust_handles_change_the_outline(tmp_path):
+    def build(slide):
+        plain = slide.shapes.add_shape(MSO_SHAPE.RIGHT_ARROW, Inches(1), Inches(1), Inches(3), Inches(1))
+        thin = slide.shapes.add_shape(MSO_SHAPE.RIGHT_ARROW, Inches(1), Inches(3), Inches(3), Inches(1))
+        thin.adjustments[0] = 0.2
+        thin.adjustments[1] = 1.0
+        round_box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(5), Inches(1), Inches(2), Inches(2))
+        round_box.adjustments[0] = 0.5
+
+    doc = svg.Document.open(_deck(tmp_path, build))
+    plain, thin, round_box = [e for e in doc.root.iter() if e.tag == "path"]
+    assert str(plain.get("d")) != str(thin.get("d"))
+    assert round_box.bounds().width == pytest.approx(2 * 96, abs=1)
+    assert len(str(round_box.get("d"))) > len("M0 0 L1 0 L1 1 L0 1 Z")

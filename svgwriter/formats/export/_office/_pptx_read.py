@@ -196,7 +196,7 @@ def outline(properties: Any, left: float, top: float, width: float, height: floa
     if custom is not None:
         data = _custom_path(custom, left, top, width, height)
     elif preset is not None:
-        data = _preset_path(preset.get("prst"), left, top, width, height)
+        data = _preset_path(preset.get("prst"), left, top, width, height, _adjustments(preset))
     else:
         return None
     if data is None:
@@ -301,20 +301,31 @@ def _custom_path(geometry: Any, left: float, top: float, width: float, height: f
     return data if len(data) else None
 
 
-def _preset_path(name: str | None, left: float, top: float, width: float, height: float) -> Any:
+def _adjustments(preset: Any) -> dict[str, float]:
+    """A preset's adjust-handle values (``<a:avLst><a:gd name="adj" fmla="val 25000"/>``) as fractions."""
+    values = {}
+    for guide in preset.iter(_a("gd")):
+        formula = str(guide.get("fmla", "")).split()
+        if len(formula) == 2 and formula[0] == "val":
+            values[str(guide.get("name"))] = float(formula[1]) / ALPHA_SCALE
+    return values
+
+
+def _preset_path(name: str | None, left: float, top: float, width: float, height: float,
+                 adjust: dict[str, float] | None = None) -> Any:
     """Outlines of the common preset shapes."""
     from ....model.elements.shapes import Ellipse, Line, Polygon, Rect
 
     if name == "rect":
         return Rect(left, top, width, height).local_outline()
     if name == "roundRect":
-        radius = min(width, height) * ROUND_RECT_ADJUST / ALPHA_SCALE
+        radius = min(width, height) * (adjust or {}).get("adj", ROUND_RECT_ADJUST / ALPHA_SCALE)
         return Rect(left, top, width, height, rx=radius).local_outline()
     if name == "ellipse":
         return Ellipse(left + width / 2, top + height / 2, width / 2, height / 2).local_outline()
     if name in ("line", "straightConnector1"):
         return Line(left, top, left + width, top + height).local_outline()
-    points = preset_points(str(name), left, top, width, height)
+    points = preset_points(str(name), left, top, width, height, adjust)
     if points is None:
         warnings.warn(f"PowerPoint shape {name!r} is not supported yet; drawn as its box", stacklevel=6)
         return Rect(left, top, width, height).local_outline()
