@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60" viewBox="0 0 200 60" version="1.1">
+  <style id="s3c25a6-svgwriter-hover" type="text/css">#s3c25a6-rect1:hover { fill:darkcyan !important;stroke:white !important;stroke-width:2 !important } #s3c25a6-rect2:hover { opacity:0.9 !important }</style>
+  <rect id="s3c25a6-rect1" x="10" y="10" width="40" height="40" rx="6" fill="teal">
+    <animateTransform attributeName="transform" values="30 30;30 30" additive="sum" begin="s3c25a6-rect1.click" dur="0.3s" repeatCount="1" type="translate"/>
+    <animateTransform attributeName="transform" values="1;1.1;1" additive="sum" begin="s3c25a6-rect1.click" dur="0.3s" repeatCount="1" type="scale"/>
+    <animateTransform attributeName="transform" values="-30 -30;-30 -30" additive="sum" begin="s3c25a6-rect1.click" dur="0.3s" repeatCount="1" type="translate"/>
+  </rect>
+  <circle cx="150" cy="30" r="12" fill="gold" opacity="0.3">
+    <animate attributeName="opacity" from="0" to="1" begin="s3c25a6-rect1.mouseover" dur="0.4s" fill="freeze"/>
+  </circle>
+  <rect id="s3c25a6-rect2" x="80" y="10" width="40" height="40" rx="6" fill="slateblue">
+    <animateTransform attributeName="transform" from="0 0" to="0 -6" additive="sum" begin="s3c25a6-rect2.click" dur="0.15s" fill="freeze" type="translate"/>
+  </rect>
+  <rect x="10" y="10" width="20" height="20" fill="teal">
+    <animateTransform attributeName="transform" from="0 0" to="160 0" additive="sum" calcMode="spline" keyTimes="0;1" keySplines="0.42 0 0.58 1" begin="0s" dur="1s" fill="freeze" type="translate"/>
+    <animate attributeName="opacity" from="0" to="1" calcMode="spline" keyTimes="0;1" keySplines="0.2 0.9 0.3 1" begin="0s" dur="0.5s" fill="freeze"/>
+    <animateTransform attributeName="transform" additive="sum" values="-100 0;-91.8097 0;-84.0183 0;-76.6167 0;-69.5955 0;-62.9456 0;-56.6577 0;-50.7227 0;-45.1312 0;-39.8741 0;-34.9421 0;-30.3261 0;-26.0168 0;-22.0049 0;-18.2813 0;-14.8366 0;-11.6618 0;-8.74755 0;-6.08464 0;-3.66385 0;-1.47595 0;0.488281 0;2.23806 0;3.78263 0;5.1312 0;6.29299 0;7.27724 0;8.09317 0;8.75 0;9.25696 0;9.62327 0;9.85816 0;9.97085 0;9.97056 0;9.86653 0;9.66797 0;9.38411 0;9.02418 0;8.59739 0;8.11299 0;7.58017 0;7.00819 0;6.40625 0;5.78358 0;5.14942 0;4.51297 0;3.88347 0;3.27015 0;2.68222 0;2.12891 0;1.61944 0;1.16305 0;0.76895 0;0.446372 0;0.204537 0;0.0526717 0;0 0" calcMode="linear" keyTimes="0;0.017857;0.035714;0.053571;0.071429;0.089286;0.107143;0.125;0.142857;0.160714;0.178571;0.196429;0.214286;0.232143;0.25;0.267857;0.285714;0.303571;0.321429;0.339286;0.357143;0.375;0.392857;0.410714;0.428571;0.446429;0.464286;0.482143;0.5;0.517857;0.535714;0.553571;0.571429;0.589286;0.607143;0.625;0.642857;0.660714;0.678571;0.696429;0.714286;0.732143;0.75;0.767857;0.785714;0.803571;0.821429;0.839286;0.857143;0.875;0.892857;0.910714;0.928571;0.946429;0.964286;0.982143;1" begin="0s" dur="1s" fill="freeze" type="translate"/>
+  </rect>
+</svg>

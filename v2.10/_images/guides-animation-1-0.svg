@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="28 28 44 44" version="1.1">
+  <circle cx="50" cy="50" r="20" fill="teal">
+    <animate attributeName="opacity" from="0" to="1" begin="0s" dur="0.5s" fill="freeze"/>
+    <animateTransform attributeName="transform" from="0 50 50" to="360 50 50" additive="sum" begin="0.5s" dur="2s" fill="freeze" type="rotate"/>
+  </circle>
+</svg>

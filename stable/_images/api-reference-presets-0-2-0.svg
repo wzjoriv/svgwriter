@@ -1,16 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="80" height="40" viewBox="0 0 80 40" version="1.1">
-  <style id="sea3f9b-svgwriter-theme" type="text/css">.role-filter-shadow { flood-color:#1f2933;flood-opacity:0.2 }</style>
+  <style id="s2ff98b-svgwriter-theme" type="text/css">.role-filter-shadow { flood-color:#1f2933;flood-opacity:0.2 }</style>
   <defs>
-    <filter id="sea3f9b-filter1" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
-      <feGaussianBlur id="sea3f9b-feGaussianBlur1" in="SourceAlpha" stdDeviation="2" result="feGaussianBlur12-out"/>
-      <feOffset id="sea3f9b-feOffset1" in="feGaussianBlur12-out" dx="2" dy="3" result="feOffset6-out"/>
-      <feFlood id="sea3f9b-feFlood1" flood-opacity="1" flood-color="rgba(0,0,0,0.35)" class="role-filter-shadow" result="feFlood5-out"/>
-      <feComposite id="sea3f9b-feComposite1" in="feFlood5-out" in2="feOffset6-out" operator="in" result="feComposite5-out"/>
+    <filter id="s2ff98b-filter1" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="s2ff98b-feGaussianBlur1" in="SourceAlpha" stdDeviation="2" result="feGaussianBlur1-out"/>
+      <feOffset id="s2ff98b-feOffset1" in="feGaussianBlur1-out" dx="2" dy="3" result="feOffset1-out"/>
+      <feFlood id="s2ff98b-feFlood1" flood-opacity="1" flood-color="rgba(0,0,0,0.35)" class="role-filter-shadow" result="feFlood1-out"/>
+      <feComposite id="s2ff98b-feComposite1" in="feFlood1-out" in2="feOffset1-out" operator="in" result="feComposite1-out"/>
       <feMerge>
-        <feMergeNode in="feComposite5-out"/>
+        <feMergeNode in="feComposite1-out"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
-  <rect x="10" y="10" width="50" height="20" fill="white" filter="url(#sea3f9b-filter1)"/>
+  <rect x="10" y="10" width="50" height="20" fill="white" filter="url(#s2ff98b-filter1)"/>
 </svg>

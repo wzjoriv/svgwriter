@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="50cm" height="70cm" viewBox="0 0 50 70" version="1.1">
-  <style id="sec8286-svgwriter-theme" type="text/css">.role-shape { fill:#0f766e;stroke:none }</style>
+  <style id="sdc169d-svgwriter-theme" type="text/css">.role-shape { fill:#0f766e;stroke:none }</style>
   <defs>
-    <pattern id="sec8286-pattern1" width="12" height="6" patternUnits="userSpaceOnUse">
+    <pattern id="sdc169d-pattern1" width="12" height="6" patternUnits="userSpaceOnUse">
       <rect x="0" y="0" width="12" height="6" fill="firebrick" stroke="white"/>
     </pattern>
-    <linearGradient id="sec8286-linearGradient1" x1="0.5" y1="1" x2="0.5" y2="0">
+    <linearGradient id="sdc169d-linearGradient1" x1="0.5" y1="1" x2="0.5" y2="0">
       <stop offset="0" stop-color="#fde68a"/>
       <stop offset="0.1" stop-color="#fdd16c"/>
       <stop offset="0.2" stop-color="#febc4f"/>
@@ -17,17 +17,17 @@
       <stop offset="0.9" stop-color="#972d21"/>
       <stop offset="1" stop-color="#7f1d1d"/>
     </linearGradient>
-    <filter id="sec8286-filter1" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
-      <feGaussianBlur id="sec8286-feGaussianBlur1" in="SourceAlpha" stdDeviation="3" result="feGaussianBlur4-out"/>
-      <feFlood id="sec8286-feFlood1" flood-color="#f97316" flood-opacity="1" result="feFlood1-out"/>
-      <feComposite id="sec8286-feComposite1" in="feFlood1-out" in2="feGaussianBlur4-out" operator="in" result="feComposite1-out"/>
+    <filter id="sdc169d-filter1" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="sdc169d-feGaussianBlur1" in="SourceAlpha" stdDeviation="3" result="feGaussianBlur1-out"/>
+      <feFlood id="sdc169d-feFlood1" flood-color="#f97316" flood-opacity="1" result="feFlood1-out"/>
+      <feComposite id="sdc169d-feComposite1" in="feFlood1-out" in2="feGaussianBlur1-out" operator="in" result="feComposite1-out"/>
       <feMerge>
         <feMergeNode in="feComposite1-out"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
-  <circle cx="10" cy="10" r="5" style="fill:url(#sec8286-linearGradient1);filter:url(#sec8286-filter1)" class="role-shape">
+  <circle cx="10" cy="10" r="5" style="fill:url(#sdc169d-linearGradient1);filter:url(#sdc169d-filter1)" class="role-shape">
     <animateTransform attributeName="transform" from="0 0" to="0 -2" additive="sum" begin="0s" dur="0.5s" fill="freeze" type="translate"/>
     <animateTransform attributeName="transform" from="0 0" to="0 2" additive="sum" begin="0.5s" dur="0.5s" fill="freeze" type="translate"/>
   </circle>
