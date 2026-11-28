@@ -8,6 +8,7 @@ import re
 from typing import Final
 
 __all__ = [
+    "LOOP_SLACK",
     "BAKE_DIGITS",
     "BAKE_DISCRETE",
     "BAKE_DOCUMENTS",
@@ -120,3 +121,5 @@ BAKE_INITIAL: Final = {
     "stroke-linecap": "butt", "stroke-linejoin": "miter", "clip-path": "none", "mask": "none", "filter": "none",
     "marker-start": "none", "marker-mid": "none", "marker-end": "none",
 }
+LOOP_SLACK: Final = 1e-6
+"""Seconds an animation may differ from the scene duration and still count as spanning it when looping."""

@@ -41,6 +41,7 @@ class Blobs(svg.Scene):
 
     width, height = 960, 400
     fps = 15
+    loop = True         # the motion is seamless, so the baked SVG repeats forever
 
     def __init__(self, count: int = 5, melt: float = MELT, speed: float = 1.0, headline: str = HEADLINE,
                  action: str = ACTION) -> None:
