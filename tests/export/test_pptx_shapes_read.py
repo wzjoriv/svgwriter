@@ -49,3 +49,19 @@ def test_shape_text_follows_its_alignment_and_anchor(tmp_path):
     assert text.get("text-anchor") == "middle"
     centre_x, centre_y = (1 + 2) * 96, (1 + 1) * 96
     assert abs(float(text.get("x")) - centre_x) < 2 and abs(float(text.get("y")) - centre_y) < 20
+
+
+def test_theme_colours_follow_their_brightness(tmp_path):
+    from pptx.enum.dml import MSO_THEME_COLOR
+
+    def build(slide):
+        for index, brightness in enumerate((0.0, 0.6, -0.5)):
+            shape = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1 + index * 2), Inches(1), Inches(1), Inches(1))
+            shape.fill.solid()
+            shape.fill.fore_color.theme_color = MSO_THEME_COLOR.ACCENT_1
+            shape.fill.fore_color.brightness = brightness
+
+    doc = svg.Document.open(_deck(tmp_path, build))
+    fills = [svg.Color.parse(str(e.get("fill"))) for e in doc.root.iter() if e.tag == "path"]
+    lightness = [max(c.r, c.g, c.b) + min(c.r, c.g, c.b) for c in fills]
+    assert len(fills) == 3 and lightness[1] > lightness[0] > lightness[2]
