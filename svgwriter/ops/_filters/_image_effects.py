@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any
 
 import skia
 
+from ..._internal._numbers import number_values
 from .._constants import (
     BLEND,
     CHANNEL_MAX,
@@ -25,14 +26,6 @@ if TYPE_CHECKING:
     from ...model.elements.core import Element
 
 __all__ = ["paint_mask", "primitive_filter"]
-
-
-def _numbers(value: object) -> list[float]:
-    if value is None:
-        return []
-    if isinstance(value, (list, tuple)):
-        return [float(v) for v in value]
-    return [float(v) for v in str(value).replace(",", " ").split()]
 
 
 def _saturate(s: float) -> list[float]:
@@ -52,7 +45,7 @@ def _hue_rotate(degrees: float) -> list[float]:
 
 
 def _color_matrix(primitive: Element) -> list[float] | None:
-    kind, values = str(primitive.get("type", "matrix")), _numbers(primitive.get("values"))
+    kind, values = str(primitive.get("type", "matrix")), number_values(primitive.get("values"))
     if kind == "saturate":
         return _saturate(values[0] if values else 1.0)
     if kind == "hueRotate":
@@ -93,9 +86,9 @@ def _convolve(primitive: Element, first: Any) -> Any:
     Without ``preserveAlpha`` the bias is scaled by the source alpha, so it lifts only
     what is painted; skia adds a bias uniformly, in 0..255, which serves ``preserveAlpha``.
     """
-    order = [int(v) for v in _numbers(primitive.get("order"))] or [CONVOLVE_ORDER]
+    order = [int(v) for v in number_values(primitive.get("order"))] or [CONVOLVE_ORDER]
     columns, rows = order[0], order[-1]
-    kernel = _numbers(primitive.get("kernelMatrix"))
+    kernel = number_values(primitive.get("kernelMatrix"))
     if len(kernel) != columns * rows:
         return first
     divisor = float(primitive.get("divisor", 0) or 0) or sum(kernel) or 1.0
@@ -132,7 +125,7 @@ def primitive_filter(primitive: Element, first: Any, second: Any, scale: tuple[f
     """
     tag = primitive.tag
     if tag == "feGaussianBlur":
-        sx, *rest = _numbers(primitive.get("stdDeviation", 0)) or [0.0]
+        sx, *rest = number_values(primitive.get("stdDeviation", 0)) or [0.0]
         return skia.ImageFilters.Blur(sx * scale[0], (rest[0] if rest else sx) * scale[1], skia.TileMode.kDecal, first)
     if tag == "feOffset":
         return skia.ImageFilters.Offset(float(primitive.get("dx", 0)) * scale[0], float(primitive.get("dy", 0)) * scale[1],
@@ -143,7 +136,7 @@ def primitive_filter(primitive: Element, first: Any, second: Any, scale: tuple[f
     if tag == "feFlood":
         return _flood(primitive)
     if tag == "feMorphology":
-        rx, *rest = _numbers(primitive.get("radius", 0)) or [0.0]
+        rx, *rest = number_values(primitive.get("radius", 0)) or [0.0]
         make = skia.ImageFilters.Dilate if str(primitive.get("operator", "erode")) == "dilate" else skia.ImageFilters.Erode
         return make(rx * scale[0], (rest[0] if rest else rx) * scale[1], first)
     if tag == "feBlend":

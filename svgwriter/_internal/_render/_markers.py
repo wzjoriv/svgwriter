@@ -17,6 +17,7 @@ from .._constants import (
     URL_OPEN,
     VISIBLE_OVERFLOW,
 )
+from .._tree import ancestors
 
 if TYPE_CHECKING:
     from ...model.elements.core import Element
@@ -190,7 +191,7 @@ def expand_markers(root: Element) -> None:
 
     rules = rules_of(root)
     ids = {str(e.get("id")): e for e in root.iter() if e.get("id")}
-    shapes = [e for e in root.iter() if e.tag in MARKABLE and not any(a.tag in MARKER_FREE for a in _ancestors(e))]
+    shapes = [e for e in root.iter() if e.tag in MARKABLE and not any(a.tag in MARKER_FREE for a in ancestors(e))]
     serial = 0
     for shape in shapes:
         markers = [_marker_of(shape, name, rules, ids) for name in MARKER_PROPERTIES]
@@ -224,11 +225,3 @@ def expand_markers(root: Element) -> None:
         parent = shape.parent
         if len(placed) and parent is not None:
             parent.insert(parent.children.index(shape) + 1, placed)
-
-
-def _ancestors(element: Element) -> list[Element]:
-    chain, node = [], element.parent
-    while node is not None:
-        chain.append(node)
-        node = node.parent
-    return chain

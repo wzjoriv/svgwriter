@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 from ...._internal._animation._timing import clock
+from ...._internal._numbers import number_values
 from ._constants import CLICK_EVENTS, CLICK_START_RE, COLOR_ATTRIBUTES, PATH_TOLERANCE
 
 if TYPE_CHECKING:
@@ -84,10 +85,6 @@ def _values(animation: Element) -> list[str]:
     return [str(v) for v in (start, stop) if v is not None]
 
 
-def _numbers(value: str) -> list[float]:
-    return [float(v) for v in value.replace(",", " ").split()]
-
-
 def _timing(animation: Element) -> dict[str, Any] | None:
     """Begin, duration, repeats, fill and ease of *animation*, or None when not a plain clock schedule."""
     text = str(animation.get("begin", "0s"))
@@ -102,7 +99,7 @@ def _timing(animation: Element) -> dict[str, Any] | None:
     accel = decel = 0.0
     splines = animation.get("keySplines")
     if splines is not None:
-        x1, y1, x2, y2 = _numbers(str(splines).split(";")[0])
+        x1, y1, x2, y2 = number_values(str(splines).split(";")[0])
         accel, decel = max(0.0, x1 - y1), max(0.0, y2 - x2)
         total = accel + decel
         if total > 1:
@@ -124,7 +121,7 @@ def _there_and_back(values: list[str]) -> bool:
 
 def _transform(animation: Element, values: list[str], frame: Matrix) -> dict[str, Any] | None:
     kind = str(animation.get("type", "translate"))
-    numbers = [_numbers(v) for v in values]
+    numbers = [number_values(v) for v in values]
     if kind == "translate":
         points = [_page(frame, p[0], p[1] if len(p) > 1 else 0.0) for p in numbers]
         return {"kind": "motion", "points": tuple(points)} if len(set(points)) > 1 else {}
