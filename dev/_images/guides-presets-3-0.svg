@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="220" height="80" viewBox="0 0 220 80" version="1.1">
-  <style id="s9e8818-svgwriter-theme" type="text/css">.role-pattern { fill:#0f766e;stroke:none }
+  <style id="se39d1d-svgwriter-theme" type="text/css">.role-pattern { fill:#0f766e;stroke:none }
 .role-filter-shadow { flood-color:#1f2933;flood-opacity:0.2 }
 .role-arrow-head { fill:#1f2933;stroke:none }</style>
   <defs>
-    <pattern id="s9e8818-pattern1" x="0" y="0" width="12" height="12" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+    <pattern id="se39d1d-pattern1" x="0" y="0" width="12" height="12" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
       <rect x="0" y="0" width="6" height="12" fill="black" class="role-pattern"/>
     </pattern>
-    <pattern id="s9e8818-pattern2" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+    <pattern id="se39d1d-pattern2" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
       <rect x="0" y="0" width="8" height="8" fill="mistyrose"/>
       <circle cx="4" cy="4" r="1.5" fill="crimson"/>
       <circle cx="0" cy="0" r="1.5" fill="crimson"/>
@@ -14,7 +14,7 @@
       <circle cx="0" cy="8" r="1.5" fill="crimson"/>
       <circle cx="8" cy="8" r="1.5" fill="crimson"/>
     </pattern>
-    <pattern id="s9e8818-pattern3" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+    <pattern id="se39d1d-pattern3" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
       <rect x="0" y="0" width="2" height="2" fill="black" class="role-pattern" fill-opacity="0.32"/>
       <rect x="4" y="0" width="2" height="2" fill="black" class="role-pattern" fill-opacity="0.63"/>
       <rect x="6" y="0" width="2" height="2" fill="black" class="role-pattern" fill-opacity="0.25"/>
@@ -123,38 +123,38 @@
       <rect x="24" y="30" width="2" height="2" fill="black" class="role-pattern" fill-opacity="0.64"/>
       <rect x="28" y="30" width="2" height="2" fill="black" class="role-pattern" fill-opacity="0.3"/>
     </pattern>
-    <filter id="s9e8818-filter1" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
-      <feGaussianBlur id="s9e8818-feGaussianBlur1" in="SourceAlpha" stdDeviation="3" result="feGaussianBlur6-out"/>
-      <feOffset id="s9e8818-feOffset1" in="feGaussianBlur6-out" dx="2" dy="3" result="feOffset4-out"/>
-      <feFlood id="s9e8818-feFlood1" flood-opacity="1" flood-color="rgba(0,0,0,0.35)" class="role-filter-shadow" result="feFlood3-out"/>
-      <feComposite id="s9e8818-feComposite1" in="feFlood3-out" in2="feOffset4-out" operator="in" result="feComposite3-out"/>
+    <filter id="se39d1d-filter1" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="se39d1d-feGaussianBlur1" in="SourceAlpha" stdDeviation="3" result="feGaussianBlur1-out"/>
+      <feOffset id="se39d1d-feOffset1" in="feGaussianBlur1-out" dx="2" dy="3" result="feOffset1-out"/>
+      <feFlood id="se39d1d-feFlood1" flood-opacity="1" flood-color="rgba(0,0,0,0.35)" class="role-filter-shadow" result="feFlood1-out"/>
+      <feComposite id="se39d1d-feComposite1" in="feFlood1-out" in2="feOffset1-out" operator="in" result="feComposite1-out"/>
       <feMerge>
-        <feMergeNode in="feComposite3-out"/>
+        <feMergeNode in="feComposite1-out"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    <filter id="s9e8818-filter2" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
-      <feGaussianBlur id="s9e8818-feGaussianBlur2" in="SourceGraphic" stdDeviation="8" result="feGaussianBlur7-out"/>
-      <feColorMatrix id="s9e8818-feColorMatrix1" in="feGaussianBlur7-out" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 20 -7" result="feColorMatrix1-out"/>
+    <filter id="se39d1d-filter2" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="se39d1d-feGaussianBlur2" in="SourceGraphic" stdDeviation="8" result="feGaussianBlur2-out"/>
+      <feColorMatrix id="se39d1d-feColorMatrix1" in="feGaussianBlur2-out" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 20 -7" result="feColorMatrix1-out"/>
       <feComposite in="SourceGraphic" in2="feColorMatrix1-out" operator="atop"/>
     </filter>
-    <marker id="s9e8818-marker1" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+    <marker id="se39d1d-marker1" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto">
       <polygon points="0,0 10,5 0,10" fill="black" class="role-arrow-head"/>
     </marker>
-    <marker id="s9e8818-marker2" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+    <marker id="se39d1d-marker2" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto">
       <polygon points="5,0 10,5 5,10 0,5" fill="black" class="role-arrow-head"/>
     </marker>
-    <marker id="s9e8818-marker3" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+    <marker id="se39d1d-marker3" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto">
       <circle cx="5" cy="5" r="5" fill="black" class="role-arrow-head"/>
     </marker>
   </defs>
-  <rect x="10" y="10" width="60" height="60" fill="url(#s9e8818-pattern1)"/>
-  <rect x="80" y="10" width="60" height="60" fill="url(#s9e8818-pattern2)"/>
-  <rect x="150" y="10" width="60" height="60" fill="url(#s9e8818-pattern3)"/>
-  <rect x="10" y="10" width="60" height="40" rx="6" fill="white" filter="url(#s9e8818-filter1)"/>
-  <g fill="teal" filter="url(#s9e8818-filter2)">
+  <rect x="10" y="10" width="60" height="60" fill="url(#se39d1d-pattern1)"/>
+  <rect x="80" y="10" width="60" height="60" fill="url(#se39d1d-pattern2)"/>
+  <rect x="150" y="10" width="60" height="60" fill="url(#se39d1d-pattern3)"/>
+  <rect x="10" y="10" width="60" height="40" rx="6" fill="white" filter="url(#se39d1d-filter1)"/>
+  <g fill="teal" filter="url(#se39d1d-filter2)">
     <circle cx="30" cy="60" r="12"/>
     <circle cx="52" cy="60" r="12"/>
   </g>
-  <path d="M10 70 L110 20 L210 70" marker-end="url(#s9e8818-marker1)" marker-mid="url(#s9e8818-marker2)" marker-start="url(#s9e8818-marker3)" fill="none" stroke="black" stroke-width="2"/>
+  <path d="M10 70 L110 20 L210 70" marker-end="url(#se39d1d-marker1)" marker-mid="url(#se39d1d-marker2)" marker-start="url(#se39d1d-marker3)" fill="none" stroke="black" stroke-width="2"/>
 </svg>

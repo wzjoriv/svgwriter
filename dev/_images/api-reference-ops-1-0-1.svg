@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="80" height="40" viewBox="0 0 80 40" version="1.1">
-  <style id="s169850-svgwriter-theme" type="text/css">.role-filter-shadow { flood-color:#1f2933;flood-opacity:0.2 }</style>
+  <style id="s876eb4-svgwriter-theme" type="text/css">.role-filter-shadow { flood-color:#1f2933;flood-opacity:0.2 }</style>
   <defs>
-    <filter id="s169850-filter1" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
-      <feGaussianBlur id="s169850-feGaussianBlur1" in="SourceAlpha" stdDeviation="2" result="feGaussianBlur13-out"/>
-      <feOffset id="s169850-feOffset1" in="feGaussianBlur13-out" dx="2" dy="2" result="feOffset7-out"/>
-      <feFlood id="s169850-feFlood1" flood-opacity="1" flood-color="rgba(0,0,0,0.35)" class="role-filter-shadow" result="feFlood6-out"/>
-      <feComposite id="s169850-feComposite1" in="feFlood6-out" in2="feOffset7-out" operator="in" result="feComposite6-out"/>
+    <filter id="s876eb4-filter1" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="s876eb4-feGaussianBlur1" in="SourceAlpha" stdDeviation="2" result="feGaussianBlur1-out"/>
+      <feOffset id="s876eb4-feOffset1" in="feGaussianBlur1-out" dx="2" dy="2" result="feOffset1-out"/>
+      <feFlood id="s876eb4-feFlood1" flood-opacity="1" flood-color="rgba(0,0,0,0.35)" class="role-filter-shadow" result="feFlood1-out"/>
+      <feComposite id="s876eb4-feComposite1" in="feFlood1-out" in2="feOffset1-out" operator="in" result="feComposite1-out"/>
       <feMerge>
-        <feMergeNode in="feComposite6-out"/>
+        <feMergeNode in="feComposite1-out"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
-  <rect x="5" y="5" width="30" height="30" fill="crimson" filter="url(#s169850-filter1)"/>
+  <rect x="5" y="5" width="30" height="30" fill="crimson" filter="url(#s876eb4-filter1)"/>
   <text x="45" y="28" font-size="20">Hi</text>
 </svg>

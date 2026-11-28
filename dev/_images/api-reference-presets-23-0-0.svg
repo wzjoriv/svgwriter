@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="117.6471" viewBox="0 0 34 20" version="1.1">
   <defs>
-    <filter id="s80602c-filter1" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
-      <feGaussianBlur id="s80602c-feGaussianBlur1" in="SourceGraphic" stdDeviation="6" result="feGaussianBlur25-out"/>
-      <feColorMatrix id="s80602c-feColorMatrix1" in="feGaussianBlur25-out" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 20 -7" result="feColorMatrix4-out"/>
-      <feComposite in="SourceGraphic" in2="feColorMatrix4-out" operator="atop"/>
+    <filter id="s940756-filter1" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="s940756-feGaussianBlur1" in="SourceGraphic" stdDeviation="6" result="feGaussianBlur1-out"/>
+      <feColorMatrix id="s940756-feColorMatrix1" in="feGaussianBlur1-out" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 20 -7" result="feColorMatrix1-out"/>
+      <feComposite in="SourceGraphic" in2="feColorMatrix1-out" operator="atop"/>
     </filter>
   </defs>
-  <g filter="url(#s80602c-filter1)">
+  <g filter="url(#s940756-filter1)">
     <circle cx="10" cy="10" r="8"/>
     <circle cx="24" cy="10" r="8"/>
   </g>

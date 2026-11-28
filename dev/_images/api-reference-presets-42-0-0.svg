@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="73.7229" viewBox="-1.8682 6.2617 70.6191 26.0312" version="1.1">
   <defs>
-    <linearGradient id="sa03dc9-linearGradient1" x1="0.5" y1="0" x2="0.5" y2="1">
+    <linearGradient id="s1d77c7-linearGradient1" x1="0.5" y1="0" x2="0.5" y2="1">
       <stop offset="0" stop-color="#e0fbfc"/>
       <stop offset="0.1" stop-color="#d0f0f4"/>
       <stop offset="0.2" stop-color="#c1e4ed"/>
@@ -13,17 +13,17 @@
       <stop offset="0.9" stop-color="#6899b8"/>
       <stop offset="1" stop-color="#5c8fb0"/>
     </linearGradient>
-    <filter id="sa03dc9-filter1" x="-19.696" y="-11.566" width="106.275" height="61.688" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
-      <feGaussianBlur id="sa03dc9-feGaussianBlur1" in="SourceGraphic" stdDeviation="5.508 0" result="feGaussianBlur39-out"/>
-      <feOffset id="sa03dc9-feOffset1" in="feGaussianBlur39-out" dx="-6.885" dy="0" result="feOffset20-out">
+    <filter id="s1d77c7-filter1" x="-19.696" y="-11.566" width="106.275" height="61.688" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur id="s1d77c7-feGaussianBlur1" in="SourceGraphic" stdDeviation="5.508 0" result="feGaussianBlur1-out"/>
+      <feOffset id="s1d77c7-feOffset1" in="feGaussianBlur1-out" dx="-6.885" dy="0" result="feOffset1-out">
         <animate attributeName="dx" values="-4.131;-11.016;-4.131" dur="1.6s" repeatCount="indefinite"/>
       </feOffset>
-      <feColorMatrix id="sa03dc9-feColorMatrix1" in="feOffset20-out" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.55 0" result="feColorMatrix7-out"/>
+      <feColorMatrix id="s1d77c7-feColorMatrix1" in="feOffset1-out" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.55 0" result="feColorMatrix1-out"/>
       <feMerge>
-        <feMergeNode in="feColorMatrix7-out"/>
+        <feMergeNode in="feColorMatrix1-out"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
-  <text x="0" y="30" font-size="30" fill="url(#sa03dc9-linearGradient1)" filter="url(#sa03dc9-filter1)">Wind</text>
+  <text x="0" y="30" font-size="30" fill="url(#s1d77c7-linearGradient1)" filter="url(#s1d77c7-filter1)">Wind</text>
 </svg>
