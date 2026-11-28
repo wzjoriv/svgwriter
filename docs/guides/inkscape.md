@@ -1,8 +1,8 @@
-# Inkscape
+# Working with Inkscape files
 
 Drawings saved by Inkscape open as ordinary documents and save back with everything Inkscape stores
 alongside the SVG: layers, object names, editable stars and arcs, connectors, guides, path effects and
-export settings. Their `inkscape:` and `sodipodi:` attributes keep their prefixes, declared once on the
+export settings. Layers also work in plain documents; see [Layers](documents.md#layers). Their `inkscape:` and `sodipodi:` attributes keep their prefixes, declared once on the
 root, so the file reads the same in Inkscape after svgwriter has edited it.
 
 ```python
@@ -30,29 +30,6 @@ doc["Logo"].rotate(15)                 # found by its Inkscape label
 print(list(doc.layers), doc.guides[0])
 doc.save("drawing.svg")                # still an Inkscape drawing
 ```
-
-## Layers
-
-`doc.layer(label)` returns the layer with that name at the insertion point, adding it when it is missing.
-Use it with `with` to draw into it; inside a layer it finds or adds a sublayer. `doc.layers` lists every
-layer and sublayer by label, including those read from a file.
-
-```python
-import svgwriter as svg
-
-doc = svg.Document(200, 100)
-with doc.layer("Background"):
-    doc.rect(0, 0, 200, 100, fill="#eeeeee")
-with doc.layer("Shapes"):
-    doc.circle(50, 50, 20, fill="teal")
-    with doc.layer("Labels"):
-        doc.text("A", x=46, y=55)
-print(list(doc.layers))                 # ['Background', 'Shapes', 'Labels']
-print(svg.inkscape.is_layer(doc.layers["Shapes"]))
-```
-
-A layer is a `<g>` with `inkscape:groupmode="layer"` and `inkscape:label`, so browsers and every
-exporter treat it as a plain group.
 
 ## Labels as names
 

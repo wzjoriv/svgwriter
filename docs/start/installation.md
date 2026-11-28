@@ -44,7 +44,7 @@ Optional extras:
 Optional external programs, found on `PATH` or through `SVGWRITER_<NAME>` (for example
 `SVGWRITER_FFMPEG=/opt/ffmpeg/bin/ffmpeg`):
 
-- **ffmpeg** for {doc}`video export <../guides/animation>`. Without it, `render_animation` raises
+- **ffmpeg** for {doc}`video export <../guides/scenes-and-video>`. Without it, `render_animation` raises
   `FFmpegNotFoundError` before doing any work.
 - **LaTeX** with **dvisvgm** for `svg.latex` with real TeX (otherwise Ziamath or matplotlib's mathtext).
 - **Graphviz** (`dot`), the **Mermaid CLI** (`mmdc`), **PlantUML** and **D2** for diagram files.

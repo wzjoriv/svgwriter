@@ -81,4 +81,4 @@ the script; open it in a browser or image viewer. In a project, `svgwriter previ
   first drawing to animation, PowerPoint and fonts, each a script with a notebook of pictures.
 - {doc}`../guides/geometry` to move, rotate and align, {doc}`../guides/text` for type,
   {doc}`../guides/themes` for colours and roles, {doc}`../guides/animation` to make things move, and
-  {doc}`../guides/export-import` for every file format.
+  {doc}`../guides/export` for every file format.

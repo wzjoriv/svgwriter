@@ -53,20 +53,10 @@ print(svg.formats.writers(), svg.formats.readers())
 | LaTeX math | `svg.latex(...)` | — | ✓ | formulas as glyph outlines: TeX (`latex` + `dvisvgm`), else Ziamath (`pysvgwriter[math]`), else matplotlib mathtext |
 | Video frames | `.mp4` `.webm` `.mov` | ✓ | ✓ | needs ffmpeg: `render_animation` writes frames, `svgwriter.motion.video.Video` reads them |
 
-TikZ, EPS, PowerPoint, Word, Excalidraw and the polyline formats work from a flattened copy of the
-drawing: transforms, clipping, patterns and markers are worked into the shapes themselves. Masks and
-filters cannot be. PowerPoint and Word draw an element with a filter or mask as a picture of how it looks
-(one warning lists how many); everything else stays editable. `save(..., fallback="drop")` keeps those
-elements as shapes without the effect instead, and `dpi=` sets the pictures' resolution (192 by default).
-The other flattened formats skip masks and filters with a warning; `el.to_image(scale=...)` turns any
-element into a picture by hand.
+Filters and masks have no shape in TikZ, EPS, PowerPoint, Word, Excalidraw and the polyline formats, which
+work from a flattened copy of the drawing; [Diagrams and Office files](diagrams-and-office.md#pictures-where-an-effect-has-no-shape)
+says what each does with them (`fallback=`, `dpi=`). Word, PowerPoint and Excel need the `office` extra.
 
-```python
-card = svg.Document(width=200, height=100)
-card.rect(10, 10, 80, 50, rx=8, fill="teal", filter=svg.filters.drop_shadow())
-# card.save("card.pptx")                   # the shadowed card becomes a picture
-# card.save("card.pptx", fallback="drop")  # an editable card without its shadow
-```
 
 ## What each format keeps
 
@@ -96,25 +86,9 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 
 "one frame" is the drawing at t = 0, or at `seconds=`; `render_animation` writes animated GIF and video.
 
-PowerPoint keeps SMIL as slide effects that start with the slide, each at its own `begin` (no clicks
-needed), and reading a deck turns them back into `element.animate` presets:
+PowerPoint keeps SMIL as slide effects; the table of what carries over is under
+[Slide effects](diagrams-and-office.md#slide-effects).
 
-| SMIL (preset) | PowerPoint effect |
-| --- | --- |
-| opacity 0 to 1, 1 to 0 (`fade_in`, `fade_out`) | Fade entrance, Fade exit |
-| `set visibility` (`show`, `hide`) | Appear, Disappear |
-| translate or `animateMotion` (`move_by`, `move_to`, `slide_in`, `follow`, `bounce`, `shake`) | custom motion path |
-| rotate (`rotate`, `spin`) | Spin |
-| scale (`scale`, `grow`, `shrink`, `pulse`) | Grow/Shrink |
-| fill or stroke colour (`tween("fill", ...)`, two-colour `color_cycle`) | colour change of the fill or the line |
-
-`begin`, `dur`, `repeat`, `freeze` and there-and-back values (`pulse`, `color_cycle`) carry over; an
-ease becomes PowerPoint's accelerate and decelerate fractions, so curves are approximated. Shapes with
-an entrance effect are drawn in their visible state, since PowerPoint hides them until the effect.
-PowerPoint spins and scales about the shape's centre, so a named or custom pivot (`about=`, `anchor`)
-other than the centre is not kept, and motion paths are followed without turning. Anything else
-(`morph`, `draw`, `create`, `write`, `wipe`, `typewriter`, `skew`, `blink`, sync-based `begin`) is
-dropped with one warning that lists it.
 PowerPoint and Word place pictures by their bounding box, so a rotated or skewed image comes out upright, and
 group opacity is multiplied into each shape's own transparency. A radial gradient becomes a
 PowerPoint path gradient centred on the gradient's centre, which matches circles and differs on
@@ -150,7 +124,7 @@ memo.save("memo.tex")
 
 PDF, EPS and TikZ read back as filled and stroked `<path>` elements with solid colours or gradients,
 stroke width, dashes, caps, joins and opacity, in user units with y pointing down (see
-[Physical size](#physical-size)). The PDF reader scans for objects (a
+[Physical size](print-and-colour.md#physical-size)). The PDF reader scans for objects (a
 broken xref table does not matter), inflates `/FlateDecode` streams, follows Form XObjects and `gs`
 alpha, and reads page 1 unless you pass `page=`. Images, clipping paths and text come in as
 `<image>`, `clip-path` and `<text>`. Text is decoded through the font's `/ToUnicode` map, which most
@@ -230,73 +204,9 @@ hold one drawing and raise `ValueError` for a list. The low-level `load` returns
 the page option is `None` (`page=None` for PDF, `slide=None` for PowerPoint); `Document.open` reads
 one page and `Document.open_all` reads every page, or wraps a single-page file in a list of one.
 
-## Physical size
-
-A user unit is a CSS pixel, 96 to the inch, so a point is 4/3 of a unit and a millimetre is
-96/25.4. Formats with a physical page keep the document's true size: a
-`svg.Document(210 * svg.mm, 297 * svg.mm)` exports as a 595.28 × 841.89 pt A4 PDF page and EPS
-bounding box, and as a 7560000 × 10692000 EMU PowerPoint slide, and an 8.5 × 11 inch document as a
-612 × 792 pt Letter page. TikZ pictures are drawn at 0.75 bp per unit, Word drawings at 9525 EMU
-per unit, and DXF, HPGL and G-code at 25.4/96 mm per unit. A raster has no physical size: `dpi=`
-sets how many pixels an inch of the document becomes (96 is `scale=1`), and `pixels=` asks for an
-exact pixel size instead.
-
-```python
-a4 = svg.Document(210 * svg.mm, 297 * svg.mm)   # user units are millimetres through the viewBox
-a4.rect(20, 30, 170, 30, fill="tomato")
-a4.text("A4", x=30, y=52, font_size=20, fill="white")
-a4.save("a4.pdf")                               # prints at 100% on A4
-```
-
-Readers work the other way: a PDF or EPS point reads as 4/3 of a unit and a TikZ `1cm` as
-96/2.54, so a file made elsewhere opens at its real size and an exported file reads back at the
-same size with every shape in the same place, measured in user units (a millimetre document comes
-back as 793.7 × 1122.5 units with no `viewBox` scaling).
-
-A drawing made in plain numbers is in CSS pixels, so a 144-unit-wide figure prints 1.5 inches wide.
-When the numbers are meant as points (one unit, one point, as in many plotting tools), pass
-`units_per_inch=72` to `pdf`, `eps`, `tikz` or, together with `dpi=`, to a raster format; sizes in `mm`, `cm`, `in`, `pt` or `pc` stay as they are:
-
-```python
-chart = svg.Document(144, 72)                     # meant as 2 x 1 inches
-chart.rect(0, 0, 144, 72, fill="aliceblue", stroke="black")
-chart.text("2 × 1 in", x=72, y=42, font_size=18, text_anchor="middle")
-chart.save("chart.pdf", units_per_inch=72)          # 144 x 72 pt
-chart.save("chart.pdf")                          # 108 x 54 pt: CSS pixels
-```
-
-## Colour profiles
-
-Every export draws in sRGB. `icc=`
-attaches an ICC profile, converting the pixels when it is not sRGB (LittleCMS does it in one pass and
-profiles are parsed once):
-
-```python
-swatch = svg.Document(80, 40)
-swatch.rect(0, 0, 80, 40, fill="#00c853")        # a saturated green: it shifts most between profiles
-swatch.save("swatch.png", icc="srgb")               # tagged sRGB, pixels unchanged
-swatch.save("swatch.png", icc="display-p3")         # pixels converted to Display P3, profile in iCCP
-swatch.save("swatch.jpg", icc="display-p3")         # profile in APP2 segments
-# swatch.save("press.tif", icc=open("press.icc", "rb").read(), dpi=300)   # CMYK ink for a CMYK profile
-# swatch.save("print.pdf", icc=open("press.icc", "rb").read())            # PDF/X-style output intent
-```
-
-Wide-gamut colours (`oklch(...)`, `color(display-p3 ...)`) keep their own space through theme
-palettes, theme expressions, mixing and gradient stops, so they are never clipped before they are
-combined. The pixels, though, are drawn by skia's SVG renderer, which paints in sRGB: a colour outside
-sRGB is clipped to it when drawn, and `icc="display-p3"` then converts those sRGB pixels. The PNG is a
-correctly tagged Display P3 image of the sRGB rendering, not one that reaches the extra P3 gamut.
-
-| Format | `icc=` |
-|---|---|
-| PNG, APNG, JPEG | `"srgb"`, `"display-p3"` or RGB profile bytes; the pixels are converted and the profile embedded |
-| TIFF | the same, or CMYK profile bytes: the file is CMYK, flattened on white since ink has no alpha |
-| PDF | `"srgb"` adds an sRGB output intent (as PDF/A expects); CMYK profile bytes add a PDF/X-style intent naming the press condition |
-
-A PDF keeps its colours as sRGB DeviceRGB: skia's PDF backend writes no other colour space and no
-CMYK, so the intent is appended as an incremental update and a non-sRGB RGB profile is refused rather
-than silently reinterpreting the colours; a RIP converts the RGB to the press condition named by a
-CMYK intent. Without the extra, `icc=` raises an `ImportError` naming it.
+Physical sizes, `dpi=` and `units_per_inch=` are in [Print and colour](print-and-colour.md);
+diagram files (Graphviz, Mermaid, PlantUML, D2, LaTeX math) and Office files are in
+[Diagrams and Office files](diagrams-and-office.md).
 
 ## Your own formats
 
@@ -333,56 +243,6 @@ file path. `read_extensions=` adds extensions the format only reads: the `svg` f
 while `.svgz` writes through the `svgz` format, and Excalidraw also reads `.json`. A package can ship formats through the `svgwriter.format` entry-point group (see
 [Extending svgwriter](extending.md)).
 
-## Diagrams
-
-Graphviz (`.dot`, `.gv`) and Mermaid (`.mmd`, `.mermaid`) files load through their own command-line
-tools, so layouts match what those tools draw: `svg.Document.open("graph.dot")` runs `dot -Tsvg`, and
-`svg.Document.open("flow.mmd")` runs `mmdc` with SVG (not HTML) labels. The result is an ordinary document to
-edit, combine or export to any format. Install Graphviz or `@mermaid-js/mermaid-cli`, or point
-`SVGWRITER_DOT` / `SVGWRITER_MMDC` at the executables; a missing tool raises `DiagramToolError` with
-the install hint.
-Without `mmdc`, Mermaid flowcharts (`graph` / `flowchart`: node shapes, edge styles and labels, chains, `&`
-groups, subgraphs) are parsed and laid out by svgwriter itself, so they need no tool at all.
-
-PlantUML (`.puml`) and D2 (`.d2`) load the same way through `plantuml` and `d2`. Math comes from LaTeX
-itself: `svg.latex(r"\int_0^1 x^2\,dx = \frac{1}{3}", display=True)` returns the typeset formula as
-outlines. Without TeX it falls back to Ziamath (pure Python, `pysvgwriter[math]`) and then to matplotlib's
-mathtext; `engine="tex"`, `"ziamath"` or `"mathtext"` picks one.
-
-## Office files
-
-`pip install "pysvgwriter[office]"` adds PowerPoint, Word and Excel:
-
-- `.pptx` out: one slide per drawing (a list gives a deck), each outline an editable PowerPoint shape
-  (curves, solid or gradient fill, outline with dashes, caps and joins, transparency, hyperlink), text
-  as editable text boxes, images as pictures and SMIL as slide effects. In: shapes, pictures, text
-  boxes and effects of a slide (`svg.Document.open("deck.pptx", slide=2)`) as native SVG elements and
-  presets, with the same paints and links.
-- `.docx` out: the drawing as native Word shapes floating in one paragraph as tall as the drawing,
-  with the same outlines, paints, text boxes and pictures as the PowerPoint export. In: paragraphs,
-  headings (`Title`, `Heading 1`-`6`), bulleted and numbered lists and line breaks laid out top to
-  bottom like Markdown, with each run's bold, italics, underline, strike-through, size, colour and
-  font as a styled `<tspan>`. Inline pictures and shapes take their place in the flow; floating ones
-  keep their position, and their text boxes come back as text. Table cells are read as paragraphs.
-- `.xlsx` out: the drawing as a picture at its natural size.
-
-Formulas made with `svg.latex` remember their source (the group's `data-latex` attribute), so the
-PowerPoint and Word exports write them as native, editable Office equations instead of outlines.
-The LaTeX goes through MathML (`latex2mathml`) to Office Math: fractions, scripts, roots, sums and
-integrals, accents, bars, limits, `\left`/`\right` delimiters, matrices, text and Greek letters.
-Each equation is centred on the box the formula occupied, in Cambria Math at the drawn size; in Word
-it floats over the shapes, or becomes an equation paragraph when the drawing holds nothing else.
-LaTeX with no Office equivalent stays as outlines. Reading a deck back gives an equation's
-characters as plain text, without its layout.
-
-```python
-slide = svg.Document(320, 120)
-slide.add(svg.latex(r"\int_0^1 x^2\,dx = \frac{1}{3}", display=True)).scale(2).place(160, 60)
-slide.save("formula.pptx")      # an editable equation, not shapes
-```
-
-Without the extra these formats raise an `ImportError` that names the install command.
-
 ## HTML pages
 
 `doc.save("page.html")` writes a standalone page with the drawing inline. The SVG stays static;
@@ -394,4 +254,3 @@ interaction is attached by the page, by element id:
 ```
 
 Opening an HTML file reads its first inline `<svg>`.
-

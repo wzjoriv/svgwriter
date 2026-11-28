@@ -1,3 +1,7 @@
+---
+orphan: true
+---
+
 # Logos and icons
 
 Keep a logo as a Python function with variants and generate every asset from it. Output is deterministic,
