@@ -409,7 +409,7 @@ TIMING_ATTRIBUTE_RE: Final = re.compile(r'(?<![\w-])(begin|end)="([^"]*)"')
 """A SMIL ``begin`` or ``end`` attribute; group 2 is its value (may name other elements' ids)."""
 
 HOVER_STYLE: Final = "_hover_style"
-"""Where an element keeps the properties ``on_hover`` gave it (SVG names to value text)."""
+"""Where an element keeps the properties ``interact.hover`` gave it (SVG names to value text)."""
 HOVER_SHEET_ID: Final = "svgwriter-hover"
 """Id of the ``<style>`` holding the ``:hover`` rules while a document is written."""
 POINTER_EVENTS: Final = {

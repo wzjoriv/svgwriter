@@ -1,7 +1,7 @@
 """# Playing card
 
 An adjustable playing card. `@svg.widgets.controls` declares a control per parameter, so
-`svgwriter preview` shows a form beside the card, a notebook can call `svg.interact(card)`, and
+`svgwriter preview` shows a form beside the card, a notebook can call `svg.explore(card)`, and
 `svg.sweep` turns the same parameters into an animation.
 """
 

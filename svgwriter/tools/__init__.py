@@ -14,7 +14,7 @@ widgets
 Notes
 -----
 The top-level package re-exports ``project`` and ``widgets``, so
-``svg.Project`` and ``svg.interact`` work without this path. The group itself
+``svg.Project`` and ``svg.explore`` work without this path. The group itself
 imports nothing.
 
 Examples

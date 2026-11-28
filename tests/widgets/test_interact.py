@@ -17,7 +17,7 @@ def badge(radius=10, color="#0ea5e9", label="Hi"):
 class TestInteract:
     def test_panel_and_state(self) -> None:
         panel = Recorder()
-        view = svg.interact(badge, radius=(2, 40), color=["#0ea5e9", "#f43f5e"], backend=panel, delay=0)
+        view = svg.explore(badge, radius=(2, 40), color=["#0ea5e9", "#f43f5e"], backend=panel, delay=0)
         assert list(panel.controls) == ["radius", "color"] and panel.inputs == {"radius": 10, "color": "#0ea5e9"}
         assert panel.shown == 1 and len(panel.drawings) == 1 and panel.message is None
         panel.set("radius", 30)
@@ -33,9 +33,9 @@ class TestInteract:
         def tile(doc, size=8):
             doc.rect(0, 0, size, size)
 
-        view = svg.interact(tile, backend=Recorder())
+        view = svg.explore(tile, backend=Recorder())
         assert view.values == {"size": 8} and view.document.root[0].tag == "rect"
-        assert svg.interact(badge, backend=Recorder()).values == {"radius": 10, "color": "#0ea5e9", "label": "Hi"}
+        assert svg.explore(badge, backend=Recorder()).values == {"radius": 10, "color": "#0ea5e9", "label": "Hi"}
 
     def test_errors_keep_the_last_drawing(self) -> None:
         def fragile(n=1):
@@ -44,7 +44,7 @@ class TestInteract:
             return svg.text(str(n))
 
         panel = Recorder()
-        view = svg.interact(fragile, n=(0, 10), backend=panel, delay=0)
+        view = svg.explore(fragile, n=(0, 10), backend=panel, delay=0)
         panel.set("n", 8)
         assert "too many" in panel.message and "too many" in view.error and len(panel.drawings) == 1
         assert view.document.root[0].children == ["1"]
@@ -54,7 +54,7 @@ class TestInteract:
         assert panel.message is None and view.error is None and len(panel.drawings) == 2
 
     def test_first_drawing_fails(self) -> None:
-        view = svg.interact(lambda n=1: 1 / 0, backend=Recorder())
+        view = svg.explore(lambda n=1: 1 / 0, backend=Recorder())
         with pytest.raises(RuntimeError, match="ZeroDivisionError"):
             _ = view.document
         with pytest.raises(RuntimeError, match="returned int"):
@@ -68,7 +68,7 @@ class TestInteract:
             return svg.text(str(n))
 
         panel = Recorder()
-        view = svg.interact(counted, n=(0, 9), backend=panel, delay=0)
+        view = svg.explore(counted, n=(0, 9), backend=panel, delay=0)
         view.update(n=4).update(n=1).update(n=4)
         assert calls == [1, 4] and len(panel.drawings) == 4
         view.update(n=4)
@@ -86,7 +86,7 @@ class TestInteract:
             return svg.text(str(n))
 
         panel = Recorder()
-        view = svg.interact(counted, n=(0, 9), backend=panel, delay=0.05)
+        view = svg.explore(counted, n=(0, 9), backend=panel, delay=0.05)
         for value in range(2, 8):
             panel.set("n", value)
         deadline = time.monotonic() + 5
@@ -95,7 +95,7 @@ class TestInteract:
         assert calls == [1, 7] and view.values == {"n": 7}
 
     def test_save(self, tmp_path) -> None:
-        view = svg.interact(badge, backend=Recorder()).update(radius=12)
+        view = svg.explore(badge, backend=Recorder()).update(radius=12)
         target = view.save(tmp_path / "badge.svg")
         assert 'r="12"' in target.read_text(encoding="utf-8")
         view.save(tmp_path / "badge.png")
@@ -103,14 +103,14 @@ class TestInteract:
 
     def test_show_again(self) -> None:
         panel = Recorder()
-        view = svg.interact(badge, backend=panel)
+        view = svg.explore(badge, backend=panel)
         view._ipython_display_()
         view.show()
         assert panel.shown == 3
 
     def test_unknown_backend_value(self) -> None:
         with pytest.raises(TypeError, match="no parameter"):
-            svg.interact(badge, size=(0, 1), backend=Recorder())
+            svg.explore(badge, size=(0, 1), backend=Recorder())
         with pytest.raises(RuntimeError, match="no panel"):
             Recorder().set("x", 1)
 
@@ -126,7 +126,7 @@ def test_missing_ipywidgets(monkeypatch) -> None:
     monkeypatch.delitem(sys.modules, "ipywidgets", raising=False)
     monkeypatch.setattr(builtins, "__import__", blocked)
     with pytest.raises(ImportError, match=r"pysvgwriter\[widget\]"):
-        svg.interact(badge)
+        svg.explore(badge)
 
 
 def test_notebook_backend_widgets() -> None:

@@ -33,5 +33,5 @@ def key(label: str, *, shape: str, height: float, colors: Mapping[str, tuple[svg
     square = height if shape == "circle" else None
     stack = svg.VStack(text, width=square, height=height, align="center", justify="center", background=background)
     background.animate.on("press", stack).tween("opacity", 1, PRESSED_OPACITY, PRESS_SECONDS, freeze=False)
-    stack.on_hover(opacity=HOVER_OPACITY)
+    stack.interact.hover(opacity=HOVER_OPACITY)
     return stack

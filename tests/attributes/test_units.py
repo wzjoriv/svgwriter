@@ -34,9 +34,9 @@ class TestLengths:
         assert str(svg.Length.parse(text)) == expected
 
     def test_lowercase_factories_and_input_only_units(self):
-        assert svg.length(1.5, "meters") == svg.mm(1500) == svg.m(1.5)
-        assert svg.length(2, "ft") == svg.ft(2) == svg.inch(24)
-        assert svg.q(4).to("mm").value == pytest.approx(1) and svg.length(3) == svg.Length(3)
+        assert svg.length(1.5, "meters") == svg.mm(1500) == svg.units.m(1.5)
+        assert svg.length(2, "ft") == svg.units.ft(2) == svg.inch(24)
+        assert svg.units.q(4).to("mm").value == pytest.approx(1) and svg.length(3) == svg.Length(3)
         with pytest.raises(ValueError, match="unknown length unit"):
             svg.length(1, "cubit")
         with pytest.raises(ValueError, match="unknown length unit"):
@@ -49,15 +49,15 @@ class TestLengths:
         assert str(doc.rect(width=2 * svg.inch, height=svg.inch).attributes["height"]) == "1in"
 
     @pytest.mark.parametrize(("unit", "text"), [
-        (svg.km, "1000000mm"), (svg.um, "0.001mm"), (svg.nmi, "1852000mm"), (svg.yd, "36in"),
-        (svg.mi, "63360in"), (svg.furlong, "7920in"), (svg.mil, "0.001in"),
+        (svg.units.km, "1000000mm"), (svg.units.um, "0.001mm"), (svg.units.nmi, "1852000mm"), (svg.units.yd, "36in"),
+        (svg.units.mi, "63360in"), (svg.units.furlong, "7920in"), (svg.units.mil, "0.001in"),
     ])
     def test_units_svg_has_no_name_for_are_written_in_svg_units(self, unit, text):
         assert str(unit(1)) == str(1 * unit) == text
 
     def test_spelled_out_units(self):
-        assert svg.length(2, "miles") == svg.mi(2) and svg.length(1, "µm") == svg.um(1)
-        assert svg.length(1, "nautical mile") == svg.nmi(1) and svg.length(3, "thou") == svg.mil(3)
+        assert svg.length(2, "miles") == svg.units.mi(2) and svg.length(1, "µm") == svg.units.um(1)
+        assert svg.length(1, "nautical mile") == svg.units.nmi(1) and svg.length(3, "thou") == svg.units.mil(3)
 
 
 class TestAngles:

@@ -94,11 +94,11 @@ plays click, press and release starts as triggers on the clicked shape (and read
 click starts again); it has no hover trigger. Still images, PDF, video and other formats without events
 show the resting state.
 
-For a style that holds only while the pointer is over an element, use `on_hover` with presentation
+For a style that holds only while the pointer is over an element, use `interact.hover` with presentation
 properties; it is written as a CSS `:hover` rule:
 
 ```python
-key.on_hover(fill="darkcyan", stroke="white", stroke_width=2)
+key.interact.hover(fill="darkcyan", stroke="white", stroke_width=2)
 ```
 
 Interactions bundle these under a name: `el.interact.button()` dims an element under the pointer and
@@ -108,7 +108,7 @@ with `@svg.preset.interaction`; `on()` also accepts any SVG 1.1 event name (`"mo
 ```python
 @svg.preset.interaction
 def nudge(element: svg.Element, *, distance: float = 4) -> None:
-    element.on_hover(opacity=0.9)
+    element.interact.hover(opacity=0.9)
     element.animate.on("click").move_by(0, -distance, dur=0.15)
 
 

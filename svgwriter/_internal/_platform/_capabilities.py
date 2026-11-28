@@ -218,7 +218,7 @@ def missing(name: str, action: str, error: type[Exception] = ImportError) -> Exc
     name : str
         The missing capability.
     action : str
-        What needed it (``"svg.interact"``, ``"video export"``).
+        What needed it (``"svg.explore"``, ``"video export"``).
     error : type of Exception, optional
         The exception class to build. Defaults to ImportError.
 

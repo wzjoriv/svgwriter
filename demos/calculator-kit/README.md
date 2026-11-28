@@ -14,7 +14,7 @@ What it shows:
 - The theme (`theme.toml`) for the neutral colours and fonts, filters for the shell shadows, and a project
   animation preset (`animations/press.py`) that presses the `=` key in the SVG.
 
-Every parameter of `calculator` is a control, so `svgwriter preview` and `svg.interact` offer them all; the notebook also shows stills of the glass, brutal and soft shells.
+Every parameter of `calculator` is a control, so `svgwriter preview` and `svg.explore` offer them all; the notebook also shows stills of the glass, brutal and soft shells.
 
 Open the notebook, [calculator-kit.ipynb](calculator-kit.ipynb), to see the demo step by step with its pictures; run it to get a panel for the controls.
 

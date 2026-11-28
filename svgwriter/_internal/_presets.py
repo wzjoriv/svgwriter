@@ -400,7 +400,7 @@ def catalogue(registry: Registry[Any], module: str) -> tuple[Callable[[str], Any
 class InteractionPresets(Registry[Callable[..., None]]):
     """Interactions: a function that makes an element respond to the pointer, reused as ``el.interact.<name>()``.
 
-    Decorate ``function(element, *, option=default, ...)``; it adds hover styles (``element.on_hover``) and
+    Decorate ``function(element, *, option=default, ...)``; it adds hover styles (``element.interact.hover``) and
     event-started animations (``element.animate.on``) in place. Use bare, or with ``name=`` and ``replace=``.
 
     Examples
@@ -408,7 +408,7 @@ class InteractionPresets(Registry[Callable[..., None]]):
     >>> import svgwriter as svg
     >>> @svg.preset.interaction
     ... def glow(element: svg.Element, *, color: str = "gold") -> None:
-    ...     element.on_hover(stroke=color, stroke_width=3)
+    ...     element.interact.hover(stroke=color, stroke_width=3)
     >>> doc = svg.Document(width=40, height=20)
     >>> button = doc.rect(5, 5, 30, 10, id="b").interact.glow(color="orange")
     >>> "#b:hover { stroke:orange !important;stroke-width:3 !important }" in doc.to_string()

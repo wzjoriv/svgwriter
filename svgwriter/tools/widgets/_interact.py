@@ -1,5 +1,5 @@
 """
-``svg.interact``: a drawing beside its controls, redrawn as they change.
+``svg.explore``: a drawing beside its controls, redrawn as they change.
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ from ._control import Control
 from ._draw import arguments, draw
 from ._infer import controls_of
 
-__all__ = ["Backend", "Interactive", "interact"]
+__all__ = ["Backend", "Interactive", "explore"]
 
 Changed = Callable[[str, Any], None]
 
@@ -56,7 +56,7 @@ def _cell() -> int | None:
 
 
 class Interactive:
-    """A drawing function with live controls; :func:`interact` makes one.
+    """A drawing function with live controls; :func:`explore` makes one.
 
     Parameters
     ----------
@@ -78,7 +78,7 @@ class Interactive:
 
     See Also
     --------
-    interact : Build and show one in a notebook.
+    explore : Build and show one in a notebook.
 
     Examples
     --------
@@ -124,7 +124,7 @@ class Interactive:
         Examples
         --------
         >>> import svgwriter as svg
-        >>> svg.interact(lambda n=3: svg.text(str(n)), backend=svg.widgets.Recorder()).values
+        >>> svg.explore(lambda n=3: svg.text(str(n)), backend=svg.widgets.Recorder()).values
         {'n': 3}
         """
         return dict(self._values)
@@ -146,7 +146,7 @@ class Interactive:
         Examples
         --------
         >>> import svgwriter as svg
-        >>> view = svg.interact(lambda r=5: svg.circle(r, r, r), backend=svg.widgets.Recorder())
+        >>> view = svg.explore(lambda r=5: svg.circle(r, r, r), backend=svg.widgets.Recorder())
         >>> view.document.root[0].tag
         'circle'
         """
@@ -177,7 +177,7 @@ class Interactive:
         Examples
         --------
         >>> import svgwriter as svg
-        >>> view = svg.interact(lambda r=5: svg.circle(r, r, r), backend=svg.widgets.Recorder())
+        >>> view = svg.explore(lambda r=5: svg.circle(r, r, r), backend=svg.widgets.Recorder())
         >>> view.update(r=8).values
         {'r': 8}
         """
@@ -196,7 +196,7 @@ class Interactive:
         Examples
         --------
         >>> import svgwriter as svg
-        >>> view = svg.interact(lambda r=5: svg.circle(r, r, r), backend=svg.widgets.Recorder())
+        >>> view = svg.explore(lambda r=5: svg.circle(r, r, r), backend=svg.widgets.Recorder())
         >>> view.redraw()
         """
         key = tuple((name, _frozen(value)) for name, value in self._values.items())
@@ -255,7 +255,7 @@ class Interactive:
         Examples
         --------
         >>> import svgwriter as svg
-        >>> view = svg.interact(lambda r=5: svg.circle(r, r, r), backend=svg.widgets.Recorder())
+        >>> view = svg.explore(lambda r=5: svg.circle(r, r, r), backend=svg.widgets.Recorder())
         >>> view.save("dot.svg")  # doctest: +SKIP
         """
         target = Path(path)
@@ -275,19 +275,19 @@ class Interactive:
         >>> import svgwriter as svg
         >>> def card(rank="A", glow=False):
         ...     return svg.text(rank)
-        >>> svg.interact(card, backend=svg.widgets.Recorder()).update(glow=True).code()
+        >>> svg.explore(card, backend=svg.widgets.Recorder()).update(glow=True).code()
         "card(rank='A', glow=True)"
         """
         parts = (f"{name}={self.controls[name].code(value)}" for name, value in self._values.items())
         return f"{getattr(self.function, '__name__', 'draw')}({', '.join(parts)})"
 
     def show(self) -> None:
-        """Display the panel again (a notebook shows it once when :func:`interact` runs).
+        """Display the panel again (a notebook shows it once when :func:`explore` runs).
 
         Examples
         --------
         >>> import svgwriter as svg
-        >>> svg.interact(lambda r=5: svg.circle(r, r, r), backend=svg.widgets.Recorder()).show()
+        >>> svg.explore(lambda r=5: svg.circle(r, r, r), backend=svg.widgets.Recorder()).show()
         """
         self._backend.show()
 
@@ -297,7 +297,7 @@ class Interactive:
         self.show()
 
 
-def interact(function: Callable[..., Any], *, backend: Backend | None = None, delay: float = DEBOUNCE_SECONDS,
+def explore(function: Callable[..., Any], *, backend: Backend | None = None, delay: float = DEBOUNCE_SECONDS,
              **controls: Any) -> Interactive:
     """Show *function*'s drawing beside a panel of controls, redrawn as they change.
 
@@ -340,7 +340,7 @@ def interact(function: Callable[..., Any], *, backend: Backend | None = None, de
     >>> import svgwriter as svg
     >>> def badge(radius=12, color="#0ea5e9"):
     ...     return svg.circle(radius, radius, radius, fill=color)
-    >>> view = svg.interact(badge, radius=(4, 40), color=["#0ea5e9", "#f43f5e"], backend=svg.widgets.Recorder())
+    >>> view = svg.explore(badge, radius=(4, 40), color=["#0ea5e9", "#f43f5e"], backend=svg.widgets.Recorder())
     >>> view.update(radius=30).code()
     "badge(radius=30, color='#0ea5e9')"
     """

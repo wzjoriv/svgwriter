@@ -271,7 +271,7 @@ def sweep(function: Callable[..., Any], *, dur: float = SWEEP_DURATION, fps: flo
 
     See Also
     --------
-    interact : The same parameters on live controls.
+    explore : The same parameters on live controls.
 
     Examples
     --------
