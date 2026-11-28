@@ -10,10 +10,9 @@ The package installs as `pysvgwriter` and imports as `svgwriter`:
 import svgwriter as svg
 ```
 
-svgwriter needs Python 3.10 or newer. It installs [skia-python](https://kyamagu.github.io/skia-python/)
-(geometry, text outlines and rendering), numpy (pixels, points and colors as arrays), uharfbuzz (text
-shaping), tomlkit (theme files), click (the command line) and
-[python-lcms2](https://wzjoriv.github.io/python-lcms2/) (ICC colour profiles through LittleCMS).
+svgwriter needs Python 3.10 or newer; everything else it needs installs with it. (The core
+dependencies are skia-python for drawing and text, numpy, uharfbuzz for text shaping, tomlkit, click and
+python-lcms2 for colour profiles.)
 Nothing else is needed at runtime.
 
 Optional extras:
@@ -26,6 +25,13 @@ Optional extras:
   ```
 
   Without it, `svgwriter new` asks for the preset with a numbered menu.
+
+- **office** for PowerPoint, Word and Excel files (read and write) through python-pptx, python-docx and
+  openpyxl:
+
+  ```console
+  $ pip install "pysvgwriter[office]"
+  ```
 
 - **widget** for {doc}`notebook panels <../guides/widgets>` (`svg.explore`) through ipywidgets:
 

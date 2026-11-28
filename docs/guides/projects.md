@@ -77,6 +77,7 @@ formats = ["pdf", "svg", "png"]
 directory = "output"
 png = { dpi = 150 }         # options for one format, passed to its exporter
 gif = { fps = 12, scale = 0.5 }
+pptx = { deck = true }      # every scene as one slide of a single deck
 ```
 
 | Key | Default | Meaning |
@@ -89,6 +90,7 @@ gif = { fps = 12, scale = 0.5 }
 | `outputs.formats` | `["svg", "png"]` | Any export format name, plus `gif`, `mp4`, `webm`, `mov` for animations |
 | `outputs.directory` | `"output"` | Where outputs go |
 | `outputs.<format>` | none | Exporter options for that format, such as `png = { scale = 2 }` |
+| `outputs.<format>.deck` | `false` | For formats with several pages (PowerPoint, PDF): write every scene of the project into one file, one page or slide each, instead of one file per scene |
 
 A `[preview]` table configures `svgwriter preview`; see [Live preview](#live-preview).
 
