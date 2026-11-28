@@ -7,11 +7,11 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Elements - svgwriter 2.8.0</title>
+        <title>Elements - svgwriter 2.9.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bdbc586f" />
     
     
 
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.8.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.9.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.8.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.9.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.8.0</span>
+  <span class="sidebar-versions-label">2.9.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -347,6 +347,9 @@ arguments use Python spelling (<code class="docutils literal notranslate"><span 
 <span class="go">('rect', 2)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-0-0-0.svg" />
+</figure>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="svgwriter.model.elements.Element.tag">
 <span class="sig-name descname"><span class="pre">tag</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.15)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="headerlink" href="#svgwriter.model.elements.Element.tag" title="Link to this definition">¶</a></dt>
@@ -390,6 +393,9 @@ arguments use Python spelling (<code class="docutils literal notranslate"><span 
 <span class="go">'a'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-1-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py property">
@@ -414,6 +420,31 @@ arguments use Python spelling (<code class="docutils literal notranslate"><span 
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="svgwriter.model.elements.Element.interact">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">interact</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><a class="headerlink" href="#svgwriter.model.elements.Element.interact" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">button.interact.button()</span></code>; add your own with
+<code class="docutils literal notranslate"><span class="pre">&#64;svg.preset.interaction</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Interactions</em> – The presets; each call applies one and returns this element.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">interact</span><span class="o">.</span><span class="n">highlight</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"crimson"</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-3-0-0.svg" />
+</figure>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Interaction presets for this element</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="svgwriter.model.elements.Element.home">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">home</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#svgwriter.model.elements.Element" title="svgwriter.model.elements.core._element.Element"><span class="pre">Element</span></a></span><a class="headerlink" href="#svgwriter.model.elements.Element.home" title="Link to this definition">¶</a></dt>
 <dd><p>a detached copy to start each frame from.</p>
@@ -430,7 +461,7 @@ computes every frame afresh, so the motion never drifts and frames can be drawn 
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.catalog.preset.behavior</span></code></dt><dd><p>Write a behavior.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.library.preset.behavior</span></code></dt><dd><p>Write a behavior.</p>
 </dd>
 </dl>
 </div>
@@ -479,6 +510,9 @@ or <em>default</em>.</p>
 <span class="go">('red', '12px', 1)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-5-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -510,6 +544,9 @@ both behave like <code class="docutils literal notranslate"><span class="pre">cl
 <span class="go">('dot', 'use')</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-6-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -543,6 +580,9 @@ the child but not yet placed are collected into the root <code class="docutils l
 <span class="go">'circle'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-7-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -582,6 +622,9 @@ the child but not yet placed are collected into the root <code class="docutils l
 <span class="go">False</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-9-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -618,6 +661,9 @@ the child but not yet placed are collected into the root <code class="docutils l
 <span class="go">2</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-11-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -646,6 +692,9 @@ the child but not yet placed are collected into the root <code class="docutils l
 <span class="go">('circle', None)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-12-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -667,6 +716,9 @@ the child but not yet placed are collected into the root <code class="docutils l
 <span class="go">2</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-13-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -715,6 +767,9 @@ the attribute.</p>
 <span class="go">'blue'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-15-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -736,6 +791,9 @@ the attribute.</p>
 <span class="go">'circle'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-16-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -781,6 +839,9 @@ the attribute.</p>
 <span class="go">['rect', 'circle']</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-18-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py property">
@@ -827,6 +888,9 @@ Defaults to infinity.</p></li>
 <span class="go">['g', 'circle', 'rect']</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-20-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py property">
@@ -844,6 +908,9 @@ Assigning None removes it.</p>
 <span class="go">('Logo', 'Logo')</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-21-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -935,6 +1002,9 @@ one color, a list of colors or an <code class="docutils literal notranslate"><sp
 <span class="go">0</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-25-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -954,6 +1024,9 @@ one color, a list of colors or an <code class="docutils literal notranslate"><sp
 <span class="go">True</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-26-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -1031,6 +1104,11 @@ Inkscape writes them) is changed there, where it takes effect.</p>
 <span class="go">(Style({'fill': 'blue'}), False)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-28-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-28-0-1.svg" />
+</figcaption>
+</figure>
 </dd></dl>
 
 <dl class="py property">
@@ -1050,6 +1128,9 @@ Inkscape writes them) is changed there, where it takes effect.</p>
 <span class="go">'&lt;title&gt;New&lt;/title&gt;'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-29-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -1106,6 +1187,9 @@ Inkscape writes them) is changed there, where it takes effect.</p>
 <span class="go">'red'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-31-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py property">
@@ -1167,6 +1251,9 @@ appending to a list; output is the shortest equivalent <code class="docutils lit
 <span class="go">Point(x=60.0, y=50.0)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-33-0-0.svg" />
+</figure>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="svgwriter.model.elements.Transformable.transform_attribute">
 <span class="sig-name descname"><span class="pre">transform_attribute</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.15)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'transform'</span></span><a class="headerlink" href="#svgwriter.model.elements.Transformable.transform_attribute" title="Link to this definition">¶</a></dt>
@@ -1199,6 +1286,9 @@ Assign <code class="docutils literal notranslate"><span class="pre">None</span><
 <span class="go">Point(x=5.0, y=4.0)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-34-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py property">
@@ -1253,6 +1343,11 @@ lines up left edges and <code class="docutils literal notranslate"><span class="
 <span class="go">BBox(x=15.0, y=12.0, width=10.0, height=4.0)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-36-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-36-0-1.svg" />
+</figcaption>
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -1286,6 +1381,9 @@ the child but not yet placed are collected into the root <code class="docutils l
 <span class="go">'circle'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-37-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -1401,6 +1499,9 @@ the child but not yet placed are collected into the root <code class="docutils l
 <span class="go">False</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-41-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -1437,6 +1538,9 @@ the child but not yet placed are collected into the root <code class="docutils l
 <span class="go">2</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-43-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -1465,6 +1569,9 @@ the child but not yet placed are collected into the root <code class="docutils l
 <span class="go">('circle', None)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-44-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -1486,6 +1593,9 @@ the child but not yet placed are collected into the root <code class="docutils l
 <span class="go">2</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-45-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -1594,6 +1704,9 @@ the attribute.</p>
 <span class="go">'blue'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-49-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -1615,6 +1728,9 @@ the attribute.</p>
 <span class="go">'circle'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-50-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -1654,6 +1770,9 @@ the attribute.</p>
 <span class="go">'a'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-52-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -1679,6 +1798,9 @@ the attribute.</p>
 <span class="go">['rect', 'circle']</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-53-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py property">
@@ -1725,6 +1847,9 @@ Defaults to infinity.</p></li>
 <span class="go">['g', 'circle', 'rect']</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-55-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py property">
@@ -1742,6 +1867,9 @@ Assigning None removes it.</p>
 <span class="go">('Logo', 'Logo')</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-56-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py property">
@@ -1851,6 +1979,9 @@ uses the anchor.</p></li>
 <span class="go">Point(x=20.0, y=20.0)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-60-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -1894,6 +2025,9 @@ uses the anchor.</p></li>
 <span class="go">0</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-62-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -1936,6 +2070,9 @@ uses the anchor.</p></li>
 <span class="go">True</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-64-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -2069,6 +2206,11 @@ Inkscape writes them) is changed there, where it takes effect.</p>
 <span class="go">(Style({'fill': 'blue'}), False)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-68-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-68-0-1.svg" />
+</figcaption>
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -2113,6 +2255,9 @@ Inkscape writes them) is changed there, where it takes effect.</p>
 <span class="go">'&lt;title&gt;New&lt;/title&gt;'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-70-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -2226,6 +2371,9 @@ of the parent’s. Defaults to False.</p></li>
 <span class="go">'red'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-73-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py property">
@@ -2275,6 +2423,9 @@ element itself does the same.</p>
 <span class="go">True</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-75-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -2320,6 +2471,9 @@ the element and the alternatives.</p>
 <span class="go">(5, 10, 4)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-77-0-0.svg" />
+</figure>
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.model.elements._behavior.Convertible.to_path">
 <span class="sig-name descname"><span class="pre">to_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.elements.shapes.Path" title="svgwriter.model.elements.shapes.Path"><span class="pre">Path</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/elements/_behavior/_convert.html#Convertible.to_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.elements._behavior.Convertible.to_path" title="Link to this definition">¶</a></dt>
@@ -2366,6 +2520,9 @@ is for elements that have none.</p>
 <span class="go">('g', 1)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-79-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -2391,6 +2548,9 @@ is for elements that have none.</p>
 <span class="go">((20, 20), (5.0, 5.0, 10.0))</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-80-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -2431,6 +2591,9 @@ path with a boolean intersection.</p>
 <span class="go">'clipPath'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-81-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -2449,6 +2612,9 @@ path with a boolean intersection.</p>
 <span class="go">True</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-82-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py property">
@@ -2543,6 +2709,11 @@ left operand’s presentation attributes.</p>
 <span class="go">(15.0, 5.0)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-86-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-elements-86-0-1.svg" />
+</figcaption>
+</figure>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="svgwriter.model.elements.PathOperand.geometry_attributes">
 <span class="sig-name descname"><span class="pre">geometry_attributes</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.15)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#frozenset" title="(in Python v3.15)"><span class="pre">frozenset</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({})</span></span><a class="headerlink" href="#svgwriter.model.elements.PathOperand.geometry_attributes" title="Link to this definition">¶</a></dt>
@@ -2623,6 +2794,9 @@ left operand’s presentation attributes.</p>
 <span class="go">5.0</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-90-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -2655,6 +2829,9 @@ and an unfilled copy for the stroke.</p>
 <span class="go">(['g', 'rect'], 4)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-91-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -3318,6 +3495,9 @@ built fluently: <code class="docutils literal notranslate"><span class="pre">pat
 <span class="go">'&lt;path d="M0 0 H10 M0 5 H10" stroke="red"/&gt;'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-117-0-0.svg" />
+</figure>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="svgwriter.model.elements.shapes.Path.geometry_attributes">
 <span class="sig-name descname"><span class="pre">geometry_attributes</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.15)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#frozenset" title="(in Python v3.15)"><span class="pre">frozenset</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'d',</span> <span class="pre">'pathLength'})</span></span><a class="headerlink" href="#svgwriter.model.elements.shapes.Path.geometry_attributes" title="Link to this definition">¶</a></dt>
@@ -3371,6 +3551,9 @@ line between their centres), or None to detach it.</p>
 <span class="go">(True, 'M10 20 L90 20')</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-119-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py property">
@@ -3385,6 +3568,9 @@ line between their centres), or None to detach it.</p>
 <span class="go">'&lt;path d="M5 5 H20"/&gt;'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-120-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py property">
@@ -3401,6 +3587,9 @@ numpy: <code class="docutils literal notranslate"><span class="pre">p.nodes</spa
 <span class="go">'M1 2 L11 2 L11 12'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-121-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -3590,6 +3779,9 @@ numpy: <code class="docutils literal notranslate"><span class="pre">p.nodes</spa
 <span class="go">'&lt;polyline points="5,5 6,6"/&gt;'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-129-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -4270,6 +4462,9 @@ place or assign new arrays. Pixels are written as a PNG <code class="docutils li
 <span class="go">[1.0, 0.0, 0.0, 1.0]</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-155-0-0.svg" />
+</figure>
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.model.elements.structure.Image.open">
 <span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.15)"><span class="pre">PathLike</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.model.elements.structure.Image" title="svgwriter.model.elements.structure._image.Image"><span class="pre">Image</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/elements/structure/_image.html#Image.open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.model.elements.structure.Image.open" title="Link to this definition">¶</a></dt>
@@ -4329,6 +4524,9 @@ place or assign new arrays. Pixels are written as a PNG <code class="docutils li
 <span class="go">1.0</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-158-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py property">
@@ -4345,6 +4543,9 @@ place or assign new arrays. Pixels are written as a PNG <code class="docutils li
 <span class="go">(2, 2, 1)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-159-0-0.svg" />
+</figure>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Alpha</p>
@@ -4847,6 +5048,9 @@ presentation, conditional and core attributes in Python spelling.</p></li>
 <span class="go">'&lt;svg xmlns="http://www.w3.org/2000/svg" version="1.1"&gt;&lt;defs/&gt;&lt;/svg&gt;'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-179-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py attribute">
@@ -5030,6 +5234,9 @@ an id if it has none. Defaults to None.</p></li>
 <span class="go">'&lt;use xmlns:xlink="http://www.w3.org/1999/xlink" x="10" xlink:href="#dot"/&gt;'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-185-0-0.svg" />
+</figure>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="svgwriter.model.elements.structure.Use.geometry_attributes">
 <span class="sig-name descname"><span class="pre">geometry_attributes</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.15)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#frozenset" title="(in Python v3.15)"><span class="pre">frozenset</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'height',</span> <span class="pre">'width',</span> <span class="pre">'x',</span> <span class="pre">'xlink:href',</span> <span class="pre">'y'})</span></span><a class="headerlink" href="#svgwriter.model.elements.structure.Use.geometry_attributes" title="Link to this definition">¶</a></dt>
@@ -5235,6 +5442,9 @@ be transformed freely.</p>
 <span class="go">((0.0, -4.0, 4.0), (0.0, 20.0, 0.0))</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-190-0-0.svg" />
+</figure>
 <dl class="py property">
 <dt class="sig sig-object py" id="svgwriter.model.elements.text.Character.index">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">index</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><a class="headerlink" href="#svgwriter.model.elements.text.Character.index" title="Link to this definition">¶</a></dt>
@@ -5283,6 +5493,9 @@ be transformed freely.</p>
 <span class="go">20.0</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-194-0-0.svg" />
+</figure>
 </dd></dl>
 
 </dd></dl>
@@ -5310,6 +5523,9 @@ be transformed freely.</p>
 <span class="go">'&lt;text x="0" y="20"&gt;Hello &lt;tspan fill="red"&gt;world&lt;/tspan&gt;&lt;/text&gt;'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-195-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py class">
@@ -5333,6 +5549,9 @@ be transformed freely.</p>
 <span class="go">'Hlo'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-196-0-0.svg" />
+</figure>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="svgwriter.model.elements.text.CharacterSelection.fill">
 <span class="sig-name descname"><span class="pre">fill</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PaintValue</span></span><a class="headerlink" href="#svgwriter.model.elements.text.CharacterSelection.fill" title="Link to this definition">¶</a></dt>
@@ -8782,6 +9001,9 @@ one instant, so they take only the moment. Presets added with
 <span class="go">'0.42 0 0.58 1'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-299-0-0.svg" />
+</figure>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="svgwriter.Motion.element">
 <span class="sig-name descname"><span class="pre">element</span></span><a class="headerlink" href="#svgwriter.Motion.element" title="Link to this definition">¶</a></dt>
@@ -8819,6 +9041,9 @@ this element.</p></li>
 <span class="go">'go.click+0.2s'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-300-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -8849,6 +9074,9 @@ function need not be registered; <code class="xref py py-data docutils literal n
 <span class="go">True</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-elements-301-0-0.svg" />
+</figure>
 </dd></dl>
 
 <dl class="py method">
@@ -9062,6 +9290,7 @@ rewritten to the matched start shape, which looks the same.</p>
 <li><a class="reference internal" href="#svgwriter.model.elements.Element.content"><code class="docutils literal notranslate"><span class="pre">Element.content</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.elements.Element.id"><code class="docutils literal notranslate"><span class="pre">Element.id</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.elements.Element.animate"><code class="docutils literal notranslate"><span class="pre">Element.animate</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.model.elements.Element.interact"><code class="docutils literal notranslate"><span class="pre">Element.interact</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.elements.Element.home"><code class="docutils literal notranslate"><span class="pre">Element.home</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.elements.Element.computed"><code class="docutils literal notranslate"><span class="pre">Element.computed()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.model.elements.Element.clone"><code class="docutils literal notranslate"><span class="pre">Element.clone()</span></code></a></li>
@@ -9867,7 +10096,7 @@ rewritten to the matched start shape, which looks the same.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e9694baa"></script>
+</div><script src="../_static/documentation_options.js?v=8da69bee"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

@@ -7,11 +7,11 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Themes - svgwriter 2.8.0</title>
+        <title>Themes - svgwriter 2.9.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bdbc586f" />
     
     
 
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.8.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.9.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.8.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.9.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.8.0</span>
+  <span class="sidebar-versions-label">2.9.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -323,6 +323,9 @@ decides how each role looks. Changing the theme restyles the whole drawing.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">to_string</span><span class="p">()[:</span><span class="mi">200</span><span class="p">])</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-themes-0-0.svg" />
+</figure>
 <section id="roles-in-the-output">
 <h2>Roles in the output<a class="headerlink" href="#roles-in-the-output" title="Link to this heading">¶</a></h2>
 <p>The SVG gets one <code class="docutils literal notranslate"><span class="pre">&lt;style</span> <span class="pre">id=&quot;svgwriter-theme&quot;&gt;</span></code> holding a <code class="docutils literal notranslate"><span class="pre">.role-&lt;name&gt;</span></code> rule for each role in use
@@ -341,6 +344,9 @@ on an element into its inline <code class="docutils literal notranslate"><span c
 <span class="nb">print</span><span class="p">(</span><span class="n">warn</span><span class="o">.</span><span class="n">style</span><span class="p">[</span><span class="s2">"stroke"</span><span class="p">],</span> <span class="n">warn</span><span class="o">.</span><span class="n">classes</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-themes-1-0.svg" />
+</figure>
 <p>Builder presets work the same way: <code class="docutils literal notranslate"><span class="pre">svg.paths.star(...,</span> <span class="pre">fill=&quot;gold&quot;)</span></code> keeps its gold fill and takes the
 rest of the <code class="docutils literal notranslate"><span class="pre">shape</span></code> role.</p>
 </section>
@@ -687,6 +693,9 @@ so threads and async tasks each keep their own; outside any block the default is
 <span class="nb">print</span><span class="p">(</span><span class="n">figure</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-themes-4-0.svg" />
+</figure>
 </section>
 <section id="theme-files">
 <h2>Theme files<a class="headerlink" href="#theme-files" title="Link to this heading">¶</a></h2>
@@ -814,7 +823,7 @@ new keys change. A theme built directly with <code class="docutils literal notra
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e9694baa"></script>
+</div><script src="../_static/documentation_options.js?v=8da69bee"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

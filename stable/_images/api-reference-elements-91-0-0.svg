@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="-2 -2 12 12" version="1.1">
+  <defs>
+    <clipPath id="s07667c-clipPath1">
+      <path d="M0 0 H8 V8 H0 Z"/>
+    </clipPath>
+  </defs>
+  <g>
+    <g clip-path="url(#s07667c-clipPath1)">
+      <g>
+        <svg x="0" y="0" width="4" height="4" viewBox="0 0 4.0 4.0" version="1.1">
+          <circle cx="2" cy="2" r="1"/>
+        </svg>
+        <svg x="4" y="0" width="4" height="4" viewBox="0 0 4.0 4.0" version="1.1">
+          <circle cx="2" cy="2" r="1"/>
+        </svg>
+        <svg x="0" y="4" width="4" height="4" viewBox="0 0 4.0 4.0" version="1.1">
+          <circle cx="2" cy="2" r="1"/>
+        </svg>
+        <svg x="4" y="4" width="4" height="4" viewBox="0 0 4.0 4.0" version="1.1">
+          <circle cx="2" cy="2" r="1"/>
+        </svg>
+      </g>
+    </g>
+    <rect x="0" y="0" width="8" height="8" fill="none" stroke="black"/>
+  </g>
+</svg>

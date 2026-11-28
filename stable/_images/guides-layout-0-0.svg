@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="146" height="87.2812" viewBox="0 0 146 87.2812" version="1.1">
+  <style id="s80f577-svgwriter-theme" type="text/css">.role-surface { fill:#f4f6f8;stroke:none }
+.role-accent { fill:#fbbf24;stroke:none }
+.role-title { fill:#0f766e;stroke:none;font-family:Helvetica, Arial, sans-serif;font-size:24px;font-weight:700 }
+.role-caption { fill:#575e66;stroke:none;font-family:Helvetica, Arial, sans-serif;font-size:11px;font-weight:400 }</style>
+  <g>
+    <rect x="0" y="0" width="146" height="87.2812" rx="12" class="role-surface"/>
+    <text style="font-size:16" class="role-title" transform="translate(16 30.4844)">Storage</text>
+    <text style="font-size:12" class="role-caption" transform="translate(16 52.7383)">42 GB of 64 GB used</text>
+    <rect x="0" y="0" width="114" height="8" rx="4" class="role-accent" transform="translate(16 63.2812)"/>
+  </g>
+</svg>

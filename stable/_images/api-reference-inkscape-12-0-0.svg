@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1">
+  <rect id="s134fe1-a" x="0" y="0" width="10" height="10"/>
+  <rect id="s134fe1-b" x="50" y="0" width="10" height="10"/>
+  <path d="M5 5 L55 5" inkscape:connector-type="polyline" inkscape:connector-curvature="0" inkscape:connection-start="#s134fe1-a" inkscape:connection-end="#s134fe1-b"/>
+</svg>

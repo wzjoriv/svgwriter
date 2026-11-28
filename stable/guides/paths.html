@@ -7,11 +7,11 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Paths, boolean operations and measurement - svgwriter 2.8.0</title>
+        <title>Paths, boolean operations and measurement - svgwriter 2.9.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bdbc586f" />
     
     
 
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.8.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.9.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.8.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.9.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.8.0</span>
+  <span class="sidebar-versions-label">2.9.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -320,6 +320,9 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-paths-0-0.svg" />
+</figure>
 <p>Drawing methods: <code class="docutils literal notranslate"><span class="pre">move_to</span></code>, <code class="docutils literal notranslate"><span class="pre">line_to</span></code>, <code class="docutils literal notranslate"><span class="pre">horizontal_to</span></code>, <code class="docutils literal notranslate"><span class="pre">vertical_to</span></code>, <code class="docutils literal notranslate"><span class="pre">curve_to</span></code>, <code class="docutils literal notranslate"><span class="pre">smooth_curve_to</span></code>,
 <code class="docutils literal notranslate"><span class="pre">quad_to</span></code>, <code class="docutils literal notranslate"><span class="pre">smooth_quad_to</span></code>, <code class="docutils literal notranslate"><span class="pre">arc_to(rx,</span> <span class="pre">ry,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">rotation=0,</span> <span class="pre">large=False,</span> <span class="pre">clockwise=True)</span></code>, <code class="docutils literal notranslate"><span class="pre">close</span></code>.
 Each takes <code class="docutils literal notranslate"><span class="pre">relative=True</span></code> for the lowercase command. Path data text works too: <code class="docutils literal notranslate"><span class="pre">svg.path(&quot;M0</span> <span class="pre">0</span> <span class="pre">H10&quot;)</span></code>.</p>
@@ -338,6 +341,11 @@ numpy broadcasting edits the whole path at once:</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>        <span class="c1"># (50, 2), read-only</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-paths-1-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-1-1.svg" />
+</figcaption>
+</figure>
 </section>
 <section id="boolean-operations">
 <h2>Boolean operations<a class="headerlink" href="#boolean-operations" title="Link to this heading">¶</a></h2>
@@ -351,6 +359,13 @@ numpy broadcasting edits the whole path at once:</p>
 <span class="n">many</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>      <span class="c1"># n-ary, one skia operation</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-paths-2-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-2-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-2-2.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-2-3.svg" />
+</figcaption>
+</figure>
 <p>Results are <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> elements carrying the left operand’s style. <code class="docutils literal notranslate"><span class="pre">simplified()</span></code> removes overlaps, and
 <code class="docutils literal notranslate"><span class="pre">stroked()</span></code> turns a stroke into a filled outline.</p>
 <p>Boolean operations combine filled areas. An open path (no <code class="docutils literal notranslate"><span class="pre">Z</span></code>) is treated as closed by a straight line,
@@ -367,6 +382,13 @@ is the same under either rule:</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">joined</span><span class="o">.</span><span class="n">contains_point</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">holed</span><span class="o">.</span><span class="n">contains_point</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">merged</span><span class="o">.</span><span class="n">contains_point</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-paths-3-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-3-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-3-2.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-3-3.svg" />
+</figcaption>
+</figure>
 </section>
 <section id="measurement">
 <h2>Measurement<a class="headerlink" href="#measurement" title="Link to this heading">¶</a></h2>
@@ -377,6 +399,9 @@ is the same under either rule:</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">ring</span><span class="o">.</span><span class="n">exact_bbox</span><span class="p">())</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-paths-4-0.svg" />
+</figure>
 </section>
 <section id="walking-along-a-path">
 <h2>Walking along a path<a class="headerlink" href="#walking-along-a-path" title="Link to this heading">¶</a></h2>
@@ -389,6 +414,12 @@ is the same under either rule:</p>
 <span class="n">ticks</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">distribute</span><span class="p">([</span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">)],</span> <span class="n">along</span><span class="o">=</span><span class="n">wave</span><span class="p">)</span>   <span class="c1"># turned to follow it</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-paths-5-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-5-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-5-2.svg" />
+</figcaption>
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">normal_at</span></code> is the tangent turned a quarter counter-clockwise on screen, which points outwards on
 rectangles, circles and ellipses. <code class="docutils literal notranslate"><span class="pre">sample</span></code> and <code class="docutils literal notranslate"><span class="pre">distribute</span></code> on a closed outline do not repeat the start.</p>
 </section>
@@ -404,6 +435,13 @@ quadratics with <code class="docutils literal notranslate"><span class="pre">fil
 <span class="n">one</span> <span class="o">=</span> <span class="n">tri</span><span class="o">.</span><span class="n">round_corner</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">fillet</span><span class="o">=</span><span class="s2">"quad"</span><span class="p">)</span>                   <span class="c1"># a single vertex</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-paths-6-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-6-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-6-2.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-6-3.svg" />
+</figcaption>
+</figure>
 </section>
 <section id="clipping">
 <h2>Clipping<a class="headerlink" href="#clipping" title="Link to this heading">¶</a></h2>
@@ -413,6 +451,11 @@ quadratics with <code class="docutils literal notranslate"><span class="pre">fil
 <span class="n">art</span><span class="o">.</span><span class="n">unclip</span><span class="p">()</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-paths-7-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-7-1.svg" />
+</figcaption>
+</figure>
 <p>The clip shapes are in the element’s local coordinates, so the clip moves with the element.</p>
 </section>
 <section id="conversions">
@@ -523,7 +566,7 @@ quadratics with <code class="docutils literal notranslate"><span class="pre">fil
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e9694baa"></script>
+</div><script src="../_static/documentation_options.js?v=8da69bee"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

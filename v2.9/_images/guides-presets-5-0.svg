@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="106.25" viewBox="-2 -2 64 34" version="1.1">
+  <defs>
+    <pattern id="saae7fe-pattern1" width="12" height="6" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="12" height="6" fill="firebrick" stroke="white"/>
+    </pattern>
+  </defs>
+  <rect x="0" y="0" width="60" height="30" fill="url(#saae7fe-pattern1)"/>
+</svg>

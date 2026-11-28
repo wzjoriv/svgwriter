@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="85.7143" viewBox="-4 -1 28 12" version="1.1">
+  <g fill="teal">
+    <circle cx="0" cy="5" r="2"/>
+    <circle cx="10" cy="5" r="4"/>
+    <circle cx="20" cy="5" r="2"/>
+  </g>
+</svg>

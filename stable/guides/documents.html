@@ -7,11 +7,11 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Documents - svgwriter 2.8.0</title>
+        <title>Documents - svgwriter 2.9.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bdbc586f" />
     
     
 
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.8.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.9.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.8.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.9.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.8.0</span>
+  <span class="sidebar-versions-label">2.9.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -319,6 +319,9 @@
 <span class="n">doc</span> <span class="o">+=</span> <span class="p">[</span><span class="n">svg</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">)]</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-documents-0-0.svg" />
+</figure>
 </section>
 <section id="access">
 <h2>Access<a class="headerlink" href="#access" title="Link to this heading">¶</a></h2>
@@ -332,6 +335,9 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">cx</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-documents-1-0.svg" />
+</figure>
 </section>
 <section id="definitions">
 <h2>Definitions<a class="headerlink" href="#definitions" title="Link to this heading">¶</a></h2>
@@ -342,6 +348,9 @@ references them is in the document:</p>
 <span class="n">doc</span><span class="o">.</span><span class="n">defs</span> <span class="o">+=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"spare"</span><span class="p">)</span>           <span class="c1"># or add definitions explicitly</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-documents-2-0.svg" />
+</figure>
 </section>
 <section id="auto-size">
 <h2>Auto-size<a class="headerlink" href="#auto-size" title="Link to this heading">¶</a></h2>
@@ -353,6 +362,9 @@ displayed; <code class="docutils literal notranslate"><span class="pre">fit()</s
 <span class="n">sketch</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-documents-3-0.svg" />
+</figure>
 </section>
 <section id="other-libraries">
 <h2>Other libraries<a class="headerlink" href="#other-libraries" title="Link to this heading">¶</a></h2>
@@ -366,6 +378,9 @@ a <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span><
 <span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Badge</span><span class="p">())</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-documents-4-0.svg" />
+</figure>
 <p>In Jupyter, documents display as SVG (<code class="docutils literal notranslate"><span class="pre">_repr_svg_</span></code>) and PNG (<code class="docutils literal notranslate"><span class="pre">_repr_png_</span></code>).</p>
 </section>
 <section id="attributes">
@@ -377,6 +392,9 @@ custom attributes go through <code class="docutils literal notranslate"><span cl
 <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">stroke_linejoin</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">computed</span><span class="p">(</span><span class="s2">"fill"</span><span class="p">,</span> <span class="s2">"black"</span><span class="p">))</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-documents-5-0.svg" />
+</figure>
 </section>
 <section id="parsing-and-writing">
 <h2>Parsing and writing<a class="headerlink" href="#parsing-and-writing" title="Link to this heading">¶</a></h2>
@@ -385,6 +403,9 @@ custom attributes go through <code class="docutils literal notranslate"><span cl
 <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"figure.svg"</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-documents-6-0.svg" />
+</figure>
 </section>
 <section id="documents-inside-documents">
 <h2>Documents inside documents<a class="headerlink" href="#documents-inside-documents" title="Link to this heading">¶</a></h2>
@@ -397,6 +418,11 @@ and <code class="docutils literal notranslate"><span class="pre">viewBox</span><
 <span class="n">sheet</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">icon</span><span class="p">)</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>        <span class="c1"># a copy; later edits to icon do not change sheet</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-documents-7-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-documents-7-1.svg" />
+</figcaption>
+</figure>
 <p>Explicit ids keep their values, so give embedded drawings distinct ids if they are referenced.</p>
 </section>
 <section id="drawing-your-own-objects">
@@ -419,6 +445,9 @@ can describe its own picture this way:</p>
 <span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Network</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">]))</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-documents-8-0.svg" />
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">add</span></code> also takes objects from other libraries: matplotlib figures (<code class="docutils literal notranslate"><span class="pre">savefig</span></code>), ziaplot plots, anything with
 <code class="docutils literal notranslate"><span class="pre">_repr_svg_</span></code> (parsed into elements), anything with only <code class="docutils literal notranslate"><span class="pre">_repr_png_</span></code> or <code class="docutils literal notranslate"><span class="pre">_repr_jpeg_</span></code> (an <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code>),
 and numpy pixel arrays.</p>
@@ -534,7 +563,7 @@ returning them. <code class="docutils literal notranslate"><span class="pre">see
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e9694baa"></script>
+</div><script src="../_static/documentation_options.js?v=8da69bee"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

@@ -7,11 +7,11 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Export and import - svgwriter 2.8.0</title>
+        <title>Export and import - svgwriter 2.9.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bdbc586f" />
     
     
 
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.8.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.9.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.8.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.9.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.8.0</span>
+  <span class="sidebar-versions-label">2.9.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -323,6 +323,12 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">formats</span><span class="o">.</span><span class="n">writers</span><span class="p">(),</span> <span class="n">svg</span><span class="o">.</span><span class="n">formats</span><span class="o">.</span><span class="n">readers</span><span class="p">())</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-export-import-0-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-0-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-0-2.svg" />
+</figcaption>
+</figure>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -864,6 +870,9 @@ reader of the file may lack the fonts:</p>
 <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"figure.pdf"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>     <span class="c1"># glyph outlines only</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-export-import-1-0.svg" />
+</figure>
 <p>PDF, EPS and TikZ read back as filled and stroked <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> elements with solid colours or gradients,
 stroke width, dashes, caps, joins and opacity, in user units with y pointing down (see
 <a class="reference internal" href="#physical-size">Physical size</a>). The PDF reader scans for objects (a
@@ -883,6 +892,11 @@ and xcolor mixes, the common line options, shadings (<code class="docutils liter
 <span class="n">picture</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"figure.tex"</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-export-import-2-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-2-1.svg" />
+</figcaption>
+</figure>
 </section>
 <section id="page-sizes">
 <h2>Page sizes<a class="headerlink" href="#page-sizes" title="Link to this heading">¶</a></h2>
@@ -900,6 +914,13 @@ are pixels. <code class="docutils literal notranslate"><span class="pre">dpi=</s
 <span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"poster-50x70"</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-export-import-3-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-3-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-3-2.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-3-3.svg" />
+</figcaption>
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">svg.size.&lt;name&gt;</span></code> gives a <code class="docutils literal notranslate"><span class="pre">PageSize</span></code> for every registered size with the name turned into an identifier
 (<code class="docutils literal notranslate"><span class="pre">svg.size.slide_16_9</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.size.instagram_story</span></code>), so an editor completes it; <code class="docutils literal notranslate"><span class="pre">.landscape</span></code> and <code class="docutils literal notranslate"><span class="pre">.portrait</span></code>
 turn it. <code class="docutils literal notranslate"><span class="pre">Document(size=...)</span></code>, <code class="docutils literal notranslate"><span class="pre">Scene.size</span></code> and a project’s <code class="docutils literal notranslate"><span class="pre">size</span></code> take a name or a <code class="docutils literal notranslate"><span class="pre">PageSize</span></code>.</p>
@@ -965,6 +986,9 @@ exact pixel size instead.</p>
 <span class="n">a4</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"a4.pdf"</span><span class="p">)</span>                               <span class="c1"># prints at 100% on A4</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-export-import-5-0.svg" />
+</figure>
 <p>Readers work the other way: a PDF or EPS point reads as 4/3 of a unit and a TikZ <code class="docutils literal notranslate"><span class="pre">1cm</span></code> as
 96/2.54, so a file made elsewhere opens at its real size and an exported file reads back at the
 same size with every shape in the same place, measured in user units (a millimetre document comes
@@ -978,6 +1002,9 @@ When the numbers are meant as points (one unit, one point, as in many plotting t
 <span class="n">chart</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"chart.pdf"</span><span class="p">)</span>                          <span class="c1"># 108 x 54 pt: CSS pixels</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-export-import-6-0.svg" />
+</figure>
 </section>
 <section id="colour-profiles">
 <h2>Colour profiles<a class="headerlink" href="#colour-profiles" title="Link to this heading">¶</a></h2>
@@ -991,6 +1018,9 @@ profiles are parsed once):</p>
 <span class="c1"># doc.save("print.pdf", icc=open("press.icc", "rb").read())            # PDF/X-style output intent</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-export-import-7-0.svg" />
+</figure>
 <p>Wide-gamut colours (<code class="docutils literal notranslate"><span class="pre">oklch(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">color(display-p3</span> <span class="pre">...)</span></code>) keep their own space through theme
 palettes, theme expressions, mixing and gradient stops, so they are never clipped before they are
 combined. The pixels, though, are drawn by skia’s SVG renderer, which paints in sRGB: a colour outside
@@ -1045,6 +1075,11 @@ what it does. Creating the class registers it, so <code class="docutils literal 
 <span class="n">svg</span><span class="o">.</span><span class="n">formats</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"lines"</span><span class="p">)</span>                      <span class="c1"># plugins and tests can clean up</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-export-import-8-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-8-1.svg" />
+</figcaption>
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">binary=True</span></code> (the default) means <code class="docutils literal notranslate"><span class="pre">write</span></code> returns <code class="docutils literal notranslate"><span class="pre">bytes</span></code>; <code class="docutils literal notranslate"><span class="pre">multipage=True</span></code> means <code class="docutils literal notranslate"><span class="pre">write</span></code> also takes a
 list of documents and <code class="docutils literal notranslate"><span class="pre">read</span></code> returns a list when its page option (<code class="docutils literal notranslate"><span class="pre">page_option=</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;page&quot;</span></code> by default)
 is None. <code class="docutils literal notranslate"><span class="pre">svg.formats.writer(path)</span></code> and <code class="docutils literal notranslate"><span class="pre">svg.formats.reader(path)</span></code> find a format by name, extension or
@@ -1188,7 +1223,7 @@ interaction is attached by the page, by element id:</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e9694baa"></script>
+</div><script src="../_static/documentation_options.js?v=8da69bee"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

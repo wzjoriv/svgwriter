@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60" viewBox="0 0 200 60" version="1.1">
+  <style id="s959795-svgwriter-hover" type="text/css">#s959795-rect1:hover { fill:darkcyan !important;stroke:white !important;stroke-width:2 !important } #s959795-rect2:hover { opacity:0.9 !important }</style>
+  <rect id="s959795-rect1" x="10" y="10" width="40" height="40" rx="6" fill="teal"/>
+  <circle cx="150" cy="30" r="12" fill="gold" opacity="0.3"/>
+  <rect id="s959795-rect2" x="80" y="10" width="40" height="40" rx="6" fill="slateblue"/>
+  <rect x="10" y="10" width="20" height="20" fill="teal" transform="translate(160)" opacity="1"/>
+</svg>
