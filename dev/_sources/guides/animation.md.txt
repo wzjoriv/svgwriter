@@ -298,7 +298,7 @@ $ python -m svgwriter render scenes.py Intro --at 1.5   # one frame to Intro.png
 ```
 
 `--fps`, `--duration` and `--renderer` override the scene's settings. An `.svg` file is accepted too and
-plays its SMIL. See `examples/13_scenes/scenes.py`.
+plays its SMIL. See `examples/16_scenes/scenes.py`.
 
 ## Behaviours
 
