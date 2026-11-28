@@ -22,6 +22,7 @@ from ._constants import (
     QUARTER_TURN,
     TOOTH_DEPTH_RATIO,
 )
+from ._parametric import Star
 from ._rounded import rounded_outline
 
 __all__ = ["arrow", "gear", "regular_polygon", "star"]
@@ -37,12 +38,10 @@ def _ring(cx: float, cy: float, radii: list[float], rotation: float) -> list[tup
     return points
 
 
-def _inkscape_star(cx: float, cy: float, outer: float, inner: float, sides: int, angle: float, corner_radius: float,
-                   *, flatsided: bool, **kwargs: Any) -> Path:
-    from ...formats.inkscape import Star
-
+def _parametric_star(cx: float, cy: float, outer: float, inner: float, sides: int, angle: float, corner_radius: float,
+                     *, flatsided: bool, **kwargs: Any) -> Path:
     if corner_radius > 0:
-        raise ValueError("corner_radius= does not apply to Inkscape stars; round them in Inkscape instead")
+        raise ValueError("corner_radius= does not apply to parametric stars; set Star.rounded instead")
     return Star.create(cx, cy, outer, inner, sides, angle=angle, flatsided=flatsided, **kwargs)
 
 
@@ -55,7 +54,7 @@ def star(
     points: int = DEFAULT_STAR_POINTS,
     *,
     corner_radius: float = 0,
-    inkscape: bool = False,
+    parametric: bool = False,
     **kwargs: Any,
 ) -> Polygon | Path:
     """Build a star with *points* tips, pointing up.
@@ -73,26 +72,27 @@ def star(
     corner_radius : float, optional
         Radius of the circular fillet at every tip and notch; it shrinks where the star is too small
         for it. Defaults to 0 (sharp).
-    inkscape : bool, optional
-        Build a path carrying Inkscape's star parameters (``sodipodi:type="star"``),
-        so the star stays editable with Inkscape's star tool. Defaults to False.
+    parametric : bool, optional
+        Build a path that keeps its star parameters, editable afterwards through
+        :class:`Star` (and with Inkscape's star tool). Defaults to False.
     **kwargs
         Presentation attributes forwarded to :class:`~svgwriter.model.elements.Polygon`
-        (:class:`~svgwriter.model.elements.Path` when rounded or `inkscape`).
+        (:class:`~svgwriter.model.elements.Path` when rounded or `parametric`).
 
     Returns
     -------
     Polygon or Path
-        The star, a polygon unless `corner_radius` or `inkscape` makes it a path.
+        The star, a polygon unless `corner_radius` or `parametric` makes it a path.
 
     Raises
     ------
     ValueError
-        If `inkscape` is combined with `corner_radius`.
+        If `parametric` is combined with `corner_radius`.
 
     See Also
     --------
     regular_polygon : A polygon without notches.
+    Star : Edit a parametric star.
 
     Examples
     --------
@@ -101,12 +101,12 @@ def star(
     10
     >>> round(star(50, 50, 40, corner_radius=4).bbox.height, 1)
     64.0
-    >>> star(50, 50, 40, inkscape=True).get("sodipodi:type")
+    >>> star(50, 50, 40, parametric=True).get("sodipodi:type")
     'star'
     """
     inner = outer * DEFAULT_INNER_RATIO if inner is None else inner
-    if inkscape:
-        return _inkscape_star(cx, cy, outer, inner, points, -QUARTER_TURN, corner_radius, flatsided=False, **kwargs)
+    if parametric:
+        return _parametric_star(cx, cy, outer, inner, points, -QUARTER_TURN, corner_radius, flatsided=False, **kwargs)
     vertices = _ring(cx, cy, [outer, inner] * points, -QUARTER_TURN)
     if corner_radius > 0:
         return rounded_outline(vertices, [corner_radius] * len(vertices), **kwargs)
@@ -198,7 +198,7 @@ def regular_polygon(
     *,
     rotation: float = 0,
     corner_radius: float = 0,
-    inkscape: bool = False,
+    parametric: bool = False,
     **kwargs: Any,
 ) -> Polygon | Path:
     """Build a regular polygon with optionally rounded corners.
@@ -215,23 +215,23 @@ def regular_polygon(
         Clockwise rotation in degrees; the first corner is at the top when 0. Defaults to 0.
     corner_radius : float, optional
         Radius of the circular fillet at every corner. Defaults to 0 (sharp).
-    inkscape : bool, optional
-        Build a path carrying Inkscape's polygon parameters (``sodipodi:type="star"``
-        with ``inkscape:flatsided="true"``), editable with Inkscape's star tool.
+    parametric : bool, optional
+        Build a path that keeps its polygon parameters (a flat-sided :class:`Star`),
+        editable afterwards through :class:`Star` (and with Inkscape's star tool).
         Defaults to False.
     **kwargs
         Presentation attributes forwarded to :class:`~svgwriter.model.elements.Polygon`
-        (:class:`~svgwriter.model.elements.Path` when rounded or `inkscape`).
+        (:class:`~svgwriter.model.elements.Path` when rounded or `parametric`).
 
     Returns
     -------
     Polygon or Path
-        The polygon, a path when `corner_radius` rounds it or `inkscape` is set.
+        The polygon, a path when `corner_radius` rounds it or `parametric` is set.
 
     Raises
     ------
     ValueError
-        If `sides` is below 3, or `inkscape` is combined with `corner_radius`.
+        If `sides` is below 3, or `parametric` is combined with `corner_radius`.
 
     See Also
     --------
@@ -244,13 +244,13 @@ def regular_polygon(
     6
     >>> regular_polygon(0, 0, 10, 5, corner_radius=2).tag
     'path'
-    >>> regular_polygon(0, 0, 10, 6, inkscape=True).get("inkscape:flatsided")
+    >>> regular_polygon(0, 0, 10, 6, parametric=True).get("inkscape:flatsided")
     'true'
     """
     if sides < MIN_SIDES:
         raise ValueError(f"a polygon needs at least {MIN_SIDES} sides, got {sides}")
-    if inkscape:
-        return _inkscape_star(cx, cy, r, r * math.cos(math.pi / sides), sides, rotation - QUARTER_TURN, corner_radius,
+    if parametric:
+        return _parametric_star(cx, cy, r, r * math.cos(math.pi / sides), sides, rotation - QUARTER_TURN, corner_radius,
                               flatsided=True, **kwargs)
     vertices = _ring(cx, cy, [r] * sides, rotation - QUARTER_TURN)
     if corner_radius > 0:

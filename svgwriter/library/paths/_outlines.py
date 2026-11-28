@@ -1,5 +1,5 @@
 """
-Outlines of Inkscape's parametric stars, polygons and arcs, computed the way Inkscape draws them.
+Outlines of parametric stars, polygons and arcs, computed the way Inkscape draws them.
 """
 
 from __future__ import annotations
@@ -7,7 +7,7 @@ from __future__ import annotations
 import math
 
 from ...model.pathdata.builder import PathBuilder
-from ._constants import HANDLE_REACH, MAX_ARC_SEGMENTS, MIN_RADIUS, QUARTER_TURNS
+from ._constants import ARC_MAX_SEGMENTS, ARC_MIN_RADIUS, ARC_TURN_PARTS, STAR_HANDLE_REACH
 
 __all__ = ["arc_outline", "star_outline"]
 
@@ -38,7 +38,7 @@ def star_outline(cx: float, cy: float, radii: Vector, args: Vector, sides: int, 
             following = corner(1 - kind, index if kind == 0 else next_index)
         middle = ((previous[0] + following[0]) / 2, (previous[1] + following[1]) / 2)
         across = _unit_normal(middle, following)
-        direction = _unit_normal(here, (middle[0] + HANDLE_REACH * across[0], middle[1] + HANDLE_REACH * across[1]))
+        direction = _unit_normal(here, (middle[0] + STAR_HANDLE_REACH * across[0], middle[1] + STAR_HANDLE_REACH * across[1]))
         reach = rounded * (-math.dist(previous, here) if before else math.dist(following, here))
         return here[0] + reach * direction[0], here[1] + reach * direction[1]
 
@@ -60,12 +60,12 @@ def star_outline(cx: float, cy: float, radii: Vector, args: Vector, sides: int, 
 
 def arc_outline(cx: float, cy: float, rx: float, ry: float, start: float, end: float, kind: str) -> PathBuilder | None:
     """The outline of a ``sodipodi:type="arc"`` path; None when a radius is zero."""
-    if abs(rx) < MIN_RADIUS or abs(ry) < MIN_RADIUS:
+    if abs(rx) < ARC_MIN_RADIUS or abs(ry) < ARC_MIN_RADIUS:
         return None
     sweep = end - start
     if sweep <= 0:
         sweep += math.tau
-    count = min(1 + int(sweep * QUARTER_TURNS / math.tau), MAX_ARC_SEGMENTS)
+    count = min(1 + int(sweep * ARC_TURN_PARTS / math.tau), ARC_MAX_SEGMENTS)
     step = sweep / count
     path = PathBuilder().move_to(cx + rx * math.cos(start), cy + ry * math.sin(start))
     for index in range(1, count + 1):

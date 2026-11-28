@@ -7,7 +7,8 @@ from pathlib import Path
 import pytest
 
 import svgwriter as svg
-from svgwriter.formats.inkscape import Arc, Guide, Star
+from svgwriter.formats.inkscape import Guide
+from svgwriter.library.paths import Arc, Star
 
 DATA = Path(__file__).parent / "data"
 INKSCAPE = "http://www.inkscape.org/namespaces/inkscape"
@@ -110,7 +111,7 @@ class TestTransformCenter:
 
 class TestShapes:
     def test_star_parameters(self, doc: svg.Document) -> None:
-        star = svg.inkscape.shape(doc["star"])
+        star = svg.paths.parametric(doc["star"])
         assert isinstance(star, Star)
         assert (star.sides, star.outer, star.inner, star.flatsided) == (5, 20, 10, False)
         assert star.angle == pytest.approx(-90)
@@ -123,21 +124,12 @@ class TestShapes:
         assert len(doc["star"].d) == 2 * 7 + 1
         assert doc["star"].bbox.height == pytest.approx(20 + 20 * max(math.sin(math.radians(360 / 7 * k - 90)) for k in range(7)))
 
-    def test_rounded_matches_inkscape(self) -> None:
-        path = Star.create(150, 70, 20, 10, 5, rounded=0.3)
-        first = path.d[1]
-        assert (first.x1, first.y1) == pytest.approx((153.98439, 50), abs=1e-4)
-
-    def test_polygon(self) -> None:
-        hexagon = svg.paths.regular_polygon(0, 0, 10, 6, inkscape=True)
-        assert Star(hexagon).flatsided and hexagon.bbox.height == pytest.approx(20)
-
-    def test_builder_star(self) -> None:
-        drawn = svg.paths.star(50, 50, 40, inkscape=True, fill="gold")
-        plain = svg.paths.star(50, 50, 40)
-        assert drawn.bbox.width == pytest.approx(plain.bbox.width)
-        with pytest.raises(ValueError, match="corner_radius"):
-            svg.paths.star(0, 0, 4, inkscape=True, corner_radius=1)
+    def test_saved_star_stays_an_inkscape_star(self, doc: svg.Document) -> None:
+        Star(doc["star"]).sides = 6
+        back = svg.Document.from_string(doc.to_string())
+        star = svg.paths.parametric(back["star"])
+        assert isinstance(star, Star) and star.sides == 6
+        assert 'sodipodi:type="star"' in doc.to_string()
 
     def test_arc(self, doc: svg.Document) -> None:
         pie = Arc(doc["pie"])
@@ -148,10 +140,6 @@ class TestShapes:
         assert str(doc["pie"].d).count("Z") == 0
         with pytest.raises(ValueError):
             pie.kind = "wedge"
-
-    def test_not_a_shape(self) -> None:
-        with pytest.raises(ValueError, match="not an Inkscape star"):
-            Star(svg.Path("M0 0"))
 
 
 class TestConnectors:

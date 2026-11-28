@@ -7,8 +7,8 @@ operations like any other element.
 
 | Preset | Signature | Returns |
 | --- | --- | --- |
-| `star` | `star(cx, cy, outer, inner=None, points=5, *, corner_radius=0)` | `Polygon`, or `Path` when rounded |
-| `regular_polygon` | `regular_polygon(cx, cy, r, sides, *, rotation=0, corner_radius=0)` | `Polygon`, or `Path` when rounded |
+| `star` | `star(cx, cy, outer, inner=None, points=5, *, corner_radius=0, parametric=False)` | `Polygon`, or `Path` when rounded or parametric |
+| `regular_polygon` | `regular_polygon(cx, cy, r, sides, *, rotation=0, corner_radius=0, parametric=False)` | `Polygon`, or `Path` when rounded or parametric |
 | `gear` | `gear(cx, cy, radius, teeth=12)` | `Polygon` |
 | `heart` | `heart(cx, cy, size)` | `Path` |
 | `cross` | `cross(cx, cy, size, *, thickness=None)` | `Polygon` |
@@ -36,6 +36,34 @@ is `grid`, `spiral` and `wave` are `line`; `outline`, `dashed_line` and `dot`
 are `outline`, `line` and `dot`. Presentation keywords you pass go into the inline
 `style`, so they win over the role. `grid`, `spiral` and `wave` return open paths with `fill="none"`.
 `wave` takes `kind="sine"` (smooth cubic segments), `"square"`, `"triangle"` or `"sawtooth"`.
+
+## Parametric stars, polygons and arcs
+
+A parametric shape is a path that keeps the numbers it was drawn from. `paths.star(..., parametric=True)`
+and `paths.regular_polygon(..., parametric=True)` build one, `paths.Star.create` and `paths.Arc.create`
+take every parameter, and `paths.Star` and `paths.Arc` are live views on an existing one: assigning a
+parameter redraws the path. `paths.parametric(element)` returns the right view, or None for any other
+element. Angles are in degrees. The result is an ordinary path, so every export format draws it.
+
+```python
+import svgwriter as svg
+from svgwriter import paths
+
+doc = svg.Document(200, 100)
+logo = doc.add(paths.star(50, 50, 30, 12, 5, parametric=True, fill="gold"))
+hexagon = doc.add(paths.regular_polygon(150, 50, 25, 6, parametric=True, fill="teal"))
+
+star = paths.parametric(logo)
+star.sides = 7                          # 7 tips, redrawn
+star.rounded = 0.2                      # smooth corners
+pie = doc.add(paths.Arc.create(100, 80, 15, 15, start=0, end=270, fill="tomato"))
+paths.Arc(pie).kind = "chord"
+print(star.sides, round(star.angle), paths.parametric(hexagon).flatsided)
+```
+
+`corner_radius` does not combine with `parametric=True`; set `rounded` instead. The parameters are stored
+under Inkscape's names, so the shapes stay editable with Inkscape's star and ellipse tools, and stars and
+arcs drawn in Inkscape come back as parametric shapes (see [Inkscape files](../guides/inkscape.md)).
 
 ## Your own presets
 

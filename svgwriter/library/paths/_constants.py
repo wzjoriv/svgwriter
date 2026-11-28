@@ -8,6 +8,11 @@ import math
 from typing import Final
 
 __all__ = [
+    "ARC_ATTRIBUTES",
+    "ARC_KINDS",
+    "ARC_MAX_SEGMENTS",
+    "ARC_MIN_RADIUS",
+    "ARC_TURN_PARTS",
     "ARROW_HEAD_ANGLE",
     "CALLOUT_RADIUS",
     "CALLOUT_TAIL_RATIO",
@@ -24,14 +29,23 @@ __all__ = [
     "HEART_MIDLINE",
     "HEART_NOTCH",
     "MIN_SIDES",
+    "PARAMETER_PRECISION",
+    "PARAMETRIC_TYPE",
     "QUARTER_TURN",
     "ROUNDING_EPSILON",
     "SINE_CONTROL_X",
     "SINE_CONTROL_Y",
     "SPIRAL_SEGMENTS_PER_TURN",
+    "STAR_ATTRIBUTES",
+    "STAR_FLATSIDED",
+    "STAR_HANDLE_REACH",
+    "STAR_RANDOMIZED",
+    "STAR_ROUNDED",
     "TOOTH_DEPTH_RATIO",
     "WAVE_CYCLES",
     "WAVE_KINDS",
+    "XML_FALSE",
+    "XML_TRUE",
 ]
 
 MIN_SIDES: Final = 3
@@ -73,3 +87,34 @@ WAVE_KINDS: Final = {
     "sawtooth": ((0.0, -1.0), (1.0, 1.0)),
 }
 WAVE_CYCLES: Final = ("sine", *WAVE_KINDS)
+
+PARAMETRIC_TYPE: Final = "sodipodi:type"
+PARAMETER_PRECISION: Final = 9
+XML_TRUE: Final = "true"
+XML_FALSE: Final = "false"
+STAR_FLATSIDED: Final = "inkscape:flatsided"
+STAR_ROUNDED: Final = "inkscape:rounded"
+STAR_RANDOMIZED: Final = "inkscape:randomized"
+STAR_ATTRIBUTES: Final = {
+    "cx": "sodipodi:cx",
+    "cy": "sodipodi:cy",
+    "r1": "sodipodi:r1",
+    "r2": "sodipodi:r2",
+    "arg1": "sodipodi:arg1",
+    "arg2": "sodipodi:arg2",
+    "sides": "sodipodi:sides",
+}
+STAR_HANDLE_REACH: Final = 100000.0
+ARC_ATTRIBUTES: Final = {
+    "cx": "sodipodi:cx",
+    "cy": "sodipodi:cy",
+    "rx": "sodipodi:rx",
+    "ry": "sodipodi:ry",
+    "start": "sodipodi:start",
+    "end": "sodipodi:end",
+    "kind": "sodipodi:arc-type",
+}
+ARC_KINDS: Final = ("slice", "arc", "chord")
+ARC_TURN_PARTS: Final = 4
+ARC_MAX_SEGMENTS: Final = 4
+ARC_MIN_RADIUS: Final = 1e-8

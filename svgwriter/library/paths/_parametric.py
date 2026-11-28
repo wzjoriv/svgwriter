@@ -1,5 +1,8 @@
 """
-Inkscape's editable stars, polygons and arcs: paths with ``sodipodi:type`` parameters.
+Parametric stars, polygons and arcs: paths that keep their parameters and redraw from them.
+
+The parameters are stored the way Inkscape stores them (``sodipodi:type`` and its companions), so the
+same path stays an editable star or arc when the file opens in Inkscape.
 """
 
 from __future__ import annotations
@@ -12,25 +15,25 @@ from ...model.elements.core import Element
 from ...model.elements.shapes import Path
 from ...model.transform.matrix import Point
 from ._constants import (
-    ANGLE_PRECISION,
     ARC_ATTRIBUTES,
-    ARC_TYPES,
-    FALSE,
-    SHAPE_TYPE,
+    ARC_KINDS,
+    PARAMETER_PRECISION,
+    PARAMETRIC_TYPE,
+    QUARTER_TURN,
     STAR_ATTRIBUTES,
     STAR_FLATSIDED,
     STAR_RANDOMIZED,
     STAR_ROUNDED,
-    TRUE,
-    UP,
+    XML_FALSE,
+    XML_TRUE,
 )
-from ._geometry import arc_outline, star_outline
+from ._outlines import arc_outline, star_outline
 
-__all__ = ["Arc", "Star", "shape"]
+__all__ = ["Arc", "Star", "parametric"]
 
 
 def _angle(radians: float) -> str:
-    return format_number(radians, ANGLE_PRECISION)
+    return format_number(radians, PARAMETER_PRECISION)
 
 
 def _number(element: Element, name: str, default: float = 0.0) -> float:
@@ -42,8 +45,8 @@ class _Shape:
     shape_type = ""
 
     def __init__(self, path: Element) -> None:
-        if not isinstance(path, Path) or path.attributes.get(SHAPE_TYPE) != self.shape_type:
-            raise ValueError(f"<{path.tag}> is not an Inkscape {self.shape_type} "
+        if not isinstance(path, Path) or path.attributes.get(PARAMETRIC_TYPE) != self.shape_type:
+            raise ValueError(f"<{path.tag}> is not a parametric {self.shape_type} "
                              f"(sodipodi:type=\"{self.shape_type}\" on a path)")
         self.path = path
 
@@ -66,11 +69,11 @@ class _Shape:
 
 
 class Star(_Shape):
-    """The editable parameters of an Inkscape star or polygon.
+    """The editable parameters of a parametric star or polygon.
 
     A live view on a ``<path sodipodi:type="star">``: reading a property reads the
-    ``sodipodi:`` attribute, and assigning one writes it and redraws ``d`` the way
-    Inkscape does, so the file stays an editable star in Inkscape.
+    stored parameter, and assigning one writes it and redraws ``d``. The parameters
+    use Inkscape's names, so the path also stays an editable star in Inkscape.
 
     Parameters
     ----------
@@ -80,24 +83,25 @@ class Star(_Shape):
     Raises
     ------
     ValueError
-        If `path` is not an Inkscape star.
+        If `path` is not a parametric star.
 
     See Also
     --------
     Arc : The same for ellipses and arcs.
-    svgwriter.library.paths.star : ``inkscape=True`` builds one.
+    star : ``parametric=True`` builds one.
+    parametric : The right view for any element.
 
     Notes
     -----
-    Angles are in degrees, clockwise from the x axis (Inkscape stores radians).
+    Angles are in degrees, clockwise from the x axis (the stored parameters are radians).
     ``inkscape:randomized`` is kept but not applied to the redrawn outline;
     Inkscape applies it again when it opens the file.
 
     Examples
     --------
     >>> import svgwriter as svg
-    >>> star = svg.inkscape.Star.create(50, 50, 40, 20, 5)
-    >>> view = svg.inkscape.Star(star)
+    >>> star = svg.paths.Star.create(50, 50, 40, 20, 5)
+    >>> view = svg.paths.Star(star)
     >>> view.sides = 6
     >>> star.get("sodipodi:sides"), len(star.d)
     (6, 13)
@@ -106,9 +110,9 @@ class Star(_Shape):
     shape_type = "star"
 
     @classmethod
-    def create(cls, cx: float, cy: float, outer: float, inner: float, sides: int, *, angle: float = UP,
+    def create(cls, cx: float, cy: float, outer: float, inner: float, sides: int, *, angle: float = -QUARTER_TURN,
                flatsided: bool = False, rounded: float = 0.0, **kwargs: Any) -> Path:
-        """Build a new star path with Inkscape's parameters.
+        """Build a new parametric star path.
 
         Parameters
         ----------
@@ -123,7 +127,7 @@ class Star(_Shape):
         flatsided : bool, optional
             A regular polygon instead of a star. Defaults to False.
         rounded : float, optional
-            Inkscape's rounding factor; 0 keeps sharp corners. Defaults to 0.
+            Rounding factor, as Inkscape defines it; 0 keeps sharp corners. Defaults to 0.
         **kwargs
             Presentation attributes for the path.
 
@@ -135,29 +139,29 @@ class Star(_Shape):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> svg.inkscape.Star.create(0, 0, 10, 5, 4).get("sodipodi:type")
+        >>> svg.paths.Star.create(0, 0, 10, 5, 4).get("sodipodi:type")
         'star'
         """
         first = math.radians(angle)
         path = Path(**kwargs)
         path.attributes.update({
-            SHAPE_TYPE: cls.shape_type, "sodipodi:sides": sides, "sodipodi:cx": float(cx), "sodipodi:cy": float(cy),
+            PARAMETRIC_TYPE: cls.shape_type, "sodipodi:sides": sides, "sodipodi:cx": float(cx), "sodipodi:cy": float(cy),
             "sodipodi:r1": float(outer), "sodipodi:r2": float(inner), "sodipodi:arg1": _angle(first),
-            "sodipodi:arg2": _angle(first + math.pi / sides), STAR_FLATSIDED: TRUE if flatsided else FALSE,
+            "sodipodi:arg2": _angle(first + math.pi / sides), STAR_FLATSIDED: XML_TRUE if flatsided else XML_FALSE,
             STAR_ROUNDED: float(rounded), STAR_RANDOMIZED: 0,
         })
         cls(path).redraw()
         return path
 
     def redraw(self) -> None:
-        """Recompute ``d`` from the parameters, as Inkscape does.
+        """Recompute ``d`` from the parameters, the way Inkscape draws them.
 
         Examples
         --------
         >>> import svgwriter as svg
-        >>> star = svg.inkscape.Star.create(0, 0, 10, 5, 3)
+        >>> star = svg.paths.Star.create(0, 0, 10, 5, 3)
         >>> star.d = "M0 0"
-        >>> svg.inkscape.Star(star).redraw()
+        >>> svg.paths.Star(star).redraw()
         >>> len(star.d)
         7
         """
@@ -224,15 +228,15 @@ class Star(_Shape):
     @property
     def flatsided(self) -> bool:
         """A regular polygon (``inkscape:flatsided``) instead of a star."""
-        return str(self.path.attributes.get(STAR_FLATSIDED, FALSE)).lower() == TRUE
+        return str(self.path.attributes.get(STAR_FLATSIDED, XML_FALSE)).lower() == XML_TRUE
 
     @flatsided.setter
     def flatsided(self, value: bool) -> None:
-        self._store({STAR_FLATSIDED: TRUE if value else FALSE})
+        self._store({STAR_FLATSIDED: XML_TRUE if value else XML_FALSE})
 
     @property
     def rounded(self) -> float:
-        """Inkscape's rounding factor (``inkscape:rounded``); 0 is sharp."""
+        """Rounding factor (``inkscape:rounded``); 0 is sharp."""
         return _number(self.path, STAR_ROUNDED)
 
     @rounded.setter
@@ -241,7 +245,7 @@ class Star(_Shape):
 
 
 class Arc(_Shape):
-    """The editable parameters of an Inkscape ellipse, arc or pie slice.
+    """The editable parameters of a parametric ellipse, arc or pie slice.
 
     A live view on a ``<path sodipodi:type="arc">``; assigning a property writes the
     ``sodipodi:`` attribute and redraws ``d``.
@@ -254,7 +258,7 @@ class Arc(_Shape):
     Raises
     ------
     ValueError
-        If `path` is not an Inkscape arc.
+        If `path` is not a parametric arc.
 
     See Also
     --------
@@ -262,13 +266,13 @@ class Arc(_Shape):
 
     Notes
     -----
-    Angles are in degrees, clockwise from the x axis (Inkscape stores radians).
+    Angles are in degrees, clockwise from the x axis (the stored parameters are radians).
 
     Examples
     --------
     >>> import svgwriter as svg
-    >>> pie = svg.inkscape.Arc.create(0, 0, 10, 10, start=0, end=90)
-    >>> svg.inkscape.Arc(pie).kind
+    >>> pie = svg.paths.Arc.create(0, 0, 10, 10, start=0, end=90)
+    >>> svg.paths.Arc(pie).kind
     'slice'
     """
 
@@ -276,8 +280,8 @@ class Arc(_Shape):
 
     @classmethod
     def create(cls, cx: float, cy: float, rx: float, ry: float, *, start: float = 0.0, end: float = 0.0,
-               kind: str = ARC_TYPES[0], **kwargs: Any) -> Path:
-        """Build a new arc path with Inkscape's parameters.
+               kind: str = ARC_KINDS[0], **kwargs: Any) -> Path:
+        """Build a new parametric arc path.
 
         Parameters
         ----------
@@ -305,12 +309,12 @@ class Arc(_Shape):
         Examples
         --------
         >>> import svgwriter as svg
-        >>> svg.inkscape.Arc.create(5, 5, 4, 2).bbox
+        >>> svg.paths.Arc.create(5, 5, 4, 2).bbox
         BBox(x=1.0, y=3.0, width=8.0, height=4.0)
         """
         path = Path(**kwargs)
         path.attributes.update({
-            SHAPE_TYPE: cls.shape_type, ARC_ATTRIBUTES["cx"]: float(cx), ARC_ATTRIBUTES["cy"]: float(cy),
+            PARAMETRIC_TYPE: cls.shape_type, ARC_ATTRIBUTES["cx"]: float(cx), ARC_ATTRIBUTES["cy"]: float(cy),
             ARC_ATTRIBUTES["rx"]: float(rx), ARC_ATTRIBUTES["ry"]: float(ry),
         })
         view = cls(path)
@@ -321,7 +325,7 @@ class Arc(_Shape):
         return path
 
     def redraw(self) -> None:
-        """Recompute ``d`` from the parameters, as Inkscape does."""
+        """Recompute ``d`` from the parameters, the way Inkscape draws them."""
         centre = self.center
         outline = arc_outline(centre.x, centre.y, self.rx, self.ry, _number(self.path, ARC_ATTRIBUTES["start"]),
                               _number(self.path, ARC_ATTRIBUTES["end"], math.tau), self.kind)
@@ -369,40 +373,42 @@ class Arc(_Shape):
         """``"slice"``, ``"arc"`` (open) or ``"chord"`` (``sodipodi:arc-type``)."""
         value = self.path.attributes.get(ARC_ATTRIBUTES["kind"])
         if value is None:
-            return ARC_TYPES[1] if str(self.path.attributes.get("sodipodi:open", "")).lower() == TRUE else ARC_TYPES[0]
+            return ARC_KINDS[1] if str(self.path.attributes.get("sodipodi:open", "")).lower() == XML_TRUE else ARC_KINDS[0]
         return str(value)
 
     @kind.setter
     def kind(self, value: str) -> None:
-        if value not in ARC_TYPES:
-            raise ValueError(f"unknown arc type {value!r}; choose one of {', '.join(ARC_TYPES)}")
+        if value not in ARC_KINDS:
+            raise ValueError(f"unknown arc type {value!r}; choose one of {', '.join(ARC_KINDS)}")
         self.path.attributes.pop("sodipodi:open", None)
         self._store({ARC_ATTRIBUTES["kind"]: value})
 
 
-def shape(element: Element) -> Star | Arc | None:
-    """The editable Inkscape star or arc behind *element*, or None for any other element.
+def parametric(element: Element) -> Star | Arc | None:
+    """The parametric star or arc behind *element*, or None for any other element.
 
     Parameters
     ----------
     element : Element
-        Any element, typically one read from an Inkscape file.
+        Any element, such as one built with ``parametric=True`` or read from an Inkscape file.
 
     Returns
     -------
     Star, Arc or None
         A live view of the parameters.
 
+    See Also
+    --------
+    Star, Arc : The views themselves.
+
     Examples
     --------
     >>> import svgwriter as svg
-    >>> type(svg.inkscape.shape(svg.inkscape.Star.create(0, 0, 4, 2, 5))).__name__
+    >>> type(svg.paths.parametric(svg.paths.Star.create(0, 0, 4, 2, 5))).__name__
     'Star'
-    >>> svg.inkscape.shape(svg.rect(0, 0, 1, 1)) is None
+    >>> svg.paths.parametric(svg.rect(0, 0, 1, 1)) is None
     True
     """
     kinds = {Star.shape_type: Star, Arc.shape_type: Arc}
-    found = kinds.get(str(element.attributes.get(SHAPE_TYPE)))
+    found = kinds.get(str(element.attributes.get(PARAMETRIC_TYPE)))
     return found(element) if found is not None and isinstance(element, Path) else None
-
-
