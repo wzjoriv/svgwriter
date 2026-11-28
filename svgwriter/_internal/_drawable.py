@@ -8,7 +8,17 @@ import hashlib
 import re
 from typing import Any
 
-from ._constants import GHOST, GRID, GRID_STEP, ID_ATTRIBUTE_RE, OUTLINE, STROKE, SWATCH, TIMING_ATTRIBUTE_RE
+from ._constants import (
+    GHOST,
+    GRID,
+    GRID_STEP,
+    ID_ATTRIBUTE_RE,
+    OUTLINE,
+    ROLE_CLASS_RE,
+    STROKE,
+    SWATCH,
+    TIMING_ATTRIBUTE_RE,
+)
 
 __all__ = ["Drawable", "notebook_markup"]
 
@@ -85,16 +95,18 @@ def pixels_picture(pixels: Any) -> Any:
 
 
 def notebook_markup(markup: str) -> str:
-    """*markup* ready for a notebook output: ids made unique to this drawing and non-ASCII as references.
+    """*markup* ready for a notebook output: ids and theme role classes made unique to this drawing.
 
     Notebook pages put every SVG output in one HTML page, so a second drawing's ``url(#filter1)`` would use
-    the first drawing's filter. Ids get a prefix from a hash of the drawing, and every reference
+    the first drawing's filter, and theme rules (``.role-title``) of one drawing restyle the others. Ids and role
+    classes get a prefix from a hash of the drawing, and every reference
     (``#id``, ``url(#id)``, ``id.begin`` timing) follows. Viewers that mishandle non-ASCII in SVG outputs
     (GitHub shows escaped bytes) still read character references.
     """
+    prefix = "s" + hashlib.blake2s(markup.encode("utf-8"), digest_size=3).hexdigest() + "-"
+    markup = ROLE_CLASS_RE.sub(lambda match: match[1] + prefix + match[2], markup)
     ids = set(ID_ATTRIBUTE_RE.findall(markup))
     if ids:
-        prefix = "s" + hashlib.blake2s(markup.encode("utf-8"), digest_size=3).hexdigest() + "-"
         names = "|".join(re.escape(name) for name in sorted(ids, key=len, reverse=True))
         references = re.compile(rf"""((?<![\w-])id="|#)({names})(?=["'\s){{,:.>+~]|$)""")
         timing = re.compile(rf"(?<![\w.-])({names})(?=\.)")

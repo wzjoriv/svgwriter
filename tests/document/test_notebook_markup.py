@@ -32,3 +32,16 @@ def test_saved_files_keep_their_ids():
 
 def test_markup_without_ids_is_only_made_ascii():
     assert notebook_markup('<svg><text>é</text></svg>') == "<svg><text>&#233;</text></svg>"
+
+
+def test_theme_role_classes_are_scoped_per_drawing():
+    def themed(name: str) -> str:
+        doc = svg.Document(width=60, height=30, theme=name)
+        doc.text("Hi", x=5, y=20).as_role("title")
+        return doc._repr_svg_()
+
+    dark, light = themed("dark"), themed("light")
+    classes = [set(re.findall(r'class="([^"]+)"', markup)) for markup in (dark, light)]
+    assert not classes[0] & classes[1]
+    for markup, names in zip((dark, light), classes):
+        assert all(f".{name}" in markup for name in names)

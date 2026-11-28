@@ -8,6 +8,7 @@ import re
 from typing import Final
 
 __all__ = [
+    "ROLE_CLASS_RE",
     "EFFECT_FREE",
     "HOVER_SHEET_ID",
     "HOVER_STYLE",
@@ -425,3 +426,5 @@ SVG_EVENTS: Final = frozenset({
     "DOMActivate", "DOMFocusIn", "DOMFocusOut", "load", "SVGLoad",
 })
 """SVG 1.1 event names ``element.animate.on(...)`` also accepts as written."""
+ROLE_CLASS_RE: Final = re.compile(r"([\s\".]|^)(role-[\w-]+)")
+"""A theme role class (``role-title``) in a ``class`` attribute or a CSS selector; group 2 is the class."""
