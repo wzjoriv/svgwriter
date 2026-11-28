@@ -321,6 +321,7 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">..model.elements</span><span class="w"> </span><span class="kn">import</span> <span class="n">Motion</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..model.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..model.elements.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">Character</span><span class="p">,</span> <span class="n">CharacterRange</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..model.pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathData</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..model.units.lengths</span><span class="w"> </span><span class="kn">import</span> <span class="n">LengthLike</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -331,6 +332,8 @@
     <span class="s2">"GRADIENTS"</span><span class="p">,</span>
     <span class="s2">"INTERACTIONS"</span><span class="p">,</span>
     <span class="s2">"KINDS"</span><span class="p">,</span>
+    <span class="s2">"PATH_EFFECTS"</span><span class="p">,</span>
+    <span class="s2">"PathEffectPresets"</span><span class="p">,</span>
     <span class="s2">"InteractionPresets"</span><span class="p">,</span>
     <span class="s2">"MARKERS"</span><span class="p">,</span>
     <span class="s2">"PATTERNS"</span><span class="p">,</span>
@@ -789,6 +792,50 @@
 
 
 
+
+<div class="viewcode-block" id="PathEffectPresets">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.PathEffectPresets">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PathEffectPresets</span><span class="p">(</span><span class="n">Registry</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="s2">"PathData"</span><span class="p">]]):</span>
+<span class="w">    </span><span class="sd">"""Path effects: a function turning path data into new path data, applied as ``el.path_effect(name, ...)``.</span>
+
+<span class="sd">    Decorate ``function(data, *, option=default, ...) -&gt; PathData``. With ``fills=True`` the result is an outline to</span>
+<span class="sd">    fill (like a tapered stroke): the element's stroke paint becomes the fill. Use bare, or with ``name=``,</span>
+<span class="sd">    ``replace=`` and ``fills=``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">    &gt;&gt;&gt; @svg.preset.path_effect</span>
+<span class="sd">    ... def shifted(data: svg.PathData, *, dx: float = 5) -&gt; svg.PathData:</span>
+<span class="sd">    ...     return data.transformed(svg.Matrix.translate(dx, 0))</span>
+<span class="sd">    &gt;&gt;&gt; svg.line(0, 0, 10, 0, stroke="black").path_effect("shifted", dx=3).bounds().x</span>
+<span class="sd">    3.0</span>
+<span class="sd">    &gt;&gt;&gt; _ = svg.preset.path_effect.unregister("shifted")</span>
+<span class="sd">    """</span>
+
+<div class="viewcode-block" id="PathEffectPresets.register">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.PathEffectPresets.register">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">fills</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">decorate</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+            <span class="n">function</span><span class="o">.</span><span class="n">__svgwriter_fills__</span> <span class="o">=</span> <span class="n">fills</span>
+            <span class="k">return</span> <span class="n">Registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">decorate</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">decorate</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+
+    <span class="fm">__call__</span> <span class="o">=</span> <span class="n">register</span>
+
+<div class="viewcode-block" id="PathEffectPresets.prepare">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.PathEffectPresets.prepare">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"path effect </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> must be a function taking path data first"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">item</span></div>
+</div>
+
+
+
 <span class="n">ANIMATIONS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">AnimationPresets</span><span class="p">(</span><span class="s2">"animation"</span><span class="p">)</span>
 <span class="n">BEHAVIORS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">BehaviorPresets</span><span class="p">(</span><span class="s2">"behavior"</span><span class="p">)</span>
 <span class="n">SHAPES</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">ShapePresets</span><span class="p">(</span><span class="s2">"shape"</span><span class="p">)</span>
@@ -799,10 +846,11 @@
 <span class="n">MARKERS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">DefinitionPresets</span><span class="p">(</span><span class="s2">"marker"</span><span class="p">,</span> <span class="n">_types</span><span class="p">(</span><span class="s2">"Marker"</span><span class="p">))</span>
 <span class="n">EFFECTS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">EffectPresets</span><span class="p">(</span><span class="s2">"effect"</span><span class="p">)</span>
 <span class="n">INTERACTIONS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">InteractionPresets</span><span class="p">(</span><span class="s2">"interaction"</span><span class="p">)</span>
+<span class="n">PATH_EFFECTS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">PathEffectPresets</span><span class="p">(</span><span class="s2">"path_effect"</span><span class="p">)</span>
 <span class="n">KINDS</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Registry</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"animation"</span><span class="p">:</span> <span class="n">ANIMATIONS</span><span class="p">,</span> <span class="s2">"behavior"</span><span class="p">:</span> <span class="n">BEHAVIORS</span><span class="p">,</span> <span class="s2">"shape"</span><span class="p">:</span> <span class="n">SHAPES</span><span class="p">,</span> <span class="s2">"size"</span><span class="p">:</span> <span class="n">SIZES</span><span class="p">,</span> <span class="s2">"pattern"</span><span class="p">:</span> <span class="n">PATTERNS</span><span class="p">,</span>
     <span class="s2">"filter"</span><span class="p">:</span> <span class="n">FILTERS</span><span class="p">,</span> <span class="s2">"gradient"</span><span class="p">:</span> <span class="n">GRADIENTS</span><span class="p">,</span> <span class="s2">"marker"</span><span class="p">:</span> <span class="n">MARKERS</span><span class="p">,</span> <span class="s2">"effect"</span><span class="p">:</span> <span class="n">EFFECTS</span><span class="p">,</span>
-    <span class="s2">"interaction"</span><span class="p">:</span> <span class="n">INTERACTIONS</span><span class="p">}</span>
+    <span class="s2">"interaction"</span><span class="p">:</span> <span class="n">INTERACTIONS</span><span class="p">,</span> <span class="s2">"path_effect"</span><span class="p">:</span> <span class="n">PATH_EFFECTS</span><span class="p">}</span>
 </pre></div>
         </article>
       </div>

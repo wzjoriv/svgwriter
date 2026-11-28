@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10" version="1.1">
-  <style id="se3ce2e-svgwriter-theme" type="text/css">.role-dot { fill:#b45309;stroke:#99f6e4;stroke-width:1px }</style>
-  <circle cx="5" cy="5" r="2" class="role-dot"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="66.6667" viewBox="-2.5 -2.5 15 5" version="1.1">
+  <style id="s67a0b8-svgwriter-theme" type="text/css">.role-line { fill:none;stroke:#0f766e;stroke-width:2px }</style>
+  <line x1="0" y1="0" x2="10" y2="0" style="stroke:red" class="role-line" stroke-dasharray="4 2"/>
 </svg>

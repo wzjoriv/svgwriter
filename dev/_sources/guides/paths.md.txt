@@ -128,6 +128,25 @@ doc.add(svg.path("M290 90 C320 20 350 140 400 60", fill="#e11d48").stamp(arrow, 
 doc.add(svg.path("M20 125 L400 125", fill="#334155").stamp(svg.rect(-1, -6, 2, 12), 10))
 ```
 
+Every path effect is also a registered preset: `el.path_effect("taper", widths=(0, 8, 0))` applies one by
+name, and `taper(*widths)` draws a brush stroke whose width changes along the line (one width per point
+spread evenly, or `widths=` a function of the position 0..1), filled with the element's stroke paint. Add
+your own with `@svg.preset.path_effect`: a function from path data to path data (`fills=True` when the
+result is an outline to fill). Plugins ship them through the `svgwriter.path_effect` entry point.
+
+```python
+brush = svg.path("M20 80 C80 10 140 110 200 40", stroke="#1e3a8a").taper(0, 14, 0)
+
+
+@svg.preset.path_effect(fills=True)
+def thicken(data: svg.PathData, *, width: float = 4) -> svg.PathData:
+    return svg.path(data).stroked(width=width).get("d")
+
+
+bar = svg.line(20, 100, 200, 100, stroke="#0f766e").path_effect("thicken", width=6)
+svg.preset.path_effect.unregister("thicken")
+```
+
 ## Clipping
 
 ```python

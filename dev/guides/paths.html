@@ -471,6 +471,28 @@ the same seed draws the same wobble.</p></li>
 <img alt="What the code above draws" src="../_images/guides-paths-7-1.svg" />
 </figcaption>
 </figure>
+<p>Every path effect is also a registered preset: <code class="docutils literal notranslate"><span class="pre">el.path_effect(&quot;taper&quot;,</span> <span class="pre">widths=(0,</span> <span class="pre">8,</span> <span class="pre">0))</span></code> applies one by
+name, and <code class="docutils literal notranslate"><span class="pre">taper(*widths)</span></code> draws a brush stroke whose width changes along the line (one width per point
+spread evenly, or <code class="docutils literal notranslate"><span class="pre">widths=</span></code> a function of the position 0..1), filled with the element’s stroke paint. Add
+your own with <code class="docutils literal notranslate"><span class="pre">&#64;svg.preset.path_effect</span></code>: a function from path data to path data (<code class="docutils literal notranslate"><span class="pre">fills=True</span></code> when the
+result is an outline to fill). Plugins ship them through the <code class="docutils literal notranslate"><span class="pre">svgwriter.path_effect</span></code> entry point.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">brush</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">"M20 80 C80 10 140 110 200 40"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"#1e3a8a"</span><span class="p">)</span><span class="o">.</span><span class="n">taper</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+
+<span class="nd">@svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">path_effect</span><span class="p">(</span><span class="n">fills</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">thicken</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">svg</span><span class="o">.</span><span class="n">PathData</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">svg</span><span class="o">.</span><span class="n">PathData</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">svg</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">stroked</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"d"</span><span class="p">)</span>
+
+
+<span class="n">bar</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"#0f766e"</span><span class="p">)</span><span class="o">.</span><span class="n">path_effect</span><span class="p">(</span><span class="s2">"thicken"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">path_effect</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"thicken"</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-paths-8-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-8-1.svg" />
+</figcaption>
+</figure>
 </section>
 <section id="clipping">
 <h2>Clipping<a class="headerlink" href="#clipping" title="Link to this heading">¶</a></h2>
@@ -481,8 +503,8 @@ the same seed draws the same wobble.</p></li>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-paths-8-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-paths-8-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-9-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-9-1.svg" />
 </figcaption>
 </figure>
 <p>The clip shapes are in the element’s local coordinates, so the clip moves with the element.</p>
