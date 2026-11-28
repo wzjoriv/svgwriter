@@ -1,5 +1,5 @@
 # The poster's look, sized in millimetres because the page is drawn in millimetres.
-name = "tide-atlas"
+name = "beach-cleanup"
 extends = "print"
 
 [palette]
@@ -15,7 +15,7 @@ border = "#c9bfae"
 family = "Helvetica, Arial, sans-serif"
 
 [fonts.sizes]
-title = 30
+title = 21
 subtitle = 5.2
 text = 4
 caption = 3
@@ -29,3 +29,18 @@ stroke-linecap = "round"
 
 [roles.pattern]
 fill = "{palette.primary}"
+
+[roles.badge]
+fill = "{palette.accent}"
+stroke = "none"
+
+[roles.icon]
+fill = "{palette.primary}"
+stroke = "{palette.primary}"
+stroke-width = 0.6
+stroke-linejoin = "round"
+
+[roles.panel]
+fill = "{palette.primary}"
+stroke = "none"
+rx = 3

@@ -55,10 +55,10 @@ under the goo filter, moved by a project behaviour on a seamless loop, with cont
 
 ## Poster
 
-![An A4 tide atlas poster](_static/demos/poster.png)
+![An A4 poster inviting people to a beach clean-up](_static/demos/poster.png)
 
 [`demos/poster`](https://github.com/wzjoriv/svgwriter/tree/main/demos/poster): an A4 print poster drawn in
-millimetres with typefaces, gradients, patterns, markers, a legend and a tide table, and controls for the theme, an accent hue shift and the title. Outputs: a true-size
+millimetres: an invitation to a beach clean-up with gradients, patterns, a route with markers, drawn icons of what to bring and a schedule read from CSV, and controls for the theme, an accent hue shift and the event's title, date, time and place. Outputs: a true-size
 PDF, a 300 dpi PNG and an SVG. [Notebook](https://github.com/wzjoriv/svgwriter/blob/main/demos/poster/poster.ipynb).
 
 The pictures on this page are built from the demos by `python scripts/dev.py svgwriter gallery`.
