@@ -3,7 +3,7 @@
 Text stays live characters: styled ranges, per-glyph moves and rotations, outlines and cut-outs, and lines
 in Hindi, Bengali, Urdu, Japanese and Chinese.
 
-Run it as ``python 04_typography.py`` or open ``04_typography.ipynb`` to see each step.
+Run it as ``python typography.py`` or open ``typography.ipynb`` to see each step.
 """
 
 import math

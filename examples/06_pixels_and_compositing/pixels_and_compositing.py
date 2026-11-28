@@ -2,7 +2,7 @@
 
 numpy pixels sit next to vectors, and Porter-Duff operators combine pixels with shapes, text and other images.
 
-Run it as ``python 06_pixels_and_compositing.py`` or open ``06_pixels_and_compositing.ipynb`` to see each step.
+Run it as ``python pixels_and_compositing.py`` or open ``pixels_and_compositing.ipynb`` to see each step.
 """
 
 

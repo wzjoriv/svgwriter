@@ -4,7 +4,7 @@ An adjustable playing card: rank and suit on rows of buttons, the hue and the co
 glow on a toggle. In a notebook `svg.interact` puts the controls beside the live card; `svg.sweep` turns
 the same parameters into an animation.
 
-    python 18_widgets.py                writes 18_card.svg, 18_suits.svg, 18_card_sweep.svg and 18_card_sweep.gif
+    python widgets.py                writes 18_card.svg, 18_suits.svg, 18_card_sweep.svg and 18_card_sweep.gif
 """
 
 import svgwriter as svg

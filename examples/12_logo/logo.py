@@ -4,7 +4,7 @@ An app logo defined in Python, with variants, and every asset generated from it.
 like this one; tooling imports ``logo`` and writes SVG variants, PNGs at any size, ``.ico``/``.icns`` and
 favicons. Output is deterministic, so stale assets can be detected by regenerating and comparing.
 
-Run it as ``python 12_logo.py`` or open ``12_logo.ipynb`` to see each variant.
+Run it as ``python logo.py`` or open ``logo.ipynb`` to see each variant.
 """
 
 import svgwriter as svg
@@ -75,7 +75,6 @@ logo(svg.themes.get("light").replace(palette={"primary": "#7c3aed", "accent": "#
 # %% [markdown]
 # Every asset a project usually needs comes from that one definition: SVG variants, PNGs at any size,
 # a multi-size `.ico`, an `.icns` and an apple-touch icon. This cell only runs when the file is executed, not when it is imported
-# (the devkit `logo` tool imports `logo` from here as `examples.12_logo`).
 
 # %%
 if __name__ == "__main__":

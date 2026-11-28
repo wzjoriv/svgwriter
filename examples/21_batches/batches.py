@@ -3,7 +3,7 @@
 Thousands of shapes from numpy arrays: a scatter plot of 20,000 points coloured by a colormap, then a
 particle field of arrows that move, turn and fade one by one, all made, transformed and written as columns.
 
-    python 21_batches.py                writes 21_scatter.svg, 21_scatter.png, 21_field.svg and 21_field.png
+    python batches.py                writes 21_scatter.svg, 21_scatter.png, 21_field.svg and 21_field.png
 """
 
 import numpy as np

@@ -3,7 +3,7 @@
 Path data built from commands and markers, combined with boolean operations and measured: length, tight
 bounds, points along an outline and hit tests.
 
-Run it as ``python 03_paths_and_geometry.py`` or open ``03_paths_and_geometry.ipynb`` to see each step.
+Run it as ``python paths_and_geometry.py`` or open ``paths_and_geometry.ipynb`` to see each step.
 """
 
 

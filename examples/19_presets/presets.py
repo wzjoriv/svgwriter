@@ -4,7 +4,7 @@ Ready-made patterns, gradients, filters, markers and effects, each a catalogue y
 per catalogue, a sentence whose words burn, smoke, shine, blow and snow while staying text, the same
 effects on shapes, and gooey blobs.
 
-    python 19_presets.py                writes 19_patterns.svg, 19_gradients.svg, 19_filters.svg,
+    python presets.py                writes 19_patterns.svg, 19_gradients.svg, 19_filters.svg,
                                         19_markers.svg, 19_sentence.svg/.gif, 19_shapes.svg and
                                         19_goo.svg/.gif
 """

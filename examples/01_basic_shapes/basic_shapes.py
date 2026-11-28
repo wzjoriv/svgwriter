@@ -2,7 +2,7 @@
 
 Shapes, gradients, text and nested groups, created with document shortcuts.
 
-Run it as ``python 01_basic_shapes.py`` or open ``01_basic_shapes.ipynb`` to see each step.
+Run it as ``python basic_shapes.py`` or open ``basic_shapes.ipynb`` to see each step.
 """
 
 

@@ -4,7 +4,7 @@ One drawing exported to many formats and read back. `doc.save(path)` picks the e
 and `Document.open(path)` the importer, so the same drawing travels through vector, raster, document, TeX
 and CAD files.
 
-Run it as ``python 07_formats.py`` or open ``07_formats.ipynb`` to see each step.
+Run it as ``python formats.py`` or open ``formats.ipynb`` to see each step.
 """
 
 import importlib.util

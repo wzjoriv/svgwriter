@@ -3,7 +3,7 @@
 Slides made in Python: several documents become one deck, drawn with native PowerPoint shapes, text
 boxes and an equation you can edit in PowerPoint. The deck is then read back as documents.
 
-Run it as ``python 15_powerpoint.py`` or open ``15_powerpoint.ipynb`` to see each step. Saving to
+Run it as ``python powerpoint.py`` or open ``powerpoint.ipynb`` to see each step. Saving to
 ``.pptx`` needs the office extra: ``pip install pysvgwriter[office]``.
 """
 

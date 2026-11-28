@@ -3,7 +3,7 @@
 A calculator built from stacks and a grid: the keys size themselves to their labels, the keypad to the
 keys and the card to the keypad, so changing one parameter re-lays out the whole design.
 
-    python 17_layout.py                 writes 17_calculator.svg, 17_calculator_roomy.svg and 17_calculator.pdf
+    python layout.py                 writes 17_calculator.svg, 17_calculator_roomy.svg and 17_calculator.pdf
 """
 
 import svgwriter as svg
