@@ -4,7 +4,7 @@
 `__svgwriter__`, `_repr_svg_` or `_repr_png_`. Each becomes native elements you can place, scale and
 restyle. Matplotlib and networkx are optional; their cells are skipped when they are not installed.
 
-Run it as ``python 11_interop.py`` or open ``11_interop.ipynb`` to see each step.
+Run it as ``python interop.py`` or open ``interop.ipynb`` to see each step.
 """
 
 import importlib.util

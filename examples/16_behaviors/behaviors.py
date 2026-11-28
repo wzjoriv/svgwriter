@@ -3,7 +3,7 @@
 Python motion packaged as behaviours, then baked into SMIL so the scene plays in a browser just like
 the video.
 
-    python 16_behaviors.py              writes 16_workshop.svg (animated) and 16_workshop.pptx
+    python behaviors.py              writes 16_workshop.svg (animated) and 16_workshop.pptx
 """
 
 import svgwriter as svg

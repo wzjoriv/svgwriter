@@ -3,7 +3,7 @@
 One drawing in every built-in theme, a variant computed with `=` expressions, a theme read from TOML and
 saved back with its comments, and a theme made the default for a block of code.
 
-Run it as ``python 14_themes.py`` or open ``14_themes.ipynb`` to see each step.
+Run it as ``python themes.py`` or open ``themes.ipynb`` to see each step.
 """
 
 import svgwriter as svg

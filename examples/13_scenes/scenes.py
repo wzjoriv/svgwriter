@@ -4,9 +4,9 @@ Several animations in one file. Each ``svg.Scene`` subclass is one clip: ``Title
 ``Bars`` grows a chart from ``update(seconds)``. ``svgwriter animate`` renders every scene in the file to
 ``<ClassName>.mp4``, or only the ones named.
 
-    python -m svgwriter animate examples/13_scenes.py --list
-    python -m svgwriter animate examples/13_scenes.py Bars --format gif
-    python 13_scenes.py                                writes each scene as SVG and PNG
+    python -m svgwriter animate examples/13_scenes/scenes.py --list
+    python -m svgwriter animate examples/13_scenes/scenes.py Bars --format gif
+    python scenes.py                                writes each scene as SVG and PNG
 """
 
 import svgwriter as svg

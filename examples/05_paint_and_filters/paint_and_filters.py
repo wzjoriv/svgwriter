@@ -3,7 +3,7 @@
 Gradients, patterns, clip paths and masks give shapes their paint; filter primitives add shadows, noise,
 lighting, distortion, images and color changes.
 
-Run it as ``python 05_paint_and_filters.py`` or open ``05_paint_and_filters.ipynb`` to see each step.
+Run it as ``python paint_and_filters.py`` or open ``paint_and_filters.ipynb`` to see each step.
 """
 
 

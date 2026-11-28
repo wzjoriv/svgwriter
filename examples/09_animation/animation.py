@@ -3,7 +3,7 @@
 Presets (draw-on, morph, stagger, spin, typewriter), the animation elements underneath them and async
 writing, saved as SVG and an animated GIF.
 
-Run it as ``python 09_animation.py`` or open ``09_animation.ipynb``; the SVG animates in the notebook.
+Run it as ``python animation.py`` or open ``animation.ipynb``; the SVG animates in the notebook.
 """
 
 import asyncio

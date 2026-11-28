@@ -4,8 +4,8 @@ A scene for ``python -m svgwriter animate``. The ``Orbit`` scene draws a sun, an
 in ``build`` and moves the planet in ``update(seconds)``; the animate command renders one frame per time
 step.
 
-    python -m svgwriter animate examples/10_procedural_animation.py --format gif
-    python 10_procedural_animation.py                  writes the first frame as SVG
+    python -m svgwriter animate examples/10_procedural_animation/procedural_animation.py --format gif
+    python procedural_animation.py                  writes the first frame as SVG
 """
 
 import math

@@ -3,7 +3,7 @@
 Every shape carries one transform. Copies of a petal are rotated about a shared pivot, flipped and placed,
 then a second drawing lays shapes out with the named points of their bounds and `align`.
 
-Run it as ``python 02_transforms_and_layout.py`` or open ``02_transforms_and_layout.ipynb`` to see each step.
+Run it as ``python transforms_and_layout.py`` or open ``transforms_and_layout.ipynb`` to see each step.
 """
 
 

@@ -3,7 +3,7 @@
 A handwritten-style font drawn with stroked paths, used straight away for text, then an icon font of four
 icons with its stylesheet and cheatsheet. Compiling needs the `fonts` extra: `pip install 'pysvgwriter[fonts]'`.
 
-    python 20_fonts.py                  writes 20_hand.otf/.ttf, 20_hand.svg, 20_icons.woff/.css,
+    python fonts.py                  writes 20_hand.otf/.ttf, 20_hand.svg, 20_icons.woff/.css,
                                         20_icons.svg and 20_cheatsheet.svg
 """
 
