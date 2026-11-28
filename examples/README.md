@@ -1,27 +1,44 @@
 # svgwriter examples
 
-A numbered learning path: each example is a short step-by-step script that builds on the ones before it. Each example is a folder holding its script and a notebook of the same name (plus any sample files it opens). Run one from its folder, `cd examples/07_formats && python formats.py`, or open the notebook to see every step as a picture. Saved files are written to the folder you run it from.
+Draw pictures, diagrams, animations, slides and fonts with plain Python, one small step at a time.
 
-| # | Example | Notebook | What it shows | Key APIs |
-|--:|---|---|---|---|
-| 01 | [basic_shapes.py](01_basic_shapes/basic_shapes.py) | [ipynb](01_basic_shapes/basic_shapes.ipynb) | Shapes, gradients, text and nested groups through document shortcuts. | `svg.Document`, `svg.LinearGradient`, `doc.group`, `svg.ellipse` |
-| 02 | [transforms_and_layout.py](02_transforms_and_layout/transforms_and_layout.py) | [ipynb](02_transforms_and_layout/transforms_and_layout.ipynb) | Rotate, flip, clip and place shapes, then lay them out by the named points of their bounds. | `rotate`, `flip_x`, `place`, `align`, `bounds`, `BBox.point` |
-| 03 | [paths_and_geometry.py](03_paths_and_geometry/paths_and_geometry.py) | [ipynb](03_paths_and_geometry/paths_and_geometry.ipynb) | Path data, arcs and markers; boolean operations; length, tight bounds, points along an outline and hit tests. | `svg.PathBuilder`, `svg.markers`, `union`, `stroked`, `total_length`, `point_at_length`, `contains_point` |
-| 04 | [typography.py](04_typography/typography.py) | [ipynb](04_typography/typography.ipynb) | Live text: styled ranges, per-character moves, outlines, cut-outs, Hindi, Bengali, Urdu, Japanese and Chinese lines, and typeface weights and metrics. | `svg.text`, `text[a:b].wrap`, `glyphs`, `direction`, `svg.Typeface` |
-| 05 | [paint_and_filters.py](05_paint_and_filters/paint_and_filters.py) | [ipynb](05_paint_and_filters/paint_and_filters.ipynb) | Gradients, patterns, clip paths and masks, then filter primitives for shadows, noise, lighting, displacement, images and color. | `svg.Pattern`, `svg.ClipPath`, `svg.Mask`, `svg.Filter`, `svg.filters.drop_shadow` |
-| 06 | [pixels_and_compositing.py](06_pixels_and_compositing/pixels_and_compositing.py) | [ipynb](06_pixels_and_compositing/pixels_and_compositing.ipynb) | numpy pixels beside vectors, and Porter-Duff operators between pixels, shapes and text. | `svg.Image`, `to_image`, `Pixels.composite`, `Pixels.on_grid` |
-| 07 | [formats.py](07_formats/formats.py) | [ipynb](07_formats/formats.ipynb) | One drawing exported to SVG, PNG, PDF, EPS, TikZ, PowerPoint and DXF, then read back; a postcard sized in millimetres with lengths in inches and points and angles in degrees and turns. | `doc.save`, `svg.Document.open`, `Document(size=)`, `svg.mm`, `svg.pt`, `svg.deg`, `svg.turn` |
-| 08 | [math_and_diagrams.py](08_math_and_diagrams/math_and_diagrams.py) | [ipynb](08_math_and_diagrams/math_and_diagrams.ipynb) | LaTeX formulas as outlines and a Mermaid flowchart imported as native elements. | `svg.latex`, `svg.Document.open` |
-| 09 | [animation.py](09_animation/animation.py) | [ipynb](09_animation/animation.ipynb) | Animation presets, the animation elements beneath them, stills, a GIF and async writing. | `element.animate`, `doc.at`, `svg.AnimateTransform`, `write_many_async` |
-| 10 | [procedural_animation.py](10_procedural_animation/procedural_animation.py) | [ipynb](10_procedural_animation/procedural_animation.ipynb) | A scene class moved by `update(seconds)` and rendered with `python -m svgwriter animate`. | `svg.Scene`, `build`, `update`, `fps`, `duration` |
-| 11 | [interop.py](11_interop/interop.py) | [ipynb](11_interop/interop.ipynb) | Adding matplotlib figures, networkx graphs and objects with `__svgwriter__`, `_repr_svg_` or `_repr_png_`. | `doc.add`, `__svgwriter__`, `_repr_svg_`, `_repr_png_` |
-| 12 | [logo.py](12_logo/logo.py) | [ipynb](12_logo/logo.ipynb) | An app logo with light, dark and mono variants, and the SVG, PNG, ICO and ICNS assets made from it. | `svg.Theme`, `svg.rect`, `stroked`, `doc.save(pixels=, sizes=)` |
-| 13 | [scenes.py](13_scenes/scenes.py) | [ipynb](13_scenes/scenes.ipynb) | Several scenes in one file, one SMIL-driven and one moved from Python, rendered by name. | `svg.Scene`, `render`, `save`, `svgwriter animate --list` |
-| 14 | [themes.py](14_themes/themes.py) | [ipynb](14_themes/themes.ipynb) | One drawing in every built-in theme and all of them side by side, a variant computed with `=` expressions, a TOML theme saved back with its comments and a default set with `with`. | `svg.Theme`, `as_role`, `theme.replace`, `Theme.from_toml`, `to_toml`, `Document(theme=)` |
-| 15 | [powerpoint.py](15_powerpoint/powerpoint.py) | [ipynb](15_powerpoint/powerpoint.ipynb) | Slides as documents saved to one `.pptx` with native shapes, text and an editable equation, then read back. | `svg.export.save`, `svg.latex`, `Document.open_all`, `Document(theme=)` |
-| 16 | [behaviors.py](16_behaviors/behaviors.py) | [ipynb](16_behaviors/behaviors.ipynb) | Reusable Python motion attached to elements, and the scene baked into SMIL so the SVG plays like the video. | `@svg.preset.behavior`, `Scene.attach`, `element.home`, `Scene.bake` |
-| 17 | [layout.py](17_layout/layout.py) | [ipynb](17_layout/layout.ipynb) | A calculator card from stacks and a grid that re-lays itself out when the gap, padding or a label changes. | `svg.VStack`, `svg.HStack`, `svg.Grid`, `svg.Spacer`, `grid.span` |
-| 18 | [widgets.py](18_widgets/widgets.py) | [ipynb](18_widgets/widgets.ipynb) | An adjustable playing card: rank and suit on button rows, hue and corner radius on sliders, a glow toggle; a still per suit and a sweep saved as animated SVG and GIF. | `@svg.widgets.controls`, `svg.explore`, `svg.sweep`, `Segmented`, `Slider`, `Toggle` |
-| 19 | [presets.py](19_presets/presets.py) | [ipynb](19_presets/presets.ipynb) | Pattern, gradient, filter and marker catalogues; a sentence whose words smoke, shine, blow, burn and snow while staying text, saved as SVG and GIF; gooey blobs; effects on shapes; an effect of your own. | `svg.patterns`, `svg.gradients`, `svg.filters`, `svg.markers`, `text[a:b].effect`, `@svg.preset.effect` |
-| 20 | [fonts.py](20_fonts/fonts.py) | [ipynb](20_fonts/fonts.ipynb) | A handwritten-style alphabet drawn with strokes, saved as OTF and TTF and used for text at once; an icon font of four icons with its stylesheet and cheatsheet. | `svg.FontBuilder`, `glyph`, `icon`, `kern`, `save_css`, `cheatsheet`, `typeface` |
-| 21 | [batches.py](21_batches/batches.py) | [ipynb](21_batches/batches.ipynb) | A 20,000-point scatter plot coloured by a colormap with batched ticks and labels, and a particle field of arrows moved, turned, scaled and faded per item, then a staggered fade-in. | `svg.batch.points`, `svg.batch.colormap`, `svg.batch.instances`, `batch.translate`, `batch.set`, `batch.animate` |
+```
+pip install pysvgwriter
+```
+
+Some examples need an extra: `pip install "pysvgwriter[office]"` for PowerPoint, `[math]` for formulas,
+`[widget]` for notebook controls and `[fonts]` for making fonts.
+
+**Start here: [01 Your first drawing](01_first_drawing/).** Each folder holds a script, a notebook of the same
+name that shows every step as a picture, and any sample files it opens. Run a script from its folder, for
+example `cd examples/01_first_drawing && python first_drawing.py`; it saves its pictures there.
+
+| # | Example | You will build |
+|--:|---|---|
+| 01 | [Your first drawing](01_first_drawing/) | A little house under a sunny sky |
+| 02 | [Transforms](02_transforms/) | A flower badge from one petal turned, mirrored and moved |
+| 03 | [Alignment](03_alignment/) | A product card whose tab, price tag and icon snap into place |
+| 04 | [Paths](04_paths/) | A trail map with an arrow, and a pie chart |
+| 05 | [Booleans](05_booleans/) | A flower sticker with a hole and a cut-out letter |
+| 06 | [Measuring](06_measuring/) | Kilometre markers along a trail, and campsites tested against a lake |
+| 07 | [Typography](07_typography/) | A type specimen and lines in five languages |
+| 08 | [Paint](08_paint/) | A sunset through a round window, with gradients, a pattern, a mask and a clip |
+| 09 | [Filters](09_filters/) | A button with a shadow and a glow on a paper texture |
+| 10 | [Pixels](10_pixels/) | A plasma picture beside shapes, cut, masked and tinted |
+| 11 | [Formats](11_formats/) | One picture saved as PNG, PDF, EPS, TikZ, PowerPoint and DXF, and read back |
+| 12 | [Print sizes and units](12_print_sizes/) | An A6 postcard in millimetres, printed at 300 dpi |
+| 13 | [Math and diagrams](13_math_and_diagrams/) | Formulas, a Mermaid flowchart and an Excalidraw sketch |
+| 14 | [Interop](14_interop/) | A board mixing matplotlib, networkx and your own classes |
+| 15 | [Animation](15_animation/) | An animated title card, as SVG and GIF |
+| 16 | [Scenes](16_scenes/) | An orbiting planet and a growing bar chart, rendered to video |
+| 17 | [Behaviors](17_behaviors/) | Turning gears and a wobbling sign that play in a browser |
+| 18 | [Themes](18_themes/) | One diagram in every built-in theme |
+| 19 | [Custom themes](19_custom_themes/) | Your own brand theme, and one kept in a TOML file |
+| 20 | [Logo](20_logo/) | An app logo in three versions, with PNGs, favicon and app icons |
+| 21 | [PowerPoint](21_powerpoint/) | A quarterly review deck with an editable equation |
+| 22 | [Layout](22_layout/) | A calculator that lays itself out |
+| 23 | [Widgets](23_widgets/) | A playing card with sliders and buttons, and an animated sweep |
+| 24 | [Presets](24_presets/) | Sheets of ready-made patterns, gradients, filters and markers |
+| 25 | [Effects](25_effects/) | Words that burn, smoke and snow, gooey blobs and an effect of your own |
+| 26 | [Making fonts](26_fonts/) | A handwritten font and an icon font |
+| 27 | [Batches](27_batches/) | A 20,000-point scatter plot and a field of 1,500 arrows |
