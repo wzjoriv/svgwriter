@@ -4,13 +4,14 @@ Positions along an outline by fraction of its length, sub-paths, and corner roun
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 from ...._internal._page import to_page
 from ...transform.matrix import Point
 
 if TYPE_CHECKING:
     from ....ops.corners import Corner, CornerFilter, Fillet
+    from ....ops.path_effects import StampOrient
     from ...units.lengths import Length
     from ..shapes import Path
 
@@ -226,6 +227,109 @@ class AlongPath:
         from ....ops.corners import round_corners
 
         return self._result(round_corners(self, to_page(radius, self), where, fillet=fillet))  # type: ignore[arg-type, attr-defined, no-any-return]
+
+    def roughen(self, segment: Length | float = 4.0, deviation: Length | float = 1.5, *, seed: int = 0) -> Path:
+        """A hand-drawn version: the outline broken into short pieces whose ends wobble at random.
+
+        Parameters
+        ----------
+        segment : float or Length, optional
+            Length of the pieces. Defaults to 4.
+        deviation : float or Length, optional
+            Largest wobble. Defaults to 1.5.
+        seed : int, optional
+            Random seed; the same seed draws the same wobble. Defaults to 0.
+
+        Returns
+        -------
+        Path
+            The roughened outline, with this element's presentation attributes.
+
+        Raises
+        ------
+        ValueError
+            If *segment* is not positive.
+
+        See Also
+        --------
+        svgwriter.ops.path_effects.roughen : The function behind it.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.circle(20, 20, 15, fill="none", stroke="black").roughen(seed=1).tag
+        'path'
+        """
+        from ....ops.path_effects import roughen
+
+        return self._result(roughen(self, to_page(segment, self), to_page(deviation, self), seed))  # type: ignore[arg-type, attr-defined, no-any-return]
+
+    def dashed(self, *intervals: Length | float, offset: Length | float = 0.0) -> Path:
+        """The outline cut into dashes as real geometry, so formats without dash support draw them too.
+
+        Parameters
+        ----------
+        *intervals : float or Length
+            Dash and gap lengths, alternating, as in ``stroke-dasharray``.
+        offset : float or Length, optional
+            Distance into the pattern where the outline starts. Defaults to 0.
+
+        Returns
+        -------
+        Path
+            The dashes as open paths, with this element's presentation attributes (stroke them).
+
+        Raises
+        ------
+        ValueError
+            If no interval is positive.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> svg.line(0, 0, 50, 0, stroke="black").dashed(8, 4).tag
+        'path'
+        """
+        from ....ops.path_effects import dashed
+
+        lengths = tuple(to_page(value, self) for value in intervals)
+        return self._result(dashed(self, lengths, to_page(offset, self)))  # type: ignore[arg-type, attr-defined, no-any-return]
+
+    def stamp(self, shape: Any, spacing: Length | float, *, offset: Length | float = 0.0,
+              orient: StampOrient = "rotate") -> Path:
+        """Copies of *shape* repeated along this outline, as one ``<path>``: dots, arrows, ticks, chains.
+
+        Parameters
+        ----------
+        shape : Element or PathData
+            What to repeat, drawn around its own origin (the origin lands on the path).
+        spacing : float or Length
+            Distance between copies.
+        offset : float or Length, optional
+            Distance along the outline of the first copy. Defaults to 0.
+        orient : {"rotate", "translate", "morph"}, optional
+            Turn each copy with the path, keep it upright, or bend it along the path. Defaults to "rotate".
+
+        Returns
+        -------
+        Path
+            The copies, with this element's presentation attributes (fill them).
+
+        Raises
+        ------
+        ValueError
+            If *spacing* is not positive or *orient* is unknown.
+
+        Examples
+        --------
+        >>> import svgwriter as svg
+        >>> arrow = svg.Polygon([(-3, -3), (3, 0), (-3, 3)])
+        >>> svg.path("M0 40 C40 0 80 80 120 40", fill="black").stamp(arrow, 12).tag
+        'path'
+        """
+        from ....ops.path_effects import stamp
+
+        return self._result(stamp(self, shape, to_page(spacing, self), offset=to_page(offset, self), orient=orient))  # type: ignore[arg-type, attr-defined, no-any-return]
 
     def round_corner(self, index: int, radius: Length | float, *, fillet: Fillet = "arc") -> Path:
         """A ``<path>`` with the corner at vertex *index* rounded.
