@@ -159,3 +159,15 @@ attributes and any other node payload is the label (any other edge payload the w
 (`{node: (x, y)}`, an igraph `Layout`, a rustworkx `Pos2DMapping`), or a function of the graph
 returning them. `seed=` makes random layouts reproducible.
 
+## Seeing the geometry
+
+`doc.wireframe()` (and `el.wireframe()`) returns a copy drawn as thin outlines: no fills, filters,
+masks or opacity, images as their box, text at its real size. `bounds=True` adds each shape's bounding
+box, dashed, which helps when something lands in the wrong place. The original is not changed.
+
+```python
+doc = svg.Document(width=200, height=80)
+doc.rect(10, 10, 80, 60, rx=8, fill="teal", filter=svg.filters.drop_shadow())
+doc.circle(140, 40, 25, fill="gold").rotate(20)
+doc.wireframe(bounds=True)
+```

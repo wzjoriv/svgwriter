@@ -10,6 +10,11 @@ from typing import Final
 import skia
 
 __all__ = [
+    "WIREFRAME_BOUNDS_DASH",
+    "WIREFRAME_COLOR",
+    "WIREFRAME_DROPPED",
+    "WIREFRAME_WIDTH",
+    "WIREFRAME_WIDTH_SHARE",
     "ALPHA_ONLY",
     "ARC_HANDLE",
     "ARITHMETIC_TERMS",
@@ -213,3 +218,15 @@ FORMATS: Final = {"png": skia.kPNG, "jpeg": skia.kJPEG, "jpg": skia.kJPEG, "webp
 DEFAULT_FAMILY: Final = "sans-serif"
 GLYPH_CACHE: Final = 8192
 FAMILY_IDENTIFIER: Final = re.compile(r"[A-Za-z_][\w-]*(?: [A-Za-z_][\w-]*)*")
+
+WIREFRAME_COLOR: Final = "#0ea5e9"
+"""Outline colour of a wireframe."""
+WIREFRAME_WIDTH: Final = 1.0
+"""Outline width of a wireframe whose size is unknown, in user units."""
+WIREFRAME_WIDTH_SHARE: Final = 600
+"""A wireframe's default outline is the drawing's larger side divided by this."""
+WIREFRAME_BOUNDS_DASH: Final = "4 3"
+"""Dash pattern of the bounding boxes a wireframe can draw."""
+WIREFRAME_DROPPED: Final = ("filter", "mask", "clip-path", "opacity", "fill-opacity", "stroke-opacity", "marker-start",
+                            "marker-mid", "marker-end", "stroke-dasharray")
+"""Attributes and style properties a wireframe leaves out, so only the geometry shows."""
