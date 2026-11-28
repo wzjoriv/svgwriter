@@ -226,3 +226,19 @@ class TestScene:
         baked = baked_quietly(scene)
         for seconds in (0.0, 0.2, 0.43, 0.5, 0.77, 1.0):
             assert mismatch(scene, baked, seconds) < PIXEL_TOLERANCE
+
+
+def test_looping_scenes_repeat_forever():
+    class Spin(svg.Scene):
+        width, height, duration = 40, 40, 2.0
+        loop = True
+
+        def build(self, doc):
+            self.dot = doc.circle(30, 20, 4)
+
+        def update(self, seconds):
+            self.dot.cx = 20 + 10 * (seconds / self.duration)
+
+    looped = Spin().bake(fps=4).to_string()
+    once = Spin().bake(fps=4, loop=False).to_string()
+    assert 'repeatCount="indefinite"' in looped and 'repeatCount="indefinite"' not in once

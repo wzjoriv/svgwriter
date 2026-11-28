@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any, Concatenate, TypeVar
 
 from ..._internal._typing import P
 from ._bake import bake_document, bake_times
-from ._constants import BAKE_TOLERANCE
+from ._constants import BAKE_TOLERANCE, LOOP_SLACK
 from .animation import animation_duration
 
 if TYPE_CHECKING:
@@ -95,7 +95,7 @@ class SceneMotion:
         return bool(self._behaviors) or type(self).update is not Scene.update
 
     def bake(self, fps: float | None = None, *, duration: float | None = None,
-             tolerance: float = BAKE_TOLERANCE) -> Document:
+             tolerance: float = BAKE_TOLERANCE, loop: bool | None = None) -> Document:
         """A copy of the document whose SMIL plays what the behaviors and :meth:`update` do.
 
         The scene is sampled ``fps`` times a second. Each element's changes become ``<animate>``,
@@ -115,6 +115,10 @@ class SceneMotion:
         tolerance : float, optional
             Largest difference allowed between the baked animation and a sample, in user units, degrees,
             scale factors or colour channels (``0..1``). Defaults to 0.01.
+        loop : bool, optional
+            Repeat forever: animations that span the whole duration from the start get
+            ``repeatCount="indefinite"``, so a seamless scene plays on in browsers and notebooks. Defaults to
+            None, which uses the scene's ``loop`` attribute (False unless the class sets it).
 
         Returns
         -------
@@ -165,4 +169,20 @@ class SceneMotion:
         if issues:
             warnings.warn(f"SMIL cannot express these changes, left out of the baked animation: "
                           f"{'; '.join(dict.fromkeys(issues))}", stacklevel=2)
+        if loop if loop is not None else getattr(self, "loop", False):
+            _repeat_forever(baked, length)
         return baked
+
+
+def _repeat_forever(document: Document, length: float) -> None:
+    """Make the animations that span *length* seconds from the start repeat indefinitely."""
+    from ..._internal._animation._timing import clock
+    from ...model.elements.animation import AnimationElement
+
+    for animation in document.root.iter():
+        if not isinstance(animation, AnimationElement) or animation.tag == "set":
+            continue
+        begin = clock(str(animation.get("begin", "0s"))) or 0.0
+        dur = clock(str(animation.get("dur", "0s"))) or 0.0
+        if begin == 0 and abs(dur - length) <= LOOP_SLACK:
+            animation.set("repeatCount", "indefinite")
