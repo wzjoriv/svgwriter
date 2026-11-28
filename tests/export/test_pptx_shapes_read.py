@@ -69,7 +69,7 @@ def test_theme_colours_follow_their_brightness(tmp_path):
 
 def test_adjust_handles_change_the_outline(tmp_path):
     def build(slide):
-        plain = slide.shapes.add_shape(MSO_SHAPE.RIGHT_ARROW, Inches(1), Inches(1), Inches(3), Inches(1))
+        slide.shapes.add_shape(MSO_SHAPE.RIGHT_ARROW, Inches(1), Inches(1), Inches(3), Inches(1))
         thin = slide.shapes.add_shape(MSO_SHAPE.RIGHT_ARROW, Inches(1), Inches(3), Inches(3), Inches(1))
         thin.adjustments[0] = 0.2
         thin.adjustments[1] = 1.0
