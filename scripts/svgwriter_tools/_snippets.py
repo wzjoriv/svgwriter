@@ -23,6 +23,8 @@ BLOCK = re.compile(r"```python\n(.*?)```", re.S)
 SAVES = re.compile(r"\.(save|write|to_file)\(")
 SHOWN = "__shown__"
 """List the values of a block's bare expressions are kept in."""
+CANVAS_PAD = 0.08
+"""Margin around a shared frame, as a share of its larger side."""
 MAX_PICTURES = 4
 """Most pictures shown under one block (the last ones it draws)."""
 SAMPLE = ROOT / "tests" / "export" / "data" / "sample.excalidraw"
@@ -54,6 +56,33 @@ def _picture(value: Any) -> str | None:
     except Exception:  # noqa: BLE001 - a snippet object that cannot be drawn just gets no picture
         return None
 
+
+
+def _on_one_canvas(drawn: list[tuple[Any, str]]) -> list[str]:
+    """Several loose elements drawn in one shared frame (their joint bounds), so moves and sizes compare.
+
+    Documents, and a single picture, keep their own frame.
+    """
+    import svgwriter as svg
+
+    if len(drawn) < 2 or not all(isinstance(value, svg.Element) and value.tag != "svg" for value, _ in drawn):
+        return [picture for _, picture in drawn]
+    try:
+        boxes = [value.bounds() for value, _ in drawn]
+    except Exception:  # noqa: BLE001 - elements without bounds keep their own frames
+        boxes = [None]
+    if any(box is None for box in boxes):
+        return [picture for _, picture in drawn]
+    left, top = min(box.x for box in boxes), min(box.y for box in boxes)
+    right, bottom = max(box.x + box.width for box in boxes), max(box.y + box.height for box in boxes)
+    pad = max(right - left, bottom - top) * CANVAS_PAD
+    width, height = right - left + 2 * pad, bottom - top + 2 * pad
+    pictures = []
+    for value, _ in drawn:
+        doc = svg.Document(width=width, height=height, view_box=(left - pad, top - pad, width, height))
+        doc.add(value.clone())
+        pictures.append(doc._repr_svg_())
+    return pictures
 
 
 def _inside_shown(value: Any, drawn: list[tuple[Any, str]]) -> bool:
@@ -139,9 +168,9 @@ def render_blocks(blocks: list[str], label: str) -> dict[int, list[str]]:
                         (saves or last.get(id(value)) != picture):
                     last[id(value)] = picture
                     drawn.append((value, picture))
-            pictures = [picture for value, picture in drawn if not _inside_shown(value, drawn)]
-            if pictures:
-                shown[index] = pictures[-MAX_PICTURES:]
+            kept = [(value, picture) for value, picture in drawn if not _inside_shown(value, drawn)]
+            if kept:
+                shown[index] = _on_one_canvas(kept[-MAX_PICTURES:])
     return shown
 
 
