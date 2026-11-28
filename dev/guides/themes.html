@@ -323,12 +323,15 @@ decides how each role looks. Changing the theme restyles the whole drawing.</p>
 <span class="n">doc</span> <span class="o">+=</span> <span class="n">svg</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>          <span class="c1"># builder shapes carry roles already</span>
 <span class="n">doc</span> <span class="o">+=</span> <span class="n">svg</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">67</span><span class="p">)</span>
 
+<span class="n">dark</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>                                  <span class="c1"># a still of the dark one, to compare</span>
 <span class="n">doc</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="s2">"paper"</span>                               <span class="c1"># restyle everything</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">to_string</span><span class="p">()[:</span><span class="mi">200</span><span class="p">])</span>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
 <img alt="What the code above draws" src="../_images/guides-themes-0-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-themes-0-1.svg" />
+</figcaption>
 </figure>
 <section id="roles-in-the-output">
 <h2>Roles in the output<a class="headerlink" href="#roles-in-the-output" title="Link to this heading">¶</a></h2>
@@ -506,8 +509,13 @@ follow their sources:</p>
     <span class="p">},</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">brand</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">"box"</span><span class="p">),</span> <span class="n">brand</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">"badge"</span><span class="p">))</span>
+<span class="n">tag</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="n">brand</span><span class="p">)</span>
+<span class="n">tag</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"badge"</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-themes-2-0.svg" />
+</figure>
 <p>A role value may also be a reference, <code class="docutils literal notranslate"><span class="pre">&quot;{palette.primary}&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;{fonts.sizes.title}&quot;</span></code>, alone or inside
 text (<code class="docutils literal notranslate"><span class="pre">&quot;1px</span> <span class="pre">solid</span> <span class="pre">{palette.border}&quot;</span></code>), or an expression starting with <code class="docutils literal notranslate"><span class="pre">=</span></code>. Unknown roles and references and reference cycles
 raise <code class="docutils literal notranslate"><span class="pre">svg.errors.ThemeError</span></code> with the path of the value.</p>
@@ -535,8 +543,13 @@ Derived values follow their sources: replacing <code class="docutils literal not
     <span class="p">}},</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">brand</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">on_primary</span><span class="o">.</span><span class="n">hex</span><span class="p">,</span> <span class="n">brand</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">"badge"</span><span class="p">))</span>
+<span class="n">tag</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="n">brand</span><span class="p">)</span>
+<span class="n">tag</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"#7c3aed"</span><span class="p">,</span> <span class="n">stroke_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"badge"</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-themes-3-0.svg" />
+</figure>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -692,8 +705,9 @@ so threads and async tasks each keep their own; outside any block the default is
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 
 <span class="k">with</span> <span class="n">svg</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"print"</span><span class="p">):</span>
-    <span class="n">figure</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
-    <span class="n">figure</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Figure 1"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"caption"</span><span class="p">)</span>
+    <span class="n">figure</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">72</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"box"</span><span class="p">)</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Figure 1"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">as_role</span><span class="p">(</span><span class="s2">"caption"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">figure</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">svg</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>

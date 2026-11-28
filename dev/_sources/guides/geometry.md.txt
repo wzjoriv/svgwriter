@@ -9,7 +9,7 @@ affine {class}`~svgwriter.Matrix`.
 ```python
 import svgwriter as svg
 
-c = svg.circle(50, 50, 10)
+c = svg.circle(50, 50, 10, fill="tomato")
 c.translate(20, 0).rotate(90)
 print(c.cx)          # 50.0: the local geometry never changes
 print(c.position)    # Point(x=70.0, y=50.0): where the anchor (centre) is now
@@ -23,12 +23,15 @@ Rotation, scaling, skewing and flipping pivot on the **anchor**, given in local 
 is the centre of the element's bounding box and follows geometry edits; set it to pin it.
 
 ```python
-r = svg.rect(0, 0, 40, 20)
+doc = svg.Document(140, 140)
+doc.rect(30, 40, 40, 20, fill="#ccc")        # the original, for comparison
+r = doc.rect(30, 40, 40, 20, fill="steelblue")
 print(r.anchor)              # Point(x=20.0, y=10.0)
 r.anchor = (0, 0)            # pivot on the top-left corner from now on
 r.rotate(30)
 r.anchor = None              # back to the centre
-r.rotate(-30, about=(100, 100))     # or pass a pivot for one call
+r.rotate(-30, about=(60, 60))     # or pass a pivot for one call
+doc
 ```
 
 ## Parent frame or local frame
@@ -37,8 +40,10 @@ Each method composes in the **parent** frame by default: `translate(10, 0)` move
 screen whatever the current rotation. `local=True` uses the element's own (rotated, scaled) axes.
 
 ```python
-a = svg.rect(0, 0, 10, 10).rotate(90).translate(10, 0)                 # right on screen
-b = svg.rect(0, 0, 10, 10).rotate(90).translate(10, 0, local=True)     # along its own x axis: down
+doc = svg.Document(80, 80)
+doc.rect(20, 20, 20, 20, fill="#ccc")                                       # where both start
+a = doc.rect(20, 20, 20, 20, fill="tomato").rotate(90).translate(20, 0)            # right on screen
+b = doc.rect(20, 20, 20, 20, fill="royalblue").rotate(90).translate(20, 0, local=True)   # its own x axis: down
 print(a.position, b.position)
 ```
 
@@ -61,12 +66,18 @@ All return the element, so they chain. Gradients and patterns have the same meth
 Numbers and pairs transform a **copy**; element operands keep their structural meaning.
 
 ```python
-dot = svg.circle(0, 0, 5)
-moved = dot + (10, 20)          # translated copy
-bigger = dot * 2                # scaled copy about the anchor
-turned = svg.rect(0, 0, 8, 2) @ 45      # rotated copy ("at 45 degrees")
-shifted = svg.Matrix.translate(5, 0) @ dot      # matrix in the parent frame
-group = dot + svg.circle(20, 0, 5)              # a <g> holding both
+dot = svg.circle(0, 0, 8, fill="steelblue")
+results = [
+    dot,                                                # the original
+    dot + (10, 20),                                     # translated copy
+    dot * 2,                                            # scaled copy about the anchor
+    svg.rect(0, 0, 24, 6, fill="tomato") @ 45,          # rotated copy ("at 45 degrees")
+    svg.Matrix.translate(5, 0) @ dot,                   # matrix in the parent frame
+    dot + svg.circle(20, 0, 8, fill="gold"),            # a <g> holding both
+]
+row = svg.Document(340, 60)                             # the results side by side
+for n, el in enumerate(results):
+    row.add(el.place(30 + 55 * n, 30))
 dot += (1, 1)                   # in place
 ```
 
@@ -86,10 +97,13 @@ Things to keep in mind:
 ## Bounds
 
 ```python
-box = svg.rect(0, 0, 10, 10).rotate(45)
+doc = svg.Document(100, 100)
+box = doc.rect(30, 30, 40, 40, fill="lightsteelblue").rotate(45)
 print(box.local_bbox())     # before the transform
 print(box.bounds())         # after it, in parent coordinates
 print(box.exact_bbox())     # tight box of the transformed outline
+for found, color in ((box.local_bbox(), "tomato"), (box.bounds(), "seagreen"), (box.exact_bbox(), "purple")):
+    doc.rect(*found, fill="none", stroke=color, stroke_width=1.5)      # the three boxes drawn on the shape
 ```
 
 ## Placing and aligning
@@ -99,11 +113,13 @@ Boxes have edges (`left`, `right`, `top`, `bottom`) and named points (`center`, 
 same names to move by their bounds:
 
 ```python
-title = svg.rect(0, 0, 80, 20)
-badge = svg.circle(0, 0, 6).align(title, "center_left", to="center_right", offset=(4, 0))
-note = svg.rect(0, 0, 30, 8).align(title, "top_left", to="bottom_left", offset=(0, 2))
-logo = svg.Polygon.regular(0, 0, 10, 5).place(100, 100, at="bottom_right")
+title = svg.rect(0, 0, 80, 20, fill="steelblue")
+badge = svg.circle(0, 0, 6, fill="tomato").align(title, "center_left", to="center_right", offset=(4, 0))
+note = svg.rect(0, 0, 30, 8, fill="gold").align(title, "top_left", to="bottom_left", offset=(0, 2))
+logo = svg.Polygon.regular(0, 0, 10, 5, fill="seagreen").place(100, 100, at="bottom_right")
 print(note.bounds().top, badge.bounds().left)
+placed = svg.Document(110, 110, view_box=(-5, -5, 110, 110))
+placed += [title, badge, note, logo]
 ```
 
 `place(x, y, at=...)` moves a named point onto a coordinate; `align(target, at, to=...)` moves it onto a
@@ -113,13 +129,15 @@ Elements also have the box's edges and points as attributes. Reading one gives t
 point of the element's bounds; assigning one moves the element so that edge or point lands there:
 
 ```python
-card = svg.rect(20, 20, 100, 50)
-heading = svg.rect(0, 0, 40, 8)
+card = svg.rect(20, 20, 100, 50, fill="lightsteelblue")
+heading = svg.rect(0, 0, 40, 8, fill="navy")
 heading.center = card.center              # centred on the card
 heading.top = card.top + 4                # then 4 units below the card's top edge
-pin = svg.circle(0, 0, 3)
+pin = svg.circle(0, 0, 3, fill="tomato")
 pin.center = card.bottom_right            # on the card's corner
 print(heading.top_left, pin.center)
+sheet = svg.Document(140, 90)
+sheet += [card, heading, pin]
 ```
 
 ## Units and angles
@@ -131,8 +149,10 @@ the result keeps the left side's unit:
 width = 5 * svg.inch - 7 * svg.mm            # 4.7244in
 print(width.to("mm"), svg.inch(1) / svg.mm(25.4))
 page = svg.Document(210 * svg.mm, 297 * svg.mm)   # A4; coordinates inside are millimetres
+page.rect(10, 10, 190, 40, fill="steelblue")
+page.text("A4, in mm", x=20, y=36, font_size=18, fill="white")
 # page.save("print.png", dpi=300)
-spin = svg.rect(0, 0, 4, 2) @ svg.turn(0.25)  # angles: deg, rad, turn (svg.units.grad too)
+spin = svg.rect(0, 0, 4, 2, fill="tomato") @ svg.turn(0.25)  # angles: deg, rad, turn (svg.units.grad too)
 ```
 
 A document sized in a physical unit with a matching `viewBox`, such as `svg.Document(size="a4")` or
@@ -182,7 +202,7 @@ side = area / svg.mm(40)                     # 15mm, a Length again
 ratio = svg.inch(1) / svg.mm(25.4)           # 1.0
 spin = svg.deg(90) / svg.mm(10)              # length⁻¹·angle: turn per millimetre
 print(area, side, ratio, spin * svg.mm(5))   # ... 45deg
-box = svg.rect(0, 0, side, side)
+box = svg.rect(0, 0, side, side, fill="seagreen")      # 15mm square
 try:
     box.width = area
 except TypeError as error:

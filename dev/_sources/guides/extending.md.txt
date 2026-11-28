@@ -65,8 +65,9 @@ def ember(element: svg.Element, *, color: str = "#f97316") -> None:
     element.filter = svg.filters.glow(3, color=color)
 
 
-doc = svg.Document(size="poster-50x70")
-doc.add(svg.preset.shape.get("badge")(10, 10, 5, fill=svg.patterns.bricks())).effect("ember")
+print(svg.Document(size="poster-50x70").root.get("width"))   # the size preset, by name
+doc = svg.Document(100, 60)
+doc.add(svg.preset.shape.get("badge")(30, 30, 25, fill=svg.patterns.bricks())).effect("ember")
 doc[0].animate.bob(height=2)
 print(svg.preset.effect.list())
 
@@ -80,7 +81,9 @@ for kind, name in [("animation", "bob"), ("behavior", "drift"), ("shape", "badge
 ```python
 brand = svg.themes.get("light").replace(name="brand", palette={"primary": "#ff6600"})
 svg.themes.register(brand)
-doc = svg.Document(100, 100, theme="brand")
+doc = svg.Document(120, 60, theme="brand")
+doc.rect(10, 10, 100, 40, rx=6).as_role("box")          # the brand's primary colour, by role
+doc.text("Brand", x=60, y=36, text_anchor="middle", font_size=20).as_role("title")
 svg.themes.unregister("brand")
 ```
 

@@ -16,7 +16,7 @@ doc += [svg.line(0, 99, 200, 99, stroke="gray")]
 ## Access
 
 ```python
-doc.rect(0, 0, 10, 10, id="logo")
+doc.rect(150, 68, 40, 24, fill="tomato", id="logo")
 print(doc[0].tag, doc[-1].tag, len(doc))    # top-level content
 print(doc["logo"])                          # any element by id
 print("logo" in doc)
@@ -44,7 +44,7 @@ displayed; `fit()` makes that permanent.
 
 ```python
 sketch = svg.Document()
-sketch.circle(100, 100, 30, stroke="black", stroke_width=4)
+sketch.circle(100, 100, 30, fill="gold", stroke="crimson", stroke_width=4)
 print(sketch.content_bounds())       # BBox(x=68.0, y=68.0, width=64.0, height=64.0)
 sketch.fit(padding=10)
 ```
@@ -58,7 +58,7 @@ a `<g>` holding its `<svg>`, so it can be moved and scaled. Objects with only `_
 ```python
 class Badge:
     def _repr_svg_(self):
-        return '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="9"/></svg>'
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="9" fill="tomato"/></svg>'
 
 doc.add(Badge()).translate(150, 10).scale(0.5)
 ```
@@ -71,7 +71,7 @@ Every SVG attribute is readable and writable by its Python name. Unknown names r
 custom attributes go through `attrs={...}`, `data_*` keywords or `el.set(name, value)`.
 
 ```python
-r = svg.rect(0, 0, 10, 10, data_kind="tile")
+r = svg.rect(0, 0, 60, 60, fill="teal", stroke="navy", stroke_width=6, data_kind="tile")
 r.stroke_linejoin = "round"
 print(r.stroke_linejoin, r.width, r.computed("fill", "black"))
 ```
@@ -146,7 +146,9 @@ import igraph as ig
 g = ig.Graph([(0, 1), (1, 2), (2, 0)], directed=True)
 g.vs["name"] = ["a", "b", "c"]
 g.es["weight"] = [1, 2, 3]
-doc.add(svg.ops.draw_graph(g, layout="kamada_kawai", edge_labels=True))
+graph = svg.Document()
+graph.add(svg.ops.draw_graph(g, layout="kamada_kawai", edge_labels=True))
+graph.fit(padding=10)                    # the page wraps the drawing, with a margin
 ```
 
 Each library reads its own way: networkx node and edge data; igraph vertex and edge attributes, with
@@ -169,5 +171,5 @@ box, dashed, which helps when something lands in the wrong place. The original i
 doc = svg.Document(width=200, height=80)
 doc.rect(10, 10, 80, 60, rx=8, fill="teal", filter=svg.filters.drop_shadow())
 doc.circle(140, 40, 25, fill="gold").rotate(20)
-doc.wireframe(bounds=True)
+wire = doc.wireframe(bounds=True)        # the original is unchanged
 ```

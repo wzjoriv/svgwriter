@@ -22,6 +22,10 @@ last step. `a >> b` wires `b` to read `a` and returns `b`, which reads left to r
 ```python
 step = svg.FeGaussianBlur(2, in_="SourceAlpha") >> svg.FeOffset(3, 3)
 glow = svg.Filter(svg.FeMerge(step, "SourceGraphic"))
+
+lit = svg.Document(80, 60)
+lit.rect(0, 0, 80, 60, fill="#334155")
+lit.rect(10, 10, 50, 30, fill="gold", filter=glow)
 ```
 
 SVG 1.1 gives an element a single `filter`, so effects stack by chaining whole filters: `f1 >> f2` is
@@ -31,6 +35,9 @@ one filter that applies `f1`, then `f2` to its result.
 soft = svg.Filter(svg.FeGaussianBlur(1))
 stacked = soft >> drop
 print(len(stacked.primitives))
+
+blurred = svg.Document(80, 60)
+blurred.rect(10, 10, 50, 30, fill="gold", filter=stacked)       # blur first, then the shadow
 ```
 
 Ready-made filters live in `svg.filters` (`drop_shadow`, `glow`, `long_shadow`, `outline`, `goo`, ...),

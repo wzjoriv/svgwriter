@@ -10,7 +10,7 @@ import numpy as np
 import svgwriter as svg
 
 rng = np.random.default_rng(0)
-x, y = rng.normal(200, 60, (2, 20_000))
+x, y = rng.normal(200, 60, (2, 2_000))
 doc = svg.Document(400, 400)
 dots = doc.add(svg.batch.points(x, y, 2, fill=svg.batch.colormap("viridis", np.hypot(x - 200, y - 200)),
                                 opacity=0.6))
@@ -85,8 +85,7 @@ import svgwriter as svg
 
 n = 500
 angle = np.linspace(0, 12 * np.pi, n)
-arrow = svg.polygon([(-3, -1.5), (3, 0), (-3, 1.5)])
-field = svg.batch.instances(arrow, 200 + angle * 4 * np.cos(angle), 200 + angle * 4 * np.sin(angle),
+field = svg.batch.instances(svg.polygon([(-3, -1.5), (3, 0), (-3, 1.5)]), 200 + angle * 4 * np.cos(angle), 200 + angle * 4 * np.sin(angle),
                             angle=np.degrees(angle) + 90, fill=svg.batch.colormap("plasma", angle))
 field.scale(np.linspace(0.5, 2, n)).translate(0, -10)
 field.set(opacity=np.linspace(1, 0.3, n))
@@ -121,6 +120,7 @@ doc = svg.Document(200, 40)
 wave = doc.add(svg.batch.circles(np.arange(10) * 20 + 10, 20, 6, fill="navy"))
 wave.animate.fade_in(0.5, stagger=0.1).move_by(0, -10, dur=0.5, begin=np.linspace(1, 2, 10))
 print([item.get("opacity") for item in doc.at(0.3).root[0]][:4])
+doc.at(1.5)         # the dots part-way through their staggered hops
 ```
 
 `svg.interpolate(a, b, t)` blends two batches of the same size: compact batches column by column

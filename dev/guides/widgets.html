@@ -488,8 +488,15 @@ outputs in place. <code class="docutils literal notranslate"><span class="pre">s
 <span class="nd">@svg</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">controls</span><span class="p">(</span><span class="n">hue</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">),</span> <span class="n">corners</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="p">))</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">corners</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="n">corners</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">from_hsl</span><span class="p">(</span><span class="n">hue</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+
+
+<span class="n">page</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">220</span><span class="p">,</span> <span class="mi">140</span><span class="p">)</span>
+<span class="n">build</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="mi">280</span><span class="p">,</span> <span class="n">corners</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>                  <span class="c1"># still a plain function, so it draws on any document</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-widgets-4-0.svg" />
+</figure>
 <p>The form is plain HTML inputs and the server only the standard library. Editing <code class="docutils literal notranslate"><span class="pre">main.py</span></code> keeps the
 values that still fit the edited controls. See <a class="reference internal" href="projects.html"><span class="doc">Projects</span></a>.</p>
 </section>
@@ -503,11 +510,15 @@ and a control runs through its range or options; anything else is passed unchang
 
 <span class="n">grow</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">sweep</span><span class="p">(</span><span class="n">badge</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s2">"#0ea5e9"</span><span class="p">,</span> <span class="s2">"#f43f5e"</span><span class="p">],</span> <span class="n">dur</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">ease</span><span class="o">=</span><span class="s2">"ease-in-out"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">grow</span><span class="o">.</span><span class="n">values_at</span><span class="p">(</span><span class="mf">1.0</span><span class="p">))</span>
+<span class="n">grow</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>              <span class="c1"># the drawing half way through</span>
 <span class="n">grow</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"badge.svg"</span><span class="p">)</span>    <span class="c1"># baked SMIL: plays in a browser</span>
 <span class="n">grow</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"badge.gif"</span><span class="p">)</span>    <span class="c1"># frame by frame, no ffmpeg needed</span>
 <span class="c1"># grow.save("badge.mp4")  # through ffmpeg; .pptx works as well</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-widgets-5-0.svg" />
+</figure>
 <p>Each frame redraws the function and carries the result over onto the scene’s drawing: elements that
 keep their place keep their identity and only take new attributes, so the baked SVG interpolates them
 with a few keyframes instead of swapping whole copies. A function that returns an element gets a canvas

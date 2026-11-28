@@ -1,5 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="200" height="100" viewBox="0 0 200 100" version="1.1">
   <g inkscape:groupmode="layer" inkscape:label="Parts">
-    <rect x="90" y="20" width="20" height="10" transform="rotate(30 90 25)" inkscape:transform-center-x="-8.6603" inkscape:transform-center-y="5"/>
+    <rect x="60" y="40" width="80" height="20" fill="#ccc"/>
+    <rect x="60" y="40" width="80" height="20" fill="tomato" transform="rotate(30 60 50)" inkscape:transform-center-x="-34.641" inkscape:transform-center-y="20"/>
   </g>
 </svg>

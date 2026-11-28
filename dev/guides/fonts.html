@@ -328,6 +328,7 @@ private-use code points, kerning pairs, and files in OpenType (<code class="docu
 <span class="n">fb</span><span class="o">.</span><span class="n">glyph</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="n">advance</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 <span class="n">fb</span><span class="o">.</span><span class="n">kern</span><span class="p">(</span><span class="s2">"l"</span><span class="p">,</span> <span class="s2">"o"</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">)</span>
 <span class="n">fb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"MyHand.otf"</span><span class="p">)</span>
+<span class="n">fb</span><span class="o">.</span><span class="n">cheatsheet</span><span class="p">()</span>                                       <span class="c1"># every glyph on a sheet, to check the drawing</span>
 </pre></div>
 </div>
 <p>The coordinate convention follows svgwriter, not the font file:</p>
@@ -395,7 +396,8 @@ characters or icon names; negative values pull the pair together.</p>
 <span class="n">icons</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s2">"star"</span><span class="p">,</span> <span class="n">svg</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">icons</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"Icons.woff"</span><span class="p">)</span>                             <span class="c1"># .woff2 with brotli installed</span>
 <span class="n">icons</span><span class="o">.</span><span class="n">save_css</span><span class="p">(</span><span class="s2">"icons.css"</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s2">"Icons.woff"</span><span class="p">)</span>
-<span class="n">icons</span><span class="o">.</span><span class="n">cheatsheet</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"icons.svg"</span><span class="p">)</span>
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">icons</span><span class="o">.</span><span class="n">cheatsheet</span><span class="p">()</span>
+<span class="n">sheet</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"icons.svg"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Each icon gets the next private-use code point from U+E000 in the order it is added, and adding a name

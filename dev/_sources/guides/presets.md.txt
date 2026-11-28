@@ -39,6 +39,10 @@ another role and `background=` fills behind. `noise` is seeded: equal seeds give
 sky = svg.gradients.sunset()
 brand = svg.gradients.theme()                    # primary to accent of the current theme
 heat = svg.gradients.blend("navy", "crimson", "gold", angle=90)
+
+bars = svg.Document(180, 90)                     # the three as bars
+for n, gradient in enumerate([sky, brand, heat]):
+    bars.rect(10, 10 + 26 * n, 160, 22, rx=4, fill=gradient)
 ```
 
 ![Every built-in gradient](../_static/examples/gradient_catalogue.png)
@@ -52,6 +56,8 @@ defaults come from the current theme when the gradient is built (`with svg.theme
 ## Filters
 
 ```python
+doc = svg.Document(120, 100)
+doc.rect(0, 0, 120, 100, fill="#c7d2fe")
 card = doc.rect(10, 10, 60, 40, rx=6, fill="white")
 card.filter = svg.filters.drop_shadow(2, 3, 3)
 
@@ -73,6 +79,7 @@ you pass a color, so they restyle with the document theme. `bevel` and `relief` 
 ## Markers
 
 ```python
+doc = svg.Document(220, 90)
 doc.path("M10 70 L110 20 L210 70", fill="none", stroke="black", stroke_width=2,
          marker_start=svg.markers.dot(), marker_mid=svg.markers.diamond(), marker_end=svg.markers.arrow())
 ```
@@ -85,8 +92,9 @@ Markers are sized in stroke widths, so a thicker line gets a larger head, and tu
 ## Effects
 
 ```python
-doc = svg.Document(520, 60)
-line = doc.text("A bitter Wind carried sparks", x=10, y=40, font_size=28)
+doc = svg.Document(700, 90)
+doc.rect(0, 0, 700, 90, fill="#0f172a")
+line = doc.text("A bitter Wind carried sparks", x=15, y=60, font_size=44, fill="white")
 line[9:13].effect("wind")
 svg.effects.fire(line[22:28])               # the same, by function
 doc.save("sparks.gif")
@@ -132,8 +140,9 @@ def ember(element: svg.Element, *, color: str = "#f97316") -> None:
     element.filter = svg.filters.glow(3, color=color)
 
 
-wall = svg.rect(0, 0, 60, 30, fill=svg.patterns.bricks())
-title = svg.Document(200, 50).text("still warm", x=10, y=36, font_size=28)
+sheet = svg.Document(240, 140)
+wall = sheet.rect(10, 10, 220, 70, fill=svg.patterns.bricks())
+title = sheet.text("still warm", x=10, y=120, font_size=44)
 title[6:].effect("ember")
 svg.preset.pattern.unregister("bricks")
 svg.preset.effect.unregister("ember")

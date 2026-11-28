@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="240" height="100" viewBox="0 0 240 100" version="1.1">
-  <style id="s5e088e-svgwriter-theme" type="text/css">.s5e088e-role-background { fill:#fbf7ef;stroke:none }
-.s5e088e-role-box { fill:#f3ecdf;stroke:#c1bcb3;stroke-width:1px }
-.s5e088e-role-shape { fill:#8c4a2f;stroke:none }
-.s5e088e-role-arrow-line { fill:none;stroke:#3b3128;stroke-width:2px }
-.s5e088e-role-title { fill:#8c4a2f;stroke:none;font-family:Helvetica, Arial, sans-serif;font-size:24px;font-weight:700 }</style>
-  <rect x="0" y="0" width="240" height="100" class="s5e088e-role-background"/>
-  <text x="16" y="34" class="s5e088e-role-title">Results</text>
-  <rect x="16" y="50" width="90" height="34" rx="6" class="s5e088e-role-box"/>
-  <polygon points="200,40 204.7023,53.5279 219.0211,53.8197 207.6085,62.4721 211.7557,76.1803 200,68 188.2443,76.1803 192.3915,62.4721 180.9789,53.8197 195.2977,53.5279" class="s5e088e-role-shape"/>
-  <path d="M110 67 L160 67 M151.3397 72 L160 67 M151.3397 62 L160 67" fill="none" class="s5e088e-role-arrow-line"/>
+  <style id="sf8d582-svgwriter-theme" type="text/css">.sf8d582-role-background { fill:#111827;stroke:none }
+.sf8d582-role-box { fill:#1f2937;stroke:#515662;stroke-width:1px }
+.sf8d582-role-shape { fill:#99f6e4;stroke:none }
+.sf8d582-role-arrow-line { fill:none;stroke:#e5e7eb;stroke-width:2px }
+.sf8d582-role-title { fill:#99f6e4;stroke:none;font-family:Helvetica, Arial, sans-serif;font-size:24px;font-weight:700 }</style>
+  <rect x="0" y="0" width="240" height="100" class="sf8d582-role-background"/>
+  <text x="16" y="34" class="sf8d582-role-title">Results</text>
+  <rect x="16" y="50" width="90" height="34" rx="6" class="sf8d582-role-box"/>
+  <polygon points="200,40 204.7023,53.5279 219.0211,53.8197 207.6085,62.4721 211.7557,76.1803 200,68 188.2443,76.1803 192.3915,62.4721 180.9789,53.8197 195.2977,53.5279" class="sf8d582-role-shape"/>
+  <path d="M110 67 L160 67 M151.3397 72 L160 67 M151.3397 62 L160 67" fill="none" class="sf8d582-role-arrow-line"/>
 </svg>

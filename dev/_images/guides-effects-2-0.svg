@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="60" viewBox="0 0 80 60" version="1.1">
+  <defs>
+    <filter id="s2c7350-filter1">
+      <feGaussianBlur id="s2c7350-feGaussianBlur2" stdDeviation="1" result="feGaussianBlur2-out"/>
+      <feGaussianBlur id="s2c7350-feGaussianBlur3" in="SourceAlpha" stdDeviation="3" result="feGaussianBlur3-out"/>
+      <feOffset id="s2c7350-feOffset1" in="feGaussianBlur3-out" dx="2" dy="2" result="feOffset1-out"/>
+      <feMerge>
+        <feMergeNode in="feOffset1-out"/>
+        <feMergeNode in="feGaussianBlur2-out"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect x="10" y="10" width="50" height="30" fill="gold" filter="url(#s2c7350-filter1)"/>
+</svg>
