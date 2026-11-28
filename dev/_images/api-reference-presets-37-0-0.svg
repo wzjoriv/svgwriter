@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="92.1843" viewBox="-0.7256 6.2617 56.4766 26.0312" version="1.1">
+  <defs>
+    <linearGradient id="s53a22e-linearGradient1" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.05" stop-color="#f7fbff"/>
+      <stop offset="0.1" stop-color="#edf7ff"/>
+      <stop offset="0.15" stop-color="#e2f4ff"/>
+      <stop offset="0.2" stop-color="#d6f2fd"/>
+      <stop offset="0.25" stop-color="#caf0f8"/>
+      <stop offset="0.3" stop-color="#bfedf6"/>
+      <stop offset="0.35" stop-color="#b4eaf5"/>
+      <stop offset="0.4" stop-color="#a8e6f3"/>
+      <stop offset="0.45" stop-color="#9ce3f1"/>
+      <stop offset="0.5" stop-color="#90e0ef"/>
+      <stop offset="0.55" stop-color="#79d2e6"/>
+      <stop offset="0.6" stop-color="#62c3de"/>
+      <stop offset="0.65" stop-color="#49b4d6"/>
+      <stop offset="0.7" stop-color="#2ea5cf"/>
+      <stop offset="0.75" stop-color="#0096c7"/>
+      <stop offset="0.8" stop-color="#0084bc"/>
+      <stop offset="0.85" stop-color="#0073b0"/>
+      <stop offset="0.9" stop-color="#0061a4"/>
+      <stop offset="0.95" stop-color="#005097"/>
+      <stop offset="1" stop-color="#023e8a"/>
+    </linearGradient>
+    <filter id="s53a22e-filter1" x="-18.554" y="-11.566" width="92.133" height="61.688" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur id="s53a22e-feGaussianBlur1" in="SourceAlpha" stdDeviation="1.721" result="feGaussianBlur28-out"/>
+      <feFlood id="s53a22e-feFlood1" flood-color="#bde0fe" flood-opacity="1" result="feFlood20-out"/>
+      <feComposite id="s53a22e-feComposite1" in="feFlood20-out" in2="feGaussianBlur28-out" operator="in" result="feComposite25-out"/>
+      <feGaussianBlur id="s53a22e-feGaussianBlur2" in="SourceAlpha" stdDeviation="1.033" result="feGaussianBlur29-out"/>
+      <feSpecularLighting id="s53a22e-feSpecularLighting1" in="feGaussianBlur29-out" surfaceScale="1.033" lighting-color="white" specularConstant="0.7" specularExponent="24" result="feSpecularLighting2-out">
+        <feDistantLight azimuth="150" elevation="35"/>
+      </feSpecularLighting>
+      <feComposite id="s53a22e-feComposite2" in="feSpecularLighting2-out" in2="SourceAlpha" operator="in" result="feComposite24-out"/>
+      <feComposite id="s53a22e-feComposite3" in="SourceGraphic" in2="feComposite24-out" operator="arithmetic" k2="1" k3="1" result="feComposite26-out"/>
+      <feMerge>
+        <feMergeNode in="feComposite25-out"/>
+        <feMergeNode in="feComposite26-out"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <text x="0" y="30" font-size="30" fill="url(#s53a22e-linearGradient1)" filter="url(#s53a22e-filter1)">cold</text>
+</svg>

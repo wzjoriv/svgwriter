@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="85.2048" viewBox="-1.0036 6.6282 75.1644 32.0219" version="1.1">
+  <defs>
+    <filter id="sa542ea-filter1" x="-23.035" y="-15.403" width="119.227" height="76.084" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur id="sa542ea-feGaussianBlur1" in="SourceAlpha" stdDeviation="10.19" result="feGaussianBlur31-out"/>
+      <feFlood id="sa542ea-feFlood1" flood-color="#fbbf24" flood-opacity="1" result="feFlood22-out"/>
+      <feComposite id="sa542ea-feComposite1" in="feFlood22-out" in2="feGaussianBlur31-out" operator="in" result="feComposite30-out"/>
+      <feGaussianBlur id="sa542ea-feGaussianBlur2" in="SourceAlpha" stdDeviation="5.095" result="feGaussianBlur32-out"/>
+      <feFlood id="sa542ea-feFlood2" flood-color="#fbbf24" flood-opacity="1" result="feFlood23-out"/>
+      <feComposite id="sa542ea-feComposite2" in="feFlood23-out" in2="feGaussianBlur32-out" operator="in" result="feComposite31-out"/>
+      <feGaussianBlur id="sa542ea-feGaussianBlur3" in="SourceAlpha" stdDeviation="1.698" result="feGaussianBlur33-out"/>
+      <feFlood id="sa542ea-feFlood3" flood-color="#fbbf24" flood-opacity="1" result="feFlood24-out"/>
+      <feComposite id="sa542ea-feComposite3" in="feFlood24-out" in2="feGaussianBlur33-out" operator="in" result="feComposite32-out"/>
+      <feMerge>
+        <feMergeNode in="feComposite30-out"/>
+        <feMergeNode in="feComposite31-out"/>
+        <feMergeNode in="feComposite32-out"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <text x="0" y="30" font-size="30" fill="#feefc8" stroke="#fbbf24" stroke-width="0.849" filter="url(#sa542ea-filter1)">Open<animate attributeName="opacity" values="1;1;0.55;1;0.8;1;1" calcMode="discrete" dur="2.5s" repeatCount="indefinite"/></text>
+</svg>

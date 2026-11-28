@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="71.8494" viewBox="0.2544 6.0552 73.6103 26.4443" version="1.1">
+  <defs>
+    <linearGradient id="s0261fe-linearGradient1" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#fff3b2"/>
+      <stop offset="0.22" stop-color="#806c00"/>
+      <stop offset="0.45" stop-color="#fffbe5"/>
+      <stop offset="0.5" stop-color="#ccac00"/>
+      <stop offset="0.72" stop-color="#ffe766"/>
+      <stop offset="1" stop-color="#4d4000"/>
+    </linearGradient>
+    <filter id="s0261fe-filter1" x="-17.367" y="-11.566" width="108.854" height="61.688" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur id="s0261fe-feGaussianBlur1" in="SourceAlpha" stdDeviation="0.688" result="feGaussianBlur30-out"/>
+      <feSpecularLighting id="s0261fe-feSpecularLighting1" in="feGaussianBlur30-out" surfaceScale="1.721" lighting-color="white" specularConstant="0.8" specularExponent="18" result="feSpecularLighting3-out">
+        <feDistantLight azimuth="200" elevation="40">
+          <animate attributeName="azimuth" values="200;250;200" dur="3s" repeatCount="indefinite"/>
+        </feDistantLight>
+      </feSpecularLighting>
+      <feComposite id="s0261fe-feComposite1" in="feSpecularLighting3-out" in2="SourceAlpha" operator="in" result="feComposite27-out"/>
+      <feComposite id="s0261fe-feComposite2" in="SourceGraphic" in2="feComposite27-out" operator="arithmetic" k2="1" k3="1" result="feComposite29-out"/>
+      <feOffset id="s0261fe-feOffset1" in="feGaussianBlur30-out" dx="0.688" dy="0.688" result="feOffset16-out"/>
+      <feFlood id="s0261fe-feFlood1" flood-color="black" flood-opacity="0.4" result="feFlood21-out"/>
+      <feComposite id="s0261fe-feComposite3" in="feFlood21-out" in2="feOffset16-out" operator="in" result="feComposite28-out"/>
+      <feMerge>
+        <feMergeNode in="feComposite28-out"/>
+        <feMergeNode in="feComposite29-out"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <text x="0" y="30" font-size="30" fill="url(#s0261fe-linearGradient1)" stroke="#2f3338" stroke-width="0.413" filter="url(#s0261fe-filter1)">Metal</text>
+</svg>

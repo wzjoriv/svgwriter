@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="65.5472" viewBox="-0.9697 6.7207 79.04 25.9042" version="1.1">
+  <defs>
+    <linearGradient id="s9ae0e6-linearGradient1" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.1" stop-color="#fbfcfe"/>
+      <stop offset="0.2" stop-color="#f7f9fe"/>
+      <stop offset="0.3" stop-color="#f2f6fd"/>
+      <stop offset="0.4" stop-color="#edf4fc"/>
+      <stop offset="0.5" stop-color="#e8f1fb"/>
+      <stop offset="0.6" stop-color="#dfebf8"/>
+      <stop offset="0.7" stop-color="#d7e5f4"/>
+      <stop offset="0.8" stop-color="#cedff1"/>
+      <stop offset="0.9" stop-color="#c5daee"/>
+      <stop offset="1" stop-color="#bcd4ea"/>
+    </linearGradient>
+    <filter id="s9ae0e6-filter1" x="-17.754" y="-10.063" width="112.608" height="59.473" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feTurbulence id="s9ae0e6-feTurbulence1" baseFrequency="0.2712" numOctaves="1" seed="0" type="fractalNoise" result="feTurbulence8-out"/>
+      <feColorMatrix id="s9ae0e6-feColorMatrix1" in="feTurbulence8-out" type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 14 0 0 0 -10" result="feColorMatrix6-out"/>
+      <feOffset id="s9ae0e6-feOffset1" in="feColorMatrix6-out" dx="0" dy="0" result="feOffset17-out"/>
+      <feGaussianBlur id="s9ae0e6-feGaussianBlur1" in="SourceAlpha" stdDeviation="0.996" result="feGaussianBlur36-out"/>
+      <feFlood id="s9ae0e6-feFlood1" flood-color="white" flood-opacity="0.6" result="feFlood26-out"/>
+      <feComposite id="s9ae0e6-feComposite1" in="feFlood26-out" in2="feGaussianBlur36-out" operator="in" result="feComposite34-out"/>
+      <feMerge>
+        <feMergeNode in="feComposite34-out"/>
+        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode in="feOffset17-out"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <text x="0" y="30" font-size="30" fill="url(#s9ae0e6-linearGradient1)" stroke="#bcd4ea" stroke-width="0.664" filter="url(#s9ae0e6-filter1)">Snow</text>
+</svg>

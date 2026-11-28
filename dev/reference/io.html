@@ -621,7 +621,7 @@ the prolog for this call.</p></li>
 <dl class="simple">
 <dt><a class="reference internal" href="#svgwriter.formats.io.to_string" title="svgwriter.formats.io.to_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_string</span></code></a></dt><dd><p>Return the text instead.</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.formats.io.write_async</span></code></dt><dd><p>Write to a path in a worker thread.</p>
+<dt><a class="reference internal" href="#svgwriter.formats.io.write_async" title="svgwriter.formats.io.write_async"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.formats.io.write_async</span></code></a></dt><dd><p>Write to a path in a worker thread.</p>
 </dd>
 </dl>
 </div>
@@ -633,6 +633,39 @@ the prolog for this call.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">write</span><span class="p">(</span><span class="n">Circle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">stream</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">xml_declaration</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">stream</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
 <span class="go">'&lt;circle cx="5" cy="5" r="2"/&gt;'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.formats.io.write_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">write_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.model.elements.Element" title="svgwriter.model.elements.Element"><span class="pre">Element</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnyPath</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/formats/io/_async.html#write_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.formats.io.write_async" title="Link to this definition">¶</a></dt>
+<dd><p>Write <em>element</em> to <em>path</em> in a worker thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.Element" title="svgwriter.model.elements.Element"><em>Element</em></a>) – Root of the tree to write.</p></li>
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.15)"><em>os.PathLike</em></a>) – Destination file.</p></li>
+<li><p><strong>**kwargs</strong> – <code class="docutils literal notranslate"><span class="pre">options</span></code> or fields of <a class="reference internal" href="#svgwriter.formats.io.SerializeOptions" title="svgwriter.formats.io.SerializeOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">SerializeOptions</span></code></a>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_many_async</span></code></dt><dd><p>Write several documents concurrently.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span><span class="o">,</span><span class="w"> </span><span class="nn">tempfile</span><span class="o">,</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="kn">import</span> <span class="n">Circle</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.formats.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_async</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">folder</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"a.svg"</span>
+<span class="gp">... </span>    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">write_async</span><span class="p">(</span><span class="n">Circle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">path</span><span class="p">))</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;circle"</span><span class="p">))</span>
+<span class="go">1</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -716,6 +749,7 @@ the prolog for this call.</p></li>
 <li><a class="reference internal" href="#svgwriter.formats.io.iter_chunks"><code class="docutils literal notranslate"><span class="pre">iter_chunks()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.formats.io.to_string"><code class="docutils literal notranslate"><span class="pre">to_string()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.formats.io.write"><code class="docutils literal notranslate"><span class="pre">write()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.formats.io.write_async"><code class="docutils literal notranslate"><span class="pre">write_async()</span></code></a></li>
 </ul>
 </li>
 </ul>
