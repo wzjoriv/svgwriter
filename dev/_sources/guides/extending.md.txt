@@ -20,6 +20,7 @@ A taken name raises `ValueError` naming the function or module that owns it, bui
 | `svg.preset.size` | page sizes for `Document(size=...)` | `svgwriter.size` |
 | `svg.preset.pattern`, `filter`, `gradient`, `marker` | functions returning that definition, joining `svg.patterns` and the others | `svgwriter.pattern`, ... |
 | `svg.preset.effect` | `f(element, *, option=default)` styling any element (`el.effect(name)`) | `svgwriter.effect` |
+| `svg.preset.interpolator` | `f(a, b, t) -> value` for a `kind=` or `attribute=`, used by `svg.interpolate`, tweens and morphs | `svgwriter.interpolator` |
 | `svg.themes` | `svg.Theme` instances | `svgwriter.theme` |
 | `svg.formats` | `svg.Format` subclasses (one instance each) | `svgwriter.format` |
 | `svg.renderers` | `f(document, seconds)` returning PNG bytes or an RGBA array | `svgwriter.renderer` |
@@ -71,8 +72,17 @@ doc.add(svg.preset.shape.get("badge")(30, 30, 25, fill=svg.patterns.bricks())).e
 doc[0].animate.bob(height=2)
 print(svg.preset.effect.list())
 
+
+@svg.preset.interpolator(attribute="opacity")
+def stepped_opacity(a: float, b: float, t: float) -> float:
+    return round(a + (b - a) * t, 1)
+
+
+faint, solid = svg.circle(10, 10, 5, opacity=0.1), svg.circle(10, 10, 5, opacity=0.9)
+print(svg.interpolate(faint, solid, 0.33).get("opacity"))   # blended with stepped_opacity
+
 for kind, name in [("animation", "bob"), ("behavior", "drift"), ("shape", "badge"), ("size", "poster-50x70"),
-                   ("pattern", "bricks"), ("effect", "ember")]:
+                   ("pattern", "bricks"), ("effect", "ember"), ("interpolator", "stepped_opacity")]:
     svg.preset.KINDS[kind].unregister(name)            # tests and notebooks can clean up
 ```
 

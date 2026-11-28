@@ -313,17 +313,19 @@
           <h1>Source code for svgwriter._internal._presets</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
 <span class="sd">Preset registries, one per kind: animations and behaviors (``element.animate``), shapes, sizes, patterns,</span>
-<span class="sd">filters, gradients, markers and effects.</span>
+<span class="sd">filters, gradients, markers,</span>
+<span class="sd">effects, interactions, path effects and interpolators.</span>
 <span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Concatenate</span><span class="p">,</span> <span class="n">Final</span><span class="p">,</span> <span class="n">TypeAlias</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">overload</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">MOTION_HELPERS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">INTERPOLATOR_LIBRARY</span><span class="p">,</span> <span class="n">MOTION_HELPERS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Registry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._roles</span><span class="w"> </span><span class="kn">import</span> <span class="n">with_role</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">P</span>
@@ -343,6 +345,8 @@
     <span class="s2">"FILTERS"</span><span class="p">,</span>
     <span class="s2">"GRADIENTS"</span><span class="p">,</span>
     <span class="s2">"INTERACTIONS"</span><span class="p">,</span>
+    <span class="s2">"INTERPOLATORS"</span><span class="p">,</span>
+    <span class="s2">"InterpolatorPresets"</span><span class="p">,</span>
     <span class="s2">"KINDS"</span><span class="p">,</span>
     <span class="s2">"PATH_EFFECTS"</span><span class="p">,</span>
     <span class="s2">"PathEffectPresets"</span><span class="p">,</span>
@@ -848,6 +852,135 @@
 
 
 
+<span class="n">Interpolator</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span>
+<span class="n">Rule</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="s2">"tuple[Callable[[object], bool] | None, frozenset[str], Interpolator]"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_matcher</span><span class="p">(</span><span class="n">kind</span><span class="p">:</span> <span class="nb">type</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">object</span><span class="p">],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">object</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">kind</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">kind</span>
+
+
+<div class="viewcode-block" id="InterpolatorPresets">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.InterpolatorPresets">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InterpolatorPresets</span><span class="p">(</span><span class="n">Registry</span><span class="p">[</span><span class="n">Interpolator</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">"""Interpolators: how :func:`svgwriter.interpolate`, tweens, morphs and batch blends mix two values.</span>
+
+<span class="sd">    Decorate ``function(a, b, t) -&gt; value`` with ``kind=`` (a class, whose instances and subclasses match, or a</span>
+<span class="sd">    predicate ``kind(value) -&gt; bool``; it applies when both values match), ``attribute=`` (an attribute name or</span>
+<span class="sd">    names, for values of that attribute when two elements blend), or both. Yours are tried before the built-in</span>
+<span class="sd">    ones, newest first; registering under a built-in's name with ``replace=True`` changes how that kind blends.</span>
+<span class="sd">    A batch whose columns include an attribute with an interpolator of its own blends item by item.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">    &gt;&gt;&gt; @svg.preset.interpolator(attribute="stroke-width")</span>
+<span class="sd">    ... def stepped(a: float, b: float, t: float) -&gt; float:</span>
+<span class="sd">    ...     return round(a + (b - a) * t)</span>
+<span class="sd">    &gt;&gt;&gt; svg.interpolate(svg.line(0, 0, 9, 0, stroke_width=1), svg.line(0, 0, 9, 0, stroke_width=4), 0.4).get("stroke-width")</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; _ = svg.preset.interpolator.unregister("stepped")</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">builtins</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">object</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">builtins</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rules</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">()</span>
+
+<div class="viewcode-block" id="InterpolatorPresets.register">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.InterpolatorPresets.register">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">kind</span><span class="p">:</span> <span class="nb">type</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">object</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kind</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">attribute</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"an interpolator needs kind= (a class or predicate), attribute= (names), or both"</span><span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..model.attributes.names</span><span class="w"> </span><span class="kn">import</span> <span class="n">svg_name</span>
+
+        <span class="n">names</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">svg_name</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="p">((</span><span class="n">attribute</span><span class="p">,)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">attribute</span> <span class="ow">or</span> <span class="p">()))</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">kind</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">_matcher</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">decorate</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+            <span class="n">function</span><span class="o">.</span><span class="n">__svgwriter_interpolates__</span> <span class="o">=</span> <span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="n">names</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">decorate</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">decorate</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+
+    <span class="fm">__call__</span> <span class="o">=</span> <span class="n">register</span>
+
+<div class="viewcode-block" id="InterpolatorPresets.prepare">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.InterpolatorPresets.prepare">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Interpolator</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Interpolator</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"interpolator </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> must be a function (a, b, t) -&gt; value"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">item</span></div>
+
+
+<div class="viewcode-block" id="InterpolatorPresets.add">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.InterpolatorPresets.add">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Interpolator</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Interpolator</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rules</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InterpolatorPresets.unregister">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.InterpolatorPresets.unregister">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unregister</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Interpolator</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rules</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InterpolatorPresets.restore">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.InterpolatorPresets.restore">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Interpolator</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rules</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">state</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InterpolatorPresets.seal">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.InterpolatorPresets.seal">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">seal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rules</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">seal</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="InterpolatorPresets.match">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.InterpolatorPresets.match">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Interpolator</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The interpolator that blends *a* with *b* (values of *attribute*, when given), or None."""</span>
+        <span class="k">for</span> <span class="n">matches</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">function</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rules</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">names</span> <span class="ow">or</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">names</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">matches</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">matches</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">and</span> <span class="n">matches</span><span class="p">(</span><span class="n">b</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="n">function</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="InterpolatorPresets.attributes">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.InterpolatorPresets.attributes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Every attribute name an interpolator is registered for."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rules</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Yours newest first, then the built-in ones in order (a replacement where one was registered)."""</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">(</span><span class="n">plugins</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ordered</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">reversed</span><span class="p">([</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">builtins</span><span class="p">]),</span>
+                   <span class="o">*</span><span class="p">(</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">builtins</span><span class="p">)]</span>
+        <span class="n">rules</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ordered</span><span class="p">:</span>
+            <span class="n">function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">builtins</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">matches</span><span class="p">,</span> <span class="n">attributes</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="s2">"__svgwriter_interpolates__"</span><span class="p">,</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">frozenset</span><span class="p">()))</span>
+            <span class="n">rules</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">matches</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">function</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">names</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rules</span> <span class="o">=</span> <span class="n">rules</span>
+        <span class="k">return</span> <span class="n">rules</span></div>
+
+
+
 <span class="n">ANIMATIONS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">AnimationPresets</span><span class="p">(</span><span class="s2">"animation"</span><span class="p">)</span>
 <span class="n">BEHAVIORS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">BehaviorPresets</span><span class="p">(</span><span class="s2">"behavior"</span><span class="p">)</span>
 <span class="n">SHAPES</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">ShapePresets</span><span class="p">(</span><span class="s2">"shape"</span><span class="p">)</span>
@@ -859,10 +992,11 @@
 <span class="n">EFFECTS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">EffectPresets</span><span class="p">(</span><span class="s2">"effect"</span><span class="p">)</span>
 <span class="n">INTERACTIONS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">InteractionPresets</span><span class="p">(</span><span class="s2">"interaction"</span><span class="p">)</span>
 <span class="n">PATH_EFFECTS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">PathEffectPresets</span><span class="p">(</span><span class="s2">"path_effect"</span><span class="p">)</span>
+<span class="n">INTERPOLATORS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">InterpolatorPresets</span><span class="p">(</span><span class="s2">"interpolator"</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">INTERPOLATOR_LIBRARY</span><span class="p">))</span>
 <span class="n">KINDS</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Registry</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"animation"</span><span class="p">:</span> <span class="n">ANIMATIONS</span><span class="p">,</span> <span class="s2">"behavior"</span><span class="p">:</span> <span class="n">BEHAVIORS</span><span class="p">,</span> <span class="s2">"shape"</span><span class="p">:</span> <span class="n">SHAPES</span><span class="p">,</span> <span class="s2">"size"</span><span class="p">:</span> <span class="n">SIZES</span><span class="p">,</span> <span class="s2">"pattern"</span><span class="p">:</span> <span class="n">PATTERNS</span><span class="p">,</span>
     <span class="s2">"filter"</span><span class="p">:</span> <span class="n">FILTERS</span><span class="p">,</span> <span class="s2">"gradient"</span><span class="p">:</span> <span class="n">GRADIENTS</span><span class="p">,</span> <span class="s2">"marker"</span><span class="p">:</span> <span class="n">MARKERS</span><span class="p">,</span> <span class="s2">"effect"</span><span class="p">:</span> <span class="n">EFFECTS</span><span class="p">,</span>
-    <span class="s2">"interaction"</span><span class="p">:</span> <span class="n">INTERACTIONS</span><span class="p">,</span> <span class="s2">"path_effect"</span><span class="p">:</span> <span class="n">PATH_EFFECTS</span><span class="p">}</span>
+    <span class="s2">"interaction"</span><span class="p">:</span> <span class="n">INTERACTIONS</span><span class="p">,</span> <span class="s2">"path_effect"</span><span class="p">:</span> <span class="n">PATH_EFFECTS</span><span class="p">,</span> <span class="s2">"interpolator"</span><span class="p">:</span> <span class="n">INTERPOLATORS</span><span class="p">}</span>
 </pre></div>
         </article>
       </div>

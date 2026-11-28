@@ -251,13 +251,35 @@ In an `update` callback this gives morphs and tweens per frame, for instance
 
 Attribute values inside elements that cannot blend (keywords such as `none`, font names, lists of different
 lengths) switch halfway, as SMIL does. Called directly on two values it cannot blend, `interpolate` raises
-`TypeError`. Teach it a new type with `svg.register_interpolator`:
+`TypeError`.
+
+Each kind of value blends with an interpolator from `svg.preset.interpolator`, a registry like the other
+presets: `number`, `matrix`, `path`, `array`, `batch`, `element`, `sequence` and `color`, tried in that order.
+Register `f(a, b, t) -> value` for a type or predicate (`kind=`), for an attribute (`attribute=`), or both;
+yours are tried first, and `replace=True` under a built-in's name changes how that kind blends. Attribute
+interpolators reach every tween, morph and batch blend of that attribute:
 
 ```python
 class Weight(int):
     pass
 
-svg.register_interpolator(Weight, lambda a, b, t: Weight(round(a + (b - a) * t, -2)))
+
+@svg.preset.interpolator(kind=Weight)
+def weight(a: Weight, b: Weight, t: float) -> Weight:
+    return Weight(round(a + (b - a) * t, -2))
+
+
+@svg.preset.interpolator(attribute="stroke_width")
+def whole_widths(a: float, b: float, t: float) -> float:
+    return round(a + (b - a) * t)
+
+
 print(svg.interpolate(Weight(400), Weight(700), 0.5))
-svg.unregister_interpolator(Weight)
+thin, thick = svg.line(0, 0, 50, 0, stroke_width=1), svg.line(0, 0, 50, 0, stroke_width=6)
+print(svg.interpolate(thin, thick, 0.3).get("stroke-width"))
+svg.preset.interpolator.unregister("weight")
+svg.preset.interpolator.unregister("whole_widths")
 ```
+
+Packages ship interpolators through the `svgwriter.interpolator` entry-point group (see
+[Extending svgwriter](extending.md)).

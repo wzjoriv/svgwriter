@@ -312,26 +312,17 @@
         <article role="main" id="furo-main-content">
           <h1>Source code for svgwriter.ops.interpolate</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">Interpolation between numbers, colors, transforms, path data and whole elements (morphing).</span>
+<span class="sd">Interpolation between numbers, colors, transforms, path data and whole elements (morphing), through the</span>
+<span class="sd">interpolator registry (``svg.preset.interpolator``).</span>
 <span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Final</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeVar</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._presets</span><span class="w"> </span><span class="kn">import</span> <span class="n">INTERPOLATORS</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..model.color.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span><span class="p">,</span> <span class="n">as_color</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..model.pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathData</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..model.transform.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">Point</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DISCRETE_SWITCH</span><span class="p">,</span> <span class="n">FULL_TURN</span><span class="p">,</span> <span class="n">GEOMETRY_SKIP</span><span class="p">,</span> <span class="n">HALF_TURN</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._morph</span><span class="w"> </span><span class="kn">import</span> <span class="n">blend_outlines</span>
-
-<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..model.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
-
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"interpolate"</span><span class="p">,</span> <span class="s2">"register_interpolator"</span><span class="p">,</span> <span class="s2">"unregister_interpolator"</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"interpolate"</span><span class="p">]</span>
 
 <span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">"T"</span><span class="p">)</span>
 
@@ -353,8 +344,8 @@
 <span class="sd">    size blend every item at once.</span>
 <span class="sd">    Inside elements, attribute values that cannot be blended (keywords,</span>
 <span class="sd">    different strings, lists of different lengths) switch at ``t = 0.5``, as</span>
-<span class="sd">    SMIL's discrete mode does. Other types are added with</span>
-<span class="sd">    :func:`register_interpolator`.</span>
+<span class="sd">    SMIL's discrete mode does. Each kind of value blends with an</span>
+<span class="sd">    interpolator; add or replace them with ``@svg.preset.interpolator``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -376,7 +367,7 @@
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    svgwriter.Color.mix : Color blending on its own.</span>
-<span class="sd">    register_interpolator : Teach interpolate a new type.</span>
+<span class="sd">    svgwriter.library.interpolators : The built-in interpolators.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -393,247 +384,14 @@
 <span class="sd">    &gt;&gt;&gt; svg.interpolate(1, "bold", 0.5)</span>
 <span class="sd">    Traceback (most recent call last):</span>
 <span class="sd">    ...</span>
-<span class="sd">    TypeError: cannot interpolate int and str; teach it with svg.register_interpolator</span>
+<span class="sd">    TypeError: cannot interpolate int and str; teach it with @svg.preset.interpolator</span>
 <span class="sd">    """</span>
-    <span class="n">blend</span> <span class="o">=</span> <span class="n">_find</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="n">blend</span> <span class="o">=</span> <span class="n">INTERPOLATORS</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">blend</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"cannot interpolate </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">; "</span>
-                        <span class="s2">"teach it with svg.register_interpolator"</span><span class="p">)</span>
+                        <span class="s2">"teach it with @svg.preset.interpolator"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">blend</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>  <span class="c1"># type: ignore[no-any-return]</span></div>
 
-
-
-<div class="viewcode-block" id="register_interpolator">
-<a class="viewcode-back" href="../../../reference/ops.html#svgwriter.ops.register_interpolator">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">register_interpolator</span><span class="p">(</span><span class="n">kind</span><span class="p">:</span> <span class="nb">type</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">object</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
-                          <span class="n">blend</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Teach :func:`interpolate` to blend values of a new kind.</span>
-
-<span class="sd">    Registered rules are tried before the built-in ones, newest first, so a</span>
-<span class="sd">    rule can also replace how a built-in type blends.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    kind : type or callable</span>
-<span class="sd">        A class (instances and subclasses match) or a predicate</span>
-<span class="sd">        ``kind(value) -&gt; bool``. A rule applies when both values match.</span>
-<span class="sd">    blend : callable</span>
-<span class="sd">        ``blend(a, b, t)`` returning the value a fraction *t* from *a* to *b*.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    unregister_interpolator : Remove the rule again.</span>
-<span class="sd">    interpolate : Uses the rules.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; class Weight(int):</span>
-<span class="sd">    ...     pass</span>
-<span class="sd">    &gt;&gt;&gt; svg.register_interpolator(Weight, lambda a, b, t: Weight(round(a + (b - a) * t, -2)))</span>
-<span class="sd">    &gt;&gt;&gt; svg.interpolate(Weight(400), Weight(700), 0.5)</span>
-<span class="sd">    600</span>
-<span class="sd">    &gt;&gt;&gt; svg.unregister_interpolator(Weight)</span>
-<span class="sd">    """</span>
-    <span class="n">_USER_RULES</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">_predicate</span><span class="p">(</span><span class="n">kind</span><span class="p">),</span> <span class="n">blend</span><span class="p">))</span></div>
-
-
-
-<div class="viewcode-block" id="unregister_interpolator">
-<a class="viewcode-back" href="../../../reference/ops.html#svgwriter.ops.unregister_interpolator">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">unregister_interpolator</span><span class="p">(</span><span class="n">kind</span><span class="p">:</span> <span class="nb">type</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">object</span><span class="p">],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Remove the rule registered for *kind* with :func:`register_interpolator`.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    kind : type or callable</span>
-<span class="sd">        The class or predicate given when registering.</span>
-
-<span class="sd">    Raises</span>
-<span class="sd">    ------</span>
-<span class="sd">    KeyError</span>
-<span class="sd">        If no rule is registered for *kind*.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
-<span class="sd">    &gt;&gt;&gt; svg.unregister_interpolator(complex)</span>
-<span class="sd">    Traceback (most recent call last):</span>
-<span class="sd">    ...</span>
-<span class="sd">    KeyError: 'no interpolator registered for complex'</span>
-<span class="sd">    """</span>
-    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">registered</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">_USER_RULES</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">registered</span> <span class="ow">is</span> <span class="n">kind</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">_USER_RULES</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-            <span class="k">return</span>
-    <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"no interpolator registered for </span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span><span class="w"> </span><span class="s1">'__name__'</span><span class="p">,</span><span class="w"> </span><span class="n">kind</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
-
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">kind</span><span class="p">:</span> <span class="nb">type</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">object</span><span class="p">],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">object</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-        <span class="k">return</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">kind</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">kind</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_find</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">matches</span><span class="p">,</span> <span class="n">blend</span> <span class="ow">in</span> <span class="n">_USER_RULES</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">matches</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">and</span> <span class="n">matches</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">blend</span>
-    <span class="n">exact</span> <span class="o">=</span> <span class="n">_EXACT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">exact</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_EXACT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">))</span> <span class="ow">is</span> <span class="n">exact</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">exact</span>
-    <span class="k">for</span> <span class="n">kind</span><span class="p">,</span> <span class="n">blend</span> <span class="ow">in</span> <span class="n">_RULES</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">kind</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">and</span> <span class="n">kind</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">blend</span>
-    <span class="k">return</span> <span class="kc">None</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_attribute</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Blend two attribute values, switching at ``t = 0.5`` when they do not blend."""</span>
-    <span class="n">blend</span> <span class="o">=</span> <span class="n">_find</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">blend</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">a</span> <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">DISCRETE_SWITCH</span> <span class="k">else</span> <span class="n">b</span>
-    <span class="k">return</span> <span class="n">blend</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_number</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">a</span><span class="p">))</span> <span class="o">*</span> <span class="n">t</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_sequence</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">a</span> <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">DISCRETE_SWITCH</span> <span class="k">else</span> <span class="n">b</span>
-    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">interpolate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">Point</span><span class="p">)</span> <span class="k">else</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)(</span><span class="n">values</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="n">values</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_color</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Color</span><span class="p">:</span>
-    <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">as_color</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">as_color</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">Color</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">_number</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">first</span><span class="o">.</span><span class="n">rgba</span><span class="p">,</span> <span class="n">second</span><span class="o">.</span><span class="n">rgba</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_angle</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="n">turn</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span> <span class="o">+</span> <span class="n">HALF_TURN</span><span class="p">)</span> <span class="o">%</span> <span class="n">FULL_TURN</span> <span class="o">-</span> <span class="n">HALF_TURN</span>
-    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">turn</span> <span class="o">*</span> <span class="n">t</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_matrix</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix</span><span class="p">:</span>
-    <span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">ay</span><span class="p">,</span> <span class="n">ar</span><span class="p">,</span> <span class="n">ak</span><span class="p">,</span> <span class="n">asx</span><span class="p">,</span> <span class="n">asy</span><span class="p">),</span> <span class="p">(</span><span class="n">bx</span><span class="p">,</span> <span class="n">by</span><span class="p">,</span> <span class="n">br</span><span class="p">,</span> <span class="n">bk</span><span class="p">,</span> <span class="n">bsx</span><span class="p">,</span> <span class="n">bsy</span><span class="p">)</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">decompose</span><span class="p">(),</span> <span class="n">b</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">Matrix</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">_number</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">bx</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="n">_number</span><span class="p">(</span><span class="n">ay</span><span class="p">,</span> <span class="n">by</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span> <span class="o">@</span> <span class="n">Matrix</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">_angle</span><span class="p">(</span><span class="n">ar</span><span class="p">,</span> <span class="n">br</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
-            <span class="o">@</span> <span class="n">Matrix</span><span class="o">.</span><span class="n">skew_x</span><span class="p">(</span><span class="n">_number</span><span class="p">(</span><span class="n">ak</span><span class="p">,</span> <span class="n">bk</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span> <span class="o">@</span> <span class="n">Matrix</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">_number</span><span class="p">(</span><span class="n">asx</span><span class="p">,</span> <span class="n">bsx</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="n">_number</span><span class="p">(</span><span class="n">asy</span><span class="p">,</span> <span class="n">bsy</span><span class="p">,</span> <span class="n">t</span><span class="p">)))</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_is_color</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Color</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">as_color</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="kc">False</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_is_number</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_is_sequence</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">_is_number</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_is_sequence</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_array</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-    <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s2">"array"</span><span class="p">,</span> <span class="n">a</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="s2">"array"</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">first</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">second</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">a</span> <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">DISCRETE_SWITCH</span> <span class="k">else</span> <span class="n">b</span>
-    <span class="n">mixed</span> <span class="o">=</span> <span class="n">first</span> <span class="o">+</span> <span class="p">(</span><span class="n">second</span> <span class="o">-</span> <span class="n">first</span><span class="p">)</span> <span class="o">*</span> <span class="n">t</span>
-    <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)(</span><span class="n">mixed</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s2">"array"</span><span class="p">)</span> <span class="k">else</span> <span class="n">mixed</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_is_array</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"array"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_is_batch</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..model.batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Batch</span>
-
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Batch</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_is_element</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..model.elements.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
-
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Element</span><span class="p">)</span>
-
-
-<span class="n">_RULES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">object</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]]]</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="n">_is_number</span><span class="p">,</span> <span class="n">_number</span><span class="p">),</span>
-    <span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">),</span> <span class="n">_matrix</span><span class="p">),</span>
-    <span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">PathData</span><span class="p">),</span> <span class="n">blend_outlines</span><span class="p">),</span>
-    <span class="p">(</span><span class="n">_is_array</span><span class="p">,</span> <span class="n">_array</span><span class="p">),</span>
-    <span class="p">(</span><span class="n">_is_batch</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">_blend</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">)),</span>
-    <span class="p">(</span><span class="n">_is_element</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">_elements</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">)),</span>
-    <span class="p">(</span><span class="n">_is_sequence</span><span class="p">,</span> <span class="n">_sequence</span><span class="p">),</span>
-    <span class="p">(</span><span class="n">_is_color</span><span class="p">,</span> <span class="n">_color</span><span class="p">),</span>
-<span class="p">]</span>
-
-<span class="n">_EXACT</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="nb">int</span><span class="p">:</span> <span class="n">_number</span><span class="p">,</span> <span class="nb">float</span><span class="p">:</span> <span class="n">_number</span><span class="p">,</span> <span class="n">Color</span><span class="p">:</span> <span class="n">_color</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">:</span> <span class="n">_matrix</span><span class="p">,</span> <span class="n">PathData</span><span class="p">:</span> <span class="n">blend_outlines</span><span class="p">,</span>
-<span class="p">}</span>
-
-<span class="n">_USER_RULES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">object</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">object</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
-                              <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]]]</span> <span class="o">=</span> <span class="p">[]</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_same_shape</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">children</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">attributes</span><span class="p">):</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">b</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">"points"</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">_is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_is_array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">array</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">array</span><span class="p">)):</span>  <span class="c1"># type: ignore[union-attr]</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">"d"</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">PathData</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">PathData</span><span class="p">)):</span>
-            <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">return</span> <span class="kc">True</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_elements</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Element</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">_same_shape</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">attributes</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"transform"</span><span class="p">):</span>
-                <span class="k">continue</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">_attribute</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">b</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">t</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">_morph</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s2">"matrix"</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="s2">"matrix"</span><span class="p">):</span>
-        <span class="n">pivot</span> <span class="o">=</span> <span class="n">interpolate</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">anchor</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">anchor</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
-        <span class="n">about</span> <span class="o">=</span> <span class="n">Matrix</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">pivot</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">pivot</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-        <span class="n">result</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">about</span> <span class="o">@</span> <span class="n">_matrix</span><span class="p">(</span><span class="n">about</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span> <span class="o">@</span> <span class="n">a</span><span class="o">.</span><span class="n">matrix</span> <span class="o">@</span> <span class="n">about</span><span class="p">,</span> <span class="n">about</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span> <span class="o">@</span> <span class="n">b</span><span class="o">.</span><span class="n">matrix</span> <span class="o">@</span> <span class="n">about</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="o">@</span> <span class="n">about</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>  <span class="c1"># type: ignore[attr-defined]</span>
-    <span class="k">return</span> <span class="n">result</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_geometry</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">element</span><span class="p">),</span> <span class="s2">"geometry_attributes"</span><span class="p">,</span> <span class="nb">frozenset</span><span class="p">())</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_morph</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Element</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Both as local outlines, blended; paint and other attributes blend or switch."""</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">..model.elements.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-
-    <span class="n">data</span> <span class="o">=</span> <span class="n">blend_outlines</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">local_outline</span><span class="p">(),</span> <span class="n">b</span><span class="o">.</span><span class="n">local_outline</span><span class="p">(),</span> <span class="n">t</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="n">geometry</span> <span class="o">=</span> <span class="n">GEOMETRY_SKIP</span> <span class="o">|</span> <span class="n">_geometry</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">|</span> <span class="n">_geometry</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">attributes</span><span class="p">))</span> <span class="o">-</span> <span class="n">geometry</span><span class="p">:</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">_attribute</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">b</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">t</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">path</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">path</span>
 </pre></div>
         </article>
       </div>

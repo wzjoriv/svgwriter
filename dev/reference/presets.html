@@ -325,7 +325,7 @@
 <h1>Preset libraries<a class="headerlink" href="#preset-libraries" title="Link to this heading">¶</a></h1>
 <p>Ready-made patterns, gradients, filters, markers and effects; see the <a class="reference internal" href="../guides/presets.html"><span class="std std-doc">Presets guide</span></a>
 for pictures of each. <code class="docutils literal notranslate"><span class="pre">&#64;svg.preset.pattern</span></code>, <code class="docutils literal notranslate"><span class="pre">filter</span></code>, <code class="docutils literal notranslate"><span class="pre">gradient</span></code>, <code class="docutils literal notranslate"><span class="pre">marker</span></code> and <code class="docutils literal notranslate"><span class="pre">effect</span></code> (documented
-under <a class="reference internal" href="paths.html"><span class="std std-doc">Composite shapes and effects</span></a>) add your own to these catalogues.</p>
+under <a class="reference internal" href="paths.html"><span class="std std-doc">Composite shapes and effects</span></a>) add your own to these catalogues; <code class="docutils literal notranslate"><span class="pre">&#64;svg.preset.interpolator</span></code> adds how two values blend.</p>
 <p id="module-svgwriter.library.patterns">Ready-made patterns, used as paints: <code class="docutils literal notranslate"><span class="pre">fill=svg.patterns.stripes(angle=45,</span> <span class="pre">gap=6)</span></code>.</p>
 <p>Every pattern returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Pattern</span></code> in user units that goes into the document’s
 <code class="docutils literal notranslate"><span class="pre">&lt;defs&gt;</span></code> when an element refers to it. Shapes take the theme role <code class="docutils literal notranslate"><span class="pre">&quot;pattern&quot;</span></code> (the palette’s primary
@@ -1596,6 +1596,215 @@ as <code class="docutils literal notranslate"><span class="pre">text[4:9]</span>
 </figure>
 </dd></dl>
 
+<p id="module-svgwriter.library.interpolators">Built-in interpolators: how <code class="docutils literal notranslate"><span class="pre">svg.interpolate</span></code>, tweens, morphs and batch blends mix numbers, transforms, path
+data, arrays, batches, elements, sequences and colours; add your own with <code class="docutils literal notranslate"><span class="pre">&#64;svg.preset.interpolator</span></code>.</p>
+<p>They are tried in that order, after any of your own; the first whose <code class="docutils literal notranslate"><span class="pre">kind</span></code> matches both values blends them.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.library.interpolators.array">
+<span class="sig-name descname"><span class="pre">array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/library/interpolators.html#array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.interpolators.array" title="Link to this definition">¶</a></dt>
+<dd><p>NumPy arrays (and values holding one as <code class="docutils literal notranslate"><span class="pre">.array</span></code>, like point lists) element-wise; other shapes switch halfway.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (numpy.ndarray or object with <code class="docutils literal notranslate"><span class="pre">array</span></code>) – Start and end.</p></li>
+<li><p><strong>b</strong> (numpy.ndarray or object with <code class="docutils literal notranslate"><span class="pre">array</span></code>) – Start and end.</p></li>
+<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Fraction of the way.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>numpy.ndarray or object</em> – The blend, of <em>a</em>’s type.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.library.interpolators</span><span class="w"> </span><span class="kn">import</span> <span class="n">array</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="go">[0.5, 0.5]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.library.interpolators.batch">
+<span class="sig-name descname"><span class="pre">batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="batch.html#svgwriter.model.batch.Batch" title="svgwriter.model.batch.Batch"><span class="pre">Batch</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="batch.html#svgwriter.model.batch.Batch" title="svgwriter.model.batch.Batch"><span class="pre">Batch</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="batch.html#svgwriter.model.batch.Batch" title="svgwriter.model.batch.Batch"><span class="pre">Batch</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/library/interpolators.html#batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.interpolators.batch" title="Link to this definition">¶</a></dt>
+<dd><p>Batches of the same size, every item at once; batches of different sizes switch halfway.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch" title="svgwriter.model.batch.Batch"><em>Batch</em></a>) – Start and end batches.</p></li>
+<li><p><strong>b</strong> (<a class="reference internal" href="batch.html#svgwriter.model.batch.Batch" title="svgwriter.model.batch.Batch"><em>Batch</em></a>) – Start and end batches.</p></li>
+<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Fraction of the way.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Batch</em> – The blended batch.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.library.interpolators</span><span class="w"> </span><span class="kn">import</span> <span class="n">batch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">batch</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">circles</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">svg</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">circles</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">]),</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">r</span>
+<span class="go">3.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.library.interpolators.color">
+<span class="sig-name descname"><span class="pre">color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="color.html#svgwriter.model.color.Color" title="svgwriter.model.color.color.Color"><span class="pre">Color</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/library/interpolators.html#color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.interpolators.color" title="Link to this definition">¶</a></dt>
+<dd><p>Colours (or colour strings) channel by channel in RGBA.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<a class="reference internal" href="color.html#svgwriter.model.color.Color" title="svgwriter.model.color.Color"><em>Color</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Start and end colours.</p></li>
+<li><p><strong>b</strong> (<a class="reference internal" href="color.html#svgwriter.model.color.Color" title="svgwriter.model.color.Color"><em>Color</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Start and end colours.</p></li>
+<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Fraction of the way.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Color</em> – The blended colour.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.Color.mix</span></code></dt><dd><p>Colour blending on its own.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.library.interpolators</span><span class="w"> </span><span class="kn">import</span> <span class="n">color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">color</span><span class="p">(</span><span class="s2">"red"</span><span class="p">,</span> <span class="s2">"blue"</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span>
+<span class="go">'#800080'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.library.interpolators.element">
+<span class="sig-name descname"><span class="pre">element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.model.elements.Element" title="svgwriter.model.elements.Element"><span class="pre">Element</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="elements.html#svgwriter.model.elements.Element" title="svgwriter.model.elements.Element"><span class="pre">Element</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="elements.html#svgwriter.model.elements.Element" title="svgwriter.model.elements.Element"><span class="pre">Element</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/library/interpolators.html#element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.interpolators.element" title="Link to this definition">¶</a></dt>
+<dd><p>Elements: the same kind and shape blend attribute by attribute, anything else morphs as outlines.</p>
+<p>Attribute values blend with the interpolators (those registered for the attribute first) and switch halfway
+when none applies; the transforms blend about the elements’ anchors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.Element" title="svgwriter.model.elements.Element"><em>Element</em></a>) – Start and end elements.</p></li>
+<li><p><strong>b</strong> (<a class="reference internal" href="elements.html#svgwriter.model.elements.Element" title="svgwriter.model.elements.Element"><em>Element</em></a>) – Start and end elements.</p></li>
+<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Fraction of the way.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Element</em> – A new element: a copy of <em>a</em> blended, or a <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> for a morph.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.library.interpolators</span><span class="w"> </span><span class="kn">import</span> <span class="n">element</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">element</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">r</span>
+<span class="go">3.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.library.interpolators.matrix">
+<span class="sig-name descname"><span class="pre">matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="geometry.html#svgwriter.model.transform.Matrix" title="svgwriter.model.transform.matrix.Matrix"><span class="pre">Matrix</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="geometry.html#svgwriter.model.transform.Matrix" title="svgwriter.model.transform.matrix.Matrix"><span class="pre">Matrix</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="geometry.html#svgwriter.model.transform.Matrix" title="svgwriter.model.transform.matrix.Matrix"><span class="pre">Matrix</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/library/interpolators.html#matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.interpolators.matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Transforms blended as translation, rotation (the short way), skew and scale, so turns stay turns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<a class="reference internal" href="geometry.html#svgwriter.model.transform.Matrix" title="svgwriter.model.transform.Matrix"><em>Matrix</em></a>) – Start and end transforms.</p></li>
+<li><p><strong>b</strong> (<a class="reference internal" href="geometry.html#svgwriter.model.transform.Matrix" title="svgwriter.model.transform.Matrix"><em>Matrix</em></a>) – Start and end transforms.</p></li>
+<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Fraction of the way.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Matrix</em> – The blended transform.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.library.interpolators</span><span class="w"> </span><span class="kn">import</span> <span class="n">matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">abs</span><span class="p">(</span><span class="n">matrix</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Matrix</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">350</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">Matrix</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">decompose</span><span class="p">()[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mf">1e-9</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.library.interpolators.number">
+<span class="sig-name descname"><span class="pre">number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/library/interpolators.html#number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.interpolators.number" title="Link to this definition">¶</a></dt>
+<dd><p>Numbers along a straight line; <em>t</em> outside <code class="docutils literal notranslate"><span class="pre">0..1</span></code> extrapolates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Start and end.</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Start and end.</p></li>
+<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Fraction of the way.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>float</em> – <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">+</span> <span class="pre">(b</span> <span class="pre">-</span> <span class="pre">a)</span> <span class="pre">*</span> <span class="pre">t</span></code>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.library.interpolators</span><span class="w"> </span><span class="kn">import</span> <span class="n">number</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">number</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span>
+<span class="go">2.5</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.library.interpolators.path">
+<span class="sig-name descname"><span class="pre">path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.data.PathData"><span class="pre">PathData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.data.PathData"><span class="pre">PathData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.data.PathData"><span class="pre">PathData</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/library/interpolators.html#path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.interpolators.path" title="Link to this definition">¶</a></dt>
+<dd><p>Path data morphed as outlines: contours paired, resampled to one point count and aligned so they do not twist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a>) – Start and end outlines.</p></li>
+<li><p><strong>b</strong> (<a class="reference internal" href="geometry.html#svgwriter.model.pathdata.PathData" title="svgwriter.model.pathdata.PathData"><em>PathData</em></a>) – Start and end outlines.</p></li>
+<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Fraction of the way.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>PathData</em> – The in-between outline.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.library.interpolators</span><span class="w"> </span><span class="kn">import</span> <span class="n">path</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">path</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">local_outline</span><span class="p">(),</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">local_outline</span><span class="p">(),</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">bbox</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+<span class="go">10</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.library.interpolators.sequence">
+<span class="sig-name descname"><span class="pre">sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/library/interpolators.html#sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.interpolators.sequence" title="Link to this definition">¶</a></dt>
+<dd><p>Points and nested numeric tuples or lists item by item; different lengths switch halfway.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a>) – Start and end.</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a>) – Start and end.</p></li>
+<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Fraction of the way.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>tuple or list</em> – The blend, of <em>a</em>’s type.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">svgwriter.library.interpolators</span><span class="w"> </span><span class="kn">import</span> <span class="n">sequence</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sequence</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="go">(5.0, 10.0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <section id="registries">
 <h2>Registries<a class="headerlink" href="#registries" title="Link to this heading">¶</a></h2>
 <p>Every registry (the preset kinds, <code class="docutils literal notranslate"><span class="pre">svg.themes</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.formats</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.renderers</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.project.presets</span></code> and
@@ -1851,6 +2060,14 @@ None, for registries filled at import time.</p></li>
 <li><a class="reference internal" href="#svgwriter.library.effects.smoke"><code class="docutils literal notranslate"><span class="pre">smoke()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.library.effects.snow"><code class="docutils literal notranslate"><span class="pre">snow()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.library.effects.wind"><code class="docutils literal notranslate"><span class="pre">wind()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.library.interpolators.array"><code class="docutils literal notranslate"><span class="pre">array()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.library.interpolators.batch"><code class="docutils literal notranslate"><span class="pre">batch()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.library.interpolators.color"><code class="docutils literal notranslate"><span class="pre">color()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.library.interpolators.element"><code class="docutils literal notranslate"><span class="pre">element()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.library.interpolators.matrix"><code class="docutils literal notranslate"><span class="pre">matrix()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.library.interpolators.number"><code class="docutils literal notranslate"><span class="pre">number()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.library.interpolators.path"><code class="docutils literal notranslate"><span class="pre">path()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.library.interpolators.sequence"><code class="docutils literal notranslate"><span class="pre">sequence()</span></code></a></li>
 <li><a class="reference internal" href="#registries">Registries</a><ul>
 <li><a class="reference internal" href="#svgwriter.Registry"><code class="docutils literal notranslate"><span class="pre">Registry</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.Registry.register"><code class="docutils literal notranslate"><span class="pre">Registry.register()</span></code></a></li>
