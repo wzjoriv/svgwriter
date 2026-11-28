@@ -330,6 +330,46 @@ writes the faces a document uses as <code class="docutils literal notranslate"><
 <figure class="snippet-result align-default">
 <img alt="What the code above draws" src="../_images/api-reference-ops-0-0-0.svg" />
 </figure>
+<dl class="py function">
+<dt class="sig sig-object py" id="svgwriter.ops.wireframe">
+<span class="sig-name descname"><span class="pre">wireframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="document.html#svgwriter.Document" title="svgwriter.Document"><span class="pre">Document</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="elements.html#svgwriter.model.elements.Element" title="svgwriter.model.elements.Element"><span class="pre">Element</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'#0ea5e9'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../_modules/svgwriter/ops/wireframe.html#wireframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.wireframe" title="Link to this definition">¶</a></dt>
+<dd><p>A copy of <em>target</em> drawn as thin outlines, to see the geometry under the paint.</p>
+<p>Shapes and text keep their geometry and type sizes with no fill and a <em>width</em> stroke in <em>color</em> (set in
+their inline style, so theme roles cannot repaint them); images become their box. Filters, masks, opacity, markers and animations are left out, and the original is not changed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<a class="reference internal" href="document.html#svgwriter.Document" title="svgwriter.Document"><em>Document</em></a><em> or </em><a class="reference internal" href="elements.html#svgwriter.model.elements.Element" title="svgwriter.model.elements.Element"><em>Element</em></a>) – The drawing.</p></li>
+<li><p><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Outline colour. Defaults to sky blue.</p></li>
+<li><p><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Outline width in user units. Defaults to None: 1/600 of the drawing’s larger side, a hairline at any
+page size.</p></li>
+<li><p><strong>bounds</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – Also draw each shape’s bounding box, dashed. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Document or Element</em> – The wireframe, of the same kind as <em>target</em>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"crimson"</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">drop_shadow</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Hi"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wire</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">wireframe</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rect</span> <span class="o">=</span> <span class="n">wire</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"rect"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rect</span><span class="o">.</span><span class="n">style</span><span class="p">[</span><span class="s2">"fill"</span><span class="p">],</span> <span class="n">rect</span><span class="o">.</span><span class="n">style</span><span class="p">[</span><span class="s2">"stroke"</span><span class="p">],</span> <span class="n">rect</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"filter"</span><span class="p">)</span>
+<span class="go">('none', '#0ea5e9', None)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"rect"</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fill"</span><span class="p">)</span>
+<span class="go">'crimson'</span>
+</pre></div>
+</div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/api-reference-ops-1-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-ops-1-0-1.svg" />
+</figcaption>
+</figure>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="svgwriter.ops.BooleanOp">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">BooleanOp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/ops/boolean.html#BooleanOp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.ops.BooleanOp" title="Link to this definition">¶</a></dt>
@@ -769,7 +809,7 @@ None.</p></li>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-ops-15-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-ops-16-0-0.svg" />
 </figure>
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.ops.Typeface.from_files">
@@ -2353,6 +2393,7 @@ converts.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Geometry operations and rendering</a><ul>
+<li><a class="reference internal" href="#svgwriter.ops.wireframe"><code class="docutils literal notranslate"><span class="pre">wireframe()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.BooleanOp"><code class="docutils literal notranslate"><span class="pre">BooleanOp</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.ops.BooleanOp.UNION"><code class="docutils literal notranslate"><span class="pre">BooleanOp.UNION</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.ops.BooleanOp.INTERSECTION"><code class="docutils literal notranslate"><span class="pre">BooleanOp.INTERSECTION</span></code></a></li>

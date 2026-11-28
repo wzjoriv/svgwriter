@@ -504,6 +504,40 @@
 
         <span class="k">return</span> <span class="n">Interactions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Element.wireframe">
+<a class="viewcode-back" href="../../../../../reference/elements.html#svgwriter.model.elements.Element.wireframe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wireframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"#0ea5e9"</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bounds</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""A copy drawn as thin outlines, to see the geometry under the paint (for debugging).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        color : str, optional</span>
+<span class="sd">            Outline colour. Defaults to sky blue.</span>
+<span class="sd">        width : float, optional</span>
+<span class="sd">            Outline width in user units. Defaults to None: a hairline scaled to the drawing.</span>
+<span class="sd">        bounds : bool, optional</span>
+<span class="sd">            Also draw each shape's bounding box, dashed. Defaults to False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Element</span>
+<span class="sd">            The wireframe; this one is unchanged.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        svgwriter.ops.wireframe : The function behind it.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">        &gt;&gt;&gt; svg.circle(5, 5, 4, fill="red").wireframe().style["fill"]</span>
+<span class="sd">        'none'</span>
+<span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">....ops.wireframe</span><span class="w"> </span><span class="kn">import</span> <span class="n">wireframe</span>
+
+        <span class="k">return</span> <span class="n">wireframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">)</span></div>
+
+
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">home</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Element</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""The element as it was when its first behavior was attached: a detached copy to start each frame from.</span>

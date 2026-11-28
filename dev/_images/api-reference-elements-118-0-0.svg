@@ -1,5 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="100" height="40" viewBox="0 0 100 40" version="1.1">
-  <circle id="sf8f96c-circle1" cx="10" cy="20" r="5"/>
-  <circle id="sf8f96c-circle2" cx="90" cy="20" r="5"/>
-  <path d="M10 20 L90 20" stroke="black" inkscape:connector-type="polyline" inkscape:connector-curvature="0" inkscape:connection-start="#sf8f96c-circle1" inkscape:connection-end="#sf8f96c-circle2"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="66.6667" viewBox="-2.5 -2.5 15 5" version="1.1">
+  <path d="M0 0 H10" stroke="red"/>
 </svg>

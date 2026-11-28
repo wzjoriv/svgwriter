@@ -1,3 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200" viewBox="3 3 14 14" version="1.1">
-  <image x="5" y="5" width="10" height="10" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABHNCSVQICAgIfAhkiAAAAOFJREFUOI3N1LFKw1AUgOHvXhfRBxCcpAUXcXExk7j6Eg4i2LFv51gQuzhIERdHNzeHdukgx6UBDbFJ6R088I/nI5yEJC0T7OAK5zhbFXhe9YT7xFfbfhMbBNMgOpoGgy7sNpj3wOrmwc1f2GgDqNmoiQ2DxRbgIhjWWO55s64egyyoCmB1VUbV+er7T5VxWRJMwQcOCoHvuRBUz27GrCA4+/+gYD94KfANvgZ7IDgNlltgy+Dk17MG4y3AcesBgrvY7Pf1GVyvvWpwFEx6YJPgsLmf1sDHuPhRwkNd4q1t7xtJF2hF1Rn20QAAAABJRU5ErkJggg=="/>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="1 1 8 8" version="1.1">
+  <g opacity="0.5">
+    <circle cx="5" cy="5" r="2"/>
+  </g>
 </svg>

@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="80" height="60" viewBox="0 0 80 60" version="1.1">
   <defs>
-    <filter id="s08fc8e-filter1">
-      <feGaussianBlur id="s08fc8e-feGaussianBlur1" in="SourceAlpha" stdDeviation="3" result="feGaussianBlur1-out"/>
-      <feOffset id="s08fc8e-feOffset1" in="feGaussianBlur1-out" dx="2" dy="2" result="feOffset1-out"/>
+    <filter id="s62dac6-filter1">
+      <feGaussianBlur id="s62dac6-feGaussianBlur1" in="SourceAlpha" stdDeviation="3" result="feGaussianBlur2-out"/>
+      <feOffset id="s62dac6-feOffset1" in="feGaussianBlur2-out" dx="2" dy="2" result="feOffset2-out"/>
       <feMerge>
-        <feMergeNode in="feOffset1-out"/>
+        <feMergeNode in="feOffset2-out"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
-  <rect x="10" y="10" width="50" height="30" fill="gold" filter="url(#s08fc8e-filter1)"/>
+  <rect x="10" y="10" width="50" height="30" fill="gold" filter="url(#s62dac6-filter1)"/>
 </svg>

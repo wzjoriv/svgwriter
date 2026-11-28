@@ -1445,6 +1445,37 @@ made in this session.</p>
 </figure>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.Document.wireframe">
+<span class="sig-name descname"><span class="pre">wireframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'#0ea5e9'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></span><a class="headerlink" href="#svgwriter.Document.wireframe" title="Link to this definition">¶</a></dt>
+<dd><p>A copy drawn as thin outlines, to see the geometry under the paint (for debugging).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Outline colour. Defaults to sky blue.</p></li>
+<li><p><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Outline width in user units. Defaults to None: a hairline scaled to the drawing.</p></li>
+<li><p><strong>bounds</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – Also draw each shape’s bounding box, dashed. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Document</em> – The wireframe; this one is unchanged.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="ops.html#svgwriter.ops.wireframe" title="svgwriter.ops.wireframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">svgwriter.ops.wireframe</span></code></a></dt><dd><p>The function behind it.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">wireframe</span><span class="p">()</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fill"</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">"none"</span>
+<span class="go">'none'</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 <section id="named-sizes">
@@ -1694,6 +1725,7 @@ across) or <code class="docutils literal notranslate"><span class="pre">-portrai
 <li><a class="reference internal" href="#svgwriter.Document.title"><code class="docutils literal notranslate"><span class="pre">Document.title()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.to_string"><code class="docutils literal notranslate"><span class="pre">Document.to_string()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Document.used_faces"><code class="docutils literal notranslate"><span class="pre">Document.used_faces()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.Document.wireframe"><code class="docutils literal notranslate"><span class="pre">Document.wireframe()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#named-sizes">Named sizes</a><ul>

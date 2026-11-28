@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="240" height="60" viewBox="0 0 240 60" version="1.1">
   <defs>
-    <linearGradient id="sa5f3a7-linearGradient1" x1="0.5" y1="1" x2="0.5" y2="0">
+    <linearGradient id="s07dff9-linearGradient1" x1="0.5" y1="1" x2="0.5" y2="0">
       <stop offset="0" stop-color="#fff3b0"/>
       <stop offset="0.05" stop-color="#fde898"/>
       <stop offset="0.1" stop-color="#fddd7f"/>
@@ -23,20 +23,20 @@
       <stop offset="0.95" stop-color="#7b0612"/>
       <stop offset="1" stop-color="#6a040f"/>
     </linearGradient>
-    <filter id="sa5f3a7-filter1" x="81.29" y="-3.779" width="128.188" height="73.079" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
-      <feTurbulence id="sa5f3a7-feTurbulence1" baseFrequency="0.0307 0.0858" numOctaves="2" seed="0" type="turbulence" result="feTurbulence5-out">
+    <filter id="s07dff9-filter1" x="81.29" y="-3.779" width="128.188" height="73.079" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feTurbulence id="s07dff9-feTurbulence1" baseFrequency="0.0307 0.0858" numOctaves="2" seed="0" type="turbulence" result="feTurbulence5-out">
         <animate attributeName="baseFrequency" values="0.0307 0.0858;0.0368 0.1226;0.027 0.1042;0.0307 0.0858" dur="1.2s" repeatCount="indefinite"/>
       </feTurbulence>
-      <feDisplacementMap id="sa5f3a7-feDisplacementMap1" in="SourceGraphic" in2="feTurbulence5-out" scale="4.078" xChannelSelector="R" yChannelSelector="G" result="feDisplacementMap3-out"/>
-      <feGaussianBlur id="sa5f3a7-feGaussianBlur1" in="feDisplacementMap3-out" stdDeviation="3.262" result="feGaussianBlur26-out"/>
-      <feFlood id="sa5f3a7-feFlood1" flood-color="#ff7b00" flood-opacity="1" result="feFlood16-out"/>
-      <feComposite id="sa5f3a7-feComposite1" in="feFlood16-out" in2="feGaussianBlur26-out" operator="in" result="feComposite20-out"/>
+      <feDisplacementMap id="s07dff9-feDisplacementMap1" in="SourceGraphic" in2="feTurbulence5-out" scale="4.078" xChannelSelector="R" yChannelSelector="G" result="feDisplacementMap3-out"/>
+      <feGaussianBlur id="s07dff9-feGaussianBlur1" in="feDisplacementMap3-out" stdDeviation="3.262" result="feGaussianBlur28-out"/>
+      <feFlood id="s07dff9-feFlood1" flood-color="#ff7b00" flood-opacity="1" result="feFlood18-out"/>
+      <feComposite id="s07dff9-feComposite1" in="feFlood18-out" in2="feGaussianBlur28-out" operator="in" result="feComposite22-out"/>
       <feMerge>
-        <feMergeNode in="feComposite20-out"/>
+        <feMergeNode in="feComposite22-out"/>
         <feMergeNode in="feDisplacementMap3-out"/>
       </feMerge>
     </filter>
-    <linearGradient id="sa5f3a7-linearGradient2" x1="0.5" y1="1" x2="0.5" y2="0">
+    <linearGradient id="s07dff9-linearGradient2" x1="0.5" y1="1" x2="0.5" y2="0">
       <stop offset="0" stop-color="#fff3b0"/>
       <stop offset="0.05" stop-color="#fde898"/>
       <stop offset="0.1" stop-color="#fddd7f"/>
@@ -59,21 +59,21 @@
       <stop offset="0.95" stop-color="#7b0612"/>
       <stop offset="1" stop-color="#6a040f"/>
     </linearGradient>
-    <filter id="sa5f3a7-filter2" x="166.4" y="-3.6" width="67.2" height="67.2" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
-      <feTurbulence id="sa5f3a7-feTurbulence2" baseFrequency="0.0333 0.0933" numOctaves="2" seed="0" type="turbulence" result="feTurbulence6-out">
+    <filter id="s07dff9-filter2" x="166.4" y="-3.6" width="67.2" height="67.2" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feTurbulence id="s07dff9-feTurbulence2" baseFrequency="0.0333 0.0933" numOctaves="2" seed="0" type="turbulence" result="feTurbulence6-out">
         <animate attributeName="baseFrequency" values="0.0333 0.0933;0.04 0.1333;0.0293 0.1133;0.0333 0.0933" dur="1.2s" repeatCount="indefinite"/>
       </feTurbulence>
-      <feDisplacementMap id="sa5f3a7-feDisplacementMap2" in="SourceGraphic" in2="feTurbulence6-out" scale="3.75" xChannelSelector="R" yChannelSelector="G" result="feDisplacementMap4-out"/>
-      <feGaussianBlur id="sa5f3a7-feGaussianBlur2" in="feDisplacementMap4-out" stdDeviation="3" result="feGaussianBlur27-out"/>
-      <feFlood id="sa5f3a7-feFlood2" flood-color="#ff7b00" flood-opacity="1" result="feFlood17-out"/>
-      <feComposite id="sa5f3a7-feComposite2" in="feFlood17-out" in2="feGaussianBlur27-out" operator="in" result="feComposite21-out"/>
+      <feDisplacementMap id="s07dff9-feDisplacementMap2" in="SourceGraphic" in2="feTurbulence6-out" scale="3.75" xChannelSelector="R" yChannelSelector="G" result="feDisplacementMap4-out"/>
+      <feGaussianBlur id="s07dff9-feGaussianBlur2" in="feDisplacementMap4-out" stdDeviation="3" result="feGaussianBlur29-out"/>
+      <feFlood id="s07dff9-feFlood2" flood-color="#ff7b00" flood-opacity="1" result="feFlood19-out"/>
+      <feComposite id="s07dff9-feComposite2" in="feFlood19-out" in2="feGaussianBlur29-out" operator="in" result="feComposite23-out"/>
       <feMerge>
-        <feMergeNode in="feComposite21-out"/>
+        <feMergeNode in="feComposite23-out"/>
         <feMergeNode in="feDisplacementMap4-out"/>
       </feMerge>
     </filter>
   </defs>
   <text x="10" y="40" font-size="28">carried <tspan visibility="hidden">sparks</tspan></text>
-  <text x="10" y="40" font-size="28" fill="url(#sa5f3a7-linearGradient1)" filter="url(#sa5f3a7-filter1)"><tspan visibility="hidden">carried </tspan>sparks</text>
-  <circle cx="200" cy="30" r="12" fill="url(#sa5f3a7-linearGradient2)" filter="url(#sa5f3a7-filter2)"/>
+  <text x="10" y="40" font-size="28" fill="url(#s07dff9-linearGradient1)" filter="url(#s07dff9-filter1)"><tspan visibility="hidden">carried </tspan>sparks</text>
+  <circle cx="200" cy="30" r="12" fill="url(#s07dff9-linearGradient2)" filter="url(#s07dff9-filter2)"/>
 </svg>

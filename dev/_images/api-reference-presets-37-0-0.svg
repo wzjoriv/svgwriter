@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="92.1843" viewBox="-0.7256 6.2617 56.4766 26.0312" version="1.1">
   <defs>
-    <linearGradient id="s53a22e-linearGradient1" x1="0.5" y1="0" x2="0.5" y2="1">
+    <linearGradient id="s25e456-linearGradient1" x1="0.5" y1="0" x2="0.5" y2="1">
       <stop offset="0" stop-color="#ffffff"/>
       <stop offset="0.05" stop-color="#f7fbff"/>
       <stop offset="0.1" stop-color="#edf7ff"/>
@@ -23,21 +23,21 @@
       <stop offset="0.95" stop-color="#005097"/>
       <stop offset="1" stop-color="#023e8a"/>
     </linearGradient>
-    <filter id="s53a22e-filter1" x="-18.554" y="-11.566" width="92.133" height="61.688" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
-      <feGaussianBlur id="s53a22e-feGaussianBlur1" in="SourceAlpha" stdDeviation="1.721" result="feGaussianBlur28-out"/>
-      <feFlood id="s53a22e-feFlood1" flood-color="#bde0fe" flood-opacity="1" result="feFlood20-out"/>
-      <feComposite id="s53a22e-feComposite1" in="feFlood20-out" in2="feGaussianBlur28-out" operator="in" result="feComposite25-out"/>
-      <feGaussianBlur id="s53a22e-feGaussianBlur2" in="SourceAlpha" stdDeviation="1.033" result="feGaussianBlur29-out"/>
-      <feSpecularLighting id="s53a22e-feSpecularLighting1" in="feGaussianBlur29-out" surfaceScale="1.033" lighting-color="white" specularConstant="0.7" specularExponent="24" result="feSpecularLighting2-out">
+    <filter id="s25e456-filter1" x="-18.554" y="-11.566" width="92.133" height="61.688" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur id="s25e456-feGaussianBlur1" in="SourceAlpha" stdDeviation="1.721" result="feGaussianBlur30-out"/>
+      <feFlood id="s25e456-feFlood1" flood-color="#bde0fe" flood-opacity="1" result="feFlood22-out"/>
+      <feComposite id="s25e456-feComposite1" in="feFlood22-out" in2="feGaussianBlur30-out" operator="in" result="feComposite27-out"/>
+      <feGaussianBlur id="s25e456-feGaussianBlur2" in="SourceAlpha" stdDeviation="1.033" result="feGaussianBlur31-out"/>
+      <feSpecularLighting id="s25e456-feSpecularLighting1" in="feGaussianBlur31-out" surfaceScale="1.033" lighting-color="white" specularConstant="0.7" specularExponent="24" result="feSpecularLighting2-out">
         <feDistantLight azimuth="150" elevation="35"/>
       </feSpecularLighting>
-      <feComposite id="s53a22e-feComposite2" in="feSpecularLighting2-out" in2="SourceAlpha" operator="in" result="feComposite24-out"/>
-      <feComposite id="s53a22e-feComposite3" in="SourceGraphic" in2="feComposite24-out" operator="arithmetic" k2="1" k3="1" result="feComposite26-out"/>
+      <feComposite id="s25e456-feComposite2" in="feSpecularLighting2-out" in2="SourceAlpha" operator="in" result="feComposite26-out"/>
+      <feComposite id="s25e456-feComposite3" in="SourceGraphic" in2="feComposite26-out" operator="arithmetic" k2="1" k3="1" result="feComposite28-out"/>
       <feMerge>
-        <feMergeNode in="feComposite25-out"/>
-        <feMergeNode in="feComposite26-out"/>
+        <feMergeNode in="feComposite27-out"/>
+        <feMergeNode in="feComposite28-out"/>
       </feMerge>
     </filter>
   </defs>
-  <text x="0" y="30" font-size="30" fill="url(#s53a22e-linearGradient1)" filter="url(#s53a22e-filter1)">cold</text>
+  <text x="0" y="30" font-size="30" fill="url(#s25e456-linearGradient1)" filter="url(#s25e456-filter1)">cold</text>
 </svg>

@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="220" height="80" viewBox="0 0 220 80" version="1.1">
-  <style id="sdda865-svgwriter-theme" type="text/css">.role-pattern { fill:#0f766e;stroke:none }
+  <style id="s2ac1b5-svgwriter-theme" type="text/css">.role-pattern { fill:#0f766e;stroke:none }
 .role-filter-shadow { flood-color:#1f2933;flood-opacity:0.2 }</style>
   <defs>
-    <pattern id="sdda865-pattern1" x="0" y="0" width="12" height="12" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+    <pattern id="s2ac1b5-pattern1" x="0" y="0" width="12" height="12" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
       <rect x="0" y="0" width="6" height="12" fill="black" class="role-pattern"/>
     </pattern>
-    <pattern id="sdda865-pattern2" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+    <pattern id="s2ac1b5-pattern2" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
       <rect x="0" y="0" width="8" height="8" fill="mistyrose"/>
       <circle cx="4" cy="4" r="1.5" fill="crimson"/>
       <circle cx="0" cy="0" r="1.5" fill="crimson"/>
@@ -13,7 +13,7 @@
       <circle cx="0" cy="8" r="1.5" fill="crimson"/>
       <circle cx="8" cy="8" r="1.5" fill="crimson"/>
     </pattern>
-    <pattern id="sdda865-pattern3" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+    <pattern id="s2ac1b5-pattern3" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
       <rect x="0" y="0" width="2" height="2" fill="black" class="role-pattern" fill-opacity="0.32"/>
       <rect x="4" y="0" width="2" height="2" fill="black" class="role-pattern" fill-opacity="0.63"/>
       <rect x="6" y="0" width="2" height="2" fill="black" class="role-pattern" fill-opacity="0.25"/>
@@ -122,27 +122,27 @@
       <rect x="24" y="30" width="2" height="2" fill="black" class="role-pattern" fill-opacity="0.64"/>
       <rect x="28" y="30" width="2" height="2" fill="black" class="role-pattern" fill-opacity="0.3"/>
     </pattern>
-    <filter id="sdda865-filter1" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
-      <feGaussianBlur id="sdda865-feGaussianBlur1" in="SourceAlpha" stdDeviation="3" result="feGaussianBlur5-out"/>
-      <feOffset id="sdda865-feOffset1" in="feGaussianBlur5-out" dx="2" dy="3" result="feOffset3-out"/>
-      <feFlood id="sdda865-feFlood1" flood-opacity="1" flood-color="rgba(0,0,0,0.35)" class="role-filter-shadow" result="feFlood2-out"/>
-      <feComposite id="sdda865-feComposite1" in="feFlood2-out" in2="feOffset3-out" operator="in" result="feComposite2-out"/>
+    <filter id="s2ac1b5-filter1" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="s2ac1b5-feGaussianBlur1" in="SourceAlpha" stdDeviation="3" result="feGaussianBlur6-out"/>
+      <feOffset id="s2ac1b5-feOffset1" in="feGaussianBlur6-out" dx="2" dy="3" result="feOffset4-out"/>
+      <feFlood id="s2ac1b5-feFlood1" flood-opacity="1" flood-color="rgba(0,0,0,0.35)" class="role-filter-shadow" result="feFlood3-out"/>
+      <feComposite id="s2ac1b5-feComposite1" in="feFlood3-out" in2="feOffset4-out" operator="in" result="feComposite3-out"/>
       <feMerge>
-        <feMergeNode in="feComposite2-out"/>
+        <feMergeNode in="feComposite3-out"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    <filter id="sdda865-filter2" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
-      <feGaussianBlur id="sdda865-feGaussianBlur2" in="SourceGraphic" stdDeviation="8" result="feGaussianBlur6-out"/>
-      <feColorMatrix id="sdda865-feColorMatrix1" in="feGaussianBlur6-out" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 20 -7" result="feColorMatrix1-out"/>
+    <filter id="s2ac1b5-filter2" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="s2ac1b5-feGaussianBlur2" in="SourceGraphic" stdDeviation="8" result="feGaussianBlur7-out"/>
+      <feColorMatrix id="s2ac1b5-feColorMatrix1" in="feGaussianBlur7-out" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 20 -7" result="feColorMatrix1-out"/>
       <feComposite in="SourceGraphic" in2="feColorMatrix1-out" operator="atop"/>
     </filter>
   </defs>
-  <rect x="10" y="10" width="60" height="60" fill="url(#sdda865-pattern1)"/>
-  <rect x="80" y="10" width="60" height="60" fill="url(#sdda865-pattern2)"/>
-  <rect x="150" y="10" width="60" height="60" fill="url(#sdda865-pattern3)"/>
-  <rect x="10" y="10" width="60" height="40" rx="6" fill="white" filter="url(#sdda865-filter1)"/>
-  <g fill="teal" filter="url(#sdda865-filter2)">
+  <rect x="10" y="10" width="60" height="60" fill="url(#s2ac1b5-pattern1)"/>
+  <rect x="80" y="10" width="60" height="60" fill="url(#s2ac1b5-pattern2)"/>
+  <rect x="150" y="10" width="60" height="60" fill="url(#s2ac1b5-pattern3)"/>
+  <rect x="10" y="10" width="60" height="40" rx="6" fill="white" filter="url(#s2ac1b5-filter1)"/>
+  <g fill="teal" filter="url(#s2ac1b5-filter2)">
     <circle cx="30" cy="60" r="12"/>
     <circle cx="52" cy="60" r="12"/>
   </g>
