@@ -323,23 +323,21 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">NORMAL_WEIGHT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._presets</span><span class="w"> </span><span class="kn">import</span> <span class="n">FONTS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._typography._font_constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">FONT_FILE_SUFFIXES</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._internal._typography._font_match</span><span class="w"> </span><span class="kn">import</span> <span class="n">FontStyle</span><span class="p">,</span> <span class="n">match_rank</span><span class="p">,</span> <span class="n">style_of</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_FONT_SIZE</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._text</span><span class="w"> </span><span class="kn">import</span> <span class="n">Face</span><span class="p">,</span> <span class="n">FaceMetrics</span><span class="p">,</span> <span class="n">FontSource</span><span class="p">,</span> <span class="n">css_family</span><span class="p">,</span> <span class="n">family_of</span><span class="p">,</span> <span class="n">installed_faces</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="n">load_face</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_font</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Face"</span><span class="p">,</span> <span class="s2">"FaceMetrics"</span><span class="p">,</span> <span class="s2">"FontSource"</span><span class="p">,</span> <span class="s2">"Typeface"</span><span class="p">,</span> <span class="s2">"known_typefaces"</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Face"</span><span class="p">,</span> <span class="s2">"FaceMetrics"</span><span class="p">,</span> <span class="s2">"FontSource"</span><span class="p">,</span> <span class="s2">"Typeface"</span><span class="p">,</span> <span class="s2">"font_families"</span><span class="p">,</span> <span class="s2">"known_typefaces"</span><span class="p">]</span>
 
-
-<span class="n">_REGISTERED</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 <span class="n">_KNOWN</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Typeface</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">known_typefaces</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Typeface</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""Every typeface made in this session, the latest per family name.</span>
+<span class="w">    </span><span class="sd">"""Every typeface made in this session or registered as a font plugin, the latest per family name.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -354,6 +352,7 @@
 <span class="sd">    &gt;&gt;&gt; serif in known_typefaces()</span>
 <span class="sd">    True</span>
 <span class="sd">    """</span>
+    <span class="n">FONTS</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">_KNOWN</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
 
@@ -391,7 +390,7 @@
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    register_font : Register one file (what this does for each face).</span>
+<span class="sd">    svgwriter.preset.font : Register font files or folders by family name.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -420,6 +419,11 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">entries</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">FontSource</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Load file faces (with optional ``(weight, style)`` overrides) and register them."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">entries</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">entries</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">FontSource</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Load file faces (with optional ``(weight, style)`` overrides) without registering them."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">entries</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"typeface </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> needs at least one face"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_installed</span> <span class="o">=</span> <span class="n">name</span><span class="p">,</span> <span class="kc">False</span>
@@ -427,7 +431,6 @@
         <span class="k">for</span> <span class="n">override</span><span class="p">,</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">:</span>
             <span class="n">loaded</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">load_face</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">typeface</span><span class="p">,</span> <span class="n">override</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">blob</span><span class="p">)</span> <span class="k">for</span> <span class="n">typeface</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">blob</span> <span class="ow">in</span> <span class="n">load</span><span class="p">(</span><span class="n">source</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_faces</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">loaded</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
         <span class="n">_KNOWN</span><span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="bp">self</span>
 
 <div class="viewcode-block" id="Typeface.from_files">
@@ -551,7 +554,10 @@
 <div class="viewcode-block" id="Typeface.register">
 <a class="viewcode-back" href="../../../reference/ops.html#svgwriter.ops.Typeface.register">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Typeface</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Register every file face with :func:`register_font` (done on construction; repeats are skipped).</span>
+<span class="w">        </span><span class="sd">"""Register the family in :data:`svgwriter.preset.font` under its name (done on construction).</span>
+
+<span class="sd">        A family registered earlier under the same name is replaced. Installed</span>
+<span class="sd">        families need no registering, so this does nothing for them.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -564,12 +570,8 @@
 <span class="sd">        &gt;&gt;&gt; svg.Typeface("serif").register().installed</span>
 <span class="sd">        True</span>
 <span class="sd">        """</span>
-        <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_installed</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_faces</span><span class="p">:</span>
-            <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">face</span><span class="o">.</span><span class="n">source</span> <span class="ow">or</span> <span class="n">face</span><span class="o">.</span><span class="n">blob</span><span class="p">,</span> <span class="n">face</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">face</span><span class="o">.</span><span class="n">style</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_REGISTERED</span><span class="p">:</span>
-                <span class="n">register_font</span><span class="p">(</span><span class="n">face</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
-                              <span class="n">weight</span><span class="o">=</span><span class="n">face</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">face</span><span class="o">.</span><span class="n">style</span><span class="p">)</span>
-                <span class="n">_REGISTERED</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_installed</span> <span class="ow">and</span> <span class="n">FONTS</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">FONTS</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
@@ -699,6 +701,79 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_faces</span><span class="p">)</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">font_families</span><span class="p">(</span><span class="n">sources</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Typeface</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Typefaces from font sources, one per family, not yet registered.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sources : iterable</span>
+<span class="sd">        Font files, folders of font files (``.ttf``, ``.otf``, ``.ttc``,</span>
+<span class="sd">        ``.otc``), their contents, mappings of ``(weight, style)`` to a file,</span>
+<span class="sd">        :class:`Typeface` instances, or nested iterables of these.</span>
+<span class="sd">    name : str, optional</span>
+<span class="sd">        One family name for every face. Defaults to None, which groups the</span>
+<span class="sd">        faces by the family stored in each file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of Typeface</span>
+<span class="sd">        The families in the order first seen.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If there are no faces, a folder holds no fonts, or a file is not a font.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        If a source is an installed typeface or not a font source.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from svgwriter.ops.typeface import font_families</span>
+<span class="sd">    &gt;&gt;&gt; font_families([])</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">    ...</span>
+<span class="sd">    ValueError: no font faces given</span>
+<span class="sd">    """</span>
+    <span class="n">groups</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">FontSource</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">override</span><span class="p">,</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">_entries</span><span class="p">(</span><span class="n">sources</span><span class="p">):</span>
+        <span class="n">family</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Typeface</span><span class="p">)</span> <span class="k">else</span> <span class="n">family_of</span><span class="p">(</span><span class="n">source</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Typeface</span><span class="p">):</span>
+            <span class="n">groups</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">family</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">extend</span><span class="p">(((</span><span class="n">face</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">face</span><span class="o">.</span><span class="n">style</span><span class="p">),</span> <span class="n">face</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">faces</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">groups</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">family</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">override</span><span class="p">,</span> <span class="n">source</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">groups</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"no font faces given"</span><span class="p">)</span>
+    <span class="n">families</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">family</span><span class="p">,</span> <span class="n">entries</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">typeface</span> <span class="o">=</span> <span class="n">Typeface</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">Typeface</span><span class="p">)</span>
+        <span class="n">typeface</span><span class="o">.</span><span class="n">_load</span><span class="p">(</span><span class="n">family</span><span class="p">,</span> <span class="n">entries</span><span class="p">)</span>
+        <span class="n">families</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">typeface</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">families</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_entries</span><span class="p">(</span><span class="n">sources</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">"""Every ``(override, source)`` in *sources*, folders expanded to their font files."""</span>
+    <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">sources</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Typeface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="n">installed</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">source</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> is installed already; register font files instead"</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="kc">None</span><span class="p">,</span> <span class="n">source</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+            <span class="k">yield from</span> <span class="n">source</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">))</span> <span class="ow">and</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">fspath</span><span class="p">(</span><span class="n">source</span><span class="p">))</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">path</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">fspath</span><span class="p">(</span><span class="n">source</span><span class="p">))</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span>
+                           <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">FONT_FILE_SUFFIXES</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">files</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"no font files in </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">yield from</span> <span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">files</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">"read"</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="kc">None</span><span class="p">,</span> <span class="n">source</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+            <span class="k">yield from</span> <span class="n">_entries</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"not a font source: </span><span class="si">{</span><span class="n">source</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
         </article>
       </div>

@@ -21,6 +21,7 @@ A taken name raises `ValueError` naming the function or module that owns it, bui
 | `svg.preset.pattern`, `filter`, `gradient`, `marker` | functions returning that definition, joining `svg.patterns` and the others | `svgwriter.pattern`, ... |
 | `svg.preset.effect` | `f(element, *, option=default)` styling any element (`el.effect(name)`) | `svgwriter.effect` |
 | `svg.preset.interpolator` | `f(a, b, t) -> value` for a `kind=` or `attribute=`, used by `svg.interpolate`, tweens and morphs | `svgwriter.interpolator` |
+| `svg.preset.font` | font families from files, folders or bytes (`svg.preset.font(path, name=None)`), used by measuring, outlines and PNG, PDF and EPS text | `svgwriter.font` (a path, paths, or a function returning them) |
 | `svg.themes` | `svg.Theme` instances | `svgwriter.theme` |
 | `svg.formats` | `svg.Format` subclasses (one instance each) | `svgwriter.format` |
 | `svg.renderers` | `f(document, seconds)` returning PNG bytes or an RGBA array | `svgwriter.renderer` |
@@ -81,7 +82,10 @@ def stepped_opacity(a: float, b: float, t: float) -> float:
 faint, solid = svg.circle(10, 10, 5, opacity=0.1), svg.circle(10, 10, 5, opacity=0.9)
 print(svg.interpolate(faint, solid, 0.33).get("opacity"))   # blended with stepped_opacity
 
-for kind, name in [("animation", "bob"), ("behavior", "drift"), ("shape", "badge"), ("size", "poster-50x70"),
+[brand] = svg.preset.font(svg.Typeface("serif").faces[0].data, name="Brand Serif")
+doc.text("Brand", x=5, y=55, font_family=brand)       # measured, outlined and rendered with the file
+
+for kind, name in [("font", "Brand Serif"), ("animation", "bob"), ("behavior", "drift"), ("shape", "badge"), ("size", "poster-50x70"),
                    ("pattern", "bricks"), ("effect", "ember"), ("interpolator", "stepped_opacity")]:
     svg.preset.KINDS[kind].unregister(name)            # tests and notebooks can clean up
 ```

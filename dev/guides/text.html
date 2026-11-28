@@ -519,12 +519,28 @@ a list of font files relative to the file:</p>
 </div>
 <p>Projects register every file in <code class="docutils literal notranslate"><span class="pre">assets/fonts</span></code> when they build, so those families are usable by name.</p>
 </section>
-<section id="registering-single-files">
-<h3>Registering single files<a class="headerlink" href="#registering-single-files" title="Link to this heading">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">svg.register_font(path)</span></code> is the low-level call under <code class="docutils literal notranslate"><span class="pre">Typeface</span></code>: it registers one file under its
-family name (or <code class="docutils literal notranslate"><span class="pre">family=</span></code>), with optional <code class="docutils literal notranslate"><span class="pre">weight=</span></code> and <code class="docutils literal notranslate"><span class="pre">style=</span></code> descriptors, and returns the name.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># family = svg.register_font("Inter-Regular.ttf")   # returns the family name stored in the file</span>
-<span class="c1"># svg.text("Hello", x=0, y=40, font_family=family, font_size=32).to_path()</span>
+<section id="registering-fonts-by-name">
+<h3>Registering fonts by name<a class="headerlink" href="#registering-fonts-by-name" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">svg.preset.font</span></code> is the registry of font families every renderer and exporter consults: measuring,
+outlines, PNG and PDF text, and <code class="docutils literal notranslate"><span class="pre">embed_fonts</span></code>. Give it font files, folders of them, their contents,
+<code class="docutils literal notranslate"><span class="pre">{(weight,</span> <span class="pre">style):</span> <span class="pre">file}</span></code> mappings or typefaces; faces group by the family stored in each file unless
+<code class="docutils literal notranslate"><span class="pre">name=</span></code> is given, and the call returns the family names. A registered family wins over an installed one
+of the same name, and every <code class="docutils literal notranslate"><span class="pre">Typeface</span></code> made from files registers itself here.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Typeface</span><span class="p">(</span><span class="s2">"sans-serif"</span><span class="p">)</span><span class="o">.</span><span class="n">faces</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>          <span class="c1"># any .ttf/.otf path, folder or bytes</span>
+<span class="p">[</span><span class="n">family</span><span class="p">]</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">font</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Brand Sans"</span><span class="p">)</span>
+<span class="n">label</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Hello"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">font_family</span><span class="o">=</span><span class="n">family</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">text_width</span><span class="p">(</span><span class="s2">"Hello"</span><span class="p">,</span> <span class="n">family</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"Brand Sans"</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-text-9-0.svg" />
+</figure>
+<p>Packages ship fonts through the <code class="docutils literal notranslate"><span class="pre">svgwriter.font</span></code> entry-point group: the object is a path, a list of
+paths or a function returning them, registered under the entry point’s name when a family is first
+looked up.</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[project.entry-points.</span><span class="s2">"svgwriter.font"</span><span class="k">]</span>
+<span class="s2">"Brand Sans"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"brand_fonts:files"</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">svg.Typeface</span></code> is not <code class="docutils literal notranslate"><span class="pre">svg.Font</span></code>. <code class="docutils literal notranslate"><span class="pre">svg.Font</span></code> is the SVG 1.1 <code class="docutils literal notranslate"><span class="pre">&lt;font&gt;</span></code> element, which defines glyphs as
@@ -598,7 +614,7 @@ and writing such files. A <code class="docutils literal notranslate"><span class
 <li><a class="reference internal" href="#typography">Typography</a><ul>
 <li><a class="reference internal" href="#embedding-fonts">Embedding fonts</a></li>
 <li><a class="reference internal" href="#themes-and-projects">Themes and projects</a></li>
-<li><a class="reference internal" href="#registering-single-files">Registering single files</a></li>
+<li><a class="reference internal" href="#registering-fonts-by-name">Registering fonts by name</a></li>
 </ul>
 </li>
 </ul>

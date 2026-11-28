@@ -314,7 +314,7 @@
 <span></span><span class="sd">"""</span>
 <span class="sd">Preset registries, one per kind: animations and behaviors (``element.animate``), shapes, sizes, patterns,</span>
 <span class="sd">filters, gradients, markers,</span>
-<span class="sd">effects, interactions, path effects and interpolators.</span>
+<span class="sd">effects, interactions, path effects, interpolators and fonts.</span>
 <span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
@@ -337,12 +337,14 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">..model.elements.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">Character</span><span class="p">,</span> <span class="n">CharacterRange</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..model.pathdata.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathData</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..model.units.lengths</span><span class="w"> </span><span class="kn">import</span> <span class="n">LengthLike</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..ops.typeface</span><span class="w"> </span><span class="kn">import</span> <span class="n">Typeface</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">"ANIMATIONS"</span><span class="p">,</span>
     <span class="s2">"BEHAVIORS"</span><span class="p">,</span>
     <span class="s2">"EFFECTS"</span><span class="p">,</span>
     <span class="s2">"FILTERS"</span><span class="p">,</span>
+    <span class="s2">"FONTS"</span><span class="p">,</span>
     <span class="s2">"GRADIENTS"</span><span class="p">,</span>
     <span class="s2">"INTERACTIONS"</span><span class="p">,</span>
     <span class="s2">"INTERPOLATORS"</span><span class="p">,</span>
@@ -359,6 +361,7 @@
     <span class="s2">"BehaviorPresets"</span><span class="p">,</span>
     <span class="s2">"DefinitionPresets"</span><span class="p">,</span>
     <span class="s2">"EffectPresets"</span><span class="p">,</span>
+    <span class="s2">"FontPresets"</span><span class="p">,</span>
     <span class="s2">"ShapePresets"</span><span class="p">,</span>
     <span class="s2">"SizePresets"</span><span class="p">,</span>
     <span class="s2">"catalogue"</span><span class="p">,</span>
@@ -981,6 +984,129 @@
 
 
 
+<div class="viewcode-block" id="FontPresets">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.FontPresets">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FontPresets</span><span class="p">(</span><span class="n">Registry</span><span class="p">[</span><span class="s2">"Typeface"</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">"""Font families by name, found by every text measurement, outline, render and export.</span>
+
+<span class="sd">    Register with a call, ``svg.preset.font(*sources, name=None, replace=False)``: font files (``.ttf``,</span>
+<span class="sd">    ``.otf``, ``.ttc``, ``.otc``), folders of them, their contents, mappings of ``(weight, style)`` to a</span>
+<span class="sd">    file, or :class:`~svgwriter.Typeface` instances. Faces group into families by the name stored in each</span>
+<span class="sd">    file unless *name* is given; the call returns the family names. A registered family wins over an</span>
+<span class="sd">    installed one of the same name, and text picks among its faces with CSS font matching. Packages add</span>
+<span class="sd">    fonts through the ``svgwriter.font`` entry-point group, whose object is a source, a list of sources or</span>
+<span class="sd">    a function returning them, registered under the entry point's name. Every</span>
+<span class="sd">    :class:`~svgwriter.Typeface` made from files registers itself here.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">    &gt;&gt;&gt; # families = svg.preset.font("assets/fonts")   # every family in the folder</span>
+<span class="sd">    &gt;&gt;&gt; # svg.text("Hi", x=0, y=20, font_family=families[0])</span>
+<span class="sd">    &gt;&gt;&gt; "sans-serif" in svg.preset.font</span>
+<span class="sd">    False</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">builtins</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">object</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">builtins</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="nb">object</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">sources</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Register the families in *sources* and return their names.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *sources : path, bytes, mapping, Typeface or iterable of these</span>
+<span class="sd">            Font files, folders of font files, their contents, mappings of ``(weight, style)`` to a file</span>
+<span class="sd">            (descriptors that override the file's own), or typefaces.</span>
+<span class="sd">        name : str, optional</span>
+<span class="sd">            One family name for every face. Defaults to None, which uses the family stored in each file</span>
+<span class="sd">            (typographic family first).</span>
+<span class="sd">        replace : bool, optional</span>
+<span class="sd">            Replace a family registered under the same name. Defaults to False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of str</span>
+<span class="sd">            The family names, for ``font_family``.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If a name is taken and *replace* is False, or a source is not a font.</span>
+<span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..ops.typeface</span><span class="w"> </span><span class="kn">import</span> <span class="n">font_families</span>
+
+        <span class="n">families</span> <span class="o">=</span> <span class="n">font_families</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">replace</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">typeface</span> <span class="ow">in</span> <span class="n">families</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">typeface</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">plugins</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">typeface</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">typeface</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">typeface</span> <span class="ow">in</span> <span class="n">families</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">typeface</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">typeface</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">typeface</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">typeface</span> <span class="ow">in</span> <span class="n">families</span><span class="p">]</span>
+
+<div class="viewcode-block" id="FontPresets.register">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.FontPresets.register">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"fonts register with a call: svg.preset.font(*sources, name=None)"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">item</span><span class="p">()</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s2">"faces"</span><span class="p">)</span> <span class="k">else</span> <span class="n">item</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FontPresets.on_change">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.FontPresets.on_change">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">object</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Call *clear* whenever a family is registered or removed (cache invalidation)."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clear</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FontPresets.faces">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.FontPresets.faces">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">faces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">family</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">"""The ``(skia typeface, CSS descriptors)`` of every face registered for *family*, any case."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">._typography._font_match</span><span class="w"> </span><span class="kn">import</span> <span class="n">FaceStyle</span>
+
+            <span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">(</span><span class="n">plugins</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">index</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+                <span class="n">index</span><span class="p">[</span><span class="n">label</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="p">[(</span><span class="n">face</span><span class="o">.</span><span class="n">typeface</span><span class="p">,</span> <span class="n">FaceStyle</span><span class="p">(</span><span class="n">face</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">face</span><span class="o">.</span><span class="n">style</span><span class="p">,</span> <span class="n">face</span><span class="o">.</span><span class="n">stretch</span><span class="p">,</span> <span class="n">face</span><span class="o">.</span><span class="n">axes</span><span class="p">))</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">label</span><span class="p">)</span><span class="o">.</span><span class="n">faces</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">family</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="p">[])</span></div>
+
+
+<div class="viewcode-block" id="FontPresets.add">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.FontPresets.add">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Typeface</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Typeface</span><span class="p">:</span>
+        <span class="n">added</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_changed</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">added</span></div>
+
+
+<div class="viewcode-block" id="FontPresets.unregister">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.FontPresets.unregister">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unregister</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Typeface</span><span class="p">:</span>
+        <span class="n">removed</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_changed</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">removed</span></div>
+
+
+<div class="viewcode-block" id="FontPresets.restore">
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.FontPresets.restore">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Typeface</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_changed</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">clear</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="p">:</span>
+            <span class="n">clear</span><span class="p">()</span></div>
+
+
+
 <span class="n">ANIMATIONS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">AnimationPresets</span><span class="p">(</span><span class="s2">"animation"</span><span class="p">)</span>
 <span class="n">BEHAVIORS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">BehaviorPresets</span><span class="p">(</span><span class="s2">"behavior"</span><span class="p">)</span>
 <span class="n">SHAPES</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">ShapePresets</span><span class="p">(</span><span class="s2">"shape"</span><span class="p">)</span>
@@ -993,10 +1119,12 @@
 <span class="n">INTERACTIONS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">InteractionPresets</span><span class="p">(</span><span class="s2">"interaction"</span><span class="p">)</span>
 <span class="n">PATH_EFFECTS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">PathEffectPresets</span><span class="p">(</span><span class="s2">"path_effect"</span><span class="p">)</span>
 <span class="n">INTERPOLATORS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">InterpolatorPresets</span><span class="p">(</span><span class="s2">"interpolator"</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">INTERPOLATOR_LIBRARY</span><span class="p">))</span>
+<span class="n">FONTS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">FontPresets</span><span class="p">(</span><span class="s2">"font"</span><span class="p">)</span>
 <span class="n">KINDS</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Registry</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"animation"</span><span class="p">:</span> <span class="n">ANIMATIONS</span><span class="p">,</span> <span class="s2">"behavior"</span><span class="p">:</span> <span class="n">BEHAVIORS</span><span class="p">,</span> <span class="s2">"shape"</span><span class="p">:</span> <span class="n">SHAPES</span><span class="p">,</span> <span class="s2">"size"</span><span class="p">:</span> <span class="n">SIZES</span><span class="p">,</span> <span class="s2">"pattern"</span><span class="p">:</span> <span class="n">PATTERNS</span><span class="p">,</span>
     <span class="s2">"filter"</span><span class="p">:</span> <span class="n">FILTERS</span><span class="p">,</span> <span class="s2">"gradient"</span><span class="p">:</span> <span class="n">GRADIENTS</span><span class="p">,</span> <span class="s2">"marker"</span><span class="p">:</span> <span class="n">MARKERS</span><span class="p">,</span> <span class="s2">"effect"</span><span class="p">:</span> <span class="n">EFFECTS</span><span class="p">,</span>
-    <span class="s2">"interaction"</span><span class="p">:</span> <span class="n">INTERACTIONS</span><span class="p">,</span> <span class="s2">"path_effect"</span><span class="p">:</span> <span class="n">PATH_EFFECTS</span><span class="p">,</span> <span class="s2">"interpolator"</span><span class="p">:</span> <span class="n">INTERPOLATORS</span><span class="p">}</span>
+    <span class="s2">"interaction"</span><span class="p">:</span> <span class="n">INTERACTIONS</span><span class="p">,</span> <span class="s2">"path_effect"</span><span class="p">:</span> <span class="n">PATH_EFFECTS</span><span class="p">,</span> <span class="s2">"interpolator"</span><span class="p">:</span> <span class="n">INTERPOLATORS</span><span class="p">,</span>
+    <span class="s2">"font"</span><span class="p">:</span> <span class="n">FONTS</span><span class="p">}</span>
 </pre></div>
         </article>
       </div>

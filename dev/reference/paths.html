@@ -436,8 +436,8 @@ effects (see the <a class="reference internal" href="../guides/presets.html"><sp
 <span id="preset-functions"></span><h2>Preset functions<a class="headerlink" href="#module-svgwriter.library.preset" title="Link to this heading">¶</a></h2>
 <p>Presets of your own, by kind, each found by name.</p>
 <p>Every kind is a registry: animations, behaviors, shapes, patterns, filters, gradients, markers,
-effects, interactions, path effects and interpolators register by decorator (bare, or with <code class="docutils literal notranslate"><span class="pre">name=</span></code> and <code class="docutils literal notranslate"><span class="pre">replace=</span></code>) and sizes by a call
-(<code class="docutils literal notranslate"><span class="pre">svg.preset.size(name,</span> <span class="pre">width,</span> <span class="pre">height)</span></code>); each has <code class="docutils literal notranslate"><span class="pre">list()</span></code>, <code class="docutils literal notranslate"><span class="pre">get(name)</span></code> and <code class="docutils literal notranslate"><span class="pre">unregister(name)</span></code>. A
+effects, interactions, path effects and interpolators register by decorator (bare, or with <code class="docutils literal notranslate"><span class="pre">name=</span></code> and <code class="docutils literal notranslate"><span class="pre">replace=</span></code>), sizes by a call
+(<code class="docutils literal notranslate"><span class="pre">svg.preset.size(name,</span> <span class="pre">width,</span> <span class="pre">height)</span></code>) and fonts by a call with files or folders (<code class="docutils literal notranslate"><span class="pre">svg.preset.font(path)</span></code>); each has <code class="docutils literal notranslate"><span class="pre">list()</span></code>, <code class="docutils literal notranslate"><span class="pre">get(name)</span></code> and <code class="docutils literal notranslate"><span class="pre">unregister(name)</span></code>. A
 taken name raises an error naming its owner, built-in presets included; <code class="docutils literal notranslate"><span class="pre">replace=True</span></code> replaces one on
 purpose. Registered patterns, filters, gradients, markers and effects join their catalogues
 (<code class="docutils literal notranslate"><span class="pre">svg.patterns</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.filters</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.gradients</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.markers</span></code>, <code class="docutils literal notranslate"><span class="pre">svg.effects</span></code>) beside the
@@ -693,6 +693,91 @@ effect that only suits some elements raises TypeError for the others.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="svgwriter.library.preset.FontPresets">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">FontPresets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">builtins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/_internal/_presets.html#FontPresets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.preset.FontPresets" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="presets.html#svgwriter.Registry" title="svgwriter._internal._registry.Registry"><code class="xref py py-class docutils literal notranslate"><span class="pre">Registry</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Typeface</span></code>]</p>
+<p>Font families by name, found by every text measurement, outline, render and export.</p>
+<p>Register with a call, <code class="docutils literal notranslate"><span class="pre">svg.preset.font(*sources,</span> <span class="pre">name=None,</span> <span class="pre">replace=False)</span></code>: font files (<code class="docutils literal notranslate"><span class="pre">.ttf</span></code>,
+<code class="docutils literal notranslate"><span class="pre">.otf</span></code>, <code class="docutils literal notranslate"><span class="pre">.ttc</span></code>, <code class="docutils literal notranslate"><span class="pre">.otc</span></code>), folders of them, their contents, mappings of <code class="docutils literal notranslate"><span class="pre">(weight,</span> <span class="pre">style)</span></code> to a
+file, or <code class="xref py py-class docutils literal notranslate"><span class="pre">Typeface</span></code> instances. Faces group into families by the name stored in each
+file unless <em>name</em> is given; the call returns the family names. A registered family wins over an
+installed one of the same name, and text picks among its faces with CSS font matching. Packages add
+fonts through the <code class="docutils literal notranslate"><span class="pre">svgwriter.font</span></code> entry-point group, whose object is a source, a list of sources or
+a function returning them, registered under the entry point’s name. Every
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Typeface</span></code> made from files registers itself here.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># families = svg.preset.font("assets/fonts")   # every family in the folder</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># svg.text("Hi", x=0, y=20, font_family=families[0])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">"sans-serif"</span> <span class="ow">in</span> <span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">font</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.library.preset.FontPresets.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/_internal/_presets.html#FontPresets.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.preset.FontPresets.register" title="Link to this definition">¶</a></dt>
+<dd><p>Register <em>item</em>, or return a decorator that does.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><em>object</em></a><em>, </em><em>optional</em>) – The entry. Given when used as a bare decorator or a call.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – The name. Defaults to None, which takes the item’s <code class="docutils literal notranslate"><span class="pre">__name__</span></code> (functions and classes) or
+<code class="docutils literal notranslate"><span class="pre">name</span></code> (themes, presets).</p></li>
+<li><p><strong>replace</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – Replace an entry already registered under the name, a built-in one included. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>object</em> – The registered entry, or a decorator that registers and returns it.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the name is taken and <cite>replace</cite> is False; the message names the owner.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.library.preset.FontPresets.on_change">
+<span class="sig-name descname"><span class="pre">on_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clear</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/_internal/_presets.html#FontPresets.on_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.preset.FontPresets.on_change" title="Link to this definition">¶</a></dt>
+<dd><p>Call <em>clear</em> whenever a family is registered or removed (cache invalidation).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.library.preset.FontPresets.faces">
+<span class="sig-name descname"><span class="pre">faces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">family</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/svgwriter/_internal/_presets.html#FontPresets.faces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.preset.FontPresets.faces" title="Link to this definition">¶</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">(skia</span> <span class="pre">typeface,</span> <span class="pre">CSS</span> <span class="pre">descriptors)</span></code> of every face registered for <em>family</em>, any case.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.library.preset.FontPresets.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ops.html#svgwriter.ops.Typeface" title="svgwriter.ops.Typeface"><span class="pre">Typeface</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="ops.html#svgwriter.ops.Typeface" title="svgwriter.ops.Typeface"><span class="pre">Typeface</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/_internal/_presets.html#FontPresets.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.preset.FontPresets.add" title="Link to this definition">¶</a></dt>
+<dd><p>Store <em>item</em> under <em>name</em>; a taken name raises ValueError naming its owner unless <em>replace</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.library.preset.FontPresets.unregister">
+<span class="sig-name descname"><span class="pre">unregister</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="ops.html#svgwriter.ops.Typeface" title="svgwriter.ops.Typeface"><span class="pre">Typeface</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/_internal/_presets.html#FontPresets.unregister"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.preset.FontPresets.unregister" title="Link to this definition">¶</a></dt>
+<dd><p>Remove the entry registered as <em>name</em> and return it; a replaced built-in comes back.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The registered name.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>object</em> – The removed entry.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#svgwriter.errors.UnknownNameError" title="svgwriter.errors.UnknownNameError"><strong>UnknownNameError</strong></a> – If nothing is registered under <em>name</em>, or it is built in (built-ins are replaced, not removed).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.library.preset.FontPresets.restore">
+<span class="sig-name descname"><span class="pre">restore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="ops.html#svgwriter.ops.Typeface" title="svgwriter.ops.Typeface"><span class="pre">Typeface</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/_internal/_presets.html#FontPresets.restore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.preset.FontPresets.restore" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="svgwriter.library.preset.InteractionPresets">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">InteractionPresets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">builtins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/svgwriter/_internal/_presets.html#InteractionPresets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.library.preset.InteractionPresets" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="presets.html#svgwriter.Registry" title="svgwriter._internal._registry.Registry"><code class="xref py py-class docutils literal notranslate"><span class="pre">Registry</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>[[…], <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]]</p>
@@ -712,7 +797,7 @@ event-started animations (<code class="docutils literal notranslate"><span class
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-paths-5-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-paths-6-0-0.svg" />
 </figure>
 <dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.library.preset.InteractionPresets.register">
@@ -1039,7 +1124,7 @@ what the element classes do not provide.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-paths-11-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-paths-12-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1107,7 +1192,7 @@ what the element classes do not provide.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-paths-13-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-paths-14-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1137,7 +1222,7 @@ what the element classes do not provide.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/api-reference-paths-14-0-0.svg" />
+<img alt="What the code above draws" src="../_images/api-reference-paths-15-0-0.svg" />
 </figure>
 </dd></dl>
 
@@ -1562,6 +1647,15 @@ the crest; sawtooth starts at the trough and ramps up. Defaults to <code class="
 <li><a class="reference internal" href="#svgwriter.library.preset.EffectPresets"><code class="docutils literal notranslate"><span class="pre">EffectPresets</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.library.preset.EffectPresets.register"><code class="docutils literal notranslate"><span class="pre">EffectPresets.register()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.library.preset.EffectPresets.prepare"><code class="docutils literal notranslate"><span class="pre">EffectPresets.prepare()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#svgwriter.library.preset.FontPresets"><code class="docutils literal notranslate"><span class="pre">FontPresets</span></code></a><ul>
+<li><a class="reference internal" href="#svgwriter.library.preset.FontPresets.register"><code class="docutils literal notranslate"><span class="pre">FontPresets.register()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.library.preset.FontPresets.on_change"><code class="docutils literal notranslate"><span class="pre">FontPresets.on_change()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.library.preset.FontPresets.faces"><code class="docutils literal notranslate"><span class="pre">FontPresets.faces()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.library.preset.FontPresets.add"><code class="docutils literal notranslate"><span class="pre">FontPresets.add()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.library.preset.FontPresets.unregister"><code class="docutils literal notranslate"><span class="pre">FontPresets.unregister()</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.library.preset.FontPresets.restore"><code class="docutils literal notranslate"><span class="pre">FontPresets.restore()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#svgwriter.library.preset.InteractionPresets"><code class="docutils literal notranslate"><span class="pre">InteractionPresets</span></code></a><ul>

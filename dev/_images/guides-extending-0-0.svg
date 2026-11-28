@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="100" height="60" viewBox="0 0 100 60" version="1.1">
-  <style id="se9a480-svgwriter-theme" type="text/css">.se9a480-role-shape { fill:#0f766e;stroke:none }</style>
+  <style id="s456235-svgwriter-theme" type="text/css">.s456235-role-shape { fill:#0f766e;stroke:none }</style>
   <defs>
-    <pattern id="se9a480-pattern1" width="12" height="6" patternUnits="userSpaceOnUse">
+    <pattern id="s456235-pattern1" width="12" height="6" patternUnits="userSpaceOnUse">
       <rect x="0" y="0" width="12" height="6" fill="firebrick" stroke="white"/>
     </pattern>
-    <linearGradient id="se9a480-linearGradient1" x1="0.5" y1="1" x2="0.5" y2="0">
+    <linearGradient id="s456235-linearGradient1" x1="0.5" y1="1" x2="0.5" y2="0">
       <stop offset="0" stop-color="#fde68a"/>
       <stop offset="0.1" stop-color="#fdd16c"/>
       <stop offset="0.2" stop-color="#febc4f"/>
@@ -17,18 +17,19 @@
       <stop offset="0.9" stop-color="#972d21"/>
       <stop offset="1" stop-color="#7f1d1d"/>
     </linearGradient>
-    <filter id="se9a480-filter1" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
-      <feGaussianBlur id="se9a480-feGaussianBlur1" in="SourceAlpha" stdDeviation="3" result="feGaussianBlur1-out"/>
-      <feFlood id="se9a480-feFlood1" flood-color="#f97316" flood-opacity="1" result="feFlood1-out"/>
-      <feComposite id="se9a480-feComposite1" in="feFlood1-out" in2="feGaussianBlur1-out" operator="in" result="feComposite1-out"/>
+    <filter id="s456235-filter1" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="s456235-feGaussianBlur1" in="SourceAlpha" stdDeviation="3" result="feGaussianBlur1-out"/>
+      <feFlood id="s456235-feFlood1" flood-color="#f97316" flood-opacity="1" result="feFlood1-out"/>
+      <feComposite id="s456235-feComposite1" in="feFlood1-out" in2="feGaussianBlur1-out" operator="in" result="feComposite1-out"/>
       <feMerge>
         <feMergeNode in="feComposite1-out"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
-  <circle cx="30" cy="30" r="25" style="fill:url(#se9a480-linearGradient1);filter:url(#se9a480-filter1)" class="se9a480-role-shape">
+  <circle cx="30" cy="30" r="25" style="fill:url(#s456235-linearGradient1);filter:url(#s456235-filter1)" class="s456235-role-shape">
     <animateTransform attributeName="transform" from="0 0" to="0 -2" additive="sum" begin="0s" dur="0.5s" fill="freeze" type="translate"/>
     <animateTransform attributeName="transform" from="0 0" to="0 2" additive="sum" begin="0.5s" dur="0.5s" fill="freeze" type="translate"/>
   </circle>
+  <text x="5" y="55" font-family="Brand Serif">Brand</text>
 </svg>
