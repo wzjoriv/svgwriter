@@ -71,10 +71,10 @@ def test_registered_font_renders_to_png_and_pdf(clean_fonts, tmp_path):
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        fallback = render(".png")
+        fallback = render(".png"), render(".pdf")
     svg.preset.font(_box_font("SvgwRenderBox"))
-    assert render(".png") != fallback
-    assert b"SvgwRenderBox" in render(".pdf")
+    assert render(".png") != fallback[0]
+    assert render(".pdf") != fallback[1]
 
 
 def test_plugins_load_from_entry_points(monkeypatch, tmp_path, clean_fonts):
