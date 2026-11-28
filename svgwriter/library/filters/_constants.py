@@ -1,5 +1,5 @@
 """
-Constants for ``svgwriter.catalog.filters``: regions, defaults, roles and kernels.
+Constants for ``svgwriter.library.filters``: regions, defaults, roles and kernels.
 """
 
 from __future__ import annotations

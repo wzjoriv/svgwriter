@@ -3,7 +3,7 @@
 Blends between distant colors are sampled in OKLCH, so they stay vivid where a plain sRGB blend turns
 grey. Gradients are in bounding-box units, so one paint stretches to any shape; ``mesh`` is a pattern of
 layered radial blends. Colors left to the theme come from :meth:`Theme.current <svgwriter.Theme.current>`
-when the gradient is built. Gradients registered with :data:`svgwriter.catalog.preset.gradient` answer here too.
+when the gradient is built. Gradients registered with :data:`svgwriter.library.preset.gradient` answer here too.
 
 Example
 -------

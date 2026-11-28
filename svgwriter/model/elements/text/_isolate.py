@@ -124,7 +124,7 @@ class RangeEffects:
 
         See Also
         --------
-        svgwriter.catalog.effects : The built-in effects.
+        svgwriter.library.effects : The built-in effects.
 
         Examples
         --------

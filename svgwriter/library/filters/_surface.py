@@ -62,7 +62,7 @@ def grain(amount: float = GRAIN_AMOUNT, *, frequency: float = GRAIN_FREQUENCY, s
 
     See Also
     --------
-    svgwriter.catalog.patterns.noise : Noise as a paint.
+    svgwriter.library.patterns.noise : Noise as a paint.
 
     Examples
     --------

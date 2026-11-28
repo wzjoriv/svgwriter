@@ -1,5 +1,5 @@
 """
-Constants for ``svgwriter.catalog.fonts``: default metrics, code points, formats and cheatsheet layout.
+Constants for ``svgwriter.library.fonts``: default metrics, code points, formats and cheatsheet layout.
 """
 
 from __future__ import annotations

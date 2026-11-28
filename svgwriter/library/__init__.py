@@ -19,7 +19,7 @@ The top-level package re-exports these, so ``svg.patterns.stripes()`` and
 
 Examples
 --------
->>> from svgwriter.catalog import patterns
+>>> from svgwriter.library import patterns
 >>> patterns.stripes().tag
 'pattern'
 """

@@ -57,7 +57,7 @@ def waves(*, wavelength: float = WAVE_LENGTH, amplitude: float = WAVE_AMPLITUDE,
     angle : float, optional
         Rotation in degrees. Defaults to 0.
     color, role, background, **kwargs
-        As for :func:`svgwriter.catalog.patterns.stripes`.
+        As for :func:`svgwriter.library.patterns.stripes`.
 
     Returns
     -------
@@ -99,7 +99,7 @@ def zigzag(*, wavelength: float = WAVE_LENGTH / 2, amplitude: float = WAVE_AMPLI
     angle : float, optional
         Rotation in degrees. Defaults to 0.
     color, role, background, **kwargs
-        As for :func:`svgwriter.catalog.patterns.stripes`.
+        As for :func:`svgwriter.library.patterns.stripes`.
 
     Returns
     -------
@@ -136,7 +136,7 @@ def noise(*, seed: int = 0, density: float = NOISE_DENSITY, cell: float = NOISE_
     size : int, optional
         Side of the repeating tile, in user units. Defaults to 32.
     color, role, background, **kwargs
-        As for :func:`svgwriter.catalog.patterns.stripes`.
+        As for :func:`svgwriter.library.patterns.stripes`.
 
     Returns
     -------
@@ -145,7 +145,7 @@ def noise(*, seed: int = 0, density: float = NOISE_DENSITY, cell: float = NOISE_
 
     See Also
     --------
-    svgwriter.catalog.filters.grain : Noise as a filter over any element.
+    svgwriter.library.filters.grain : Noise as a filter over any element.
 
     Examples
     --------

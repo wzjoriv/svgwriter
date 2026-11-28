@@ -3,7 +3,7 @@
 Every pattern returns a :class:`~svgwriter.Pattern` in user units that goes into the document's
 ``<defs>`` when an element refers to it. Shapes take the theme role ``"pattern"`` (the palette's primary
 color) unless a ``color=`` or another ``role=`` is given; ``background=`` fills behind them. Patterns
-registered with :data:`svgwriter.catalog.preset.pattern` answer here too, and a built-in replaced with
+registered with :data:`svgwriter.library.preset.pattern` answer here too, and a built-in replaced with
 ``replace=True`` answers with the replacement.
 
 Example

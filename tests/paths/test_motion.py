@@ -1,7 +1,7 @@
 import pytest
 
 import svgwriter as svg
-from svgwriter.catalog.paths import star
+from svgwriter.library.paths import star
 
 
 def _opacity_at(doc, time):

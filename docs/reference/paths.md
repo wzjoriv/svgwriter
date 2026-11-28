@@ -72,11 +72,11 @@ effects (see the [Presets guide](../guides/presets.md)).
 ## Preset functions
 
 ```{eval-rst}
-.. automodule:: svgwriter.catalog.preset
+.. automodule:: svgwriter.library.preset
    :members:
 ```
 
 ```{eval-rst}
-.. automodule:: svgwriter.catalog.paths
+.. automodule:: svgwriter.library.paths
    :members:
 ```

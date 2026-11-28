@@ -1,5 +1,5 @@
 """
-Constants for ``svgwriter.catalog.patterns``: default spacings, sizes and sampling.
+Constants for ``svgwriter.library.patterns``: default spacings, sizes and sampling.
 """
 
 from __future__ import annotations

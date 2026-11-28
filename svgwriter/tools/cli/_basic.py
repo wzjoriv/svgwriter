@@ -11,10 +11,10 @@ from typing import Any
 
 import click
 
-from ...catalog import preset
 from ...document import Document
 from ...formats.io.parser import Strictness, parse_file
 from ...formats.io.writer import SerializeOptions
+from ...library import preset
 from ...model.elements.core import Category, Element
 from ._constants import CANVAS_MARGIN, DEFAULT_CANVAS, DRAW_LAYOUTS, SIZE_COLUMN, STROKE_WIDTH
 

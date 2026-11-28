@@ -34,7 +34,7 @@ def font_format(name: str) -> str:
 
     Examples
     --------
-    >>> from svgwriter.catalog.fonts._glyphs import font_format
+    >>> from svgwriter.library.fonts._glyphs import font_format
     >>> font_format("Icons.WOFF2")
     'woff2'
     """
@@ -59,7 +59,7 @@ def char_name(char: str) -> str:
 
     Examples
     --------
-    >>> from svgwriter.catalog.fonts._glyphs import char_name
+    >>> from svgwriter.library.fonts._glyphs import char_name
     >>> char_name("A"), char_name("1")
     ('A', 'uni0031')
     """
@@ -84,7 +84,7 @@ def icon_name(name: str) -> str:
 
     Examples
     --------
-    >>> from svgwriter.catalog.fonts._glyphs import icon_name
+    >>> from svgwriter.library.fonts._glyphs import icon_name
     >>> icon_name("arrow-left"), icon_name("3d")
     ('arrow_left', 'icon_3d')
     """
@@ -128,7 +128,7 @@ def place(name: str, codepoint: int, shape: Element | None, advance: float | Non
     Examples
     --------
     >>> import svgwriter as svg
-    >>> from svgwriter.catalog.fonts._glyphs import place
+    >>> from svgwriter.library.fonts._glyphs import place
     >>> place("I", 73, svg.rect(10, -70, 10, 70), None, 5, 5, 0, 10).outline.bbox
     BBox(x=5.0, y=0.0, width=100.0, height=700.0)
     """
@@ -159,8 +159,8 @@ def base_records(info: FontInfo, names: set[str]) -> list[GlyphRecord]:
 
     Examples
     --------
-    >>> from svgwriter.catalog.fonts._compile import FontInfo
-    >>> from svgwriter.catalog.fonts._glyphs import base_records
+    >>> from svgwriter.library.fonts._compile import FontInfo
+    >>> from svgwriter.library.fonts._glyphs import base_records
     >>> info = FontInfo("X", "Regular", 400, 1000, 800, 200, 700, 500, 0, "1")
     >>> [record.name for record in base_records(info, set())]
     ['.notdef', 'uni0020']
