@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from ..model.elements.core import Element
     from ..model.pathdata.data import PathData
 
-__all__ = ["attach_cursor", "clip_outline", "cursor_of", "element_list", "replace_in_parent", "resolve", "settle_parent"]
+__all__ = ["ancestors", "attach_cursor", "clip_outline", "cursor_of", "element_list", "replace_in_parent", "resolve", "settle_parent"]
 
 
 def resolve(element: Element, value: Any) -> Element | None:
@@ -240,3 +240,21 @@ def settle_parent(element: Element) -> None:
     parent = element.parent
     if parent is not None and parent.arranges_children:
         parent.arrange()  # type: ignore[attr-defined]
+
+
+def ancestors(element: Element) -> list[Element]:
+    """The parents of *element*, nearest first, up to the root.
+
+    Examples
+    --------
+    >>> import svgwriter as svg
+    >>> dot = svg.circle(0, 0, 1)
+    >>> outer = svg.group(svg.group(dot))
+    >>> [node.tag for node in ancestors(dot)]
+    ['g', 'g']
+    """
+    chain, node = [], element.parent
+    while node is not None:
+        chain.append(node)
+        node = node.parent
+    return chain

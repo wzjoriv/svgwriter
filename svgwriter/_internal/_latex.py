@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import tempfile
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from ._constants import (
     DISPLAY_SCALE,
@@ -28,6 +28,7 @@ from ._constants import (
 from ._errors import DiagramToolError
 from ._platform import available, missing
 from ._tools import find_tool, run_tool, svg_document
+from ._tree import ancestors
 
 if TYPE_CHECKING:
     from ..model.elements.structure import Group
@@ -136,17 +137,9 @@ def _ziamath(source: str, display: bool) -> Group | None:
             path.set("fill", element.get("fill") or "black")
             group.add(path)
         elif element.tag in ("rect", "path", "line", "polygon") and not any(
-                ancestor.tag == "symbol" for ancestor in _ancestors(element)):
+                ancestor.tag == "symbol" for ancestor in ancestors(element)):
             group.add(element.clone())
     return group
-
-
-def _ancestors(element: Any) -> list[Any]:
-    chain, node = [], element.parent
-    while node is not None:
-        chain.append(node)
-        node = node.parent
-    return chain
 
 
 def _mathtext(source: str, display: bool) -> Group | None:

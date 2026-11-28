@@ -5,9 +5,10 @@ The LaTeX groups that Office exports write as native equations, placed on the pa
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from ...._internal._constants import LATEX_SIZE, LATEX_SOURCE
+from ...._internal._tree import ancestors
 
 if TYPE_CHECKING:
     from ....document import Document
@@ -77,7 +78,7 @@ def split_equations(document: Document) -> tuple[Document, list[Equation]]:
     copy = Document(root=document.root.clone(), theme=document.theme)
     equations: list[Equation] = []
     for group in [element for element in copy.root.iter() if element.get(LATEX_SOURCE) is not None]:
-        if any(ancestor.get(LATEX_SOURCE) is not None for ancestor in _ancestors(group)):
+        if any(ancestor.get(LATEX_SOURCE) is not None for ancestor in ancestors(group)):
             continue
         source = str(group.get(LATEX_SOURCE))
         box, scale = page_box(copy, group)
@@ -91,11 +92,3 @@ def split_equations(document: Document) -> tuple[Document, list[Equation]]:
                                   float(group.get(LATEX_SIZE) or 0) * scale))
         group.parent.remove(group)
     return copy, equations
-
-
-def _ancestors(element: Any) -> list[Any]:
-    chain, node = [], element.parent
-    while node is not None:
-        chain.append(node)
-        node = node.parent
-    return chain

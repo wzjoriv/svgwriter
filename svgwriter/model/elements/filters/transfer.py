@@ -8,19 +8,12 @@ from collections.abc import Sequence
 from typing import Any
 
 from ...._internal._enums import Keyword
+from ...._internal._numbers import number_values
 from ...._internal._typing import Self
 from .._behavior import CoreAttributes
 from ..core import ContentModel
 
 __all__ = ["FeFunc", "TransferType"]
-
-
-def _numbers(value: Any) -> list[float]:
-    if value is None:
-        return []
-    if isinstance(value, (list, tuple)):
-        return [float(v) for v in value]
-    return [float(v) for v in str(value).replace(",", " ").split()]
 
 
 class TransferType(Keyword):
@@ -192,7 +185,7 @@ class FeFunc(CoreAttributes, content=ContentModel.ELEMENTS):
         1.1
         """
         kind = TransferType(self.get("type", TransferType.IDENTITY))
-        table = _numbers(self.get("tableValues"))
+        table = number_values(self.get("tableValues"))
         if kind is TransferType.LINEAR:
             return float(self.get("slope", 1)) * c + float(self.get("intercept", 0))
         if kind is TransferType.GAMMA:
