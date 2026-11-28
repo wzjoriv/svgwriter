@@ -43,5 +43,5 @@ def test_theme_role_classes_are_scoped_per_drawing():
     dark, light = themed("dark"), themed("light")
     classes = [set(re.findall(r'class="([^"]+)"', markup)) for markup in (dark, light)]
     assert not classes[0] & classes[1]
-    for markup, names in zip((dark, light), classes):
+    for markup, names in zip((dark, light), classes, strict=True):
         assert all(f".{name}" in markup for name in names)
