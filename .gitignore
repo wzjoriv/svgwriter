@@ -67,4 +67,4 @@ examples/*.ico
 examples/*.icns
 examples/*.mmd
 examples/*/[0-9][0-9]_*
-examples/07_formats/formats/
+examples/11_formats/formats/
