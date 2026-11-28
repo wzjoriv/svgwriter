@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="41.7377" viewBox="8.7793 13.7109 117.6992 24.5625" version="1.1">
+<svg xmlns="http://www.w3.org/2000/svg" width="144.3951" height="56.19" viewBox="-9.9583 -9.9583 144.3951 56.19" version="1.1">
   <defs>
-    <linearGradient id="see3d72-linearGradient1" x1="0.5" y1="1" x2="0.5" y2="0">
+    <linearGradient id="s5a6ac4-linearGradient1" x1="0.5" y1="1" x2="0.5" y2="0">
       <stop offset="0" stop-color="#fde68a"/>
       <stop offset="0.1" stop-color="#fdd16c"/>
       <stop offset="0.2" stop-color="#febc4f"/>
@@ -13,15 +13,15 @@
       <stop offset="0.9" stop-color="#972d21"/>
       <stop offset="1" stop-color="#7f1d1d"/>
     </linearGradient>
-    <filter id="see3d72-filter1" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
-      <feGaussianBlur id="see3d72-feGaussianBlur1" in="SourceAlpha" stdDeviation="3" result="feGaussianBlur1-out"/>
-      <feFlood id="see3d72-feFlood1" flood-color="#f97316" flood-opacity="1" result="feFlood1-out"/>
-      <feComposite id="see3d72-feComposite1" in="feFlood1-out" in2="feGaussianBlur1-out" operator="in" result="feComposite1-out"/>
+    <filter id="s5a6ac4-filter1" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="s5a6ac4-feGaussianBlur1" in="SourceAlpha" stdDeviation="3" result="feGaussianBlur1-out"/>
+      <feFlood id="s5a6ac4-feFlood1" flood-color="#f97316" flood-opacity="1" result="feFlood1-out"/>
+      <feComposite id="s5a6ac4-feComposite1" in="feFlood1-out" in2="feGaussianBlur1-out" operator="in" result="feComposite1-out"/>
       <feMerge>
         <feMergeNode in="feComposite1-out"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
-  <text x="10" y="36" font-size="28" fill="url(#see3d72-linearGradient1)" filter="url(#see3d72-filter1)"><tspan visibility="hidden">still </tspan>warm</text>
+  <text x="10" y="36" font-size="28" fill="url(#s5a6ac4-linearGradient1)" filter="url(#s5a6ac4-filter1)"><tspan visibility="hidden">still </tspan>warm</text>
 </svg>
