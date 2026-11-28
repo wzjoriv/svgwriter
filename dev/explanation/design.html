@@ -313,7 +313,7 @@
 <h1>Design<a class="headerlink" href="#design" title="Link to this heading">¶</a></h1>
 <p>The main ideas behind the API:</p>
 <p><strong>Geometry is local; placement is a transform.</strong> SVG coordinates are written as given and never rewritten
-by moves. A single immutable affine matrix, <code class="docutils literal notranslate"><span class="pre">t</span></code>, places each element, and the writer turns it into the
+by moves. A single immutable affine matrix, <code class="docutils literal notranslate"><span class="pre">el.matrix</span></code>, places each element, and the writer turns it into the
 shortest equivalent <code class="docutils literal notranslate"><span class="pre">transform</span></code> text. Rewriting <code class="docutils literal notranslate"><span class="pre">cx</span></code> on every move would not work for paths, groups or
 images and could not express rotation.</p>
 <p><strong>Operators keep two meanings apart.</strong> Element operands are structural (<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">+</span> <span class="pre">b</span></code> groups, <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-</span> <span class="pre">b</span></code> subtracts

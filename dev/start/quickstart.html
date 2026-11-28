@@ -334,7 +334,7 @@ attributes in Python spelling: <code class="docutils literal notranslate"><span 
 <h2>Move things<a class="headerlink" href="#move-things" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sun</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>          <span class="c1"># move</span>
 <span class="n">sun</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>                  <span class="c1"># about its centre (the anchor)</span>
-<span class="n">hill</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">)</span>                 <span class="c1"># degrees, clockwise on screen</span>
+<span class="n">hill</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">)</span>                 <span class="c1"># 5 degrees counter-clockwise (positive turns clockwise on screen)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">sun</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>             <span class="c1"># where its centre is now</span>
 </pre></div>
 </div>
@@ -344,7 +344,7 @@ attributes in Python spelling: <code class="docutils literal notranslate"><span 
 </figcaption>
 </figure>
 <p>Geometry attributes (<code class="docutils literal notranslate"><span class="pre">cx</span></code>, <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">d</span></code>, …) stay as written; placement goes through the element’s
-transform <code class="docutils literal notranslate"><span class="pre">t</span></code>. See <a class="reference internal" href="../guides/geometry.html"><span class="doc">Geometry and transforms</span></a>.</p>
+<code class="docutils literal notranslate"><span class="pre">matrix</span></code> (its transform). See <a class="reference internal" href="../guides/geometry.html"><span class="doc">Geometry and transforms</span></a>.</p>
 </section>
 <section id="combine-and-measure">
 <h2>Combine and measure<a class="headerlink" href="#combine-and-measure" title="Link to this heading">¶</a></h2>
@@ -392,9 +392,21 @@ the command line build it:</p>
 <p>Named sizes work in any document: <code class="docutils literal notranslate"><span class="pre">svg.Document(size=&quot;a4&quot;)</span></code> draws in millimetres. See
 <a class="reference internal" href="../guides/projects.html"><span class="doc">Projects</span></a>.</p>
 </section>
-<section id="more-examples">
-<h2>More examples<a class="headerlink" href="#more-examples" title="Link to this heading">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">examples/</span></code> folder of the repository is a numbered learning path of runnable scripts (<code class="docutils literal notranslate"><span class="pre">examples/01_first_drawing/</span></code> to <code class="docutils literal notranslate"><span class="pre">examples/27_batches/</span></code>), each a folder with the script and a Jupyter notebook beside it that shows the results as pictures.</p>
+<section id="seeing-your-drawing">
+<h2>Seeing your drawing<a class="headerlink" href="#seeing-your-drawing" title="Link to this heading">¶</a></h2>
+<p>In a Jupyter notebook, a document on the last line of a cell shows as a picture, and <code class="docutils literal notranslate"><span class="pre">svg.explore(fn)</span></code> adds
+sliders and pickers. In a plain script, <code class="docutils literal notranslate"><span class="pre">doc.save(&quot;hello.svg&quot;)</span></code> (or <code class="docutils literal notranslate"><span class="pre">.png</span></code>, <code class="docutils literal notranslate"><span class="pre">.pdf</span></code>) writes the file next to
+the script; open it in a browser or image viewer. In a project, <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">preview</span></code> shows it live.</p>
+</section>
+<section id="next-steps">
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The <a class="reference external" href="https://github.com/wzjoriv/svgwriter/tree/main/examples">examples</a>: a 27-step learning path, from a
+first drawing to animation, PowerPoint and fonts, each a script with a notebook of pictures.</p></li>
+<li><p><a class="reference internal" href="../guides/geometry.html"><span class="doc">Geometry and transforms</span></a> to move, rotate and align, <a class="reference internal" href="../guides/text.html"><span class="doc">Text</span></a> for type,
+<a class="reference internal" href="../guides/themes.html"><span class="doc">Themes</span></a> for colours and roles, <a class="reference internal" href="../guides/animation.html"><span class="doc">Animation</span></a> to make things move, and
+<a class="reference internal" href="../guides/export-import.html"><span class="doc">Export and import</span></a> for every file format.</p></li>
+</ul>
 </section>
 </section>
 
@@ -460,7 +472,8 @@ the command line build it:</p>
 <li><a class="reference internal" href="#render-and-export">Render and export</a></li>
 <li><a class="reference internal" href="#read-it-back">Read it back</a></li>
 <li><a class="reference internal" href="#start-a-project">Start a project</a></li>
-<li><a class="reference internal" href="#more-examples">More examples</a></li>
+<li><a class="reference internal" href="#seeing-your-drawing">Seeing your drawing</a></li>
+<li><a class="reference internal" href="#next-steps">Next steps</a></li>
 </ul>
 </li>
 </ul>

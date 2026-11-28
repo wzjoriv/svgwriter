@@ -380,6 +380,7 @@ preview always shows the files as they are now.</p>
 <span class="n">directory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output"</span>
 <span class="n">png</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">dpi</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">150</span><span class="w"> </span><span class="p">}</span><span class="w">         </span><span class="c1"># options for one format, passed to its exporter</span>
 <span class="n">gif</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">fps</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="n">scale</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="p">}</span>
+<span class="n">pptx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">deck</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">}</span><span class="w">      </span><span class="c1"># every scene as one slide of a single deck</span>
 </pre></div>
 </div>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -422,6 +423,10 @@ preview always shows the files as they are now.</p>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">outputs.&lt;format&gt;</span></code></p></td>
 <td><p>none</p></td>
 <td><p>Exporter options for that format, such as <code class="docutils literal notranslate"><span class="pre">png</span> <span class="pre">=</span> <span class="pre">{</span> <span class="pre">scale</span> <span class="pre">=</span> <span class="pre">2</span> <span class="pre">}</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">outputs.&lt;format&gt;.deck</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
+<td><p>For formats with several pages (PowerPoint, PDF): write every scene of the project into one file, one page or slide each, instead of one file per scene</p></td>
 </tr>
 </tbody>
 </table>

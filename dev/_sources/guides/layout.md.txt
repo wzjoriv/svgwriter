@@ -126,5 +126,5 @@ A layout writes `<g transform="...">` groups and sized rects: no CSS layout and 
 back with `svg.parse` or `Document.open`, the groups are plain groups. PDF, PowerPoint, PNG and every
 other format draw the same positions as the SVG.
 
-`group.arrange()` places the children at once, for code that reads a child's `t` directly. A clone of a
+`group.arrange()` places the children at once, for code that reads a child's `matrix` directly. A clone of a
 layout is a live layout too: changing its gap re-lays out the copy only.

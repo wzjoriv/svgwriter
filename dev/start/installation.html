@@ -318,10 +318,9 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 </pre></div>
 </div>
-<p>svgwriter needs Python 3.10 or newer. It installs <a class="reference external" href="https://kyamagu.github.io/skia-python/">skia-python</a>
-(geometry, text outlines and rendering), numpy (pixels, points and colors as arrays), uharfbuzz (text
-shaping), tomlkit (theme files), click (the command line) and
-<a class="reference external" href="https://wzjoriv.github.io/python-lcms2/">python-lcms2</a> (ICC colour profiles through LittleCMS).
+<p>svgwriter needs Python 3.10 or newer; everything else it needs installs with it. (The core
+dependencies are skia-python for drawing and text, numpy, uharfbuzz for text shaping, tomlkit, click and
+python-lcms2 for colour profiles.)
 Nothing else is needed at runtime.</p>
 <p>Optional extras:</p>
 <ul>
@@ -331,6 +330,12 @@ Nothing else is needed at runtime.</p>
 </pre></div>
 </div>
 <p>Without it, <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">new</span></code> asks for the preset with a numbered menu.</p>
+</li>
+<li><p><strong>office</strong> for PowerPoint, Word and Excel files (read and write) through python-pptx, python-docx and
+openpyxl:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"pysvgwriter[office]"</span>
+</pre></div>
+</div>
 </li>
 <li><p><strong>widget</strong> for <a class="reference internal" href="../guides/widgets.html"><span class="doc">notebook panels</span></a> (<code class="docutils literal notranslate"><span class="pre">svg.explore</span></code>) through ipywidgets:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"pysvgwriter[widget]"</span>
