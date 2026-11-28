@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bdbc586f" />
     
     
 
@@ -339,6 +339,9 @@ root, so the file reads the same in Inkscape after svgwriter has edited it.</p>
 <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"drawing.svg"</span><span class="p">)</span>                <span class="c1"># still an Inkscape drawing</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-inkscape-0-0.svg" />
+</figure>
 <section id="layers">
 <h2>Layers<a class="headerlink" href="#layers" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">doc.layer(label)</span></code> returns the layer with that name at the insertion point, adding it when it is missing.
@@ -357,6 +360,9 @@ layer and sublayer by label, including those read from a file.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">inkscape</span><span class="o">.</span><span class="n">is_layer</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">"Shapes"</span><span class="p">]))</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-inkscape-1-0.svg" />
+</figure>
 <p>A layer is a <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span></code> with <code class="docutils literal notranslate"><span class="pre">inkscape:groupmode=&quot;layer&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">inkscape:label</span></code>, so browsers and every
 exporter treat it as a plain group.</p>
 </section>
@@ -373,6 +379,9 @@ in code. A label shared by several elements raises <code class="docutils literal
 <span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="s2">"Sun"</span><span class="p">]</span> <span class="ow">is</span> <span class="n">sun</span><span class="p">,</span> <span class="s2">"Sun"</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-inkscape-2-0.svg" />
+</figure>
 </section>
 <section id="rotation-centres">
 <h2>Rotation centres<a class="headerlink" href="#rotation-centres" title="Link to this heading">¶</a></h2>
@@ -390,6 +399,9 @@ up; svgwriter converts both ways.</p>
 <span class="n">arm</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>                                          <span class="c1"># turns around the same point</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-inkscape-3-0.svg" />
+</figure>
 </section>
 <section id="stars-polygons-and-arcs">
 <h2>Stars, polygons and arcs<a class="headerlink" href="#stars-polygons-and-arcs" title="Link to this heading">¶</a></h2>
@@ -412,6 +424,9 @@ degrees.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">star</span><span class="o">.</span><span class="n">sides</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">star</span><span class="o">.</span><span class="n">angle</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">inkscape</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">hexagon</span><span class="p">)</span><span class="o">.</span><span class="n">flatsided</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-inkscape-4-0.svg" />
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">svg.paths.star(...,</span> <span class="pre">inkscape=True)</span></code> and <code class="docutils literal notranslate"><span class="pre">svg.paths.regular_polygon(...,</span> <span class="pre">inkscape=True)</span></code> build these
 paths; <code class="docutils literal notranslate"><span class="pre">corner_radius</span></code> does not combine with them (use <code class="docutils literal notranslate"><span class="pre">rounded</span></code> instead).</p>
 </section>
@@ -430,6 +445,9 @@ it when either object moves. <code class="docutils literal notranslate"><span cl
 <span class="n">wire</span><span class="o">.</span><span class="n">connects</span> <span class="o">=</span> <span class="kc">None</span>                     <span class="c1"># a plain path again</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-inkscape-5-0.svg" />
+</figure>
 </section>
 <section id="guides">
 <h2>Guides<a class="headerlink" href="#guides" title="Link to this heading">¶</a></h2>
@@ -445,6 +463,9 @@ own coordinates (y down), and assigning a list replaces them. <code class="docut
 <span class="nb">print</span><span class="p">([(</span><span class="n">g</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">guides</span><span class="p">])</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-inkscape-6-0.svg" />
+</figure>
 </section>
 <section id="export-hints">
 <h2>Export hints<a class="headerlink" href="#export-hints" title="Link to this heading">¶</a></h2>
@@ -460,6 +481,9 @@ given.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">export_hints</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-inkscape-7-0.svg" />
+</figure>
 </section>
 <section id="kept-as-they-are">
 <h2>Kept as they are<a class="headerlink" href="#kept-as-they-are" title="Link to this heading">¶</a></h2>

@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bdbc586f" />
     
     
 
@@ -326,6 +326,9 @@ affine <code class="xref py py-class docutils literal notranslate"><span class="
 <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>             <span class="c1"># &lt;circle cx="50" cy="50" r="10" transform="..."/&gt;</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-geometry-0-0.svg" />
+</figure>
 </section>
 <section id="the-anchor">
 <h2>The anchor<a class="headerlink" href="#the-anchor" title="Link to this heading">¶</a></h2>
@@ -339,6 +342,9 @@ is the centre of the element’s bounding box and follows geometry edits; set it
 <span class="n">r</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="n">about</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>     <span class="c1"># or pass a pivot for one call</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-geometry-1-0.svg" />
+</figure>
 </section>
 <section id="parent-frame-or-local-frame">
 <h2>Parent frame or local frame<a class="headerlink" href="#parent-frame-or-local-frame" title="Link to this heading">¶</a></h2>
@@ -349,6 +355,11 @@ screen whatever the current rotation. <code class="docutils literal notranslate"
 <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-geometry-2-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-geometry-2-1.svg" />
+</figcaption>
+</figure>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -399,6 +410,13 @@ screen whatever the current rotation. <code class="docutils literal notranslate"
 <span class="n">dot</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>                   <span class="c1"># in place</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-geometry-3-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-geometry-3-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-geometry-3-2.svg" />
+<img alt="What the code above draws" src="../_images/guides-geometry-3-3.svg" />
+</figcaption>
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">*</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> never bake coordinates. To fold the transform into the geometry, convert:
 <code class="docutils literal notranslate"><span class="pre">el.to_path()</span></code> returns a <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> whose <code class="docutils literal notranslate"><span class="pre">d</span></code> already includes <code class="docutils literal notranslate"><span class="pre">t</span></code>.</p>
 <p>Things to keep in mind:</p>
@@ -420,6 +438,9 @@ element, numbers and offsets transform, so <code class="docutils literal notrans
 <span class="nb">print</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">exact_bbox</span><span class="p">())</span>     <span class="c1"># tight box of the transformed outline</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-geometry-4-0.svg" />
+</figure>
 </section>
 <section id="placing-and-aligning">
 <h2>Placing and aligning<a class="headerlink" href="#placing-and-aligning" title="Link to this heading">¶</a></h2>
@@ -433,6 +454,13 @@ same names to move by their bounds:</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">note</span><span class="o">.</span><span class="n">bounds</span><span class="p">()</span><span class="o">.</span><span class="n">top</span><span class="p">,</span> <span class="n">badge</span><span class="o">.</span><span class="n">bounds</span><span class="p">()</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-geometry-5-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-geometry-5-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-geometry-5-2.svg" />
+<img alt="What the code above draws" src="../_images/guides-geometry-5-3.svg" />
+</figcaption>
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">place(x,</span> <span class="pre">y,</span> <span class="pre">at=...)</span></code> moves a named point onto a coordinate; <code class="docutils literal notranslate"><span class="pre">align(target,</span> <span class="pre">at,</span> <span class="pre">to=...)</span></code> moves it onto a
 point of another element, box or <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code>, so <code class="docutils literal notranslate"><span class="pre">a.align(b,</span> <span class="pre">&quot;top&quot;,</span> <span class="pre">to=&quot;bottom&quot;)</span></code> stacks <code class="docutils literal notranslate"><span class="pre">a</span></code> under <code class="docutils literal notranslate"><span class="pre">b</span></code>.</p>
 <p>Elements also have the box’s edges and points as attributes. Reading one gives the edge (a number) or
@@ -446,6 +474,12 @@ point of the element’s bounds; assigning one moves the element so that edge or
 <span class="nb">print</span><span class="p">(</span><span class="n">heading</span><span class="o">.</span><span class="n">top_left</span><span class="p">,</span> <span class="n">pin</span><span class="o">.</span><span class="n">center</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-geometry-6-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-geometry-6-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-geometry-6-2.svg" />
+</figcaption>
+</figure>
 </section>
 <section id="units-and-angles">
 <h2>Units and angles<a class="headerlink" href="#units-and-angles" title="Link to this heading">¶</a></h2>
@@ -458,6 +492,11 @@ the result keeps the left side’s unit:</p>
 <span class="n">spin</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">@</span> <span class="n">svg</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>  <span class="c1"># angles: deg, rad, grad, turn</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-geometry-7-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-geometry-7-1.svg" />
+</figcaption>
+</figure>
 <p>A document sized in a physical unit with a matching <code class="docutils literal notranslate"><span class="pre">viewBox</span></code>, such as <code class="docutils literal notranslate"><span class="pre">svg.Document(size=&quot;a4&quot;)</span></code> or
 the page above, counts its user units in that unit. Lengths you give there mean the same thing
 everywhere: <code class="docutils literal notranslate"><span class="pre">rect(width=svg.mm(20))</span></code>, <code class="docutils literal notranslate"><span class="pre">stroke_width=svg.pt(1)</span></code>, layout gaps and path tools such as
@@ -500,6 +539,9 @@ accepts the dimension it needs, so mistakes surface where the value is used:</p>
 <span class="n">tip</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">@</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>               <span class="c1"># a Point: 10mm at 30 degrees from +x</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-geometry-9-0.svg" />
+</figure>
 <p>Angles have helpers for direction work. Positive angles turn from +x towards +y, clockwise on screen;
 <code class="docutils literal notranslate"><span class="pre">ccw=True</span></code> asks for the counter-clockwise way round:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">heading</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">350</span><span class="p">)</span>
@@ -522,6 +564,9 @@ value each, like numpy broadcasting. Colors can be names, one color, or an <code
 <span class="n">cloud</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="o">*</span><span class="n">dots</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-geometry-11-0.svg" />
+</figure>
 </section>
 <section id="matrices-and-numpy">
 <h2>Matrices and numpy<a class="headerlink" href="#matrices-and-numpy" title="Link to this heading">¶</a></h2>

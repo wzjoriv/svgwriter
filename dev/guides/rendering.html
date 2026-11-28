@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bdbc586f" />
     
     
 
@@ -324,11 +324,17 @@
 <span class="n">png</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">render_png</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-rendering-0-0.svg" />
+</figure>
 <p>Single elements render on their own, over their stroke-inclusive bounds:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">star</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"gold"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"black"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">star</span><span class="o">.</span><span class="n">rasterize</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-rendering-1-0.svg" />
+</figure>
 <section id="what-the-renderer-handles">
 <h2>What the renderer handles<a class="headerlink" href="#what-the-renderer-handles" title="Link to this heading">¶</a></h2>
 <p>skia’s SVG renderer does not load images, draw text or apply <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> sheets. svgwriter renders a working

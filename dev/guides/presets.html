@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bdbc586f" />
     
     
 
@@ -359,6 +359,9 @@ plural catalogues hold the ready-made ones, and <code class="docutils literal no
 <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">patterns</span><span class="o">.</span><span class="n">noise</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="mf">0.4</span><span class="p">))</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-presets-0-0.svg" />
+</figure>
 <p><img alt="Every built-in pattern" src="../_images/pattern_catalogue.png" /></p>
 <p>Patterns are in user units, so stripes keep their spacing on any shape. Without <code class="docutils literal notranslate"><span class="pre">color=</span></code> the shapes take
 the theme role <code class="docutils literal notranslate"><span class="pre">pattern</span></code> (the palette’s primary color) and follow the document theme; <code class="docutils literal notranslate"><span class="pre">role=</span></code> picks
@@ -389,6 +392,9 @@ defaults come from the current theme when the gradient is built (<code class="do
 <span class="n">blobs</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">goo</span><span class="p">()</span>                 <span class="c1"># the circles melt together</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-presets-2-0.svg" />
+</figure>
 <p><img alt="Every built-in filter" src="../_images/filter_catalogue.png" /></p>
 <p>Filter regions are enlarged so blurs and shadows are not clipped, and colors are computed in sRGB.
 Shadows and outlines take their <code class="docutils literal notranslate"><span class="pre">flood-color</span></code> from the theme roles <code class="docutils literal notranslate"><span class="pre">filter.shadow</span></code> and <code class="docutils literal notranslate"><span class="pre">filter.ink</span></code> unless
@@ -402,6 +408,9 @@ you pass a color, so they restyle with the document theme. <code class="docutils
          <span class="n">marker_start</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">dot</span><span class="p">(),</span> <span class="n">marker_mid</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">diamond</span><span class="p">(),</span> <span class="n">marker_end</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">arrow</span><span class="p">())</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-presets-3-0.svg" />
+</figure>
 <p><img alt="Every built-in marker" src="../_images/marker_catalogue.png" /></p>
 <p>Markers are sized in stroke widths, so a thicker line gets a larger head, and turn with the line
 (<code class="docutils literal notranslate"><span class="pre">orient=&quot;auto&quot;</span></code>). They take the theme role <code class="docutils literal notranslate"><span class="pre">arrow.head</span></code> unless you pass <code class="docutils literal notranslate"><span class="pre">color=</span></code>.</p>
@@ -415,6 +424,9 @@ you pass a color, so they restyle with the document theme. <code class="docutils
 <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"sparks.gif"</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-presets-4-0.svg" />
+</figure>
 <p><img alt="Smoke, metal, wind, fire and snow on one sentence" src="../_images/effects1.gif" /></p>
 <p><code class="docutils literal notranslate"><span class="pre">fire</span></code>, <code class="docutils literal notranslate"><span class="pre">ice</span></code>, <code class="docutils literal notranslate"><span class="pre">smoke</span></code>, <code class="docutils literal notranslate"><span class="pre">metal</span></code>, <code class="docutils literal notranslate"><span class="pre">wind</span></code>, <code class="docutils literal notranslate"><span class="pre">snow</span></code>, <code class="docutils literal notranslate"><span class="pre">neon</span></code> and <code class="docutils literal notranslate"><span class="pre">glitch</span></code> each set a gradient or color, a
 filter and a small SMIL animation (<code class="docutils literal notranslate"><span class="pre">animate=False</span></code> leaves it still), on any element: a shape, group, image
@@ -458,6 +470,11 @@ The wrapper checks the return type, so a mistake fails where it is made.</p>
 <span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">effect</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"ember"</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-presets-5-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-presets-5-1.svg" />
+</figcaption>
+</figure>
 <p>An effect receives the element (for a range, the copy holding the range’s characters) and styles it in
 place; registering it makes it work on every element and on ranges. An effect that only suits some
 elements raises <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> for the others. <code class="docutils literal notranslate"><span class="pre">svg.preset.filter.list()</span></code> lists a catalogue and <code class="docutils literal notranslate"><span class="pre">svg.preset.marker.get(&quot;arrow&quot;)</span></code> looks one up

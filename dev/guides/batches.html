@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bdbc586f" />
     
     
 
@@ -326,6 +326,9 @@ keeps them as columns, so building, moving, recolouring and writing them are a f
 <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dots</span><span class="p">),</span> <span class="n">dots</span><span class="o">.</span><span class="n">compact</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-batches-0-0.svg" />
+</figure>
 <p>The output is ordinary SVG: one <code class="docutils literal notranslate"><span class="pre">&lt;circle&gt;</span></code> per point inside a <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span></code>, the same markup a loop of
 <code class="docutils literal notranslate"><span class="pre">doc.circle(...)</span></code> calls writes, so browsers, editors and every exporter see real shapes.</p>
 <section id="making-batches">
@@ -376,6 +379,9 @@ with one value per item:</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">bars</span><span class="o">.</span><span class="n">item_markup</span><span class="p">()[</span><span class="mi">2</span><span class="p">])</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-batches-1-0.svg" />
+</figure>
 <p>A value given once goes on the batch’s <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span></code> when the property is inherited (<code class="docutils literal notranslate"><span class="pre">fill</span></code>, <code class="docutils literal notranslate"><span class="pre">stroke</span></code>,
 <code class="docutils literal notranslate"><span class="pre">stroke_width</span></code>, <code class="docutils literal notranslate"><span class="pre">font_size</span></code>…) and on every item when it is not (<code class="docutils literal notranslate"><span class="pre">opacity</span></code>), so a shared opacity still
 makes overlapping dots darker, as it would for separate shapes.</p>
@@ -396,6 +402,9 @@ from a built-in perceptual map (<code class="docutils literal notranslate"><span
 <span class="nb">print</span><span class="p">(</span><span class="n">swatches</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">"fill"</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-batches-2-0.svg" />
+</figure>
 </section>
 <section id="transforming-and-restyling">
 <h2>Transforming and restyling<a class="headerlink" href="#transforming-and-restyling" title="Link to this heading">¶</a></h2>
@@ -417,6 +426,11 @@ matrices).</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">bounds</span><span class="p">())</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-batches-3-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-batches-3-1.svg" />
+</figcaption>
+</figure>
 <p>The batch’s own <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span></code> transform is <code class="docutils literal notranslate"><span class="pre">batch.matrix</span></code>, and roles style the whole batch: <code class="docutils literal notranslate"><span class="pre">batch.as_role(&quot;dot&quot;)</span></code>.</p>
 </section>
 <section id="items-expanding-and-animation">
@@ -432,6 +446,9 @@ other. Batch methods keep working afterwards, item by item.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">dots</span><span class="o">.</span><span class="n">compact</span><span class="p">,</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fill"</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">dots</span><span class="p">])</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-batches-4-0.svg" />
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">batch.animate</span></code> runs any animation preset on every item. Array arguments with one value per item go to
 their own item, and <code class="docutils literal notranslate"><span class="pre">stagger</span></code> starts each item that many seconds after the previous one:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -443,6 +460,9 @@ their own item, and <code class="docutils literal notranslate"><span class="pre"
 <span class="nb">print</span><span class="p">([</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"opacity"</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span><span class="o">.</span><span class="n">root</span><span class="p">[</span><span class="mi">0</span><span class="p">]][:</span><span class="mi">4</span><span class="p">])</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-batches-5-0.svg" />
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">svg.interpolate(a,</span> <span class="pre">b,</span> <span class="pre">t)</span></code> blends two batches of the same size: compact batches column by column
 (numbers, colours, per-item transforms the short way round), others item by item.</p>
 </section>

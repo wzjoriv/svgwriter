@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bdbc586f" />
     
     
 
@@ -427,6 +427,9 @@ before <code class="docutils literal notranslate"><span class="pre">icc-color</s
 <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">ink</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-colors-and-images-5-0.svg" />
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">icc-color</span></code> works in <code class="docutils literal notranslate"><span class="pre">fill</span></code>, <code class="docutils literal notranslate"><span class="pre">stroke</span></code>, <code class="docutils literal notranslate"><span class="pre">stop-color</span></code>, <code class="docutils literal notranslate"><span class="pre">flood-color</span></code> and <code class="docutils literal notranslate"><span class="pre">lighting-color</span></code>. The profile’s
 <code class="docutils literal notranslate"><span class="pre">xlink:href</span></code> may be a path (relative to the document), a <code class="docutils literal notranslate"><span class="pre">file:</span></code> URL or a <code class="docutils literal notranslate"><span class="pre">data:</span></code> URI. Images use the
 <code class="docutils literal notranslate"><span class="pre">color-profile</span></code> property: <code class="docutils literal notranslate"><span class="pre">auto</span></code> (the default) applies the profile embedded in a PNG (<code class="docutils literal notranslate"><span class="pre">iCCP</span></code>) or JPEG
@@ -434,6 +437,9 @@ before <code class="docutils literal notranslate"><span class="pre">icc-color</s
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"scan.png"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">color_profile</span><span class="o">=</span><span class="s2">"print"</span><span class="p">))</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-colors-and-images-6-0.svg" />
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">Pixels.decode(data,</span> <span class="pre">profile=...,</span> <span class="pre">intent=...)</span></code> does the same for raw image bytes.</p>
 </section>
 <section id="images-are-numpy-arrays">
@@ -451,6 +457,9 @@ an <code class="docutils literal notranslate"><span class="pre">(H,</span> <span
 <span class="n">data</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"png"</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-colors-and-images-7-0.svg" />
+</figure>
 <p>uint8 arrays are divided by 255. <code class="docutils literal notranslate"><span class="pre">Image.open(&quot;photo.jpg&quot;)</span></code> decodes a file; <code class="docutils literal notranslate"><span class="pre">Image(&quot;photo.jpg&quot;,</span> <span class="pre">...)</span></code>
 links to it instead (linked local files are drawn when rendering). Images are written as PNG <code class="docutils literal notranslate"><span class="pre">data:</span></code> URIs.</p>
 <p>Any element can become an image: <code class="docutils literal notranslate"><span class="pre">el.to_image(scale=2)</span></code> rasterizes it and places the result where the
@@ -466,6 +475,12 @@ element was.</p>
 <span class="n">plain</span> <span class="o">=</span> <span class="n">badge</span><span class="o">.</span><span class="n">expand_pattern</span><span class="p">()</span>                <span class="c1"># tiles clipped to the circle: plain vector graphics</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-colors-and-images-8-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-colors-and-images-8-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-colors-and-images-8-2.svg" />
+</figcaption>
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">expand_pattern()</span></code> is for targets without pattern support (plotters, cutters, some editors);
 <code class="docutils literal notranslate"><span class="pre">pattern.tiles(area)</span></code> gives the tile copies on their own.</p>
 </section>
@@ -485,6 +500,11 @@ keeps whatever is not shared. <code class="docutils literal notranslate"><span c
 <span class="nb">print</span><span class="p">(</span><span class="n">card</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">svg</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="n">badge</span><span class="o">.</span><span class="n">rgba</span><span class="p">())</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-colors-and-images-9-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-colors-and-images-9-1.svg" />
+</figcaption>
+</figure>
 <p>Two pixel grids combine pixel for pixel, so their shapes must broadcast. An element or a whole document
 on the other side is first drawn onto the pixels’ own grid (one user unit per pixel, origin at the
 top-left pixel); <code class="docutils literal notranslate"><span class="pre">pixels.on_grid(element)</span></code> gives that rendering by itself. <code class="docutils literal notranslate"><span class="pre">svg.Image(pixels.rgba())</span></code>

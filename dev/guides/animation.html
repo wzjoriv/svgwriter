@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bdbc586f" />
     
     
 
@@ -323,6 +323,9 @@
 <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"ball.svg"</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-0-0.svg" />
+</figure>
 </section>
 <section id="presets">
 <h2>Presets<a class="headerlink" href="#presets" title="Link to this heading">¶</a></h2>
@@ -331,6 +334,9 @@
 <span class="n">logo</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">fade_in</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">spin</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-1-0.svg" />
+</figure>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -387,10 +393,18 @@ transform and preset pivots there; an unknown name raises <code class="docutils 
 <span class="n">needle</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">spin</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="s2">"indefinite"</span><span class="p">)</span>    <span class="c1"># and so does the animation</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-2-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-2-1.svg" />
+</figcaption>
+</figure>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">card</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"slateblue"</span><span class="p">)</span>
 <span class="n">card</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">move_by</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-3-0.svg" />
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">create</span></code>, <code class="docutils literal notranslate"><span class="pre">uncreate</span></code> and <code class="docutils literal notranslate"><span class="pre">write</span></code> animate <code class="docutils literal notranslate"><span class="pre">stroke-dasharray</span></code>/<code class="docutils literal notranslate"><span class="pre">stroke-dashoffset</span></code> and <code class="docutils literal notranslate"><span class="pre">fill-opacity</span></code>.
 A shape without a stroke is drawn with its fill color, every contour of a shape draws at once, and
 <code class="docutils literal notranslate"><span class="pre">write</span></code> starts each character a little before the previous one finishes:</p>
@@ -400,6 +414,11 @@ A shape without a stroke is drawn with its fill color, every contour of a shape 
 <span class="n">badge</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">uncreate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-4-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-4-1.svg" />
+</figcaption>
+</figure>
 </section>
 <section id="started-by-a-click-or-hover">
 <h2>Started by a click or hover<a class="headerlink" href="#started-by-a-click-or-hover" title="Link to this heading">¶</a></h2>
@@ -413,6 +432,9 @@ A shape without a stroke is drawn with its fill color, every contour of a shape 
 <span class="n">lamp</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">"hover"</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">fade_in</span><span class="p">(</span><span class="mf">0.4</span><span class="p">)</span>              <span class="c1"># the lamp lights up when the pointer reaches the key</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-5-0.svg" />
+</figure>
 <p>No script is involved: the file stays plain SVG 1.1 and plays in browsers and SVG viewers. PowerPoint
 plays click, press and release starts as triggers on the clicked shape (and reading the deck back gives
 click starts again); it has no hover trigger. Still images, PDF, video and other formats without events
@@ -422,6 +444,9 @@ properties; it is written as a CSS <code class="docutils literal notranslate"><s
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">key</span><span class="o">.</span><span class="n">on_hover</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">"darkcyan"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span> <span class="n">stroke_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-6-0.svg" />
+</figure>
 </section>
 <section id="presets-of-your-own">
 <h2>Presets of your own<a class="headerlink" href="#presets-of-your-own" title="Link to this heading">¶</a></h2>
@@ -447,6 +472,11 @@ default, and it returns the motion so calls chain:</p>
 <span class="n">svg</span><span class="o">.</span><span class="n">preset</span><span class="o">.</span><span class="n">animation</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="s2">"bob"</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-7-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-7-1.svg" />
+</figcaption>
+</figure>
 <p>The shape is checked when the function is decorated, so a mistake fails at once with a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>
 showing the expected signature. Returning None is accepted too; <code class="docutils literal notranslate"><span class="pre">apply</span></code> returns the motion either way.
 <code class="docutils literal notranslate"><span class="pre">&#64;svg.preset.animation(name=&quot;hop&quot;)</span></code> registers under another name. A taken name raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> naming
@@ -503,6 +533,9 @@ timing curve for the whole animation. The named curves are the standard cubic b�
 <span class="n">box</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">fade_in</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ease</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>         <span class="c1"># a custom bézier</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-8-0.svg" />
+</figure>
 <p>Any Python function from time to progress works too, overshoot included:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">back_out</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
     <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="mf">2.7</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">+</span> <span class="mf">1.7</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
@@ -510,6 +543,9 @@ timing curve for the whole animation. The named curves are the standard cubic b�
 <span class="n">box</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">slide_in</span><span class="p">(</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">ease</span><span class="o">=</span><span class="n">back_out</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-9-0.svg" />
+</figure>
 <p>The curve covers the whole timeline, so a preset with several <code class="docutils literal notranslate"><span class="pre">values</span></code> (<code class="docutils literal notranslate"><span class="pre">bounce</span></code>, <code class="docutils literal notranslate"><span class="pre">shake</span></code>, <code class="docutils literal notranslate"><span class="pre">pulse</span></code>,
 <code class="docutils literal notranslate"><span class="pre">color_cycle</span></code>) moves through all of them along the one curve. Béziers are written as SMIL
 <code class="docutils literal notranslate"><span class="pre">calcMode=&quot;spline&quot;</span></code> with exact <code class="docutils literal notranslate"><span class="pre">keySplines</span></code> (one piece of the curve per value interval), steps as
@@ -526,6 +562,11 @@ spline with <code class="docutils literal notranslate"><span class="pre">keySpli
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">frame</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>          <span class="c1"># the ball halfway along</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-10-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-10-1.svg" />
+</figcaption>
+</figure>
 <p>Saving keeps the animation where the format can play it: <code class="docutils literal notranslate"><span class="pre">.svg</span></code> and <code class="docutils literal notranslate"><span class="pre">.svgz</span></code> keep the SMIL elements,
 and <code class="docutils literal notranslate"><span class="pre">.gif</span></code> becomes an animated GIF of the whole animation (<code class="docutils literal notranslate"><span class="pre">fps=</span></code>, <code class="docutils literal notranslate"><span class="pre">duration=</span></code>, <code class="docutils literal notranslate"><span class="pre">loop=</span></code>; no ffmpeg
 needed); <code class="docutils literal notranslate"><span class="pre">.png</span></code> and <code class="docutils literal notranslate"><span class="pre">.webp</span></code> become APNG and animated WebP with <code class="docutils literal notranslate"><span class="pre">animate=True</span></code>. Other still formats show one moment, chosen with <code class="docutils literal notranslate"><span class="pre">seconds=</span></code>:
@@ -560,6 +601,9 @@ and <code class="docutils literal notranslate"><span class="pre">scene.at(t)</sp
 <span class="n">frame</span> <span class="o">=</span> <span class="n">Drift</span><span class="p">()</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>                   <span class="c1"># cx 60 from Python, r 20 from SMIL, fully faded in</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-11-0.svg" />
+</figure>
 </section>
 <section id="video-through-ffmpeg">
 <h2>Video through ffmpeg<a class="headerlink" href="#video-through-ffmpeg" title="Link to this heading">¶</a></h2>
@@ -600,6 +644,9 @@ the drawing play as well, so a scene can use presets, Python, or both.</p>
 <span class="c1"># pulse.save()                   # Pulse.mp4; or save("pulse.gif"), save("pulse.png") for numbered frames</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-13-0.svg" />
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">build</span></code> receives the document rather than returning one, so the size is declared once, as class
 attributes, and <code class="docutils literal notranslate"><span class="pre">build</span></code> holds only drawing code. It runs when the scene is created; keep the elements
 that <code class="docutils literal notranslate"><span class="pre">update</span></code> changes on <code class="docutils literal notranslate"><span class="pre">self</span></code>. <code class="docutils literal notranslate"><span class="pre">update</span></code> gets absolute time, so frames can be drawn in any order. In a
@@ -671,6 +718,11 @@ automatically (no ffmpeg needed):</p>
 <span class="c1"># garden.save("garden.pptx")              # slide effects where PowerPoint has them</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-15-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-15-1.svg" />
+</figcaption>
+</figure>
 <p>The scene is sampled <code class="docutils literal notranslate"><span class="pre">fps</span></code> times a second (<code class="docutils literal notranslate"><span class="pre">bake(fps=...)</span></code> to change it) and every element is compared
 from sample to sample:</p>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -729,6 +781,11 @@ started where the points have least distance to travel, so the in-between shapes
 <span class="nb">print</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="n">frames</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fill"</span><span class="p">))</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-animation-16-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-animation-16-1.svg" />
+</figcaption>
+</figure>
 <p>In an <code class="docutils literal notranslate"><span class="pre">update</span></code> callback this gives morphs and tweens per frame, for instance
 <code class="docutils literal notranslate"><span class="pre">doc[0]</span> <span class="pre">=</span> <span class="pre">svg.interpolate(start,</span> <span class="pre">end,</span> <span class="pre">time</span> <span class="pre">/</span> <span class="pre">duration)</span></code>.</p>
 <p>Attribute values inside elements that cannot blend (keywords such as <code class="docutils literal notranslate"><span class="pre">none</span></code>, font names, lists of different

@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bdbc586f" />
     
     
 
@@ -323,6 +323,9 @@
 <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"hello.svg"</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/start-quickstart-0-0.svg" />
+</figure>
 <p>Every SVG element is a class (<code class="docutils literal notranslate"><span class="pre">svg.Circle</span></code>) with a lowercase alias (<code class="docutils literal notranslate"><span class="pre">svg.circle</span></code>). Documents and groups
 have shortcuts (<code class="docutils literal notranslate"><span class="pre">doc.circle(...)</span></code>) that build, add and return the element. Keyword arguments are SVG
 attributes in Python spelling: <code class="docutils literal notranslate"><span class="pre">stroke_width</span></code> is <code class="docutils literal notranslate"><span class="pre">stroke-width</span></code>, <code class="docutils literal notranslate"><span class="pre">class_</span></code> is <code class="docutils literal notranslate"><span class="pre">class</span></code>.</p>
@@ -335,6 +338,11 @@ attributes in Python spelling: <code class="docutils literal notranslate"><span 
 <span class="nb">print</span><span class="p">(</span><span class="n">sun</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>             <span class="c1"># where its centre is now</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/start-quickstart-1-0.svg" />
+<img alt="What the code above draws" src="../_images/start-quickstart-1-1.svg" />
+</figcaption>
+</figure>
 <p>Geometry attributes (<code class="docutils literal notranslate"><span class="pre">cx</span></code>, <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">d</span></code>, …) stay as written; placement goes through the element’s
 transform <code class="docutils literal notranslate"><span class="pre">t</span></code>. See <a class="reference internal" href="../guides/geometry.html"><span class="doc">Geometry and transforms</span></a>.</p>
 </section>
@@ -345,6 +353,9 @@ transform <code class="docutils literal notranslate"><span class="pre">t</span><
 <span class="n">doc</span> <span class="o">+=</span> <span class="n">ring</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">"tomato"</span><span class="p">,</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/start-quickstart-2-0.svg" />
+</figure>
 </section>
 <section id="render-and-export">
 <h2>Render and export<a class="headerlink" href="#render-and-export" title="Link to this heading">¶</a></h2>
@@ -354,6 +365,9 @@ transform <code class="docutils literal notranslate"><span class="pre">t</span><
 <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"hello.tex"</span><span class="p">)</span>                 <span class="c1"># TikZ</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/start-quickstart-3-0.svg" />
+</figure>
 </section>
 <section id="read-it-back">
 <h2>Read it back<a class="headerlink" href="#read-it-back" title="Link to this heading">¶</a></h2>
@@ -361,6 +375,9 @@ transform <code class="docutils literal notranslate"><span class="pre">t</span><
 <span class="nb">print</span><span class="p">(</span><span class="n">again</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">again</span><span class="p">))</span>       <span class="c1"># top-level content by index</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/start-quickstart-4-0.svg" />
+</figure>
 </section>
 <section id="start-a-project">
 <h2>Start a project<a class="headerlink" href="#start-a-project" title="Link to this heading">¶</a></h2>

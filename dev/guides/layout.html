@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bdbc586f" />
     
     
 
@@ -328,6 +328,9 @@ resizes the ones it stretches), so the output is plain SVG that every exporter k
 <span class="nb">print</span><span class="p">(</span><span class="n">card</span><span class="o">.</span><span class="n">bounds</span><span class="p">())</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-layout-0-0.svg" />
+</figure>
 <p>The card is one call: the background is sized to the stack, <code class="docutils literal notranslate"><span class="pre">align=&quot;stretch&quot;</span></code> widens the bar to the
 widest line, and the document sizes itself around the card.</p>
 <section id="stacks">
@@ -381,6 +384,9 @@ edge. Spacers share the space by their <code class="docutils literal notranslate
 <span class="nb">print</span><span class="p">([</span><span class="nb">round</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">bounds</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">bar</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">svg</span><span class="o">.</span><span class="n">Spacer</span><span class="p">)])</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-layout-1-0.svg" />
+</figure>
 </section>
 <section id="grids">
 <h2>Grids<a class="headerlink" href="#grids" title="Link to this heading">¶</a></h2>
@@ -404,6 +410,9 @@ makes a keypad’s keys equal.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">pad</span><span class="o">.</span><span class="n">bounds</span><span class="p">())</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-layout-2-0.svg" />
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">gap</span></code> is one length or <code class="docutils literal notranslate"><span class="pre">(column</span> <span class="pre">gap,</span> <span class="pre">row</span> <span class="pre">gap)</span></code>. In a cell, <code class="docutils literal notranslate"><span class="pre">justify</span></code> places a child horizontally and <code class="docutils literal notranslate"><span class="pre">align</span></code>
 vertically (CSS <code class="docutils literal notranslate"><span class="pre">justify-items</span></code> and <code class="docutils literal notranslate"><span class="pre">align-items</span></code>); both default to <code class="docutils literal notranslate"><span class="pre">&quot;stretch&quot;</span></code>, which sizes resizable
 children to the cell. <code class="docutils literal notranslate"><span class="pre">grid.span(child,</span> <span class="pre">columns=,</span> <span class="pre">rows=)</span></code> lets a child cover several cells; children fill
@@ -424,6 +433,9 @@ a new child) all show on the next read.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">button</span><span class="o">.</span><span class="n">bounds</span><span class="p">()</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-layout-3-0.svg" />
+</figure>
 <p>Stacks nest freely: a grid in a card, a row of buttons in a panel. Arranging the outermost group arranges
 everything inside it, each group once.</p>
 </section>
@@ -446,6 +458,9 @@ and path tools.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">panel</span><span class="o">.</span><span class="n">bounds</span><span class="p">())</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-layout-4-0.svg" />
+</figure>
 </section>
 <section id="output-and-export">
 <h2>Output and export<a class="headerlink" href="#output-and-export" title="Link to this heading">¶</a></h2>

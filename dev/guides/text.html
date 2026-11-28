@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a55abf10" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bdbc586f" />
     
     
 
@@ -321,6 +321,9 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">title</span><span class="o">.</span><span class="n">characters</span><span class="p">)</span>          <span class="c1"># 'Hello world'</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-text-0-0.svg" />
+</figure>
 <p>Fonts come from the computed style: attributes on the text and its <code class="docutils literal notranslate"><span class="pre">tspan</span></code>s, inherited values from
 ancestors, and CSS from <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> elements all apply, as in a browser. Whitespace follows SVG’s
 <code class="docutils literal notranslate"><span class="pre">xml:space</span></code> rules.</p>
@@ -340,6 +343,9 @@ character of each cluster carries its glyphs.</p>
 <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">char</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-text-1-0.svg" />
+</figure>
 <p>Setting a presentation attribute on a range wraps it in a <code class="docutils literal notranslate"><span class="pre">&lt;tspan&gt;</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">note</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Status: OK"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="n">note</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span><span class="o">.</span><span class="n">fill</span> <span class="o">=</span> <span class="s2">"green"</span>
@@ -347,6 +353,9 @@ character of each cluster carries its glyphs.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">note</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-text-2-0.svg" />
+</figure>
 <p>A list of positions, a mask with one bool per character, or a stepped slice picks several runs at
 once as a <code class="docutils literal notranslate"><span class="pre">CharacterSelection</span></code>; setting an attribute styles every run:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">word</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Mississippi"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
@@ -355,12 +364,18 @@ once as a <code class="docutils literal notranslate"><span class="pre">Character
 <span class="nb">print</span><span class="p">(</span><span class="n">word</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">chars</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-text-3-0.svg" />
+</figure>
 <p>Scaling or skewing one character has no SVG text form; those calls raise and point to
 <code class="docutils literal notranslate"><span class="pre">text.glyphs()</span></code>, which returns one outline <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> per character, styled like its run:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">outlines</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"BIG"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="o">.</span><span class="n">glyphs</span><span class="p">()</span>
 <span class="n">outlines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-text-4-0.svg" />
+</figure>
 </section>
 <section id="outlines-and-measurement">
 <h2>Outlines and measurement<a class="headerlink" href="#outlines-and-measurement" title="Link to this heading">¶</a></h2>
@@ -370,6 +385,11 @@ once as a <code class="docutils literal notranslate"><span class="pre">Character
 <span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">text_width</span><span class="p">(</span><span class="s2">"Outline"</span><span class="p">,</span> <span class="s2">"sans-serif"</span><span class="p">,</span> <span class="mi">36</span><span class="p">))</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-text-5-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-text-5-1.svg" />
+</figcaption>
+</figure>
 <p>Text takes part in boolean operations (<code class="docutils literal notranslate"><span class="pre">rect</span> <span class="pre">-</span> <span class="pre">text</span></code>) and clipping (<code class="docutils literal notranslate"><span class="pre">art.clip(text)</span></code>) through its
 outlines.</p>
 </section>
@@ -439,6 +459,9 @@ variable font covering a whole range). It works like a CSS <code class="docutils
 <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"Bold italic"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">sans</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">font_weight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">,</span> <span class="n">font_style</span><span class="o">=</span><span class="s2">"italic"</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-text-6-0.svg" />
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">from_files</span></code> reads each face’s family, weight (OS/2 weight class), style and width from inside the
 file, never from its name: the typographic family comes first, so “Inter SemiBold” files join “Inter”,
 and <code class="docutils literal notranslate"><span class="pre">face.subfamily</span></code> keeps the style name (“SemiBold Italic”). Sources may be paths, bytes, binary
@@ -466,6 +489,9 @@ instead (<code class="docutils literal notranslate"><span class="pre">local(...)
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span><span class="o">.</span><span class="n">embed_fonts</span><span class="p">(</span><span class="n">sans</span><span class="p">)</span>
 </pre></div>
 </div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-text-8-0.svg" />
+</figure>
 <p>Embed only fonts whose licence allows it. For output that needs no fonts at all, convert text to
 outlines with <code class="docutils literal notranslate"><span class="pre">text.to_path()</span></code>.</p>
 </section>
