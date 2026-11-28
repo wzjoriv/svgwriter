@@ -1,4 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10" version="1.1">
-  <style id="se3ce2e-svgwriter-theme" type="text/css">.role-dot { fill:#b45309;stroke:#99f6e4;stroke-width:1px }</style>
-  <circle cx="5" cy="5" r="2" class="role-dot"/>
+  <style id="se3ce2e-svgwriter-theme" type="text/css">.se3ce2e-role-dot { fill:#b45309;stroke:#99f6e4;stroke-width:1px }</style>
+  <circle cx="5" cy="5" r="2" class="se3ce2e-role-dot"/>
 </svg>

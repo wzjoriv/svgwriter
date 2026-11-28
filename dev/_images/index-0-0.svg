@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="160" height="60" viewBox="0 0 160 60" version="1.1">
-  <style id="s98e332-svgwriter-theme" type="text/css">.role-shape { fill:#0f766e;stroke:none }</style>
+  <style id="s98e332-svgwriter-theme" type="text/css">.s98e332-role-shape { fill:#0f766e;stroke:none }</style>
   <defs>
     <linearGradient id="s98e332-linearGradient1" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="gold"/>
@@ -8,5 +8,5 @@
   </defs>
   <rect x="0" y="0" width="160" height="60" rx="12" fill="url(#s98e332-linearGradient1)"/>
   <text x="88" y="36" font-size="18" text-anchor="middle">svg<tspan fill="navy">writer</tspan></text>
-  <polygon points="0,-10 2.9389,-4.0451 9.5106,-3.0902 4.7553,1.5451 5.8779,8.0902 0,5 -5.8779,8.0902 -4.7553,1.5451 -9.5106,-3.0902 -2.9389,-4.0451" style="fill:navy" class="role-shape" transform="translate(30 30.9549) rotate(15 0 -0.9549)"/>
+  <polygon points="0,-10 2.9389,-4.0451 9.5106,-3.0902 4.7553,1.5451 5.8779,8.0902 0,5 -5.8779,8.0902 -4.7553,1.5451 -9.5106,-3.0902 -2.9389,-4.0451" style="fill:navy" class="s98e332-role-shape" transform="translate(30 30.9549) rotate(15 0 -0.9549)"/>
 </svg>

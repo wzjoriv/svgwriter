@@ -1,44 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="118.732" height="200" viewBox="-2 -2 103 173.5" version="1.1">
-  <style id="s967067-svgwriter-theme" type="text/css">.role-box { fill:#f4f6f8;stroke:#bcbfc2;stroke-width:1px }</style>
+  <style id="s967067-svgwriter-theme" type="text/css">.s967067-role-box { fill:#f4f6f8;stroke:#bcbfc2;stroke-width:1px }</style>
   <g>
     <g>
-      <rect x="0" y="0" width="29" height="37.875" class="role-box"/>
+      <rect x="0" y="0" width="29" height="37.875" class="s967067-role-box"/>
       <text font-size="16" transform="translate(10 24.4844)">7</text>
     </g>
     <g transform="translate(35)">
-      <rect x="0" y="0" width="29" height="37.875" class="role-box"/>
+      <rect x="0" y="0" width="29" height="37.875" class="s967067-role-box"/>
       <text font-size="16" transform="translate(10 24.4844)">8</text>
     </g>
     <g transform="translate(70)">
-      <rect x="0" y="0" width="29" height="37.875" class="role-box"/>
+      <rect x="0" y="0" width="29" height="37.875" class="s967067-role-box"/>
       <text font-size="16" transform="translate(10 24.4844)">9</text>
     </g>
     <g transform="translate(0 43.875)">
-      <rect x="0" y="0" width="29" height="37.875" class="role-box"/>
+      <rect x="0" y="0" width="29" height="37.875" class="s967067-role-box"/>
       <text font-size="16" transform="translate(10 24.4844)">4</text>
     </g>
     <g transform="translate(35 43.875)">
-      <rect x="0" y="0" width="29" height="37.875" class="role-box"/>
+      <rect x="0" y="0" width="29" height="37.875" class="s967067-role-box"/>
       <text font-size="16" transform="translate(10 24.4844)">5</text>
     </g>
     <g transform="translate(70 43.875)">
-      <rect x="0" y="0" width="29" height="37.875" class="role-box"/>
+      <rect x="0" y="0" width="29" height="37.875" class="s967067-role-box"/>
       <text font-size="16" transform="translate(10 24.4844)">6</text>
     </g>
     <g transform="translate(0 87.75)">
-      <rect x="0" y="0" width="29" height="37.875" class="role-box"/>
+      <rect x="0" y="0" width="29" height="37.875" class="s967067-role-box"/>
       <text font-size="16" transform="translate(10 24.4844)">1</text>
     </g>
     <g transform="translate(35 87.75)">
-      <rect x="0" y="0" width="29" height="37.875" class="role-box"/>
+      <rect x="0" y="0" width="29" height="37.875" class="s967067-role-box"/>
       <text font-size="16" transform="translate(10 24.4844)">2</text>
     </g>
     <g transform="translate(70 87.75)">
-      <rect x="0" y="0" width="29" height="37.875" class="role-box"/>
+      <rect x="0" y="0" width="29" height="37.875" class="s967067-role-box"/>
       <text font-size="16" transform="translate(10 24.4844)">3</text>
     </g>
     <g transform="translate(0 131.625)">
-      <rect x="0" y="0" width="99" height="37.875" class="role-box"/>
+      <rect x="0" y="0" width="99" height="37.875" class="s967067-role-box"/>
       <text font-size="16" transform="translate(45 24.4844)">0</text>
     </g>
   </g>

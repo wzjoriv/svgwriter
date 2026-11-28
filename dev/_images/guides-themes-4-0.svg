@@ -1,4 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="100" height="40" viewBox="0 0 100 40" version="1.1">
-  <style id="sb4a6fe-svgwriter-theme" type="text/css">.role-caption { fill:#5f5f5f;stroke:none;font-family:Georgia, 'Times New Roman', serif;font-size:11px;font-weight:400 }</style>
-  <text x="4" y="24" class="role-caption">Figure 1</text>
+  <style id="sb4a6fe-svgwriter-theme" type="text/css">.sb4a6fe-role-caption { fill:#5f5f5f;stroke:none;font-family:Georgia, 'Times New Roman', serif;font-size:11px;font-weight:400 }</style>
+  <text x="4" y="24" class="sb4a6fe-role-caption">Figure 1</text>
 </svg>
