@@ -62,4 +62,5 @@ and a "Get started" button (hover and click in the SVG) beside metaballs that me
 millimetres: an invitation to a beach clean-up with gradients, patterns, a route with markers, drawn icons of what to bring and a schedule read from CSV, and controls for the theme, an accent hue shift and the event's title, date, time and place. Outputs: a true-size
 PDF, a 300 dpi PNG and an SVG. [Notebook](https://github.com/wzjoriv/svgwriter/blob/main/demos/poster/poster.ipynb).
 
-The pictures on this page are built from the demos by `python scripts/dev.py svgwriter gallery`.
+Each demo's `output/` folder holds its built SVG, PDF, PNG and PowerPoint files, so you can open the results
+without running anything (`python scripts/dev.py svgwriter demo-outputs build` rebuilds them). The pictures on this page are built from the demos by `python scripts/dev.py svgwriter gallery`.
