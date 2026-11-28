@@ -70,4 +70,4 @@ Named sizes work in any document: `svg.Document(size="a4")` draws in millimetres
 
 ## More examples
 
-The `examples/` folder of the repository is a numbered learning path of runnable scripts (`examples/01_basic_shapes.py` to `examples/20_fonts.py`), each with a Jupyter notebook beside it (`examples/<name>.ipynb`) that shows the results as pictures.
+The `examples/` folder of the repository is a numbered learning path of runnable scripts (`examples/01_basic_shapes/` to `examples/21_batches/`), each a folder with the script and a Jupyter notebook beside it that shows the results as pictures.

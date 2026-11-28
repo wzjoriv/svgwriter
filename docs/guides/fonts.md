@@ -85,7 +85,7 @@ the character, and `icons.icons` maps every name to its character.
 so `<i class="icon-rocket"></i>` shows the rocket; `prefix=` changes `icon`. `css()` returns the same text.
 `cheatsheet(columns=)` returns a document with every glyph drawn with its name and code point.
 
-`examples/20_fonts.py` in the repository builds a small handwritten alphabet and a four-icon font with its
+`examples/20_fonts/fonts.py` in the repository builds a small handwritten alphabet and a four-icon font with its
 stylesheet and cheatsheet.
 
 ## Limits
