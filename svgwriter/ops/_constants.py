@@ -10,6 +10,7 @@ from typing import Final
 import skia
 
 __all__ = [
+    "TAPER_SAMPLES",
     "STAMP_STYLES",
     "WIREFRAME_BOUNDS_DASH",
     "WIREFRAME_COLOR",
@@ -233,3 +234,5 @@ WIREFRAME_DROPPED: Final = ("filter", "mask", "clip-path", "opacity", "fill-opac
 """Attributes and style properties a wireframe leaves out, so only the geometry shows."""
 STAMP_STYLES: Final = {"rotate": "kRotate_Style", "translate": "kTranslate_Style", "morph": "kMorph_Style"}
 """How a stamped shape follows its path, and the skia style for each."""
+TAPER_SAMPLES: Final = 64
+"""Points a tapered stroke takes along each part of its line."""

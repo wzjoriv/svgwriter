@@ -27,3 +27,30 @@ def test_stamp_repeats_the_shape_and_checks_its_options():
     assert box.width == pytest.approx(92, abs=1) and box.height == pytest.approx(6, abs=0.1)
     with pytest.raises(ValueError, match="orient"):
         svg.line(0, 0, 10, 0).stamp(svg.circle(0, 0, 1), 2, orient="spin")
+
+
+def test_taper_fills_with_the_stroke_and_follows_its_widths():
+    brush = svg.line(0, 0, 100, 0, stroke="navy").taper(0, 10, 0)
+    assert str(brush.get("fill")) == "navy" and str(brush.get("stroke")) == "none"
+    assert brush.bounds().height == pytest.approx(10, abs=0.5)
+    point = svg.line(0, 0, 100, 0, stroke="red").path_effect("taper", widths=lambda t: 8 * (1 - t))
+    assert point.bounds().height == pytest.approx(8, abs=0.5)
+
+
+def test_users_register_their_own_path_effects():
+    @svg.preset.path_effect(fills=True)
+    def thicken(data, *, width: float = 4) -> svg.PathData:
+        return svg.path(data).stroked(width=width).get("d")
+
+    try:
+        assert "thicken" in svg.preset.path_effect.list()
+        made = svg.line(0, 0, 50, 0, stroke="teal").path_effect("thicken", width=6)
+        assert str(made.get("fill")) == "teal" and made.bounds().height == pytest.approx(6, abs=0.5)
+    finally:
+        svg.preset.path_effect.unregister("thicken")
+
+
+def test_built_ins_are_listed_and_unknown_names_suggest():
+    assert {"roughen", "dashed", "stamp", "taper"} <= set(svg.preset.path_effect.list())
+    with pytest.raises(Exception, match="taper"):
+        svg.line(0, 0, 1, 0).path_effect("tapr")
