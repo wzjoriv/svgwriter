@@ -48,10 +48,10 @@ SVG and PowerPoint. [Notebook](https://github.com/wzjoriv/svgwriter/blob/main/de
 
 ## Blobs
 
-![Gooey blobs merging and splitting](_static/demos/blobs.gif)
+![A website hero banner with gooey blobs](_static/demos/blobs.gif)
 
-[`demos/blobs`](https://github.com/wzjoriv/svgwriter/tree/main/demos/blobs): metaballs that merge and split
-under the goo filter, moved by a project behaviour on a seamless loop, with controls for the number of blobs, their gooeyness and the speed. Outputs: GIF and animated SVG. [Notebook](https://github.com/wzjoriv/svgwriter/blob/main/demos/blobs/blobs.ipynb).
+[`demos/blobs`](https://github.com/wzjoriv/svgwriter/tree/main/demos/blobs): a website hero banner: a headline
+and a "Get started" button (hover and click in the SVG) beside metaballs that merge and split under the goo filter, moved by a project behaviour on a seamless loop, with controls for the number of blobs, their gooeyness, the speed, the headline and the button text. Outputs: GIF and animated SVG. [Notebook](https://github.com/wzjoriv/svgwriter/blob/main/demos/blobs/blobs.ipynb).
 
 ## Poster
 
