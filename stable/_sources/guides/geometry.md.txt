@@ -145,10 +145,11 @@ convert when it is added; attribute text read from an SVG file keeps its SVG mea
 by physical size, and a user-unit length equals the plain number: `svg.Length(5) == 5` and
 `svg.inch(1) == svg.mm(25.4)`.
 
-The units are `px`, `pt`, `pc`, `mm`, `q` (quarter millimetres, written `Q`), `cm`, `inch`, `em`, `ex`
-and `percent`. Units SVG has no suffix for are written in the nearest SVG unit: `m`, `km`, `um`
+The everyday units are on `svg` itself: `px`, `pt`, `mm`, `cm`, `inch`, `em`, `percent`, `deg`, `rad` and
+`turn`. Every unit, the rarer ones included, is in `svg.units`: `pc`, `q` (quarter millimetres, written `Q`),
+`ex`, `grad`, and units SVG has no suffix for, written in the nearest SVG unit: `m`, `km`, `um`
 (micrometres) and `nmi` (nautical miles) as millimetres; `ft`, `yd`, `mi`, `furlong` and `mil`
-(thousandths of an inch) as inches. A unit on its own is one of itself, so `height=svg.inch` is one
+(thousandths of an inch) as inches (`svg.units.mi(2)`). A unit on its own is one of itself, so `height=svg.inch` is one
 inch and `svg.turn` is a full turn.
 `svg.length(value, unit)` and `svg.angle(value, unit)` take the unit as text, spelled short or in full
 (`"mm"`, `"millimetres"`, `"inches"`, `"degrees"`, `"gon"`, `"turns"`, ...); output always uses the

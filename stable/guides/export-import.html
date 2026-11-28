@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Export and import - svgwriter 2.10.0</title>
+        <title>Export and import - svgwriter 2.11.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.10.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.11.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.10.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.11.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.10.0</span>
+  <span class="sidebar-versions-label">2.11.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -537,7 +537,20 @@
 </div>
 <p>TikZ, EPS, PowerPoint, Word, Excalidraw and the polyline formats work from a flattened copy of the
 drawing: transforms, clipping, patterns and markers are worked into the shapes themselves. Masks and
-filters cannot be, so these formats skip them with a warning.</p>
+filters cannot be. PowerPoint and Word draw an element with a filter or mask as a picture of how it looks
+(one warning lists how many); everything else stays editable. <code class="docutils literal notranslate"><span class="pre">save(...,</span> <span class="pre">fallback=&quot;drop&quot;)</span></code> keeps those
+elements as shapes without the effect instead, and <code class="docutils literal notranslate"><span class="pre">dpi=</span></code> sets the pictures’ resolution (192 by default).
+The other flattened formats skip masks and filters with a warning; <code class="docutils literal notranslate"><span class="pre">el.to_image(scale=...)</span></code> turns any
+element into a picture by hand.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">card</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">card</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">svg</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">drop_shadow</span><span class="p">())</span>
+<span class="c1"># card.save("card.pptx")                   # the shadowed card becomes a picture</span>
+<span class="c1"># card.save("card.pptx", fallback="drop")  # an editable card without its shadow</span>
+</pre></div>
+</div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-export-import-1-0.svg" />
+</figure>
 <section id="what-each-format-keeps">
 <h2>What each format keeps<a class="headerlink" href="#what-each-format-keeps" title="Link to this heading">¶</a></h2>
 <p>Checked by exporting a drawing with each feature to every format and reading it back. “shapes” means
@@ -673,8 +686,8 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>yes (pixels)</p></td>
 <td><p>skipped</p></td>
 <td><p>skipped</p></td>
-<td><p>skipped</p></td>
-<td><p>skipped</p></td>
+<td><p>picture</p></td>
+<td><p>picture</p></td>
 <td><p>picture</p></td>
 <td><p>skipped</p></td>
 <td><p>skipped</p></td>
@@ -685,8 +698,8 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 <td><p>yes (pixels)</p></td>
 <td><p>skipped</p></td>
 <td><p>skipped</p></td>
-<td><p>skipped</p></td>
-<td><p>skipped</p></td>
+<td><p>picture</p></td>
+<td><p>picture</p></td>
 <td><p>picture</p></td>
 <td><p>skipped</p></td>
 <td><p>skipped</p></td>
@@ -871,7 +884,7 @@ reader of the file may lack the fonts:</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-export-import-1-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-2-0.svg" />
 </figure>
 <p>PDF, EPS and TikZ read back as filled and stroked <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> elements with solid colours or gradients,
 stroke width, dashes, caps, joins and opacity, in user units with y pointing down (see
@@ -893,8 +906,8 @@ and xcolor mixes, the common line options, shadings (<code class="docutils liter
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-export-import-2-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-export-import-2-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-3-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-3-1.svg" />
 </figcaption>
 </figure>
 </section>
@@ -915,10 +928,10 @@ are pixels. <code class="docutils literal notranslate"><span class="pre">dpi=</s
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-export-import-3-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-export-import-3-1.svg" />
-<img alt="What the code above draws" src="../_images/guides-export-import-3-2.svg" />
-<img alt="What the code above draws" src="../_images/guides-export-import-3-3.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-4-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-4-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-4-2.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-4-3.svg" />
 </figcaption>
 </figure>
 <p><code class="docutils literal notranslate"><span class="pre">svg.size.&lt;name&gt;</span></code> gives a <code class="docutils literal notranslate"><span class="pre">PageSize</span></code> for every registered size with the name turned into an identifier
@@ -987,7 +1000,7 @@ exact pixel size instead.</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-export-import-5-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-6-0.svg" />
 </figure>
 <p>Readers work the other way: a PDF or EPS point reads as 4/3 of a unit and a TikZ <code class="docutils literal notranslate"><span class="pre">1cm</span></code> as
 96/2.54, so a file made elsewhere opens at its real size and an exported file reads back at the
@@ -1003,7 +1016,7 @@ When the numbers are meant as points (one unit, one point, as in many plotting t
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-export-import-6-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-7-0.svg" />
 </figure>
 </section>
 <section id="colour-profiles">
@@ -1019,7 +1032,7 @@ profiles are parsed once):</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-export-import-7-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-8-0.svg" />
 </figure>
 <p>Wide-gamut colours (<code class="docutils literal notranslate"><span class="pre">oklch(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">color(display-p3</span> <span class="pre">...)</span></code>) keep their own space through theme
 palettes, theme expressions, mixing and gradient stops, so they are never clipped before they are
@@ -1076,8 +1089,8 @@ what it does. Creating the class registers it, so <code class="docutils literal 
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-export-import-8-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-export-import-8-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-9-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-export-import-9-1.svg" />
 </figcaption>
 </figure>
 <p><code class="docutils literal notranslate"><span class="pre">binary=True</span></code> (the default) means <code class="docutils literal notranslate"><span class="pre">write</span></code> returns <code class="docutils literal notranslate"><span class="pre">bytes</span></code>; <code class="docutils literal notranslate"><span class="pre">multipage=True</span></code> means <code class="docutils literal notranslate"><span class="pre">write</span></code> also takes a
@@ -1223,7 +1236,7 @@ interaction is attached by the page, by element id:</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=5fc5b6a2"></script>
+</div><script src="../_static/documentation_options.js?v=3b0a66e6"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

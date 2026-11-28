@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="8 8 44 44" version="1.1">
+  <style id="sd6e08f-svgwriter-hover" type="text/css">#sd6e08f-rect1:hover { fill:darkcyan !important;stroke:white !important;stroke-width:2 !important }</style>
+  <rect id="sd6e08f-rect1" x="10" y="10" width="40" height="40" rx="6" fill="teal">
+    <animateTransform attributeName="transform" values="30 30;30 30" additive="sum" begin="sd6e08f-rect1.click" dur="0.3s" repeatCount="1" type="translate"/>
+    <animateTransform attributeName="transform" values="1;1.1;1" additive="sum" begin="sd6e08f-rect1.click" dur="0.3s" repeatCount="1" type="scale"/>
+    <animateTransform attributeName="transform" values="-30 -30;-30 -30" additive="sum" begin="sd6e08f-rect1.click" dur="0.3s" repeatCount="1" type="translate"/>
+  </rect>
+</svg>

@@ -1,12 +1,12 @@
 # Widgets
 
-Controls for drawing functions, notebook panels and sweeps. `svg.interact` and `svg.sweep` are exported at
+Controls for drawing functions, notebook panels and sweeps. `svg.explore` and `svg.sweep` are exported at
 the top level as well; the guide is {doc}`../guides/widgets`.
 
 ```{eval-rst}
 .. autosummary::
 
-   svgwriter.tools.widgets.interact
+   svgwriter.tools.widgets.explore
    svgwriter.tools.widgets.sweep
    svgwriter.tools.widgets.controls
    svgwriter.tools.widgets.control

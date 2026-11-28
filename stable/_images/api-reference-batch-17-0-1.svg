@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="68.9655" viewBox="5 5 29 10" version="1.1">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="37.12" height="20.12" viewBox="-2.56 -4.56 37.12 20.12" version="1.1">
   <g>
     <defs>
-      <polygon id="s8d8837-polygon1" points="0,-2 6,0 0,2"/>
+      <polygon id="s0a1236-polygon1" points="0,-2 6,0 0,2"/>
     </defs>
-    <use xlink:href="#s8d8837-polygon1" fill="#ff0000" transform="matrix(1 0 0 1 7 10)"/>
-    <use xlink:href="#s8d8837-polygon1" fill="#0000ff" transform="matrix(0 1 -1 0 30 7)"/>
+    <use xlink:href="#s0a1236-polygon1" fill="#ff0000" transform="matrix(1 0 0 1 7 10)"/>
+    <use xlink:href="#s0a1236-polygon1" fill="#0000ff" transform="matrix(0 1 -1 0 30 7)"/>
   </g>
 </svg>

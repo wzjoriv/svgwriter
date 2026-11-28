@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Widgets - svgwriter 2.10.0</title>
+        <title>Widgets - svgwriter 2.11.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.10.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.11.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.10.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.11.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.10.0</span>
+  <span class="sidebar-versions-label">2.11.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -307,7 +307,7 @@
         <article role="main" id="furo-main-content">
           <section id="widgets">
 <h1>Widgets<a class="headerlink" href="#widgets" title="Link to this heading">¶</a></h1>
-<p>A drawing function with parameters becomes adjustable: <code class="docutils literal notranslate"><span class="pre">svg.interact</span></code> puts sliders, buttons and colour
+<p>A drawing function with parameters becomes adjustable: <code class="docutils literal notranslate"><span class="pre">svg.explore</span></code> puts sliders, buttons and colour
 pickers beside the drawing in a notebook, <code class="docutils literal notranslate"><span class="pre">svgwriter</span> <span class="pre">preview</span></code> shows the same controls as a form above a
 project’s outputs, and <code class="docutils literal notranslate"><span class="pre">svg.sweep</span></code> steps the parameters over time into an animation. All three read one
 declaration, because a control is plain data.</p>
@@ -440,14 +440,14 @@ option, with a <code class="docutils literal notranslate"><span class="pre">Valu
 </section>
 <section id="notebook-panels">
 <h2>Notebook panels<a class="headerlink" href="#notebook-panels" title="Link to this heading">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">svg.interact(fn)</span></code> shows the controls next to the drawing <code class="docutils literal notranslate"><span class="pre">fn(**values)</span></code> returns, a <code class="docutils literal notranslate"><span class="pre">Document</span></code> or an
+<p><code class="docutils literal notranslate"><span class="pre">svg.explore(fn)</span></code> shows the controls next to the drawing <code class="docutils literal notranslate"><span class="pre">fn(**values)</span></code> returns, a <code class="docutils literal notranslate"><span class="pre">Document</span></code> or an
 element, and redraws it as they change. It needs the <code class="docutils literal notranslate"><span class="pre">widget</span></code> extra:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"pysvgwriter[widget]"</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 
-<span class="n">view</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">interact</span><span class="p">(</span><span class="n">badge</span><span class="p">)</span>                       <span class="c1"># the panel appears below the cell</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">explore</span><span class="p">(</span><span class="n">badge</span><span class="p">)</span>                       <span class="c1"># the panel appears below the cell</span>
 <span class="n">view</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"#f43f5e"</span><span class="p">)</span>            <span class="c1"># set values from code as well</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">code</span><span class="p">())</span>                               <span class="c1"># badge(size=70.0, color='#f43f5e', shape='box', outline=False)</span>
@@ -456,7 +456,7 @@ element, and redraws it as they change. It needs the <code class="docutils liter
 </div>
 <p>The panel looks like the preview page: the drawing on the left, the controls in a column on the right
 (under the drawing when the cell is narrow), in the notebook’s light or dark theme.</p>
-<p>Controls given as keywords are added to declared ones (<code class="docutils literal notranslate"><span class="pre">svg.interact(fn,</span> <span class="pre">size=(0,</span> <span class="pre">100))</span></code>); with none
+<p>Controls given as keywords are added to declared ones (<code class="docutils literal notranslate"><span class="pre">svg.explore(fn,</span> <span class="pre">size=(0,</span> <span class="pre">100))</span></code>); with none
 at all, they are inferred from the function’s keyword defaults. A function whose first parameter is not
 a control, such as a project’s <code class="docutils literal notranslate"><span class="pre">build(doc,</span> <span class="pre">...)</span></code>, receives a new document there.</p>
 <p>Redraws wait until the controls have been still for 80 ms (<code class="docutils literal notranslate"><span class="pre">delay=</span></code> changes it), and values drawn before
@@ -468,7 +468,7 @@ drawing, and <code class="docutils literal notranslate"><span class="pre">record
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
 
 <span class="n">panel</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">Recorder</span><span class="p">()</span>
-<span class="n">view</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">interact</span><span class="p">(</span><span class="n">badge</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">panel</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">explore</span><span class="p">(</span><span class="n">badge</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">panel</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">panel</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"shape"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>                            <span class="c1"># option controls send the option's index</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">panel</span><span class="o">.</span><span class="n">drawings</span><span class="p">))</span>  <span class="c1"># dot 2</span>
 </pre></div>
@@ -582,7 +582,7 @@ fitted to the content of the whole sweep.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=5fc5b6a2"></script>
+</div><script src="../_static/documentation_options.js?v=3b0a66e6"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

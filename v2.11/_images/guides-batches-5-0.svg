@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="40" viewBox="0 0 200 40" version="1.1">
+  <g fill="navy">
+    <circle cx="10" cy="20" r="6">
+      <animate attributeName="opacity" from="0" to="1" begin="0s" dur="0.5s" fill="freeze"/>
+      <animateTransform attributeName="transform" from="0 0" to="0 -10" additive="sum" begin="1s" dur="0.5s" fill="freeze" type="translate"/>
+    </circle>
+    <circle cx="30" cy="20" r="6" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" begin="0.1s" dur="0.5s" fill="freeze"/>
+      <animateTransform attributeName="transform" from="0 0" to="0 -10" additive="sum" begin="1.11111s" dur="0.5s" fill="freeze" type="translate"/>
+    </circle>
+    <circle cx="50" cy="20" r="6" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" begin="0.2s" dur="0.5s" fill="freeze"/>
+      <animateTransform attributeName="transform" from="0 0" to="0 -10" additive="sum" begin="1.22222s" dur="0.5s" fill="freeze" type="translate"/>
+    </circle>
+    <circle cx="70" cy="20" r="6" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" begin="0.3s" dur="0.5s" fill="freeze"/>
+      <animateTransform attributeName="transform" from="0 0" to="0 -10" additive="sum" begin="1.33333s" dur="0.5s" fill="freeze" type="translate"/>
+    </circle>
+    <circle cx="90" cy="20" r="6" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" begin="0.4s" dur="0.5s" fill="freeze"/>
+      <animateTransform attributeName="transform" from="0 0" to="0 -10" additive="sum" begin="1.44444s" dur="0.5s" fill="freeze" type="translate"/>
+    </circle>
+    <circle cx="110" cy="20" r="6" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" begin="0.5s" dur="0.5s" fill="freeze"/>
+      <animateTransform attributeName="transform" from="0 0" to="0 -10" additive="sum" begin="1.55556s" dur="0.5s" fill="freeze" type="translate"/>
+    </circle>
+    <circle cx="130" cy="20" r="6" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" begin="0.6s" dur="0.5s" fill="freeze"/>
+      <animateTransform attributeName="transform" from="0 0" to="0 -10" additive="sum" begin="1.66667s" dur="0.5s" fill="freeze" type="translate"/>
+    </circle>
+    <circle cx="150" cy="20" r="6" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" begin="0.7s" dur="0.5s" fill="freeze"/>
+      <animateTransform attributeName="transform" from="0 0" to="0 -10" additive="sum" begin="1.77778s" dur="0.5s" fill="freeze" type="translate"/>
+    </circle>
+    <circle cx="170" cy="20" r="6" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" begin="0.8s" dur="0.5s" fill="freeze"/>
+      <animateTransform attributeName="transform" from="0 0" to="0 -10" additive="sum" begin="1.88889s" dur="0.5s" fill="freeze" type="translate"/>
+    </circle>
+    <circle cx="190" cy="20" r="6" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" begin="0.9s" dur="0.5s" fill="freeze"/>
+      <animateTransform attributeName="transform" from="0 0" to="0 -10" additive="sum" begin="2s" dur="0.5s" fill="freeze" type="translate"/>
+    </circle>
+  </g>
+</svg>
