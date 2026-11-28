@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any, Final
 
 import numpy as np
 
+from ...._internal._constants import BOLD_WEIGHT
 from ....model.transform.matrix import Matrix
 from ._constants import (
     BF_CHAR_RE,
@@ -119,10 +120,33 @@ def _font(painter: _Painter, operands: list[Any], resources: dict[str, Any]) -> 
     font = font if isinstance(font, dict) else {}
     base = SUBSET_RE.sub("", str(font.get("BaseFont", "")).lstrip("/"))
     style = base.lower()
-    painter.text_font = (_family(STYLE_RE.sub("", base)), "bold" in style, "italic" in style or "oblique" in style)
+    family = _family(STYLE_RE.sub("", base))
+    bold, italic = "bold" in style, "italic" in style or "oblique" in style
+    if not base:
+        family, bold, italic = _described(painter, font)
+    painter.text_font = (family, bold, italic)
     painter.text_size = _numbers(operands[1:], 1)[0]
     painter.text_codes = (2 if str(font.get("Subtype", "")).lstrip("/") == "Type0" else 1,
                           _to_unicode(painter, font.get("ToUnicode")))
+
+
+def _described(painter: _Painter, font: dict[str, Any]) -> tuple[str, bool, bool]:
+    """Family, bold and italic of a font without a base name (Type 3), read from its ``/FontDescriptor``.
+
+    Variable fonts are written as Type 3 glyph procedures, whose descriptor still names the family and weight.
+    """
+    from ._pdf_objects import _numbers, _resolve
+
+    descriptor = _resolve(painter.objects, font.get("FontDescriptor"))
+    descriptor = descriptor if isinstance(descriptor, dict) else {}
+    name = SUBSET_RE.sub("", str(descriptor.get("FontName", "")).lstrip("/"))
+    raw = descriptor.get("FontFamily", b"")
+    family = (raw.decode("latin-1") if isinstance(raw, bytes) else str(raw).strip("()")) or STYLE_RE.sub("", name)
+    weight = _numbers([descriptor.get("FontWeight", 400)], 1)[0]
+    angle = _numbers([descriptor.get("ItalicAngle", 0)], 1)[0]
+    style = name.lower()
+    return (_family(family), weight >= BOLD_WEIGHT or "bold" in style,
+            bool(angle) or "italic" in style or "oblique" in style)
 
 
 def _family(name: str) -> str:
