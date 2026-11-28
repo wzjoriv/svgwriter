@@ -181,7 +181,29 @@ def write_outputs(config: ProjectConfig, items: Sequence[Item], theme: Theme | N
             one_file = exporter is not None and exporter.multipage and format not in VIDEO_FORMATS
             names = _numbered(config.name, 1 if one_file else len(pages), extension)
             written += _write_pages(pages, [folder / name for name in names], format, options)
+        if scenes and options.get("deck") and _multipage(format):
+            written.append(_write_deck(scenes, folder / f"{config.name}{extension}", format, options))
+            continue
+        options = {key: value for key, value in options.items() if key != "deck"}
         for scene in scenes:
             stem = _scene_stem(config, scene, len(scenes), len(pages))
             written.append(_write_scene(scene, folder / f"{stem}{extension}", format, options))
     return written
+
+
+def _multipage(format: str) -> bool:
+    exporter = find_format(format)
+    return exporter is not None and exporter.multipage and format not in VIDEO_FORMATS
+
+
+def _write_deck(scenes: Sequence[Scene], target: Path, format: str, options: Mapping[str, Any]) -> Path:
+    """Every scene baked onto its own page of one file (``deck = true``): one PowerPoint slide per scene."""
+    pages = []
+    for scene in scenes:
+        baked = _baked(scene, options) if format in BAKED_FORMATS else None
+        if baked is None:
+            scene._advance(scene.document, 0.0)
+            baked = scene.document
+        pages.append(baked)
+    rest = {key: value for key, value in options.items() if key not in ("deck", "fps", "duration")}
+    return save(pages, target, format, **rest)

@@ -37,7 +37,7 @@ STILLS: dict[str, tuple[dict[str, Any], ...]] = {
     "calculator-kit": ({"style": "glass", "accent": "#4f46e5", "shape": "pill"},
                        {"style": "brutal", "layout": "scientific 5x6", "font": "mono", "accent": "#0d9488"},
                        {"style": "soft", "layout": "compact 4x4", "shape": "circle", "accent": "#e11d48"}),
-    "planets-explainer": ({"scene": "700× wider"}, {"speed": 3.0}),
+    "planets-explainer": ({"scene": "Quiz"}, {"scene": "700× wider"}),
     "playing-card": ({"rank": "7", "suit": "♠", "hue": 210}, {"rank": "K", "suit": "♣", "hue": 140},
                      {"rank": "A", "suit": "♦", "iridescence": 0.8, "glow": False}),
     "poster": ({"theme": "night"}, {"theme": "mint", "title": "Dune Planting", "date": "Sunday 5 April 2026"},

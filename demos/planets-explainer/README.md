@@ -1,22 +1,21 @@
 # Planets explainer
 
-A two-part explainer built from `Scene` classes:
+A four-slide classroom lesson on the Solar System, written as `Scene` classes:
 
-1. **Eight planets**: the orbits drawn to scale from `assets/data/planets.csv` (Neptune's is 78 times
-   Mercury's), every planet circling the Sun at its own pace.
-2. **700× wider**: the Sun beside Betelgeuse, to scale, while a row of 100 Suns lines up and a rolling
-   counter counts them.
+1. **Title**: "The Solar System" and the lesson's three goals, fading in one by one.
+2. **Eight planets**: the orbits drawn to scale (1 AU = 36 px) while each planet circles the Sun.
+3. **700× wider**: the Sun beside Betelgeuse, with a row of 100 Suns counted on a rolling counter.
+4. **Quiz**: three questions on cards; each answer appears when its card is clicked.
 
 What it shows:
 
-- Scenes with SMIL presets (`fade_in`, `stagger`, the built-in `breathe` behaviour) and Python motion: the
-  project's own `orbit` behaviour (`animations/orbit.py`, registered with `@svg.preset.behavior`) and an
-  `update` that adds Suns and turns the counter's digit wheels (`components/counter.py`).
-- Baking: the SVG and PowerPoint outputs turn the behaviours and the per-frame updates into SMIL, so the
-  SVG plays in a browser like the video.
-- The theme (`theme.toml`) and data read from `assets/`.
+- `svg.Scene` classes, a project behaviour (`animations/orbit.py`) and per-frame `update`.
+- One PowerPoint deck for all scenes (`pptx = { deck = true }` in `svgwriter.toml`): animations become slide
+  effects, and the quiz answers use click triggers (`animate.on("click", card)`).
+- Baking: the SVG of each slide plays in a browser like the video.
+- Components for the heading, the planet table (`assets/data`) and the counter.
 
-Controls: `explainer` takes the clip (`Eight planets` or `700× wider`) and a `time scale` that speeds up the orbits and the counter. They drive `svg.explore` in the notebook; the project's entry stays the two scenes, so `svgwriter build` still writes one clip each, and `svgwriter preview` shows no form for scenes.
+Controls (`svgwriter preview` shows them as a form): which `scene` to show and a `time scale`.
 
 Open the notebook, [planets-explainer.ipynb](planets-explainer.ipynb), to see the demo step by step with its pictures; run it to get a panel for the controls.
 

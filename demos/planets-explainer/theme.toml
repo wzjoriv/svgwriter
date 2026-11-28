@@ -23,3 +23,12 @@ caption = 16
 fill = "none"
 stroke = "{palette.border}"
 stroke-width = 1.5
+
+[roles.card]
+fill = "{palette.surface}"
+stroke = "{palette.border}"
+stroke-width = 2
+
+[roles.answer]
+fill = "{palette.accent}"
+font-weight = "bold"
