@@ -4,6 +4,7 @@ PowerPoint slides in: DrawingML shapes, pictures, text boxes and equations as na
 
 from __future__ import annotations
 
+import colorsys
 import io
 import math
 import warnings
@@ -242,8 +243,36 @@ def _solid(fill: Any, scheme: dict[str, str] | None = None) -> Any:
         value, source = Color.parse(code), slot
     else:
         return None
+    value = _modified(value, source)
     alpha = source.find(_a("alpha"))
     return value.with_alpha(int(alpha.get("val")) / ALPHA_SCALE) if alpha is not None else value
+
+
+def _modified(value: Any, source: Any) -> Any:
+    """*value* with DrawingML's colour changes applied in order: ``lumMod``/``lumOff`` (lighter, darker),
+    ``tint`` (towards white) and ``shade`` (towards black)."""
+    from ....model.color.color import Color
+
+    red, green, blue = value.r, value.g, value.b
+    for change in source:
+        name, amount = _local_name(change), int(change.get("val", ALPHA_SCALE)) / ALPHA_SCALE
+        if name in ("lumMod", "lumOff"):
+            hue, lightness, saturation = colorsys.rgb_to_hls(red, green, blue)
+            lightness = min(max(lightness * amount if name == "lumMod" else lightness + amount, 0.0), 1.0)
+            red, green, blue = colorsys.hls_to_rgb(hue, lightness, saturation)
+        elif name == "tint":
+            red, green, blue = (channel + (1 - channel) * (1 - amount) for channel in (red, green, blue))
+        elif name == "shade":
+            red, green, blue = (channel * amount for channel in (red, green, blue))
+    if (red, green, blue) == (value.r, value.g, value.b):
+        return value
+    return Color(red, green, blue, value.a)
+
+
+def _local_name(node: Any) -> str:
+    """The local name of an XML element (``lumMod`` for ``{ns}lumMod``)."""
+    tag = node.tag if isinstance(node.tag, str) else ""
+    return tag.rsplit("}", 1)[-1]
 
 
 def _custom_path(geometry: Any, left: float, top: float, width: float, height: float) -> Any:
