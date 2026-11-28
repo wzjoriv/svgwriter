@@ -37,14 +37,15 @@ whose two title words carry their own effects (still selectable text), a blinkin
 buttons that glow and respond to hover and click, with controls for the title and each effect. Outputs: an
 animated SVG and a GIF. [Notebook](https://github.com/wzjoriv/svgwriter/blob/main/demos/effects/effects.ipynb).
 
-## Planets explainer
+## Planets lesson
 
 ![The eight planets with their orbits to scale](_static/demos/planets-explainer.gif)
 
-[`demos/planets-explainer`](https://github.com/wzjoriv/svgwriter/tree/main/demos/planets-explainer): two
-scenes, the eight planets on orbits drawn to scale and Betelgeuse beside the Sun with a rolling counter,
-moved by behaviours, SMIL and per-frame updates, then baked; a time scale and a choice of scene drive them in the notebook. Outputs: MP4 (GIF without ffmpeg), animated
-SVG and PowerPoint. [Notebook](https://github.com/wzjoriv/svgwriter/blob/main/demos/planets-explainer/planets-explainer.ipynb).
+[`demos/planets-explainer`](https://github.com/wzjoriv/svgwriter/tree/main/demos/planets-explainer): a four-slide
+classroom lesson on the Solar System as `Scene` classes: a title slide with the lesson's goals, the planets'
+orbits to scale, the Sun beside Betelgeuse with 100 Suns counted up, and a quiz whose answers appear when their
+question is clicked. Outputs: a video, an animated SVG per slide and one PowerPoint deck
+(`pptx = { deck = true }`) with slide effects and click triggers for the quiz. [Notebook](https://github.com/wzjoriv/svgwriter/blob/main/demos/planets-explainer/planets-explainer.ipynb).
 
 ## Blobs
 

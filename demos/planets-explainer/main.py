@@ -1,9 +1,10 @@
-"""# Planets explainer
+"""# Planets lesson
 
-A two-part explainer as `Scene` classes. "Eight planets" draws the orbits to scale while each planet
-circles the Sun through the project's `orbit` behaviour. "700× wider" sets the Sun beside Betelgeuse and
-counts a row of 100 Suns on a rolling counter. Saving a scene as SVG or PowerPoint bakes the behaviours
-and the per-frame updates into SMIL.
+A four-slide classroom lesson on the Solar System, written as `Scene` classes: a title slide with the lesson's
+goals, "Eight planets" (the orbits to scale while each planet circles the Sun), "700× wider" (the Sun beside
+Betelgeuse with a row of 100 Suns counted up) and a quiz whose answers appear when their question is clicked.
+The PowerPoint deck has one slide per scene, its animations as slide effects and the quiz answers on click
+triggers; the video and the animated SVGs show the same slides.
 """
 
 # %%
@@ -20,6 +21,37 @@ AU = 36                    # pixels per astronomical unit
 WIDER = 700                # Betelgeuse's diameter in Suns
 ROW = 100                  # Suns counted in the row
 LABELLED = 2               # orbits beyond this many AU get a name; the inner four share one
+
+# %% [markdown]
+# ## Title slide
+# The lesson's name and what students will learn, each goal fading in after the last.
+
+# %%
+GOALS = ("How far the planets are from the Sun", "How big the Sun is next to another star",
+         "Why scale models help us compare")
+
+
+class Lesson(svg.Scene):
+    """The title slide: the lesson's name and its goals."""
+
+    size = "video-720p"
+    fps = 30
+    duration = 4.0
+
+    def __init__(self, speed: float = 1.0) -> None:
+        self.speed = speed
+        super().__init__()
+
+    def build(self, doc: svg.Document) -> None:
+        doc.rect(0, 0, self.width, self.height).as_role("background")
+        title = heading("The Solar System", "Science, lesson 4: distances and sizes", x=MARGIN, y=MARGIN + 80)
+        doc += title
+        title.animate.fade_in(0.8)
+        doc.text("Today we will learn", x=MARGIN, y=MARGIN + 260, font_size=36).as_role("subtitle")
+        for index, goal in enumerate(GOALS):
+            line = doc.text(f"•  {goal}", x=MARGIN + 20, y=MARGIN + 330 + index * 64, font_size=32).as_role("text")
+            line.animate.fade_in(0.6, begin=(0.8 + index * 0.6) / self.speed)
+
 
 # %% [markdown]
 # ## Eight planets
@@ -108,12 +140,47 @@ class Betelgeuse(svg.Scene):
 
 
 # %% [markdown]
-# `scenes` is the project's entry: one clip each. Two controls, a time scale and which clip, drive the same
+# ## Quiz
+# Three questions on cards. Each answer starts hidden and fades in when its card is clicked
+# (`animate.on("click", card)`): in a browser, and as a click trigger in PowerPoint.
+
+# %%
+QUESTIONS = (("Which planet is farthest from the Sun?", "Neptune, about 30 AU away"),
+             ("How many Suns would fit across Betelgeuse?", "About 700"),
+             ("Why are the planets drawn bigger than they are?", "At true size they would be invisible specks"))
+
+
+class Quiz(svg.Scene):
+    """Check your understanding: click a question to show its answer."""
+
+    size = "video-720p"
+    fps = 30
+    duration = 1.0
+
+    def __init__(self, speed: float = 1.0) -> None:
+        self.speed = speed
+        super().__init__()
+
+    def build(self, doc: svg.Document) -> None:
+        doc.rect(0, 0, self.width, self.height).as_role("background")
+        doc += heading("Check your understanding", "Click a question to reveal its answer", x=MARGIN, y=MARGIN)
+        for index, (question, answer) in enumerate(QUESTIONS):
+            top = MARGIN + 170 + index * 150
+            card = doc.group()
+            card.rect(MARGIN, top, self.width - 2 * MARGIN, 120, rx=16).as_role("card")
+            card.text(question, x=MARGIN + 32, y=top + 50, font_size=30).as_role("text")
+            card.interact.hover(opacity=0.9)
+            reveal = doc.text(answer, x=MARGIN + 32, y=top + 96, font_size=28, opacity=0).as_role("answer")
+            reveal.animate.on("click", card).fade_in(0.4)
+
+
+# %% [markdown]
+# `scenes` is the project's entry: one slide (and clip) each. Two controls, a time scale and which clip, drive the same
 # scenes through a function that bakes the chosen one, which `svg.explore` shows in a notebook.
 
 # %%
-scenes = [Planets, Betelgeuse]
-CLIPS = {"Eight planets": Planets, "700× wider": Betelgeuse}
+scenes = [Lesson, Planets, Betelgeuse, Quiz]
+CLIPS = {"Title": Lesson, "Eight planets": Planets, "700× wider": Betelgeuse, "Quiz": Quiz}
 
 
 @svg.widgets.controls(

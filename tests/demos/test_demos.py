@@ -38,7 +38,7 @@ def _quick_copy(name: str, folder: Path) -> svg.Project:
     outputs["formats"] = formats
     for format, options in QUICK.items():
         if format in formats and (format != "svg" or format in outputs):
-            outputs[format] = options
+            outputs[format] = {**dict(outputs.get(format, {})), **options}
     manifest.write_text(tomlkit.dumps(document), encoding="utf-8")
     return svg.Project.load(root)
 
@@ -115,6 +115,18 @@ def test_poster_invitation_shows_its_details(tmp_path: Path) -> None:
     values = {"title": "Dune Planting", "date": "Sunday 5 April 2026", "place": "North end"}
     text = project.build(["svg"], values=values)[0].read_text(encoding="utf-8")
     assert all(value in text for value in values.values()) and "What to bring" in text
+
+
+def test_planets_lesson_writes_one_deck_with_a_quiz_trigger(tmp_path: Path) -> None:
+    import zipfile
+
+    pytest.importorskip("pptx")
+    project = _quick_copy("planets-explainer", tmp_path)
+    (deck,) = project.build(["pptx"])
+    slides = sorted(name for name in zipfile.ZipFile(deck).namelist()
+                    if name.startswith("ppt/slides/slide") and name.endswith(".xml"))
+    assert deck.name == "planets-explainer.pptx" and len(slides) == 4
+    assert "interactiveSeq" in zipfile.ZipFile(deck).read(slides[-1]).decode()
 
 
 def test_playing_card_has_controls_and_a_sweep(tmp_path: Path) -> None:
