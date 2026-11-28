@@ -22,5 +22,5 @@ logo("dark").save("logo-dark.svg")
 ```
 
 Variants are themes ([Themes](themes.md)): `logo("dark")`, `logo("mono")`, or any
-`svg.themes.get("light").replace(palette={...})`. `examples/12_logo.py` in the repository is a complete version with light, dark and mono variants and the full
+`svg.themes.get("light").replace(palette={...})`. `examples/12_logo/logo.py` in the repository is a complete version with light, dark and mono variants and the full
 asset set.
