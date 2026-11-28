@@ -70,6 +70,7 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     b'%PDF-'
     """
     from ...._internal._render._rendering import view_matrix
+    from ...._internal._typography._font_match import static_fonts
     from ....ops.render import page_size, paint_tree
     from .._units import unit_scale
     from ._pdf_boxes import exact_media_boxes, page_points
@@ -83,7 +84,7 @@ def pdf(document: Document | Sequence[Document], *, title: str | None = None, au
     pdf_document = skia.PDF.MakeDocument(stream, metadata)
     sizes: list[tuple[float, float]] = []
     for page in document if isinstance(document, Sequence) else [document]:
-        with page._prepared():
+        with page._prepared(), static_fonts():
             width, height = page_size(page)
             points = PX_PER_PT / unit_scale(page, units_per_inch)
             sizes.append((width / points, height / points))

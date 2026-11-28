@@ -4,6 +4,10 @@ Font faces as CSS sees them: weight, style and stretch ranges, matching and vari
 
 from __future__ import annotations
 
+import io
+from collections.abc import Iterator
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
@@ -23,7 +27,8 @@ from ._font_constants import (
     WIDTH_PERCENT,
 )
 
-__all__ = ["FaceStyle", "FontStyle", "Range", "axis_tag", "describe", "instance", "match_rank", "style_of"]
+__all__ = ["STATIC_FONTS", "FaceStyle", "FontStyle", "Range", "axis_tag", "describe", "instance", "match_rank",
+           "static_font", "static_fonts", "static_instance", "style_of"]
 
 FontStyle = Literal["normal", "italic", "oblique"]
 Range = tuple[float, float]
@@ -146,3 +151,65 @@ def instance(typeface: Any, face: FaceStyle, weight: float, style: str) -> Any:
     arguments = skia.FontArguments()
     arguments.setVariationDesignPosition(skia.FontArguments.VariationPosition(coordinates))
     return typeface.makeClone(arguments)
+
+
+STATIC_FONTS: ContextVar[bool] = ContextVar("svgwriter_static_fonts", default=False)
+"""True while writing a format that needs static fonts (PDF): variable faces are then instanced."""
+
+
+@contextmanager
+def static_fonts() -> Iterator[None]:
+    """Instance variable fonts at their used position for the block, so PDF embeds them as TrueType."""
+    token = STATIC_FONTS.set(True)
+    try:
+        yield
+    finally:
+        STATIC_FONTS.reset(token)
+
+
+def static_font(font: Any) -> Any:
+    """*font* with a static copy of its typeface when that is variable and static fonts are on; else *font*."""
+    typeface = font.getTypeface() if STATIC_FONTS.get() else None
+    if typeface is None or not variation_axes(typeface):
+        return font
+    position = {str(axis_tag(coordinate.axis)): coordinate.value
+                for coordinate in typeface.getVariationDesignPosition()}
+    static = static_instance(typeface, position)
+    if static is None:
+        return font
+    copy = font.makeWithSize(font.getSize())
+    copy.setTypeface(static)
+    return copy
+
+
+def static_instance(typeface: Any, position: dict[str, float]) -> Any:
+    """A static (non-variable) copy of *typeface* at *position*, or None when fontTools is missing."""
+    key = (typeface.getFamilyName(), typeface.uniqueID(), tuple(sorted(position.items())))
+    if key not in _STATIC:
+        _STATIC[key] = _instanced(typeface, position)
+    return _STATIC[key]
+
+
+def _instanced(typeface: Any, position: dict[str, float]) -> Any:
+    try:
+        from fontTools.ttLib import TTFont
+        from fontTools.varLib.instancer import instantiateVariableFont
+    except ImportError:
+        return None
+    from ._sfnt import sfnt_bytes
+
+    data = sfnt_bytes(typeface)
+    try:
+        try:
+            font = instantiateVariableFont(TTFont(io.BytesIO(data)), position, updateFontNames=True)
+        except Exception:  # noqa: BLE001 - fonts without a STAT table cannot be renamed; keep their names
+            font = instantiateVariableFont(TTFont(io.BytesIO(data)), position)
+        out = io.BytesIO()
+        font.save(out)
+    except Exception:  # noqa: BLE001 - a font fontTools cannot instance keeps its variable form
+        return None
+    return skia.Typeface.MakeFromData(skia.Data.MakeWithCopy(out.getvalue()))
+
+
+_STATIC: dict[tuple[Any, ...], Any] = {}
+"""Static instances made so far, by family, typeface id and position."""
