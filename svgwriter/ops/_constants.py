@@ -35,21 +35,17 @@ __all__ = [
     "DEFAULT_FONT_SIZE",
     "DEFAULT_QUALITY",
     "DEFAULT_STROKE_WIDTH",
-    "DISCRETE_SWITCH",
     "DISPLAY",
     "EDGE_STROKE",
     "EDGE_WIDTH",
     "EFFECTS",
     "EVENODD",
     "FORMATS",
-    "FULL_TURN",
-    "GEOMETRY_SKIP",
     "GLYPH_CACHE",
     "GRAPH_LAYOUTS",
     "GRAPH_SIZE",
     "GRAPH_TYPES",
     "IGRAPH_LAYOUT_NAMES",
-    "HALF_TURN",
     "JOINS",
     "LABEL_BASELINE",
     "LABEL_SIZE",
@@ -60,11 +56,6 @@ __all__ = [
     "MASK_CANVAS",
     "MEASURE_PRECISION",
     "MISSING_GLYPH",
-    "MORPH_CORNER",
-    "MORPH_FLATNESS",
-    "MORPH_MAX_POINTS",
-    "MORPH_MIN_POINTS",
-    "MORPH_SPACING",
     "MOVETO",
     "CORNER_TOLERANCE",
     "LENGTH_SEARCH_STEPS",
@@ -179,15 +170,6 @@ SEEDED_LAYOUTS: Final = ("spring", "random")
 LABEL_BASELINE: Final = 0.35
 MUTUAL_BEND: Final = 0.15
 
-HALF_TURN: Final = 180.0
-FULL_TURN: Final = 360.0
-DISCRETE_SWITCH: Final = 0.5
-GEOMETRY_SKIP: Final = frozenset({"id", "transform", "d", "points"})
-MORPH_SPACING: Final = 0.012
-MORPH_FLATNESS: Final = 0.001
-MORPH_MIN_POINTS: Final = 24
-MORPH_MAX_POINTS: Final = 600
-MORPH_CORNER: Final = 0.35
 
 DEFAULT_STROKE_WIDTH: Final = 1.0
 MEASURE_PRECISION: Final = 16.0

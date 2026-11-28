@@ -2,7 +2,7 @@
 
 Ready-made patterns, gradients, filters, markers and effects; see the [Presets guide](../guides/presets.md)
 for pictures of each. `@svg.preset.pattern`, `filter`, `gradient`, `marker` and `effect` (documented
-under [Composite shapes and effects](paths.md)) add your own to these catalogues.
+under [Composite shapes and effects](paths.md)) add your own to these catalogues; `@svg.preset.interpolator` adds how two values blend.
 
 ```{eval-rst}
 .. automodule:: svgwriter.library.patterns
@@ -18,6 +18,9 @@ under [Composite shapes and effects](paths.md)) add your own to these catalogues
    :members:
 
 .. automodule:: svgwriter.library.effects
+   :members:
+
+.. automodule:: svgwriter.library.interpolators
    :members:
 ```
 

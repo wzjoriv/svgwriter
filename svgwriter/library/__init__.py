@@ -9,6 +9,8 @@ patterns, gradients, filters, markers, effects
     Ready-made paints, filters, line markers and effects for any element.
 interactions
     Ready-made hover and click responses (``el.interact.button()``).
+interpolators
+    How two values blend when tweening and morphing (``svg.interpolate``).
 preset
     Presets of your own by kind (animation, shape, pattern and more).
 fonts

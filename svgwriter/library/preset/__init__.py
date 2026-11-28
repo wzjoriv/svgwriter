@@ -1,7 +1,7 @@
 """Presets of your own, by kind, each found by name.
 
-Every kind is a registry: animations, behaviors, shapes, patterns, filters, gradients, markers and
-effects register by decorator (bare, or with ``name=`` and ``replace=``) and sizes by a call
+Every kind is a registry: animations, behaviors, shapes, patterns, filters, gradients, markers,
+effects, interactions, path effects and interpolators register by decorator (bare, or with ``name=`` and ``replace=``) and sizes by a call
 (``svg.preset.size(name, width, height)``); each has ``list()``, ``get(name)`` and ``unregister(name)``. A
 taken name raises an error naming its owner, built-in presets included; ``replace=True`` replaces one on
 purpose. Registered patterns, filters, gradients, markers and effects join their catalogues
@@ -32,6 +32,7 @@ from ..._internal._presets import (
     FILTERS,
     GRADIENTS,
     INTERACTIONS,
+    INTERPOLATORS,
     KINDS,
     MARKERS,
     PATH_EFFECTS,
@@ -43,6 +44,7 @@ from ..._internal._presets import (
     DefinitionPresets,
     EffectPresets,
     InteractionPresets,
+    InterpolatorPresets,
     PathEffectPresets,
     ShapePresets,
     SizePresets,
@@ -59,6 +61,7 @@ marker: Final = MARKERS
 effect: Final = EFFECTS
 interaction: Final = INTERACTIONS
 path_effect: Final = PATH_EFFECTS
+interpolator: Final = INTERPOLATORS
 
 __all__ = [
     "KINDS",
@@ -67,6 +70,7 @@ __all__ = [
     "DefinitionPresets",
     "EffectPresets",
     "InteractionPresets",
+    "InterpolatorPresets",
     "PathEffectPresets",
     "ShapePresets",
     "SizePresets",
@@ -76,6 +80,7 @@ __all__ = [
     "filter",
     "gradient",
     "interaction",
+    "interpolator",
     "marker",
     "path_effect",
     "pattern",
