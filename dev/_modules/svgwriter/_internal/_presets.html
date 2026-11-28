@@ -375,7 +375,7 @@
 
 
 <div class="viewcode-block" id="AnimationPresets">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.AnimationPresets">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.AnimationPresets">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AnimationPresets</span><span class="p">(</span><span class="n">Registry</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="s2">"Motion | None"</span><span class="p">]]):</span>
 <span class="w">    </span><span class="sd">"""Animation presets: a typed function becomes ``element.animate.&lt;name&gt;(...)``.</span>
 
@@ -412,7 +412,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">F</span><span class="p">],</span> <span class="n">F</span><span class="p">]:</span> <span class="o">...</span>
 
 <div class="viewcode-block" id="AnimationPresets.register">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.AnimationPresets.register">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.AnimationPresets.register">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">F</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">F</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">F</span><span class="p">],</span> <span class="n">F</span><span class="p">]:</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type,return-value]</span></div>
@@ -421,7 +421,7 @@
     <span class="fm">__call__</span> <span class="o">=</span> <span class="n">register</span>
 
 <div class="viewcode-block" id="AnimationPresets.prepare">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.AnimationPresets.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.AnimationPresets.prepare">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Motion</span> <span class="o">|</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Motion</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="n">_check_motion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">BEHAVIORS</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
                       <span class="s2">"def </span><span class="si">{name}</span><span class="s2">(motion: svg.Motion, *, option: float = 1.0) -&gt; svg.Motion"</span><span class="p">)</span>
@@ -431,7 +431,7 @@
 
 
 <div class="viewcode-block" id="BehaviorPresets">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.BehaviorPresets">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.BehaviorPresets">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BehaviorPresets</span><span class="p">(</span><span class="n">Registry</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]):</span>
 <span class="w">    </span><span class="sd">"""Behaviors: Python motion that a :class:`~svgwriter.Scene` runs before every frame.</span>
 
@@ -464,7 +464,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">F</span><span class="p">],</span> <span class="n">F</span><span class="p">]:</span> <span class="o">...</span>
 
 <div class="viewcode-block" id="BehaviorPresets.register">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.BehaviorPresets.register">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.BehaviorPresets.register">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">F</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">F</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">F</span><span class="p">],</span> <span class="n">F</span><span class="p">]:</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type,return-value]</span></div>
@@ -473,7 +473,7 @@
     <span class="fm">__call__</span> <span class="o">=</span> <span class="n">register</span>
 
 <div class="viewcode-block" id="BehaviorPresets.prepare">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.BehaviorPresets.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.BehaviorPresets.prepare">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="n">_check_motion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">ANIMATIONS</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
                       <span class="s2">"def </span><span class="si">{name}</span><span class="s2">(element: svg.Element, seconds: float, *, option: float = 1.0) -&gt; None"</span><span class="p">)</span>
@@ -483,7 +483,7 @@
 
 
 <div class="viewcode-block" id="ShapePresets">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.ShapePresets">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.ShapePresets">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ShapePresets</span><span class="p">(</span><span class="n">Registry</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="s2">"Element"</span><span class="p">]]):</span>
 <span class="w">    </span><span class="sd">"""Shape presets: a function returning an element, listed by ``svgwriter shapes``.</span>
 
@@ -503,7 +503,7 @@
 <span class="sd">    &gt;&gt;&gt; svg.preset.shape(name="star")(disc)  # doctest: +ELLIPSIS</span>
 <span class="sd">    Traceback (most recent call last):</span>
 <span class="sd">    ...</span>
-<span class="sd">    ValueError: shape 'star' is already registered by svgwriter.catalog.paths._shapes.star (built in); pass replace=True ...</span>
+<span class="sd">    ValueError: shape 'star' is already registered by svgwriter.library.paths._shapes.star (built in); pass replace=True ...</span>
 <span class="sd">    &gt;&gt;&gt; _ = svg.preset.shape.unregister("disc")</span>
 <span class="sd">    """</span>
 
@@ -516,7 +516,7 @@
                  <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]]:</span> <span class="o">...</span>
 
 <div class="viewcode-block" id="ShapePresets.register">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.ShapePresets.register">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.ShapePresets.register">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">role</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">"shape"</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">decorate</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
@@ -541,7 +541,7 @@
 
 
 <div class="viewcode-block" id="DefinitionPresets">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.DefinitionPresets">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.DefinitionPresets">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DefinitionPresets</span><span class="p">(</span><span class="n">Registry</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="s2">"Element"</span><span class="p">]]):</span>
 <span class="w">    </span><span class="sd">"""Pattern, filter, gradient or marker presets: functions building a reusable definition.</span>
 
@@ -581,7 +581,7 @@
                  <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]]:</span> <span class="o">...</span>
 
 <div class="viewcode-block" id="DefinitionPresets.register">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.DefinitionPresets.register">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.DefinitionPresets.register">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span></div>
@@ -590,7 +590,7 @@
     <span class="fm">__call__</span> <span class="o">=</span> <span class="n">register</span>
 
 <div class="viewcode-block" id="DefinitionPresets.prepare">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.DefinitionPresets.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.DefinitionPresets.prepare">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Element</span><span class="p">]:</span>
         <span class="n">kind</span><span class="p">,</span> <span class="n">types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_types</span>
 
@@ -609,7 +609,7 @@
 
 
 <div class="viewcode-block" id="EffectPresets">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.EffectPresets">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.EffectPresets">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EffectPresets</span><span class="p">(</span><span class="n">Registry</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="s2">"Element"</span><span class="p">]]):</span>
 <span class="w">    </span><span class="sd">"""Effects: a function styling an element becomes an effect for any element and for ranges of a text.</span>
 
@@ -645,7 +645,7 @@
                  <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Styler</span><span class="p">[</span><span class="n">P</span><span class="p">]],</span> <span class="n">Effect</span><span class="p">[</span><span class="n">P</span><span class="p">]]:</span> <span class="o">...</span>
 
 <div class="viewcode-block" id="EffectPresets.register">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.EffectPresets.register">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.EffectPresets.register">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Styler</span><span class="p">[</span><span class="n">P</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span></div>
@@ -654,7 +654,7 @@
     <span class="fm">__call__</span> <span class="o">=</span> <span class="n">register</span>
 
 <div class="viewcode-block" id="EffectPresets.prepare">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.EffectPresets.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.EffectPresets.prepare">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Element</span><span class="p">]:</span>
         <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">effect</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Target</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Element</span><span class="p">:</span>
@@ -678,7 +678,7 @@
 
 
 <div class="viewcode-block" id="SizePresets">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.SizePresets">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.SizePresets">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SizePresets</span><span class="p">(</span><span class="n">Registry</span><span class="p">[</span><span class="s2">"PageSize"</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">"""Named canvas sizes for ``Document(size=name)``, ``Scene.size`` and project files.</span>
 
@@ -705,7 +705,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">PageSize</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SizePresets.name_of">
-<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.catalog.preset.SizePresets.name_of">[docs]</a>
+<a class="viewcode-back" href="../../../reference/paths.html#svgwriter.library.preset.SizePresets.name_of">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">name_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"sizes register with a name: svg.preset.size(name, width, height)"</span><span class="p">)</span></div>
 </div>
