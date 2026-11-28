@@ -30,12 +30,12 @@ font, size and alignment, history line, key font and weight, spacing and palette
 
 ## Effects
 
-![Words that smoke, shine, blow, burn and snow beside a logo and buttons](_static/demos/effects.gif)
+![A retro game title screen with fire and metal title words and glowing menu buttons](_static/demos/effects.gif)
 
-[`demos/effects`](https://github.com/wzjoriv/svgwriter/tree/main/demos/effects): a passage on a
-night card where five words carry the smoke, metal, wind, fire and snow effects while staying text, beside a logo and two buttons with effects of their own, and a dropdown
-per word, for the logo and for the buttons to swap each effect.
-Outputs: an animated SVG and a GIF. [Notebook](https://github.com/wzjoriv/svgwriter/blob/main/demos/effects/effects.ipynb).
+[`demos/effects`](https://github.com/wzjoriv/svgwriter/tree/main/demos/effects): a retro game title screen
+whose two title words carry their own effects (still selectable text), a blinking "Press start" and menu
+buttons that glow and respond to hover and click, with controls for the title and each effect. Outputs: an
+animated SVG and a GIF. [Notebook](https://github.com/wzjoriv/svgwriter/blob/main/demos/effects/effects.ipynb).
 
 ## Planets explainer
 
