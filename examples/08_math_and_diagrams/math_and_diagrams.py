@@ -28,22 +28,13 @@ for index, (source, color) in enumerate(FORMULAS):
 formulas
 
 # %% [markdown]
-# `Document.from_string(text, "mermaid")` reads Mermaid source (`Document.open` reads a file).
+# `Document.open` reads Mermaid files such as `pipeline.mmd`, beside this example
+# (`Document.from_string(text, "mermaid")` reads source text).
 # Flowcharts (`graph` / `flowchart`) are parsed and laid out by svgwriter itself when the Mermaid CLI
 # is missing, so this needs no external tool.
 
 # %%
-FLOWCHART = """flowchart LR
-    A([Python code]) --> B{svgwriter}
-    B -->|vector| C[SVG]
-    B -->|raster| D[PNG / GIF]
-    B -->|documents| E[PDF / TikZ]
-    C --> F((Browser))
-    D --> F
-    E --> G[[Paper]]
-"""
-
-flow = svg.Document.from_string(FLOWCHART, "mermaid")
+flow = svg.Document.open("pipeline.mmd")
 flow
 
 # %% [markdown]

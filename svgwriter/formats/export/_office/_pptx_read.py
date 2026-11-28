@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import io
 import math
+import warnings
 from typing import TYPE_CHECKING, Any
 
 from . import require
@@ -15,19 +16,29 @@ from ._constants import (
     ASCENT,
     DEFAULT_TEXT_PT,
     EMU_PER_UNIT,
+    HORIZONTAL_ALIGNS,
     LINE_HEIGHT,
     M_NS,
+    P_NS,
     POINTS_PER_UNIT,
     PPTX_SIZE_SCALE,
     ROUND_RECT_ADJUST,
+    SCHEME_ALIASES,
+    STYLE_LINE_WIDTH,
+    THEME_RELATIONSHIP,
+    VERTICAL_ANCHORS,
 )
 from ._drawingml import read_gradient, read_line_style
 from ._pptx import _a
+from ._pptx_presets import preset_points
 from ._pptx_timing_read import read_timing, read_triggers
 
 if TYPE_CHECKING:
     from ....document import Document
 
+
+_SCHEMES: dict[int, dict[str, str]] = {}
+"""Theme colour schemes read so far, by slide master part."""
 
 def read_pptx(data: bytes, index: int | None) -> Document | list[Document]:
     """Read one slide, or every slide when *index* is None; see :func:`svgwriter.formats.export._office.read_pptx`."""
@@ -111,10 +122,45 @@ def _link(shape: Any) -> str | None:
 def _outline(shape: Any, left: float, top: float, width: float, height: float) -> Any:
     """A preset or custom shape as a ``<path>`` with its fill and outline, or None."""
     properties = getattr(shape._element, "spPr", None)
-    return outline(properties, left, top, width, height) if properties is not None else None
+    if properties is None:
+        return None
+    style = shape._element.find(f"{{{P_NS}}}style")
+    return outline(properties, left, top, width, height, scheme=_scheme(shape), style=style)
 
 
-def outline(properties: Any, left: float, top: float, width: float, height: float) -> Any:
+def _scheme(shape: Any) -> dict[str, str]:
+    """The theme colour scheme of the slide holding *shape* (``accent1``, ``dk1``, ...) as ``#rrggbb``."""
+    try:
+        master = shape.part.slide.slide_layout.slide_master.part
+    except AttributeError:
+        return {}
+    cached = _SCHEMES.get(id(master))
+    if cached is None:
+        cached = _SCHEMES[id(master)] = _read_scheme(master)
+    return cached
+
+
+def _read_scheme(master: Any) -> dict[str, str]:
+    from lxml import etree
+
+    try:
+        theme = etree.fromstring(master.part_related_by(THEME_RELATIONSHIP).blob)
+    except (KeyError, ValueError, etree.XMLSyntaxError):
+        return {}
+    colors = {}
+    for entry in theme.iter(_a("clrScheme")):
+        for slot in entry:
+            value = slot.find(_a("srgbClr"))
+            system = slot.find(_a("sysClr"))
+            code = value.get("val") if value is not None else system.get("lastClr") if system is not None else None
+            if code:
+                colors[etree.QName(slot).localname] = "#" + code
+        break
+    return colors
+
+
+def outline(properties: Any, left: float, top: float, width: float, height: float, *,
+            scheme: dict[str, str] | None = None, style: Any = None) -> Any:
     """The geometry of a DrawingML ``spPr`` as a ``<path>`` with its solid or gradient fill and outline.
 
     Parameters
@@ -123,6 +169,11 @@ def outline(properties: Any, left: float, top: float, width: float, height: floa
         The shape properties holding a preset or custom geometry.
     left, top, width, height : float
         The shape's box on the page, in user units.
+    scheme : dict of str to str, optional
+        Theme colours by slot (``accent1``, ``dk1``, ...) for ``<a:schemeClr>`` fills. Defaults to None.
+    style : lxml element, optional
+        The shape's ``<p:style>``: its fill and line references paint a shape without its own. Defaults
+        to None.
 
     Returns
     -------
@@ -150,13 +201,19 @@ def outline(properties: Any, left: float, top: float, width: float, height: floa
     if data is None:
         return None
     path = Path(data)
-    fill, stroke = _solid(properties.find(_a("solidFill"))), None
+    fill, stroke = _solid(properties.find(_a("solidFill")), scheme), None
     shade = properties.find(_a("gradFill"))
     if fill is None and shade is not None:
         fill = read_gradient(shade, left, top, width, height)
+    if fill is None and shade is None and properties.find(_a("noFill")) is None and style is not None:
+        fill = _solid(style.find(_a("fillRef")), scheme)
     line = properties.find(_a("ln"))
+    if line is None and style is not None:
+        stroke = _solid(style.find(_a("lnRef")), scheme)
+        if stroke is not None:
+            path.set("stroke-width", STYLE_LINE_WIDTH)
     if line is not None and line.find(_a("noFill")) is None:
-        stroke = _solid(line.find(_a("solidFill")))
+        stroke = _solid(line.find(_a("solidFill")), scheme)
         if stroke is not None:
             stroke_width = int(line.get("w", EMU_PER_UNIT)) / EMU_PER_UNIT
             path.set("stroke-width", stroke_width)
@@ -169,15 +226,23 @@ def outline(properties: Any, left: float, top: float, width: float, height: floa
     return path
 
 
-def _solid(fill: Any) -> Any:
-    """The color of an ``<a:solidFill>`` with an explicit RGB value, alpha included, or None."""
+def _solid(fill: Any, scheme: dict[str, str] | None = None) -> Any:
+    """The colour of an ``<a:solidFill>`` (or a style reference): an RGB value or a theme slot, alpha included."""
     from ....model.color.color import Color
 
-    rgb = fill.find(_a("srgbClr")) if fill is not None else None
-    if rgb is None:
+    if fill is None:
         return None
-    alpha = rgb.find(_a("alpha"))
-    value = Color.parse("#" + rgb.get("val"))
+    rgb, slot = fill.find(_a("srgbClr")), fill.find(_a("schemeClr"))
+    if rgb is not None:
+        value, source = Color.parse("#" + rgb.get("val")), rgb
+    elif slot is not None and scheme:
+        code = scheme.get(SCHEME_ALIASES.get(slot.get("val"), slot.get("val")))
+        if code is None:
+            return None
+        value, source = Color.parse(code), slot
+    else:
+        return None
+    alpha = source.find(_a("alpha"))
     return value.with_alpha(int(alpha.get("val")) / ALPHA_SCALE) if alpha is not None else value
 
 
@@ -209,7 +274,7 @@ def _custom_path(geometry: Any, left: float, top: float, width: float, height: f
 
 def _preset_path(name: str | None, left: float, top: float, width: float, height: float) -> Any:
     """Outlines of the common preset shapes."""
-    from ....model.elements.shapes import Ellipse, Line, Rect
+    from ....model.elements.shapes import Ellipse, Line, Polygon, Rect
 
     if name == "rect":
         return Rect(left, top, width, height).local_outline()
@@ -220,7 +285,11 @@ def _preset_path(name: str | None, left: float, top: float, width: float, height
         return Ellipse(left + width / 2, top + height / 2, width / 2, height / 2).local_outline()
     if name in ("line", "straightConnector1"):
         return Line(left, top, left + width, top + height).local_outline()
-    return None
+    points = preset_points(str(name), left, top, width, height)
+    if points is None:
+        warnings.warn(f"PowerPoint shape {name!r} is not supported yet; drawn as its box", stacklevel=6)
+        return Rect(left, top, width, height).local_outline()
+    return Polygon(points).local_outline()
 
 
 def _text(shape: Any, left: float, top: float) -> Any:
@@ -235,15 +304,27 @@ def _text(shape: Any, left: float, top: float) -> Any:
     group = Group()
     if not frame.text.strip():
         return _equation(shape, left, top, group)
-    left += (frame.margin_left or 0) / EMU_PER_UNIT
-    line_top = top + (frame.margin_top or 0) / EMU_PER_UNIT
+    inner_left = left + (frame.margin_left or 0) / EMU_PER_UNIT
+    inner_top = top + (frame.margin_top or 0) / EMU_PER_UNIT
+    inner_width = (shape.width or 0) / EMU_PER_UNIT - ((frame.margin_left or 0) + (frame.margin_right or 0)) / EMU_PER_UNIT
+    inner_height = (shape.height or 0) / EMU_PER_UNIT - ((frame.margin_top or 0) + (frame.margin_bottom or 0)) / EMU_PER_UNIT
+    lines = []
     for paragraph in frame.paragraphs:
         font = next((run.font for run in paragraph.runs if run.font.size is not None), None)
         size_units = (font.size.pt if font is not None else DEFAULT_TEXT_PT) / POINTS_PER_UNIT
+        lines.append((paragraph, font, size_units))
+    total = sum(size * LINE_HEIGHT for _, _, size in lines)
+    anchor = frame._txBody.find(_a("bodyPr"))  # noqa: SLF001 - the vertical anchor is not exposed by python-pptx
+    vertical = anchor.get("anchor", "t") if anchor is not None else "t"
+    line_top = inner_top + max(inner_height - total, 0) * VERTICAL_ANCHORS.get(vertical, 0.0)
+    for paragraph, font, size_units in lines:
         content = paragraph.text
         if content:
-            text = Text(content, x=left, y=line_top + size_units * ASCENT,
-                        font_size=math.floor(size_units * 100) / 100)
+            properties = paragraph._p.find(_a("pPr"))  # noqa: SLF001 - read the raw alignment code
+            align = properties.get("algn", "l") if properties is not None else "l"
+            share, text_anchor = HORIZONTAL_ALIGNS.get(align, (0.0, None))
+            text = Text(content, x=inner_left + inner_width * share, y=line_top + size_units * ASCENT,
+                        font_size=math.floor(size_units * 100) / 100, text_anchor=text_anchor)
             if font is not None:
                 _text_style(text, font)
             group.add(text)

@@ -1,0 +1,8 @@
+flowchart LR
+    A([Python code]) --> B{svgwriter}
+    B -->|vector| C[SVG]
+    B -->|raster| D[PNG / GIF]
+    B -->|documents| E[PDF / TikZ]
+    C --> F((Browser))
+    D --> F
+    E --> G[[Paper]]

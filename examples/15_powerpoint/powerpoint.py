@@ -77,6 +77,18 @@ def side_by_side(left: svg.Document, right: svg.Document) -> svg.Document:
     return doc
 
 
+# %% [markdown]
+# ## A deck made in PowerPoint
+#
+# `quarterly.pptx`, beside this example, was made outside svgwriter. Each slide reads back as a document
+# whose text boxes, autoshapes and colours are native elements.
+
+# %%
+quarterly = svg.Document.open_all("quarterly.pptx")
+print(len(quarterly), "slide(s) in quarterly.pptx")
+quarterly[0]
+
+
 if __name__ == "__main__":
     svg.export.save(DECK, "15_powerpoint.pptx")
     slides = svg.Document.open_all("15_powerpoint.pptx")
