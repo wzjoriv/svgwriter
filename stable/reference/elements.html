@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Elements - svgwriter 2.7.0</title>
+        <title>Elements - svgwriter 2.8.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.7.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.8.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.7.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.8.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.7.0</span>
+  <span class="sidebar-versions-label">2.8.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -8788,6 +8788,40 @@ one instant, so they take only the moment. Presets added with
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="svgwriter.Motion.on">
+<span class="sig-name descname"><span class="pre">on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#svgwriter.model.elements.Element" title="svgwriter.model.elements.Element"><span class="pre">Element</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Triggered</span></span></span><a class="reference internal" href="../_modules/svgwriter/model/elements/_motion.html#Motion.on"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Motion.on" title="Link to this definition">¶</a></dt>
+<dd><p>The presets started by a pointer event instead of the clock: <code class="docutils literal notranslate"><span class="pre">el.animate.on(&quot;click&quot;).pulse()</span></code>.</p>
+<p>Each preset’s <code class="docutils literal notranslate"><span class="pre">begin</span></code> becomes a delay after the event. SVG in browsers and viewers plays the
+animation when the event happens, and can replay it; still images, PDF and video show the resting
+state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – <code class="docutils literal notranslate"><span class="pre">&quot;click&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;hover&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;leave&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;press&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;release&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;focus&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;blur&quot;</span></code>.</p></li>
+<li><p><strong>source</strong> (<a class="reference internal" href="#svgwriter.model.elements.Element" title="svgwriter.model.elements.Element"><em>Element</em></a><em>, </em><em>optional</em>) – The element the event happens on, such as a button that animates something else. Defaults to
+this element.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Triggered</em> – The presets, each returning the same object to chain.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If <em>event</em> is not a known event name.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">button</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">"go"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">ball</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">"click"</span><span class="p">,</span> <span class="n">button</span><span class="p">)</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">ball</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"begin"</span><span class="p">))</span>
+<span class="go">'go.click+0.2s'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="svgwriter.Motion.apply">
 <span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">function:</span> <span class="pre">~collections.abc.Callable[[~typing.Concatenate[~svgwriter.model.elements._motion.Motion,</span> <span class="pre">~P]],</span> <span class="pre">~svgwriter.model.elements._motion.Motion</span> <span class="pre">|</span> <span class="pre">None],</span> <span class="pre">*args:</span> <span class="pre">~typing.~P,</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.~P</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#svgwriter.Motion" title="svgwriter.model.elements._motion.Motion"><span class="pre">Motion</span></a></span></span><a class="reference internal" href="../_modules/svgwriter/model/elements/_motion.html#Motion.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#svgwriter.Motion.apply" title="Link to this definition">¶</a></dt>
 <dd><p>Run an animation function on this element: <code class="docutils literal notranslate"><span class="pre">function(self,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>.</p>
@@ -9800,6 +9834,7 @@ rewritten to the matched start shape, which looks the same.</p>
 <li><a class="reference internal" href="#animation-presets">Animation presets</a><ul>
 <li><a class="reference internal" href="#svgwriter.Motion"><code class="docutils literal notranslate"><span class="pre">Motion</span></code></a><ul>
 <li><a class="reference internal" href="#svgwriter.Motion.element"><code class="docutils literal notranslate"><span class="pre">Motion.element</span></code></a></li>
+<li><a class="reference internal" href="#svgwriter.Motion.on"><code class="docutils literal notranslate"><span class="pre">Motion.on()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Motion.apply"><code class="docutils literal notranslate"><span class="pre">Motion.apply()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Motion.tween"><code class="docutils literal notranslate"><span class="pre">Motion.tween()</span></code></a></li>
 <li><a class="reference internal" href="#svgwriter.Motion.show"><code class="docutils literal notranslate"><span class="pre">Motion.show()</span></code></a></li>
@@ -9832,7 +9867,7 @@ rewritten to the matched start shape, which looks the same.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=9cebf295"></script>
+</div><script src="../_static/documentation_options.js?v=e9694baa"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

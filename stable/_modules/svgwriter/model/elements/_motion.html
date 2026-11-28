@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>svgwriter.model.elements._motion - svgwriter 2.7.0</title>
+        <title>svgwriter.model.elements._motion - svgwriter 2.8.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">svgwriter 2.7.0</div></a>
+      <a href="../../../../index.html"><div class="brand">svgwriter 2.8.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,10 +192,10 @@
     <img class="sidebar-logo" src="../../../../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.7.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.8.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.7.0</span>
+  <span class="sidebar-versions-label">2.8.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
@@ -319,6 +319,7 @@
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._presets</span><span class="w"> </span><span class="kn">import</span> <span class="n">ANIMATIONS</span><span class="p">,</span> <span class="n">BEHAVIORS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..._internal._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">P</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._motion_events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Triggered</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._motion_transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransformPresets</span><span class="p">,</span> <span class="n">timing</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.animation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Animate</span><span class="p">,</span> <span class="n">AnimateMotion</span><span class="p">,</span> <span class="n">Ease</span><span class="p">,</span> <span class="n">EaseLike</span><span class="p">,</span> <span class="n">Set</span>
 
@@ -412,6 +413,46 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="n">element</span>
+
+<div class="viewcode-block" id="Motion.on">
+<a class="viewcode-back" href="../../../../reference/elements.html#svgwriter.Motion.on">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Element</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Triggered</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The presets started by a pointer event instead of the clock: ``el.animate.on("click").pulse()``.</span>
+
+<span class="sd">        Each preset's ``begin`` becomes a delay after the event. SVG in browsers and viewers plays the</span>
+<span class="sd">        animation when the event happens, and can replay it; still images, PDF and video show the resting</span>
+<span class="sd">        state.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        event : str</span>
+<span class="sd">            ``"click"``, ``"hover"``, ``"leave"``, ``"press"``, ``"release"``, ``"focus"`` or ``"blur"``.</span>
+<span class="sd">        source : Element, optional</span>
+<span class="sd">            The element the event happens on, such as a button that animates something else. Defaults to</span>
+<span class="sd">            this element.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Triggered</span>
+<span class="sd">            The presets, each returning the same object to chain.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If *event* is not a known event name.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import svgwriter as svg</span>
+<span class="sd">        &gt;&gt;&gt; doc = svg.Document(width=80, height=30)</span>
+<span class="sd">        &gt;&gt;&gt; button = doc.rect(0, 0, 30, 20, id="go")</span>
+<span class="sd">        &gt;&gt;&gt; ball = doc.circle(50, 10, 5)</span>
+<span class="sd">        &gt;&gt;&gt; _ = ball.animate.on("click", button).move_to(70, 10, begin=0.2)</span>
+<span class="sd">        &gt;&gt;&gt; str(ball.children[-1].get("begin"))</span>
+<span class="sd">        'go.click+0.2s'</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">Triggered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">animation</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Motion</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">animation</span><span class="p">)</span>
@@ -793,7 +834,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=9cebf295"></script>
+</div><script src="../../../../_static/documentation_options.js?v=e9694baa"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
-        <title>Animation - svgwriter 2.7.0</title>
+        <title>Animation - svgwriter 2.8.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">svgwriter 2.7.0</div></a>
+      <a href="../index.html"><div class="brand">svgwriter 2.8.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,10 +193,10 @@
     <img class="sidebar-logo" src="../_static/logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">svgwriter 2.7.0</span>
+  <span class="sidebar-brand-text">svgwriter 2.8.0</span>
   
 </a><div class="sidebar-versions">
-  <span class="sidebar-versions-label">2.7.0</span>
+  <span class="sidebar-versions-label">2.8.0</span>
   <a href="https://wzjoriv.github.io/svgwriter/stable/" class="current">stable</a>
   <a href="https://wzjoriv.github.io/svgwriter/dev/" class="">dev</a>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -394,6 +394,28 @@ A shape without a stroke is drawn with its fill color, every contour of a shape 
 <span class="n">title</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>
 <span class="n">badge</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">)</span>
 <span class="n">badge</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">uncreate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="started-by-a-click-or-hover">
+<h2>Started by a click or hover<a class="headerlink" href="#started-by-a-click-or-hover" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">element.animate.on(event)</span></code> gives the same presets, started by a pointer event instead of the clock;
+<code class="docutils literal notranslate"><span class="pre">begin</span></code> becomes a delay after the event. Events are <code class="docutils literal notranslate"><span class="pre">&quot;click&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;hover&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;leave&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;press&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;release&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;focus&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;blur&quot;</span></code>, and a second argument names another element to watch:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">key</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">)</span>
+<span class="n">key</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">"click"</span><span class="p">)</span><span class="o">.</span><span class="n">pulse</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>            <span class="c1"># the key bounces when clicked</span>
+<span class="n">lamp</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"gold"</span><span class="p">,</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">lamp</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">"hover"</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">fade_in</span><span class="p">(</span><span class="mf">0.4</span><span class="p">)</span>              <span class="c1"># the lamp lights up when the pointer reaches the key</span>
+</pre></div>
+</div>
+<p>No script is involved: the file stays plain SVG 1.1 and plays in browsers and SVG viewers. PowerPoint
+plays click, press and release starts as triggers on the clicked shape (and reading the deck back gives
+click starts again); it has no hover trigger. Still images, PDF, video and other formats without events
+show the resting state.</p>
+<p>For a style that holds only while the pointer is over an element, use <code class="docutils literal notranslate"><span class="pre">on_hover</span></code> with presentation
+properties; it is written as a CSS <code class="docutils literal notranslate"><span class="pre">:hover</span></code> rule:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">key</span><span class="o">.</span><span class="n">on_hover</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">"darkcyan"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span> <span class="n">stroke_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -791,6 +813,7 @@ numpy array. Mix footage with vector animation in <code class="docutils literal 
 <li><a class="reference internal" href="#">Animation</a><ul>
 <li><a class="reference internal" href="#smil-in-the-document">SMIL in the document</a></li>
 <li><a class="reference internal" href="#presets">Presets</a></li>
+<li><a class="reference internal" href="#started-by-a-click-or-hover">Started by a click or hover</a></li>
 <li><a class="reference internal" href="#presets-of-your-own">Presets of your own</a></li>
 <li><a class="reference internal" href="#easing">Easing</a></li>
 <li><a class="reference internal" href="#playing-smil">Playing SMIL</a></li>
@@ -812,7 +835,7 @@ numpy array. Mix footage with vector animation in <code class="docutils literal 
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=9cebf295"></script>
+</div><script src="../_static/documentation_options.js?v=e9694baa"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
