@@ -1,3 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="-5 -5 70 70" version="1.1">
-  <rect x="0" y="0" width="60" height="60" data-kind="tile" fill="teal" stroke="navy" stroke-width="6" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="200" height="100" viewBox="0 0 200 100" version="1.1">
+  <g inkscape:groupmode="layer" inkscape:label="Background">
+    <rect x="0" y="0" width="200" height="100" fill="#eeeeee"/>
+  </g>
+  <g inkscape:groupmode="layer" inkscape:label="Shapes">
+    <circle cx="50" cy="50" r="20" fill="teal"/>
+    <g inkscape:groupmode="layer" inkscape:label="Labels">
+      <text x="46" y="55">A</text>
+    </g>
+  </g>
 </svg>

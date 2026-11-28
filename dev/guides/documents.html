@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Rendering" href="rendering.html"><link rel="prev" title="Presets" href="presets.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Themes" href="themes.html"><link rel="prev" title="Presets" href="presets.html">
         <link rel="prefetch" href="../_static/logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
@@ -215,26 +215,38 @@
 <li class="toctree-l1"><a class="reference internal" href="../start/quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos.html">Demos</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
-<ul class="current">
+<p class="caption" role="heading"><span class="caption-text">Drawing</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry and transforms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="paths.html">Paths, boolean operations and measurement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fonts.html">Making fonts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="colors-and-images.html">Colors and images</a></li>
-<li class="toctree-l1"><a class="reference internal" href="effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="presets.html">Presets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documents &amp; output</span></p>
+<ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rendering.html">Rendering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="batches.html">Performance and batches</a></li>
-<li class="toctree-l1"><a class="reference internal" href="export-import.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="print-and-colour.html">Print and colour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diagrams-and-office.html">Diagrams and Office files</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Motion</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="animation.html">Animation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="logos.html">Logos and icons</a></li>
-<li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scenes-and-video.html">Scenes and video</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">More</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units and angles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inkscape.html">Working with Inkscape files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -387,6 +399,31 @@ a <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span><
 </figure>
 <p>In Jupyter, documents display as SVG (<code class="docutils literal notranslate"><span class="pre">_repr_svg_</span></code>) and PNG (<code class="docutils literal notranslate"><span class="pre">_repr_png_</span></code>).</p>
 </section>
+<section id="layers">
+<h2>Layers<a class="headerlink" href="#layers" title="Link to this heading">¶</a></h2>
+<p>Layers are what Inkscape’s Layers panel shows, and they work in any document (<a class="reference internal" href="inkscape.html"><span class="std std-doc">Working with Inkscape files</span></a> covers the rest of what Inkscape stores).</p>
+<p><code class="docutils literal notranslate"><span class="pre">doc.layer(label)</span></code> returns the layer with that name at the insertion point, adding it when it is missing.
+Use it with <code class="docutils literal notranslate"><span class="pre">with</span></code> to draw into it; inside a layer it finds or adds a sublayer. <code class="docutils literal notranslate"><span class="pre">doc.layers</span></code> lists every
+layer and sublayer by label, including those read from a file.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">svgwriter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">svg</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">doc</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="s2">"Background"</span><span class="p">):</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"#eeeeee"</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">doc</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="s2">"Shapes"</span><span class="p">):</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">doc</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="s2">"Labels"</span><span class="p">):</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"A"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">55</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">layers</span><span class="p">))</span>                 <span class="c1"># ['Background', 'Shapes', 'Labels']</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">inkscape</span><span class="o">.</span><span class="n">is_layer</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">"Shapes"</span><span class="p">]))</span>
+</pre></div>
+</div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-documents-5-0.svg" />
+</figure>
+<p>A layer is a <code class="docutils literal notranslate"><span class="pre">&lt;g&gt;</span></code> with <code class="docutils literal notranslate"><span class="pre">inkscape:groupmode=&quot;layer&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">inkscape:label</span></code>, so browsers and every
+exporter treat it as a plain group.</p>
+</section>
 <section id="attributes">
 <h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
 <p>Every SVG attribute is readable and writable by its Python name. Unknown names raise with a suggestion;
@@ -397,7 +434,7 @@ custom attributes go through <code class="docutils literal notranslate"><span cl
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-documents-5-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-documents-6-0.svg" />
 </figure>
 </section>
 <section id="parsing-and-writing">
@@ -408,7 +445,7 @@ custom attributes go through <code class="docutils literal notranslate"><span cl
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-documents-6-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-documents-7-0.svg" />
 </figure>
 </section>
 <section id="documents-inside-documents">
@@ -423,8 +460,8 @@ and <code class="docutils literal notranslate"><span class="pre">viewBox</span><
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-documents-7-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-documents-7-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-documents-8-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-documents-8-1.svg" />
 </figcaption>
 </figure>
 <p>Explicit ids keep their values, so give embedded drawings distinct ids if they are referenced.</p>
@@ -450,7 +487,7 @@ can describe its own picture this way:</p>
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-documents-8-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-documents-9-0.svg" />
 </figure>
 <p><code class="docutils literal notranslate"><span class="pre">add</span></code> also takes objects from other libraries: matplotlib figures (<code class="docutils literal notranslate"><span class="pre">savefig</span></code>), ziaplot plots, anything with
 <code class="docutils literal notranslate"><span class="pre">_repr_svg_</span></code> (parsed into elements), anything with only <code class="docutils literal notranslate"><span class="pre">_repr_png_</span></code> or <code class="docutils literal notranslate"><span class="pre">_repr_jpeg_</span></code> (an <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code>),
@@ -501,8 +538,8 @@ box, dashed, which helps when something lands in the wrong place. The original i
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-documents-10-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-documents-10-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-documents-11-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-documents-11-1.svg" />
 </figcaption>
 </figure>
 </section>
@@ -513,12 +550,12 @@ box, dashed, which helps when something lands in the wrong place. The original i
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="rendering.html">
+          <a class="next-page" href="themes.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Rendering</div>
+                <div class="title">Themes</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -569,6 +606,7 @@ box, dashed, which helps when something lands in the wrong place. The original i
 <li><a class="reference internal" href="#definitions">Definitions</a></li>
 <li><a class="reference internal" href="#auto-size">Auto-size</a></li>
 <li><a class="reference internal" href="#other-libraries">Other libraries</a></li>
+<li><a class="reference internal" href="#layers">Layers</a></li>
 <li><a class="reference internal" href="#attributes">Attributes</a></li>
 <li><a class="reference internal" href="#parsing-and-writing">Parsing and writing</a></li>
 <li><a class="reference internal" href="#documents-inside-documents">Documents inside documents</a></li>

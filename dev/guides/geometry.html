@@ -215,7 +215,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../start/quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos.html">Demos</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Drawing</span></p>
 <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Geometry and transforms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
@@ -223,18 +223,30 @@
 <li class="toctree-l1"><a class="reference internal" href="text.html">Text</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fonts.html">Making fonts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="colors-and-images.html">Colors and images</a></li>
-<li class="toctree-l1"><a class="reference internal" href="effects.html">Filters and effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="presets.html">Presets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documents &amp; output</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="documents.html">Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rendering.html">Rendering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="batches.html">Performance and batches</a></li>
-<li class="toctree-l1"><a class="reference internal" href="export-import.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export.html">Export and import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="print-and-colour.html">Print and colour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diagrams-and-office.html">Diagrams and Office files</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Motion</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="animation.html">Animation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="logos.html">Logos and icons</a></li>
-<li class="toctree-l1"><a class="reference internal" href="themes.html">Themes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inkscape.html">Inkscape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scenes-and-video.html">Scenes and video</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">More</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units and angles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inkscape.html">Working with Inkscape files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extending.html">Extending svgwriter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
@@ -488,82 +500,8 @@ point of the element’s bounds; assigning one moves the element so that edge or
 </section>
 <section id="units-and-angles">
 <h2>Units and angles<a class="headerlink" href="#units-and-angles" title="Link to this heading">¶</a></h2>
-<p>Plain numbers are user units (CSS pixels, 96 per inch). Lengths carry units and combine across them;
-the result keeps the left side’s unit:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">width</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">inch</span> <span class="o">-</span> <span class="mi">7</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span>            <span class="c1"># 4.7244in</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">width</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">"mm"</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">inch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mf">25.4</span><span class="p">))</span>
-<span class="n">page</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="mi">210</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">,</span> <span class="mi">297</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">)</span>   <span class="c1"># A4; coordinates inside are millimetres</span>
-<span class="n">page</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">190</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"steelblue"</span><span class="p">)</span>
-<span class="n">page</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"A4, in mm"</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">36</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"white"</span><span class="p">)</span>
-<span class="c1"># page.save("print.png", dpi=300)</span>
-<span class="n">spin</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"tomato"</span><span class="p">)</span> <span class="o">@</span> <span class="n">svg</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>  <span class="c1"># angles: deg, rad, turn (svg.units.grad too)</span>
-</pre></div>
-</div>
-<figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-geometry-7-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-geometry-7-1.svg" />
-</figcaption>
-</figure>
-<p>A document sized in a physical unit with a matching <code class="docutils literal notranslate"><span class="pre">viewBox</span></code>, such as <code class="docutils literal notranslate"><span class="pre">svg.Document(size=&quot;a4&quot;)</span></code> or
-the page above, counts its user units in that unit. Lengths you give there mean the same thing
-everywhere: <code class="docutils literal notranslate"><span class="pre">rect(width=svg.mm(20))</span></code>, <code class="docutils literal notranslate"><span class="pre">stroke_width=svg.pt(1)</span></code>, layout gaps and path tools such as
-<code class="docutils literal notranslate"><span class="pre">round_corners(svg.mm(3))</span></code> all resolve against the page, so the rectangle is written as
-<code class="docutils literal notranslate"><span class="pre">width=&quot;20&quot;</span></code> and prints 20 mm wide in browsers and in every export (writing <code class="docutils literal notranslate"><span class="pre">20mm</span></code> there would make
-browsers scale the millimetres a second time). Lengths set on an element before it joins the page
-convert when it is added; attribute text read from an SVG file keeps its SVG meaning. Lengths compare
-by physical size, and a user-unit length equals the plain number: <code class="docutils literal notranslate"><span class="pre">svg.Length(5)</span> <span class="pre">==</span> <span class="pre">5</span></code> and
-<code class="docutils literal notranslate"><span class="pre">svg.inch(1)</span> <span class="pre">==</span> <span class="pre">svg.mm(25.4)</span></code>.</p>
-<p>The everyday units are on <code class="docutils literal notranslate"><span class="pre">svg</span></code> itself: <code class="docutils literal notranslate"><span class="pre">px</span></code>, <code class="docutils literal notranslate"><span class="pre">pt</span></code>, <code class="docutils literal notranslate"><span class="pre">mm</span></code>, <code class="docutils literal notranslate"><span class="pre">cm</span></code>, <code class="docutils literal notranslate"><span class="pre">inch</span></code>, <code class="docutils literal notranslate"><span class="pre">em</span></code>, <code class="docutils literal notranslate"><span class="pre">percent</span></code>, <code class="docutils literal notranslate"><span class="pre">deg</span></code>, <code class="docutils literal notranslate"><span class="pre">rad</span></code> and
-<code class="docutils literal notranslate"><span class="pre">turn</span></code>. Every unit, the rarer ones included, is in <code class="docutils literal notranslate"><span class="pre">svg.units</span></code>: <code class="docutils literal notranslate"><span class="pre">pc</span></code>, <code class="docutils literal notranslate"><span class="pre">q</span></code> (quarter millimetres, written <code class="docutils literal notranslate"><span class="pre">Q</span></code>),
-<code class="docutils literal notranslate"><span class="pre">ex</span></code>, <code class="docutils literal notranslate"><span class="pre">grad</span></code>, and units SVG has no suffix for, written in the nearest SVG unit: <code class="docutils literal notranslate"><span class="pre">m</span></code>, <code class="docutils literal notranslate"><span class="pre">km</span></code>, <code class="docutils literal notranslate"><span class="pre">um</span></code>
-(micrometres) and <code class="docutils literal notranslate"><span class="pre">nmi</span></code> (nautical miles) as millimetres; <code class="docutils literal notranslate"><span class="pre">ft</span></code>, <code class="docutils literal notranslate"><span class="pre">yd</span></code>, <code class="docutils literal notranslate"><span class="pre">mi</span></code>, <code class="docutils literal notranslate"><span class="pre">furlong</span></code> and <code class="docutils literal notranslate"><span class="pre">mil</span></code>
-(thousandths of an inch) as inches. A unit on its own is one of itself, so <code class="docutils literal notranslate"><span class="pre">height=svg.inch</span></code> is one
-inch and <code class="docutils literal notranslate"><span class="pre">svg.turn</span></code> is a full turn.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">mi</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">km</span><span class="p">(</span><span class="mf">1.5</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">pc</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>   <span class="c1"># 126720in 1500000mm 3pc</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">"deg"</span><span class="p">))</span>                         <span class="c1"># 90deg</span>
-</pre></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">svg.length(value,</span> <span class="pre">unit)</span></code> and <code class="docutils literal notranslate"><span class="pre">svg.angle(value,</span> <span class="pre">unit)</span></code> take the unit as text, spelled short or in full
-(<code class="docutils literal notranslate"><span class="pre">&quot;mm&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;millimetres&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;inches&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;degrees&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;gon&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;turns&quot;</span></code>, …); output always uses the
-short suffix.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="mf">1.2</span><span class="p">,</span> <span class="s2">"metres"</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"ft"</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">Length</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"3 inches"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="s2">"turns"</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s2">"gon"</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">"deg"</span><span class="p">))</span>
-</pre></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">em</span></code>, <code class="docutils literal notranslate"><span class="pre">ex</span></code> and <code class="docutils literal notranslate"><span class="pre">%</span></code> only combine with themselves, because converting them needs a font size or a
-reference length. <code class="docutils literal notranslate"><span class="pre">dpi=</span></code> on raster exports sets pixels per inch (96 is <code class="docutils literal notranslate"><span class="pre">scale=1</span></code>).</p>
-<section id="calculating-with-units">
-<h3>Calculating with units<a class="headerlink" href="#calculating-with-units" title="Link to this heading">¶</a></h3>
-<p>Multiplying and dividing lengths and angles works like a maths problem: the dimensions travel with the
-numbers as powers of length and angle. A length times a length is an area (a <code class="docutils literal notranslate"><span class="pre">Quantity</span></code>), dividing
-it by a length gives a length again, and a length over a length is a plain number. An attribute only
-accepts the dimension it needs, so mistakes surface where the value is used:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">area</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>               <span class="c1"># 600mm², dimension length²</span>
-<span class="n">side</span> <span class="o">=</span> <span class="n">area</span> <span class="o">/</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>                     <span class="c1"># 15mm, a Length again</span>
-<span class="n">ratio</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">inch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mf">25.4</span><span class="p">)</span>           <span class="c1"># 1.0</span>
-<span class="n">spin</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span> <span class="o">/</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>              <span class="c1"># length⁻¹·angle: turn per millimetre</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="n">spin</span> <span class="o">*</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>   <span class="c1"># ... 45deg</span>
-<span class="n">box</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"seagreen"</span><span class="p">)</span>      <span class="c1"># 15mm square</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">box</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">area</span>
-<span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>                             <span class="c1"># width needs a length, got length²</span>
-<span class="n">tip</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">@</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>               <span class="c1"># a Point: 10mm at 30 degrees from +x</span>
-</pre></div>
-</div>
-<figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-geometry-10-0.svg" />
-</figure>
-<p>Angles have helpers for direction work. Positive angles turn from +x towards +y, clockwise on screen;
-<code class="docutils literal notranslate"><span class="pre">ccw=True</span></code> asks for the counter-clockwise way round:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">heading</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">350</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">heading</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">heading</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">ccw</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>   <span class="c1"># 20deg, -340deg (shortest arc, then forced)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">heading</span><span class="o">.</span><span class="n">lerp</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">wrap</span><span class="p">(),</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">wrap</span><span class="p">())</span>   <span class="c1"># 0deg, 270deg</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">sin</span><span class="p">(),</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span> <span class="n">svg</span><span class="o">.</span><span class="n">deg</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="mi">350</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span><span class="o">.</span><span class="n">arclength</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="mi">20</span><span class="p">)))</span>            <span class="c1"># 31.4159mm</span>
-</pre></div>
-</div>
-</section>
+<p>Plain numbers are user units (CSS pixels, 96 per inch). Lengths such as <code class="docutils literal notranslate"><span class="pre">svg.mm(5)</span></code> or <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">*</span> <span class="pre">svg.inch</span></code> and
+angles such as <code class="docutils literal notranslate"><span class="pre">svg.deg(30)</span></code> carry their unit and combine across units; see the <a class="reference internal" href="units.html"><span class="std std-doc">Units guide</span></a>.</p>
 </section>
 <section id="many-elements-from-arrays">
 <h2>Many elements from arrays<a class="headerlink" href="#many-elements-from-arrays" title="Link to this heading">¶</a></h2>
@@ -577,7 +515,7 @@ value each, like numpy broadcasting. Colors can be names, one color, or an <code
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-geometry-12-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-geometry-7-0.svg" />
 </figure>
 </section>
 <section id="matrices-and-numpy">
@@ -655,10 +593,7 @@ value each, like numpy broadcasting. Colors can be names, one color, or an <code
 <li><a class="reference internal" href="#operators">Operators</a></li>
 <li><a class="reference internal" href="#bounds">Bounds</a></li>
 <li><a class="reference internal" href="#placing-and-aligning">Placing and aligning</a></li>
-<li><a class="reference internal" href="#units-and-angles">Units and angles</a><ul>
-<li><a class="reference internal" href="#calculating-with-units">Calculating with units</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#units-and-angles">Units and angles</a></li>
 <li><a class="reference internal" href="#many-elements-from-arrays">Many elements from arrays</a></li>
 <li><a class="reference internal" href="#matrices-and-numpy">Matrices and numpy</a></li>
 </ul>

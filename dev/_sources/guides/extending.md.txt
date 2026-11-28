@@ -101,7 +101,7 @@ doc.save("figure.count")
 svg.formats.unregister("count")
 ```
 
-See [Export and import](export-import.md#your-own-formats) for reading, multi-page formats and lookups.
+See [Export and import](export.md#your-own-formats) for reading, multi-page formats and lookups.
 
 ## Renderers
 

@@ -1,3 +1,54 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="150" height="200" viewBox="-1 -3 6 8" version="1.1">
-  <rect x="0" y="0" width="4" height="2" fill="tomato" transform="rotate(90 2 1)"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="88.8117" viewBox="-4 26.0034 108 47.9583" version="1.1">
+  <g>
+    <circle cx="0" cy="50" r="2" fill="#9e0ec6"/>
+    <circle cx="2.0408" cy="54.0534" r="2" fill="#67ec06"/>
+    <circle cx="4.0816" cy="57.9385" r="2" fill="#2fb83d"/>
+    <circle cx="6.1224" cy="61.4941" r="2" fill="#4a9875"/>
+    <circle cx="8.1633" cy="64.5727" r="2" fill="#c746a9"/>
+    <circle cx="10.2041" cy="67.0464" r="2" fill="#cc656f"/>
+    <circle cx="12.2449" cy="68.8127" r="2" fill="#596ecb"/>
+    <circle cx="14.2857" cy="69.7981" r="2" fill="#be8288"/>
+    <circle cx="16.3265" cy="69.9617" r="2" fill="#97c94a"/>
+    <circle cx="18.3673" cy="69.2969" r="2" fill="#1f9cfa"/>
+    <circle cx="20.4082" cy="67.8312" r="2" fill="#13897a"/>
+    <circle cx="22.449" cy="65.6254" r="2" fill="#5e1b5b"/>
+    <circle cx="24.4898" cy="62.771" r="2" fill="#e4ab4d"/>
+    <circle cx="26.5306" cy="59.3866" r="2" fill="#5d23dc"/>
+    <circle cx="28.5714" cy="55.6126" r="2" fill="#b9b678"/>
+    <circle cx="30.6122" cy="51.6056" r="2" fill="#056e79"/>
+    <circle cx="32.6531" cy="47.532" r="2" fill="#71ef4b"/>
+    <circle cx="34.6939" cy="43.5609" r="2" fill="#2f1bea"/>
+    <circle cx="36.7347" cy="39.857" r="2" fill="#a610da"/>
+    <circle cx="38.7755" cy="36.574" r="2" fill="#ea7a56"/>
+    <circle cx="40.8163" cy="33.8484" r="2" fill="#e874a6"/>
+    <circle cx="42.8571" cy="31.7931" r="2" fill="#af1ca0"/>
+    <circle cx="44.898" cy="30.4934" r="2" fill="#6f8f09"/>
+    <circle cx="46.9388" cy="30.0034" r="2" fill="#285313"/>
+    <circle cx="48.9796" cy="30.3434" r="2" fill="#956edc"/>
+    <circle cx="51.0204" cy="31.4992" r="2" fill="#b53b78"/>
+    <circle cx="53.0612" cy="33.4228" r="2" fill="#500712"/>
+    <circle cx="55.102" cy="36.0346" r="2" fill="#42f18f"/>
+    <circle cx="57.1429" cy="39.2259" r="2" fill="#b73e10"/>
+    <circle cx="59.1837" cy="42.8644" r="2" fill="#cf3e87"/>
+    <circle cx="61.2245" cy="46.7991" r="2" fill="#a89247"/>
+    <circle cx="63.2653" cy="50.8666" r="2" fill="#2906f7"/>
+    <circle cx="65.3061" cy="54.8982" r="2" fill="#4fa84e"/>
+    <circle cx="67.3469" cy="58.7265" r="2" fill="#fd387b"/>
+    <circle cx="69.3878" cy="62.1925" r="2" fill="#834c41"/>
+    <circle cx="71.4286" cy="65.1526" r="2" fill="#94ad9c"/>
+    <circle cx="73.4694" cy="67.4837" r="2" fill="#4a7409"/>
+    <circle cx="75.5102" cy="69.0891" r="2" fill="#bb1a9c"/>
+    <circle cx="77.551" cy="69.9023" r="2" fill="#6c0f64"/>
+    <circle cx="79.5918" cy="69.8894" r="2" fill="#3d12e2"/>
+    <circle cx="81.6327" cy="69.051" r="2" fill="#196c02"/>
+    <circle cx="83.6735" cy="67.4219" r="2" fill="#572529"/>
+    <circle cx="85.7143" cy="65.0697" r="2" fill="#5f32ef"/>
+    <circle cx="87.7551" cy="62.0921" r="2" fill="#453a33"/>
+    <circle cx="89.7959" cy="58.6125" r="2" fill="#dbd6ed"/>
+    <circle cx="91.8367" cy="54.7755" r="2" fill="#adfd37"/>
+    <circle cx="93.8776" cy="50.7403" r="2" fill="#d4eac7"/>
+    <circle cx="95.9184" cy="46.6743" r="2" fill="#4d1c67"/>
+    <circle cx="97.9592" cy="42.7464" r="2" fill="#4ca536"/>
+    <circle cx="100" cy="39.1196" r="2" fill="#3e5b07"/>
+  </g>
 </svg>

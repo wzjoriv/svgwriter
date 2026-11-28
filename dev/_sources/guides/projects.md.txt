@@ -84,7 +84,7 @@ pptx = { deck = true }      # every scene as one slide of a single deck
 |---|---|---|
 | `project.name` | folder name | The project name; outputs are `output/<name>.<ext>` |
 | `project.entry` | `"main:build"` | What draws the project (see below) |
-| `project.size` | none (fits the content) | A [named size](export-import.md#page-sizes) or `[width, height]`; `ProjectConfig(size=svg.size.a4)` takes a `PageSize` |
+| `project.size` | none (fits the content) | A [named size](export.md#page-sizes) or `[width, height]`; `ProjectConfig(size=svg.size.a4)` takes a `PageSize` |
 | `project.theme` | none | A theme file or a registered theme name |
 | `project.fonts` | `"assets/fonts"` | Font folder |
 | `outputs.formats` | `["svg", "png"]` | Any export format name, plus `gif`, `mp4`, `webm`, `mov` for animations |
@@ -123,6 +123,8 @@ The entry object decides what gets drawn:
 
 Still formats such as PDF and PNG show a page once its animations have ended; `png = { seconds = 0 }`
 shows the start instead. SVG, GIF and PowerPoint keep the animations.
+
+A logo kept as a function that writes every size and variant of its assets is a good first entry; see [Logos and icons](logos.md).
 
 ## Presets
 

@@ -65,6 +65,32 @@ doc.add(Badge()).translate(150, 10).scale(0.5)
 
 In Jupyter, documents display as SVG (`_repr_svg_`) and PNG (`_repr_png_`).
 
+## Layers
+
+Layers are what Inkscape's Layers panel shows, and they work in any document ([Working with Inkscape files](inkscape.md) covers the rest of what Inkscape stores).
+
+`doc.layer(label)` returns the layer with that name at the insertion point, adding it when it is missing.
+Use it with `with` to draw into it; inside a layer it finds or adds a sublayer. `doc.layers` lists every
+layer and sublayer by label, including those read from a file.
+
+```python
+import svgwriter as svg
+
+doc = svg.Document(200, 100)
+with doc.layer("Background"):
+    doc.rect(0, 0, 200, 100, fill="#eeeeee")
+with doc.layer("Shapes"):
+    doc.circle(50, 50, 20, fill="teal")
+    with doc.layer("Labels"):
+        doc.text("A", x=46, y=55)
+print(list(doc.layers))                 # ['Background', 'Shapes', 'Labels']
+print(svg.inkscape.is_layer(doc.layers["Shapes"]))
+```
+
+A layer is a `<g>` with `inkscape:groupmode="layer"` and `inkscape:label`, so browsers and every
+exporter treat it as a plain group.
+
+
 ## Attributes
 
 Every SVG attribute is readable and writable by its Python name. Unknown names raise with a suggestion;
