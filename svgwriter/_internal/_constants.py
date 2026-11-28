@@ -8,6 +8,7 @@ import re
 from typing import Final
 
 __all__ = [
+    "EFFECT_FREE",
     "HOVER_SHEET_ID",
     "HOVER_STYLE",
     "POINTER_EVENTS",
@@ -296,6 +297,8 @@ TIMECOUNT_RE: Final = re.compile(r"^\s*([+-]?\d*\.?\d+)\s*(ms|s|min|h)?\s*$")
 DEFAULT_MITER: Final = 4.0
 NONE: Final = "none"
 DROPPED_EFFECTS: Final = {"mask": ("mask",), "filter": ("filter",)}
+EFFECT_FREE: Final = frozenset({"defs", "pattern", "clipPath", "mask", "marker", "symbol", "filter"})
+"""Containers whose children are not drawn in place, so an effect inside them is not turned into a picture."""
 MARKER_PROPERTIES: Final = ("marker-start", "marker-mid", "marker-end")
 MARKER_DEFAULT_SIZE: Final = 3.0
 MARKER_SHORTHAND: Final = "marker"

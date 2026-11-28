@@ -9,7 +9,8 @@ import warnings
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
-from .._constants import DEFAULT_MITER, DROPPED_EFFECTS, MAX_SEGMENTS, NONE
+from .._constants import DEFAULT_MITER, DROPPED_EFFECTS, EFFECT_FREE, MAX_SEGMENTS, NONE
+from .._tree import ancestors
 from ._paints import _paint, _shading
 from ._patterns import _ancestry, _expand_patterns
 
@@ -222,8 +223,30 @@ def _effects_and_link(leaf: Element, root: Element) -> tuple[list[str], str | No
     return dropped, link
 
 
+def _effects_as_images(root: Element, scale: float) -> None:
+    """Replace each outermost element with a filter or mask by an ``<image>`` of how it looks."""
+    effects = [attribute for attributes in DROPPED_EFFECTS.values() for attribute in attributes]
+    replaced = 0
+    for element in list(root.iter()):
+        if element is root or element.parent is None or not any(element.get(name) for name in effects):
+            continue
+        if any(node.tag in EFFECT_FREE for node in ancestors(element)):
+            continue
+        try:
+            picture = element.to_image(scale=scale)  # type: ignore[attr-defined]
+        except Exception:  # noqa: BLE001 - what cannot be rendered keeps its effect dropped, as before
+            continue
+        parent = element.parent
+        parent.insert(parent.children.index(element), picture)
+        parent.remove(element)
+        replaced += 1
+    if replaced:
+        warnings.warn(f"{replaced} element(s) with filters or masks were drawn as images (fallback='image'); "
+                      "pass fallback='drop' to keep them as shapes without the effect", stacklevel=4)
+
+
 def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: bool = False,
-            color_glyphs: bool = True) -> Scene:
+            color_glyphs: bool = True, effect_scale: float | None = None) -> Scene:
     """Reduce *document* to :class:`Item` paths in its user space (``viewBox`` applied).
 
     Parameters
@@ -240,6 +263,9 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
         Leave emoji to the outlines or text runs, warning when outlines lose them (colour
         glyphs have no outline); False when the caller places them itself, see
         :func:`~svgwriter._internal._typography._emoji.color_glyph_images`. Defaults to True.
+    effect_scale : float, optional
+        Draw each element with a filter or mask as a picture of how it looks, at this many pixels per user unit,
+        instead of dropping the effect (for callers that embed images). Defaults to None (effects dropped).
 
     Returns
     -------
@@ -288,6 +314,8 @@ def flatten(document: Document, *, handled: frozenset[str] = frozenset(), text: 
                 if element.parent is not None:
                     element.parent.remove(element)
         root = renderable_copy(source)
+        if effect_scale and "image" in handled:
+            _effects_as_images(root, effect_scale)
         _expand_patterns(root)
     rules = rules_of(root)
     items: list[Item] = []

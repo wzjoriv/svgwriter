@@ -55,7 +55,18 @@ print(svg.formats.writers(), svg.formats.readers())
 
 TikZ, EPS, PowerPoint, Word, Excalidraw and the polyline formats work from a flattened copy of the
 drawing: transforms, clipping, patterns and markers are worked into the shapes themselves. Masks and
-filters cannot be, so these formats skip them with a warning.
+filters cannot be. PowerPoint and Word draw an element with a filter or mask as a picture of how it looks
+(one warning lists how many); everything else stays editable. `save(..., fallback="drop")` keeps those
+elements as shapes without the effect instead, and `dpi=` sets the pictures' resolution (192 by default).
+The other flattened formats skip masks and filters with a warning; `el.to_image(scale=...)` turns any
+element into a picture by hand.
+
+```python
+card = svg.Document(width=200, height=100)
+card.rect(10, 10, 80, 50, rx=8, fill="teal", filter=svg.filters.drop_shadow())
+# card.save("card.pptx")                   # the shadowed card becomes a picture
+# card.save("card.pptx", fallback="drop")  # an editable card without its shadow
+```
 
 ## What each format keeps
 
@@ -73,8 +84,8 @@ the effect is drawn into plain outlines, which look the same but are no longer t
 | fill, stroke opacity | yes | yes | yes | no | yes | yes | yes | picture | one per element | no |
 | group opacity | yes | yes | yes | no | per shape | per shape | per shape | picture | per element | no |
 | clipping | yes | yes | yes | shapes | shapes | shapes | shapes | picture | shapes | shapes |
-| masks | yes | yes | yes (pixels) | skipped | skipped | skipped | skipped | picture | skipped | skipped |
-| filters | yes | yes | yes (pixels) | skipped | skipped | skipped | skipped | picture | skipped | skipped |
+| masks | yes | yes | yes (pixels) | skipped | skipped | picture | picture | picture | skipped | skipped |
+| filters | yes | yes | yes (pixels) | skipped | skipped | picture | picture | picture | skipped | skipped |
 | text | text | pixels | text or outlines | text or outlines | text | text boxes | text boxes | picture | text | outlines |
 | images | yes | yes | yes | yes | skipped | pictures | pictures | picture | yes | skipped |
 | transforms | yes | yes | yes | applied | applied | applied | applied | picture | applied | applied |

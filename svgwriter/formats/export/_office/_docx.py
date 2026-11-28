@@ -40,7 +40,7 @@ _NAMESPACES = (f'xmlns:w="{W_NS}" xmlns:wp="{WP}" xmlns:a="{A_NS}" xmlns:wps="{W
                f'xmlns:r="{REL}" xmlns:mc="{MC_NS}"')
 
 
-def write_docx(document: Document) -> bytes:
+def write_docx(document: Document, *, effect_scale: float | None = None) -> bytes:
     """Write the Word file; see :func:`svgwriter.formats.export._office.docx`."""
     word = require("docx")
     from docx.oxml import parse_xml
@@ -50,7 +50,7 @@ def write_docx(document: Document) -> bytes:
     from ._layout import split_equations
 
     rest, equations = split_equations(document)
-    scene = flatten(rest, handled=frozenset({"image"}), text=True)
+    scene = flatten(rest, handled=frozenset({"image"}), text=True, effect_scale=effect_scale)
     out = word.Document()
     drawn = list(scene.painted())
     if not drawn and not scene.texts and equations:
