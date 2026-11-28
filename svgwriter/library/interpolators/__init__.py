@@ -278,6 +278,8 @@ def sequence(a: Any, b: Any, t: float) -> Any:
 def color(a: Any, b: Any, t: float) -> Color:
     """Colours (or colour strings) channel by channel in RGBA.
 
+    Channels are clamped to 0..1, so easings that overshoot (back, elastic) stay valid colours.
+
     Parameters
     ----------
     a, b : Color or str
@@ -299,9 +301,11 @@ def color(a: Any, b: Any, t: float) -> Color:
     >>> from svgwriter.library.interpolators import color
     >>> color("red", "blue", 0.5).hex
     '#800080'
+    >>> color("red", "blue", 1.2).hex
+    '#0000ff'
     """
     first, second = as_color(a), as_color(b)
-    return Color(*(number(x, y, t) for x, y in zip(first.rgba, second.rgba, strict=True)))
+    return Color(*(min(max(number(x, y, t), 0.0), 1.0) for x, y in zip(first.rgba, second.rgba, strict=True)))
 
 
 def _attribute(name: str, a: object, b: object, t: float) -> Any:
