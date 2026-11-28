@@ -36,6 +36,7 @@ htmlcov/
 
 # ---- Sphinx documentation ----
 docs/_build/
+docs/_snippets/
 
 # ---- Environments ----
 .env
