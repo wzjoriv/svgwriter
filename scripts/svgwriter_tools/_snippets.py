@@ -21,6 +21,8 @@ DOCS = ROOT / "docs"
 OUTPUT = DOCS / "_snippets"
 BLOCK = re.compile(r"```python\n(.*?)```", re.S)
 SAVES = re.compile(r"\.(save|write|to_file)\(")
+SHOWN = "__shown__"
+"""List the values of a block's bare expressions are kept in."""
 MAX_PICTURES = 4
 """Most pictures shown under one block (the last ones it draws)."""
 SAMPLE = ROOT / "tests" / "export" / "data" / "sample.excalidraw"
@@ -51,6 +53,7 @@ def _picture(value: Any) -> str | None:
         return value._repr_svg_()
     except Exception:  # noqa: BLE001 - a snippet object that cannot be drawn just gets no picture
         return None
+
 
 
 def _inside_shown(value: Any, drawn: list[tuple[Any, str]]) -> bool:
@@ -84,6 +87,36 @@ def render_page(page: Path) -> dict[int, list[str]]:
     """The SVGs under each block of *page* that makes, changes or saves drawings, by block index.
 
     A block that draws several things gets each of them, shown side by side.
+    """
+    return render_blocks(BLOCK.findall(page.read_text(encoding="utf-8")), page.name)
+
+
+def doctest_source(text: str) -> str:
+    """The code of a doctest block: its ``>>>`` and ``...`` lines without prompts (expected output dropped)."""
+    lines = []
+    for line in text.splitlines():
+        stripped = line.lstrip()
+        if stripped.startswith((">>> ", "... ")) or stripped in (">>>", "..."):
+            lines.append(stripped[4:])
+    return "\n".join(lines)
+
+
+def _keeping_shown_values(block: str) -> str:
+    """*block* with each top-level bare expression also kept in ``__shown__``, so drawings it shows count."""
+    try:
+        tree = ast.parse(block)
+    except SyntaxError:
+        return block
+    for position, statement in enumerate(tree.body):
+        if isinstance(statement, ast.Expr) and not isinstance(statement.value, ast.Constant):
+            keep = ast.Attribute(ast.Name(SHOWN, ast.Load()), "append", ast.Load())
+            tree.body[position] = ast.Expr(ast.Call(keep, [statement.value], []))
+    ast.fix_missing_locations(tree)
+    return ast.unparse(tree)
+
+
+def render_blocks(blocks: list[str], label: str) -> dict[int, list[str]]:
+    """The SVGs under each of *blocks* (run in order in one namespace) that makes, changes or saves drawings.
 
     Blocks that fail (an optional extra missing, say) get no picture; the snippet tests report failures.
     """
@@ -92,15 +125,15 @@ def render_page(page: Path) -> dict[int, list[str]]:
     last: dict[int, str] = {}
     with _sandbox(), warnings.catch_warnings(), contextlib.redirect_stdout(io.StringIO()):
         warnings.simplefilter("ignore")
-        for index, block in enumerate(BLOCK.findall(page.read_text(encoding="utf-8"))):
+        for index, block in enumerate(blocks):
+            namespace[SHOWN] = []
             try:
-                exec(compile(block, f"{page.name}[{index}]", "exec"), namespace)
+                exec(compile(_keeping_shown_values(block), f"{label}[{index}]", "exec"), namespace)
             except Exception:  # noqa: BLE001 - see the docstring
                 continue
             saves = bool(SAVES.search(block))
             drawn = []
-            for name in reversed(_names(block)):
-                value = namespace.get(name)
+            for value in [*(namespace.get(name) for name in reversed(_names(block))), *namespace[SHOWN]]:
                 picture = _picture(value)
                 if picture is not None and all(picture != seen for _, seen in drawn) and \
                         (saves or last.get(id(value)) != picture):
