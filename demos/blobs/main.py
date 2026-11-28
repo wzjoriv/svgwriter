@@ -79,7 +79,7 @@ class Blobs(svg.Scene):
 # The controls: how many blobs, how far they reach for each other (the goo filter's `melt`), how fast they
 # move, and the banner's headline and button text. The button dims on hover and flashes when pressed in the
 # SVG (`interact.button()`). The function bakes the scene into an animated document, so `svgwriter preview` shows the
-# form and plays the result, and `svg.interact` does the same in a notebook.
+# form and plays the result, and `svg.explore` does the same in a notebook.
 
 # %%
 @svg.widgets.controls(

@@ -112,9 +112,9 @@ class LengthUnit(Length):
     Examples
     --------
     >>> import svgwriter as svg
-    >>> str(5 * svg.mm), str(svg.inch(2) - 10 * svg.mm), str(svg.ft(1))
+    >>> str(5 * svg.mm), str(svg.inch(2) - 10 * svg.mm), str(svg.units.ft(1))
     ('5mm', '1.6063in', '12in')
-    >>> svg.inch == 96, str(svg.mi(1))
+    >>> svg.inch == 96, str(svg.units.mi(1))
     (True, '63360in')
     """
 

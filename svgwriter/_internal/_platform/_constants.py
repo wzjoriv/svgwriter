@@ -133,7 +133,7 @@ PYTHON_CAPABILITIES: Final = {
     "fonttools": {"module": "fontTools", "distribution": "fonttools", "purpose": "building and subsetting fonts",
                   "pip": "'pysvgwriter[fonts]'"},
     "brotli": {"module": "brotli", "distribution": "brotli", "purpose": "woff2 fonts", "pip": "'pysvgwriter[fonts]'"},
-    "ipywidgets": {"module": "ipywidgets", "distribution": "ipywidgets", "purpose": "svg.interact in notebooks",
+    "ipywidgets": {"module": "ipywidgets", "distribution": "ipywidgets", "purpose": "svg.explore in notebooks",
                    "pip": "'pysvgwriter[widget]'"},
     "matplotlib": {"module": "matplotlib", "distribution": "matplotlib", "purpose": "plots and mathtext",
                    "pip": "'pysvgwriter[plot]'"},

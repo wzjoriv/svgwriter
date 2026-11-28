@@ -109,7 +109,7 @@ class Betelgeuse(svg.Scene):
 
 # %% [markdown]
 # `scenes` is the project's entry: one clip each. Two controls, a time scale and which clip, drive the same
-# scenes through a function that bakes the chosen one, which `svg.interact` shows in a notebook.
+# scenes through a function that bakes the chosen one, which `svg.explore` shows in a notebook.
 
 # %%
 scenes = [Planets, Betelgeuse]

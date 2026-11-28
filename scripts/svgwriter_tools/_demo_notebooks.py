@@ -1,7 +1,7 @@
 """Notebooks of the demo projects: each demo's ``main.py`` cells, run with pictures, saved as ``<name>.ipynb``.
 
 The cells come from the shared devkit notebooks tool. The project's own ``__main__`` cell is replaced by cells
-that apply the demo's theme up front, offer ``svg.interact`` on the demo's controls, show a few stills for
+that apply the demo's theme up front, offer ``svg.explore`` on the demo's controls, show a few stills for
 other control values and show every output as SVG, built from a quick copy of the demo.
 """
 
@@ -69,7 +69,7 @@ def show(function, **values):
 INTERACT_NOTE = ("Every control of `{function}` becomes an input: in a running notebook (with the `widget` "
                  "extra) this panel redraws the drawing as you change them. A saved notebook cannot keep "
                  "live widgets, so the stills below show other values.")
-INTERACT = "svg.interact(in_project({function}))"
+INTERACT = "svg.explore(in_project({function}))"
 STILLS_NOTE = "The same function for other control values."
 STILL = "show({function}, **{values})"
 SHOW_NOTE = ("`project.build` writes the outputs listed in `svgwriter.toml` (here only the SVG, which keeps "

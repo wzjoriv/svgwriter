@@ -34,7 +34,7 @@ def _widgets() -> Any:
     try:
         import ipywidgets  # type: ignore[import-untyped]
     except ImportError:
-        raise missing("ipywidgets", "svg.interact") from None
+        raise missing("ipywidgets", "svg.explore") from None
     return ipywidgets
 
 

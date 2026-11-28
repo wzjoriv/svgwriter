@@ -1,7 +1,7 @@
 """# Widgets
 
 An adjustable playing card: rank and suit on rows of buttons, the hue and the corner radius on sliders and a
-glow on a toggle. In a notebook `svg.interact` puts the controls beside the live card; `svg.sweep` turns
+glow on a toggle. In a notebook `svg.explore` puts the controls beside the live card; `svg.sweep` turns
 the same parameters into an animation.
 
     python widgets.py                writes 18_card.svg, 18_suits.svg, 18_card_sweep.svg and 18_card_sweep.gif
@@ -12,7 +12,7 @@ import svgwriter as svg
 # %% [markdown]
 # The card is an ordinary drawing function. `@svg.widgets.controls` declares a control per parameter:
 # `Segmented` for a few choices, `Slider` for numbers and `Toggle` for on and off. The controls are plain
-# data, so `svg.interact`, `svg.sweep` and `svgwriter preview` all read the same declaration, and calling
+# data, so `svg.explore`, `svg.sweep` and `svgwriter preview` all read the same declaration, and calling
 # the function directly still works.
 
 # %%
@@ -51,13 +51,13 @@ card(rank="Q", suit="♥", hue=330, glow=True).save("18_card.svg")
 card()
 
 # %% [markdown]
-# `svg.interact(card)` shows the controls beside the card and redraws it as they move (it needs the
+# `svg.explore(card)` shows the controls beside the card and redraws it as they move (it needs the
 # `widget` extra: `pip install pysvgwriter[widget]`). The returned object keeps the current state:
 # `.values`, `.document`, `.save(path)` and `.code()`, a call to paste back into a script. Widgets only
 # run in a live notebook, so the cells after this one show the states as pictures.
 
 # %%
-view = svg.interact(card)
+view = svg.explore(card)
 view.update(rank="K", suit="♦", hue=40, radius=4)
 view.code()
 

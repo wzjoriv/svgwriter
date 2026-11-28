@@ -1,6 +1,6 @@
 # Widgets
 
-A drawing function with parameters becomes adjustable: `svg.interact` puts sliders, buttons and colour
+A drawing function with parameters becomes adjustable: `svg.explore` puts sliders, buttons and colour
 pickers beside the drawing in a notebook, `svgwriter preview` shows the same controls as a form above a
 project's outputs, and `svg.sweep` steps the parameters over time into an animation. All three read one
 declaration, because a control is plain data.
@@ -76,7 +76,7 @@ option, with a `ValueError` naming the problem.
 
 ## Notebook panels
 
-`svg.interact(fn)` shows the controls next to the drawing `fn(**values)` returns, a `Document` or an
+`svg.explore(fn)` shows the controls next to the drawing `fn(**values)` returns, a `Document` or an
 element, and redraws it as they change. It needs the `widget` extra:
 
 ```console
@@ -86,7 +86,7 @@ $ pip install "pysvgwriter[widget]"
 ```python
 import svgwriter as svg
 
-view = svg.interact(badge)                       # the panel appears below the cell
+view = svg.explore(badge)                       # the panel appears below the cell
 view.update(size=70, color="#f43f5e")            # set values from code as well
 print(view.values)
 print(view.code())                               # badge(size=70.0, color='#f43f5e', shape='box', outline=False)
@@ -96,7 +96,7 @@ view.save("badge.svg")                           # the drawing for the current v
 The panel looks like the preview page: the drawing on the left, the controls in a column on the right
 (under the drawing when the cell is narrow), in the notebook's light or dark theme.
 
-Controls given as keywords are added to declared ones (`svg.interact(fn, size=(0, 100))`); with none
+Controls given as keywords are added to declared ones (`svg.explore(fn, size=(0, 100))`); with none
 at all, they are inferred from the function's keyword defaults. A function whose first parameter is not
 a control, such as a project's `build(doc, ...)`, receives a new document there.
 
@@ -112,7 +112,7 @@ drawing, and `recorder.set(name, value)` plays an edit. It runs anywhere, for te
 import svgwriter as svg
 
 panel = svg.widgets.Recorder()
-view = svg.interact(badge, backend=panel, delay=0)
+view = svg.explore(badge, backend=panel, delay=0)
 panel.set("shape", 1)                            # option controls send the option's index
 print(view.values["shape"], len(panel.drawings))  # dot 2
 ```

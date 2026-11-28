@@ -31,13 +31,13 @@ class Recorder:
 
     See Also
     --------
-    svgwriter.tools.widgets.interact : Takes ``backend=Recorder()``.
+    svgwriter.tools.widgets.explore : Takes ``backend=Recorder()``.
 
     Examples
     --------
     >>> import svgwriter as svg
     >>> panel = svg.widgets.Recorder()
-    >>> view = svg.interact(lambda size=10: svg.rect(0, 0, size, size), backend=panel, delay=0)
+    >>> view = svg.explore(lambda size=10: svg.rect(0, 0, size, size), backend=panel, delay=0)
     >>> panel.set("size", 15)
     >>> view.values, len(panel.drawings)
     ({'size': 15}, 2)
@@ -82,7 +82,7 @@ class Recorder:
         --------
         >>> import svgwriter as svg
         >>> panel = svg.widgets.Recorder()
-        >>> view = svg.interact(lambda suit="♠": svg.text(suit), suit=["♠", "♥"], backend=panel, delay=0)
+        >>> view = svg.explore(lambda suit="♠": svg.text(suit), suit=["♠", "♥"], backend=panel, delay=0)
         >>> panel.set("suit", 1)
         >>> view.values
         {'suit': '♥'}

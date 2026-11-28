@@ -32,7 +32,7 @@ LABEL_INK = "#0f172a"  # button labels, dark on the lit buttons
 # %% [markdown]
 # `line[start:end].effect(name)` moves that range of a line onto a copy just above it, so the effect's
 # filter reaches only those letters while the line keeps its spacing. Each word has a dropdown, so
-# `svgwriter preview` (or `svg.interact` in a notebook) can swap its effect.
+# `svgwriter preview` (or `svg.explore` in a notebook) can swap its effect.
 
 # %%
 def effect_choice(label: str, value: str) -> svg.widgets.Dropdown:

@@ -72,7 +72,7 @@ def poster(doc: svg.Document, *, theme: str = "project", hue: float = 0, title: 
     doc.text(f"{date}  ·  {time}", x=MARGIN + 5, y=78, font_family=TEXT, font_weight="bold",
              fill="#ffffff").as_role("subtitle")
     doc.text(place, x=MARGIN + 5, y=84.5, font_family=TEXT, fill="#ffffff").as_role("caption")
-    when.on_hover(opacity=0.9)
+    when.interact.hover(opacity=0.9)
 
     doc += route(STOPS, family=TEXT)
     doc.text("We meet at the flag and walk the beach together", x=MARGIN, y=SHORE - 4, font_family=TEXT,

@@ -99,25 +99,14 @@ from .model.units import (
     cm,
     deg,
     em,
-    ft,
-    furlong,
-    grad,
     inch,
-    km,
     length,
-    m,
-    mi,
-    mil,
     mm,
-    nmi,
     percent,
     pt,
     px,
-    q,
     rad,
     turn,
-    um,
-    yd,
 )
 from .motion import video
 from .motion.video import Scene, renderers
@@ -132,7 +121,7 @@ from .ops import (
 )
 from .tools import project, widgets
 from .tools.project import Project
-from .tools.widgets import interact, sweep
+from .tools.widgets import explore, sweep
 
 if TYPE_CHECKING:
     from ._internal._latex import latex
@@ -176,6 +165,9 @@ def __dir__() -> list[str]:
     return sorted(name for name in {*globals(), *_LAZY} if not name.startswith("_") and name not in _TYPING_NAMES)
 
 
+_BUILTIN_SHADOWS = ("filter", "set")
+"""Lower-case aliases that would hide Python builtins under ``from svgwriter import *`` (``svg.filter`` still works)."""
+
 __all__ = [
     "BBox",
     "FontBuilder",
@@ -212,21 +204,10 @@ __all__ = [
     "drawing",
     "em",
     "inch",
-    "ft",
-    "furlong",
-    "km",
-    "mi",
-    "mil",
-    "nmi",
-    "um",
-    "yd",
-    "m",
-    "q",
     "length",
     "angle",
     "Angle",
     "deg",
-    "grad",
     "rad",
     "turn",
     "mm",
@@ -273,10 +254,10 @@ __all__ = [
     "to_string",
     "video",
     "widgets",
-    "interact",
+    "explore",
     "sweep",
     "write",
     "write_async",
     *_elements_all,
-    *_aliases_all,
+    *[name for name in _aliases_all if name not in _BUILTIN_SHADOWS],
 ]

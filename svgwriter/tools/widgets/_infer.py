@@ -153,7 +153,7 @@ def accepts(function: Callable[..., Any], names: Sequence[str]) -> None:
 def controls(**specs: Any) -> Callable[[F], F]:
     """Declare the controls of a drawing function, by parameter name.
 
-    :func:`~svgwriter.interact`, :func:`~svgwriter.sweep` and ``svgwriter preview`` read them, and
+    :func:`~svgwriter.explore`, :func:`~svgwriter.sweep` and ``svgwriter preview`` read them, and
     ``svgwriter build`` calls the function with their starting values.
 
     Parameters
