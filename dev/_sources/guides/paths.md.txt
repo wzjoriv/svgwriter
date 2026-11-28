@@ -108,6 +108,26 @@ blunt = tri.round_corners(6, where=lambda c: c.angle > 120)   # only the sharpes
 one = tri.round_corner(1, 4, fillet="quad")                   # a single vertex
 ```
 
+## Path effects
+
+These turn an outline into new geometry, so every format (PDF, PowerPoint, DXF, plotters) draws the result
+as it looks here:
+
+- `roughen(segment, deviation, seed=)` breaks the outline into short pieces that wobble, for a hand-drawn look;
+  the same seed draws the same wobble.
+- `dashed(*intervals, offset=)` cuts it into dashes as open paths, for formats that have no dash support.
+- `stamp(shape, spacing, orient=)` repeats a shape along it (`"rotate"` with the path, `"translate"` upright,
+  `"morph"` bent along it), for dotted lines, arrows along a curve or ticks.
+
+```python
+doc = svg.Document(width=420, height=150)
+doc.add(svg.rect(20, 20, 110, 70, rx=10, fill="#fde68a", stroke="#92400e", stroke_width=2).roughen(seed=2))
+doc.add(svg.circle(210, 60, 40, fill="none", stroke="#0ea5e9", stroke_width=3).dashed(12, 6))
+arrow = svg.Polygon([(-4, -4), (5, 0), (-4, 4)])
+doc.add(svg.path("M290 90 C320 20 350 140 400 60", fill="#e11d48").stamp(arrow, 14))
+doc.add(svg.path("M20 125 L400 125", fill="#334155").stamp(svg.rect(-1, -6, 2, 12), 10))
+```
+
 ## Clipping
 
 ```python

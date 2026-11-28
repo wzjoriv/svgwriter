@@ -447,6 +447,31 @@ quadratics with <code class="docutils literal notranslate"><span class="pre">fil
 </figcaption>
 </figure>
 </section>
+<section id="path-effects">
+<h2>Path effects<a class="headerlink" href="#path-effects" title="Link to this heading">¶</a></h2>
+<p>These turn an outline into new geometry, so every format (PDF, PowerPoint, DXF, plotters) draws the result
+as it looks here:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">roughen(segment,</span> <span class="pre">deviation,</span> <span class="pre">seed=)</span></code> breaks the outline into short pieces that wobble, for a hand-drawn look;
+the same seed draws the same wobble.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dashed(*intervals,</span> <span class="pre">offset=)</span></code> cuts it into dashes as open paths, for formats that have no dash support.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stamp(shape,</span> <span class="pre">spacing,</span> <span class="pre">orient=)</span></code> repeats a shape along it (<code class="docutils literal notranslate"><span class="pre">&quot;rotate&quot;</span></code> with the path, <code class="docutils literal notranslate"><span class="pre">&quot;translate&quot;</span></code> upright,
+<code class="docutils literal notranslate"><span class="pre">&quot;morph&quot;</span></code> bent along it), for dotted lines, arrows along a curve or ticks.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">doc</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">420</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"#fde68a"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"#92400e"</span><span class="p">,</span> <span class="n">stroke_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">roughen</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">210</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"none"</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="s2">"#0ea5e9"</span><span class="p">,</span> <span class="n">stroke_width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">dashed</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">arrow</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">Polygon</span><span class="p">([(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)])</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">"M290 90 C320 20 350 140 400 60"</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"#e11d48"</span><span class="p">)</span><span class="o">.</span><span class="n">stamp</span><span class="p">(</span><span class="n">arrow</span><span class="p">,</span> <span class="mi">14</span><span class="p">))</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">"M20 125 L400 125"</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"#334155"</span><span class="p">)</span><span class="o">.</span><span class="n">stamp</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+<figure class="snippet-result align-default">
+<img alt="What the code above draws" src="../_images/guides-paths-7-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-7-1.svg" />
+</figcaption>
+</figure>
+</section>
 <section id="clipping">
 <h2>Clipping<a class="headerlink" href="#clipping" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">art</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"teal"</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">svg</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span>
@@ -456,8 +481,8 @@ quadratics with <code class="docutils literal notranslate"><span class="pre">fil
 </pre></div>
 </div>
 <figure class="snippet-result align-default">
-<img alt="What the code above draws" src="../_images/guides-paths-7-0.svg" />
-<img alt="What the code above draws" src="../_images/guides-paths-7-1.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-8-0.svg" />
+<img alt="What the code above draws" src="../_images/guides-paths-8-1.svg" />
 </figcaption>
 </figure>
 <p>The clip shapes are in the element’s local coordinates, so the clip moves with the element.</p>
@@ -557,6 +582,7 @@ quadratics with <code class="docutils literal notranslate"><span class="pre">fil
 <li><a class="reference internal" href="#measurement">Measurement</a></li>
 <li><a class="reference internal" href="#walking-along-a-path">Walking along a path</a></li>
 <li><a class="reference internal" href="#corners">Corners</a></li>
+<li><a class="reference internal" href="#path-effects">Path effects</a></li>
 <li><a class="reference internal" href="#clipping">Clipping</a></li>
 <li><a class="reference internal" href="#conversions">Conversions</a></li>
 </ul>
