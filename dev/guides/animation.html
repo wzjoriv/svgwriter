@@ -739,6 +739,8 @@ automatically (no ffmpeg needed):</p>
 <img alt="What the code above draws" src="../_images/guides-animation-16-1.svg" />
 </figcaption>
 </figure>
+<p>A scene whose motion ends where it starts can loop forever: set <code class="docutils literal notranslate"><span class="pre">loop</span> <span class="pre">=</span> <span class="pre">True</span></code> on the class (or pass
+<code class="docutils literal notranslate"><span class="pre">bake(loop=True)</span></code>) and the baked animations repeat indefinitely in browsers and notebooks.</p>
 <p>The scene is sampled <code class="docutils literal notranslate"><span class="pre">fps</span></code> times a second (<code class="docutils literal notranslate"><span class="pre">bake(fps=...)</span></code> to change it) and every element is compared
 from sample to sample:</p>
 <div class="table-wrapper colwidths-auto docutils container">

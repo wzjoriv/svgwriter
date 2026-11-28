@@ -359,6 +359,9 @@ frame = baked.at(1.0)                     # the same frame the video shows at 1 
 # garden.save("garden.pptx")              # slide effects where PowerPoint has them
 ```
 
+A scene whose motion ends where it starts can loop forever: set `loop = True` on the class (or pass
+`bake(loop=True)`) and the baked animations repeat indefinitely in browsers and notebooks.
+
 The scene is sampled `fps` times a second (`bake(fps=...)` to change it) and every element is compared
 from sample to sample:
 
