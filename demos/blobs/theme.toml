@@ -10,3 +10,10 @@ accent = "#7c5cff"
 
 [roles.goo]
 fill = "{palette.primary}"
+
+[roles.button]
+fill = "{palette.accent}"
+stroke = "none"
+
+[roles."button.label"]
+fill = "#ffffff"
