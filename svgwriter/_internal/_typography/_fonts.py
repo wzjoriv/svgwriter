@@ -28,7 +28,7 @@ from .._constants import (
     PERCENT,
 )
 from .._platform import fallback_families, generic_candidates, scans_fallback
-from ._font_match import FaceStyle, instance, match_rank
+from ._font_match import FaceStyle, instance, match_rank, static_font
 
 if TYPE_CHECKING:
     from ...ops.text import FontWeight
@@ -91,8 +91,13 @@ def registered_face(family: str, weight: int, italic: bool) -> Any:
     return instance(typeface, face, weight, style)
 
 
-@lru_cache(maxsize=FONT_CACHE)
 def resolve_font(font_family: str, size: float, weight: FontWeight, italic: bool) -> Any:
+    """The font for a family list, size, weight and slant (static while writing PDF); see :func:`_resolve_font`."""
+    return static_font(_resolve_font(font_family, size, weight, italic))
+
+
+@lru_cache(maxsize=FONT_CACHE)
+def _resolve_font(font_family: str, size: float, weight: FontWeight, italic: bool) -> Any:
     """The skia font for a CSS family list, weight and slant; warns when the family is missing."""
     slant = skia.FontStyle.kItalic_Slant if italic else skia.FontStyle.kUpright_Slant
     families = [name.strip().strip("'\"") for name in font_family.split(",") if name.strip()]
@@ -119,8 +124,14 @@ def resolve_font(font_family: str, size: float, weight: FontWeight, italic: bool
     return skia.Font(typeface, size)
 
 
-@lru_cache(maxsize=GLYPH_CACHE)
 def font_for(char: str, font_family: str, size: float, weight: FontWeight = "normal", italic: bool = False,
+             language: str | None = None) -> Any:
+    """The font for *char* (static while writing PDF); see :func:`_font_for`."""
+    return static_font(_font_for(char, font_family, size, weight, italic, language))
+
+
+@lru_cache(maxsize=GLYPH_CACHE)
+def _font_for(char: str, font_family: str, size: float, weight: FontWeight = "normal", italic: bool = False,
              language: str | None = None) -> Any:
     """The font for *char*: the requested family when it has the glyph, else a system font that does.
 
@@ -229,3 +240,7 @@ def cluster_font(cluster: str, font_family: str, size: float, weight: FontWeight
     if color_font(emoji.getTypeface()) and emoji.unicharToGlyph(ord(cluster[0])):
         return emoji
     return font
+
+
+resolve_font.cache_clear = _resolve_font.cache_clear  # type: ignore[attr-defined]
+font_for.cache_clear = _font_for.cache_clear  # type: ignore[attr-defined]
