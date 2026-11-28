@@ -1,8 +1,8 @@
-# Effects on words, a logo and buttons: the SVG plays in a browser, the GIF anywhere.
+# A retro game title screen: effects on the title, a blinking "Press start" and a menu; SVG plays in a browser, GIF anywhere.
 [project]
 name = "effects"
-entry = "main:passage"
-size = [1100, 300]
+entry = "main:title_screen"
+size = [960, 540]
 theme = "theme.toml"
 
 [outputs]

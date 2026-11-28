@@ -15,7 +15,7 @@ CONTROLLED = {
     "calculator-kit": {"style", "shape", "layout", "accent"},
     "playing-card": {"rank", "suit", "hue", "iridescence"},
     "poster": {"theme", "hue", "title"},
-    "effects": {"smoke", "metal", "wind", "sparks", "snow", "logo", "button"},
+    "effects": {"title", "first", "second", "buttons"},
 }
 
 
@@ -57,8 +57,8 @@ def test_poster_controls_restyle_it(tmp_path: Path) -> None:
 def test_effect_dropdowns_swap_the_effects(tmp_path: Path) -> None:
     project = _quick_copy("effects", tmp_path)
     plain = project.build(["svg"])[0].read_text(encoding="utf-8")
-    swapped = project.build(["svg"], values={"smoke": "ice", "snow": "neon", "logo": "fire"})[0].read_text(encoding="utf-8")
-    assert swapped != plain
+    swapped = project.build(["svg"], values={"first": "ice", "second": "neon", "title": "Neon Ruins"})[0].read_text(encoding="utf-8")
+    assert swapped != plain and "Ruins" in swapped and "Ruins" not in plain
 
 
 def test_blobs_speed_shortens_the_loop(tmp_path: Path) -> None:

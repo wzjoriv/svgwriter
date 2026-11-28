@@ -42,8 +42,8 @@ STILLS: dict[str, tuple[dict[str, Any], ...]] = {
                      {"rank": "A", "suit": "♦", "iridescence": 0.8, "glow": False}),
     "poster": ({"theme": "night"}, {"theme": "mint", "title": "Dune Planting", "date": "Sunday 5 April 2026"},
                {"hue": 120, "time": "14:00 – 17:00"}),
-    "effects": ({"smoke": "ice", "metal": "neon", "wind": "glitch", "logo": "fire"},
-                {"sparks": "neon", "snow": "fire", "smoke": "snow", "button": "glitch"}),
+    "effects": ({"first": "ice", "second": "neon"},
+                {"title": "Neon Ruins", "first": "glitch", "second": "neon", "buttons": "fire"}),
 }
 SETUP = """project = svg.Project.load()
 theme = svg.Theme.load(project.config.theme)"""
