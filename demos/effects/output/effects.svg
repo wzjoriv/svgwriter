@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" version="1.1">
+  <style id="svgwriter-hover" type="text/css">#g1:hover { opacity:0.85 !important } #g2:hover { opacity:0.85 !important } #g3:hover { opacity:0.85 !important }</style>
+  <style id="svgwriter-theme" type="text/css">.role-background { fill:#070b14;stroke:none }
+.role-box { fill:#0f172a;stroke:#1e293b;stroke-width:1px }
+.role-text { fill:#e2e8f0;stroke:none;font-family:Georgia, 'Times New Roman', serif;font-size:30px;font-weight:400 }
+.role-caption { fill:#64748b;stroke:none;font-family:Georgia, 'Times New Roman', serif;font-size:13px;font-weight:400 }</style>
+  <defs>
+    <linearGradient id="linearGradient1" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0" stop-color="#fff3b0"/>
+      <stop offset="0.05" stop-color="#fde898"/>
+      <stop offset="0.1" stop-color="#fddd7f"/>
+      <stop offset="0.15" stop-color="#fdd163"/>
+      <stop offset="0.2" stop-color="#fec543"/>
+      <stop offset="0.25" stop-color="#ffb703"/>
+      <stop offset="0.3" stop-color="#ffa500"/>
+      <stop offset="0.35" stop-color="#ff9200"/>
+      <stop offset="0.4" stop-color="#ff7f00"/>
+      <stop offset="0.45" stop-color="#ff6b00"/>
+      <stop offset="0.5" stop-color="#fb5607"/>
+      <stop offset="0.55" stop-color="#f04a11"/>
+      <stop offset="0.6" stop-color="#e43e16"/>
+      <stop offset="0.65" stop-color="#d9311a"/>
+      <stop offset="0.7" stop-color="#cd231d"/>
+      <stop offset="0.75" stop-color="#c1121f"/>
+      <stop offset="0.8" stop-color="#af0f1c"/>
+      <stop offset="0.85" stop-color="#9d0b19"/>
+      <stop offset="0.9" stop-color="#8c0816"/>
+      <stop offset="0.95" stop-color="#7b0612"/>
+      <stop offset="1" stop-color="#6a040f"/>
+    </linearGradient>
+    <filter id="filter1" x="165.97" y="78.502" width="342.356" height="196.481" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feTurbulence id="feTurbulence1" baseFrequency="0.0114 0.0319" numOctaves="2" seed="0" type="turbulence" result="feTurbulence1-out">
+        <animate attributeName="baseFrequency" values="0.0114 0.0319;0.0137 0.0456;0.01 0.0388;0.0114 0.0319" dur="1.2s" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap id="feDisplacementMap1" in="SourceGraphic" in2="feTurbulence1-out" scale="10.964" xChannelSelector="R" yChannelSelector="G" result="feDisplacementMap1-out"/>
+      <feGaussianBlur id="feGaussianBlur1" in="feDisplacementMap1-out" stdDeviation="8.771" result="feGaussianBlur1-out"/>
+      <feFlood id="feFlood1" flood-color="#ff7b00" flood-opacity="1" result="feFlood1-out"/>
+      <feComposite id="feComposite1" in="feFlood1-out" in2="feGaussianBlur1-out" operator="in" result="feComposite1-out"/>
+      <feMerge>
+        <feMergeNode in="feComposite1-out"/>
+        <feMergeNode in="feDisplacementMap1-out"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="linearGradient2" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.22" stop-color="#666d78"/>
+      <stop offset="0.45" stop-color="#ffffff"/>
+      <stop offset="0.5" stop-color="#8c939e"/>
+      <stop offset="0.72" stop-color="#dfe1e4"/>
+      <stop offset="1" stop-color="#4e545c"/>
+    </linearGradient>
+    <filter id="filter2" x="414.758" y="70.992" width="385" height="206.719" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur id="feGaussianBlur2" in="SourceAlpha" stdDeviation="2.307" result="feGaussianBlur2-out"/>
+      <feSpecularLighting id="feSpecularLighting1" in="feGaussianBlur2-out" surfaceScale="5.768" lighting-color="white" specularConstant="0.8" specularExponent="18" result="feSpecularLighting1-out">
+        <feDistantLight azimuth="200" elevation="40">
+          <animate attributeName="azimuth" values="200;250;200" dur="3s" repeatCount="indefinite"/>
+        </feDistantLight>
+      </feSpecularLighting>
+      <feComposite id="feComposite2" in="feSpecularLighting1-out" in2="SourceAlpha" operator="in" result="feComposite2-out"/>
+      <feComposite id="feComposite3" in="SourceGraphic" in2="feComposite2-out" operator="arithmetic" k2="1" k3="1" result="feComposite3-out"/>
+      <feOffset id="feOffset1" in="feGaussianBlur2-out" dx="2.307" dy="2.307" result="feOffset1-out"/>
+      <feFlood id="feFlood2" flood-color="black" flood-opacity="0.4" result="feFlood2-out"/>
+      <feComposite id="feComposite4" in="feFlood2-out" in2="feOffset1-out" operator="in" result="feComposite4-out"/>
+      <feMerge>
+        <feMergeNode in="feComposite4-out"/>
+        <feMergeNode in="feComposite3-out"/>
+      </feMerge>
+    </filter>
+    <filter id="filter3" x="337.6" y="347.6" width="284.8" height="100.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur id="feGaussianBlur3" in="SourceAlpha" stdDeviation="13.5" result="feGaussianBlur3-out"/>
+      <feFlood id="feFlood3" flood-color="#b45309" flood-opacity="1" result="feFlood3-out"/>
+      <feComposite id="feComposite5" in="feFlood3-out" in2="feGaussianBlur3-out" operator="in" result="feComposite5-out"/>
+      <feGaussianBlur id="feGaussianBlur4" in="SourceAlpha" stdDeviation="6.75" result="feGaussianBlur4-out"/>
+      <feFlood id="feFlood4" flood-color="#b45309" flood-opacity="1" result="feFlood4-out"/>
+      <feComposite id="feComposite6" in="feFlood4-out" in2="feGaussianBlur4-out" operator="in" result="feComposite6-out"/>
+      <feGaussianBlur id="feGaussianBlur5" in="SourceAlpha" stdDeviation="2.25" result="feGaussianBlur5-out"/>
+      <feFlood id="feFlood5" flood-color="#b45309" flood-opacity="1" result="feFlood5-out"/>
+      <feComposite id="feComposite7" in="feFlood5-out" in2="feGaussianBlur5-out" operator="in" result="feComposite7-out"/>
+      <feMerge>
+        <feMergeNode in="feComposite5-out"/>
+        <feMergeNode in="feComposite6-out"/>
+        <feMergeNode in="feComposite7-out"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="filter4" x="337.6" y="395.6" width="284.8" height="100.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur id="feGaussianBlur6" in="SourceAlpha" stdDeviation="13.5" result="feGaussianBlur6-out"/>
+      <feFlood id="feFlood6" flood-color="#b45309" flood-opacity="1" result="feFlood6-out"/>
+      <feComposite id="feComposite8" in="feFlood6-out" in2="feGaussianBlur6-out" operator="in" result="feComposite8-out"/>
+      <feGaussianBlur id="feGaussianBlur7" in="SourceAlpha" stdDeviation="6.75" result="feGaussianBlur7-out"/>
+      <feFlood id="feFlood7" flood-color="#b45309" flood-opacity="1" result="feFlood7-out"/>
+      <feComposite id="feComposite9" in="feFlood7-out" in2="feGaussianBlur7-out" operator="in" result="feComposite9-out"/>
+      <feGaussianBlur id="feGaussianBlur8" in="SourceAlpha" stdDeviation="2.25" result="feGaussianBlur8-out"/>
+      <feFlood id="feFlood8" flood-color="#b45309" flood-opacity="1" result="feFlood8-out"/>
+      <feComposite id="feComposite10" in="feFlood8-out" in2="feGaussianBlur8-out" operator="in" result="feComposite10-out"/>
+      <feMerge>
+        <feMergeNode in="feComposite8-out"/>
+        <feMergeNode in="feComposite9-out"/>
+        <feMergeNode in="feComposite10-out"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="filter5" x="337.6" y="443.6" width="284.8" height="100.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur id="feGaussianBlur9" in="SourceAlpha" stdDeviation="13.5" result="feGaussianBlur9-out"/>
+      <feFlood id="feFlood9" flood-color="#b45309" flood-opacity="1" result="feFlood9-out"/>
+      <feComposite id="feComposite11" in="feFlood9-out" in2="feGaussianBlur9-out" operator="in" result="feComposite11-out"/>
+      <feGaussianBlur id="feGaussianBlur10" in="SourceAlpha" stdDeviation="6.75" result="feGaussianBlur10-out"/>
+      <feFlood id="feFlood10" flood-color="#b45309" flood-opacity="1" result="feFlood10-out"/>
+      <feComposite id="feComposite12" in="feFlood10-out" in2="feGaussianBlur10-out" operator="in" result="feComposite12-out"/>
+      <feGaussianBlur id="feGaussianBlur11" in="SourceAlpha" stdDeviation="2.25" result="feGaussianBlur11-out"/>
+      <feFlood id="feFlood11" flood-color="#b45309" flood-opacity="1" result="feFlood11-out"/>
+      <feComposite id="feComposite13" in="feFlood11-out" in2="feGaussianBlur11-out" operator="in" result="feComposite13-out"/>
+      <feMerge>
+        <feMergeNode in="feComposite11-out"/>
+        <feMergeNode in="feComposite12-out"/>
+        <feMergeNode in="feComposite13-out"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <g>
+    <rect x="0" y="0" width="960" height="540" class="role-background"/>
+    <rect x="16" y="16" width="928" height="508" rx="18" class="role-box"/>
+    <g fill="#ffffff">
+      <circle cx="316.5168" cy="92.6314" r="0.9858" opacity="0.1754"/>
+      <circle cx="513.2985" cy="201.77" r="0.4522" opacity="0.3276"/>
+      <circle cx="50.796" cy="236.292" r="0.4629" opacity="0.1817"/>
+      <circle cx="409.9538" cy="436.0409" r="0.5114" opacity="0.2281"/>
+      <circle cx="598.258" cy="497.4361" r="0.9194" opacity="0.2888"/>
+      <circle cx="921.9647" cy="39.664" r="1.1726" opacity="0.2514"/>
+      <circle cx="149.8687" cy="75.8385" r="0.6776" opacity="0.4356"/>
+      <circle cx="183.7141" cy="311.4529" r="0.975" opacity="0.2803"/>
+      <circle cx="524.3069" cy="47.8968" r="0.4536" opacity="0.2221"/>
+      <circle cx="647.4112" cy="233.2169" r="0.6827" opacity="0.3549"/>
+      <circle cx="436.5551" cy="168.2816" r="1.1149" opacity="0.3946"/>
+      <circle cx="242.5216" cy="307.8072" r="0.8727" opacity="0.4563"/>
+      <circle cx="692.9252" cy="162.2724" r="1.2822" opacity="0.1913"/>
+      <circle cx="404.018" cy="400.6276" r="0.5368" opacity="0.3211"/>
+      <circle cx="52.3843" cy="355.4537" r="1.0881" opacity="0.3506"/>
+      <circle cx="828.4434" cy="175.3837" r="1.0258" opacity="0.358"/>
+      <circle cx="554.1427" cy="247.7523" r="1.156" opacity="0.4806"/>
+      <circle cx="455.9633" cy="353.3893" r="0.4546" opacity="0.3955"/>
+      <circle cx="616.5356" cy="520.4927" r="1.1397" opacity="0.2496"/>
+      <circle cx="374.0145" cy="355.6756" r="0.4203" opacity="0.3116"/>
+      <circle cx="171.9489" cy="75.4847" r="0.4531" opacity="0.4189"/>
+      <circle cx="136.0277" cy="141.7883" r="0.7519" opacity="0.455"/>
+      <circle cx="90.7794" cy="244.1872" r="0.8945" opacity="0.4592"/>
+      <circle cx="776.2917" cy="454.9041" r="0.6506" opacity="0.2954"/>
+      <circle cx="348.9396" cy="465.17" r="1.262" opacity="0.2028"/>
+      <circle cx="179.5301" cy="133.8341" r="0.61" opacity="0.3197"/>
+      <circle cx="562.7066" cy="149.4753" r="0.4037" opacity="0.2966"/>
+      <circle cx="358.6673" cy="303.7013" r="1.2578" opacity="0.3917"/>
+      <circle cx="494.376" cy="329.7371" r="1.0086" opacity="0.1689"/>
+      <circle cx="850.7666" cy="412.2245" r="1.1871" opacity="0.4293"/>
+      <circle cx="380.1276" cy="218.6812" r="0.4932" opacity="0.372"/>
+      <circle cx="73.766" cy="50.2126" r="0.5879" opacity="0.2068"/>
+      <circle cx="331.5698" cy="42.7084" r="0.4002" opacity="0.2029"/>
+      <circle cx="110.1589" cy="200.7138" r="0.423" opacity="0.456"/>
+      <circle cx="585.856" cy="91.4636" r="0.627" opacity="0.2716"/>
+      <circle cx="353.9437" cy="78.4039" r="1.164" opacity="0.4976"/>
+      <circle cx="448.4382" cy="261.788" r="0.4773" opacity="0.1858"/>
+      <circle cx="333.9661" cy="150.4965" r="1.146" opacity="0.2065"/>
+      <circle cx="37.4328" cy="499.1007" r="0.8754" opacity="0.2013"/>
+      <circle cx="520.064" cy="29.7376" r="0.8753" opacity="0.4925"/>
+      <animate attributeName="opacity" values="1;0.3;1" begin="0s" dur="2.5s" repeatCount="indefinite"/>
+    </g>
+    <text x="924" y="508" style="text-anchor:end" class="role-caption">svg.effects</text>
+  </g>
+  <text x="480" y="210" style="letter-spacing:4;font-size:96;font-weight:bold;text-anchor:middle" class="role-text"><tspan visibility="hidden">Star</tspan> <tspan visibility="hidden">Drift</tspan></text>
+  <text x="480" y="210" style="letter-spacing:4;font-size:96;font-weight:bold;text-anchor:middle;fill:url(#linearGradient2);stroke:#2f3338;stroke-width:1.384;filter:url(#filter2)" class="role-text"><tspan visibility="hidden"><tspan visibility="hidden">Star</tspan></tspan><tspan visibility="hidden"> </tspan>Drift</text>
+  <text x="480" y="210" style="letter-spacing:4;font-size:96;font-weight:bold;text-anchor:middle;fill:url(#linearGradient1);filter:url(#filter1)" class="role-text">Star<tspan visibility="hidden"> Drift</tspan></text>
+  <text x="480" y="262" style="font-size:20;text-anchor:middle" class="role-caption">A journey past the last lighthouse</text>
+  <text x="480" y="340" letter-spacing="6" fill="#fde68a" font-size="22" font-weight="bold" text-anchor="middle">PRESS START<animate attributeName="opacity" values="1;0;1" begin="0s" dur="1.2s" repeatCount="indefinite"/></text>
+  <g id="g1">
+    <rect x="370" y="380" width="220" height="36" rx="18" stroke-width="1.125" fill="#ecd4c2" stroke="#b45309" filter="url(#filter3)">
+      <animate attributeName="opacity" values="1;1;0.55;1;0.8;1;1" calcMode="discrete" dur="2.5s" repeatCount="indefinite"/>
+    </rect>
+    <text x="480" y="404" fill="#0f172a" font-size="18" text-anchor="middle">New game</text>
+    <animate attributeName="opacity" from="1" to="0.6" begin="g1.mousedown" dur="0.15s"/>
+  </g>
+  <g id="g2">
+    <rect x="370" y="428" width="220" height="36" rx="18" stroke-width="1.125" fill="#ecd4c2" stroke="#b45309" filter="url(#filter4)">
+      <animate attributeName="opacity" values="1;1;0.55;1;0.8;1;1" calcMode="discrete" dur="2.5s" repeatCount="indefinite"/>
+    </rect>
+    <text x="480" y="452" fill="#0f172a" font-size="18" text-anchor="middle">Continue</text>
+    <animate attributeName="opacity" from="1" to="0.6" begin="g2.mousedown" dur="0.15s"/>
+  </g>
+  <g id="g3">
+    <rect x="370" y="476" width="220" height="36" rx="18" stroke-width="1.125" fill="#ecd4c2" stroke="#b45309" filter="url(#filter5)">
+      <animate attributeName="opacity" values="1;1;0.55;1;0.8;1;1" calcMode="discrete" dur="2.5s" repeatCount="indefinite"/>
+    </rect>
+    <text x="480" y="500" fill="#0f172a" font-size="18" text-anchor="middle">Options</text>
+    <animate attributeName="opacity" from="1" to="0.6" begin="g3.mousedown" dur="0.15s"/>
+  </g>
+  <text x="40" y="508" class="role-caption">v1.0</text>
+</svg>

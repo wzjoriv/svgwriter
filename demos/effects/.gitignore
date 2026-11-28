@@ -1,3 +1,7 @@
-output/
-__pycache__/
-.ipynb_checkpoints/
+# Built outputs: the light formats are committed so they can be opened without running anything;
+# video and GIF stay local. Rebuild with: python scripts/dev.py svgwriter demo-outputs build
+output/*
+!output/*.svg
+!output/*.pdf
+!output/*.png
+!output/*.pptx

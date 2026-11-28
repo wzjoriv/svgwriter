@@ -136,3 +136,12 @@ def test_playing_card_has_controls_and_a_sweep(tmp_path: Path) -> None:
     assert names == ["playing-card.gif", "playing-card-sweep.gif"]
     narrow, wide = (_png_size(project.build(["png"], values={"width": width})[0]) for width in (160, 320))
     assert narrow[0] < wide[0]
+
+
+def test_light_outputs_are_committed() -> None:
+    """Each demo keeps its SVG, PDF, PNG and PPTX outputs in output/ so readers can open them."""
+    light = {"svg", "pdf", "png", "pptx"}
+    for name in NAMES:
+        formats = set(svg.Project.load(DEMOS / name).config.formats) & light
+        present = {path.suffix[1:] for path in (DEMOS / name / "output").glob("*")}
+        assert formats <= present, f"{name}: run `python scripts/dev.py svgwriter demo-outputs build`"

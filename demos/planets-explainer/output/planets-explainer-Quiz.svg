@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" version="1.1">
+  <style id="svgwriter-hover" type="text/css">#g1:hover { opacity:0.9 !important } #g2:hover { opacity:0.9 !important } #g3:hover { opacity:0.9 !important }</style>
+  <style id="svgwriter-theme" type="text/css">.role-background { fill:#05060f;stroke:none }
+.role-text { fill:#e6e9f5;stroke:none;font-family:Inter, 'Segoe UI', Helvetica, Arial, sans-serif;font-size:20px;font-weight:400 }
+.role-title { fill:#ffd166;stroke:none;font-family:Inter, 'Segoe UI', Helvetica, Arial, sans-serif;font-size:64px;font-weight:700 }
+.role-subtitle { fill:#8a91b4;stroke:none;font-family:Inter, 'Segoe UI', Helvetica, Arial, sans-serif;font-size:26px;font-weight:400 }
+.role-card { fill:#1f2937;stroke:#2b3150;stroke-width:2px }
+.role-answer { fill:#ef6f3c;font-weight:bold }</style>
+  <rect x="0" y="0" width="1280" height="720" class="role-background"/>
+  <g transform="translate(80 80)">
+    <text class="role-title" transform="translate(0 62)">Check your understanding</text>
+    <text class="role-subtitle" transform="translate(0 112.625)">Click a question to reveal its answer</text>
+  </g>
+  <g id="g1">
+    <rect x="80" y="250" width="1120" height="120" rx="16" class="role-card"/>
+    <text x="112" y="300" style="font-size:30" class="role-text">Which planet is farthest from the Sun?</text>
+  </g>
+  <text x="112" y="346" style="opacity:0;font-size:28" class="role-answer">Neptune, about 30 AU away<animate attributeName="opacity" from="0" to="1" begin="g1.click" dur="0.4s" fill="freeze"/></text>
+  <g id="g2">
+    <rect x="80" y="400" width="1120" height="120" rx="16" class="role-card"/>
+    <text x="112" y="450" style="font-size:30" class="role-text">How many Suns would fit across Betelgeuse?</text>
+  </g>
+  <text x="112" y="496" style="opacity:0;font-size:28" class="role-answer">About 700<animate attributeName="opacity" from="0" to="1" begin="g2.click" dur="0.4s" fill="freeze"/></text>
+  <g id="g3">
+    <rect x="80" y="550" width="1120" height="120" rx="16" class="role-card"/>
+    <text x="112" y="600" style="font-size:30" class="role-text">Why are the planets drawn bigger than they are?</text>
+  </g>
+  <text x="112" y="646" style="opacity:0;font-size:28" class="role-answer">At true size they would be invisible specks<animate attributeName="opacity" from="0" to="1" begin="g3.click" dur="0.4s" fill="freeze"/></text>
+</svg>

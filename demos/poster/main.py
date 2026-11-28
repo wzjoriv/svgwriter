@@ -13,6 +13,7 @@ import svgwriter as svg
 DISPLAY = svg.Typeface("serif")       # the title face; drop an OFL font into assets/fonts to change it
 TEXT = svg.Typeface("sans-serif")     # captions and labels
 MARGIN = 16
+SIGNUP_URL = "https://coastwatch.example/cleanup"   # a reserved example domain, never a real site
 HORIZON = 96                          # where the sky meets the sea
 SHORE = 166                           # where the sea meets the details
 STOPS = (("Car park", 26, 150), ("Lifeguard flag", 70, 136), ("Dunes", 118, 154), ("Rock pools", 160, 132),
@@ -91,8 +92,9 @@ def poster(doc: svg.Document, *, theme: str = "project", hue: float = 0, title: 
     doc.text("Gloves, bags and tea are provided.", x=MARGIN, y=height - 30, font_family=TEXT,
              font_weight="bold").as_role("text")
     doc.line(MARGIN, height - 20, width - MARGIN, height - 20, stroke="#c9bfae", stroke_width=0.3)
-    doc.text("Organised by Coastwatch Volunteers  ·  sign up at coastwatch.example/cleanup", x=MARGIN,
-             y=height - 13, font_family=TEXT).as_role("caption")
+    signup = doc.add(svg.A(href=SIGNUP_URL))   # clickable in the SVG and the PDF
+    signup.text("Organised by Coastwatch Volunteers  ·  sign up at coastwatch.example/cleanup", x=MARGIN,
+                y=height - 13, font_family=TEXT).as_role("caption")
     doc.text("svgwriter", x=width - MARGIN, y=height - 13, text_anchor="end", font_family=TEXT).as_role("caption")
     return doc
 
