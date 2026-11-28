@@ -11,6 +11,7 @@ __all__ = [
     "HOVER_SHEET_ID",
     "HOVER_STYLE",
     "POINTER_EVENTS",
+    "SVG_EVENTS",
     "ID_ATTRIBUTE_RE",
     "TIMING_ATTRIBUTE_RE",
     "PAGE_LENGTH_DIGITS",
@@ -416,3 +417,8 @@ POINTER_EVENTS: Final = {
     "focus": "focusin", "blur": "focusout",
 }
 """Event names for ``element.animate.on(...)`` and the SVG 1.1 event each starts on."""
+SVG_EVENTS: Final = frozenset({
+    "click", "mousedown", "mouseup", "mouseover", "mousemove", "mouseout", "focusin", "focusout", "activate",
+    "DOMActivate", "DOMFocusIn", "DOMFocusOut", "load", "SVGLoad",
+})
+"""SVG 1.1 event names ``element.animate.on(...)`` also accepts as written."""

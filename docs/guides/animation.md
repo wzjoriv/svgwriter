@@ -101,6 +101,21 @@ properties; it is written as a CSS `:hover` rule:
 key.on_hover(fill="darkcyan", stroke="white", stroke_width=2)
 ```
 
+Interactions bundle these under a name: `el.interact.button()` dims an element under the pointer and
+flashes it when pressed, and `el.interact.highlight(color=...)` outlines it on hover. Register your own
+with `@svg.preset.interaction`; `on()` also accepts any SVG 1.1 event name (`"mousemove"`, `"activate"`, ...):
+
+```python
+@svg.preset.interaction
+def nudge(element: svg.Element, *, distance: float = 4) -> None:
+    element.on_hover(opacity=0.9)
+    element.animate.on("click").move_by(0, -distance, dur=0.15)
+
+
+tile = doc.rect(80, 10, 40, 40, rx=6, fill="slateblue").interact.nudge(distance=6)
+svg.preset.interaction.unregister("nudge")
+```
+
 ## Presets of your own
 
 A reusable animation is a typed function decorated with `@svg.preset.animation`. Its first positional

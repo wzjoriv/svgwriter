@@ -1,5 +1,5 @@
 """
-Ready-made content: composite shapes, paints, filters, markers, effects, presets and fonts.
+Ready-made content: composite shapes, paints, filters, markers, effects, interactions, presets and fonts.
 
 Sub-packages
 ------------
@@ -7,6 +7,8 @@ paths
     Composite shapes (star, gear, arrow) and the ``drawing`` decorator.
 patterns, gradients, filters, markers, effects
     Ready-made paints, filters, line markers and effects for any element.
+interactions
+    Ready-made hover and click responses (``el.interact.button()``).
 preset
     Presets of your own by kind (animation, shape, pattern and more).
 fonts

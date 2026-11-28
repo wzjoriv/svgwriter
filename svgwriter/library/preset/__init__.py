@@ -31,6 +31,7 @@ from ..._internal._presets import (
     EFFECTS,
     FILTERS,
     GRADIENTS,
+    INTERACTIONS,
     KINDS,
     MARKERS,
     PATTERNS,
@@ -40,6 +41,7 @@ from ..._internal._presets import (
     BehaviorPresets,
     DefinitionPresets,
     EffectPresets,
+    InteractionPresets,
     ShapePresets,
     SizePresets,
 )
@@ -53,6 +55,7 @@ filter: Final = FILTERS  # noqa: A001
 gradient: Final = GRADIENTS
 marker: Final = MARKERS
 effect: Final = EFFECTS
+interaction: Final = INTERACTIONS
 
 __all__ = [
     "KINDS",
@@ -60,6 +63,7 @@ __all__ = [
     "BehaviorPresets",
     "DefinitionPresets",
     "EffectPresets",
+    "InteractionPresets",
     "ShapePresets",
     "SizePresets",
     "animation",
@@ -67,6 +71,7 @@ __all__ = [
     "effect",
     "filter",
     "gradient",
+    "interaction",
     "marker",
     "pattern",
     "shape",
